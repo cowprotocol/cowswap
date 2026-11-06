@@ -121,6 +121,32 @@ export type TokenPairConstraint = {
   buy: { address: string; chainId: SupportedChainId }
 }
 
+/**
+ * Narrows the tokens of one token selector (sell or buy).
+ * Search results and recent tokens are narrowed the same way.
+ */
+export interface TokenSelectorFilter {
+  /**
+   * Addresses of the only tokens to show
+   */
+  tokens?: string[]
+
+  /**
+   * Addresses of tokens to hide. Like `tokens`, it limits search results to the token lists (no token import).
+   */
+  excludedTokens?: string[]
+
+  /**
+   * Shows only the tokens the connected wallet holds. Ignored while no wallet is connected, and for bridge target tokens.
+   */
+  onlyWithBalance?: boolean
+
+  /**
+   * Shown above the token list, to explain why tokens are missing
+   */
+  notice?: string
+}
+
 export type WidgetHookResult = Promise<boolean> | boolean
 
 export enum TradeType {
@@ -302,6 +328,16 @@ export interface CowSwapWidgetParams {
   buyTokenLists?: string[]
 
   /**
+   * Narrows the tokens of the sell selector, on top of `sellTokenLists`
+   */
+  sellTokensFilter?: TokenSelectorFilter
+
+  /**
+   * Narrows the tokens of the buy selector, on top of `buyTokenLists`
+   */
+  buyTokensFilter?: TokenSelectorFilter
+
+  /**
    * Forces the widget locale.
    * Serialized as the `lng` query param used by the frontend locale resolver.
    * Accepts supported locales like `en-US` and fuzzy values like `en`.
@@ -475,6 +511,16 @@ export interface CowSwapWidgetParams {
    * Option to hide bridge info
    */
   hideBridgeInfo?: boolean
+
+  /**
+   * Hides the Wait & Save toggle and related confirmation UI.
+   */
+  hideWaitAndSave?: boolean
+
+  /**
+   * Option to hide the banner suggesting to wrap the native token (e.g. ETH -> WETH) when selling it.
+   */
+  hideWrapBanner?: boolean
 
   /**
    * Option to hide orders table on LIMIT and TWAP forms.

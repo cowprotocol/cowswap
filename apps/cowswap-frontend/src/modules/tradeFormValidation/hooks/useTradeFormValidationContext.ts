@@ -8,9 +8,9 @@ import { Currency, Token } from '@cowprotocol/currency'
 import { useENSAddress } from '@cowprotocol/ens'
 import { useIsTradeUnsupported, useIsXstockToken, useTryFindToken } from '@cowprotocol/tokens'
 import {
+  isSafeWalletAtom,
   useGnosisSafeInfo,
   useIsRestoringConnection,
-  useIsSafeWallet,
   useIsTxBundlingSupported,
   useWalletDetails,
   useWalletInfo,
@@ -75,7 +75,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const isOutputCurrencyXstock = useIsXstockToken(getNonNativeCurrency(outputCurrency))
 
   const isBundlingSupported = useIsTxBundlingSupported()
-  const isSafeWallet = useIsSafeWallet()
+  const isSafeWallet = useAtomValue(isSafeWalletAtom)
   const isWrapUnwrap = useIsWrapOrUnwrap()
   const { allowsOffchainSigning, isSupportedWallet } = useWalletDetails()
   const gnosisSafeInfo = useGnosisSafeInfo()

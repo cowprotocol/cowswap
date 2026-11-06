@@ -56,7 +56,7 @@ export function MilkGlass({ fraction, isExpired = false }: MilkGlassProps): Reac
       <path d={GLASS_SILHOUETTE_PATH} transform="translate(5 4)" opacity="0.12" fill="white" />
 
       <g clipPath="url(#solana-signing-milk-glass-clip)">
-        <g style={{ transform: `translateY(${drainY}px)`, transition: 'transform 0.5s linear' }}>
+        <g style={{ transform: `translateY(${drainY}px)`, transition: 'transform 1s linear' }}>
           <SwayingSurface>
             <path d={MILK_GENTLE_SURFACE_PATH} transform="translate(-95 22)" fill="white" />
           </SwayingSurface>

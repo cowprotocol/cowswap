@@ -1,8 +1,10 @@
+import { useAtomValue } from 'jotai'
+
 import { useConfig, useWalletClient } from 'wagmi'
 
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import type { Token } from '@cowprotocol/currency'
-import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { isSafeWalletAtom, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAddBridgeOrder } from 'entities/bridgeOrders'
 import { useDispatch } from 'react-redux'
@@ -44,7 +46,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const { data: walletClient } = useWalletClient()
   const { account } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
-  const isSafeWallet = useIsSafeWallet()
+  const isSafeWallet = useAtomValue(isSafeWalletAtom)
   const derivedTradeState = useDerivedTradeState()
   const receiveAmountInfo = useGetReceiveAmountInfo()
   const tradeTypeInfo = useTradeTypeInfo()

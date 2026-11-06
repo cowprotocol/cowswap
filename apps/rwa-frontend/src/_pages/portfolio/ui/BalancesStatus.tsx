@@ -2,9 +2,9 @@ import type { ReactNode } from 'react'
 
 import styles from './Portfolio.module.css'
 
-import type { BalancesProgress } from '../model/usePortfolio'
+import { formatUtcTime } from '../lib/formatUtcTime'
 
-import { formatDateTime } from '@/shared/lib/format'
+import type { BalancesProgress } from '../model/usePortfolio'
 
 interface BalancesStatusProps {
   progress: BalancesProgress
@@ -33,9 +33,7 @@ export function BalancesStatus({ progress, onRefresh }: BalancesStatusProps): Re
           </span>
         </>
       ) : (
-        updatedAt !== null && (
-          <span className={styles.secondary}>Balances updated {formatDateTime(updatedAt / 1000)}</span>
-        )
+        updatedAt !== null && <span className={styles.secondary}>Balances updated {formatUtcTime(updatedAt)}</span>
       )}
       <button
         type="button"

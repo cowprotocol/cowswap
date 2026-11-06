@@ -1,6 +1,10 @@
 import { PublicKey } from '@solana/web3.js'
 
-import { BuyAtaQuote, getCreateBuyAtaFundedAccounts } from '../solanaFlow/planCreateBuyAtaStep'
+import {
+  BuyAtaQuote,
+  getCreateBuyAtaFundedAccounts,
+  getIsBuyAtaCreationSkipped,
+} from '../solanaFlow/planCreateBuyAtaStep'
 import { getCreateOrderFundedAccounts } from '../solanaFlow/planCreateOrderStep'
 import { getWrapFundedAccounts } from '../solanaFlow/planWrapStep'
 import { SolanaFundedAccount } from '../solanaFlow/types'
@@ -9,6 +13,8 @@ export interface PlanSolanaTradeFundedAccountsParams {
   owner: PublicKey
   quote: BuyAtaQuote
   isNativeSell: boolean
+  /** LaunchDarkly `isAtaCreationDisabled`. Defaults to false. */
+  isAtaCreationDisabled?: boolean
 }
 
 /**
@@ -22,10 +28,13 @@ export function planSolanaTradeFundedAccounts({
   owner,
   quote,
   isNativeSell,
+  isAtaCreationDisabled = false,
 }: PlanSolanaTradeFundedAccountsParams): SolanaFundedAccount[] {
+  const isBuyAtaCreationSkipped = getIsBuyAtaCreationSkipped({ quote, owner, isAtaCreationDisabled })
+
   return [
     ...(isNativeSell ? getWrapFundedAccounts(owner) : []),
-    ...getCreateBuyAtaFundedAccounts(quote),
+    ...getCreateBuyAtaFundedAccounts(quote, isBuyAtaCreationSkipped),
     ...getCreateOrderFundedAccounts(),
   ]
 }

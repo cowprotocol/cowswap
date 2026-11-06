@@ -1,10 +1,11 @@
+import { useAtomValue } from 'jotai'
 import { useCallback, useMemo } from 'react'
 
 import { useConfig } from 'wagmi'
 import { getTransactionCount } from 'wagmi/actions'
 
 import { isSolanaChain } from '@cowprotocol/cow-sdk'
-import { useWalletInfo, useIsSafeWallet } from '@cowprotocol/wallet'
+import { isSafeWalletAtom, useWalletInfo } from '@cowprotocol/wallet'
 
 import { SOLANA_UNUSED_NONCE } from 'common/constants/common'
 
@@ -54,7 +55,7 @@ export function useTransactionAdder(): TransactionAdder {
   const config = useConfig()
   const { chainId, account } = useWalletInfo()
   const dispatch = useAppDispatch()
-  const isSafeWallet = useIsSafeWallet()
+  const isSafeWallet = useAtomValue(isSafeWalletAtom)
   const allTxs = useAllTransactions()
 
   const maxPendingNonce = useMemo(() => {

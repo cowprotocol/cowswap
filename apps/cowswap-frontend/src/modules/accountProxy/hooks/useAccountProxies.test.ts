@@ -1,3 +1,5 @@
+import { getDefaultStore, type PrimitiveAtom } from 'jotai'
+
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import {
@@ -7,7 +9,7 @@ import {
   COW_SHED_FACTORY_FOR_COMPOSABLE_COW,
   CowShedHooks,
 } from '@cowprotocol/sdk-cow-shed'
-import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { isSafeWalletAtom, useWalletInfo } from '@cowprotocol/wallet'
 
 import { renderHook } from '@testing-library/react'
 
@@ -27,7 +29,7 @@ jest.mock('@cowprotocol/common-hooks', () => ({
 
 jest.mock('@cowprotocol/wallet', () => ({
   useWalletInfo: jest.fn(),
-  useIsSafeWallet: jest.fn(),
+  isSafeWalletAtom: jest.requireActual('jotai').atom(false),
 }))
 
 jest.mock('./useDeployedCowShedAddresses', () => ({
@@ -42,7 +44,7 @@ const VERSION_100_PROXY = '0x5555555555555555555555555555555555555555'
 const CHAIN_ID = SupportedChainId.MAINNET
 const useFeatureFlagsMock = useFeatureFlags as jest.MockedFunction<typeof useFeatureFlags>
 const useWalletInfoMock = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
-const useIsSafeWalletMock = useIsSafeWallet as jest.MockedFunction<typeof useIsSafeWallet>
+const writableIsSafeWalletAtom = isSafeWalletAtom as PrimitiveAtom<boolean>
 const useDeployedCowShedAddressesMock = useDeployedCowShedAddresses as jest.MockedFunction<
   typeof useDeployedCowShedAddresses
 >
@@ -55,7 +57,7 @@ describe('useAccountProxies', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     useFeatureFlagsMock.mockReturnValue({ isTwapEoaEnabled: true })
-    useIsSafeWalletMock.mockReturnValue(false)
+    getDefaultStore().set(writableIsSafeWalletAtom, false)
     useWalletInfoMock.mockReturnValue({ account: ACCOUNT, chainId: CHAIN_ID } as ReturnType<typeof useWalletInfo>)
     useDeployedCowShedAddressesMock.mockReturnValue(ALL_DEPLOYED)
     proxyOfMock
@@ -115,7 +117,7 @@ describe('useAccountProxies', () => {
   })
 
   it('excludes the advanced orders proxy for Safe wallets', () => {
-    useIsSafeWalletMock.mockReturnValue(true)
+    getDefaultStore().set(writableIsSafeWalletAtom, true)
 
     const { result } = renderHook(() => useAccountProxies())
 

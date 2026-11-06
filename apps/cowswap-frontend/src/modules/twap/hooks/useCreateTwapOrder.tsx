@@ -17,7 +17,7 @@ import {
   isEoaAtom,
   isSafeAppAtom,
   isSafeViaWcAtom,
-  useIsSafeWallet,
+  isSafeWalletAtom,
   useIsTxBundlingSupported,
   useSendBatchTransactions,
   useWalletDetails,
@@ -72,6 +72,7 @@ import {
 } from '../utils/buildTwapOrderParamsStruct'
 import { EoaTwapPlacementCancelledError, startEoaTwapPlacement } from '../utils/eoaTwapPlacementCancel'
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
+import { getEoaTwapPollerAmountToApprove } from '../utils/getEoaTwapPollerAmountToApprove'
 import { getErrorMessage } from '../utils/parseTwapError'
 import { twapOrderToStruct } from '../utils/twapOrderToStruct'
 
@@ -105,7 +106,7 @@ export function useCreateTwapOrder() {
   const setPlacedOrderHighlight = useSetAtom(placedOrderHighlightAtom)
   const revealOrderInOrdersTable = useRevealOrderInOrdersTable()
   const setOptimisticAllowance = useSetOptimisticAllowance()
-  const isSafeWallet = useIsSafeWallet()
+  const isSafeWallet = useAtomValue(isSafeWalletAtom)
   const isSafeApp = useAtomValue(isSafeAppAtom)
   const isSafeViaWc = useAtomValue(isSafeViaWcAtom)
   const isTxBundlingSupported = useIsTxBundlingSupported()
@@ -324,15 +325,11 @@ export function useCreateTwapOrder() {
           const sellTokenAddress = updatedTwapOrder.sellAmount.currency.address as `0x${string}`
           const sellToken = updatedTwapOrder.sellAmount.currency
           const sellAmountAtoms = BigInt(updatedTwapOrder.sellAmount.quotient.toString())
-          // 0n means vault-relayer allowance already covers the trade (see amountToApprove above), but we don't care about vault-relayer allowance here,
-          // we want to approve the poller instead, so qw approve the TWAP sell instead of 0 or unlimited.
-          // Dai-like permit is boolean unlimited-only (`allowed: true`).
-          const pollerAmountToApprove =
-            pollerPermitInfo?.type === 'dai-like'
-              ? maxUint256
-              : amountToApprove > 0n
-                ? amountToApprove
-                : sellAmountAtoms
+          const pollerAmountToApprove = getEoaTwapPollerAmountToApprove({
+            amountToApprove,
+            sellAmount: sellAmountAtoms,
+            isDaiLikePermit: pollerPermitInfo?.type === 'dai-like',
+          })
 
           const pollerApprovalNeeds = await getEoaTwapApprovalNeeds({
             config,

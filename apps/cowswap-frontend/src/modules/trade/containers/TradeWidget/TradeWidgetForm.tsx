@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import React, { type CSSProperties, ReactNode, useCallback, useMemo } from 'react'
 
 import svgOrdersSrc from '@cowprotocol/assets/svg/orders.svg'
@@ -6,7 +7,7 @@ import { isInjectedWidget, isSellOrder, maxAmountSpend } from '@cowprotocol/comm
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { ButtonOutlined, Media } from '@cowprotocol/ui'
-import { useIsSafeWallet, useIsSmartContractWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { isSafeWalletAtom, isSmartContractWalletAtom, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans, useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
@@ -132,8 +133,8 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const { allowsOffchainSigning } = useWalletDetails()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
-  const isSafeWallet = useIsSafeWallet()
-  const isSmartContractWallet = useIsSmartContractWallet()
+  const isSafeWallet = useAtomValue(isSafeWalletAtom)
+  const isSmartContractWallet = useAtomValue(isSmartContractWalletAtom)
   const isSmartContractWalletBridging = !!isSmartContractWallet && isCurrentTradeBridging
   const openTokenSelectWidget = useOpenTokenSelectWidget()
   const primaryFormValidation = useGetTradeFormValidation()

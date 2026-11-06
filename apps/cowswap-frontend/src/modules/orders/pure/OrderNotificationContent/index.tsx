@@ -27,6 +27,7 @@ export interface OrderNotificationContentProps {
   skipExplorerLink?: boolean
   hideReceiver?: boolean
   transactionHash?: string
+  onExplorerClick?: () => void
   bottomContent?: ReactNode
   children?: ReactNode
 }
@@ -40,6 +41,7 @@ export function OrderNotificationContent({
   actionTitle,
   customTemplate,
   transactionHash,
+  onExplorerClick,
   skipExplorerLink,
   bottomContent,
   hideReceiver,
@@ -79,6 +81,7 @@ export function OrderNotificationContent({
       isEthFlow={orderInfo.isEthFlowOrder}
       transactionHash={transactionHash}
       orderUid={orderInfo.orderUid}
+      onExplorerClick={onExplorerClick}
     >
       {content}
     </TransactionContentWithLink>

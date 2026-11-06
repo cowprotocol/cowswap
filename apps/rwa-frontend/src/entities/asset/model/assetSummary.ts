@@ -6,12 +6,13 @@ export function toAssetSummaries(assets: RwaAsset[]): RwaAssetSummary[] {
     title,
     ...(logoUrl ? { logoUrl } : {}),
     type,
-    tokens: tokens.map(({ chainId, address, symbol, decimals, issuer }) => ({
+    tokens: tokens.map(({ chainId, address, symbol, decimals, issuer, coingeckoId }) => ({
       chainId,
       address,
       symbol,
       decimals,
       issuer,
+      ...(coingeckoId ? { coingeckoId } : {}),
     })),
   }))
 }

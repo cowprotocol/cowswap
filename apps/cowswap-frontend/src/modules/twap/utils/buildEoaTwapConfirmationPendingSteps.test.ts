@@ -1,7 +1,12 @@
+import { createElement, Fragment, isValidElement, ReactElement, ReactNode } from 'react'
+
 import { i18n } from '@lingui/core'
+import { I18nProvider } from '@lingui/react'
+import { maxUint256 } from 'viem'
 
 import { USDC_MAINNET } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount } from '@cowprotocol/currency'
 
 import { renderToStaticMarkup } from 'react-dom/server'
 
@@ -19,6 +24,8 @@ import { buildEoaTwapSigningStepPlan, replaceSubmitTwapWithSlowInPlan } from './
 import { EoaTwapSigningPhase, EoaTwapSigningSteps } from '../state/eoaTwapSigningStepAtom'
 
 const DEFAULT_PLAN = [EoaTwapSigningSteps.ApprovePoller, EoaTwapSigningSteps.TwapSign, EoaTwapSigningSteps.SubmitTwap]
+const PARTIAL_AMOUNT = CurrencyAmount.fromRawAmount(USDC_MAINNET, '1000000')
+const UNLIMITED_AMOUNT = CurrencyAmount.fromRawAmount(USDC_MAINNET, maxUint256.toString())
 
 function getPendingSteps(steps: ReturnType<typeof buildEoaTwapConfirmationPendingSteps>): NonNullable<typeof steps> {
   expect(steps).not.toBeNull()
@@ -28,6 +35,20 @@ function getPendingSteps(steps: ReturnType<typeof buildEoaTwapConfirmationPendin
   }
 
   return steps
+}
+
+function labelText(label: ReactNode): string {
+  if (typeof label === 'string' || typeof label === 'number') {
+    return String(label)
+  }
+
+  if (label == null || typeof label === 'boolean') {
+    return ''
+  }
+
+  const element: ReactElement = isValidElement(label) ? label : createElement(Fragment, null, label)
+
+  return renderToStaticMarkup(createElement(I18nProvider, { i18n }, element))
 }
 
 // eslint-disable-next-line max-lines-per-function
@@ -442,6 +463,42 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
       }),
     ).toBeNull()
   })
+
+  it('shows the partial approval amount on the Approve step label', () => {
+    const steps = getPendingSteps(
+      buildEoaTwapConfirmationPendingSteps({
+        signingStep: {
+          step: EoaTwapSigningSteps.ApprovePoller,
+          plan: DEFAULT_PLAN,
+          phase: EoaTwapSigningPhase.Sign,
+          lockDismiss: false,
+        },
+        token: USDC_MAINNET,
+        amountToApprove: PARTIAL_AMOUNT,
+      }),
+    )
+
+    expect(labelText(steps[0]?.label)).toContain('Approve')
+    expect(labelText(steps[0]?.label)).toContain('1')
+    expect(labelText(steps[0]?.label)).toContain('USDC')
+  })
+
+  it('uses (unlimited) wording on the Approve step when full approval is selected', () => {
+    const steps = getPendingSteps(
+      buildEoaTwapConfirmationPendingSteps({
+        signingStep: {
+          step: EoaTwapSigningSteps.ApprovePoller,
+          plan: DEFAULT_PLAN,
+          phase: EoaTwapSigningPhase.Sign,
+          lockDismiss: false,
+        },
+        token: USDC_MAINNET,
+        amountToApprove: UNLIMITED_AMOUNT,
+      }),
+    )
+
+    expect(labelText(steps[0]?.label)).toBe('Approve USDC (unlimited)')
+  })
 })
 
 describe('getEoaTwapWalletActionSummaryLabel()', () => {
@@ -473,6 +530,20 @@ describe('getEoaTwapStepLabel()', () => {
     expect(getEoaTwapStepLabel(EoaTwapSigningSteps.TwapSign)).toBe('Sign TWAP')
     expect(getEoaTwapStepLabel(EoaTwapSigningSteps.SubmitTwap)).toBe('Activating TWAP')
     expect(getEoaTwapStepLabel(EoaTwapSigningSteps.SubmitTwapSlow)).toBe('Still activating TWAP')
+  })
+
+  it('shows the partial amount and (unlimited) wording for approve and permit', () => {
+    expect(labelText(getEoaTwapStepLabel(EoaTwapSigningSteps.ApprovePoller, 'USDC', PARTIAL_AMOUNT))).toContain(
+      'Approve',
+    )
+    expect(labelText(getEoaTwapStepLabel(EoaTwapSigningSteps.ApprovePoller, 'USDC', PARTIAL_AMOUNT))).toContain('USDC')
+    expect(labelText(getEoaTwapStepLabel(EoaTwapSigningSteps.ApprovePoller, 'USDC', UNLIMITED_AMOUNT))).toBe(
+      'Approve USDC (unlimited)',
+    )
+    expect(labelText(getEoaTwapStepLabel(EoaTwapSigningSteps.PermitPoller, 'USDC', PARTIAL_AMOUNT))).toContain('Permit')
+    expect(labelText(getEoaTwapStepLabel(EoaTwapSigningSteps.PermitPoller, 'USDC', UNLIMITED_AMOUNT))).toBe(
+      'Permit USDC (unlimited)',
+    )
   })
 })
 

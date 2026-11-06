@@ -7,11 +7,10 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
-import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
-
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 
 import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
+import { SolverLogo } from 'common/pure/SolverLogo/SolverLogo.pure'
 import type { SolverCompetition } from 'common/types/soverCompetition'
 
 import { StyledTimelinePlusIcon, SuccessTextBold, TimelineIconCircleWrapper } from '../../../styles'
@@ -65,17 +64,11 @@ export function ReceivedContent({
 }
 
 export function SolverContent({ winningSolver }: { winningSolver: SolverCompetition }): ReactNode {
-  const solver = winningSolver.solver
   return (
     <ConfirmDetailsItem withTimelineDot label={t`Winning solver`}>
       <WinningSolverContainer>
         <b>{winningSolver.displayName || winningSolver.solver}</b>
-        <img
-          src={winningSolver.image || AMM_LOGOS[winningSolver.solver]?.src || AMM_LOGOS.default.src}
-          alt={t`${solver} logo`}
-          width="16"
-          height="16"
-        />
+        <SolverLogo solver={winningSolver} size={16} />
       </WinningSolverContainer>
     </ConfirmDetailsItem>
   )

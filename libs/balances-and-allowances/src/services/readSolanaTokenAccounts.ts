@@ -11,13 +11,18 @@ import { AccountInfo, Connection, PublicKey } from '@solana/web3.js'
 export interface SolanaTokenMint {
   mint: string
   // Token-2022 mints use a different program, which changes both the ATA address and its data layout.
-  // Sourced from the token list's `extensions.isToken2022` flag.
+  // Sourced from the token's `token-2022` tag, lifted from the list's `extensions.isToken2022` flag or
+  // read off the mint when the user imported it.
   isToken2022: boolean
 }
 
 // Solana's `getMultipleAccounts` RPC rejects requests for more than 100 accounts, so ATAs must be
 // read in batches — a single request for a full token list (hundreds of tokens) fails outright.
 const MAX_ACCOUNTS_PER_REQUEST = 100
+
+// Deriving an ATA hashes until it finds an off-curve point, which costs tens of ms for a full token list on every
+// refetch. The address only depends on owner, mint and program, so it is derived once. `null` marks a malformed mint.
+const ataCache = new Map<string, PublicKey | null>()
 
 /**
  * Reads the owner's SPL-token accounts (ATAs) for `tokens`, aligned to input order. An entry is `null`
@@ -44,18 +49,9 @@ export async function readSolanaTokenAccounts(
   const resolvable: { index: number; ata: PublicKey; programId: PublicKey }[] = []
   tokens.forEach(({ mint, isToken2022 }, index) => {
     const programId = isToken2022 ? TOKEN_2022_PROGRAM_ID : TOKEN_PROGRAM_ID
-    try {
-      const ata = getAssociatedTokenAddressSync(
-        new PublicKey(mint),
-        owner,
-        false,
-        programId,
-        ASSOCIATED_TOKEN_PROGRAM_ID,
-      )
-      resolvable.push({ index, ata, programId })
-    } catch {
-      // Malformed mint: leave the default `null` so the rest of the list still loads.
-    }
+    const ata = getCachedAta(owner, ownerAddress, mint, isToken2022, programId)
+
+    if (ata) resolvable.push({ index, ata, programId })
   })
 
   const ataInfos = await getMultipleAccountsInfoBatched(
@@ -76,6 +72,30 @@ export async function readSolanaTokenAccounts(
   })
 
   return accounts
+}
+
+function getCachedAta(
+  owner: PublicKey,
+  ownerAddress: string,
+  mint: string,
+  isToken2022: boolean,
+  programId: PublicKey,
+): PublicKey | null {
+  const key = `${ownerAddress}:${mint}:${isToken2022}`
+  const cached = ataCache.get(key)
+
+  if (cached !== undefined) return cached
+
+  let ata: PublicKey | null = null
+  try {
+    ata = getAssociatedTokenAddressSync(new PublicKey(mint), owner, false, programId, ASSOCIATED_TOKEN_PROGRAM_ID)
+  } catch {
+    // Malformed mint: leave the default `null` so the rest of the list still loads.
+  }
+
+  ataCache.set(key, ata)
+
+  return ata
 }
 
 async function getMultipleAccountsInfoBatched(

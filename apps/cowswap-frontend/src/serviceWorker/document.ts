@@ -3,7 +3,7 @@ import { getCacheKeyForURL, matchPrecache } from 'workbox-precaching'
 import { Route } from 'workbox-routing'
 
 const fileExtensionRegexp = new RegExp('/[^/?]+\\.[^/]+$')
-const STATIC_DOCUMENT_PATHS = ['/dev-hook-review-fixture']
+const STATIC_DOCUMENT_PATHS = ['/dev-hook-review-fixture', '/rwa']
 
 export const DOCUMENT = self.location.origin + '/index.html'
 

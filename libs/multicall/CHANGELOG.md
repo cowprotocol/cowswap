@@ -1,5 +1,63 @@
 # Changelog
 
+## [3.11.5](https://github.com/cowprotocol/cowswap/compare/multicall-v3.11.4...multicall-v3.11.5) (2026-11-05)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.20.0
+  - @cowprotocol/common-const@3.18.0
+  - @cowprotocol/types@4.14.2
+
+## [3.11.4](https://github.com/cowprotocol/cowswap/compare/multicall-v3.11.3...multicall-v3.11.4) (2026-11-02)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.19.2
+
+## [3.11.3](https://github.com/cowprotocol/cowswap/compare/multicall-v3.11.2...multicall-v3.11.3) (2026-10-28)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.17.1
+  - @cowprotocol/wallet@3.19.1
+
+## [3.11.2](https://github.com/cowprotocol/cowswap/compare/multicall-v3.11.1...multicall-v3.11.2) (2026-10-28)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.17.0
+  - @cowprotocol/wallet@3.19.0
+
+## [3.11.1](https://github.com/cowprotocol/cowswap/compare/multicall-v3.11.0...multicall-v3.11.1) (2026-10-27)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8474)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.16.1
+  - @cowprotocol/types@4.14.1
+  - @cowprotocol/wallet@3.18.1
+
+## [3.11.0](https://github.com/cowprotocol/cowswap/compare/multicall-v3.10.0...multicall-v3.11.0) (2026-10-21)
+
+### Minor Changes
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.16.0
+  - @cowprotocol/types@4.14.0
+  - @cowprotocol/wallet@3.18.0
+
 ## [3.10.0](https://github.com/cowprotocol/cowswap/compare/multicall-v3.9.0...multicall-v3.10.0) (2026-10-14)
 
 ### Minor Changes

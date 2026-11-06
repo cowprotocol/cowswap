@@ -1,4 +1,11 @@
-import { type EnrichedOrder, OrderKind, OrderStatus, type SupportedChainId } from '@cowprotocol/cow-sdk'
+import {
+  type EnrichedOrder,
+  OrderClass,
+  OrderKind,
+  OrderStatus,
+  SigningScheme,
+  type SupportedChainId,
+} from '@cowprotocol/cow-sdk'
 
 import { collectPages } from '../lib/collectPages'
 import { getSupportedChainIds, resolveCounterTokens, settleChains, type TradeLeg, toTradeLeg } from '../lib/tradeLeg'
@@ -10,6 +17,7 @@ import { orderBookApi } from '@/shared/api'
 const ORDERS_PAGE_SIZE = 1000
 const MAX_ORDERS_PAGES = 10
 const OPEN_STATUSES: readonly OrderStatus[] = [OrderStatus.OPEN, OrderStatus.PRESIGNATURE_PENDING]
+const OFF_CHAIN_SIGNING_SCHEMES: readonly SigningScheme[] = [SigningScheme.EIP712, SigningScheme.ETHSIGN]
 
 export interface OpenOrder extends TradeLeg {
   uid: string
@@ -20,6 +28,10 @@ export interface OpenOrder extends TradeLeg {
   validTo: number
   /** ISO 8601 */
   creationDate: string
+  /** Can be cancelled with a signed message, otherwise only with a transaction */
+  isSoftCancellable: boolean
+  /** A limit order, otherwise a swap */
+  isLimit: boolean
 }
 
 export interface OpenOrdersQuery {
@@ -78,5 +90,8 @@ function getOrderDetails(order: EnrichedOrder): Omit<OpenOrder, keyof TradeLeg> 
     filledFraction: getFilledFraction(order),
     validTo: order.validTo,
     creationDate: order.creationDate,
+    // ETH-flow orders are owned by the ETH-flow contract, which can't sign a cancellation
+    isSoftCancellable: !order.onchainOrderData && OFF_CHAIN_SIGNING_SCHEMES.includes(order.signingScheme),
+    isLimit: order.class === OrderClass.LIMIT,
   }
 }

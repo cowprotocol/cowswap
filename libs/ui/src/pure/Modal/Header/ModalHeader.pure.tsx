@@ -14,6 +14,7 @@ export interface ModalHeaderProps {
    */
   titleAs?: ElementType
   children?: ReactNode
+  headerContent?: ReactNode
   subtitle?: ReactNode
   hideSubtitle?: boolean
   rightSlot?: ReactNode
@@ -32,6 +33,7 @@ export function ModalHeader({
   title,
   titleAs,
   children,
+  headerContent,
   subtitle,
   hideSubtitle = false,
   rightSlot,
@@ -48,6 +50,7 @@ export function ModalHeader({
   const scrollableBottomSlotRef = useRef<HTMLDivElement>(null)
   const hasBack = !!onBack
   const hasClose = !!onClose
+  const hasHeaderContent = !!headerContent
   const hasScrollableBottomSlot = !!scrollableBottomSlot
   const headerClass = clsx(
     className,
@@ -72,26 +75,30 @@ export function ModalHeader({
         $bottomBorder={bottomBorder && !hasScrollableBottomSlot}
         $contentMargin={contentMargin && !hasScrollableBottomSlot}
       >
-        <styledEl.Inner>
-          <styledEl.BackButton aria-hidden={!hasBack} disabled={!hasBack} onClick={onBack} />
+        {headerContent ? <styledEl.HeaderContent>{headerContent}</styledEl.HeaderContent> : null}
 
-          <styledEl.Title as={titleAs}>{title || children}</styledEl.Title>
-          {rightSlot ? (
-            <styledEl.RightSlot aria-hidden={hideRightSlot} inert={hideRightSlot}>
-              {rightSlot}
-            </styledEl.RightSlot>
+        <styledEl.Wrapper className={hasHeaderContent ? 'overlay' : undefined}>
+          <styledEl.Inner>
+            <styledEl.BackButton aria-hidden={!hasBack} disabled={!hasBack} onClick={onBack} />
+
+            <styledEl.Title as={titleAs}>{title ?? children}</styledEl.Title>
+            {rightSlot ? (
+              <styledEl.RightSlot aria-hidden={hideRightSlot} inert={hideRightSlot}>
+                {rightSlot}
+              </styledEl.RightSlot>
+            ) : null}
+
+            <styledEl.CloseButton aria-hidden={!hasClose} disabled={!hasClose} onClick={onClose} />
+          </styledEl.Inner>
+
+          {subtitle ? (
+            <styledEl.Subtitle aria-hidden={hideSubtitle} inert={hideSubtitle}>
+              <styledEl.SubtitleContent>
+                <styledEl.SubtitleLabel>{subtitle}</styledEl.SubtitleLabel>
+              </styledEl.SubtitleContent>
+            </styledEl.Subtitle>
           ) : null}
-
-          <styledEl.CloseButton aria-hidden={!hasClose} disabled={!hasClose} onClick={onClose} />
-        </styledEl.Inner>
-
-        {subtitle ? (
-          <styledEl.Subtitle aria-hidden={hideSubtitle} inert={hideSubtitle}>
-            <styledEl.SubtitleContent>
-              <styledEl.SubtitleLabel>{subtitle}</styledEl.SubtitleLabel>
-            </styledEl.SubtitleContent>
-          </styledEl.Subtitle>
-        ) : null}
+        </styledEl.Wrapper>
       </styledEl.Header>
 
       {hasScrollableBottomSlot ? (

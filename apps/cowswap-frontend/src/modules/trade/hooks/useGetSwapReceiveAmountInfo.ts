@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { getAddressKey, type OrderParameters } from '@cowprotocol/cow-sdk'
+import { getAddressKey, type OrderParameters, type SolanaQuoteResponse } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { useTokenByAddress } from '@cowprotocol/tokens'
 import { Nullish } from '@cowprotocol/types'
@@ -13,6 +13,7 @@ import {
   applyUnpricedHookGasToOrderParams,
   getEoaTwapQuotePreHooks,
   isSolanaQuoteAndPost,
+  type TradeQuoteState,
   useTradeQuote,
   useTradeQuoteProtocolFee,
 } from 'modules/tradeQuote'
@@ -47,6 +48,7 @@ export function useSwapReceiveAmountInfoParams(): ReceiveAmountInfoParams | null
   const quotedOrderParams = quoteResponse?.quote
   const orderParams = useOrderParamsWithEoaTwapHookGas(quotedOrderParams)
   const protocolFeeBps = useTradeQuoteProtocolFee()
+  const solanaQuoteResponse = useMemo(() => getSolanaQuoteResponse(tradeQuote?.quote), [tradeQuote?.quote])
 
   const { inputCurrency, outputCurrency } = useQuoteCurrencies()
 
@@ -63,6 +65,7 @@ export function useSwapReceiveAmountInfoParams(): ReceiveAmountInfoParams | null
       slippagePercent: derivedSlippage,
       partnerFeeBps: volumeFeeBps,
       protocolFeeBps,
+      solanaQuoteResponse,
     }
   }, [
     orderKind,
@@ -73,7 +76,17 @@ export function useSwapReceiveAmountInfoParams(): ReceiveAmountInfoParams | null
     outputCurrency,
     protocolFeeBps,
     derivedSlippage,
+    solanaQuoteResponse,
   ])
+}
+
+function getSolanaQuoteResponse(quote: TradeQuoteState['quote']): SolanaQuoteResponse | undefined {
+  if (!isSolanaQuoteAndPost(quote)) return undefined
+
+  const { quoteResponse } = quote.quoteResults
+
+  // The SDK types `quoteResults` as the EVM `QuoteResults`, dropping `quote.costs` that is there at runtime
+  return { ...quoteResponse, quote: { ...quoteResponse.quote, costs: quote.solanaQuote.costs } }
 }
 
 function useOrderParamsWithEoaTwapHookGas(quotedOrderParams: OrderParameters | undefined): OrderParameters | undefined {

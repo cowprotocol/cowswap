@@ -1,3 +1,7 @@
+import { TransactionExecutionError } from 'viem'
+
+import { RestrictedAddressError } from 'modules/restrictedAddresses'
+
 import { getErrorMessage } from './parseTwapError'
 
 describe('getErrorMessage()', () => {
@@ -10,6 +14,15 @@ describe('getErrorMessage()', () => {
 
     expect(message).toContain('timed out')
     expect(message).not.toContain('TransactionExecutionError')
+  })
+
+  it('returns only the short message of a viem-wrapped restricted address error', () => {
+    const message = 'This transaction contains a restricted address and was blocked.'
+    const outer = new TransactionExecutionError(new RestrictedAddressError(message), {
+      from: '0xF568A3a2dfFd73C000E8E475B2D335A4A3818EBa',
+    })
+
+    expect(getErrorMessage(outer)).toBe(message)
   })
 
   it('returns INVALID_ARGUMENT helper when present in flattened message', () => {

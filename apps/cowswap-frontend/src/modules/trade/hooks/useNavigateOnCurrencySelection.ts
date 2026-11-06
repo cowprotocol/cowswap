@@ -3,7 +3,7 @@ import { useCallback, useRef } from 'react'
 import { LpToken } from '@cowprotocol/common-const'
 import { useLatestNonNullRef } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress, getIsNativeToken } from '@cowprotocol/common-utils'
-import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Token } from '@cowprotocol/currency'
 import { useAreThereTokensWithSameSymbol, useDoesSymbolResolveToToken } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -130,8 +130,12 @@ export function useNavigateOnCurrencySelection(enableSellEqBuy = false): Currenc
           ? getCurrencyAddress(currency)
           : tokenSymbolOrAddress
 
+      // The ids come partly from the sticky refs, which a newer, not-yet-committed render may have
+      // updated while this callback's own `inputCurrency`/`outputCurrency` are still unresolved —
+      // so compare the ids that will actually be written, not only the currency objects
       const areCurrenciesTheSame =
-        targetInputCurrency && targetOutputCurrency && targetInputCurrency.equals(targetOutputCurrency)
+        (targetInputCurrency && targetOutputCurrency && targetInputCurrency.equals(targetOutputCurrency)) ||
+        (!isBridgeTrade && !targetChainMismatch && areAddressesEqual(targetInputCurrencyId, targetOutputCurrencyId))
 
       const shouldResetBuyOrder = targetChainMismatch && orderKind === OrderKind.BUY
 

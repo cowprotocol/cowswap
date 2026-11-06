@@ -7,6 +7,7 @@ import {
   cancelOrdersBatch,
   expireOrdersBatch,
   fulfillOrdersBatch,
+  invalidateAbandonedCreatingOrdersBatch,
   OrderStatus,
   requestOrderCancellation,
   SerializedOrder,
@@ -241,6 +242,70 @@ describe('orders reducer', () => {
       // order should still be in cancelled bucket, not moved back to pending
       expect(finalState[CHAIN_ID]?.cancelled[order.id]).toBeDefined()
       expect(finalState[CHAIN_ID]?.pending[order.id]).toBeUndefined()
+    })
+  })
+
+  describe('invalidateAbandonedCreatingOrdersBatch', () => {
+    function setupCreatingOrder(overrides: Partial<SerializedOrder> = {}): {
+      state: OrdersState
+      order: ReturnType<typeof generateOrder>
+    } {
+      let state = reducer(undefined, { type: '@@INIT' })
+      const order = generateOrder({ owner: '0x...', sellToken, buyToken })
+      state = reducer(
+        state,
+        addPendingOrder({
+          id: order.id,
+          chainId: CHAIN_ID,
+          order: { ...(order as unknown as SerializedOrder), status: OrderStatus.CREATING, ...overrides },
+          isSafeWallet: false,
+        }),
+      )
+
+      return { state, order }
+    }
+
+    it('fails an unwatched creating order', () => {
+      const { state, order } = setupCreatingOrder()
+
+      const finalState = reducer(
+        state,
+        invalidateAbandonedCreatingOrdersBatch({ chainId: CHAIN_ID, ids: [order.id], isSafeWallet: false }),
+      )
+
+      expect(finalState[CHAIN_ID]?.failed[order.id]).toBeDefined()
+      expect(finalState[CHAIN_ID]?.creating[order.id]).toBeUndefined()
+    })
+
+    // OrdersFromApiUpdater writes order-book statuses independently between the 404 that collected
+    // the id and this dispatch, so a rescued order must survive it.
+    it('leaves an order that has since been indexed by the order book', () => {
+      const { state, order } = setupCreatingOrder()
+      const indexed: SerializedOrder = {
+        ...(order as unknown as SerializedOrder),
+        status: OrderStatus.PENDING,
+      }
+      let finalState = reducer(state, addOrUpdateOrders({ chainId: CHAIN_ID, orders: [indexed], isSafeWallet: false }))
+
+      finalState = reducer(
+        finalState,
+        invalidateAbandonedCreatingOrdersBatch({ chainId: CHAIN_ID, ids: [order.id], isSafeWallet: false }),
+      )
+
+      expect(finalState[CHAIN_ID]?.pending[order.id]).toBeDefined()
+      expect(finalState[CHAIN_ID]?.failed[order.id]).toBeUndefined()
+    })
+
+    it('leaves a creating order whose creation transaction is being watched', () => {
+      const { state, order } = setupCreatingOrder({ orderCreationHash: '0xtx' })
+
+      const finalState = reducer(
+        state,
+        invalidateAbandonedCreatingOrdersBatch({ chainId: CHAIN_ID, ids: [order.id], isSafeWallet: false }),
+      )
+
+      expect(finalState[CHAIN_ID]?.creating[order.id]).toBeDefined()
+      expect(finalState[CHAIN_ID]?.failed[order.id]).toBeUndefined()
     })
   })
 })

@@ -1,0 +1,29 @@
+.bar {
+  display: none;
+}
+
+.slot {
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+  min-width: 0;
+  container-type: inline-size;
+}
+
+@media (max-width: 960px) {
+  .bar {
+    position: fixed;
+    z-index: 200;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    height: 56px;
+    padding: 5px 10px;
+    border-top: 1px solid var(--color-border);
+    background: var(--color-bg);
+  }
+}

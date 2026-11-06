@@ -30,7 +30,7 @@ const ItemWithIcon = css`
   }
 `
 
-export const Link = styled(NavLink)`
+const linkStyles = css`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -46,6 +46,14 @@ export const Link = styled(NavLink)`
   ${ItemWithIcon};
 `
 
+export const Link = styled(NavLink)`
+  ${linkStyles};
+`
+
+export const PageLink = styled.a`
+  ${linkStyles};
+`
+
 export const DisabledLink = styled.span`
   display: flex;
   align-items: center;
@@ -55,6 +63,12 @@ export const DisabledLink = styled.span`
   font-weight: inherit;
   line-height: 1;
   cursor: not-allowed;
+`
+
+export const DisabledLabel = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 `
 
 export const DropdownButton = styled.div`
@@ -93,12 +107,6 @@ export const MenuItem = styled.div<{ isActive?: boolean; isDropdownVisible: bool
     isDisabled &&
     css`
       opacity: 0.4;
-
-      > div,
-      > div > div {
-        display: flex;
-        flex: 1;
-      }
     `}
 
   > a,
@@ -141,7 +149,25 @@ export const MenuItem = styled.div<{ isActive?: boolean; isDropdownVisible: bool
         margin: 0 0 10px;
       `}
   }
+
+  ${({ isDisabled, isDropdownVisible, theme }) =>
+    isDisabled &&
+    css`
+      ${DisabledLink} {
+        padding: 0;
+      }
+
+      ${DisabledLabel} {
+        padding: ${getMenuItemPadding(theme.isWidget, isDropdownVisible)};
+      }
+    `}
 `
+
+function getMenuItemPadding(isWidget: boolean, isDropdownVisible: boolean): string {
+  if (isDropdownVisible) return '16px'
+
+  return isWidget ? '7px' : '5px 10px'
+}
 
 export const SelectMenu = styled.div`
   display: block;

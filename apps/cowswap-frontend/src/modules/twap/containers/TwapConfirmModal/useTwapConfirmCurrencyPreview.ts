@@ -1,5 +1,7 @@
+import { useAtomValue } from 'jotai'
+
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { useIsSafeViaWc, useIsSafeWallet } from '@cowprotocol/wallet'
+import { isSafeViaWcAtom, isSafeWalletAtom } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 
@@ -41,8 +43,8 @@ export function useTwapConfirmCurrencyPreview(): UseTwapConfirmCurrencyPreviewRe
   const localFormValidation = useTwapFormState()
   const { isConfirming, pendingTrade } = useTradeConfirmState()
   const eoaTwapSigningStep = useEoaTwapSigningStep()
-  const isSafeWallet = useIsSafeWallet()
-  const isSafeViaWc = useIsSafeViaWc()
+  const isSafeWallet = useAtomValue(isSafeWalletAtom)
+  const isSafeViaWc = useAtomValue(isSafeViaWcAtom) === true
   const { isTwapEoaEnabled } = useFeatureFlags()
   const isInsufficientBalance = !useHasEnoughBalanceForAmount(inputCurrencyAmount)
   const { amountAfterFees, amountAfterSlippage } = receiveAmountInfo

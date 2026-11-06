@@ -6,7 +6,7 @@ import { useMemo } from 'react'
 import { portfolioMarketsQueryAtomFamily } from './portfolioMarketsQueryAtom'
 
 import { getHeldTickersKey } from '../lib/heldTickers'
-import { buildHoldings, type Holding } from '../lib/holdings'
+import { buildHoldings, type Holding, type HoldingPrices } from '../lib/holdings'
 import { matchesPortfolioFilter, type PortfolioFilter } from '../lib/portfolioFilter'
 
 import { getTokenKey, type RwaAssetSummary, type RwaAssetWithMarket, type RwaTokenSummary } from '@/entities/asset'
@@ -43,10 +43,8 @@ export interface Portfolio {
   refreshBalances(): void
   orders: { data: OpenOrder[] | undefined; error: Error | null }
   activity: { data: Activity[] | undefined; error: Error | null }
-  /** Newest first, unfiltered */
-  recentActivity: Activity[] | undefined
-  getAsset(token: RwaTokenSummary): RwaAssetSummary | undefined
   getLogoUrl(asset: RwaAssetSummary, token?: RwaTokenSummary): string | null
+  getTokenLogoUrl(token: RwaTokenSummary): string | null
   /** ISO 8601, `null` while market data is loading */
   pricesUpdatedAt: string | null
   /** No market data and no error yet: every holding is unpriced until it loads */
@@ -72,34 +70,28 @@ export function usePortfolio(owner: string, assets: RwaAssetSummary[], filter: P
     () => getHeldTickersKey(positions, (token) => assetsByTokenKey.get(getTokenKey(token))),
     [positions, assetsByTokenKey],
   )
-  const { data: markets, error: marketsError } = useAtomValue(portfolioMarketsQueryAtomFamily(heldTickersKey))
+  const { data: marketsData, error: marketsError } = useAtomValue(portfolioMarketsQueryAtomFamily(heldTickersKey))
+  const markets = marketsData?.items
   const orders = useAtomValue(openOrdersQueryAtomFamily(params))
   const activity = useAtomValue(activityQueryAtomFamily(params))
 
-  const marketsByTicker = useMemo(
-    () => new Map<string, RwaAssetWithMarket>(markets?.map((item) => [item.ticker, item])),
-    [markets],
-  )
+  const prices = useMemo(() => getHoldingPrices(markets), [markets])
 
   return useMemo((): Portfolio => {
     const getAsset = (token: RwaTokenSummary): RwaAssetSummary | undefined => assetsByTokenKey.get(getTokenKey(token))
-    const getPrice = (asset: RwaAssetSummary): number | null => marketsByTicker.get(asset.ticker)?.market?.price ?? null
-    const matchesFilter = (token: RwaTokenSummary): boolean => {
-      const asset = getAsset(token)
-
-      return !!asset && matchesPortfolioFilter(filter, asset, token)
-    }
+    const matchesFilter = (token: RwaTokenSummary): boolean =>
+      !!getAsset(token) && matchesPortfolioFilter(filter, token)
     const filterLegs = <T extends TradeLeg>(legs: T[] | undefined): T[] | undefined =>
       legs?.filter((leg) => matchesFilter(leg.assetToken))
 
     return {
-      holdings: positions && buildHoldings(assets, positions, getPrice),
+      holdings: positions && buildHoldings(assets, positions, prices),
       filteredHoldings:
         positions &&
         buildHoldings(
           assets,
           positions.filter(({ token }) => matchesFilter(token)),
-          getPrice,
+          prices,
         ),
       balancesError,
       failedChainIds,
@@ -107,9 +99,8 @@ export function usePortfolio(owner: string, assets: RwaAssetSummary[], filter: P
       refreshBalances,
       orders: { data: filterLegs(orders.data), error: orders.error },
       activity: { data: filterLegs(activity.data), error: activity.error },
-      recentActivity: activity.data,
-      getAsset,
       getLogoUrl: (asset) => asset.logoUrl ?? null,
+      getTokenLogoUrl: (token) => getAsset(token)?.logoUrl ?? null,
       pricesUpdatedAt: markets?.find((item) => item.market?.updatedAt)?.market?.updatedAt ?? null,
       arePricesLoading: heldTickersKey !== '' && !markets && !marketsError,
     }
@@ -124,9 +115,32 @@ export function usePortfolio(owner: string, assets: RwaAssetSummary[], filter: P
     heldTickersKey,
     markets,
     marketsError,
-    marketsByTicker,
     orders,
     positions,
+    prices,
     refreshBalances,
   ])
+}
+
+function getHoldingPrices(markets: RwaAssetWithMarket[] | undefined): HoldingPrices {
+  const marketsByTicker = new Map(markets?.map((item) => [item.ticker, item.market]))
+  const tokenPricesByKey = getTokenPricesByKey(markets)
+  const sharesPerTokenByKey = new Map(markets?.flatMap(({ market }) => Object.entries(market?.sharesPerToken ?? {})))
+
+  return {
+    getAssetPrice: (asset) => marketsByTicker.get(asset.ticker)?.price ?? null,
+    getTokenPrice: (token) => tokenPricesByKey.get(getTokenKey(token)) ?? null,
+    getSharesPerToken: (token) => sharesPerTokenByKey.get(getTokenKey(token)) ?? null,
+  }
+}
+
+/** USD per token, keyed by `getTokenKey` */
+function getTokenPricesByKey(markets: RwaAssetWithMarket[] | undefined): Map<string, number | null> {
+  return new Map(
+    markets?.flatMap(({ tokens, market }) =>
+      tokens.flatMap(({ coingeckoId, ...token }) =>
+        coingeckoId ? [[getTokenKey(token), market?.tokens[coingeckoId]?.price ?? null] as const] : [],
+      ),
+    ),
+  )
 }

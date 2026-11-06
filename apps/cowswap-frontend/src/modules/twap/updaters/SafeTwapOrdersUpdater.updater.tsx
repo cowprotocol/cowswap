@@ -1,7 +1,8 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode, Suspense } from 'react'
 
 import { getAddressKey } from '@cowprotocol/cow-sdk'
-import { useIsSafeViaWc, useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { isSafeViaWcAtom, isSafeWalletAtom, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useComposableCowContractData } from 'modules/advancedOrders'
 
@@ -11,8 +12,8 @@ import { TwapOrdersUpdater } from './TwapOrdersUpdater'
 
 export function SafeTwapOrdersUpdater(): ReactNode {
   const { account } = useWalletInfo()
-  const isSafeWallet = useIsSafeWallet()
-  const isSafeViaWc = useIsSafeViaWc()
+  const isSafeWallet = useAtomValue(isSafeWalletAtom)
+  const isSafeViaWc = useAtomValue(isSafeViaWcAtom) === true
   const composableCowContract = useComposableCowContractData()
 
   if (!account || !composableCowContract.address || (!isSafeWallet && !isSafeViaWc)) return null

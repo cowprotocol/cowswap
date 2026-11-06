@@ -1,10 +1,11 @@
-import { useAtomValue, useSetAtom } from 'jotai'
-import { ReactNode, useEffect, useMemo, useState } from 'react'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { ReactNode, useEffect, useMemo } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { getAddress } from '@cowprotocol/common-utils'
 import { renderTooltip } from '@cowprotocol/ui'
-import { useIsSafeViaWc, useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { isSafeViaWcAtom, isSafeWalletAtom, useWalletInfo } from '@cowprotocol/wallet'
 import { TradeType } from '@cowprotocol/widget-lib'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
@@ -17,7 +18,7 @@ import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
 import {
   useGetTradeFormValidations,
-  useIsTradeFormValidationPassed,
+  useIsTradeFormValidationPassedOrRefreshing,
   useShouldHideTradeRateDetails,
 } from 'modules/tradeFormValidation'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
@@ -42,7 +43,7 @@ import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { useTwapSlippage } from '../../hooks/useTwapSlippage'
 import { DeadlineSelector } from '../../pure/DeadlineSelector/DeadlineSelector.pure'
 import { TotalDurationTooltip } from '../../pure/TotalDurationTooltip/TotalDurationTooltip.pure'
-import { twapTimeIntervalAtom } from '../../state/twapOrderAtom'
+import { twapRateInvertedAtom, twapTimeIntervalAtom } from '../../state/twapOrderAtom'
 import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 import { ActionButtons } from '../ActionButtons'
@@ -62,8 +63,8 @@ interface TwapFormWidget {
 // eslint-disable-next-line max-lines-per-function
 export function TwapFormWidget({ tradeWarnings, captcha }: TwapFormWidget): ReactNode {
   const { account } = useWalletInfo()
-  const isSafeWallet = useIsSafeWallet()
-  const isSafeViaWc = useIsSafeViaWc()
+  const isSafeWallet = useAtomValue(isSafeWalletAtom)
+  const isSafeViaWc = useAtomValue(isSafeViaWcAtom) === true
   const { isTwapEoaEnabled } = useFeatureFlags()
   const isEoaTwap = !!isTwapEoaEnabled && !isSafeWallet && !isSafeViaWc
   const isRewardsRowEnabled = useIsRewardsRowEnabled()
@@ -83,7 +84,7 @@ export function TwapFormWidget({ tradeWarnings, captcha }: TwapFormWidget): Reac
   const localFormValidation = useTwapFormState()
   const validations = useGetTradeFormValidations()
   const primaryFormValidation = validations?.[0] || null
-  const isPrimaryValidationPassed = useIsTradeFormValidationPassed()
+  const isValidationPassedOrRefreshing = useIsTradeFormValidationPassedOrRefreshing()
 
   const hideQuoteAmount = useShouldHideTradeRateDetails({ hideIfWrapUnwrap: true })
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
@@ -163,7 +164,8 @@ export function TwapFormWidget({ tradeWarnings, captcha }: TwapFormWidget): Reac
     }
   }, [account, isFallbackHandlerRequired, isFallbackHandlerCompatible, localFormValidation, verification, cowAnalytics])
 
-  const isInvertedState = useState(false)
+  const isInvertedState = useAtom(twapRateInvertedAtom)
+  const ratePairKey = [inputCurrency?.chainId, getAddress(inputCurrency), getAddress(outputCurrency)].join(':')
   const [isInverted] = isInvertedState
 
   const { onSlippageInput, onNumOfPartsInput } = useMemo(() => {
@@ -183,6 +185,8 @@ export function TwapFormWidget({ tradeWarnings, captcha }: TwapFormWidget): Reac
       {!hideQuoteAmount && (
         <TradeRows>
           <RateInfo
+            key={ratePairKey}
+            setSmartQuoteSelectionOnce
             label={tooltips.price.label}
             rateInfoParams={rateInfoParams}
             isInvertedState={isInvertedState}
@@ -241,7 +245,7 @@ export function TwapFormWidget({ tradeWarnings, captcha }: TwapFormWidget): Reac
       <TwapFormWarnings localFormValidation={localFormValidation} />
 
       <TradeRows>
-        {isPrimaryValidationPassed && !localFormValidation && (
+        {isValidationPassedOrRefreshing && !localFormValidation && (
           <TradeApproveWithAffectedOrderList approvalTarget={isEoaTwap ? 'poller' : undefined} />
         )}
       </TradeRows>

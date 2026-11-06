@@ -7,41 +7,50 @@ import Link from 'next/link'
 import { AssetAccount } from './AssetAccount'
 import { AssetPriceChart } from './AssetPriceChart'
 import styles from './AssetView.module.css'
+import { IssuersMenu } from './IssuersMenu'
+import { MarketKindSelector } from './MarketKindSelector'
 import { TradeWidget } from './TradeWidget'
 
+import { getTradingPauseMessage } from '../lib/tradingPause'
 import { useAssetMarket } from '../model/useAssetMarket'
+import { useAssetPriceStats } from '../model/useAssetPriceStats'
 import { useFitStickyTop } from '../model/useFitStickyTop'
 
 import { AssetStats, type RwaAsset } from '@/entities/asset'
-import { NetworkLogos } from '@/shared/ui/network-logos'
 import { StatusMessage } from '@/shared/ui/status-message'
 import { TokenLogo } from '@/shared/ui/token-logo'
 
 const SIDE_STICKY_GAP = 16
 
 export function AssetView({ asset }: { asset: RwaAsset }): ReactNode {
-  const { data, error, market } = useAssetMarket(asset.ticker)
+  const { data, error } = useAssetMarket(asset.ticker)
+  const { marketKind, stats, provider } = useAssetPriceStats(asset.ticker)
   const sideRef = useRef<HTMLElement>(null)
+  const tradingPauseMessage = getTradingPauseMessage(data?.tradingPause, new Date())
 
   useFitStickyTop(sideRef, SIDE_STICKY_GAP)
 
   return (
     <div className={styles.layout}>
-      <div className={styles.main}>
+      <div className={styles.overview}>
         <Link className={styles.back} href="/">
           <ArrowLeftIcon />
           Explore
         </Link>
         <AssetIdentity asset={asset} />
         {error && !data && <StatusMessage>Failed to load market data: {error.message}</StatusMessage>}
-        {data?.degraded && <StatusMessage>Market data is temporarily unavailable</StatusMessage>}
-        <AssetStats asset={asset} market={market} />
+        {data?.degraded && <StatusMessage>Tokenized stock market data is temporarily unavailable</StatusMessage>}
+        {tradingPauseMessage && <StatusMessage>{tradingPauseMessage}</StatusMessage>}
+        <MarketKindSelector asset={asset} />
+        <AssetStats asset={asset} market={stats} marketKind={marketKind} provider={provider} />
         <AssetPriceChart ticker={asset.ticker} />
-        <AssetAccount asset={asset} />
       </div>
-      <aside ref={sideRef} className={styles.side}>
+      <aside ref={sideRef} className={styles.side} aria-label={`Trade ${asset.ticker}`}>
         <TradeWidget asset={asset} />
       </aside>
+      <div className={styles.details}>
+        <AssetAccount asset={asset} />
+      </div>
     </div>
   )
 }
@@ -61,9 +70,6 @@ function ArrowLeftIcon(): ReactNode {
 }
 
 function AssetIdentity({ asset }: { asset: RwaAsset }): ReactNode {
-  const issuers = [...new Set(asset.tokens.map((token) => token.issuer))]
-  const chainIds = [...new Set(asset.tokens.map((token) => token.chainId))]
-
   return (
     <header className={styles.identity}>
       <TokenLogo symbol={asset.ticker} logoUrl={asset.logoUrl} size="hero" />
@@ -71,10 +77,7 @@ function AssetIdentity({ asset }: { asset: RwaAsset }): ReactNode {
         <h1>{asset.title}</h1>
         <div className={styles.meta}>
           <span>{asset.ticker}</span>
-          <span className={styles.issuers} title={issuers.join(', ')}>
-            {issuers.length} {issuers.length === 1 ? 'issuer' : 'issuers'}
-          </span>
-          <NetworkLogos chainIds={chainIds} />
+          <IssuersMenu tokens={asset.tokens} />
         </div>
       </div>
     </header>

@@ -1,3 +1,4 @@
+import { getDefaultStore, type PrimitiveAtom } from 'jotai'
 import React from 'react'
 
 import { i18n } from '@lingui/core'
@@ -5,7 +6,7 @@ import { I18nProvider } from '@lingui/react'
 
 import { AdditionalTargetChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
-import { useIsSafeWallet, useIsSmartContractWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { isSafeWalletAtom, isSmartContractWalletAtom, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { render, screen } from '@testing-library/react'
 
@@ -50,8 +51,8 @@ jest.mock('@cowprotocol/cow-sdk', () => ({
 jest.mock('@cowprotocol/wallet', () => ({
   useWalletInfo: jest.fn(),
   useWalletDetails: jest.fn(),
-  useIsSafeWallet: jest.fn(),
-  useIsSmartContractWallet: jest.fn(),
+  isSafeWalletAtom: jest.requireActual('jotai').atom(false),
+  isSmartContractWalletAtom: jest.requireActual('jotai').atom(false),
 }))
 
 jest.mock('@cowprotocol/ui', () => ({
@@ -149,8 +150,8 @@ jest.mock('modules/wallet', () => ({ WalletStatusButton: () => null }))
 
 const mockedUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
 const mockedUseWalletDetails = useWalletDetails as jest.MockedFunction<typeof useWalletDetails>
-const mockedUseIsSafeWallet = useIsSafeWallet as jest.MockedFunction<typeof useIsSafeWallet>
-const mockedUseIsSmartContractWallet = useIsSmartContractWallet as jest.MockedFunction<typeof useIsSmartContractWallet>
+const writableIsSafeWalletAtom = isSafeWalletAtom as PrimitiveAtom<boolean>
+const writableIsSmartContractWalletAtom = isSmartContractWalletAtom as PrimitiveAtom<boolean | null>
 const mockedUseIsWrapOrUnwrap = useIsWrapOrUnwrap as jest.MockedFunction<typeof useIsWrapOrUnwrap>
 const mockedUseIsCurrentTradeBridging = useIsCurrentTradeBridging as jest.MockedFunction<
   typeof useIsCurrentTradeBridging
@@ -216,8 +217,8 @@ function setupDefaults({
   mockedUseWalletDetails.mockReturnValue({ allowsOffchainSigning: !isSmartContractWallet } as ReturnType<
     typeof useWalletDetails
   >)
-  mockedUseIsSafeWallet.mockReturnValue(false)
-  mockedUseIsSmartContractWallet.mockReturnValue(isSmartContractWallet)
+  getDefaultStore().set(writableIsSafeWalletAtom, false)
+  getDefaultStore().set(writableIsSmartContractWalletAtom, isSmartContractWallet ?? false)
   mockedUseIsWrapOrUnwrap.mockReturnValue(isWrapOrUnwrap)
   mockedUseIsCurrentTradeBridging.mockReturnValue(isBridging)
   mockedUseIsNonEvmBridging.mockReturnValue(isNonEvmBridging)

@@ -6,8 +6,9 @@ import { TradeType } from 'common/modules/tradeNavigation'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 
-// Mirrors `solanaFlow`'s sponsor pick: a sponsored order is rented and fee-paid by the quote's
-// funder, so the owner pays nothing for placement. Limit orders never go through that path.
+// Mirrors `solanaFlow`'s sponsor pick: the quote's funder pays the fees and rents the accounts the
+// order itself needs. The owner still funds the WSOL account a native sell opens, since that account
+// is theirs to close — see `useSolanaTradeOverhead`. Limit orders never go through that path.
 export function useIsSolanaSponsoredTrade(): boolean {
   const { isSolanaSponsoredOrdersEnabled } = useFeatureFlags()
   const { quote } = useTradeQuote()

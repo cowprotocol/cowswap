@@ -2,17 +2,15 @@ import { useAtomValue } from 'jotai'
 import { JSX, useCallback, useEffect, useRef, useState } from 'react'
 
 import { DEFAULT_DEADLINE_FROM_NOW } from '@cowprotocol/common-const'
-import { useCountdown, useFeatureFlags } from '@cowprotocol/common-hooks'
+import { useCountdown } from '@cowprotocol/common-hooks'
 import { formatBatchCountdown } from '@cowprotocol/common-utils'
-import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { StatefulValue } from '@cowprotocol/types'
 import { SettingsInput, SettingsFeedback } from '@cowprotocol/ui'
-import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
-import { cowBatchValidFromAtom, waitAndSaveEnabledAtom } from 'modules/trade'
+import { cowBatchValidFromAtom, useIsWaitAndSaveAvailable, waitAndSaveEnabledAtom } from 'modules/trade'
 
 import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 'common/utils/tradeSettingsTooltips'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
@@ -28,12 +26,11 @@ export function DeadlineTransactionSettings({ deadlineState }: DeadlineSettingsP
     useCustomDeadline(deadlineState)
   const [deadline] = deadlineState
   const nativeCurrency = useNativeCurrency()
-  const { chainId } = useWalletInfo()
-  const { isWaitForCowsEnabled } = useFeatureFlags()
+  const isWaitAndSaveAvailable = useIsWaitAndSaveAvailable()
   const isWaitAndSaveEnabled = useAtomValue(waitAndSaveEnabledAtom)
   const validFrom = useAtomValue(cowBatchValidFromAtom)
 
-  const showWaitForCows = Boolean(isWaitForCowsEnabled && isWaitAndSaveEnabled && !isSolanaChain(chainId))
+  const showWaitForCows = isWaitAndSaveAvailable && isWaitAndSaveEnabled
   const hasValidFrom = validFrom !== undefined
 
   const batchWaitRef = useRef<HTMLElement | null>(null)
@@ -41,7 +38,9 @@ export function DeadlineTransactionSettings({ deadlineState }: DeadlineSettingsP
   const waitRemainingSecRef = useRef<number | undefined>(undefined)
   const [isExpirationShorterThanWait, setIsExpirationShorterThanWait] = useState(false)
 
-  const totalExpiryEpochSec = hasValidFrom ? validFrom + deadline : undefined
+  // The countdown spans only exist in the Wait for CoWs message, which the deadline error replaces.
+  const batchWaitEpochSec = showWaitForCows && !error ? validFrom : undefined
+  const totalExpiryEpochSec = batchWaitEpochSec !== undefined ? batchWaitEpochSec + deadline : undefined
 
   const syncWarning = useCallback((remainingSec: number | undefined, deadlineSec: number) => {
     const next = remainingSec !== undefined && deadlineSec > 0 && deadlineSec < remainingSec
@@ -62,7 +61,7 @@ export function DeadlineTransactionSettings({ deadlineState }: DeadlineSettingsP
 
   useCountdown({
     targetRef: batchWaitRef,
-    targetEpochSec: hasValidFrom ? validFrom : undefined,
+    targetEpochSec: batchWaitEpochSec,
     format: formatBatchCountdown,
     onRemainingChange: onBatchWaitRemainingChange,
   })

@@ -26,10 +26,6 @@ jest.mock('../config', () => ({
   reownAppKit: { switchNetwork: jest.fn(), getActiveChainNamespace: jest.fn(), getCaipNetwork: jest.fn() },
 }))
 
-jest.mock('../../api/hooks/useNetworkSwitchUnsupported', () => ({
-  useNetworkSwitchUnsupported: () => false,
-}))
-
 const useConnectionMock = useConnection as jest.Mock
 const switchNetworkMock = reownAppKit.switchNetwork as jest.Mock
 const getActiveChainNamespaceMock = reownAppKit.getActiveChainNamespace as jest.Mock

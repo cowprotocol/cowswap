@@ -16,6 +16,10 @@ export function getTotalCosts(
     fee = fee.add(info.costs.protocolFee.amount)
   }
 
+  if (info.costs.accountRentFee) {
+    fee = fee.add(info.costs.accountRentFee)
+  }
+
   if (additionalCosts) {
     if (!additionalCosts.currency.equals(fee.currency)) {
       const additionalCostsFixed = CurrencyAmount.fromRawAmount(

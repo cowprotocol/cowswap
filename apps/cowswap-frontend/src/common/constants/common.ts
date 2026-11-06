@@ -11,8 +11,8 @@ export const FAIR_PRICE_THRESHOLD_PERCENTAGE = 5.0 // 5% or less difference - fa
 
 export const MAX_ORDER_DEADLINE = ms`1y` // https://github.com/cowprotocol/infrastructure/blob/staging/services/Pulumi.yaml#L7
 
-// Use a 150K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
-export const GAS_LIMIT_DEFAULT = 150_000n
+// Use 300K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
+export const GAS_LIMIT_DEFAULT = 300_000n
 
 // Number of times to retry via the wallet provider before falling back to a dedicated RPC
 export const MAX_WALLET_RETRIES = 3

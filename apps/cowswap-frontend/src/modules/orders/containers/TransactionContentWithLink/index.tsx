@@ -26,6 +26,7 @@ interface TransactionContentWithLinkProps {
   orderUid?: string
   children?: ReactElement
   isEthFlow?: boolean
+  onExplorerClick?: () => void
   /**
    * Explicitly marks `transactionHash` as a Safe transaction hash (safeTxHash).
    * When omitted, it's inferred from whether the connected wallet is a Safe.
@@ -79,7 +80,7 @@ export function TransactionContentWithLink(props: TransactionContentWithLinkProp
   return (
     <>
       {children}
-      <OrderLinkWrapper>
+      <OrderLinkWrapper onClick={props.onExplorerClick}>
         <EnhancedTransactionLink chainId={chainId} tx={tx} />
       </OrderLinkWrapper>
     </>

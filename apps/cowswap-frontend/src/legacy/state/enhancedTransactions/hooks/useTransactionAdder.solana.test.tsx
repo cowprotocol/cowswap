@@ -17,7 +17,7 @@ jest.mock('@cowprotocol/wallet', () => {
       chainId: SupportedChainId.SOLANA,
       account: '9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM',
     }),
-    useIsSafeWallet: jest.fn().mockReturnValue(false),
+    isSafeWalletAtom: jest.requireActual('jotai').atom(false),
   }
 })
 

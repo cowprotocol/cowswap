@@ -26,6 +26,7 @@ export const DEFILLAMA_PLATFORMS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.LINEA]: 'linea',
   [SupportedChainId.PLASMA]: 'plasma',
   [SupportedChainId.INK]: 'ink',
+  [SupportedChainId.ROBINHOOD]: 'robinhood',
   [SupportedChainId.SOLANA]: 'solana',
 }
 

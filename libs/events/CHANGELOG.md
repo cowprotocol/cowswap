@@ -1,5 +1,34 @@
 # Changelog
 
+## [4.17.2](https://github.com/cowprotocol/cowswap/compare/events-v4.17.1...events-v4.17.2) (2026-11-05)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.14.2
+
+## [4.17.1](https://github.com/cowprotocol/cowswap/compare/events-v4.17.0...events-v4.17.1) (2026-10-27)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8474)
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.14.1
+
+## [4.17.0](https://github.com/cowprotocol/cowswap/compare/events-v4.16.0...events-v4.17.0) (2026-10-21)
+
+### Minor Changes
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.14.0
+
 ## [4.16.0](https://github.com/cowprotocol/cowswap/compare/events-v4.15.0...events-v4.16.0) (2026-10-14)
 
 ### Minor Changes

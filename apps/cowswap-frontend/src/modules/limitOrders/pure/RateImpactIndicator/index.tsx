@@ -10,6 +10,7 @@ import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
 
 interface RateImpactProps {
   rateImpact: number
+  priceChangePercent: number
   inputCurrency: Currency | null
 }
 
@@ -32,11 +33,16 @@ const ImpactTooltip = styled.span`
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function RateImpactIndicator({ rateImpact, inputCurrency }: RateImpactProps) {
+export function RateImpactIndicator({ rateImpact, priceChangePercent, inputCurrency }: RateImpactProps) {
   const isPositive = rateImpact > 0
-  const hugePositiveImpact = rateImpact > MAX_POSITIVE_RATE_IMPACT_PERCENT
   const isTooLowRate = rateImpact < LOW_RATE_THRESHOLD_PERCENT
-  const displayedPercent = hugePositiveImpact ? '>' + MAX_POSITIVE_RATE_IMPACT_PERCENT : rateImpact
+
+  const exceedsDisplayLimit = priceChangePercent > MAX_POSITIVE_RATE_IMPACT_PERCENT
+  const displayedPriceChange = exceedsDisplayLimit ? '>' + MAX_POSITIVE_RATE_IMPACT_PERCENT : priceChangePercent
+
+  const absPriceChange = Math.abs(priceChangePercent)
+  const displayedPercent =
+    absPriceChange > MAX_POSITIVE_RATE_IMPACT_PERCENT ? '>' + MAX_POSITIVE_RATE_IMPACT_PERCENT : absPriceChange
 
   if (!rateImpact) return null
 
@@ -44,7 +50,14 @@ export function RateImpactIndicator({ rateImpact, inputCurrency }: RateImpactPro
     <ImpactTooltip>
       {isPositive &&
         t`Your order will execute when the market price is ${displayedPercent}% better than the current market price.`}
-      {!isPositive && (
+      {!isPositive && priceChangePercent > 0 && (
+        <Trans>
+          This price is {displayedPercent}% higher than current market price. You could be selling your{' '}
+          <TokenSymbol token={inputCurrency} /> at a loss! Click on "Market price" to set your limit price to the
+          current market price.
+        </Trans>
+      )}
+      {!isPositive && priceChangePercent <= 0 && (
         <Trans>
           This price is {displayedPercent}% lower than current market price. You could be selling your{' '}
           <TokenSymbol token={inputCurrency} /> at a loss! Click on "Market price" to set your limit price to the
@@ -56,10 +69,10 @@ export function RateImpactIndicator({ rateImpact, inputCurrency }: RateImpactPro
 
   return (
     <HoverTooltip wrapInContainer={false} content={tooltipContent} placement="bottom">
-      <PercentBox isPositive={isPositive} isTooLowRate={isTooLowRate}>
+      <PercentBox isPositive={isPositive && priceChangePercent > 0} isTooLowRate={isTooLowRate}>
         <span>
-          ({isPositive && !hugePositiveImpact ? '+' : ''}
-          {displayedPercent}%)
+          ({priceChangePercent > 0 && !exceedsDisplayLimit ? '+' : ''}
+          {displayedPriceChange}%)
         </span>
         {isTooLowRate && <AlertTriangle size={14} />}
       </PercentBox>

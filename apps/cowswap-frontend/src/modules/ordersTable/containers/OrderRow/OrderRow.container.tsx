@@ -1,14 +1,15 @@
+import { useAtomValue } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
-import { formatDateWithTimezone, getAddress, getIsNativeToken } from '@cowprotocol/common-utils'
-import { isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { formatDateWithTimezone, getCurrencyAddress, getIsNativeToken } from '@cowprotocol/common-utils'
+import { areAddressesEqual, isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Price } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
 import { PercentDisplay, percentIsAlmostHundred, TokenAmount } from '@cowprotocol/ui'
-import { useIsSafeWallet } from '@cowprotocol/wallet'
+import { isSafeWalletAtom } from '@cowprotocol/wallet'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 import { getEstimatedExecutionPrice } from 'legacy/state/orders/utils'
@@ -108,7 +109,7 @@ export function OrderRow({
   const estimatedExecutionPrice = useSafeMemo(() => {
     return spotPrice && feeAmount && getEstimatedExecutionPrice(order, spotPrice, feeAmount.quotient.toString())
   }, [spotPrice, feeAmount, order])
-  const isSafeWallet = useIsSafeWallet()
+  const isSafeWallet = useAtomValue(isSafeWalletAtom)
 
   const isChainIdDeprecated = useIsProviderNetworkDeprecated()
   const showCancellationModal = useMemo(() => {
@@ -135,9 +136,12 @@ export function OrderRow({
   const activityUrl = chainId ? getActivityUrl(chainId, order) : undefined
 
   const isInvertedState = useState(() => {
-    // On mount, apply smart quote selection
     const quoteCurrency = getQuoteCurrency(chainId, inputCurrencyAmount, outputCurrencyAmount)
-    return getAddress(quoteCurrency) === getAddress(inputCurrencyAmount?.currency)
+    const inputCurrency = inputCurrencyAmount?.currency
+
+    if (!quoteCurrency || !inputCurrency) return false
+
+    return areAddressesEqual(getCurrencyAddress(quoteCurrency), getCurrencyAddress(inputCurrency))
   })
   const [isInverted, setIsInverted] = isInvertedState
   const toggleIsInverted = useCallback(() => setIsInverted((curr) => !curr), [setIsInverted])

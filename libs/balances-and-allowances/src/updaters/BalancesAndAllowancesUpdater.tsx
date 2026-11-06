@@ -60,7 +60,13 @@ export function BalancesAndAllowancesUpdater({
     }, [])
   }, [allTokens, chainId, targetChainTokensMap])
 
-  const rpcBalancesQueryConfig = useSwrConfigWithPauseForNetwork(chainId, account, RPC_BALANCES_QUERY_CONFIG)
+  const rpcBalancesQueryConfig = useSwrConfigWithPauseForNetwork(
+    chainId,
+    account,
+    RPC_BALANCES_QUERY_CONFIG,
+    undefined,
+    refreshTrigger,
+  )
 
   // Add native token balance to the store as well
   useEffect(() => {

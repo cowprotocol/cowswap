@@ -395,6 +395,38 @@ describe('useNavigateOnCurrencySelection - transient state loss (CS-104 regressi
       undefined,
     )
   })
+
+  // A click can run a callback whose render still had no buy currency while a newer render already
+  // latched the buy token into the sticky ref; comparing only currency objects navigated to USDC/USDC.
+  it('inverts tokens when the picked sell token matches the sticky buy token but outputCurrency is not resolved yet', () => {
+    mockedUseDerivedTradeState.mockReturnValue({
+      inputCurrency: WETH_MAINNET,
+      outputCurrency: undefined,
+      orderKind: OrderKind.SELL,
+    } as never)
+    const { result, rerender } = renderHook(() => useNavigateOnCurrencySelection())
+    const callbackWithoutOutputCurrency = result.current
+
+    mockedUseDerivedTradeState.mockReturnValue({
+      inputCurrency: WETH_MAINNET,
+      outputCurrency: USDC_MAINNET,
+      orderKind: OrderKind.SELL,
+    } as never)
+    rerender()
+
+    act(() => {
+      callbackWithoutOutputCurrency(Field.INPUT, USDC_MAINNET)
+    })
+
+    expect(mockNavigate).toHaveBeenCalledWith(
+      SupportedChainId.MAINNET,
+      {
+        inputCurrencyId: USDC_MAINNET.symbol,
+        outputCurrencyId: WETH_MAINNET.symbol,
+      },
+      undefined,
+    )
+  })
 })
 
 describe('useNavigateOnCurrencySelection - cross-chain', () => {

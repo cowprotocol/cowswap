@@ -4,8 +4,6 @@ jest.mock('@cowprotocol/sdk-trading-solana', () => ({
 
 import { hexToBytes } from 'viem'
 
-import { SOLANA_LIMIT_ORDER_PROD_APP_DATA, SOLANA_LIMIT_ORDER_STAGING_APP_DATA } from '@cowprotocol/common-const'
-import { isBarnBackendEnv } from '@cowprotocol/common-utils'
 import { OrderKind, SigningScheme } from '@cowprotocol/cow-sdk'
 import { buildSolanaLimitOrderOrder, SolanaSwapOrder } from '@cowprotocol/sdk-trading-solana'
 
@@ -17,7 +15,7 @@ const mockBuildSolanaLimitOrderOrder = buildSolanaLimitOrderOrder as jest.Mocked
   typeof buildSolanaLimitOrderOrder
 >
 
-const EXPECTED_APP_DATA_HEX = isBarnBackendEnv ? SOLANA_LIMIT_ORDER_STAGING_APP_DATA : SOLANA_LIMIT_ORDER_PROD_APP_DATA
+const APP_DATA_HASH = '0x' + 'ab'.repeat(32)
 
 const OWNER = new PublicKey(new Uint8Array(32).fill(1))
 const SELL_MINT = new PublicKey(new Uint8Array(32).fill(2))
@@ -34,6 +32,7 @@ function buildParams(overrides: Partial<PlanCreateLimitOrderStepParams> = {}): P
     kind: OrderKind.SELL,
     validTo: VALID_TO,
     partiallyFillable: false,
+    appDataHash: APP_DATA_HASH,
     sellSymbol: 'SOL',
     buySymbol: 'USDC',
     ...overrides,
@@ -48,7 +47,7 @@ const builtOrder = {
   orderId: '0xdeadbeef',
   signingScheme: SigningScheme.PRESIGN,
   intent: {
-    appData: hexToBytes(EXPECTED_APP_DATA_HEX as `0x${string}`),
+    appData: hexToBytes(APP_DATA_HASH as `0x${string}`),
     sellAmount: SIGNED_SELL_AMOUNT,
     buyAmount: SIGNED_BUY_AMOUNT,
   },
@@ -86,20 +85,18 @@ describe('planCreateLimitOrderStep', () => {
     )
   })
 
-  // Solana has no real appData-doc convention yet — this exact 32-byte constant is the only signal the
-  // backend indexer/explorer/this app's own orders table have to recognize a limit order at all.
-  it('signs the pre-agreed staging/prod appData constant as raw bytes, picked by env', async () => {
+  it("signs the app's appData hash as the intent's raw bytes", async () => {
     await planCreateLimitOrderStep(buildParams())
 
     expect(mockBuildSolanaLimitOrderOrder).toHaveBeenCalledWith(
-      expect.objectContaining({ appData: hexToBytes(EXPECTED_APP_DATA_HEX as `0x${string}`) }),
+      expect.objectContaining({ appData: hexToBytes(APP_DATA_HASH as `0x${string}`) }),
     )
   })
 
   it('returns the signed appData as a 0x-prefixed hex string, so the caller can store what was actually signed', async () => {
     const { appData } = await planCreateLimitOrderStep(buildParams())
 
-    expect(appData).toBe(EXPECTED_APP_DATA_HEX)
+    expect(appData).toBe(APP_DATA_HASH)
   })
 
   // buildSolanaOrder() must store the price the user actually signed on-chain, not whatever
@@ -117,6 +114,7 @@ describe('planCreateLimitOrderStep', () => {
     const [params] = mockBuildSolanaLimitOrderOrder.mock.calls[0]
     expect(params).not.toHaveProperty('sellSymbol')
     expect(params).not.toHaveProperty('buySymbol')
+    expect(params).not.toHaveProperty('appDataHash')
   })
 
   it('summarises the order with both symbols', async () => {

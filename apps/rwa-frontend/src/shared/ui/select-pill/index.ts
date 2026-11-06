@@ -1,1 +1,0 @@
-export { SelectPill } from './SelectPill'

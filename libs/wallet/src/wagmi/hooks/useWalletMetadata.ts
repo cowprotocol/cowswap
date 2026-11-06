@@ -2,9 +2,6 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { Connector, useConnection } from 'wagmi'
 
-import { useConnectionType } from './useConnectionType'
-
-import { useGnosisSafeInfo } from '../../api/hooks'
 import { ConnectionType } from '../../api/types'
 import { svgBaseSrc } from '../../assets'
 import { COW_WIDGET_CONNECTOR_ID } from '../../reown/consts'
@@ -44,53 +41,6 @@ export interface WalletMetaData {
 
 // fix for this https://github.com/gnosis/cowswap/issues/1929
 const defaultWcPeerOutput = { walletName: undefined, icon: undefined }
-
-/**
- * Detects whether the currently connected wallet is a Safe App
- * It'll be false if connected to Safe wallet via WalletConnect
- * @deprecated TODO: Use isSafeAppAtom instead
- */
-export function useIsSafeApp(): boolean {
-  const connectionType = useConnectionType()
-
-  return connectionType === ConnectionType.GNOSIS_SAFE
-}
-
-/**
- * Detects whether the currently connected wallet is a Safe wallet
- * but NOT loaded as a Safe App.
- *
- * For WalletConnect connections, gnosisSafeInfo is not available because
- * the Safe Apps SDK only works inside the Safe iframe. Instead, we detect
- * Safe wallets by checking the WalletConnect peer metadata name.
- * @deprecated TODO: Use isSafeViaWcAtom instead
- */
-export function useIsSafeViaWc(): boolean {
-  const isSafeApp = useIsSafeApp()
-  const { connector } = useConnection()
-  const wcPeerMetadata = useWcPeerMetadata(connector)
-  const isWalletConnect = connector?.type !== ConnectionType.WALLET_CONNECT_V2
-
-  return useMemo(() => {
-    if (isSafeApp) return false
-    if (isWalletConnect) return false
-
-    const peerName = wcPeerMetadata.walletName?.toLowerCase() || ''
-
-    return peerName.includes('safe')
-  }, [isSafeApp, isWalletConnect, wcPeerMetadata.walletName])
-}
-
-/**
- * Detects whether the currently connected wallet is a Safe wallet
- * regardless of the connection method (WalletConnect or inside Safe as an App).
- * Warning: this can be false when Safe API is down or rate-limited and does not mean the wallet is not a Safe.
- * TODO: Rename to useHasGnosisSafeInfo.
- * @deprecated TODO: Use isSafeWalletAtom instead
- */
-export function useIsSafeWallet(): boolean {
-  return !!useGnosisSafeInfo()
-}
 
 export function useWalletMetaData(): WalletMetaData {
   const { connector } = useConnection()

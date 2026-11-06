@@ -1,52 +1,53 @@
 'use client'
 
 import { useAtomValue, useSetAtom } from 'jotai'
-import type { ReactNode } from 'react'
+import { type ReactNode, useId, useState } from 'react'
 
-import Image from 'next/image'
+import { useConnection } from 'wagmi'
 
+import {
+  isQuoteUnavailable,
+  isUnverifiedQuote,
+  TradeTokenLogo,
+  TradeTokenName,
+  TradeTokenQuote,
+} from './TradeTokenParts'
 import styles from './TradeTokenSelector.module.css'
 
-import { isRankedQuote } from '../lib/quotedTokens'
+import { TRADE_SIDES } from '../config/tradeSides'
+import { getBestQuoteLabel, getCollapsedQuotedTokens, isRankedQuote } from '../lib/quotedTokens'
+import { formatTokenStat } from '../lib/tokenStat'
 import { tradeSideAtom, tradeTokenKeyAtom } from '../model/tradeSelectionAtoms'
 import { useSelectTradeNetwork } from '../model/useSelectTradeToken'
 
 import type { QuotedToken } from '../lib/quotedTokens'
 import type { TradeSelection } from '../model/useTradeSelection'
 
-import {
-  assetQueryAtomFamily,
-  getTokenKey,
-  type RwaAsset,
-  type RwaMarketData,
-  type RwaQuoteSide,
-} from '@/entities/asset'
-import { getChainLabel, getChainLogoUrl } from '@/shared/lib/chain'
-import { formatCompactUsd, formatPercent, formatUsd } from '@/shared/lib/format'
-import { useIsDarkTheme } from '@/shared/lib/theme'
+import { assetQueryAtomFamily, getTokenKey, type RwaAsset, type RwaMarketData } from '@/entities/asset'
+import { ConnectButton } from '@/features/connect-wallet'
+import { getChainLabel } from '@/shared/lib/chain'
 import { ChevronDownIcon, InfoIcon } from '@/shared/ui/icons'
-import { TokenLogo } from '@/shared/ui/token-logo'
+import { useNetworkOptions } from '@/shared/ui/network-logos'
+import { Select } from '@/shared/ui/select'
+import { Tooltip } from '@/shared/ui/tooltip'
 
-const TRADE_SIDES: { side: RwaQuoteSide; title: string }[] = [
-  { side: 'buy', title: 'Buy' },
-  { side: 'sell', title: 'Sell' },
-]
+const COLLAPSED_TOKENS_COUNT = 2
 
-const QUOTE_ERRORS: Record<string, string> = {
-  NoLiquidity: 'No liquidity',
-  UnsupportedToken: 'Not tradable',
-  Unavailable: 'Quote unavailable',
+interface AllTokensToggleProps {
+  count: number
+  isExpanded: boolean
+  /** Id of the tokens list */
+  controls: string
+  onToggle(): void
 }
 
 interface TradeTokenOptionProps {
   quoted: QuotedToken
   market: RwaMarketData | null | undefined
+  /** Shown as a badge when set */
+  bestQuoteLabel: string | null
   isSelected: boolean
-  isSelectedByUser: boolean
-  isBest: boolean
   isLoading: boolean
-  /** Set when other tokens have verified quotes */
-  isUnverifiedShown: boolean
   onSelect(): void
 }
 
@@ -59,155 +60,162 @@ export function TradeTokenSelector({ asset, selection }: TradeTokenSelectorProps
   const market = useAtomValue(assetQueryAtomFamily(asset.ticker)).data?.market
   const setSide = useSetAtom(tradeSideAtom)
   const setTokenKey = useSetAtom(tradeTokenKeyAtom)
-  const { side, quotedTokens, bestToken, assetToken, isAutoSelected } = selection
+  const { isConnected } = useConnection()
+  const { side, chainId, quotedTokens, bestToken, assetToken, isAutoSelected, isQuotesLoading, quotesError } = selection
+  const [areAllTokensShown, setAreAllTokensShown] = useState(false)
+  const tokensListId = useId()
+  const shownTokens = areAllTokensShown
+    ? quotedTokens
+    : getCollapsedQuotedTokens(quotedTokens, assetToken, COLLAPSED_TOKENS_COUNT)
   const sideTitle = side === 'buy' ? 'Buy' : 'Sell'
   const rankedCount = quotedTokens.filter(isRankedQuote).length
   const hasVerifiedQuote = quotedTokens.some((quoted) => isRankedQuote(quoted) && quoted.quote?.verified)
+  const bestQuoteLabel = getBestQuoteLabel(side, hasVerifiedQuote)
+  const shownBestToken = rankedCount > 1 ? bestToken : null
+  const hasNoQuotes = !isQuotesLoading && !quotesError && quotedTokens.length > 0 && rankedCount === 0
+  const hasOtherNetworks = asset.tokens.some((token) => token.chainId !== chainId)
 
   return (
     <div className={styles.selector}>
       <div className={styles.controls}>
         <div className={styles.sides} role="group" aria-label="Trade side">
           {TRADE_SIDES.map(({ side: option, title }) => (
-            <button key={option} type="button" aria-pressed={option === side} onClick={() => setSide(option)}>
+            <button
+              key={option}
+              type="button"
+              aria-pressed={option === side}
+              data-trade-side={option}
+              onClick={() => setSide(option)}
+            >
               {title}
             </button>
           ))}
         </div>
-        {!isAutoSelected && (
-          <button
-            type="button"
-            className={styles.auto}
-            title="Trade the token with the best quote"
-            onClick={() => setTokenKey(null)}
-          >
-            Use Auto
-          </button>
-        )}
-        <NetworkSelect asset={asset} chainId={selection.chainId} />
+        <NetworkSelect asset={asset} chainId={chainId} />
       </div>
       <div className={styles.tableHeader}>
-        <span>Stock token</span>
+        <span className={styles.tokenTitle}>Stock token</span>
+        {!isAutoSelected && (
+          <Tooltip className={styles.autoTrigger} content={`Trade the token with the ${bestQuoteLabel.toLowerCase()}`}>
+            <button type="button" className={styles.auto} onClick={() => setTokenKey(null)}>
+              Use auto
+            </button>
+          </Tooltip>
+        )}
         <span className={styles.quoteTitle}>
           {sideTitle} quote / share
-          <span
+          <Tooltip
             className={styles.info}
-            role="img"
-            aria-label="Quote details"
-            title={`Price per share for a $1,000 ${side} order, including network costs and fees`}
+            content={`Price per share for a $1,000 ${side} order, including network costs and fees. Tokens from different issuers may have different rights and risks.`}
           >
-            <InfoIcon />
-          </span>
+            <span role="img" aria-label="Quote details">
+              <InfoIcon />
+            </span>
+          </Tooltip>
         </span>
       </div>
-      {selection.quotesError && (
-        <p className={styles.notice}>Quotes are unavailable: {selection.quotesError.message}</p>
-      )}
-      <ul className={styles.tokens} role="radiogroup" aria-label={`${asset.ticker} token`}>
-        {quotedTokens.map((quoted) => (
+      {quotesError && <p className={styles.notice}>Quotes are unavailable: {quotesError.message}</p>}
+      <ul id={tokensListId} className={styles.tokens} role="radiogroup" aria-label={`${asset.ticker} token`}>
+        {shownTokens.map((quoted) => (
           <li key={getTokenKey(quoted.token)}>
             <TradeTokenOption
               quoted={quoted}
               market={market}
+              bestQuoteLabel={quoted.token === shownBestToken ? bestQuoteLabel : null}
               isSelected={quoted.token === assetToken}
-              isSelectedByUser={quoted.token === assetToken && !isAutoSelected}
-              isBest={rankedCount > 1 && quoted.token === bestToken}
-              isLoading={selection.isQuotesLoading}
-              isUnverifiedShown={hasVerifiedQuote && !quoted.quote?.verified}
+              isLoading={isQuotesLoading}
               onSelect={() => setTokenKey(getTokenKey(quoted.token))}
             />
           </li>
         ))}
       </ul>
+      {hasNoQuotes && (
+        <p className={styles.notice}>
+          No quotes on {getChainLabel(chainId)} right now.
+          {hasOtherNetworks && ' Switch network to see other tokens.'}
+        </p>
+      )}
+      {quotedTokens.length > COLLAPSED_TOKENS_COUNT && (
+        <AllTokensToggle
+          count={quotedTokens.length}
+          isExpanded={areAllTokensShown}
+          controls={tokensListId}
+          onToggle={() => setAreAllTokensShown((shown) => !shown)}
+        />
+      )}
+      {!isConnected && (
+        // In dapp mode (`standaloneMode: false`) the widget has no connect button of its own
+        <div className={styles.connectPrompt}>
+          <ConnectButton variant="secondary" />
+          <span> to trade this tokenized asset.</span>
+        </div>
+      )}
     </div>
   )
 }
 
-function NetworkSelect({ asset, chainId }: { asset: RwaAsset; chainId: number }): ReactNode {
-  const isDark = useIsDarkTheme()
-  const selectNetwork = useSelectTradeNetwork()
-  const chainIds = [...new Set(asset.tokens.map((token) => token.chainId))]
-  const logoUrl = getChainLogoUrl(chainId, isDark)
-
+function AllTokensToggle({ count, isExpanded, controls, onToggle }: AllTokensToggleProps): ReactNode {
   return (
-    <label className={styles.network}>
-      {logoUrl && <Image className={styles.networkLogo} src={logoUrl} alt="" width={20} height={20} unoptimized />}
-      <span className={styles.visuallyHidden}>Network</span>
-      <select value={chainId} onChange={(event) => selectNetwork(Number(event.target.value))}>
-        {chainIds.map((id) => (
-          <option key={id} value={id}>
-            {getChainLabel(id)}
-          </option>
-        ))}
-      </select>
-      <ChevronDownIcon className={styles.chevron} />
-    </label>
+    <button
+      type="button"
+      className={styles.allTokens}
+      aria-expanded={isExpanded}
+      aria-controls={controls}
+      onClick={onToggle}
+    >
+      {isExpanded ? 'Fewer tokens' : `All ${count} tokens`}
+      <ChevronDownIcon />
+    </button>
   )
 }
 
+function NetworkSelect({ asset, chainId }: { asset: RwaAsset; chainId: number }): ReactNode {
+  const selectNetwork = useSelectTradeNetwork()
+  const options = useNetworkOptions([...new Set(asset.tokens.map((token) => token.chainId))], 20)
+
+  return <Select variant="filled" aria-label="Network" value={chainId} options={options} onChange={selectNetwork} />
+}
+
 function TradeTokenOption({
-  quoted: { token, quote, pricePerShare, isPriceOutlier, stats },
+  quoted,
   market,
+  bestQuoteLabel,
   isSelected,
-  isSelectedByUser,
-  isBest,
   isLoading,
-  isUnverifiedShown,
   onSelect,
 }: TradeTokenOptionProps): ReactNode {
-  const logoUrl = token.coingeckoId ? market?.tokens[token.coingeckoId]?.logoUrl : undefined
-  const stockPrice = market?.price
+  const isDisabled = isQuoteUnavailable(quoted, isLoading)
+  const isChecked = isSelected && !isDisabled
+  const { stats } = quoted
 
   return (
     <button
       type="button"
       role="radio"
-      aria-checked={isSelected}
-      className={isSelected ? `${styles.option} ${styles.selected}` : styles.option}
+      aria-checked={isChecked}
+      disabled={isDisabled}
+      className={isChecked ? `${styles.option} ${styles.selected}` : styles.option}
       onClick={onSelect}
     >
-      <TokenLogo symbol={token.symbol} logoUrl={logoUrl} chainId={token.chainId} />
+      <TradeTokenLogo quoted={quoted} market={market} />
       <span className={styles.optionTitle}>
-        <span className={styles.optionName}>
-          <span>
-            {token.symbol} · {token.issuer}
-          </span>
-          {isBest && <span className={styles.bestBadge}>Best quote</span>}
-          {isSelectedByUser && !isBest && <span className={styles.secondary}>Selected by you</span>}
-        </span>
+        <TradeTokenName quoted={quoted} bestQuoteLabel={bestQuoteLabel} />
         <span className={styles.stats}>
           <span>
-            Onchain cap <strong>{formatCompactUsd(stats?.onchainCap)}</strong>
+            Onchain cap <strong>{formatTokenStat(stats?.onchainCap)}</strong>
           </span>
           <span aria-hidden="true">·</span>
           <span>
-            24h vol <strong>{formatCompactUsd(stats?.dexVolume24h)}</strong>
+            24h vol <strong>{formatTokenStat(stats?.dexVolume24h)}</strong>
           </span>
         </span>
       </span>
-      <span className={styles.quote}>
-        {isPriceOutlier ? (
-          <span className={styles.secondary} title="The quote is far from the stock price, liquidity is too low">
-            Insufficient liquidity
-          </span>
-        ) : pricePerShare !== null ? (
-          <>
-            <span className={styles.price}>≈ {formatUsd(pricePerShare)}</span>
-            {isUnverifiedShown && (
-              <span className={styles.secondary} title="The order book could not simulate this trade">
-                Unverified quote
-              </span>
-            )}
-            {stockPrice && (
-              <span className={styles.secondary}>{formatPercent((pricePerShare / stockPrice - 1) * 100)} vs stock</span>
-            )}
-          </>
-        ) : (
-          <span className={styles.secondary}>
-            {isLoading ? 'Loading quote…' : (QUOTE_ERRORS[quote?.error ?? ''] ?? 'No quote')}
-          </span>
-        )}
+      <span className={styles.optionQuote}>
+        <TradeTokenQuote quoted={quoted} stockPrice={market?.price} isLoading={isLoading} />
       </span>
+      {isChecked && isUnverifiedQuote(quoted) && (
+        <span className={styles.unverifiedNote}>Unverified price. It may change when you trade.</span>
+      )}
     </button>
   )
 }

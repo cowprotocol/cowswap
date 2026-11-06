@@ -4,7 +4,7 @@ import { useConfig, useWalletClient } from 'wagmi'
 
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
-import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { isSafeWalletAtom, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useDispatch } from 'react-redux'
 
@@ -35,7 +35,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const { account } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
   const state = useLimitOrdersDerivedState()
-  const isSafeWallet = useIsSafeWallet()
+  const isSafeWallet = useAtomValue(isSafeWalletAtom)
   const settlementContract = useGP2SettlementContractData()
   const settlementChainId = settlementContract.chainId
   const dispatch = useDispatch<AppDispatch>()

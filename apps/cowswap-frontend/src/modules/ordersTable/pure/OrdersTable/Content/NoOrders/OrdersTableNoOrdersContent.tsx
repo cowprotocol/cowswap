@@ -1,8 +1,9 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode, useMemo, lazy, Suspense } from 'react'
 
 import { AMOUNT_OF_ORDERS_TO_FETCH } from '@cowprotocol/common-const'
 import { useTheme } from '@cowprotocol/common-hooks'
-import { useIsSafeViaWc } from '@cowprotocol/wallet'
+import { isSafeViaWcAtom } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
@@ -36,7 +37,7 @@ export function OrdersTableNoOrdersContent({
   hasOrders,
 }: OrdersTableNoOrdersContentProps): ReactNode {
   const { darkMode: isDarkMode } = useTheme()
-  const isSafeViaWc = useIsSafeViaWc()
+  const isSafeViaWc = useAtomValue(isSafeViaWcAtom) === true
   const injectedWidgetParams = useInjectedWidgetParams()
   const emptyOrdersImage = injectedWidgetParams?.images?.emptyOrders
   const animationData = useNoOrdersAnimation({ emptyOrdersImage, hasHydratedOrders, isDarkMode })

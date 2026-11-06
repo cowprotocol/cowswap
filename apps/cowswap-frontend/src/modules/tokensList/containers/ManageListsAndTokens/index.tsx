@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import { ReactNode, useMemo, useState } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { isAddress, isValidTokenListSource } from '@cowprotocol/common-utils'
+import { isAddress, isDeprecatedTokenListSource, isValidTokenListSource } from '@cowprotocol/common-utils'
 import { isSolanaAddress, isSolanaChain } from '@cowprotocol/cow-sdk'
 import { environmentAtom, ListState, useSearchList, useSearchToken } from '@cowprotocol/tokens'
 import { Modal } from '@cowprotocol/ui'
@@ -23,7 +23,7 @@ export interface ManageListsAndTokensProps {
 }
 
 const tokensInputPlaceholder = '0x0000'
-const listsInputPlaceholder = msg`https:// or ipfs:// or ENS name`
+const listsInputPlaceholder = msg`https:// list URL`
 
 export function ManageListsAndTokens(props: ManageListsAndTokensProps): ReactNode {
   const { i18n } = useLingui()
@@ -44,11 +44,19 @@ export function ManageListsAndTokens(props: ManageListsAndTokensProps): ReactNod
     return isSolanaChain(chainId) ? isSolanaAddress(tokenInput) : !!isAddress(tokenInput)
   }, [tokenInput, chainId])
 
+  // ipfs/ipns lists (ENS names among them) no longer load from public gateways, and are unreadable
+  // to the balances watcher, where one of them fails its whole session - so they are not accepted
+  const isListSourceUnsupported = useMemo(() => {
+    if (!listInput) return false
+
+    return isDeprecatedTokenListSource(listInput)
+  }, [listInput])
+
   const isListUrlValid = useMemo(() => {
     if (!listInput) return false
 
-    return isValidTokenListSource(listInput)
-  }, [listInput])
+    return isValidTokenListSource(listInput) && !isListSourceUnsupported
+  }, [listInput, isListSourceUnsupported])
 
   const tokenSearchResponse = useSearchToken(isTokenAddressValid ? tokenInput : null)
   const listSearchResponse = useSearchList(isListUrlValid ? listInput : null)
@@ -81,7 +89,12 @@ export function ManageListsAndTokens(props: ManageListsAndTokensProps): ReactNod
           placeholder={isListsTab ? i18n._(listsInputPlaceholder) : tokensInputPlaceholder}
           type="text"
         />
-        {!isListUrlValid && listInput && (
+        {isListSourceUnsupported && (
+          <styledEl.InputError>
+            <Trans>IPFS, IPNS and ENS (.eth) token lists are no longer supported. Use a direct https list URL.</Trans>
+          </styledEl.InputError>
+        )}
+        {!isListUrlValid && !isListSourceUnsupported && listInput && (
           <styledEl.InputError>
             <Trans>Enter valid list location</Trans>
           </styledEl.InputError>

@@ -78,6 +78,35 @@ describe('planSolanaTradeFundedAccounts', () => {
     expect(size.tokenProgramId.equals(TOKEN_2022_PROGRAM_ID)).toBe(true)
   })
 
+  // The rent gates the trade button and the MAX reserve: still pricing an account the bundle no
+  // longer creates would refuse trades the wallet can afford.
+  it('drops the buy-token account when the driver creates it', () => {
+    const accounts = planSolanaTradeFundedAccounts({
+      owner: OWNER,
+      quote: quoteFor(TOKEN_PROGRAM_ID),
+      isNativeSell: false,
+      isAtaCreationDisabled: true,
+    })
+
+    expect(accounts).toHaveLength(1)
+    expect(accounts[0].address).toBeUndefined()
+  })
+
+  it('keeps the buy-token account of a custom receiver, which the driver cannot create', () => {
+    const receiver = new PublicKey('5k75h1UBx8gJp6kTkPcbkgAgPmrPBiLHLLXmzMfVsBEZ')
+    const buyTokenAccount = getAssociatedTokenAddressSync(BUY_MINT, receiver, false, TOKEN_PROGRAM_ID)
+
+    const accounts = planSolanaTradeFundedAccounts({
+      owner: OWNER,
+      quote: { intent: { buyMint: BUY_MINT, buyTokenAccount }, buyTokenProgramId: TOKEN_PROGRAM_ID } as BuyAtaQuote,
+      isNativeSell: false,
+      isAtaCreationDisabled: true,
+    })
+
+    expect(accounts).toHaveLength(2)
+    expect(accounts[0].address?.equals(buyTokenAccount)).toBe(true)
+  })
+
   it('falls back to the classic token program when the quote omits one', () => {
     const accounts = planSolanaTradeFundedAccounts({ owner: OWNER, quote: quoteFor(), isNativeSell: false })
 

@@ -43,6 +43,14 @@ export const Amounts = styled.div`
   gap: 6px;
 `
 
+export const AmountLoading = styled.span`
+  display: inline-block;
+  width: 4.5em;
+  height: 1.15em;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(${UI.COLOR_TEXT}) 14%, transparent);
+`
+
 export const Amount = styled(TokenAmount)`
   ${font('FONT_MEDIUM', 'semibold')}
   transition: ${slowTransition(['font-size', 'line-height'])};
@@ -68,16 +76,35 @@ export const FiatAmountSlot = styled(FiatValue)`
   }
 `
 
-export const SecondaryAmount = styled.div`
+export const SecondaryAmount = styled.div<{ $variant?: 'default' | 'success' }>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 4px;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  color: ${({ $variant }) =>
+    $variant === 'success' ? `var(${UI.COLOR_SUCCESS_TEXT})` : `var(${UI.COLOR_TEXT_OPACITY_70})`};
+
+  .fiat-amount {
+    ${font('FONT_SMALL', 'semibold')}
+    opacity: 1;
+  }
+`
+
+export const SecondaryAmountEnd = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+`
+
+export const SecondaryAmountTooltip = styled.span`
+  display: inline-flex;
+  color: var(${UI.COLOR_TEXT_SECONDARY});
 `
 
 export const SecondaryAmountValue = styled(TokenAmount)`
-  ${font('FONT_SMALL_PLUS', 'medium')}
+  ${font('FONT_SMALL', 'semibold')}
 `
 
 export const TokenLogo = styled(TokenLogoBase)`

@@ -2,7 +2,7 @@ export default {
   displayName: 'rwa-frontend',
   preset: '../../jest.preset.js',
   testEnvironment: 'jsdom',
-  setupFiles: ['<rootDir>/jest/textEncoderPolyfill.js'],
+  setupFiles: ['<rootDir>/jest/textEncoderPolyfill.js', '<rootDir>/jest/scrollIntoViewPolyfill.js'],
   transform: {
     '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nx/react/plugins/jest',
     '^.+\\.[tj]sx?$': ['babel-jest', { presets: [['@nx/react/babel', { runtime: 'automatic' }]] }],
@@ -10,7 +10,6 @@ export default {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
     '\\.css$': '<rootDir>/jest/cssModuleMock.js',
-    '^lightweight-charts$': '<rootDir>/jest/lightweightChartsMock.js',
     '^server-only$': '<rootDir>/jest/serverOnlyMock.js',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],

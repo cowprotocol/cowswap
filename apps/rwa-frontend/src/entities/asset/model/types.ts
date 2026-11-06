@@ -13,14 +13,35 @@ export interface RwaAsset {
   allowedTradingTime?: RwaTradingTime
   /** Official issuer press releases, hand-edited */
   newsFeed?: RwaNewsFeed
+  /** The company or fund behind the asset, hand-edited */
+  profile?: RwaAssetProfile
   tokens: RwaToken[]
 }
 
-export const RWA_ASSET_TYPES = ['stock', 'index'] as const
+export const RWA_ASSET_TYPES = ['stock', 'index', 'commodity'] as const
+
+export interface RwaAssetProfile {
+  /** One or two sentences */
+  description: string
+  /** `RWA_SECTORS` sector, `RWA_SECTOR_SEPARATOR` and industry, e.g. `Information Technology · Semiconductors` */
+  sector: string
+  /** Official site, `https`. Written by `update-websites` or by hand, never by `update-profiles` */
+  website?: string
+}
+
+/** Stats of every asset token on every network it has */
+export interface RwaAssetTokenStats extends DegradableResponse {
+  ticker: string
+  tokens: RwaChainTokenStats[]
+}
 
 export type RwaAssetType = (typeof RWA_ASSET_TYPES)[number]
 
-export const RWA_ASSET_TYPE_LABELS: Record<RwaAssetType, string> = { stock: 'Stock', index: 'ETF' }
+export const RWA_ASSET_TYPE_LABELS: Record<RwaAssetType, string> = {
+  stock: 'Stock',
+  index: 'ETF',
+  commodity: 'Commodity',
+}
 
 /** CoinGecko tokenized market of an RWA over every chain and issuer. Server-only: never sent in a response */
 export interface RwaAggregateMarket {
@@ -55,9 +76,13 @@ export interface RwaAssetNews extends DegradableResponse {
 
 export interface RwaAssetsFilter {
   type?: RwaAssetType
-  /** Matches assets with a token of this issuer, on `chainId` when both are set */
-  issuer?: string
-  chainId?: number
+  /** Matches assets with a token of one of these issuers, on one of `chainIds` when both are set */
+  issuers?: string[]
+  chainIds?: number[]
+  /** USD */
+  minMarketCap?: number
+  /** USD */
+  minVolume24h?: number
   /** Matches ticker, title or token symbol */
   query?: string
   tickers?: string[]
@@ -72,10 +97,19 @@ export interface RwaAssetWithMarket extends RwaAsset {
   market: RwaMarketData | null
 }
 
+export interface RwaChainTokenStats extends RwaTokenNetworkStats {
+  chainId: number
+}
+
 /** `RwaAggregateMarket` of the asset, plus the markets of its tokens */
 export interface RwaMarketData extends Omit<RwaAggregateMarket, 'sparkline7d'> {
-  /** Keyed by `RwaToken.coingeckoId`. Filled by `/asset/{ticker}` only, `{}` elsewhere */
+  /** Keyed by `RwaToken.coingeckoId`. Filled by `/asset/{ticker}` and tickers-filtered `/assets` only, `{}` elsewhere */
   tokens: Record<string, RwaTokenMarketData>
+  /**
+   * Shares of the underlying one token stands for, from the issuer. Keyed by `getTokenKey`, tokens without a known
+   * multiplier are missing. Filled like `tokens`
+   */
+  sharesPerToken: Record<string, number>
 }
 
 export interface RwaMarketOverview extends DegradableResponse {
@@ -112,13 +146,6 @@ export interface RwaMarketOverviewTotals {
   volume24h: number | null
   /** 7 days, hourly */
   marketCapSeries: RwaChartPoint[] | null
-}
-
-/** Stats of every asset token on one network */
-export interface RwaNetworkStats extends DegradableResponse {
-  ticker: string
-  chainId: number
-  tokens: RwaTokenNetworkStats[]
 }
 
 export interface RwaNewsFeed {
@@ -174,7 +201,16 @@ export interface RwaTokenNetworkStats {
   dexVolume24h: number | null
 }
 
-export type RwaTokenSummary = Pick<RwaToken, 'chainId' | 'address' | 'symbol' | 'decimals' | 'issuer'>
+export type RwaTokenSummary = Pick<RwaToken, 'chainId' | 'address' | 'symbol' | 'decimals' | 'issuer' | 'coingeckoId'>
+
+/** A window around an issuer's corporate action, when trading its tokens is paused */
+export interface RwaTradingPause {
+  issuer: string
+  /** ISO 8601 */
+  start: string
+  /** ISO 8601 */
+  end: string
+}
 
 export interface RwaTradingTime {
   title: string
@@ -186,16 +222,24 @@ export interface RwaTradingTime {
 
 export const RWA_SORT_FIELDS = ['priority', 'marketCap', 'volume24h', 'change24h', 'price', 'ticker', 'title'] as const
 
-export interface RwaAssetResponse extends RwaAssetWithMarket, DegradableResponse {}
+export interface RwaAssetResponse extends RwaAssetWithMarket, DegradableResponse {
+  /** The next pause of the asset's tokens, until it ends. `null` when none is scheduled */
+  tradingPause: RwaTradingPause | null
+}
+
+/** Assets requested by ticker over as many `/assets` pages as needed */
+export interface RwaAssetsByTickers extends DegradableResponse {
+  items: RwaAssetListItem[]
+}
 
 export interface RwaAssetsPage extends DegradableResponse {
   items: RwaAssetListItem[]
   page: number
   pageSize: number
   total: number
+  /** Assets of the selected type with no other filter applied */
+  typeTotal: number
   totalPages: number
-  /** Matches of each type with every filter but `type` applied */
-  typeCounts: Record<RwaAssetType, number>
   /** Issuers in the registry, for the filter */
   issuers: string[]
   /** Networks in the registry, for the filter */
@@ -212,6 +256,11 @@ export type RwaSortOrder = 'asc' | 'desc'
 
 export const RWA_CHART_RANGES = ['1D', '1W', '1M', '1Y', 'ALL'] as const
 
+export const RWA_CHART_TYPES = ['line', 'candles'] as const
+
+/** `stock`: the underlying share on its exchange, from a stock data provider. `tokenized`: its tokens, from CoinGecko */
+export const RWA_MARKET_KINDS = ['stock', 'tokenized'] as const
+
 export const RWA_QUOTE_SIDES = ['buy', 'sell'] as const
 
 /** Quotes of every asset token on one network against a fixed USDC amount */
@@ -224,7 +273,29 @@ export interface RwaAssetQuotes extends DegradableResponse {
   quotes: RwaTokenQuote[]
 }
 
-export interface RwaChart {
+export interface RwaAssetStock extends DegradableResponse {
+  ticker: string
+  /** `null` when no stock data provider covers the asset */
+  market: RwaStockMarket | null
+}
+
+/** USD */
+export interface RwaCandle {
+  /** Unix seconds of the candle open */
+  time: number
+  open: number
+  high: number
+  low: number
+  close: number
+}
+
+export interface RwaCandleChart extends DegradableResponse {
+  ticker: string
+  range: RwaChartRange
+  candles: RwaCandle[]
+}
+
+export interface RwaChart extends DegradableResponse {
   ticker: string
   range: RwaChartRange
   points: RwaChartPoint[]
@@ -239,7 +310,35 @@ export interface RwaChartPoint {
 
 export type RwaChartRange = (typeof RWA_CHART_RANGES)[number]
 
+export type RwaChartType = (typeof RWA_CHART_TYPES)[number]
+
+export type RwaMarketKind = (typeof RWA_MARKET_KINDS)[number]
+
 export type RwaQuoteSide = (typeof RWA_QUOTE_SIDES)[number]
+
+/** The underlying share on its exchange, including extended sessions */
+export interface RwaStockMarket {
+  /** USD */
+  price: number
+  /** Percent over the last 24h, e.g. `2.5` for +2.5% */
+  change24h: number | null
+  /** USD, over the last 24h */
+  dayLow: number | null
+  /** USD, over the last 24h */
+  dayHigh: number | null
+  /** USD */
+  yearLow: number | null
+  /** USD */
+  yearHigh: number | null
+  /** USD, of the company or fund */
+  marketCap: number | null
+  /** USD traded over the last 24h, estimated as shares traded × `price` */
+  volume24h: number | null
+  /** ISO 8601 */
+  updatedAt: string
+  /** Name of the provider the data came from, e.g. `Ondo` */
+  provider: string
+}
 
 /** [Token list](https://tokenlists.org) of every token in the registry */
 export interface RwaTokenList {

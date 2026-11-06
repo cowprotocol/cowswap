@@ -1,5 +1,6 @@
 import { createStorage } from 'wagmi'
 
+import { WALLET_STORAGE_KEY } from '@cowprotocol/common-const'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 
 import { COW_WIDGET_CONNECTOR_ID } from './reown/consts'
@@ -14,8 +15,8 @@ const safeSuffix = getIsSafeAppIframe() ? '_safe-app' : ''
  *  - swap.cow.fi, safe: cowswap-wallet_safe-app
  */
 export const WAGMI_STORAGE_KEY = isInjectedWidget()
-  ? 'cowswap-wallet-' + COW_WIDGET_CONNECTOR_ID + safeSuffix
-  : 'cowswap-wallet' + safeSuffix
+  ? WALLET_STORAGE_KEY + '-' + COW_WIDGET_CONNECTOR_ID + safeSuffix
+  : WALLET_STORAGE_KEY + safeSuffix
 
 export const wagmiStorage = createStorage({
   key: WAGMI_STORAGE_KEY,

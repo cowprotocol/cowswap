@@ -1,6 +1,5 @@
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { useTryFindToken } from '@cowprotocol/tokens'
@@ -28,11 +27,12 @@ import {
   useIsCustomRecipientLockedOnSolana,
   useIsEoaEthFlow,
   useIsNonEvmBridging,
+  useIsWaitAndSaveAvailable,
   useTradePriceImpact,
   useWrapNativeFlow,
 } from 'modules/trade'
 import { useHandleSwap } from 'modules/tradeFlow'
-import { useIsTradeFormValidationPassed, useShouldHideTradeRateDetails } from 'modules/tradeFormValidation'
+import { useIsTradeFormValidationPassedOrRefreshing, useShouldHideTradeRateDetails } from 'modules/tradeFormValidation'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { SettingsTab } from 'modules/tradeWidgetAddons'
 
@@ -117,7 +117,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
   const doTrade = useHandleSwap({ deadline: deadlineState[0] }, widgetActions)
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap()
   const handleUnlock = useCallback(() => updateSwapState({ isUnlocked: true }), [updateSwapState])
-  const isPrimaryValidationPassed = useIsTradeFormValidationPassed()
+  const isValidationPassedOrRefreshing = useIsTradeFormValidationPassedOrRefreshing()
   const isEoaEthFlow = useIsEoaEthFlow()
 
   useEffect(() => {
@@ -189,8 +189,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
 
   const isInfiniteApproveDisabled = useIsInfiniteApproveDisabled()
   const enablePartialApprovalState = useSwapPartialApprovalToggleState()
-  const { isWaitForCowsEnabled } = useFeatureFlags()
-  const showWaitForCows = Boolean(isWaitForCowsEnabled && !isSolanaChain(chainId))
+  const showWaitForCows = useIsWaitAndSaveAvailable()
 
   const slots: TradeWidgetSlots = {
     topContent,
@@ -227,7 +226,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
               {(!hideQuoteAmount || (isFeeExceedsError && !isRateLoading && hasInputAmount)) && (
                 <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
               )}
-              {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
+              {isValidationPassedOrRefreshing && <TradeApproveWithAffectedOrderList />}
             </TradeRows>
 
             {showWaitForCows && <WaitAndSaveRowContainer />}
@@ -255,7 +254,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
         hasEnoughWrappedBalanceForSwap,
         toBeImported,
         intermediateBuyToken,
-        isPrimaryValidationPassed,
+        isValidationPassedOrRefreshing,
         showWaitForCows,
         hideQuoteAmount,
         isFeeExceedsError,

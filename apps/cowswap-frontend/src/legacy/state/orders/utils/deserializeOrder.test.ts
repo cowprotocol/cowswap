@@ -1,7 +1,12 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { CurrencyAmount } from '@cowprotocol/currency'
 
-import { deserializeBridgeOutputAmount } from './deserializeOrder'
+import { getOrderMock } from 'mocks/orderMock'
+
+import { deserializeBridgeOutputAmount, deserializeOrder } from './deserializeOrder'
+
+import { OrderStatus } from '../actions'
+import { OrderObject } from '../reducer'
 
 const USDC_PLAIN = {
   chainId: 1,
@@ -245,5 +250,70 @@ describe('deserializeBridgeOutputAmount', () => {
       expect(result?.currency.symbol).toBe('')
       expect(result?.currency.name).toBe('')
     })
+  })
+})
+
+describe('deserializeOrder', () => {
+  const NOW_SECONDS = 1_700_000_000
+
+  function createOrderObject(validTo: number): OrderObject {
+    const { inputToken, outputToken, ...order } = getOrderMock(1)
+
+    return {
+      id: order.id,
+      isSafeWallet: false,
+      order: {
+        ...order,
+        validTo,
+        inputToken: { ...USDC_PLAIN, address: inputToken.address, decimals: inputToken.decimals },
+        outputToken: { ...USDC_PLAIN, address: outputToken.address, decimals: outputToken.decimals },
+      },
+    }
+  }
+
+  beforeEach(() => {
+    jest.useFakeTimers()
+    jest.setSystemTime(NOW_SECONDS * 1000)
+  })
+
+  afterEach(() => {
+    jest.useRealTimers()
+  })
+
+  it('returns the same Order instance for the same OrderObject reference', () => {
+    const orderObject = createOrderObject(NOW_SECONDS + 3600)
+
+    const first = deserializeOrder(orderObject)
+
+    expect(first?.inputToken).toBeInstanceOf(TokenWithLogo)
+    expect(deserializeOrder(orderObject)).toBe(first)
+  })
+
+  it('returns a new Order instance when the OrderObject reference changes', () => {
+    const orderObject = createOrderObject(NOW_SECONDS + 3600)
+
+    const first = deserializeOrder(orderObject)
+    const second = deserializeOrder({ ...orderObject, order: { ...orderObject.order, isCancelling: true } })
+
+    expect(second).not.toBe(first)
+    expect(second?.isCancelling).toBe(true)
+  })
+
+  it('marks a cached pending order as expired once its validTo has passed', () => {
+    const orderObject = createOrderObject(NOW_SECONDS + 60)
+
+    const beforeExpiry = deserializeOrder(orderObject)
+    expect(beforeExpiry?.status).toBe(OrderStatus.PENDING)
+
+    jest.setSystemTime((NOW_SECONDS + 3600) * 1000)
+
+    const afterExpiry = deserializeOrder(orderObject)
+    expect(afterExpiry?.status).toBe(OrderStatus.EXPIRED)
+    expect(deserializeOrder(orderObject)).toBe(afterExpiry)
+    expect(beforeExpiry?.status).toBe(OrderStatus.PENDING)
+  })
+
+  it('returns undefined when the order object is undefined', () => {
+    expect(deserializeOrder(undefined)).toBeUndefined()
   })
 })

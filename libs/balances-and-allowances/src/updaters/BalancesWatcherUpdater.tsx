@@ -10,7 +10,7 @@ import { NativeTokenBalanceUpdater } from './NativeTokenBalanceUpdater'
 
 import { useBalancesWatcherSession } from '../hooks/useBalancesWatcherSession'
 import { useCustomTokensForChain } from '../hooks/useCustomTokensForChain'
-import { useEnabledTokensListsUrls } from '../hooks/useEnabledTokensListsUrls'
+import { useWatcherTokensLists } from '../hooks/useWatcherTokensLists'
 
 export interface BalancesWatcherUpdaterProps {
   account: string | undefined
@@ -28,6 +28,7 @@ export interface BalancesWatcherUpdaterProps {
 const EMPTY_EXCLUDED_TOKENS: Set<string> = new Set()
 const EMPTY_BRIDGE_TOKEN_LIST: AddressKey[] = []
 const EMPTY_TOKENS_LISTS_URLS: string[] = []
+const EMPTY_CUSTOM_TOKENS: AddressKey[] = []
 
 /**
  * Watcher-mode peer of `BalancesAndAllowancesUpdater`. Drives `balancesAtom`
@@ -41,7 +42,7 @@ export function BalancesWatcherUpdater({
   isBridgeMode = false,
   bridgeTokenList = EMPTY_BRIDGE_TOKEN_LIST,
 }: BalancesWatcherUpdaterProps): ReactNode {
-  const enabledTokensListsUrls = useEnabledTokensListsUrls()
+  const { tokensListsUrls: unfetchedListsUrls, listsTokens } = useWatcherTokensLists(chainId)
   const userCustomTokens = useCustomTokensForChain(chainId)
 
   // The token-list / custom-token atoms are keyed on `environmentAtom.chainId`,
@@ -62,11 +63,19 @@ export function BalancesWatcherUpdater({
         customTokens: bridgeTokenList,
       }
     }
-    return {
-      tokensListsUrls: enabledTokensListsUrls,
-      customTokens: userCustomTokens,
+    // Lists already parsed here travel as addresses (see `useWatcherTokensLists`), so they join
+    // the user-imported tokens rather than being handed to the watcher as urls to download again
+    const customTokens = new Set<AddressKey>(userCustomTokens)
+
+    for (const address of listsTokens) {
+      customTokens.add(address)
     }
-  }, [isBridgeMode, bridgeTokenList, enabledTokensListsUrls, userCustomTokens])
+
+    return {
+      tokensListsUrls: unfetchedListsUrls,
+      customTokens: customTokens.size === 0 ? EMPTY_CUSTOM_TOKENS : Array.from(customTokens).sort(),
+    }
+  }, [isBridgeMode, bridgeTokenList, unfetchedListsUrls, listsTokens, userCustomTokens])
 
   useBalancesWatcherSession({
     account,

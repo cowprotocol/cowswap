@@ -4,10 +4,14 @@ import { normalizeError } from '@cowprotocol/common-utils/errors'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { coingeckoProvider, type MarketDataProvider } from './marketData'
+import { ondoStockDataProvider } from './ondoStockData'
 import { getTokenQuotes, QUOTE_AMOUNT_USD } from './quotes'
+import { loadSharesPerToken, loadTradingPause, type SharesPerTokenLoadResult } from './sharesMultipliers'
+import { type StockDataProvider, withStockDataFallback } from './stockData'
 
 import { sumNullable } from '../lib/sumNullable'
-import { countByType, filterAssets, paginate, searchAssets, sortAssets } from '../model/assetsQuery'
+import { getTokenKey } from '../lib/tokenKey'
+import { filterAssets, filterByMarket, paginate, searchAssets, sortAssets } from '../model/assetsQuery'
 import {
   buildDailySeries,
   buildMarketCapSeries,
@@ -26,14 +30,17 @@ import type {
   RwaAssetQuotes,
   RwaAssetResponse,
   RwaAssetsFilter,
+  RwaAssetStock,
+  RwaAssetTokenStats,
   RwaAssetsPage,
   RwaAssetsSearchResult,
+  RwaCandleChart,
+  RwaChart,
   RwaChartPoint,
   RwaChartRange,
   RwaMarketData,
   RwaMarketOverview,
   RwaMarketOverviewItem,
-  RwaNetworkStats,
   RwaQuoteSide,
   RwaSortField,
   RwaSortOrder,
@@ -43,8 +50,12 @@ import type {
 } from '../model/types'
 
 const marketDataProvider: MarketDataProvider = coingeckoProvider
+/** FinancialData.net is the planned fallback for assets without an Ondo token */
+const stockDataProvider: StockDataProvider = withStockDataFallback([ondoStockDataProvider])
 
 const MARKET_OVERVIEW_LIST_LIMIT = 3
+
+const NO_SHARES_PER_TOKEN: SharesPerTokenLoadResult = { byKey: {}, degraded: false }
 
 export interface ListAssetsParams extends RwaAssetsFilter {
   page: number
@@ -78,30 +89,56 @@ export async function getAsset(ticker: string): Promise<RwaAssetResponse | null>
 
   if (!asset) return null
 
-  const [{ byId, degraded }, tokenMarkets] = await Promise.all([loadRwaMarkets(), loadTokenMarkets(asset.tokens)])
+  const [{ byId, degraded }, tokenMarkets, sharesPerToken, tradingPause] = await Promise.all([
+    loadRwaMarkets(),
+    loadTokenMarkets(asset.tokens),
+    loadSharesPerToken(asset.tokens),
+    loadTradingPause(asset),
+  ])
 
   return {
     ...asset,
-    market: toMarketData(byId.get(asset.coingeckoId), tokenMarkets ?? {}),
-    degraded: degraded || tokenMarkets === null,
+    market: toMarketData(byId.get(asset.coingeckoId), tokenMarkets ?? {}, sharesPerToken.byKey),
+    tradingPause,
+    degraded: degraded || tokenMarkets === null || sharesPerToken.degraded,
   }
 }
 
-export async function getAssetChart(asset: RwaAsset, range: RwaChartRange): Promise<RwaChartPoint[]> {
-  return marketDataProvider.getChart(asset, range)
+/** Per share like `getAssetChart` */
+export async function getAssetCandles(asset: RwaAsset, range: RwaChartRange): Promise<RwaCandleChart> {
+  const [{ items: candles, coinTokens }, { byKey, degraded }] = await Promise.all([
+    loadFirstCoinWithData(asset.tokens, (coingeckoId) => marketDataProvider.getCandles(coingeckoId, range)),
+    loadSharesPerToken(asset.tokens),
+  ])
+  const sharesPerToken = getCoinSharesPerToken(coinTokens, byKey)
+  const chart = { ticker: asset.ticker, range, degraded }
+
+  if (sharesPerToken === null) return { ...chart, candles }
+
+  return {
+    ...chart,
+    candles: candles.map(({ time, open, high, low, close }) => ({
+      time,
+      open: open / sharesPerToken,
+      high: high / sharesPerToken,
+      low: low / sharesPerToken,
+      close: close / sharesPerToken,
+    })),
+  }
 }
 
-/** `chainId` must have tokens of the asset */
-export async function getAssetNetworkStats(asset: RwaAsset, chainId: number): Promise<RwaNetworkStats> {
-  const tokens = asset.tokens.filter((token) => token.chainId === chainId)
-  const tokenMarkets = await loadTokenMarkets(asset.tokens)
-  const stats = await loadNetworkStats(chainId, tokens, tokenMarkets ?? {})
+/** USD per share of the underlying, or per token when the charted coin has no single known multiplier */
+export async function getAssetChart(asset: RwaAsset, range: RwaChartRange): Promise<RwaChart> {
+  const [{ items: points, coinTokens }, { byKey, degraded }] = await Promise.all([
+    loadFirstCoinWithData(asset.tokens, (coingeckoId) => marketDataProvider.getChart(coingeckoId, range)),
+    loadSharesPerToken(asset.tokens),
+  ])
+  const sharesPerToken = getCoinSharesPerToken(coinTokens, byKey)
+  const chart = { ticker: asset.ticker, range, degraded }
 
-  if (stats) return { ticker: asset.ticker, chainId, tokens: stats, degraded: tokenMarkets === null }
+  if (sharesPerToken === null) return { ...chart, points }
 
-  const empty = tokens.map(({ address }) => ({ address, onchainCap: null, dexVolume24h: null }))
-
-  return { ticker: asset.ticker, chainId, tokens: empty, degraded: true }
+  return { ...chart, points: points.map(({ time, value }) => ({ time, value: value / sharesPerToken })) }
 }
 
 /** `chainId` must have tokens of the asset */
@@ -116,6 +153,51 @@ export async function getAssetQuotes(
   return { ticker: asset.ticker, chainId, side, amountUsd: QUOTE_AMOUNT_USD, quotes, degraded }
 }
 
+/**
+ * Degraded with a `null` market when every stock data provider that could cover the asset failed,
+ * and with a market when part of it failed
+ */
+export async function getAssetStock(asset: RwaAsset): Promise<RwaAssetStock> {
+  try {
+    const result = await stockDataProvider.getMarket(asset)
+
+    return { ticker: asset.ticker, market: result?.market ?? null, degraded: result?.degraded ?? false }
+  } catch (err: unknown) {
+    const error = normalizeError(err)
+    console.error(`[rwa] Failed to load the ${asset.ticker} stock market`, error)
+
+    return { ticker: asset.ticker, market: null, degraded: true }
+  }
+}
+
+/** Stock candles per share. Empty when no stock data provider covers the asset */
+export async function getAssetStockCandles(asset: RwaAsset, range: RwaChartRange): Promise<RwaCandleChart> {
+  const candles = await stockDataProvider.getCandles(asset, range)
+
+  return { ticker: asset.ticker, range, candles: candles ?? [], degraded: false }
+}
+
+/** Stock price per share. Empty when no stock data provider covers the asset */
+export async function getAssetStockChart(asset: RwaAsset, range: RwaChartRange): Promise<RwaChart> {
+  const points = await stockDataProvider.getChart(asset, range)
+
+  return { ticker: asset.ticker, range, points: points ?? [], degraded: false }
+}
+
+export async function getAssetTokenStats(asset: RwaAsset): Promise<RwaAssetTokenStats> {
+  const tokenMarkets = await loadTokenMarkets(asset.tokens)
+  const chainIds = [...new Set(asset.tokens.map((token) => token.chainId))]
+  const chains = await Promise.all(
+    chainIds.map(async (chainId) => ({ chainId, ...(await loadChainStats(asset, chainId, tokenMarkets ?? {})) })),
+  )
+
+  return {
+    ticker: asset.ticker,
+    tokens: chains.flatMap(({ chainId, tokens }) => tokens.map((stats) => ({ ...stats, chainId }))),
+    degraded: tokenMarkets === null || chains.some(({ isLoaded }) => !isLoaded),
+  }
+}
+
 export async function getMarketOverview(): Promise<RwaMarketOverview> {
   const assets = getAssets()
   const { byId, degraded } = await loadRwaMarkets()
@@ -127,12 +209,20 @@ export async function getMarketOverview(): Promise<RwaMarketOverview> {
   const markets = listed.map(({ market }) => market)
   const items = listed.map(({ asset, market }) => toOverviewItem(asset, market))
   const marketsByTicker = new Map(listed.map(({ asset, market }) => [asset.ticker, market]))
-  const withDailySeries = (moverItems: RwaMarketOverviewItem[]): RwaMarketOverviewItem[] =>
-    moverItems.map((item) => ({ ...item, series: getDailySeries(marketsByTicker.get(item.ticker)) }))
+  // A token that skips hours leaves the sparkline incomplete, while its 1D chart has every trade
+  const withDailySeries = (moverItems: RwaMarketOverviewItem[]): Promise<RwaMarketOverviewItem[]> =>
+    withSeries(
+      moverItems,
+      async (asset) => getDailySeries(marketsByTicker.get(asset.ticker)) ?? (await getAssetChart(asset, '1D')).points,
+    )
   const { gainers, losers } = splitMovers(items, MARKET_OVERVIEW_LIST_LIMIT)
-  const mostTraded = await withSeries(rankMostTraded(items, MARKET_OVERVIEW_LIST_LIMIT), (asset) =>
-    marketDataProvider.getHourlyDexVolume(asset.tokens),
-  )
+  const [mostTraded, gainersWithSeries, losersWithSeries] = await Promise.all([
+    withSeries(rankMostTraded(items, MARKET_OVERVIEW_LIST_LIMIT), (asset) =>
+      marketDataProvider.getHourlyDexVolume(asset.tokens),
+    ),
+    withDailySeries(gainers),
+    withDailySeries(losers),
+  ])
 
   return {
     totals: {
@@ -141,8 +231,8 @@ export async function getMarketOverview(): Promise<RwaMarketOverview> {
       marketCapSeries: buildMarketCapSeries(markets),
     },
     mostTraded,
-    gainers: withDailySeries(gainers),
-    losers: withDailySeries(losers),
+    gainers: gainersWithSeries,
+    losers: losersWithSeries,
     updatedAt: latestUpdatedAt(markets),
     tradingTime: assets.find((asset) => asset.allowedTradingTime)?.allowedTradingTime ?? null,
     degraded,
@@ -151,11 +241,23 @@ export async function getMarketOverview(): Promise<RwaMarketOverview> {
 
 export async function listAssets({ page, pageSize, sort, order, ...filter }: ListAssetsParams): Promise<RwaAssetsPage> {
   const registry = getAssets()
-  const { byId, degraded } = await loadRwaMarkets()
-  const matches = filterAssets(registry, filter).map((asset): RwaAssetListItem => {
-    return { ...asset, market: toMarketData(byId.get(asset.coingeckoId)), series: null }
+  const filtered = filterAssets(registry, filter)
+  const withTokens = Boolean(filter.tickers?.length)
+  const filteredTokens = filtered.flatMap((asset) => asset.tokens)
+  const [{ byId, degraded: marketsDegraded }, tokenMarkets, sharesPerToken] = await Promise.all([
+    loadRwaMarkets(),
+    withTokens ? loadTokenMarkets(filteredTokens) : {},
+    withTokens ? loadSharesPerToken(filteredTokens) : NO_SHARES_PER_TOKEN,
+  ])
+  const degraded = marketsDegraded || tokenMarkets === null || sharesPerToken.degraded
+  const listed = filtered.map((asset): RwaAssetListItem => {
+    return {
+      ...asset,
+      market: toListedMarketData(asset, byId.get(asset.coingeckoId), tokenMarkets ?? {}, sharesPerToken.byKey),
+      series: null,
+    }
   })
-  const sorted = sortAssets(matches, sort, order)
+  const sorted = sortAssets(filterByMarket(listed, filter), sort, order)
   const { items, totalPages } = paginate(sorted, page, pageSize)
 
   return {
@@ -163,8 +265,8 @@ export async function listAssets({ page, pageSize, sort, order, ...filter }: Lis
     page,
     pageSize,
     total: sorted.length,
+    typeTotal: filter.type ? registry.filter((asset) => asset.type === filter.type).length : registry.length,
     totalPages,
-    typeCounts: countByType(registry, filter),
     issuers: [...new Set(registry.flatMap((asset) => asset.tokens.map((token) => token.issuer)))].sort(),
     chainIds: [...new Set(registry.flatMap((asset) => asset.tokens.map((token) => token.chainId)))].sort(
       (a, b) => a - b,
@@ -173,8 +275,51 @@ export async function listAssets({ page, pageSize, sort, order, ...filter }: Lis
   }
 }
 
+/**
+ * Shares per token of a charted coin. Its price is shared by every token of that coin, so a multiplier that differs
+ * between them, or is unknown for one, leaves the chart per token
+ */
+function getCoinSharesPerToken(coinTokens: RwaToken[], sharesPerToken: Record<string, number>): number | null {
+  const multipliers = new Set(coinTokens.map((token) => sharesPerToken[getTokenKey(token)]))
+  const [multiplier] = multipliers
+
+  return multipliers.size === 1 && multiplier !== undefined && multiplier > 0 ? multiplier : null
+}
+
 function getDailySeries(market: RwaAggregateMarket | undefined): RwaChartPoint[] | null {
   return market ? buildDailySeries(market) : null
+}
+
+async function loadChainStats(
+  asset: RwaAsset,
+  chainId: number,
+  tokenMarkets: Record<string, RwaTokenMarketData>,
+): Promise<{ tokens: RwaTokenNetworkStats[]; isLoaded: boolean }> {
+  const tokens = asset.tokens.filter((token) => token.chainId === chainId)
+  const stats = await loadNetworkStats(chainId, tokens, tokenMarkets)
+
+  if (stats) return { tokens: stats, isLoaded: true }
+
+  return { tokens: tokens.map(({ address }) => ({ address, onchainCap: null, dexVolume24h: null })), isLoaded: false }
+}
+
+/**
+ * Tries the coins of `tokens` in registry order: an issuer's coin can stop getting prices while another issuer's coin
+ * of the same asset still trades. `coinTokens` are the tokens of the coin `items` came from
+ */
+async function loadFirstCoinWithData<T>(
+  tokens: RwaToken[],
+  load: (coingeckoId: string) => Promise<T[]>,
+): Promise<{ items: T[]; coinTokens: RwaToken[] }> {
+  const coingeckoIds = [...new Set(tokens.flatMap((token) => (token.coingeckoId ? [token.coingeckoId] : [])))]
+
+  for (const coingeckoId of coingeckoIds) {
+    const items = await load(coingeckoId)
+
+    if (items.length) return { items, coinTokens: tokens.filter((token) => token.coingeckoId === coingeckoId) }
+  }
+
+  return { items: [], coinTokens: [] }
 }
 
 async function loadNetworkStats(
@@ -236,9 +381,48 @@ async function loadTokenMarkets(tokens: RwaToken[]): Promise<Record<string, RwaT
   }
 }
 
+/** Market data with the asset's own token data, kept without the RWA market so holdings can still be valued */
+function toListedMarketData(
+  asset: RwaAsset,
+  market: RwaAggregateMarket | undefined,
+  tokenMarkets: Record<string, RwaTokenMarketData>,
+  sharesPerTokenByKey: Record<string, number>,
+): RwaMarketData | null {
+  const tokens = Object.fromEntries(
+    asset.tokens.flatMap(({ coingeckoId }) => {
+      const tokenMarket = coingeckoId ? tokenMarkets[coingeckoId] : undefined
+
+      return coingeckoId && tokenMarket ? [[coingeckoId, tokenMarket] as const] : []
+    }),
+  )
+  const sharesPerToken = Object.fromEntries(
+    asset.tokens.flatMap((token) => {
+      const multiplier = sharesPerTokenByKey[getTokenKey(token)]
+
+      return multiplier === undefined ? [] : [[getTokenKey(token), multiplier] as const]
+    }),
+  )
+
+  if (market) return toMarketData(market, tokens, sharesPerToken)
+  if (!Object.keys(tokens).length && !Object.keys(sharesPerToken).length) return null
+
+  return {
+    price: null,
+    change24h: null,
+    dayLow: null,
+    dayHigh: null,
+    marketCap: null,
+    volume24h: null,
+    updatedAt: null,
+    tokens,
+    sharesPerToken,
+  }
+}
+
 function toMarketData(
   market: RwaAggregateMarket | undefined,
   tokens: Record<string, RwaTokenMarketData> = {},
+  sharesPerToken: Record<string, number> = {},
 ): RwaMarketData | null {
   if (!market) return null
 
@@ -251,6 +435,7 @@ function toMarketData(
     volume24h: market.volume24h,
     updatedAt: market.updatedAt,
     tokens,
+    sharesPerToken,
   }
 }
 

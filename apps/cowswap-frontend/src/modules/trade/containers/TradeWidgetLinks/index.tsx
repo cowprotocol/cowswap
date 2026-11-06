@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { ReactNode, useCallback, useMemo, useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
 import { Badge, BadgeTypes, HoverTooltip, Modal } from '@cowprotocol/ui'
@@ -10,7 +10,7 @@ import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import SVG from 'react-inlinesvg'
 import { useLocation } from 'react-router'
 
-import { Routes, RoutesValues } from 'common/constants/routes'
+import { IMenuItem, Routes, RoutesValues } from 'common/constants/routes'
 import { useMenuItems } from 'common/hooks/useMenuItems'
 import { TradeUrlParams, addChainIdToRoute, parameterizeTradeRoute } from 'common/modules/tradeNavigation'
 import { isTwapSupportedChain } from 'common/utils/isTwapSupportedChain'
@@ -41,10 +41,7 @@ interface TradeWidgetLinksProps {
   isDropdown?: boolean
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) {
+export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps): ReactNode {
   const tradeContext = useTradeRouteContext()
   const location = useLocation()
   const [isDropdownVisible, setDropdownVisible] = useState(false)
@@ -59,6 +56,7 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
 
   const enabledItems = useMemo(() => {
     return menuItems.filter((item) => {
+      if (item.route === Routes.RWA) return false
       if (!enabledTradeTypes?.length) return true
 
       return enabledTradeTypes.some((type: TradeType) => TRADE_TYPE_TO_ROUTE[type] === item.route)
@@ -123,6 +121,8 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
 
   const { t } = useLingui()
 
+  const rwaMenuItem = <RwaMenuItem menuItems={menuItems} isDropdownVisible={isDropdown && isDropdownVisible} />
+
   return isDropdown ? (
     <>
       <styledEl.MenuItem
@@ -141,12 +141,18 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
           <Modal.Header onBack={handleMenuItemClick}>
             <Trans>Trading mode</Trans>
           </Modal.Header>
-          <styledEl.TradeWidgetContent>{menuItemsElements}</styledEl.TradeWidgetContent>
+          <styledEl.TradeWidgetContent>
+            {menuItemsElements}
+            {rwaMenuItem}
+          </styledEl.TradeWidgetContent>
         </styledEl.SelectMenu>
       )}
     </>
   ) : (
-    <styledEl.Wrapper>{menuItemsElements}</styledEl.Wrapper>
+    <styledEl.Wrapper>
+      {menuItemsElements}
+      {rwaMenuItem}
+    </styledEl.Wrapper>
   )
 }
 
@@ -185,11 +191,11 @@ const MenuItem = ({
 
     return (
       <styledEl.MenuItem isDisabled isDropdownVisible={isDropdownVisible}>
-        <HoverTooltip wrapInContainer placement="top" content={reason}>
-          <styledEl.DisabledLink aria-disabled="true" aria-label={`${item.label}. ${reason}`}>
-            {content}
-          </styledEl.DisabledLink>
-        </HoverTooltip>
+        <styledEl.DisabledLink aria-disabled="true" aria-label={`${item.label}. ${reason}`}>
+          <HoverTooltip wrapInContainer placement="top" content={reason}>
+            <styledEl.DisabledLabel>{content}</styledEl.DisabledLabel>
+          </HoverTooltip>
+        </styledEl.DisabledLink>
       </styledEl.MenuItem>
     )
   }
@@ -197,6 +203,27 @@ const MenuItem = ({
   return (
     <styledEl.MenuItem isActive={isActive} onClick={onClick} isDropdownVisible={isDropdownVisible}>
       <styledEl.Link to={routePath}>{content}</styledEl.Link>
+    </styledEl.MenuItem>
+  )
+}
+
+function RwaMenuItem({
+  menuItems,
+  isDropdownVisible,
+}: {
+  menuItems: IMenuItem[]
+  isDropdownVisible: boolean
+}): ReactNode {
+  const item = menuItems.find(({ route }) => route === Routes.RWA)
+
+  if (!item) return null
+
+  return (
+    <styledEl.MenuItem isDropdownVisible={isDropdownVisible}>
+      <styledEl.PageLink href={item.route}>
+        {item.label}
+        {item.badge && <Badge {...(item.badgeType && { type: item.badgeType })}>{item.badge}</Badge>}
+      </styledEl.PageLink>
     </styledEl.MenuItem>
   )
 }

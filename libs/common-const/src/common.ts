@@ -134,6 +134,7 @@ export const GAS_FEE_ENDPOINTS: Record<SupportedChainId, string> = {
   [SupportedChainId.LINEA]: '',
   [SupportedChainId.PLASMA]: '',
   [SupportedChainId.INK]: '',
+  [SupportedChainId.ROBINHOOD]: '',
   [SupportedChainId.SOLANA]: '',
 }
 
