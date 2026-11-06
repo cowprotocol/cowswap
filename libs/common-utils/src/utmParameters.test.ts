@@ -37,6 +37,17 @@ describe('utmParamsToUrlParams', () => {
   })
 })
 
+describe('cleanUpUtmParams', () => {
+  it('removes generated UTM parameters and keeps the others', () => {
+    const searchParams = new URLSearchParams({
+      ...utmParamsToUrlParams({ utmSource: 'cow.fi', utmContent: 'hero-button' }),
+      tab: 'swap',
+    })
+
+    expect(cleanUpUtmParams(searchParams).toString()).toEqual('tab=swap')
+  })
+})
+
 describe('links carrying double-underscore UTM parameters', () => {
   const searchParams = new URLSearchParams('utm__source=cow.fi&utm__content=hero-button&tab=swap')
 
