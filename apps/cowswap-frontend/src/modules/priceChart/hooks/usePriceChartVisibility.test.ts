@@ -1,26 +1,42 @@
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
+
 import { renderHook } from '@testing-library/react'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
+
+import { useIsAlternativeOrderModalVisible } from 'modules/trade'
 
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 
 import { usePriceChartVisibility } from './usePriceChartVisibility'
 
 jest.mock('@cowprotocol/common-hooks', () => ({
-  useFeatureFlags: () => ({ isPriceChartEnabled: true }),
+  useFeatureFlags: jest.fn(),
   useMediaQuery: () => true,
 }))
-jest.mock('entities/injectedWidget', () => ({ useInjectedWidgetParams: () => ({}) }))
+jest.mock('entities/injectedWidget', () => ({ useInjectedWidgetParams: jest.fn() }))
+jest.mock('modules/trade', () => ({ useIsAlternativeOrderModalVisible: jest.fn() }))
 jest.mock('common/hooks/useIsProviderNetworkUnsupported', () => ({ useIsProviderNetworkUnsupported: () => false }))
 jest.mock('common/hooks/useIsProviderNetworkDeprecated', () => ({ useIsProviderNetworkDeprecated: jest.fn() }))
 jest.mock('../state/priceChartVisibleAtom', () => ({ priceChartVisibleAtom: jest.requireActual('jotai').atom(true) }))
 
+const mockUseFeatureFlags = useFeatureFlags as jest.MockedFunction<typeof useFeatureFlags>
+const mockUseInjectedWidgetParams = useInjectedWidgetParams as jest.MockedFunction<typeof useInjectedWidgetParams>
+const mockUseIsAlternativeOrderModalVisible = useIsAlternativeOrderModalVisible as jest.MockedFunction<
+  typeof useIsAlternativeOrderModalVisible
+>
 const mockUseIsProviderNetworkDeprecated = useIsProviderNetworkDeprecated as jest.MockedFunction<
   typeof useIsProviderNetworkDeprecated
 >
 
 describe('usePriceChartVisibility', () => {
-  it('shows the chart on an active network', () => {
+  beforeEach(() => {
+    mockUseFeatureFlags.mockReturnValue({ isPriceChartEnabled: true })
+    mockUseInjectedWidgetParams.mockReturnValue({})
+    mockUseIsAlternativeOrderModalVisible.mockReturnValue(false)
     mockUseIsProviderNetworkDeprecated.mockReturnValue(false)
+  })
 
+  it('shows the chart on an active network', () => {
     const { result } = renderHook(() => usePriceChartVisibility())
 
     expect(result.current).toBe(true)
@@ -28,6 +44,30 @@ describe('usePriceChartVisibility', () => {
 
   it('hides the chart on a deprecated network', () => {
     mockUseIsProviderNetworkDeprecated.mockReturnValue(true)
+
+    const { result } = renderHook(() => usePriceChartVisibility())
+
+    expect(result.current).toBe(false)
+  })
+
+  it('hides the chart when the price chart flag is off', () => {
+    mockUseFeatureFlags.mockReturnValue({ isPriceChartEnabled: false })
+
+    const { result } = renderHook(() => usePriceChartVisibility())
+
+    expect(result.current).toBe(false)
+  })
+
+  it('hides the chart when the widget disables it', () => {
+    mockUseInjectedWidgetParams.mockReturnValue({ disablePriceChart: true })
+
+    const { result } = renderHook(() => usePriceChartVisibility())
+
+    expect(result.current).toBe(false)
+  })
+
+  it('hides the chart while the Edit/Recreate order modal is open', () => {
+    mockUseIsAlternativeOrderModalVisible.mockReturnValue(true)
 
     const { result } = renderHook(() => usePriceChartVisibility())
 
