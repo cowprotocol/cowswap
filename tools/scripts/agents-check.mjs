@@ -195,6 +195,20 @@ function checkEnforcementWiring() {
       'package.json script "agents:check" must include "tools/scripts/agents-check.mjs"',
     )
   }
+  if (
+    typeof agentsCheckScript !== 'string' ||
+    !agentsCheckScript.includes('tools/scripts/architecture-and-tests-guardrail.mjs')
+  ) {
+    errors.push(
+      'package.json script "agents:check" must include "tools/scripts/architecture-and-tests-guardrail.mjs"',
+    )
+  }
+  if (typeof packageJson.scripts?.['arch:check'] !== 'string') {
+    errors.push('package.json script "arch:check" must run the architecture-and-tests guardrail')
+  }
+  if (typeof packageJson.scripts?.['arch:baseline:update'] !== 'string') {
+    errors.push('package.json script "arch:baseline:update" must refresh the architecture-and-tests baseline')
+  }
 
   const eslintConfigPath = path.join(repoRoot, 'eslint.config.js')
   if (!fs.existsSync(eslintConfigPath)) {
