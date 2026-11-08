@@ -8,7 +8,9 @@ import styled from 'styled-components/macro'
 
 import { CampaignSummary } from '../services/cms'
 
+import { CategoryLinks } from '@/components/CategoryLinks'
 import { Link } from '@/components/Link'
+import { SearchBar } from '@/components/SearchBar'
 import { getCampaignLabel } from '@/const/resources'
 import {
   Breadcrumbs,
@@ -16,78 +18,107 @@ import {
   ContainerCardInner,
   ContainerCardSection,
   ContainerCardSectionTop,
-  ContainerCardSectionTopTitle,
   LinkColumn,
   LinkItem,
+  LinkSection,
 } from '@/styles/styled'
 
 const Wrapper = styled.div`
   display: flex;
-  flex-flow: column wrap;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
+  max-width: 1760px;
   width: 100%;
   margin: 24px auto 0;
   gap: 34px;
-  max-width: 1760px;
+  padding: 0 16px;
 
-  > h1 {
-    font-size: 67px;
-    text-align: center;
-
-    ${Media.upToMedium()} {
-      font-size: 38px;
-    }
-  }
-
-  > p {
-    max-width: 720px;
-    text-align: center;
-    color: var(${UI.COLOR_NEUTRAL_50});
-    font-size: 18px;
-    line-height: 1.5;
+  ${Media.upToMedium()} {
+    margin: 0 auto;
+    gap: 24px;
   }
 `
 
-const CampaignCount = styled.span`
+const PageTitle = styled.div`
+  font-size: 52px;
+
+  ${Media.upToMedium()} {
+    font-size: 32px;
+  }
+
+  > h1 {
+    font-size: inherit;
+  }
+`
+
+const PageDescription = styled.div`
+  font-size: 21px;
+  line-height: 1.5;
+  color: var(${UI.COLOR_NEUTRAL_20});
+
+  > p {
+    margin: 0;
+    font-size: inherit;
+    line-height: inherit;
+    color: inherit;
+  }
+`
+
+const CampaignCount = styled.div`
+  flex: 0 0 auto;
+  margin-left: auto;
   color: var(${UI.COLOR_NEUTRAL_50});
   font-size: 14px;
+  line-height: 1.3;
+  white-space: nowrap;
 `
 
 interface ResourcesHubComponentProps {
   campaigns: CampaignSummary[]
+  allCategories: { name: string; slug: string }[]
 }
 
-export function ResourcesHubComponent({ campaigns }: ResourcesHubComponentProps): ReactNode {
+export function ResourcesHubComponent({ campaigns, allCategories }: ResourcesHubComponentProps): ReactNode {
   return (
     <Wrapper>
-      <Breadcrumbs>
-        <Link href="/">Home</Link>
-        <span>Resources</span>
-      </Breadcrumbs>
+      <CategoryLinks allCategories={allCategories} />
 
-      <h1>Resources</h1>
-      <p>Programmatic reference content published by CoW DAO, grouped by campaign.</p>
+      <SearchBar />
 
-      <ContainerCard gap={42} gapMobile={24} touchFooter>
+      <ContainerCard gap={42} gapMobile={24} minHeight="100vh" alignContent="flex-start" touchFooter>
         <ContainerCardInner maxWidth={970} gap={24} gapMobile={24}>
+          <Breadcrumbs padding="0">
+            <Link href="/">Home</Link>
+            <span>Resources</span>
+          </Breadcrumbs>
+
           <ContainerCardSectionTop>
-            <ContainerCardSectionTopTitle>Campaigns</ContainerCardSectionTopTitle>
+            <PageTitle>
+              <h1>Resources</h1>
+            </PageTitle>
           </ContainerCardSectionTop>
+
           <ContainerCardSection>
+            <PageDescription>
+              <p>Guides and reference pages from CoW DAO, grouped by topic.</p>
+            </PageDescription>
+
             {campaigns.length === 0 ? (
               <p>No resources have been published yet.</p>
             ) : (
-              <LinkColumn>
-                {campaigns.map(({ campaign, count }) => (
-                  <LinkItem key={campaign} href={`/resources/${campaign}`}>
-                    {getCampaignLabel(campaign)}
-                    <CampaignCount>
-                      {count} {count === 1 ? 'page' : 'pages'} →
-                    </CampaignCount>
-                  </LinkItem>
-                ))}
-              </LinkColumn>
+              <LinkSection bgColor="transparent" columns={1} padding="0">
+                <LinkColumn>
+                  {campaigns.map(({ campaign, count }) => (
+                    <LinkItem key={campaign} href={`/resources/${campaign}`}>
+                      {getCampaignLabel(campaign)}
+                      <CampaignCount>
+                        {count} {count === 1 ? 'page' : 'pages'}
+                      </CampaignCount>
+                      <span>→</span>
+                    </LinkItem>
+                  ))}
+                </LinkColumn>
+              </LinkSection>
             )}
           </ContainerCardSection>
         </ContainerCardInner>
