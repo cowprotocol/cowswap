@@ -4,6 +4,7 @@
  * Matches the utm-fix.js attribution loading system
  */
 
+import { waitForCookieConsentDecision } from './consent/cookieConsent.store'
 import { isGtmReady } from './gtm/gtmDetection'
 import { isSafaryReady } from './safary/safaryDetection'
 
@@ -23,12 +24,14 @@ export function isAnalyticsReady(): AnalyticsReadiness {
 }
 
 /**
- * Wait for analytics tools to be ready with sophisticated timing logic
- * Matches the logic from the utm-fix.js attribution loading system
- *
- * @returns Promise that resolves when analytics are ready or timeout is reached
+ * Waits for the visitor's cookie choice, then for GTM and Safary if they accepted.
+ * Resolves right away after a rejection, and stays pending while no choice is made.
  */
-export function waitForAnalytics(): Promise<void> {
+export async function waitForAnalytics(): Promise<void> {
+  const choice = await waitForCookieConsentDecision()
+
+  if (choice !== 'accepted') return
+
   return new Promise((resolve) => {
     const startTime = Date.now()
     let attempts = 0
