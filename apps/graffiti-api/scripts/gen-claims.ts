@@ -2,10 +2,8 @@
  * Pre-generate single-use claim codes (spec §Claim flow).
  * Usage: npm run claims:gen -- --n 10 --amount 1000
  */
-import path from 'node:path'
-
 import { generateClaimCode } from '../src/claims.js'
-import { DEFAULT_CLAIM_AMOUNT, loadConfig, PKG_ROOT } from '../src/config.js'
+import { DEFAULT_CLAIM_AMOUNT, loadConfig } from '../src/config.js'
 import { openStore } from '../src/store.js'
 
 function arg(name: string, def: number): number {
@@ -18,7 +16,7 @@ const n = Math.min(arg('n', 10), 1000)
 const amount = Math.max(arg('amount', DEFAULT_CLAIM_AMOUNT), 1)
 
 const config = loadConfig()
-const store = openStore(path.resolve(PKG_ROOT, 'data', 'claims.db'), config.allowJsonStore)
+const store = openStore(config.dbPath, config.allowJsonStore)
 for (let i = 0; i < n; i++) {
   const code = generateClaimCode()
   store.insertClaim(code, amount)

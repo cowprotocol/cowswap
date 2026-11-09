@@ -1,175 +1,539 @@
-import type { CSSProperties } from 'react'
+import styled, { css, keyframes } from 'styled-components/macro'
 
-export const neonShadow = '0 0 12px rgba(0,255,163,0.55)'
+import { NARROW_BREAKPOINT_PX } from './wall.constants'
 
-export const styles: Record<string, CSSProperties> = {
-  page: {
-    position: 'relative',
-    width: '100%',
-    height: 'calc(100vh - 170px)',
-    minHeight: 480,
-    zIndex: 2,
-    display: 'flex',
-    flexDirection: 'column',
-    userSelect: 'none',
-    WebkitUserSelect: 'none',
-    WebkitTouchCallout: 'none',
-    background: 'radial-gradient(1200px 700px at 70% -10%, #131324 0%, #0a0a12 55%, #060609 100%)',
-    color: '#e8e8f0',
-    fontFamily: "'IBM Plex Mono', 'Fira Mono', ui-monospace, monospace",
-    overflow: 'hidden',
-  },
-  header: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 16,
-    padding: '10px 16px',
-    borderBottom: '1px solid #1d1d2e',
-    background: 'rgba(10,10,18,0.85)',
-    backdropFilter: 'blur(6px)',
-    flexWrap: 'wrap',
-  },
-  logo: {
-    fontSize: 18,
-    fontWeight: 700,
-    letterSpacing: 2,
-    textTransform: 'uppercase',
-    color: '#00ffa3',
-    textShadow: '0 0 14px rgba(0,255,163,0.8)',
-    whiteSpace: 'nowrap',
-  },
-  tag: {
-    fontSize: 11,
-    color: '#8a8aa3',
-    letterSpacing: 1,
-  },
-  main: {
-    flex: 1,
-    display: 'flex',
-    minHeight: 0,
-    marginTop: 14,
-  },
-  canvasWrap: {
-    flex: 1,
-    position: 'relative',
-    minHeight: 0,
-    cursor: 'crosshair',
-    touchAction: 'none',
-  },
-  sidebar: {
-    width: 264,
-    padding: 16,
-    borderLeft: '1px solid #1d1d2e',
-    background: 'rgba(12,12,20,0.92)',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 16,
-    overflowY: 'auto',
-  },
-  sectionTitle: {
-    fontSize: 11,
-    letterSpacing: 2,
-    textTransform: 'uppercase',
-    color: '#8a8aa3',
-    margin: 0,
-  },
-  swatches: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(6, 1fr)',
-    gap: 6,
-  },
-  swatch: {
-    width: '100%',
-    aspectRatio: '1',
-    borderRadius: 6,
-    border: '2px solid transparent',
-    cursor: 'pointer',
-    padding: 0,
-  },
-  button: {
-    borderRadius: 8,
-    border: '1px solid #2a2a40',
-    background: '#15152400',
-    color: '#e8e8f0',
-    padding: '8px 12px',
-    fontFamily: 'inherit',
-    fontSize: 13,
-    cursor: 'pointer',
-  },
-  panel: {
-    borderRadius: 14,
-    border: '1px solid #2a2a40',
-    background: '#151524',
-    padding: 28,
-  },
-  primaryButton: {
-    borderRadius: 10,
-    border: 'none',
-    background: 'linear-gradient(135deg, #00ffa3, #00d0ff)',
-    color: '#061310',
-    fontWeight: 700,
-    padding: '12px 14px',
-    fontFamily: 'inherit',
-    fontSize: 14,
-    letterSpacing: 1,
-    cursor: 'pointer',
-    boxShadow: neonShadow,
-    width: '100%',
-  },
-  costBox: {
-    border: '1px solid #2a2a40',
-    borderRadius: 10,
-    padding: '10px 12px',
-    background: '#10101c',
-  },
-  costValue: {
-    fontSize: 26,
-    fontWeight: 700,
-    color: '#00ffa3',
-    textShadow: neonShadow,
-  },
-  footer: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 12,
-    padding: '6px 16px',
-    borderTop: '1px solid #1d1d2e',
-    background: 'rgba(10,10,18,0.9)',
-    fontSize: 12,
-    color: '#8a8aa3',
-    minHeight: 30,
-  },
-  dot: {
-    width: 8,
-    height: 8,
-    borderRadius: '50%',
-    display: 'inline-block',
-  },
-  canvas: {
-    position: 'absolute',
-    inset: 0,
-    width: '100%',
-    height: '100%',
-    display: 'block',
-    userSelect: 'none',
-    WebkitUserSelect: 'none',
-    WebkitTouchCallout: 'none',
-  },
-}
+/**
+ * The wall has its own fixed dark palette rather than the app's theme tokens.
+ *
+ * The canvas is literally a black wall of pixels, and the surrounding chrome is
+ * styled to disappear into it. Following the light theme would put white chrome
+ * around a black wall, so these colours are deliberately theme-independent.
+ */
+export const wallColors = {
+  neon: '#00ffa3',
+  neonAlt: '#00d0ff',
+  danger: '#ff5577',
+  dangerSoft: '#ff5c8a',
+  text: '#e8e8f0',
+  textMuted: '#8a8aa3',
+  textFaint: '#5b5b72',
+  border: '#2a2a40',
+  borderSubtle: '#1d1d2e',
+  surface: '#151524',
+  surfaceDeep: '#10101c',
+  backdrop: 'rgba(10,10,18,0.85)',
+} as const
 
-/** The neon pill look shared by the wall's primary floating buttons. */
-export const glowStyle: CSSProperties = {
-  borderRadius: 999,
-  border: '1px solid #00ffa3',
-  background: 'linear-gradient(135deg, rgba(0,255,163,0.18), rgba(0,208,255,0.18)), rgba(21,21,36,0.92)',
-  boxShadow: '0 0 14px rgba(0,255,163,0.45), inset 0 0 8px rgba(0,255,163,0.15)',
-  color: '#00ffa3',
-  fontWeight: 700,
-}
+export const neonShadow = `0 0 12px rgba(0,255,163,0.55)`
 
-export const swatchGridStyle: CSSProperties = {
-  display: 'grid',
-  gridTemplateColumns: 'repeat(6, 1fr)',
-  gap: 6,
-  marginTop: 8,
-}
+/** Phones: the tools become a bottom sheet and the wall takes the screen. */
+export const onNarrow = (inner: ReturnType<typeof css>): ReturnType<typeof css> => css`
+  @media (max-width: ${NARROW_BREAKPOINT_PX}px) {
+    ${inner}
+  }
+`
+
+const monospace = `'IBM Plex Mono', 'Fira Mono', ui-monospace, monospace`
+
+export const Page = styled.div<{ $auto?: boolean }>`
+  position: relative;
+  width: 100%;
+  height: ${({ $auto }) => ($auto ? 'auto' : 'calc(100vh - 170px)')};
+  min-height: 480px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  overflow: hidden;
+  color: ${wallColors.text};
+  font-family: ${monospace};
+  background: radial-gradient(1200px 700px at 70% -10%, #131324 0%, #0a0a12 55%, #060609 100%);
+`
+
+export const Header = styled.header`
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 10px 16px;
+  border-bottom: 1px solid ${wallColors.borderSubtle};
+  background: ${wallColors.backdrop};
+  backdrop-filter: blur(6px);
+`
+
+export const Logo = styled.span`
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: ${wallColors.neon};
+  text-shadow: 0 0 14px rgba(0, 255, 163, 0.8);
+`
+
+export const Tag = styled.span`
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: ${wallColors.textMuted};
+`
+
+export const LiveTag = styled(Tag)`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+`
+
+export const Spacer = styled.span`
+  flex: 1;
+`
+
+export const Dot = styled.span<{ $live: boolean }>`
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  background: ${({ $live }) => ($live ? wallColors.neon : '#ffb800')};
+  box-shadow: 0 0 8px ${({ $live }) => ($live ? wallColors.neon : '#ffb800')};
+`
+
+export const Main = styled.div`
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  margin-top: 14px;
+
+  ${onNarrow(css`
+    flex-direction: column;
+    position: relative;
+    flex: 1 1 auto;
+  `)}
+`
+
+export const CanvasWrap = styled.div`
+  flex: 1;
+  position: relative;
+  min-height: 0;
+  cursor: crosshair;
+  touch-action: none;
+
+  ${onNarrow(css`
+    width: 100%;
+    height: auto;
+    min-height: 46vh;
+    flex: 1 1 auto;
+  `)}
+`
+
+export const Canvas = styled.canvas<{ $cursor: string }>`
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  cursor: ${({ $cursor }) => $cursor};
+`
+
+export const Sidebar = styled.aside`
+  width: 264px;
+  padding: 16px;
+  border-left: 1px solid ${wallColors.borderSubtle};
+  background: rgba(12, 12, 20, 0.92);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+
+  ${onNarrow(css`
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    max-height: 72vh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    z-index: 8;
+    border-left: none;
+    border-top: 1px solid ${wallColors.border};
+    border-radius: 14px 14px 0 0;
+    background: rgba(16, 16, 28, 0.96);
+    backdrop-filter: blur(8px);
+  `)}
+`
+
+export const SectionTitle = styled.p`
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: ${wallColors.textMuted};
+`
+
+export const SwatchGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+  margin-top: 8px;
+`
+
+export const Swatch = styled.button<{ $color: string; $selected: boolean }>`
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 6px;
+  padding: 0;
+  cursor: pointer;
+  background: ${({ $color }) => $color};
+  border: 2px solid ${({ $selected }) => ($selected ? '#ffffff' : 'rgba(255,255,255,0.15)')};
+  transition: transform 0.1s ease;
+
+  &:hover {
+    transform: scale(1.08);
+  }
+`
+
+const buttonBase = css`
+  border-radius: 8px;
+  border: 1px solid ${wallColors.border};
+  background: transparent;
+  color: ${wallColors.text};
+  padding: 8px 12px;
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+
+  &:hover:not(:disabled) {
+    border-color: ${wallColors.neon};
+    background: rgba(0, 255, 163, 0.08);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+`
+
+export const Button = styled.button`
+  ${buttonBase};
+`
+
+/** Accent border + glow for the currently selected tool. */
+export const ToolButton = styled.button<{ $active: boolean; $accent: string; $tint: boolean }>`
+  ${buttonBase};
+  border-color: ${({ $active, $accent }) => ($active ? $accent : wallColors.border)};
+  ${({ $active, $accent, $tint }) =>
+    $active &&
+    css`
+      box-shadow: 0 0 10px ${$accent}59;
+      ${$tint &&
+      css`
+        color: ${$accent};
+      `}
+    `};
+`
+
+/** The neon pill shared by the wall's primary floating controls. */
+export const GlowButton = styled.button`
+  ${buttonBase};
+  border-radius: 999px;
+  border: 1px solid ${wallColors.neon};
+  color: ${wallColors.neon};
+  font-weight: 700;
+  background: linear-gradient(135deg, rgba(0, 255, 163, 0.18), rgba(0, 208, 255, 0.18)), rgba(21, 21, 36, 0.92);
+  box-shadow:
+    0 0 14px rgba(0, 255, 163, 0.45),
+    inset 0 0 8px rgba(0, 255, 163, 0.15);
+`
+
+export const DangerButton = styled(Button)`
+  border-color: ${wallColors.danger}55;
+  color: ${wallColors.danger};
+
+  &:hover:not(:disabled) {
+    border-color: ${wallColors.danger};
+    background: rgba(255, 85, 119, 0.08);
+  }
+`
+
+export const PrimaryButton = styled.button`
+  width: 100%;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, ${wallColors.neon}, ${wallColors.neonAlt});
+  color: #061310;
+  font-weight: 700;
+  padding: 12px 14px;
+  font-family: inherit;
+  font-size: 14px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  box-shadow: ${neonShadow};
+  transition: filter 0.15s ease;
+
+  &:hover:not(:disabled) {
+    filter: brightness(1.1);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+`
+
+export const Panel = styled.div`
+  border-radius: 14px;
+  border: 1px solid ${wallColors.border};
+  background: ${wallColors.surface};
+  padding: 28px;
+`
+
+export const CostBox = styled.div<{ $variant?: 'default' | 'danger' | 'success' }>`
+  border: 1px solid
+    ${({ $variant }) =>
+      $variant === 'danger' ? wallColors.danger : $variant === 'success' ? wallColors.neon : wallColors.border};
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: ${wallColors.surfaceDeep};
+  color: ${({ $variant }) =>
+    $variant === 'danger' ? wallColors.dangerSoft : $variant === 'success' ? wallColors.neon : 'inherit'};
+`
+
+export const CostValue = styled.div`
+  font-size: 26px;
+  font-weight: 700;
+  color: ${wallColors.neon};
+  text-shadow: ${neonShadow};
+`
+
+export const Muted = styled.p`
+  margin: 0;
+  font-size: 11px;
+  color: ${wallColors.textMuted};
+`
+
+export const Footer = styled.footer`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 16px;
+  min-height: 30px;
+  border-top: 1px solid ${wallColors.borderSubtle};
+  background: rgba(10, 10, 18, 0.9);
+  font-size: 12px;
+  color: ${wallColors.textMuted};
+`
+
+export const Hints = styled.div`
+  margin-top: auto;
+  font-size: 11px;
+  line-height: 1.6;
+  color: ${wallColors.textFaint};
+`
+
+/* ---------------- canvas overlays ---------------- */
+
+export const OverlayLayer = styled.div`
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(5, 5, 10, 0.62);
+  backdrop-filter: blur(2px);
+  pointer-events: none;
+
+  ${onNarrow(css`
+    align-items: flex-end;
+    justify-content: stretch;
+    padding: 8px;
+    background: none;
+    backdrop-filter: none;
+  `)}
+`
+
+export const StartPanel = styled(Panel)`
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  min-width: 280px;
+  text-align: center;
+
+  ${onNarrow(css`
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    min-width: 0;
+    padding: 6px 8px;
+    gap: 6px;
+    background: rgba(16, 16, 28, 0.92);
+  `)}
+`
+
+/** The headline and blurb are noise on a phone, where the wall matters most. */
+export const WideOnly = styled.div`
+  display: contents;
+
+  ${onNarrow(css`
+    display: none;
+  `)}
+`
+
+export const PlotOverlayRoot = styled.div`
+  position: absolute;
+  z-index: 6;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  pointer-events: none;
+`
+
+export const BalanceChip = styled.div`
+  border-radius: 999px;
+  border: 1px solid ${wallColors.neon};
+  color: ${wallColors.neon};
+  font-weight: 700;
+  font-family: inherit;
+  font-size: 14px;
+  padding: 7px 15px;
+  background: linear-gradient(135deg, rgba(0, 255, 163, 0.18), rgba(0, 208, 255, 0.18)), rgba(21, 21, 36, 0.92);
+  box-shadow:
+    0 0 14px rgba(0, 255, 163, 0.45),
+    inset 0 0 8px rgba(0, 255, 163, 0.15);
+`
+
+export const OverlayButton = styled(GlowButton)`
+  pointer-events: auto;
+`
+
+export const PlainOverlayButton = styled(Button)`
+  pointer-events: auto;
+  border-radius: 999px;
+`
+
+export const ControlBar = styled.div<{ $hidden: boolean }>`
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  display: ${({ $hidden }) => ($hidden ? 'none' : 'flex')};
+  gap: 6px;
+  flex-wrap: wrap;
+  max-width: calc(100% - 24px);
+`
+
+export const ShowTools = styled(GlowButton)`
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 5;
+  padding: 8px 16px;
+`
+
+export const LoadError = styled.div`
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  text-align: center;
+  font-size: 14px;
+  color: ${wallColors.dangerSoft};
+  background: rgba(6, 6, 9, 0.9);
+`
+
+const pulse = keyframes`
+  to { opacity: 0.45; }
+`
+
+/** Bottom-sheet grabber, shown on phones only. */
+export const SheetHandleRow = styled.div`
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 2px 0 8px;
+
+  ${onNarrow(css`
+    display: flex;
+  `)}
+`
+
+export const SheetGrabber = styled.div`
+  width: 44px;
+  height: 4px;
+  border-radius: 2px;
+  background: #3a3a55;
+  animation: ${pulse} 1.6s ease-in-out infinite alternate;
+`
+
+export const TextInput = styled.input`
+  ${buttonBase};
+  width: 100%;
+  background: #0d0d18;
+  text-align: left;
+  user-select: text;
+  -webkit-user-select: text;
+  cursor: text;
+`
+
+export const ColorRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+`
+
+export const ColorPicker = styled.input`
+  width: 44px;
+  height: 32px;
+  background: none;
+  border: none;
+  cursor: pointer;
+`
+
+export const BrushRange = styled.input`
+  width: 100%;
+  accent-color: ${wallColors.neon};
+`
+
+export const ButtonRow = styled.div`
+  display: flex;
+  gap: 8px;
+
+  > * {
+    flex: 1;
+  }
+`
+
+export const WallHeading = styled.h2`
+  margin: 0;
+  letter-spacing: 2px;
+  color: #fff;
+`
+
+export const BigEmoji = styled.span<{ $size?: number }>`
+  font-size: ${({ $size }) => $size ?? 40}px;
+`
+
+export const UnitLabel = styled.span`
+  font-size: 13px;
+  color: ${wallColors.textMuted};
+`
+
+export const ErrorNote = styled.p`
+  margin: 6px 0 0;
+  color: #ff9cb8;
+`

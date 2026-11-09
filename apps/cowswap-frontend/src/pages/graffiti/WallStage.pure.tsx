@@ -1,10 +1,10 @@
-import type { CSSProperties, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
 import { CanvasControls, LoadErrorOverlay, ShowToolsButton } from './CanvasControls.pure'
 import { API_BASE } from './graffiti.service'
 import { PlotOverlay } from './PlotOverlay.pure'
 import { StartOverlay } from './StartOverlay.pure'
-import { styles } from './wall.styled'
+import * as styledEl from './wall.styled'
 
 import type { Tool } from './wall.types'
 import type { WallModel } from './wallModel.types'
@@ -13,8 +13,6 @@ const CURSOR: Record<Tool, string> = { draw: 'crosshair', pan: 'grab', erase: 'c
 
 const ZOOM_IN = 1.25
 const ZOOM_OUT = 0.8
-
-const narrowWrap: CSSProperties = { width: '100%', height: 'auto', minHeight: '46vh', flex: '1 1 auto' }
 
 export interface WallStageProps {
   wall: WallModel
@@ -29,10 +27,9 @@ export function WallStage({ wall }: WallStageProps): ReactNode {
   const balanceLeft = balance === null ? null : Math.max(0, Math.floor(balance - spent))
 
   return (
-    <div ref={wrap} style={{ ...styles.canvasWrap, ...(layout.narrow ? narrowWrap : {}) }}>
+    <styledEl.CanvasWrap ref={wrap}>
       {session.session === 'start' && !viewport.isFullscreen && (
         <StartOverlay
-          narrow={layout.narrow}
           phase={paint.phase}
           phaseError={paint.phaseError}
           onStart={actions.startDrawing}
@@ -50,9 +47,9 @@ export function WallStage({ wall }: WallStageProps): ReactNode {
       {!viewport.isFullscreen && !layout.toolsVisible && (
         <ShowToolsButton onClick={() => layout.setToolsVisible(true)} />
       )}
-      <canvas
+      <styledEl.Canvas
         ref={canvas}
-        style={{ ...styles.canvas, cursor: CURSOR[brush.tool] }}
+        $cursor={CURSOR[brush.tool]}
         onPointerDown={pointer.onPointerDown}
         onPointerMove={pointer.onPointerMove}
         onPointerUp={pointer.onPointerUp}
@@ -69,6 +66,6 @@ export function WallStage({ wall }: WallStageProps): ReactNode {
         onFrame={viewport.zoomToPlot}
       />
       {sync.loadError && <LoadErrorOverlay error={sync.loadError} apiBase={API_BASE} />}
-    </div>
+    </styledEl.CanvasWrap>
   )
 }

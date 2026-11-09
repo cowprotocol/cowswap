@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState, type Dispatch, type SetStateAction } 
 
 import { findFreeSpot } from './freeSpot.utils'
 import { CANVAS } from './raster.utils'
-import { useSyncRef } from './useSyncRef'
 import { DEFAULT_PLOT_HEIGHT, DEFAULT_PLOT_WIDTH } from './wall.constants'
 
 import type { CanvasInfo } from './graffiti.service'
@@ -22,7 +21,7 @@ export interface PlotState {
  * loaded, draggable while the draft is empty, locked once you paint.
  */
 export function usePlot(refs: WallRefs, info: CanvasInfo | null, loaded: boolean): PlotState {
-  const { plotRef, plotDimsRef, freeSpotRef, pixelsRef } = refs
+  const { freeSpotRef, pixelsRef } = refs
   const maxBoxWidth = info?.maxBoxWidth ?? DEFAULT_PLOT_WIDTH
   const maxBoxHeight = info?.maxBoxHeight ?? DEFAULT_PLOT_HEIGHT
   const [plot, setPlot] = useState<Plot | null>(null)
@@ -31,9 +30,6 @@ export function usePlot(refs: WallRefs, info: CanvasInfo | null, loaded: boolean
     (p) => (p?.vertical ? [maxBoxHeight, maxBoxWidth] : [maxBoxWidth, maxBoxHeight]),
     [maxBoxHeight, maxBoxWidth],
   )
-
-  useSyncRef(plotRef, plot)
-  useSyncRef(plotDimsRef, plotDims)
 
   useEffect(() => {
     if (!loaded || freeSpotRef.current) return

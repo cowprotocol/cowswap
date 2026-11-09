@@ -1,40 +1,37 @@
 // The wall's requestAnimationFrame render pass.
 //
-// Everything it needs arrives through refs: the loop runs for the page's
-// lifetime and must not be torn down each time a tool or colour changes, so it
-// may never close over state directly.
+// Everything it needs arrives through refs: the pass runs outside React and
+// must never close over state directly. React state reaches it through
+// `snapshotRef`, published after every commit.
 
 import { CANVAS, colorToHex, rasterizeStroke } from './raster.utils'
 
-import type { View, WallRefs } from './wall.types'
+import type { View, WallRefs, WallSnapshot } from './wall.types'
 
-export type Plot = { x: number; y: number; vertical?: boolean }
-
-export type Session = 'start' | 'place' | 'paint'
-export type Tool = 'draw' | 'pan' | 'erase' | 'text'
 /** The slice of the shared refs the render pass reads and writes. */
 export type WallRenderRefs = Pick<
   WallRefs,
+  | 'snapshotRef'
   | 'canvasElRef'
   | 'wrapElRef'
   | 'offscreenRef'
   | 'pixelsRef'
   | 'dirtyRef'
   | 'viewRef'
-  | 'draftRef'
   | 'drawingRef'
   | 'strokePointsRef'
-  | 'brushSizeRef'
-  | 'colorRef'
-  | 'toolRef'
-  | 'plotRef'
-  | 'plotDimsRef'
-  | 'plotLockedRef'
   | 'plotOverlayRef'
   | 'patternRef'
-  | 'sessionRef'
-  | 'fullscreenRef'
 >
+
+/** Whether the frame outline is on screen, which is the only drawn animation. */
+export function needsContinuousRender(snapshot: WallSnapshot): boolean {
+  return isPlotFrameVisible(snapshot) && !snapshot.plotLocked
+}
+
+function isPlotFrameVisible(snapshot: WallSnapshot): boolean {
+  return snapshot.plot !== null && snapshot.tool !== 'pan' && snapshot.session !== 'start' && !snapshot.fullscreen
+}
 
 /** Grid lines appear only once cells are big enough to see between them. */
 const GRID_MIN_SCALE = 6
@@ -92,7 +89,7 @@ export function renderWall(refs: WallRenderRefs): void {
   ctx.drawImage(offscreen, view.offsetX, view.offsetY, CANVAS.w * view.scale, CANVAS.h * view.scale)
 
   drawGrid(ctx, view)
-  drawDraft(ctx, refs.draftRef.current, view)
+  drawDraft(ctx, refs.snapshotRef.current.draft, view)
   drawPlotFrame(ctx, refs)
   drawStrokePreview(ctx, refs)
 }
@@ -193,14 +190,14 @@ function drawGrid(ctx: CanvasRenderingContext2D, view: View): void {
 }
 
 function drawPlotFrame(ctx: CanvasRenderingContext2D, refs: WallRenderRefs): void {
-  const plot = refs.plotRef.current
+  const snapshot = refs.snapshotRef.current
+  const plot = snapshot.plot
   const canvasEl = refs.canvasElRef.current
 
-  if (!plot || !canvasEl) return
-  if (refs.toolRef.current === 'pan' || refs.sessionRef.current === 'start' || refs.fullscreenRef.current) return
+  if (!plot || !canvasEl || !isPlotFrameVisible(snapshot)) return
 
   const view = refs.viewRef.current
-  const [plotW, plotH] = refs.plotDimsRef.current(plot)
+  const [plotW, plotH] = snapshot.plotDims(plot)
   const box = {
     sx: view.offsetX + plot.x * view.scale,
     sy: view.offsetY + plot.y * view.scale,
@@ -212,7 +209,7 @@ function drawPlotFrame(ctx: CanvasRenderingContext2D, refs: WallRenderRefs): voi
 
   dimOutsidePlot(ctx, box, canvasW, canvasH)
 
-  const locked = refs.plotLockedRef.current
+  const locked = snapshot.plotLocked
 
   ctx.save()
   ctx.lineWidth = 2
@@ -257,12 +254,13 @@ function drawStrokePreview(ctx: CanvasRenderingContext2D, refs: WallRenderRefs):
 
   if (live.length === 0 || !refs.drawingRef.current) return
 
-  const { outline } = rasterizeStroke(live, refs.brushSizeRef.current, CANVAS)
+  const snapshot = refs.snapshotRef.current
+  const { outline } = rasterizeStroke(live, snapshot.brushSize, CANVAS)
   const view = refs.viewRef.current
-  const plot = refs.plotRef.current
+  const plot = snapshot.plot
 
   if (plot) {
-    const [plotW, plotH] = refs.plotDimsRef.current(plot)
+    const [plotW, plotH] = snapshot.plotDims(plot)
 
     ctx.save()
     ctx.beginPath()
@@ -276,7 +274,7 @@ function drawStrokePreview(ctx: CanvasRenderingContext2D, refs: WallRenderRefs):
   }
 
   ctx.globalAlpha = 0.6
-  ctx.fillStyle = refs.colorRef.current
+  ctx.fillStyle = refs.snapshotRef.current.color
   ctx.beginPath()
 
   outline.forEach((p, idx) => {

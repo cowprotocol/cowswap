@@ -1,6 +1,8 @@
-import type { CSSProperties, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
-import { glowStyle, styles } from './wall.styled'
+import { Trans } from '@lingui/react/macro'
+
+import * as styledEl from './wall.styled'
 
 import type { Tool } from './wall.types'
 
@@ -16,21 +18,17 @@ export interface CanvasControlsProps {
 
 interface ToolOption {
   id: Tool
-  label: string
+  label: ReactNode
   accent: string
-  glow: string
   /** Whether the label takes the accent colour while active. */
   tint: boolean
 }
 
-const GREEN = { accent: '#00ffa3', glow: 'rgba(0,255,163,0.35)' }
-const RED = { accent: '#ff5577', glow: 'rgba(255,85,119,0.35)' }
-
 const TOOLS: ToolOption[] = [
-  { id: 'draw', label: '✏ draw', ...GREEN, tint: false },
-  { id: 'pan', label: '✋ pan', ...GREEN, tint: false },
-  { id: 'text', label: 'T text', ...GREEN, tint: true },
-  { id: 'erase', label: '🧽 erase', ...RED, tint: true },
+  { id: 'draw', label: <Trans>✏ draw</Trans>, accent: styledEl.wallColors.neon, tint: false },
+  { id: 'pan', label: <Trans>✋ pan</Trans>, accent: styledEl.wallColors.neon, tint: false },
+  { id: 'text', label: <Trans>T text</Trans>, accent: styledEl.wallColors.neon, tint: true },
+  { id: 'erase', label: <Trans>🧽 erase</Trans>, accent: styledEl.wallColors.danger, tint: true },
 ]
 
 export interface LoadErrorOverlayProps {
@@ -53,85 +51,49 @@ export function CanvasControls({
   onFrame,
 }: CanvasControlsProps): ReactNode {
   return (
-    <div
-      style={{
-        position: 'absolute',
-        left: 12,
-        bottom: 12,
-        display: hidden ? 'none' : 'flex',
-        gap: 6,
-      }}
-    >
-      <button style={styles.button} onClick={onZoomIn}>
-        ＋
-      </button>
-      <button style={styles.button} onClick={onZoomOut}>
-        －
-      </button>
-      <button style={styles.button} onClick={onFit}>
-        fit
-      </button>
-      <button style={{ ...styles.button, borderColor: '#2a2a40' }} onClick={onFrame} aria-label="zoom to frame">
-        ⌖ frame
-      </button>
+    <styledEl.ControlBar $hidden={hidden}>
+      <styledEl.Button onClick={onZoomIn}>＋</styledEl.Button>
+      <styledEl.Button onClick={onZoomOut}>－</styledEl.Button>
+      <styledEl.Button onClick={onFit}>
+        <Trans>fit</Trans>
+      </styledEl.Button>
+      <styledEl.Button onClick={onFrame}>
+        <Trans>⌖ frame</Trans>
+      </styledEl.Button>
       {TOOLS.map((option) => (
-        <button key={option.id} style={toolStyle(option, tool === option.id)} onClick={() => onTool(option.id)}>
+        <styledEl.ToolButton
+          key={option.id}
+          $active={tool === option.id}
+          $accent={option.accent}
+          $tint={option.tint}
+          onClick={() => onTool(option.id)}
+        >
           {option.label}
-        </button>
+        </styledEl.ToolButton>
       ))}
-    </div>
+    </styledEl.ControlBar>
   )
 }
 
 export function LoadErrorOverlay({ error, apiBase }: LoadErrorOverlayProps): ReactNode {
   return (
-    <div
-      style={{
-        position: 'absolute',
-        inset: 0,
-        display: 'grid',
-        placeItems: 'center',
-        background: 'rgba(6,6,9,0.9)',
-        color: '#ff5c8a',
-        fontSize: 14,
-        padding: 24,
-        textAlign: 'center',
-      }}
-    >
+    <styledEl.LoadError>
       <div>
-        <div style={{ fontSize: 40 }}>🧱</div>
-        <p>Could not load the wall from {apiBase}</p>
-        <p style={{ color: '#8a8aa3' }}>{error}</p>
+        <styledEl.BigEmoji>🧱</styledEl.BigEmoji>
+        <p>
+          <Trans>Could not load the wall from {apiBase}</Trans>
+        </p>
+        <styledEl.Muted>{error}</styledEl.Muted>
       </div>
-    </div>
+    </styledEl.LoadError>
   )
 }
 
 /** Brings the tool sidebar back after it was hidden. */
 export function ShowToolsButton({ onClick }: ShowToolsButtonProps): ReactNode {
   return (
-    <button
-      onClick={onClick}
-      style={{
-        position: 'absolute',
-        top: 8,
-        right: 8,
-        zIndex: 5,
-        ...styles.button,
-        ...glowStyle,
-        padding: '8px 16px',
-      }}
-    >
-      <span style={{ filter: 'drop-shadow(0 0 6px #00ffa3)' }}>🧰</span> tools
-    </button>
+    <styledEl.ShowTools onClick={onClick}>
+      🧰 <Trans>tools</Trans>
+    </styledEl.ShowTools>
   )
-}
-
-function toolStyle(option: ToolOption, active: boolean): CSSProperties {
-  return {
-    ...styles.button,
-    borderColor: active ? option.accent : '#2a2a40',
-    ...(option.tint ? { color: active ? option.accent : undefined } : {}),
-    boxShadow: active ? `0 0 10px ${option.glow}` : 'none',
-  }
 }

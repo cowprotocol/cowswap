@@ -17,6 +17,7 @@ import { getInfo, postClientError, type CanvasInfo } from './graffiti.service'
 import { loadPendingBurn, savePendingBurn, type PendingBurn } from './pendingBurn.utils'
 import { CANVAS, type Cell } from './raster.utils'
 import { submitDraw } from './submitDraw.service'
+import { TOKEN_SYMBOL } from './wall.constants'
 
 export type PaintPhase = 'idle' | 'quoting' | 'awaiting wallet' | 'confirming' | 'painting' | 'done' | 'error'
 
@@ -24,8 +25,6 @@ const SPL_MEMO_PROGRAM_ID = new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDL
 
 /** Minimum lamports needed to pay for the burn transaction. */
 const MIN_FEE_LAMPORTS = 5000
-
-const TOKEN_SYMBOL = 'MOOOXELS'
 
 export interface PaintFlow {
   phase: PaintPhase

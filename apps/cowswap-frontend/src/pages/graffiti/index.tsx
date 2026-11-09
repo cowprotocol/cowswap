@@ -3,9 +3,10 @@
 //
 // The page only composes: each concern lives in its own hook (wallet gate, wall
 // data sync, drafting, frame/session state, viewport, pointer input, paint flow)
-// and the view is a tree of small pure components.
+// and the view is a tree of small pure components. The canvas layer reads React
+// state through one snapshot (see wall.types.ts), never through the hooks.
 
-import type { ReactNode } from 'react'
+import { useMemo, type ReactNode } from 'react'
 
 import { NetworkGate } from './NetworkGate.pure'
 import { useBrush } from './useBrush'
@@ -21,10 +22,13 @@ import { useTokenBalance } from './useTokenBalance'
 import { useViewport } from './useViewport'
 import { useWallPaint } from './useWallPaint'
 import { useWallPixels } from './useWallPixels'
-import { useWallRefs, useWallDomBindings } from './useWallRefs'
+import { useWallDomBindings, useWallRefs } from './useWallRefs'
 import { useWallRenderLoop } from './useWallRenderLoop'
+import { useWallSnapshot } from './useWallSnapshot'
 import { useWallSync } from './useWallSync'
 import { WallScreen } from './WallScreen.pure'
+
+import type { WallSnapshot } from './wall.types'
 
 const BALANCE_POLL_MS = 15_000
 
@@ -34,7 +38,7 @@ export default function GraffitiPage(): ReactNode {
   const refs = useWallRefs()
   const dom = useWallDomBindings(refs)
 
-  const brush = useBrush(refs)
+  const brush = useBrush()
   const { wallColorAt, applyCells } = useWallPixels(refs)
   const sync = useWallSync(refs, applyCells)
   const mint = sync.info?.mint
@@ -42,7 +46,7 @@ export default function GraffitiPage(): ReactNode {
 
   const plot = usePlot(refs, sync.info, sync.loaded)
   const draft = useDraft(refs, plot.maxBoxWidth, plot.maxBoxHeight)
-  const session = useSessionState(refs, draft.draft)
+  const session = useSessionState(draft.draft)
   const paint = useWallPaint({
     solanaAccount: gate.solanaAccount,
     connected: gate.connected,
@@ -52,11 +56,13 @@ export default function GraffitiPage(): ReactNode {
     markSeq: sync.markSeq,
   })
 
-  const pointer = usePointerInput(refs, {
-    brush,
-    busy: paint.busy,
-    loaded: sync.loaded,
+  const viewport = useViewport(refs, {
+    canvasEl: dom.canvasEl,
     plotDims: plot.plotDims,
+    plotReady: plot.plot !== null,
+    plotLocked: session.plotLocked,
+  })
+  const pointer = usePointerInput(refs, {
     wallColorAt,
     pushHistory: draft.pushHistory,
     setDraft: draft.setDraft,
@@ -64,23 +70,51 @@ export default function GraffitiPage(): ReactNode {
     resetPhase: paint.resetPhase,
   })
 
-  const viewport = useViewport(refs, {
-    canvasEl: dom.canvasEl,
-    plotDims: plot.plotDims,
-    plotReady: plot.plot !== null,
-    plotLocked: session.plotLocked,
-  })
   useCanvasGestures(refs, dom.canvasEl, pointer.cancelInteraction)
 
   const actions = useSessionActions(refs, {
     ...draft,
     ...session,
-    busy: paint.busy,
     setPlot: plot.setPlot,
     plotDims: plot.plotDims,
     zoomToPlot: viewport.zoomToPlot,
     resetPhase: paint.resetPhase,
   })
+
+  const snapshot = useMemo<WallSnapshot>(
+    () => ({
+      loaded: sync.loaded,
+      busy: paint.busy,
+      session: session.session,
+      fullscreen: viewport.isFullscreen,
+      tool: brush.tool,
+      brushSize: brush.brushSize,
+      color: brush.paintColor,
+      label: brush.label,
+      draft: draft.draft,
+      plot: plot.plot,
+      plotDims: plot.plotDims,
+      plotLocked: session.plotLocked,
+      plotConfirmed: session.plotConfirmed,
+    }),
+    [
+      brush.brushSize,
+      brush.label,
+      brush.paintColor,
+      brush.tool,
+      draft.draft,
+      paint.busy,
+      plot.plot,
+      plot.plotDims,
+      session.plotConfirmed,
+      session.plotLocked,
+      session.session,
+      sync.loaded,
+      viewport.isFullscreen,
+    ],
+  )
+
+  useWallSnapshot(refs, snapshot)
   useWallRenderLoop(refs)
 
   if (!gate.onSolana) {

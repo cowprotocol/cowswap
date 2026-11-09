@@ -2,7 +2,27 @@ import { type MutableRefObject, type RefCallback, useCallback, useState } from '
 
 import { DEFAULT_BRUSH, DEFAULT_COLOR, DEFAULT_PLOT_HEIGHT, DEFAULT_PLOT_WIDTH, PIXELS_LENGTH } from './wall.constants'
 
-import type { WallRefs } from './wall.types'
+import type { WallRefs, WallSnapshot } from './wall.types'
+
+function defaultPlotDims(plot: { vertical?: boolean } | null): [number, number] {
+  return plot?.vertical ? [DEFAULT_PLOT_HEIGHT, DEFAULT_PLOT_WIDTH] : [DEFAULT_PLOT_WIDTH, DEFAULT_PLOT_HEIGHT]
+}
+
+const INITIAL_SNAPSHOT: WallSnapshot = {
+  loaded: false,
+  busy: false,
+  session: 'start',
+  fullscreen: false,
+  tool: 'draw',
+  brushSize: DEFAULT_BRUSH,
+  color: DEFAULT_COLOR,
+  label: '',
+  draft: new Map(),
+  plot: null,
+  plotDims: defaultPlotDims,
+  plotLocked: false,
+  plotConfirmed: false,
+}
 
 export interface WallDomBindings {
   wrap: RefCallback<HTMLDivElement>
@@ -14,34 +34,30 @@ export interface WallDomBindings {
 
 export function createWallRefs(): WallRefs {
   return {
-    seqRef: ref(0),
-    draftRef: ref(new Map()),
-    plotRef: ref(null),
-    plotDimsRef: ref(defaultPlotDims),
-    plotLockedRef: ref(false),
-    plotConfirmedRef: ref(false),
-    movingPlotRef: ref(null),
-    plotOverlayRef: ref(null),
-    sessionRef: ref('start'),
-    busyRef: ref(false),
-    fullscreenRef: ref(false),
-    freeSpotRef: ref(null),
+    snapshotRef: ref(INITIAL_SNAPSHOT),
+    requestRenderRef: ref(() => undefined),
+
     pixelsRef: ref(new Uint8ClampedArray(PIXELS_LENGTH)),
     dirtyRef: ref(true),
     offscreenRef: ref(null),
     patternRef: ref(null),
+
     canvasElRef: ref(null),
     wrapElRef: ref(null),
+    plotOverlayRef: ref(null),
+
     viewRef: ref({ scale: 1, offsetX: 0, offsetY: 0 }),
     minScaleRef: ref(0.06),
+
     drawingRef: ref(false),
     panningRef: ref(false),
     activePointersRef: ref(new Set()),
     pinchActiveRef: ref(false),
     strokePointsRef: ref([]),
-    brushSizeRef: ref(DEFAULT_BRUSH),
-    colorRef: ref(DEFAULT_COLOR),
-    toolRef: ref('draw'),
+    movingPlotRef: ref(null),
+
+    seqRef: ref(0),
+    freeSpotRef: ref(null),
   }
 }
 
@@ -51,6 +67,7 @@ export function createWallRefs(): WallRefs {
  */
 export function useWallDomBindings({ wrapElRef, canvasElRef, plotOverlayRef }: WallRefs): WallDomBindings {
   const [canvasEl, setCanvasEl] = useState<HTMLCanvasElement | null>(null)
+
   const wrap = useCallback(
     (el: HTMLDivElement | null): void => {
       wrapElRef.current = el
@@ -82,10 +99,6 @@ export function useWallRefs(): WallRefs {
   const [refs] = useState(createWallRefs)
 
   return refs
-}
-
-function defaultPlotDims(plot: { vertical?: boolean } | null): [number, number] {
-  return plot?.vertical ? [DEFAULT_PLOT_HEIGHT, DEFAULT_PLOT_WIDTH] : [DEFAULT_PLOT_WIDTH, DEFAULT_PLOT_HEIGHT]
 }
 
 function ref<T>(current: T): MutableRefObject<T> {

@@ -26,7 +26,7 @@ function cellsOf(draft: Draft): Array<{ x: number; y: number }> {
 }
 
 /** A canvas at scale 10 with no offset: screen px / 10 = wall cells. */
-function harness(overrides: Partial<PointerContext> = {}, plotLocked = true): Harness {
+function harness(snapshot: Partial<WallSnapshot> = {}, plotLocked = true): Harness {
   const refs = createWallRefs()
   let draft: Draft = new Map()
   let liveCost = 0
@@ -40,18 +40,22 @@ function harness(overrides: Partial<PointerContext> = {}, plotLocked = true): Ha
     clientHeight: 600,
   } as unknown as HTMLCanvasElement
   refs.viewRef.current = { scale: 10, offsetX: 0, offsetY: 0 }
-  refs.plotRef.current = { x: 0, y: 0 }
-  refs.plotLockedRef.current = plotLocked
-
-  const ctx: PointerContext = {
-    refs,
-    tool: 'draw',
-    busy: false,
+  refs.snapshotRef.current = {
+    ...refs.snapshotRef.current,
     loaded: true,
+    busy: false,
+    tool: 'draw',
     brushSize: 6,
     color: '#ff0000',
     label: '',
+    plot: { x: 0, y: 0 },
+    plotLocked,
     plotDims: (plot) => (plot?.vertical ? [FRAME.h, FRAME.w] : [FRAME.w, FRAME.h]),
+    ...snapshot,
+  }
+
+  const ctx: PointerContext = {
+    refs,
     wallColorAt: () => 0,
     pushHistory,
     setDraft: (update) => {
@@ -62,7 +66,6 @@ function harness(overrides: Partial<PointerContext> = {}, plotLocked = true): Ha
       liveCost = cost
     },
     resetPhase,
-    ...overrides,
   }
 
   return { ctx, draft: () => draft, setPlot, pushHistory, resetPhase, liveCost: () => liveCost }
@@ -142,7 +145,9 @@ describe('drawing a stroke', () => {
   })
 
   it('does not draft cells that would not change the wall, since they are free', () => {
-    const h = harness({ wallColorAt: () => 0xff0000 })
+    const h = harness()
+
+    h.ctx.wallColorAt = () => 0xff0000
 
     stroke(h, [100, 100], [300, 100])
 
@@ -150,8 +155,9 @@ describe('drawing a stroke', () => {
   })
 
   it('erases with black', () => {
-    const h = harness({ tool: 'erase', wallColorAt: () => 0xff0000 })
+    const h = harness({ tool: 'erase', color: '#000000' })
 
+    h.ctx.wallColorAt = () => 0xff0000
     stroke(h, [100, 100], [300, 100])
 
     expect(h.draft().size).toBeGreaterThan(0)
@@ -175,7 +181,7 @@ describe('drawing a stroke', () => {
   })
 
   it('does not draw until the frame is locked', () => {
-    const h = harness({ tool: 'draw' }, false)
+    const h = harness({}, false)
 
     // Away from the frame so it is not interpreted as grabbing it.
     stroke(h, [3000, 3000], [3200, 3000])
@@ -235,7 +241,7 @@ describe('moving the frame', () => {
   it('keeps a portrait frame portrait while dragging', () => {
     const h = harness({}, false)
 
-    h.ctx.refs.plotRef.current = { x: 0, y: 0, vertical: true }
+    h.ctx.refs.snapshotRef.current = { ...h.ctx.refs.snapshotRef.current, plot: { x: 0, y: 0, vertical: true } }
     handlePointerDown(pointerEvent(100, 100), h.ctx)
     handlePointerMove(pointerEvent(110, 110), h.ctx)
 

@@ -1,15 +1,13 @@
 import type { ReactNode } from 'react'
 
+import { Trans, useLingui } from '@lingui/react/macro'
+
 import { textFontSize } from './raster.utils'
-import { MAX_BRUSH, MIN_BRUSH, PALETTE, PHASE_LABEL } from './wall.constants'
-import { glowStyle, styles, swatchGridStyle } from './wall.styled'
+import { MAX_BRUSH, MIN_BRUSH, PALETTE, PHASE_LABEL, TOKEN_SYMBOL } from './wall.constants'
+import * as styledEl from './wall.styled'
 
 import type { DraftBox } from './draftBox.utils'
 import type { PaintPhase } from './usePaintFlow'
-
-const MUTED = '#8a8aa3'
-const DANGER = '#ff5577'
-const DANGER_BORDER = '#ff557755'
 
 export interface BrushSectionProps {
   brushSize: number
@@ -54,10 +52,6 @@ export interface PhaseStatusProps {
   error: string | null
 }
 
-export interface SheetHandleProps {
-  onHide: () => void
-}
-
 export interface TextLabelSectionProps {
   label: string
   brushSize: number
@@ -65,17 +59,21 @@ export interface TextLabelSectionProps {
 }
 
 export function BrushSection({ brushSize, onBrushSize }: BrushSectionProps): ReactNode {
+  const { t } = useLingui()
+
   return (
     <div>
-      <p style={styles.sectionTitle}>Brush · {brushSize}px</p>
-      <input
+      <styledEl.SectionTitle>
+        <Trans>Brush · {brushSize}px</Trans>
+      </styledEl.SectionTitle>
+      <styledEl.BrushRange
         type="range"
         min={MIN_BRUSH}
         max={MAX_BRUSH}
         step={1}
         value={brushSize}
+        aria-label={t`brush size`}
         onChange={(e) => onBrushSize(Number(e.target.value))}
-        style={{ width: '100%', accentColor: '#00ffa3' }}
       />
     </div>
   )
@@ -83,59 +81,65 @@ export function BrushSection({ brushSize, onBrushSize }: BrushSectionProps): Rea
 
 export function CancelButton({ onCancel }: { onCancel: () => void }): ReactNode {
   return (
-    <button style={{ ...styles.button, width: '100%', borderColor: DANGER_BORDER, color: DANGER }} onClick={onCancel}>
-      ✕ cancel
-    </button>
+    <styledEl.DangerButton onClick={onCancel}>
+      <Trans>✕ cancel</Trans>
+    </styledEl.DangerButton>
   )
 }
 
 export function ColorSection({ color, onColor }: ColorSectionProps): ReactNode {
+  const { t } = useLingui()
+
   return (
     <div>
-      <p style={styles.sectionTitle}>Color</p>
-      <div style={swatchGridStyle}>
+      <styledEl.SectionTitle>
+        <Trans>Color</Trans>
+      </styledEl.SectionTitle>
+      <styledEl.SwatchGrid>
         {PALETTE.map((c) => (
-          <button
+          <styledEl.Swatch
             key={c}
-            aria-label={`color ${c}`}
+            type="button"
+            aria-label={t`color ${c}`}
+            $color={c}
+            $selected={color === c}
             onClick={() => onColor(c)}
-            style={{
-              ...styles.swatch,
-              background: c,
-              borderColor: color === c ? '#ffffff' : 'rgba(255,255,255,0.15)',
-            }}
           />
         ))}
-      </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 10 }}>
-        <input
+      </styledEl.SwatchGrid>
+      <styledEl.ColorRow>
+        <styledEl.ColorPicker
           type="color"
           value={color}
+          aria-label={t`custom color`}
           onChange={(e) => onColor(e.target.value)}
-          style={{ width: 44, height: 32, background: 'none', border: 'none', cursor: 'pointer' }}
         />
-        <span style={{ color: MUTED, fontSize: 12 }}>{color.toUpperCase()}</span>
-      </div>
+        <styledEl.Muted>{color.toUpperCase()}</styledEl.Muted>
+      </styledEl.ColorRow>
     </div>
   )
 }
 
 export function CostSection({ plotLocked, draftCost, cost }: CostSectionProps): ReactNode {
   return (
-    <div style={styles.costBox}>
-      <p style={{ margin: '0 0 6px', fontSize: 11, color: plotLocked ? '#00ffa3' : MUTED }}>
-        {plotLocked
-          ? '📍 frame locked — undo everything to move it'
-          : '📍 drag the frame to position it, then ✓ draw here'}
-      </p>
-      <p style={{ ...styles.sectionTitle, marginBottom: 6 }}>{draftCost > 0 ? 'Your draft' : 'Drawing'}</p>
-      <div style={styles.costValue}>
-        {cost} <span style={{ fontSize: 13, color: MUTED }}>MOOOXELS</span>
-      </div>
-      <p style={{ fontSize: 11, color: MUTED, margin: '4px 0 0' }}>
-        {draftCost > 0 ? 'distinct pixels — one burn commits all' : 'pixels covered so far'}
-      </p>
-    </div>
+    <styledEl.CostBox>
+      <styledEl.Muted>
+        {plotLocked ? (
+          <Trans>📍 frame locked — undo everything to move it</Trans>
+        ) : (
+          <Trans>📍 drag the frame to position it, then ✓ draw here</Trans>
+        )}
+      </styledEl.Muted>
+      <styledEl.SectionTitle>
+        {draftCost > 0 ? <Trans>Your draft</Trans> : <Trans>Drawing</Trans>}
+      </styledEl.SectionTitle>
+      <styledEl.CostValue>
+        {cost} <styledEl.UnitLabel>{TOKEN_SYMBOL}</styledEl.UnitLabel>
+      </styledEl.CostValue>
+      <styledEl.Muted>
+        {draftCost > 0 ? <Trans>distinct pixels — one burn commits all</Trans> : <Trans>pixels covered so far</Trans>}
+      </styledEl.Muted>
+    </styledEl.CostBox>
   )
 }
 
@@ -143,114 +147,112 @@ export function DraftActions({ show, canUndo, onUndo, onClear }: DraftActionsPro
   if (!show) return null
 
   return (
-    <div style={{ display: 'flex', gap: 8 }}>
-      <button style={{ ...styles.button, flex: 1 }} onClick={onUndo} disabled={!canUndo}>
-        ↩ undo
-      </button>
-      <button style={{ ...styles.button, flex: 1, borderColor: DANGER_BORDER, color: DANGER }} onClick={onClear}>
-        🗑 clear all
-      </button>
-    </div>
+    <styledEl.ButtonRow>
+      <styledEl.Button onClick={onUndo} disabled={!canUndo}>
+        <Trans>↩ undo</Trans>
+      </styledEl.Button>
+      <styledEl.DangerButton onClick={onClear}>
+        <Trans>🗑 clear all</Trans>
+      </styledEl.DangerButton>
+    </styledEl.ButtonRow>
   )
 }
 
-export function HideToolsButton({ onHide }: SheetHandleProps): ReactNode {
+export function HideToolsButton({ onHide }: { onHide: () => void }): ReactNode {
   return (
-    <button style={{ ...styles.button, ...glowStyle, width: '100%' }} onClick={onHide}>
-      ⌄ hide tools
-    </button>
+    <styledEl.GlowButton onClick={onHide}>
+      <Trans>⌄ hide tools</Trans>
+    </styledEl.GlowButton>
   )
 }
 
 export function LimitWarning({ box, maxBoxWidth, maxBoxHeight }: LimitWarningProps): ReactNode {
+  const width = box?.w ?? 0
+  const height = box?.h ?? 0
+
   return (
-    <div style={{ ...styles.costBox, borderColor: DANGER }}>
-      <p style={{ margin: 0, color: DANGER, fontSize: 12, lineHeight: 1.4 }}>
-        drawing {box?.w}×{box?.h} exceeds the max area ({maxBoxWidth}×{maxBoxHeight}) — undo or clear and keep it
-        smaller
-      </p>
-    </div>
+    <styledEl.CostBox $variant="danger">
+      <Trans>
+        drawing {width}×{height} exceeds the max area ({maxBoxWidth}×{maxBoxHeight}) — undo or clear and keep it smaller
+      </Trans>
+    </styledEl.CostBox>
   )
 }
 
 export function PaintButton({ connected, disabled, draftCost, cost, onConnect, onPaint }: PaintButtonProps): ReactNode {
   if (!connected) {
     return (
-      <button style={styles.primaryButton} onClick={onConnect}>
-        CONNECT WALLET TO PAINT
-      </button>
+      <styledEl.PrimaryButton onClick={onConnect}>
+        <Trans>CONNECT WALLET TO PAINT</Trans>
+      </styledEl.PrimaryButton>
     )
   }
 
   return (
-    <button style={{ ...styles.primaryButton, opacity: disabled ? 0.4 : 1 }} disabled={disabled} onClick={onPaint}>
-      {draftCost > 0 ? `COMMIT · BURN ${cost} MOOOXELS` : 'DRAW SOMETHING ✏'}
-    </button>
+    <styledEl.PrimaryButton disabled={disabled} onClick={onPaint}>
+      {draftCost > 0 ? (
+        <Trans>
+          COMMIT · BURN {cost} {TOKEN_SYMBOL}
+        </Trans>
+      ) : (
+        <Trans>DRAW SOMETHING ✏</Trans>
+      )}
+    </styledEl.PrimaryButton>
   )
 }
 
 export function PhaseStatus({ phase, error }: PhaseStatusProps): ReactNode {
-  const failed = phase === 'error'
-
   return (
-    <div
-      style={{
-        ...styles.costBox,
-        borderColor: failed ? '#ff5c8a' : '#00ffa3',
-        color: failed ? '#ff5c8a' : '#00ffa3',
-        fontSize: 12,
-      }}
-    >
+    <styledEl.CostBox $variant={phase === 'error' ? 'danger' : 'success'}>
       <strong>{PHASE_LABEL[phase]}</strong>
-      {error && <p style={{ color: '#ff9cb8', margin: '6px 0 0' }}>{error}</p>}
-    </div>
+      {error && <styledEl.ErrorNote>{error}</styledEl.ErrorNote>}
+    </styledEl.CostBox>
   )
 }
 
-/** Bottom-sheet grabber, shown on phones. */
+/** Bottom-sheet grabber; CSS hides it outside phone widths. */
 export function SheetHandle(): ReactNode {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, padding: '2px 0 8px' }}>
-      <div style={{ width: 44, height: 4, borderRadius: 2, background: '#3a3a55' }} />
-      <span style={{ fontSize: 10, color: MUTED }}>scroll for more</span>
-    </div>
+    <styledEl.SheetHandleRow>
+      <styledEl.SheetGrabber />
+      <styledEl.Muted>
+        <Trans>scroll for more</Trans>
+      </styledEl.Muted>
+    </styledEl.SheetHandleRow>
   )
 }
 
 export function SidebarHints({ network }: { network: string }): ReactNode {
   return (
-    <div style={{ marginTop: 'auto', fontSize: 11, color: '#5b5b72', lineHeight: 1.6 }}>
-      pan: two fingers / pan tool · eraser paints black (1 MOOOXELS/cell)
+    <styledEl.Hints>
+      <Trans>pan: two fingers / pan tool · eraser paints black (1 {TOKEN_SYMBOL}/cell)</Trans>
       <br />
-      every painted pixel burns 1 MOOOXELS (SPL)
+      <Trans>every painted pixel burns 1 {TOKEN_SYMBOL} (SPL)</Trans>
       <br />
-      network: {network}
-    </div>
+      <Trans>network: {network}</Trans>
+    </styledEl.Hints>
   )
 }
 
 export function TextLabelSection({ label, brushSize, onLabel }: TextLabelSectionProps): ReactNode {
+  const { t } = useLingui()
+  const fontSize = textFontSize(brushSize)
+
   return (
     <div>
-      <p style={styles.sectionTitle}>Label</p>
-      <input
+      <styledEl.SectionTitle>
+        <Trans>Label</Trans>
+      </styledEl.SectionTitle>
+      <styledEl.TextInput
         type="text"
         value={label}
         maxLength={24}
-        placeholder="type text…"
+        placeholder={t`type text…`}
         onChange={(e) => onLabel(e.target.value)}
-        style={{
-          ...styles.button,
-          width: '100%',
-          background: '#0d0d18',
-          textAlign: 'left',
-          userSelect: 'text',
-          WebkitUserSelect: 'text',
-        }}
       />
-      <p style={{ fontSize: 11, color: MUTED, margin: '6px 0 0' }}>
-        size follows the brush ({textFontSize(brushSize)}px) — tap the wall to stamp, tap again to re-stamp
-      </p>
+      <styledEl.Muted>
+        <Trans>size follows the brush ({fontSize}px) — tap the wall to stamp, tap again to re-stamp</Trans>
+      </styledEl.Muted>
     </div>
   )
 }

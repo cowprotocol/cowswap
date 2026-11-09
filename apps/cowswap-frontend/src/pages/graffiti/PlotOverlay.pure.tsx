@@ -1,6 +1,9 @@
 import type { ReactNode, RefCallback } from 'react'
 
-import { glowStyle, styles } from './wall.styled'
+import { Trans } from '@lingui/react/macro'
+
+import { TOKEN_SYMBOL } from './wall.constants'
+import * as styledEl from './wall.styled'
 
 export interface PlotOverlayProps {
   /** Positioned by the render loop, just above the frame. */
@@ -13,8 +16,6 @@ export interface PlotOverlayProps {
   onConfirm: () => void
 }
 
-const chipStyle = { ...glowStyle, padding: '7px 15px', fontSize: 14, fontFamily: 'inherit' }
-
 /** Balance chip plus rotate / confirm buttons that follow the drawing frame. */
 export function PlotOverlay({
   bindOverlay,
@@ -24,32 +25,27 @@ export function PlotOverlay({
   onRotate,
   onConfirm,
 }: PlotOverlayProps): ReactNode {
+  const left = balanceLeft === null ? '…' : balanceLeft
+
   return (
-    <div
-      ref={bindOverlay}
-      style={{
-        position: 'absolute',
-        zIndex: 6,
-        pointerEvents: 'none',
-        display: 'flex',
-        gap: 8,
-        alignItems: 'center',
-      }}
-    >
-      {showBalance && <div style={chipStyle}>MOOOXELS left {balanceLeft === null ? '…' : balanceLeft}</div>}
-      {showControls && (
-        <button
-          style={{ ...styles.button, pointerEvents: 'auto', borderRadius: 999, borderColor: '#2a2a40' }}
-          onClick={onRotate}
-        >
-          ⟳ rotate
-        </button>
+    <styledEl.PlotOverlayRoot ref={bindOverlay}>
+      {showBalance && (
+        <styledEl.BalanceChip>
+          <Trans>
+            {TOKEN_SYMBOL} left {left}
+          </Trans>
+        </styledEl.BalanceChip>
       )}
       {showControls && (
-        <button style={{ ...styles.button, ...glowStyle, pointerEvents: 'auto' }} onClick={onConfirm}>
-          ✓ draw here
-        </button>
+        <styledEl.PlainOverlayButton onClick={onRotate}>
+          <Trans>⟳ rotate</Trans>
+        </styledEl.PlainOverlayButton>
       )}
-    </div>
+      {showControls && (
+        <styledEl.OverlayButton onClick={onConfirm}>
+          <Trans>✓ draw here</Trans>
+        </styledEl.OverlayButton>
+      )}
+    </styledEl.PlotOverlayRoot>
   )
 }

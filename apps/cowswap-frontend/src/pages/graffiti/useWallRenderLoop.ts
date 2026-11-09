@@ -1,16 +1,20 @@
 import { useEffect } from 'react'
 
 import { CANVAS } from './raster.utils'
-import { renderWall } from './renderWall.utils'
+import { needsContinuousRender, renderWall } from './renderWall.utils'
 
 import type { WallRefs } from './wall.types'
 
 /**
- * Run the wall's requestAnimationFrame loop for the page's lifetime. Everything
- * it draws comes through refs, so changes to tools or colours never tear it down.
+ * Draw the wall on demand.
+ *
+ * Rendering is scheduled by `requestRenderRef`, which every mutation calls, so
+ * an idle wall schedules no animation frames at all. The only continuously
+ * animated element is the dashed outline of an unplaced frame, which keeps
+ * asking for the next frame while it is on screen.
  */
 export function useWallRenderLoop(refs: WallRefs): void {
-  const { offscreenRef } = refs
+  const { offscreenRef, requestRenderRef, snapshotRef } = refs
 
   useEffect(() => {
     const offscreen = document.createElement('canvas')
@@ -19,19 +23,32 @@ export function useWallRenderLoop(refs: WallRefs): void {
     offscreen.height = CANVAS.h
     offscreenRef.current = offscreen
 
-    let running = true
+    let frameId = 0
+    let disposed = false
 
-    const frame = (): void => {
-      if (!running) return
+    const schedule = (): void => {
+      if (frameId || disposed) return
 
-      renderWall(refs)
-      requestAnimationFrame(frame)
+      frameId = requestAnimationFrame(() => {
+        frameId = 0
+
+        if (disposed) return
+
+        renderWall(refs)
+
+        if (needsContinuousRender(snapshotRef.current)) schedule()
+      })
     }
 
-    requestAnimationFrame(frame)
+    requestRenderRef.current = schedule
+    schedule()
 
     return () => {
-      running = false
+      disposed = true
+
+      if (frameId) cancelAnimationFrame(frameId)
+
+      requestRenderRef.current = () => undefined
     }
-  }, [offscreenRef, refs])
+  }, [offscreenRef, refs, requestRenderRef, snapshotRef])
 }

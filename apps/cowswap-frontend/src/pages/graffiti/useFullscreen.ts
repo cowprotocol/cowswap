@@ -9,7 +9,7 @@ export interface Fullscreen {
 }
 
 /** Fullscreen is the clean wall view: nothing overlaid, wall fit to view. */
-export function useFullscreen({ fullscreenRef, wrapElRef }: WallRefs, resetView: () => void): Fullscreen {
+export function useFullscreen({ wrapElRef }: WallRefs, resetView: () => void): Fullscreen {
   const [isFullscreen, setIsFullscreen] = useState(false)
 
   useEffect(() => {
@@ -17,7 +17,6 @@ export function useFullscreen({ fullscreenRef, wrapElRef }: WallRefs, resetView:
       const on = !!document.fullscreenElement
 
       setIsFullscreen(on)
-      fullscreenRef.current = on
 
       if (on) resetView()
     }
@@ -25,7 +24,7 @@ export function useFullscreen({ fullscreenRef, wrapElRef }: WallRefs, resetView:
     document.addEventListener('fullscreenchange', onChange)
 
     return () => document.removeEventListener('fullscreenchange', onChange)
-  }, [fullscreenRef, resetView])
+  }, [resetView])
 
   const toggleFullscreen = useCallback((): void => {
     const wrapEl = wrapElRef.current

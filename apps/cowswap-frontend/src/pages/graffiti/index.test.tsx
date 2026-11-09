@@ -1,10 +1,12 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useSolanaAccount, useWalletInfo } from '@cowprotocol/wallet'
 
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render as baseRender, screen, waitFor } from '@testing-library/react'
 
 import { fetchCanvasPng, getInfo, subscribeDiffs } from './graffiti.service'
 import { setCanvasSize } from './raster.utils'
+
+import { LinguiWrapper } from '../../../LinguiJestProvider'
 
 import GraffitiPage from './index'
 
@@ -30,6 +32,10 @@ jest.mock('./graffiti.service', () => ({
   postClientError: jest.fn(),
   subscribeDiffs: jest.fn(),
 }))
+
+/** The page is translated, so every render needs the i18n provider. */
+const render = (ui: Parameters<typeof baseRender>[0]): ReturnType<typeof baseRender> =>
+  baseRender(ui, { wrapper: LinguiWrapper })
 
 const WIDTH = 640
 const HEIGHT = 320

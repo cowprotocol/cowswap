@@ -14,7 +14,7 @@ import type { WallRefs } from './wall.types'
  * two-finger midpoint drags the view along.
  */
 export function useCanvasGestures(
-  { viewRef, minScaleRef, pinchActiveRef }: WallRefs,
+  { viewRef, minScaleRef, pinchActiveRef, requestRenderRef }: WallRefs,
   canvasEl: HTMLCanvasElement | null,
   onPinchStart: () => void,
 ): void {
@@ -40,6 +40,7 @@ export function useCanvasGestures(
         }
 
         zoomAround(view, ox - rect.left, oy - rect.top, scale)
+        requestRenderRef.current()
 
         return [ox, oy]
       },
@@ -50,6 +51,7 @@ export function useCanvasGestures(
         event.preventDefault()
         viewRef.current.offsetX -= dx
         viewRef.current.offsetY -= dy
+        requestRenderRef.current()
       },
     },
     {

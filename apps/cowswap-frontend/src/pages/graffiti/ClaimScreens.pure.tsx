@@ -3,14 +3,67 @@
 
 import type { ReactNode } from 'react'
 
+import { Trans } from '@lingui/react/macro'
 import { Link } from 'react-router'
+import styled from 'styled-components/macro'
 
-import { styles } from './Claim.styled'
 import { explorerTxUrl } from './graffiti.service'
+import { TOKEN_SYMBOL } from './wall.constants'
+import * as styledEl from './wall.styled'
 
-const TOKEN_SYMBOL = 'MOOOXEL'
+const Card = styled(styledEl.Panel)`
+  max-width: 420px;
+  width: 100%;
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+`
 
-const unitStyle = { fontSize: 16, color: '#8a8aa3' }
+const Amount = styled.p`
+  margin: 0;
+  font-size: 44px;
+  font-weight: 700;
+  color: ${styledEl.wallColors.neon};
+  text-shadow: ${styledEl.neonShadow};
+`
+
+const Unit = styled.span`
+  font-size: 16px;
+  color: ${styledEl.wallColors.textMuted};
+`
+
+const BigEmoji = styled.p`
+  margin: 0;
+  font-size: 54px;
+`
+
+const Note = styled.p<{ $tone?: 'muted' | 'danger' | 'success' }>`
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: ${({ $tone }) =>
+    $tone === 'danger'
+      ? styledEl.wallColors.dangerSoft
+      : $tone === 'success'
+        ? styledEl.wallColors.neon
+        : styledEl.wallColors.textMuted};
+  font-weight: ${({ $tone }) => ($tone === 'success' ? 700 : 400)};
+`
+
+const ExplorerLink = styled.a`
+  color: ${styledEl.wallColors.neonAlt};
+  text-decoration: none;
+  word-break: break-all;
+  font-size: 12px;
+`
+
+const WallLink = styled(Link)`
+  color: ${styledEl.wallColors.neonAlt};
+  text-decoration: none;
+  font-size: 12px;
+`
 
 export interface ErrorScreenProps {
   error: string | null
@@ -35,47 +88,53 @@ export interface SuccessScreenProps {
 
 export function CheckingScreen(): ReactNode {
   return (
-    <div style={styles.card}>
-      <p style={styles.bigEmoji}>⏳</p>
-      <p style={styles.muted}>Checking claim code…</p>
-    </div>
+    <Card>
+      <BigEmoji>⏳</BigEmoji>
+      <Note>
+        <Trans>Checking claim code…</Trans>
+      </Note>
+    </Card>
   )
 }
 
 export function ErrorScreen({ error, onRetry }: ErrorScreenProps): ReactNode {
   return (
-    <div style={styles.card}>
-      <p style={styles.bigEmoji}>💥</p>
-      <p style={{ ...styles.muted, color: '#ff5c8a' }}>Claim failed</p>
-      <p style={styles.muted}>{error}</p>
-      <button style={styles.ghostButton} onClick={onRetry} type="button">
-        try again
-      </button>
-    </div>
+    <Card>
+      <BigEmoji>💥</BigEmoji>
+      <Note $tone="danger">
+        <Trans>Claim failed</Trans>
+      </Note>
+      <Note>{error}</Note>
+      <styledEl.Button onClick={onRetry}>
+        <Trans>try again</Trans>
+      </styledEl.Button>
+    </Card>
   )
 }
 
 export function InvalidCodeScreen(): ReactNode {
   return (
-    <div style={styles.card}>
-      <p style={styles.bigEmoji}>🚫</p>
-      <p style={{ ...styles.muted, color: '#ff5c8a' }}>This claim code is invalid or has already been used.</p>
-    </div>
+    <Card>
+      <BigEmoji>🚫</BigEmoji>
+      <Note $tone="danger">
+        <Trans>This claim code is invalid or has already been used.</Trans>
+      </Note>
+    </Card>
   )
 }
 
 export function MissingCodeScreen(): ReactNode {
   return (
-    <div style={styles.card}>
-      <p style={styles.bigEmoji}>❓</p>
-      <p style={styles.muted}>
-        No claim code found.
-        <br />
-        Scan a graffiti QR code or open a link like
-        <br />
-        <code>/graffiti/claim?code=…</code>
-      </p>
-    </div>
+    <Card>
+      <BigEmoji>❓</BigEmoji>
+      <Note>
+        <Trans>
+          No claim code found.
+          <br />
+          Scan a graffiti QR code or open a link like <code>/graffiti/claim?code=…</code>
+        </Trans>
+      </Note>
+    </Card>
   )
 }
 
@@ -88,63 +147,63 @@ export function ReadyScreen({
   onClaim,
 }: ReadyScreenProps): ReactNode {
   return (
-    <div style={styles.card}>
-      <p style={styles.muted}>This code is worth</p>
-      <Amount amount={amount} />
+    <Card>
+      <Note>
+        <Trans>This code is worth</Trans>
+      </Note>
+      <ClaimAmount amount={amount} />
 
       {connected ? (
-        <button
-          style={{ ...styles.button, opacity: claiming ? 0.5 : 1 }}
-          disabled={claiming}
-          onClick={onClaim}
-          type="button"
-        >
-          {claiming ? 'CLAIMING…' : `CLAIM ${TOKEN_SYMBOL}`}
-        </button>
+        <styledEl.PrimaryButton disabled={claiming} onClick={onClaim}>
+          {claiming ? <Trans>CLAIMING…</Trans> : <Trans>CLAIM {TOKEN_SYMBOL}</Trans>}
+        </styledEl.PrimaryButton>
       ) : (
-        <button style={styles.button} onClick={onConnect} type="button">
-          CONNECT SOLANA WALLET
-        </button>
+        <styledEl.PrimaryButton onClick={onConnect}>
+          <Trans>CONNECT SOLANA WALLET</Trans>
+        </styledEl.PrimaryButton>
       )}
 
-      <p style={styles.muted}>{connected ? `to ${shortAddress}` : 'tokens are sent straight to your wallet'}</p>
-    </div>
+      <Note>
+        {connected ? <Trans>to {shortAddress}</Trans> : <Trans>tokens are sent straight to your wallet</Trans>}
+      </Note>
+    </Card>
   )
 }
 
 export function SuccessScreen({ amount, balance, txSignature, network }: SuccessScreenProps): ReactNode {
   return (
-    <div style={styles.card}>
-      <p style={styles.bigEmoji}>🎨</p>
-      <p style={{ ...styles.muted, color: '#00ffa3', fontWeight: 700 }}>CLAIMED!</p>
-      <Amount amount={amount} />
+    <Card>
+      <BigEmoji>🎨</BigEmoji>
+      <Note $tone="success">
+        <Trans>CLAIMED!</Trans>
+      </Note>
+      <ClaimAmount amount={amount} />
 
       {balance !== null && (
-        <p style={styles.muted}>
-          wallet balance:{' '}
-          <strong style={{ color: '#00ffa3' }}>
-            {balance} {TOKEN_SYMBOL}
-          </strong>
-        </p>
+        <Note>
+          <Trans>
+            wallet balance: {balance} {TOKEN_SYMBOL}
+          </Trans>
+        </Note>
       )}
 
       {txSignature && (
-        <a style={styles.link} href={explorerTxUrl(txSignature, network)} target="_blank" rel="noopener noreferrer">
-          view transaction ↗
-        </a>
+        <ExplorerLink href={explorerTxUrl(txSignature, network)} target="_blank" rel="noopener noreferrer">
+          <Trans>view transaction ↗</Trans>
+        </ExplorerLink>
       )}
 
-      <Link style={styles.link} to="/graffiti">
-        → go paint the wall
-      </Link>
-    </div>
+      <WallLink to="/graffiti">
+        <Trans>→ go paint the wall</Trans>
+      </WallLink>
+    </Card>
   )
 }
 
-function Amount({ amount }: { amount: number | null }): ReactNode {
+function ClaimAmount({ amount }: { amount: number | null }): ReactNode {
   return (
-    <p style={styles.amount}>
-      {amount ?? '…'} <span style={unitStyle}>{TOKEN_SYMBOL}</span>
-    </p>
+    <Amount>
+      {amount ?? '…'} <Unit>{TOKEN_SYMBOL}</Unit>
+    </Amount>
   )
 }

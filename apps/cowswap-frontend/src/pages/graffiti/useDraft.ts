@@ -2,7 +2,6 @@ import { useCallback, useMemo, useRef, useState, type Dispatch, type SetStateAct
 
 import { computeDraftBox, type DraftBox, isDraftTooBig } from './draftBox.utils'
 import { CANVAS } from './raster.utils'
-import { useSyncRef } from './useSyncRef'
 
 import type { Draft, WallRefs } from './wall.types'
 
@@ -25,23 +24,23 @@ const MAX_HISTORY = 50
  * Multi-stroke draft: strokes accumulate and the whole draft is committed with
  * ONE burn on Paint. `maxBox*` is the backend's per-draw bounding-box limit.
  */
-export function useDraft({ draftRef }: WallRefs, maxBoxWidth: number, maxBoxHeight: number): DraftState {
+export function useDraft({ snapshotRef }: WallRefs, maxBoxWidth: number, maxBoxHeight: number): DraftState {
   const [draft, setDraft] = useState<Draft>(new Map())
   const [historySize, setHistorySize] = useState(0)
   const historyRef = useRef<Array<Draft>>([])
 
-  useSyncRef(draftRef, draft)
-
   const draftBox = useMemo(() => computeDraftBox(draft, CANVAS.w), [draft])
   const boxTooBig = isDraftTooBig(draftBox, maxBoxWidth, maxBoxHeight)
 
+  // Snapshots the committed draft: pushHistory runs from pointer handlers, so
+  // it must not depend on the render that scheduled it.
   const pushHistory = useCallback((): void => {
-    historyRef.current.push(new Map(draftRef.current))
+    historyRef.current.push(new Map(snapshotRef.current.draft))
 
     if (historyRef.current.length > MAX_HISTORY) historyRef.current.shift()
 
     setHistorySize(historyRef.current.length)
-  }, [draftRef])
+  }, [snapshotRef])
 
   const popHistory = useCallback((): Draft | undefined => {
     const previous = historyRef.current.pop()

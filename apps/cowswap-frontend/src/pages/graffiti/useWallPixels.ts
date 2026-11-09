@@ -11,7 +11,7 @@ export interface WallPixels {
   applyCells: (cells: Array<[number, number, number]>) => void
 }
 
-export function useWallPixels({ pixelsRef, dirtyRef }: WallRefs): WallPixels {
+export function useWallPixels({ pixelsRef, dirtyRef, requestRenderRef }: WallRefs): WallPixels {
   const wallColorAt = useCallback(
     (x: number, y: number): number => {
       const px = pixelsRef.current
@@ -37,9 +37,12 @@ export function useWallPixels({ pixelsRef, dirtyRef }: WallRefs): WallPixels {
         pixels[i + 3] = 255
       }
 
-      if (cells.length > 0) dirtyRef.current = true
+      if (cells.length > 0) {
+        dirtyRef.current = true
+        requestRenderRef.current()
+      }
     },
-    [dirtyRef, pixelsRef],
+    [dirtyRef, pixelsRef, requestRenderRef],
   )
 
   return { wallColorAt, applyCells }

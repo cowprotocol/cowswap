@@ -1,16 +1,14 @@
-import type { CSSProperties, ReactNode } from 'react'
+import type { ReactNode } from 'react'
+
+import { Trans } from '@lingui/react/macro'
 
 import { ToolsSidebar } from './ToolsSidebar.pure'
 import { PHASE_LABEL } from './wall.constants'
-import { styles } from './wall.styled'
+import * as styledEl from './wall.styled'
 import { WallHeader } from './WallHeader.pure'
 import { WallStage } from './WallStage.pure'
 
 import type { WallModel } from './wallModel.types'
-
-const narrowMain: CSSProperties = { flexDirection: 'column', position: 'relative', minHeight: 0, flex: '1 1 auto' }
-
-const DEFAULT_FOOTER = 'draw on the wall — cost updates live'
 
 export interface WallScreenProps {
   wall: WallModel
@@ -23,14 +21,13 @@ export function WallScreen({ wall }: WallScreenProps): ReactNode {
   const settled = paint.phase === 'done' || paint.phase === 'error'
 
   return (
-    <div style={styles.page}>
+    <styledEl.Page>
       <WallHeader info={sync.info} wsStatus={sync.wsStatus} paintersOnline={sync.paintersOnline} seq={sync.seq} />
 
-      <div style={{ ...styles.main, ...(layout.narrow ? narrowMain : {}) }}>
+      <styledEl.Main>
         <WallStage wall={wall} />
         {layout.toolsVisible && (
           <ToolsSidebar
-            narrow={layout.narrow}
             brush={brush}
             connected={gate.connected}
             network={sync.info?.network ?? 'devnet'}
@@ -54,13 +51,13 @@ export function WallScreen({ wall }: WallScreenProps): ReactNode {
             onHide={() => layout.setToolsVisible(false)}
           />
         )}
-      </div>
+      </styledEl.Main>
 
       {(layout.toolsVisible || paint.busy || settled) && (
-        <footer style={styles.footer}>
-          <span>{PHASE_LABEL[paint.phase] || DEFAULT_FOOTER}</span>
-        </footer>
+        <styledEl.Footer>
+          <span>{PHASE_LABEL[paint.phase] || <Trans>draw on the wall — cost updates live</Trans>}</span>
+        </styledEl.Footer>
       )}
-    </div>
+    </styledEl.Page>
   )
 }

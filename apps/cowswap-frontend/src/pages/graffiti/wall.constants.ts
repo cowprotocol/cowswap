@@ -32,6 +32,9 @@ export const NARROW_BREAKPOINT_PX = 780
 export const DEFAULT_PLOT_WIDTH = 256
 export const DEFAULT_PLOT_HEIGHT = 128
 
+/** Wall token shown throughout the UI. */
+export const TOKEN_SYMBOL = 'MOOOXELS'
+
 export const PHASE_LABEL: Record<PaintPhase, string> = {
   idle: '',
   quoting: 'Counting cells…',

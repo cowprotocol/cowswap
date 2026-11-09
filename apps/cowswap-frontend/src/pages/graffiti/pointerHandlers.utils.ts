@@ -2,20 +2,16 @@ import type { Dispatch, PointerEvent as ReactPointerEvent, SetStateAction } from
 
 import { CANVAS, hexToColor, type Point, rasterizeStroke, rasterizeText, textFontSize } from './raster.utils'
 
-import type { Draft, Plot, PlotDims, Tool, WallRefs } from './wall.types'
+import type { Draft, Plot, WallRefs } from './wall.types'
 
 export type CanvasPointerEvent = ReactPointerEvent<HTMLCanvasElement>
 
-/** What the handlers need besides the refs: the latest tool state and setters. */
+/**
+ * What the handlers need besides the live refs. Tool and session state is read
+ * from `refs.snapshotRef`, so this object is stable for the page's lifetime.
+ */
 export interface PointerContext {
   refs: WallRefs
-  tool: Tool
-  busy: boolean
-  loaded: boolean
-  brushSize: number
-  color: string
-  label: string
-  plotDims: PlotDims
   wallColorAt: (x: number, y: number) => number
   pushHistory: () => void
   setDraft: Dispatch<SetStateAction<Draft>>
@@ -28,8 +24,6 @@ export interface PointerContext {
 const FRAME_GRAB_MARGIN = 8
 /** Ignore pointer moves shorter than this, in wall cells. */
 const MIN_STROKE_STEP = 0.75
-const ERASE_COLOR = '#000000'
-
 /** Abandon any stroke, pan or frame drag in progress. */
 export function cancelInteraction(ctx: PointerContext): void {
   const { drawingRef, strokePointsRef, panningRef, movingPlotRef } = ctx.refs
@@ -39,10 +33,12 @@ export function cancelInteraction(ctx: PointerContext): void {
   panningRef.current = false
   movingPlotRef.current = null
   ctx.setLiveCost(0)
+  ctx.refs.requestRenderRef.current()
 }
 
 export function handlePointerDown(event: CanvasPointerEvent, ctx: PointerContext): void {
-  const { activePointersRef, pinchActiveRef, panningRef } = ctx.refs
+  const { activePointersRef, pinchActiveRef, panningRef, requestRenderRef } = ctx.refs
+  const { tool } = ctx.refs.snapshotRef.current
 
   activePointersRef.current.add(event.pointerId)
 
@@ -50,10 +46,10 @@ export function handlePointerDown(event: CanvasPointerEvent, ctx: PointerContext
   if (activePointersRef.current.size >= 2) return cancelInteraction(ctx)
   if (pinchActiveRef.current) return
 
-  if (ctx.tool === 'text') return stampText(event, ctx)
+  if (tool === 'text') return stampText(event, ctx)
   if (tryGrabPlot(event, ctx)) return
 
-  if (ctx.tool === 'pan' || event.button === 1 || event.button === 2) {
+  if (tool === 'pan' || event.button === 1 || event.button === 2) {
     panningRef.current = true
     event.currentTarget.setPointerCapture(event.pointerId)
 
@@ -61,10 +57,11 @@ export function handlePointerDown(event: CanvasPointerEvent, ctx: PointerContext
   }
 
   beginStroke(event, ctx)
+  requestRenderRef.current()
 }
 
 export function handlePointerMove(event: CanvasPointerEvent, ctx: PointerContext): void {
-  const { activePointersRef, pinchActiveRef, movingPlotRef, panningRef, viewRef } = ctx.refs
+  const { activePointersRef, pinchActiveRef, movingPlotRef, panningRef, viewRef, requestRenderRef } = ctx.refs
 
   if (activePointersRef.current.size >= 2 || pinchActiveRef.current) return
 
@@ -73,11 +70,13 @@ export function handlePointerMove(event: CanvasPointerEvent, ctx: PointerContext
   if (panningRef.current) {
     viewRef.current.offsetX += event.movementX
     viewRef.current.offsetY += event.movementY
+    requestRenderRef.current()
 
     return
   }
 
   extendStroke(event, ctx)
+  requestRenderRef.current()
 }
 
 export function handlePointerUp(event: CanvasPointerEvent, ctx: PointerContext): void {
@@ -110,6 +109,7 @@ export function handlePointerUp(event: CanvasPointerEvent, ctx: PointerContext):
 
   drawingRef.current = false
   finishStroke(ctx)
+  ctx.refs.requestRenderRef.current()
 }
 
 export function screenToCanvas({ canvasElRef, viewRef }: WallRefs, clientX: number, clientY: number): Point {
@@ -127,8 +127,10 @@ export function screenToCanvas({ canvasElRef, viewRef }: WallRefs, clientX: numb
 }
 
 function beginStroke(event: CanvasPointerEvent, ctx: PointerContext): void {
-  if (event.button !== 0 || ctx.busy || !ctx.loaded) return
-  if (!ctx.refs.plotLockedRef.current) return // frame not confirmed yet
+  const { busy, loaded, plotLocked } = ctx.refs.snapshotRef.current
+
+  if (event.button !== 0 || busy || !loaded) return
+  if (!plotLocked) return // frame not confirmed yet
 
   ctx.refs.drawingRef.current = true
   ctx.refs.strokePointsRef.current = [screenToCanvas(ctx.refs, event.clientX, event.clientY)]
@@ -143,8 +145,8 @@ function beginStroke(event: CanvasPointerEvent, ctx: PointerContext): void {
  * they are never drafted.
  */
 function commitCells(ctx: PointerContext, cells: Array<Point>, colorNum: number): void {
-  const plot = ctx.refs.plotRef.current
-  const dims = ctx.plotDims(plot)
+  const { plot, plotDims } = ctx.refs.snapshotRef.current
+  const dims = plotDims(plot)
   const changing = cells.filter((c) => isInsidePlot(c, plot, dims) && ctx.wallColorAt(c.x, c.y) !== colorNum)
 
   if (changing.length === 0) return
@@ -171,16 +173,17 @@ function extendStroke(event: CanvasPointerEvent, ctx: PointerContext): void {
   if (last && Math.hypot(point.x - last.x, point.y - last.y) < MIN_STROKE_STEP) return
 
   points.push(point)
-  ctx.setLiveCost(rasterizeStroke(points, ctx.brushSize, CANVAS).cells.length)
+  ctx.setLiveCost(rasterizeStroke(points, ctx.refs.snapshotRef.current.brushSize, CANVAS).cells.length)
 }
 
 function finishStroke(ctx: PointerContext): void {
   const { strokePointsRef } = ctx.refs
-  const { cells } = rasterizeStroke(strokePointsRef.current, ctx.brushSize, CANVAS)
+  const { brushSize, color } = ctx.refs.snapshotRef.current
+  const { cells } = rasterizeStroke(strokePointsRef.current, brushSize, CANVAS)
 
   ctx.setLiveCost(0)
 
-  if (cells.length > 0) commitCells(ctx, cells, hexToColor(ctx.tool === 'erase' ? ERASE_COLOR : ctx.color))
+  if (cells.length > 0) commitCells(ctx, cells, hexToColor(color))
 
   strokePointsRef.current = []
 }
@@ -191,14 +194,14 @@ function isInsidePlot(cell: Point, plot: Plot | null, dims: [number, number]): b
 
 /** Drag the unconfirmed frame, kept inside the wall. */
 function moveFrame(event: CanvasPointerEvent, ctx: PointerContext): void {
-  const { movingPlotRef, plotRef, canvasElRef } = ctx.refs
+  const { movingPlotRef, canvasElRef } = ctx.refs
+  const { plot, plotDims } = ctx.refs.snapshotRef.current
   const moving = movingPlotRef.current
 
   if (!moving || !canvasElRef.current) return
 
   const at = screenToCanvas(ctx.refs, event.clientX, event.clientY)
-  const plot = plotRef.current
-  const [pw, ph] = ctx.plotDims(plot)
+  const [pw, ph] = plotDims(plot)
 
   ctx.setPlot({
     x: Math.max(0, Math.min(CANVAS.w - pw, Math.round(at.x - moving.dx))),
@@ -209,16 +212,18 @@ function moveFrame(event: CanvasPointerEvent, ctx: PointerContext): void {
 
 /** Stamp the label as wall cells at the tap point, clipped to the frame. */
 function stampText(event: CanvasPointerEvent, ctx: PointerContext): void {
-  if (event.button !== 0 || ctx.busy || !ctx.loaded || !ctx.refs.plotLockedRef.current) return
+  const { busy, loaded, plotLocked, label, brushSize, color } = ctx.refs.snapshotRef.current
 
-  const text = ctx.label.trim()
+  if (event.button !== 0 || busy || !loaded || !plotLocked) return
+
+  const text = label.trim()
 
   if (!text) return
 
   const at = screenToCanvas(ctx.refs, event.clientX, event.clientY)
-  const cells = rasterizeText(text, at.x, at.y, textFontSize(ctx.brushSize), CANVAS)
+  const cells = rasterizeText(text, at.x, at.y, textFontSize(brushSize), CANVAS)
 
-  commitCells(ctx, cells, hexToColor(ctx.color))
+  commitCells(ctx, cells, hexToColor(color))
 }
 
 /**
@@ -226,13 +231,13 @@ function stampText(event: CanvasPointerEvent, ctx: PointerContext): void {
  * it. Returns true when a drag started.
  */
 function tryGrabPlot(event: CanvasPointerEvent, ctx: PointerContext): boolean {
-  const { plotRef, plotLockedRef, movingPlotRef } = ctx.refs
-  const plot = plotRef.current
+  const { movingPlotRef, canvasElRef } = ctx.refs
+  const { plot, plotLocked, plotDims } = ctx.refs.snapshotRef.current
 
-  if (plotLockedRef.current || !plot || !ctx.refs.canvasElRef.current) return false
+  if (plotLocked || !plot || !canvasElRef.current) return false
 
   const at = screenToCanvas(ctx.refs, event.clientX, event.clientY)
-  const [pw, ph] = ctx.plotDims(plot)
+  const [pw, ph] = plotDims(plot)
   const inside =
     at.x >= plot.x - FRAME_GRAB_MARGIN &&
     at.x <= plot.x + pw + FRAME_GRAB_MARGIN &&

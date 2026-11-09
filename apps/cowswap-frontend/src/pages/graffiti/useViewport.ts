@@ -26,7 +26,7 @@ export function useViewport(
   refs: WallRefs,
   { canvasEl, plotDims, plotReady, plotLocked }: UseViewportParams,
 ): Viewport {
-  const { viewRef, minScaleRef, plotRef } = refs
+  const { viewRef, minScaleRef, snapshotRef, requestRenderRef } = refs
 
   // Zoom-out floor for the gesture handlers, which read it without a re-render.
   useLayoutEffect(() => {
@@ -41,19 +41,24 @@ export function useViewport(
       const next = clampScale(view.scale * factor, computeMinScale(canvasEl))
 
       zoomAround(view, canvasEl.clientWidth / 2, canvasEl.clientHeight / 2, next)
+      requestRenderRef.current()
     },
-    [canvasEl, viewRef],
+    [canvasEl, requestRenderRef, viewRef],
   )
 
   const resetView = useCallback((): void => {
     if (canvasEl) viewRef.current = fitView(canvasEl)
-  }, [canvasEl, viewRef])
+
+    requestRenderRef.current()
+  }, [canvasEl, requestRenderRef, viewRef])
 
   const zoomToPlot = useCallback((): void => {
-    const plot = plotRef.current
+    const { plot } = snapshotRef.current
 
     if (canvasEl && plot) frameView(viewRef.current, canvasEl, plot, plotDims, minScaleRef.current)
-  }, [canvasEl, minScaleRef, plotDims, plotRef, viewRef])
+
+    requestRenderRef.current()
+  }, [canvasEl, minScaleRef, plotDims, requestRenderRef, snapshotRef, viewRef])
 
   // The frame becomes movable on first placement and after a full undo.
   useEffect(() => {
@@ -65,6 +70,8 @@ export function useViewport(
 
     const observer = new ResizeObserver(() => {
       if (viewRef.current.scale === 1 && viewRef.current.offsetX === 0) resetView()
+
+      requestRenderRef.current()
     })
 
     observer.observe(canvasEl)
@@ -72,7 +79,7 @@ export function useViewport(
     if (canvasEl.clientWidth > 0) resetView()
 
     return () => observer.disconnect()
-  }, [canvasEl, resetView, viewRef])
+  }, [canvasEl, requestRenderRef, resetView, viewRef])
 
   const { isFullscreen, toggleFullscreen } = useFullscreen(refs, resetView)
 

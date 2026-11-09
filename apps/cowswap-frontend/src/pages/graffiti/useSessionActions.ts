@@ -1,7 +1,6 @@
 import { useCallback, useEffect, type Dispatch, type SetStateAction } from 'react'
 
 import { CANVAS } from './raster.utils'
-import { useSyncRef } from './useSyncRef'
 
 import type { Draft, Plot, PlotDims, Session, WallRefs } from './wall.types'
 
@@ -19,7 +18,6 @@ export interface SessionActions {
 }
 
 export interface UseSessionActionsParams {
-  busy: boolean
   setDraft: Dispatch<SetStateAction<Draft>>
   pushHistory: () => void
   popHistory: () => Draft | undefined
@@ -32,12 +30,9 @@ export interface UseSessionActionsParams {
 }
 
 export function useSessionActions(refs: WallRefs, params: UseSessionActionsParams): SessionActions {
-  const { busy, setDraft, pushHistory, popHistory, setPlot, plotDims } = params
+  const { setDraft, pushHistory, popHistory, setPlot, plotDims } = params
   const { setSession, setPlotConfirmed, zoomToPlot, resetPhase } = params
-  const { busyRef, draftRef, plotConfirmedRef } = refs
-
-  useSyncRef(busyRef, busy)
-
+  const { snapshotRef } = refs
   const resetToStart = useCallback((): void => {
     setDraft(new Map())
     setPlotConfirmed(false)
@@ -47,17 +42,18 @@ export function useSessionActions(refs: WallRefs, params: UseSessionActionsParam
 
   const undo = useCallback((): void => {
     const previous = popHistory()
-    const nextSize = previous ? previous.size : draftRef.current.size
+    const { draft, plotConfirmed } = snapshotRef.current
+    const nextSize = previous ? previous.size : draft.size
 
     if (previous) setDraft(previous)
 
     // Undoing back to nothing returns the frame to movable mode.
-    if (nextSize === 0 && plotConfirmedRef.current) {
+    if (nextSize === 0 && plotConfirmed) {
       setPlotConfirmed(false)
       setSession('place')
       zoomToPlot()
     }
-  }, [draftRef, plotConfirmedRef, popHistory, setDraft, setPlotConfirmed, setSession, zoomToPlot])
+  }, [popHistory, setDraft, setPlotConfirmed, setSession, snapshotRef, zoomToPlot])
 
   const clearAll = useCallback((): void => {
     pushHistory()
@@ -100,12 +96,14 @@ function clamp(value: number, max: number): number {
 }
 
 /** ESC during placement/painting behaves like ✕ cancel, but never mid-transaction. */
-function useEscapeToCancel({ busyRef, sessionRef }: WallRefs, resetToStart: () => void): void {
+function useEscapeToCancel({ snapshotRef }: WallRefs, resetToStart: () => void): void {
   useEffect(() => {
     const onKey = (e: KeyboardEvent): void => {
       if (e.key !== 'Escape') return
       if (document.fullscreenElement) return // ESC exits fullscreen first
-      if (busyRef.current || sessionRef.current === 'start') return
+      const { busy, session } = snapshotRef.current
+
+      if (busy || session === 'start') return
 
       resetToStart()
     }
@@ -113,7 +111,7 @@ function useEscapeToCancel({ busyRef, sessionRef }: WallRefs, resetToStart: () =
     window.addEventListener('keydown', onKey)
 
     return () => window.removeEventListener('keydown', onKey)
-  }, [busyRef, resetToStart, sessionRef])
+  }, [resetToStart, snapshotRef])
 }
 
 /** Cmd/Ctrl+Z, except while typing in a field. */
