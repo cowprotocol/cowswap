@@ -2,13 +2,13 @@ import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { getIsSolanaSmartContractWallet } from 'tradingSdk/solana/getIsSolanaSmartContractWallet'
+
 import { isSolanaQuoteAndPost, useTradeQuote } from 'modules/tradeQuote'
 
 import { TradeType } from 'common/modules/tradeNavigation'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
-
-import { getIsSolanaSmartContractWallet } from '../utils/getIsSolanaSmartContractWallet'
 
 // Mirrors `solanaFlow`'s sponsor pick: the quote's funder pays the fees and rents the accounts the
 // order itself needs. The owner still funds the WSOL account a native sell opens, since that account
@@ -21,7 +21,7 @@ export function useIsSolanaSponsoredTrade(): boolean {
 
   const solanaQuote = isSolanaQuoteAndPost(quote) ? quote.solanaQuote : null
   // A quote outlives the wallet that asked for it, so an EVM account can be current while a Solana
-  // quote is still in state. `getIsSolanaSmartContractWallet` throws on anything that is not base58.
+  // quote is still in state.
   const owner = isSolanaChain(chainId) ? account : undefined
 
   return Boolean(

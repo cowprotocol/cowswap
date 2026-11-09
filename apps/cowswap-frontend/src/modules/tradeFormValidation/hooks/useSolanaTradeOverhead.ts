@@ -8,9 +8,9 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { useAppKitConnection } from '@reown/appkit-adapter-solana/react'
 import { PublicKey } from '@solana/web3.js'
 import useSWR from 'swr'
+import { getIsSolanaSmartContractWallet } from 'tradingSdk/solana/getIsSolanaSmartContractWallet'
 
 import {
-  getIsSolanaSmartContractWallet,
   getSolanaTradeOverhead,
   getWrapFundedAccounts,
   planSolanaTradeFundedAccounts,

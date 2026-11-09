@@ -1,6 +1,6 @@
-import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
+import { getIsSolanaSmartContractWallet } from 'tradingSdk/solana/getIsSolanaSmartContractWallet'
 
-import { getIsSolanaSmartContractWallet } from 'modules/trade'
+import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
 
 import { getSquadsProposalOutcome } from './getSquadsProposalOutcome'
 

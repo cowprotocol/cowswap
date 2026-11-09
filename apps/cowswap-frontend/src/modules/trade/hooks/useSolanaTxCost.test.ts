@@ -2,18 +2,17 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { renderHook } from '@testing-library/react'
+import { getIsSolanaSmartContractWallet } from 'tradingSdk/solana/getIsSolanaSmartContractWallet'
 
 import { useSolanaTradeOverhead } from 'modules/tradeFormValidation'
 
 import { useIsSolanaSponsoredTrade } from './useIsSolanaSponsoredTrade'
 import { useSolanaTxCost } from './useSolanaTxCost'
 
-import { getIsSolanaSmartContractWallet } from '../utils/getIsSolanaSmartContractWallet'
-
 jest.mock('@cowprotocol/wallet', () => ({ useWalletInfo: jest.fn() }))
 jest.mock('modules/tradeFormValidation', () => ({ useSolanaTradeOverhead: jest.fn() }))
 jest.mock('./useIsSolanaSponsoredTrade', () => ({ useIsSolanaSponsoredTrade: jest.fn() }))
-jest.mock('../utils/getIsSolanaSmartContractWallet', () => ({ getIsSolanaSmartContractWallet: jest.fn() }))
+jest.mock('tradingSdk/solana/getIsSolanaSmartContractWallet', () => ({ getIsSolanaSmartContractWallet: jest.fn() }))
 
 const mockUseWalletInfo = jest.mocked(useWalletInfo)
 const mockUseSolanaTradeOverhead = jest.mocked(useSolanaTradeOverhead)

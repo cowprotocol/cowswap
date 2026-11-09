@@ -9,9 +9,15 @@ import { PublicKey } from '@solana/web3.js'
  * `VaultTransactionExecute` rather than as a top-level instruction it signed itself. Program-derived
  * addresses are off the ed25519 curve by construction, and that is what tells them apart.
  *
- * Throws on anything that is not a Solana address: callers holding a bare string must know it came
- * from a Solana chain.
+ * False for anything that is not a Solana address at all. `useWalletInfo` reports the chain id and the
+ * account from separate sources, so a wallet switch or a page restore leaves an EVM account paired with
+ * a Solana chain id for a render or two, and `isOnCurve` throws `Non-base58 character` on it — inside
+ * render, which the error boundary turns into a blank page.
  */
 export function getIsSolanaSmartContractWallet(owner: PublicKey | string): boolean {
-  return !PublicKey.isOnCurve(owner)
+  try {
+    return !PublicKey.isOnCurve(owner)
+  } catch {
+    return false
+  }
 }

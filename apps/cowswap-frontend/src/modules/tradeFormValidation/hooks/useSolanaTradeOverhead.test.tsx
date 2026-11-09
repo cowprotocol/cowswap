@@ -9,9 +9,9 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { useAppKitConnection } from '@reown/appkit-adapter-solana/react'
 import { renderHook, waitFor } from '@testing-library/react'
 import { SWRConfig } from 'swr'
+import { getIsSolanaSmartContractWallet } from 'tradingSdk/solana/getIsSolanaSmartContractWallet'
 
 import {
-  getIsSolanaSmartContractWallet,
   getSolanaTradeOverhead,
   getWrapFundedAccounts,
   planSolanaTradeFundedAccounts,
@@ -26,8 +26,8 @@ import { useSolanaTradeOverhead } from './useSolanaTradeOverhead'
 jest.mock('@cowprotocol/wallet', () => ({ useWalletInfo: jest.fn() }))
 jest.mock('@cowprotocol/common-hooks', () => ({ useFeatureFlags: jest.fn() }))
 jest.mock('@reown/appkit-adapter-solana/react', () => ({ useAppKitConnection: jest.fn() }))
+jest.mock('tradingSdk/solana/getIsSolanaSmartContractWallet', () => ({ getIsSolanaSmartContractWallet: jest.fn() }))
 jest.mock('modules/trade', () => ({
-  getIsSolanaSmartContractWallet: jest.fn(),
   getSolanaTradeOverhead: jest.fn(),
   getWrapFundedAccounts: jest.fn(),
   planSolanaTradeFundedAccounts: jest.fn(),

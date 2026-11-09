@@ -15,6 +15,7 @@ import {
   SolanaSigningDeadlineState,
   solanaSigningWindowExpiredAtom,
 } from 'entities/trade'
+import { getIsSolanaSmartContractWallet } from 'tradingSdk/solana/getIsSolanaSmartContractWallet'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
@@ -23,7 +24,6 @@ import { emitPostedOrderEvent } from 'modules/orders'
 import {
   estimateSolanaSigningDeadline,
   getIsBuyAtaCreationSkipped,
-  getIsSolanaSmartContractWallet,
   getSigningWindowClosedError,
   planCreateBuyAtaStep,
   planCreateLimitOrderStep,

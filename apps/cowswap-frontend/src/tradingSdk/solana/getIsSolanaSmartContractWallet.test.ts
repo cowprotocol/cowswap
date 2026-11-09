@@ -28,4 +28,18 @@ describe('getIsSolanaSmartContractWallet', () => {
     expect(getIsSolanaSmartContractWallet(keypair.toBase58())).toBe(false)
     expect(getIsSolanaSmartContractWallet(VAULT.toBase58())).toBe(true)
   })
+
+  /**
+   * `useWalletInfo` sourced the chain id and the account separately, so restoring a Solana session left an
+   * EVM account paired with a Solana chain id for a render or two. `isOnCurve` threw `Non-base58 character`
+   * on it from inside render, and the error boundary turned the app into "Something went wrong".
+   */
+  it.each([
+    ['an EVM address', '0x9FA3c00a92Ec5f96B1Ad2527ab41B3932EFEDa58'],
+    ['a non-base58 string', 'ergerger2'],
+    ['too few bytes to be a key', 'ff'],
+    ['an empty string', ''],
+  ])('is false rather than throwing for %s', (_label, owner) => {
+    expect(getIsSolanaSmartContractWallet(owner)).toBe(false)
+  })
 })

@@ -5,11 +5,11 @@ import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { getIsSolanaSmartContractWallet } from 'tradingSdk/solana/getIsSolanaSmartContractWallet'
+
 import { useSolanaTradeOverhead } from 'modules/tradeFormValidation'
 
 import { useIsSolanaSponsoredTrade } from './useIsSolanaSponsoredTrade'
-
-import { getIsSolanaSmartContractWallet } from '../utils/getIsSolanaSmartContractWallet'
 
 export interface SolanaTxCost {
   /** Rent for the accounts the bundle creates, plus the transaction fee unless `isFeePaidByVaultMember`. */
@@ -43,10 +43,7 @@ export function useSolanaTxCost(): SolanaTxCost | null {
   const isSponsored = useIsSolanaSponsoredTrade()
   const overhead = useSolanaTradeOverhead({ ignoreSponsor: true })
   const ownerOverhead = useSolanaTradeOverhead()
-  // `getIsSolanaSmartContractWallet` throws on anything that is not base58, and an EVM account can be
-  // current while a Solana quote is still in state.
-  const owner = isSolanaChain(chainId) ? account : undefined
-  const isFeePaidByVaultMember = Boolean(owner && getIsSolanaSmartContractWallet(owner))
+  const isFeePaidByVaultMember = Boolean(isSolanaChain(chainId) && account && getIsSolanaSmartContractWallet(account))
 
   return useMemo(() => {
     if (!overhead || overhead.spent <= 0n || !isSolanaChain(chainId)) return null
