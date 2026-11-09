@@ -4,10 +4,17 @@
  */
 import { readFile, rename, writeFile } from 'node:fs/promises'
 
+const MAP_KEY_REGEX = /^(0|[1-9]\d*)$/
+
 /** The registry with values in place of keys, plus the maps it was read from to keep their keys on write */
 export async function readRegistry(path) {
   const { allowedTradingTimes = {}, sectors = {}, ...file } = JSON.parse(await readFile(path, 'utf8'))
+  for (const [name, map] of Object.entries({ allowedTradingTimes, sectors })) {
+    const invalidKey = Object.keys(map).find((key) => !MAP_KEY_REGEX.test(key))
+    if (invalidKey !== undefined) throw new Error(`${path} ${name}: key ${JSON.stringify(invalidKey)} is not a number`)
+  }
   const lookup = (map, key, label) => {
+    if (!Number.isInteger(key)) throw new Error(`${path} ${label}: key ${JSON.stringify(key)} is not a number`)
     if (map[key] === undefined) throw new Error(`${path} ${label}: unknown key ${key}`)
     return map[key]
   }

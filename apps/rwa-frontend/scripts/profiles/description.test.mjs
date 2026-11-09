@@ -36,6 +36,7 @@ test('findDescriptionIssue rejects links and domains that are not in the title',
     'Visit www.example.org.',
     'Migrate at cow-claim.xyz today.',
     'Trading moved to Trip.com.evil.io.',
+    'Book at rip.com instead.',
     'Write to support@example.com.',
   ]) {
     assert.equal(findDescriptionIssue(description, 'Trip.com Group'), 'must not contain links or domains', description)

@@ -23,7 +23,6 @@
   --color-footer: #23191a;
   --color-footer-text: #827474;
   --color-backdrop: rgba(0, 35, 78, 0.4);
-  --color-backdrop-on-canvas: #8e9fb4;
   --shadow-subtle: 0 1px 2px rgba(0, 35, 78, 0.04), 0 2px 6px rgba(0, 35, 78, 0.03);
   --shadow-pill: 0 1px 2px rgba(0, 35, 78, 0.05);
   --shadow-widget: 0 12px 12px rgba(5, 43, 101, 0.06);
@@ -32,6 +31,7 @@
   --radius-card: 24px;
   --radius-pill: 999px;
   --content-width: 1280px;
+  --wallet-bar-height: 56px;
   --font-family: var(--font-inter), system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
   color-scheme: light;
@@ -60,7 +60,6 @@
   --color-warning-text: #ffd978;
   --color-star: #ffc24b;
   --color-backdrop: rgba(0, 0, 0, 0.425);
-  --color-backdrop-on-canvas: #08091a;
   --shadow-subtle: none;
   --shadow-pill: none;
   --shadow-widget: none;
@@ -107,6 +106,27 @@ button:disabled {
   opacity: 0.5;
 }
 
+input[type='search'] {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: none;
+  text-overflow: ellipsis;
+  outline: none;
+}
+
+input[type='search']::placeholder {
+  color: var(--color-text-secondary);
+  text-overflow: ellipsis;
+}
+
+/* The empty field keeps room for its hidden clear button, which clips the placeholder */
+input[type='search']:placeholder-shown::-webkit-search-cancel-button {
+  display: none;
+}
+
 a {
   color: var(--color-accent);
 }
@@ -128,6 +148,7 @@ a {
 }
 
 @media (max-width: 500px) {
+  /* With the canvas's 10px, cards sit 16px from the screen edge */
   .page {
     padding: 0 6px;
   }
