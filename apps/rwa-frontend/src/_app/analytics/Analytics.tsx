@@ -4,6 +4,7 @@ import { type ReactNode, useEffect, useRef } from 'react'
 
 import { useConnection } from 'wagmi'
 
+import { useCookieConsent } from '@cowprotocol/analytics/consent'
 import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 
 import { usePathname } from 'next/navigation'
@@ -18,24 +19,31 @@ interface ConnectedWallet {
 const UNKNOWN_WALLET = 'Unknown'
 const NOT_CONNECTED_WALLET_NAME = 'Not connected'
 
-/** Loads GTM and tracks page views and wallet connections, see `docs/analytics.md` */
+/** Loads GTM and tracks page views and wallet connections once cookies are accepted, see `docs/analytics.md` */
 export function Analytics(): ReactNode {
-  useEffect(() => loadGtm(), [])
-  usePageViews()
-  useWalletEvents()
+  const { consent } = useCookieConsent()
+  const isAccepted = consent?.choice === 'accepted'
+
+  useEffect(() => {
+    if (isAccepted) loadGtm()
+  }, [isAccepted])
+  usePageViews(isAccepted)
+  useWalletEvents(isAccepted)
 
   return null
 }
 
-function usePageViews(): void {
+function usePageViews(isAccepted: boolean): void {
   const pathname = usePathname()
 
   useEffect(() => {
+    if (!isAccepted) return
+
     trackEvent('page_view', { page_path: window.location.pathname })
-  }, [pathname])
+  }, [pathname, isAccepted])
 }
 
-function useWalletEvents(): void {
+function useWalletEvents(isAccepted: boolean): void {
   const { address, connector, chainId, status } = useConnection()
   const previousRef = useRef<ConnectedWallet | null>(null)
 
@@ -49,7 +57,7 @@ function useWalletEvents(): void {
     const previous = previousRef.current
     const current = status === 'connected' && address ? { address, name: connector?.name ?? UNKNOWN_WALLET } : null
 
-    previousRef.current = current
+    previousRef.current = isAccepted ? current : null
     setAnalyticsDimension('userAddress', current?.address ?? 'disconnected')
     if (current) setAnalyticsDimension('walletName', current.name)
 
@@ -78,5 +86,5 @@ function useWalletEvents(): void {
     }
 
     if (!current) setAnalyticsDimension('walletName', NOT_CONNECTED_WALLET_NAME)
-  }, [address, connector, status])
+  }, [address, connector, status, isAccepted])
 }

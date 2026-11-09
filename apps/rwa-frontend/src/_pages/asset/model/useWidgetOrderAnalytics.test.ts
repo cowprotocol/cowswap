@@ -15,6 +15,11 @@ import { AAPLX_MAINNET } from '../lib/fixtures'
 
 import { type RwaAsset } from '@/entities/asset'
 
+jest.mock('@cowprotocol/analytics/consent', () => ({
+  grantGoogleConsent: jest.fn(),
+  hasAcceptedCookies: () => true,
+}))
+
 const ASSET: RwaAsset = {
   ticker: 'AAPL',
   coingeckoId: 'apple',

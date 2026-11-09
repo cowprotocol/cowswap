@@ -1,8 +1,18 @@
+import { grantGoogleConsent } from '@cowprotocol/analytics/consent'
+
 import { loadGtm, setAnalyticsDimension, trackEvent } from './analytics'
+
+const mockConsent = { accepted: true }
+
+jest.mock('@cowprotocol/analytics/consent', () => ({
+  grantGoogleConsent: jest.fn(),
+  hasAcceptedCookies: () => mockConsent.accepted,
+}))
 
 describe('analytics', () => {
   beforeEach(() => {
     window.dataLayer = []
+    mockConsent.accepted = true
     setAnalyticsDimension('chainId', undefined)
     setAnalyticsDimension('userAddress', undefined)
     setAnalyticsDimension('walletName', undefined)
@@ -57,6 +67,14 @@ describe('analytics', () => {
     ])
   })
 
+  it('drops events until cookies are accepted', () => {
+    mockConsent.accepted = false
+
+    trackEvent('set_user_account', { userId: undefined })
+
+    expect(window.dataLayer).toEqual([])
+  })
+
   it('adds the CoW Swap GTM container once', () => {
     loadGtm()
     loadGtm()
@@ -66,5 +84,6 @@ describe('analytics', () => {
     expect(scripts).toHaveLength(1)
     expect(scripts[0].getAttribute('src')).toBe('https://www.googletagmanager.com/gtm.js?id=GTM-TBX4BV5M')
     expect(window.dataLayer).toEqual([{ 'gtm.start': expect.any(Number), event: 'gtm.js' }])
+    expect(grantGoogleConsent).toHaveBeenCalledTimes(1)
   })
 })
