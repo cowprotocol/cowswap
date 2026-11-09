@@ -665,8 +665,8 @@ importers:
         specifier: 2.8.1
         version: 2.8.1(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/sdk-trading-solana':
-        specifier: 1.0.2
-        version: 1.0.2(ajv@8.17.1)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(multiformats@14.0.0)(typescript@5.9.3)(utf-8-validate@5.0.10)
+        specifier: 1.0.3
+        version: 1.0.3(ajv@8.17.1)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(multiformats@14.0.0)(typescript@5.9.3)(utf-8-validate@5.0.10)
       '@cowprotocol/sdk-viem-adapter':
         specifier: 0.3.39
         version: 0.3.39(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
@@ -1600,8 +1600,8 @@ importers:
         specifier: workspace:*
         version: link:../currency
       '@cowprotocol/sdk-trading-solana':
-        specifier: 1.0.2
-        version: 1.0.2(ajv@8.17.1)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(multiformats@14.0.0)(typescript@5.9.3)(utf-8-validate@5.0.10)
+        specifier: 1.0.3
+        version: 1.0.3(ajv@8.17.1)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(multiformats@14.0.0)(typescript@5.9.3)(utf-8-validate@5.0.10)
       '@cowprotocol/tokens':
         specifier: workspace:*
         version: link:../tokens
@@ -3567,8 +3567,8 @@ packages:
   '@cowprotocol/sdk-subgraph@1.3.2':
     resolution: {integrity: sha512-IwFE19ki/Rwn6FGpmW7QrJR5k00boKo1WxbVQYxSIi9ImTy2nm8egJ4Z0exjkeBn5NeuXSedZvoYzj73TjT78g==}
 
-  '@cowprotocol/sdk-trading-solana@1.0.2':
-    resolution: {integrity: sha512-8EUWgeMkKTjNpjZyzE+vVb2g1kIWUWb1ilxENxL+ODoYnyrUVkKJ6Jury1cajUkaqwJt6myif6v036KX+0dJNQ==}
+  '@cowprotocol/sdk-trading-solana@1.0.3':
+    resolution: {integrity: sha512-k8zKzDeT5Ig/wSJTMjIDgOGonl5/Bz9auGoJ74wc2f6dOCSo4bZRedSzf5V3nMB+uQv31ew2+93d9L3iQ5waUw==}
 
   '@cowprotocol/sdk-trading@1.3.0':
     resolution: {integrity: sha512-xzBwRWCSTPoKDyc2DjgjMhvE2vUMkSkag3hGNTLDb8smJD0zTVhk0oruEQiX7T0MrgGgwgenxeF4ZpywtWhAZg==}
@@ -20776,7 +20776,7 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@cowprotocol/sdk-trading-solana@1.0.2(ajv@8.17.1)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(multiformats@14.0.0)(typescript@5.9.3)(utf-8-validate@5.0.10)':
+  '@cowprotocol/sdk-trading-solana@1.0.3(ajv@8.17.1)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(multiformats@14.0.0)(typescript@5.9.3)(utf-8-validate@5.0.10)':
     dependencies:
       '@cowprotocol/sdk-app-data': 6.1.1(ajv@8.17.1)(multiformats@14.0.0)
       '@cowprotocol/sdk-common': 0.14.8

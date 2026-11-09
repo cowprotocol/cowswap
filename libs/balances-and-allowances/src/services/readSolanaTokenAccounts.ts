@@ -1,11 +1,6 @@
-import {
-  type Account,
-  ASSOCIATED_TOKEN_PROGRAM_ID,
-  getAssociatedTokenAddressSync,
-  TOKEN_2022_PROGRAM_ID,
-  TOKEN_PROGRAM_ID,
-  unpackAccount,
-} from '@solana/spl-token'
+import { deriveAta } from '@cowprotocol/sdk-trading-solana'
+
+import { type Account, TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID, unpackAccount } from '@solana/spl-token'
 import { AccountInfo, Connection, PublicKey } from '@solana/web3.js'
 
 export interface SolanaTokenMint {
@@ -88,10 +83,7 @@ function getCachedAta(
 
   let ata: PublicKey | null = null
   try {
-    // `allowOwnerOffCurve`: a multisig vault is a program address, so it sits off the ed25519 curve and the
-    // default guard rejects it as `TokenOwnerOffCurveError`. Duplicates `deriveAta` in
-    // `@cowprotocol/sdk-trading-solana`, which does not export it yet; drop this once it does.
-    ata = getAssociatedTokenAddressSync(new PublicKey(mint), owner, true, programId, ASSOCIATED_TOKEN_PROGRAM_ID)
+    ata = deriveAta(new PublicKey(mint), owner, programId)
   } catch {
     // Malformed mint: leave the default `null` so the rest of the list still loads.
   }

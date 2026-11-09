@@ -1,5 +1,6 @@
+import { deriveAta } from '@cowprotocol/sdk-trading-solana'
+
 import { createApproveInstruction, TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token'
-import { deriveSolanaAta } from 'tradingSdk/solana/deriveSolanaAta'
 
 import type { PublicKey, TransactionInstruction } from '@solana/web3.js'
 
@@ -30,7 +31,7 @@ export function buildApproveInstruction({
   amount,
 }: BuildApproveInstructionParams): TransactionInstruction {
   const programId = isToken2022 ? TOKEN_2022_PROGRAM_ID : TOKEN_PROGRAM_ID
-  const associatedTokenAccount = deriveSolanaAta(mint, owner, programId)
+  const associatedTokenAccount = deriveAta(mint, owner, programId)
 
   return createApproveInstruction(associatedTokenAccount, delegate, owner, amount, [], programId)
 }
