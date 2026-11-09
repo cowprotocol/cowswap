@@ -170,14 +170,14 @@ export const DEVELOPERS = {
     title: 'Trusted',
     paragraphs: [
       'Built by people who’ve been at this since 2021. CoW Protocol has been live on Ethereum for over five years.',
-      'The Solana programs are audited by [auditor name], and the report is public: [link].',
+      'The Solana programs are open source and in Alpha. They haven’t been independently audited yet, so each order is capped at $10,000.',
     ],
   },
   doors: [
     {
       title: 'SDK',
       description:
-        'Solana is a supported chain in the CoW SDK, with USDC and wrapped SOL ready to go. Quote, sign and submit orders with the same toolkit you’d use on EVM chains.',
+        'Solana is a supported chain in the CoW SDK, with USDC and wrapped SOL ready to go. Quote, sign and submit orders with @cowprotocol/sdk-trading-solana, part of the same toolkit you’d use on EVM chains.',
       linkText: 'Read the SDK docs',
       linkHref: 'https://docs.cow.fi/cow-protocol/reference/sdks/cow-sdk',
       action: 'sol_read_the_sdk_docs',
@@ -256,7 +256,8 @@ export const SOLANA_FAQ = [
   },
   {
     question: 'Is it audited?',
-    answer: 'The Solana programs are open source and rolling out in stages.',
+    answer:
+      'Not yet. CoW Swap on Solana is in Alpha and hasn’t been independently audited, so each order is capped at $10,000. The Solana programs are open source and rolling out in stages.',
   },
   {
     question: 'What about my users on other chains?',
