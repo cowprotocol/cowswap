@@ -91,13 +91,13 @@ export function AssetsFiltersSections({ isInDrawer = false }: AssetsFiltersSecti
         onChange={(selected) => updateFilters({ chainIds: selected })}
       />
       <ThresholdSection
-        title="Onchain market cap"
+        title="Tokenized market cap"
         thresholds={MARKET_CAP_THRESHOLDS}
         value={filters.minMarketCap}
         onChange={(value) => updateFilters({ minMarketCap: value })}
       />
       <ThresholdSection
-        title="24h volume"
+        title="24h total volume"
         thresholds={VOLUME_THRESHOLDS}
         value={filters.minVolume24h}
         onChange={(value) => updateFilters({ minVolume24h: value })}

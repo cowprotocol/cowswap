@@ -34,7 +34,7 @@ import { TokenLogo } from '@/shared/ui/token-logo'
 import { Tooltip } from '@/shared/ui/tooltip'
 
 const TOKEN_METRICS_HINT =
-  'Per token and network, from CoinGecko. Onchain market cap is the token supply on the network times the token price. 24h DEX volume is the DEX trading of the token on the network over the last 24 hours.'
+  'From CoinGecko. Tokenized market cap is the value of the tokens held by investors, summed over every network the token is on, so listings of one token on different networks show the same value. 24h DEX volume is the DEX trading of the token on the network over the last 24 hours.'
 
 interface DividendNotesToggleProps {
   isExpanded: boolean
@@ -77,9 +77,11 @@ export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
     [asset.tokens, market?.sharesPerToken],
   )
   const statsByKey = useTokenStatsByKey(asset.ticker)
+  const getTokenMarket = (token: RwaToken): RwaTokenMarketData | undefined =>
+    token.coingeckoId ? market?.tokens[token.coingeckoId] : undefined
   const tokens = asset.tokens
     .filter((token) => (issuer === null || token.issuer === issuer) && (network === null || token.chainId === network))
-    .sort((a, b) => compareOnchainCaps(statsByKey.get(getTokenKey(a)), statsByKey.get(getTokenKey(b))))
+    .sort((a, b) => compareMarketCaps(getTokenMarket(a), getTokenMarket(b)))
 
   return (
     <section className={styles.section} aria-labelledby="stock-tokens-title">
@@ -129,7 +131,7 @@ export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
                 <th className={tableStyles.numeric}>Token price / share</th>
                 <th className={tableStyles.numeric}>24h DEX volume</th>
                 <th className={`${tableStyles.numeric} ${tableStyles.sorted}`} aria-sort="descending">
-                  <span aria-hidden="true">↓</span> Onchain market cap
+                  <span aria-hidden="true">↓</span> Tokenized market cap
                 </th>
                 <th>
                   <span className={styles.visuallyHidden}>Trade</span>
@@ -141,7 +143,7 @@ export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
                 <StockTokenRow
                   key={getTokenKey(token)}
                   token={token}
-                  market={token.coingeckoId ? market?.tokens[token.coingeckoId] : undefined}
+                  market={getTokenMarket(token)}
                   stats={statsByKey.get(getTokenKey(token))}
                   sharesPerToken={priceSharesPerToken[getTokenKey(token)] ?? null}
                   stockPrice={market?.price}
@@ -161,8 +163,8 @@ export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
 }
 
 /** Highest first, unknown caps last */
-function compareOnchainCaps(a: RwaTokenNetworkStats | undefined, b: RwaTokenNetworkStats | undefined): number {
-  return (b?.onchainCap ?? -1) - (a?.onchainCap ?? -1)
+function compareMarketCaps(a: RwaTokenMarketData | undefined, b: RwaTokenMarketData | undefined): number {
+  return (b?.marketCap ?? -1) - (a?.marketCap ?? -1)
 }
 
 function DividendNotesToggle({ isExpanded, controls, onToggle }: DividendNotesToggleProps): ReactNode {
@@ -254,7 +256,7 @@ function StockTokenRow({
         ) : null}
       </td>
       <td className={tableStyles.numeric}>{formatTokenStat(stats?.dexVolume24h)}</td>
-      <td className={tableStyles.numeric}>{formatTokenStat(stats?.onchainCap)}</td>
+      <td className={tableStyles.numeric}>{formatTokenStat(market?.marketCap)}</td>
       <td>
         <div className={styles.actions}>
           <button

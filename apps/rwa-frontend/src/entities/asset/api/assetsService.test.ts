@@ -23,6 +23,8 @@ jest.mock('./marketData', () => ({
     getTokenMarkets: jest.fn(),
     getChart: jest.fn(),
     getCandles: jest.fn(),
+    getRwaChart: jest.fn(),
+    getRwaCandles: jest.fn(),
     getNetworkStats: jest.fn(),
     getHourlyDexVolume: jest.fn(),
   },
@@ -87,6 +89,8 @@ const getRwaMarketsMock = coingeckoProvider.getRwaMarkets as jest.Mock
 const getTokenMarketsMock = coingeckoProvider.getTokenMarkets as jest.Mock
 const getChartMock = coingeckoProvider.getChart as jest.Mock
 const getCandlesMock = coingeckoProvider.getCandles as jest.Mock
+const getRwaChartMock = coingeckoProvider.getRwaChart as jest.Mock
+const getRwaCandlesMock = coingeckoProvider.getRwaCandles as jest.Mock
 const getNetworkStatsMock = coingeckoProvider.getNetworkStats as jest.Mock
 const getHourlyDexVolumeMock = coingeckoProvider.getHourlyDexVolume as jest.Mock
 const loadSharesPerTokenMock = loadSharesPerToken as jest.Mock
@@ -96,6 +100,8 @@ const ALL_MOCKS = [
   getTokenMarketsMock,
   getChartMock,
   getCandlesMock,
+  getRwaChartMock,
+  getRwaCandlesMock,
   getNetworkStatsMock,
   getHourlyDexVolumeMock,
   loadSharesPerTokenMock,
@@ -396,7 +402,31 @@ describe('getAssetChart', () => {
   ]
 
   beforeEach(() => {
+    getRwaChartMock.mockResolvedValue(null)
     getChartMock.mockResolvedValue(TOKEN_POINTS)
+  })
+
+  it('charts the prices of the asset over every issuer', async () => {
+    const points = [{ time: 1, value: 2 }]
+    getRwaChartMock.mockResolvedValue(points)
+
+    expect(await getAssetChart(nvda(), '1D')).toEqual({ ticker: 'NVDA', range: '1D', points, degraded: false })
+    expect(getRwaChartMock).toHaveBeenCalledWith('nvidia', '1D')
+    expect(getChartMock).not.toHaveBeenCalled()
+  })
+
+  it('charts a coin of the asset when the chart over every issuer is empty', async () => {
+    getRwaChartMock.mockResolvedValue([])
+    loadSharesPerTokenMock.mockResolvedValue({ byKey: {}, degraded: false })
+
+    expect(await getAssetChart(nvda(), '1D')).toMatchObject({ points: TOKEN_POINTS })
+  })
+
+  it('charts a coin of the asset as degraded when the chart over every issuer fails', async () => {
+    getRwaChartMock.mockRejectedValue(new Error('upstream down'))
+    loadSharesPerTokenMock.mockResolvedValue({ byKey: {}, degraded: false })
+
+    expect(await getAssetChart(nvda(), '1D')).toMatchObject({ points: TOKEN_POINTS, degraded: true })
   })
 
   it('converts the token prices to prices per share', async () => {
@@ -474,7 +504,24 @@ describe('getAssetCandles', () => {
   const TOKEN_CANDLES = [{ time: 1, open: 0.5, high: 1, low: 0.25, close: 0.75 }]
 
   beforeEach(() => {
+    getRwaCandlesMock.mockResolvedValue(null)
     getCandlesMock.mockResolvedValue(TOKEN_CANDLES)
+  })
+
+  it('takes the candles of the asset over every issuer', async () => {
+    const candles = [{ time: 1, open: 2, high: 4, low: 1, close: 3 }]
+    getRwaCandlesMock.mockResolvedValue(candles)
+
+    expect(await getAssetCandles(nvda(), '1W')).toEqual({ ticker: 'NVDA', range: '1W', candles, degraded: false })
+    expect(getRwaCandlesMock).toHaveBeenCalledWith('nvidia', '1W')
+    expect(getCandlesMock).not.toHaveBeenCalled()
+  })
+
+  it('takes the candles of a coin of the asset as degraded when the candles over every issuer fail', async () => {
+    getRwaCandlesMock.mockRejectedValue(new Error('upstream down'))
+    loadSharesPerTokenMock.mockResolvedValue({ byKey: {}, degraded: false })
+
+    expect(await getAssetCandles(nvda(), '1W')).toMatchObject({ candles: TOKEN_CANDLES, degraded: true })
   })
 
   it('converts the token candles to candles per share', async () => {
@@ -518,21 +565,20 @@ describe('getAssetTokenStats', () => {
     getNetworkStatsMock.mockImplementation((chainId: number) =>
       Promise.resolve(
         chainId === 1
-          ? [{ address: '0x0000000000000000000000000000000000000002', onchainCap: 10, dexVolume24h: 1 }]
-          : [{ address: '0x0000000000000000000000000000000000000003', onchainCap: 20, dexVolume24h: 2 }],
+          ? [{ address: '0x0000000000000000000000000000000000000002', dexVolume24h: 1 }]
+          : [{ address: '0x0000000000000000000000000000000000000003', dexVolume24h: 2 }],
       ),
     )
 
     const stats = await getAssetTokenStats(nvda())
 
-    expect(getTokenMarketsMock).toHaveBeenCalledTimes(1)
-    expect(getNetworkStatsMock).toHaveBeenCalledWith(1, [nvda().tokens[0]], NVDA_TOKEN_MARKETS)
-    expect(getNetworkStatsMock).toHaveBeenCalledWith(56, [nvda().tokens[1]], NVDA_TOKEN_MARKETS)
+    expect(getNetworkStatsMock).toHaveBeenCalledWith(1, [nvda().tokens[0]])
+    expect(getNetworkStatsMock).toHaveBeenCalledWith(56, [nvda().tokens[1]])
     expect(stats).toEqual({
       ticker: 'NVDA',
       tokens: [
-        { chainId: 1, address: '0x0000000000000000000000000000000000000002', onchainCap: 10, dexVolume24h: 1 },
-        { chainId: 56, address: '0x0000000000000000000000000000000000000003', onchainCap: 20, dexVolume24h: 2 },
+        { chainId: 1, address: '0x0000000000000000000000000000000000000002', dexVolume24h: 1 },
+        { chainId: 56, address: '0x0000000000000000000000000000000000000003', dexVolume24h: 2 },
       ],
       degraded: false,
     })
@@ -541,7 +587,7 @@ describe('getAssetTokenStats', () => {
   it('keeps the networks that loaded and flags the response when one fails', async () => {
     getNetworkStatsMock.mockImplementation((chainId: number) =>
       chainId === 1
-        ? Promise.resolve([{ address: '0x0000000000000000000000000000000000000002', onchainCap: 10, dexVolume24h: 1 }])
+        ? Promise.resolve([{ address: '0x0000000000000000000000000000000000000002', dexVolume24h: 1 }])
         : Promise.reject(new Error('Upstream failed')),
     )
 
@@ -549,8 +595,8 @@ describe('getAssetTokenStats', () => {
 
     expect(stats.degraded).toBe(true)
     expect(stats.tokens).toEqual([
-      { chainId: 1, address: '0x0000000000000000000000000000000000000002', onchainCap: 10, dexVolume24h: 1 },
-      { chainId: 56, address: '0x0000000000000000000000000000000000000003', onchainCap: null, dexVolume24h: null },
+      { chainId: 1, address: '0x0000000000000000000000000000000000000002', dexVolume24h: 1 },
+      { chainId: 56, address: '0x0000000000000000000000000000000000000003', dexVolume24h: null },
     ])
   })
 })
