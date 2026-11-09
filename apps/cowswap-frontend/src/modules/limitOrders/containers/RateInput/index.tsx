@@ -34,7 +34,7 @@ import {
 import { limitPickerModeAtom } from 'modules/limitOrders/state/limitPickerModeAtom'
 import { limitRateAtom, updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { toFraction } from 'modules/limitOrders/utils/toFraction'
-import { priceChartModalOpenAtom, priceChartVisibleAtom } from 'modules/priceChart'
+import { priceChartModalOpenAtom, priceChartVisibleAtom, useIsPriceChartAvailable } from 'modules/priceChart'
 import { getPercentageRate, PricePercentageShortcuts } from 'modules/trade'
 import { useUsdAmount } from 'modules/usdAmount'
 
@@ -89,6 +89,7 @@ export function RateInput() {
   const [isUsdRateMode, setIsUsdRateMode] = useAtom(isLocalUsdRateModeAtom)
   const [isLimitPickerMode, setLimitPickerMode] = useAtom(limitPickerModeAtom)
   const isUpToLarge = useMediaQuery(Media.upToLarge(false))
+  const isPriceChartAvailable = useIsPriceChartAvailable()
   const setChartModalOpen = useSetAtom(priceChartModalOpenAtom)
   const setChartVisible = useSetAtom(priceChartVisibleAtom)
 
@@ -341,7 +342,11 @@ export function RateInput() {
               <i>
                 <Trans>Market:</Trans>
               </i>{' '}
-              <styledEl.MarketPriceButton disabled={isDisabledMPrice} onClick={handleSetMarketPrice}>
+              <styledEl.MarketPriceButton
+                title={marketRateDisplay ?? ''}
+                disabled={isDisabledMPrice}
+                onClick={handleSetMarketPrice}
+              >
                 {isLoadingMarketRate ? <styledEl.RateLoader size="14px" /> : marketRateDisplay}
               </styledEl.MarketPriceButton>
             </styledEl.MarketRateWrapper>
@@ -372,26 +377,28 @@ export function RateInput() {
                 </styledEl.UsdButton>
               </styledEl.CurrencyToggle>
 
-              <HoverTooltip content={t`Pick the limit price from the chart`} wrapInContainer placement="top">
-                <styledEl.IconButton
-                  aria-label={t`Pick the limit price from the chart`}
-                  aria-pressed={isLimitPickerMode}
-                  onClick={() => {
-                    if (!isLimitPickerMode) {
-                      setIsUsdRateMode(true)
-                      if (isUpToLarge) {
-                        setChartModalOpen(true)
-                      } else {
-                        setChartVisible(true)
+              {isPriceChartAvailable && !isRateInputDisabled && (
+                <HoverTooltip content={t`Pick the limit price from the chart`} wrapInContainer placement="top">
+                  <styledEl.IconButton
+                    aria-label={t`Pick the limit price from the chart`}
+                    aria-pressed={isLimitPickerMode}
+                    onClick={() => {
+                      if (!isLimitPickerMode) {
+                        setIsUsdRateMode(true)
+                        if (isUpToLarge) {
+                          setChartModalOpen(true)
+                        } else {
+                          setChartVisible(true)
+                        }
                       }
-                    }
-                    setLimitPickerMode((state) => !state)
-                  }}
-                  $active={isLimitPickerMode}
-                >
-                  <MousePointer size={14} />
-                </styledEl.IconButton>
-              </HoverTooltip>
+                      setLimitPickerMode((state) => !state)
+                    }}
+                    $active={isLimitPickerMode}
+                  >
+                    <MousePointer size={14} />
+                  </styledEl.IconButton>
+                </HoverTooltip>
+              )}
             </styledEl.CurrencyToggleGroup>
           )}
         </styledEl.Body>

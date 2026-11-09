@@ -42,6 +42,7 @@ import {
   WRAPPED_NATIVE_CURRENCIES,
   USDT_INK,
   USDC_INK,
+  USDG_ROBINHOOD,
   NATIVE_CURRENCIES,
   USDC_SOLANA,
   USDS_MAINNET,
@@ -139,6 +140,10 @@ export const DEFAULT_FAVORITE_TOKENS: Record<SupportedChainId, TokensMap> = {
     WETH_PLASMA,
   ]),
   [SupportedChainId.INK]: tokensListToMap([WRAPPED_NATIVE_CURRENCIES[SupportedChainId.INK], USDT_INK, USDC_INK]),
+  [SupportedChainId.ROBINHOOD]: tokensListToMap([
+    WRAPPED_NATIVE_CURRENCIES[SupportedChainId.ROBINHOOD],
+    USDG_ROBINHOOD,
+  ]),
   [SupportedChainId.SOLANA]: tokensListToMap([
     NATIVE_CURRENCIES[SupportedChainId.SOLANA],
     WRAPPED_NATIVE_CURRENCIES[SupportedChainId.SOLANA],

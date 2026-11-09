@@ -1,15 +1,16 @@
 import 'server-only'
 
 import { toAssetSummaries } from './assetSummary'
+import { decodeRegistry } from './registryFile'
 
 import registryJson from '../../../../data/RWAs.json'
 
 import type { RwaAsset, RwaAssetSummary, RwaAssetType, RwaRegistry } from './types'
 
-const registry: RwaRegistry = {
+const registry: RwaRegistry = decodeRegistry({
   ...registryJson,
   assets: registryJson.assets.map((asset) => ({ ...asset, type: asset.type as RwaAssetType })),
-}
+})
 
 const assetsByTicker = new Map(registry.assets.map((asset) => [asset.ticker, asset]))
 const assetSummaries = toAssetSummaries(registry.assets)

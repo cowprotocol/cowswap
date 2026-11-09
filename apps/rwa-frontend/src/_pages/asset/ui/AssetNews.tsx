@@ -6,9 +6,16 @@ import type { ReactNode } from 'react'
 import styles from './AssetNews.module.css'
 
 import { assetNewsQueryAtomFamily, type RwaAsset, type RwaNewsFeed, type RwaNewsItem } from '@/entities/asset'
+import { trackEvent } from '@/shared/lib/analytics'
 import { formatDate } from '@/shared/lib/format'
 
 const SKELETON_ITEMS = 3
+
+interface NewsCardProps {
+  ticker: string
+  item: RwaNewsItem
+  source: string
+}
 
 export function AssetNews({ asset }: { asset: RwaAsset }): ReactNode {
   if (!asset.newsFeed) return null
@@ -23,8 +30,7 @@ function AssetNewsSection({ asset, feed }: { asset: RwaAsset; feed: RwaNewsFeed 
 
   return (
     <section className={styles.news} aria-labelledby="asset-news-title">
-      <h2 id="asset-news-title">Related news</h2>
-      <p className={styles.subtitle}>About {asset.title} · Company announcements</p>
+      <h2 id="asset-news-title">{asset.title} news</h2>
       {isPending ? (
         <ul className={styles.list} aria-hidden="true">
           {Array.from({ length: SKELETON_ITEMS }, (_, index) => (
@@ -34,7 +40,7 @@ function AssetNewsSection({ asset, feed }: { asset: RwaAsset; feed: RwaNewsFeed 
       ) : data?.items.length ? (
         <ul className={styles.list}>
           {data.items.map((item) => (
-            <NewsCard key={item.url} item={item} source={feed.source} />
+            <NewsCard key={item.url} ticker={asset.ticker} item={item} source={feed.source} />
           ))}
         </ul>
       ) : (
@@ -44,18 +50,22 @@ function AssetNewsSection({ asset, feed }: { asset: RwaAsset; feed: RwaNewsFeed 
   )
 }
 
-function NewsCard({ item, source }: { item: RwaNewsItem; source: string }): ReactNode {
+function NewsCard({ ticker, item, source }: NewsCardProps): ReactNode {
   return (
-    <li>
-      <a className={styles.card} href={item.url} target="_blank" rel="noopener noreferrer">
-        <span className={styles.title}>
-          {item.title} <span aria-hidden="true">↗</span>
-        </span>
-        <span className={styles.meta}>
-          {source}
-          {item.publishedAt && ` · ${formatDate(item.publishedAt)}`}
-        </span>
+    <li className={styles.item}>
+      <a
+        className={styles.title}
+        href={item.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() => trackEvent('news_article_click', { ticker, source })}
+      >
+        {item.title} <span aria-hidden="true">↗</span>
       </a>
+      <span className={styles.meta}>
+        {source}
+        {item.publishedAt && ` · ${formatDate(item.publishedAt)}`}
+      </span>
     </li>
   )
 }

@@ -1,5 +1,47 @@
 # Changelog
 
+## [4.18.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.17.2...explorer-v4.18.0) (2026-11-05)
+
+### Minor Changes
+
+- feat(solana): integrate appData api (#8467)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.20.0
+  - @cowprotocol/common-hooks@3.18.0
+  - @cowprotocol/analytics@3.16.4
+  - @cowprotocol/common-const@3.18.0
+  - @cowprotocol/common-utils@3.21.2
+  - @cowprotocol/core@3.14.3
+  - @cowprotocol/types@4.14.2
+  - @cowprotocol/hook-dapp-lib@2.5.1
+
+## [4.17.2](https://github.com/cowprotocol/cowswap/compare/explorer-v4.17.1...explorer-v4.17.2) (2026-11-02)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/core@3.14.2
+  - @cowprotocol/ui@3.19.2
+
+## [4.17.1](https://github.com/cowprotocol/cowswap/compare/explorer-v4.17.0...explorer-v4.17.1) (2026-10-28)
+
+### Patch Changes
+
+- fix(solana): gate appData integration behind isSolanaAppDataEnabled (#8493)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.17.1
+  - @cowprotocol/common-hooks@3.17.1
+  - @cowprotocol/analytics@3.16.3
+  - @cowprotocol/common-utils@3.21.1
+  - @cowprotocol/core@3.14.1
+  - @cowprotocol/ui@3.19.1
+
 ## [4.17.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.16.1...explorer-v4.17.0) (2026-10-28)
 
 ### Minor Changes

@@ -5,6 +5,11 @@ export const TRADE_URL_BUY_AMOUNT_KEY = 'buyAmount'
 export const TRADE_URL_ORDER_KIND_KEY = 'orderKind'
 export const TRADE_URL_PRICE_PERCENTAGE_KEY = 'pricePercentage'
 
+/**
+ * One-shot flag: the trade state from URL is applied as is, even when only chainId was changed
+ */
+export const TRADE_URL_FORCE_NAVIGATE_KEY = 'forceTradeNavigate'
+
 export enum TradeType {
   SWAP = 'SWAP',
   LIMIT_ORDER = 'LIMIT_ORDER',

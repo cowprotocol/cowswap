@@ -46,7 +46,7 @@ describe('getAssetSeoTokensLabel', () => {
 describe('getAssetSeoDescription', () => {
   it('describes the asset and its tokens', () => {
     expect(getAssetSeoDescription(AAPL)).toBe(
-      'Trade Apple (AAPL) tokenized stock onchain with CoW Protocol: xStocks token on Ethereum.',
+      'Third-party tokens referencing Apple (AAPL) stock, with swaps powered by CoW Protocol: xStocks token on Ethereum.',
     )
   })
 })

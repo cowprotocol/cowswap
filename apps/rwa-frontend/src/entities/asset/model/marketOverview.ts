@@ -4,21 +4,27 @@ import type { RwaAggregateMarket, RwaAsset, RwaChartPoint, RwaMarketData, RwaMar
 
 const HOUR_SECONDS = 3600
 const DAILY_SERIES_HOURS = 24
+const SPARKLINE_HOURS = 7 * 24
 
 interface Movers {
   gainers: RwaMarketOverviewItem[]
   losers: RwaMarketOverviewItem[]
 }
 
-/** The last 24 hours of `sparkline7d`, ending at the hour of `updatedAt` */
+/**
+ * The last 24 hourly points of `sparkline7d`, the last one labelled with the hour of `updatedAt`.
+ * CoinGecko adds an hour's point some minutes after the hour, so the last point lags `updatedAt` by up to an hour
+ * and a 25th point would start the window up to 26 hours before the price.
+ * `null` for a sparkline that isn't hourly
+ */
 export function buildDailySeries({ sparkline7d, updatedAt }: RwaAggregateMarket): RwaChartPoint[] | null {
   const updatedSeconds = updatedAt ? Date.parse(updatedAt) / 1000 : NaN
 
-  if (!Number.isFinite(updatedSeconds)) return null
+  if (!isHourlySparkline(sparkline7d) || !Number.isFinite(updatedSeconds)) return null
 
   const lastHour = floorToHour(updatedSeconds)
   const points = sparkline7d
-    .slice(-(DAILY_SERIES_HOURS + 1))
+    .slice(-DAILY_SERIES_HOURS)
     .flatMap((value, index, window) =>
       Number.isFinite(value) ? [{ time: lastHour - (window.length - 1 - index) * HOUR_SECONDS, value }] : [],
     )
@@ -29,13 +35,18 @@ export function buildDailySeries({ sparkline7d, updatedAt }: RwaAggregateMarket)
 /**
  * Σ (market cap / price) × sparkline price, per hour: supply is assumed constant.
  * Every sparkline ends at the hour of the latest `updatedAt`, so assets updated around an hour boundary
- * stay aligned; sparklines differ in length and an asset counts only in the hours it covers
+ * stay aligned; an asset without an hourly sparkline is left out of every hour
  */
 export function buildMarketCapSeries(markets: RwaAggregateMarket[]): RwaChartPoint[] | null {
   const included = markets.flatMap(({ price, marketCap, sparkline7d, updatedAt }) => {
     const updatedSeconds = updatedAt ? Date.parse(updatedAt) / 1000 : NaN
 
-    if (!isPositive(price) || !isPositive(marketCap) || !sparkline7d.length || !Number.isFinite(updatedSeconds)) {
+    if (
+      !isPositive(price) ||
+      !isPositive(marketCap) ||
+      !isHourlySparkline(sparkline7d) ||
+      !Number.isFinite(updatedSeconds)
+    ) {
       return []
     }
 
@@ -135,6 +146,11 @@ function byTicker(a: RwaMarketOverviewItem, b: RwaMarketOverviewItem): number {
 
 function floorToHour(seconds: number): number {
   return Math.floor(seconds / HOUR_SECONDS) * HOUR_SECONDS
+}
+
+/** CoinGecko drops the hours a token didn't trade without timestamps, so only a full 7-day sparkline is hourly */
+function isHourlySparkline(sparkline7d: number[]): boolean {
+  return sparkline7d.length > SPARKLINE_HOURS
 }
 
 function isPositive(value: number | null): value is number {

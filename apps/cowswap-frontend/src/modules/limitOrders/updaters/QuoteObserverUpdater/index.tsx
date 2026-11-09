@@ -14,6 +14,7 @@ import { useUsdPrice } from 'modules/usdAmount/hooks/useUsdPrice'
 import { useSafeEffect } from 'common/hooks/useSafeMemo'
 
 import { useUpdateActiveRate } from '../../hooks/useUpdateActiveRate'
+import { getQuoteFeeAmountRaw } from '../../utils/getQuoteFeeAmountRaw'
 
 export function QuoteObserverUpdater(): null {
   const state = useDerivedTradeState()
@@ -48,7 +49,7 @@ export function QuoteObserverUpdater(): null {
   }, [price, isLoading, percentageSelection, activeRate, state?.inputCurrencyAmount, updateRate])
 
   const { quote } = useTradeQuote()
-  const feeAmountRaw = quote?.quoteResults.quoteResponse.quote.feeAmount
+  const feeAmountRaw = getQuoteFeeAmountRaw(quote)
   const feeAmount = inputCurrency && feeAmountRaw ? CurrencyAmount.fromRawAmount(inputCurrency, feeAmountRaw) : null
 
   useSafeEffect(() => {

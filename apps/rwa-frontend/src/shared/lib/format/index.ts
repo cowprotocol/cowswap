@@ -1,7 +1,9 @@
 export {
+  EMPTY_VALUE,
   formatCompactUsd,
   formatDate,
   formatDateTime,
+  formatDuration,
   formatPercent,
   formatRange,
   formatTokenAmount,

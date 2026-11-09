@@ -1,5 +1,29 @@
 # Changelog
 
+## [3.14.3](https://github.com/cowprotocol/cowswap/compare/core-v3.14.2...core-v3.14.3) (2026-11-05)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.18.0
+  - @cowprotocol/common-utils@3.21.2
+
+## [3.14.2](https://github.com/cowprotocol/cowswap/compare/core-v3.14.1...core-v3.14.2) (2026-11-02)
+
+### Patch Changes
+
+- fix(rwa): updated rwa token lists (#8487)
+
+## [3.14.1](https://github.com/cowprotocol/cowswap/compare/core-v3.14.0...core-v3.14.1) (2026-10-28)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.17.1
+  - @cowprotocol/common-utils@3.21.1
+
 ## [3.14.0](https://github.com/cowprotocol/cowswap/compare/core-v3.13.1...core-v3.14.0) (2026-10-28)
 
 ### Minor Changes

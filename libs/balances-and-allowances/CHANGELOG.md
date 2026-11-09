@@ -1,5 +1,44 @@
 # Changelog
 
+## [3.18.5](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.18.4...balances-and-allowances-v3.18.5) (2026-11-05)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+- fix(performance): remove render hotspots in token search, route matching and Solana balances (#8450)
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.18.0
+  - @cowprotocol/wallet@3.20.0
+  - @cowprotocol/common-const@3.18.0
+  - @cowprotocol/common-utils@3.21.2
+  - @cowprotocol/core@3.14.3
+  - @cowprotocol/currency@1.9.2
+  - @cowprotocol/tokens@3.17.3
+  - @cowprotocol/types@4.14.2
+
+## [3.18.4](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.18.3...balances-and-allowances-v3.18.4) (2026-11-02)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/core@3.14.2
+  - @cowprotocol/tokens@3.17.2
+  - @cowprotocol/wallet@3.19.2
+
+## [3.18.3](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.18.2...balances-and-allowances-v3.18.3) (2026-10-28)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.17.1
+  - @cowprotocol/common-hooks@3.17.1
+  - @cowprotocol/common-utils@3.21.1
+  - @cowprotocol/core@3.14.1
+  - @cowprotocol/tokens@3.17.1
+  - @cowprotocol/wallet@3.19.1
+
 ## [3.18.2](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.18.1...balances-and-allowances-v3.18.2) (2026-10-28)
 
 ### Patch Changes

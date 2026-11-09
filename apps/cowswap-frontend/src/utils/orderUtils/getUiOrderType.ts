@@ -1,4 +1,5 @@
-import { OrderClass } from '@cowprotocol/cow-sdk'
+import { SOLANA_LIMIT_ORDER_PROD_APP_DATA, SOLANA_LIMIT_ORDER_STAGING_APP_DATA } from '@cowprotocol/common-const'
+import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 
 import { Order } from 'legacy/state/orders/actions'
@@ -20,12 +21,33 @@ const API_ORDER_CLASS_TO_UI_ORDER_TYPE_MAP: Record<OrderClass, UiOrderType> = {
   [OrderClass.LIQUIDITY]: UiOrderType.LIMIT,
 }
 
-export type UiOrderTypeParams = Pick<Order, 'fullAppData' | 'composableCowInfo' | 'class'>
+export type UiOrderTypeParams = Pick<Order, 'fullAppData' | 'composableCowInfo' | 'class'> & {
+  // Optional and structurally narrow (chainId only): several existing callers pass order shapes
+  // (SerializedOrder pre-deserialization, lifecycle-event sources, ...) that either lack `appData`
+  // entirely or carry a `SerializedToken` instead of a full `Token` class instance for `inputToken`.
+  // Neither is available, the Solana check below is simply skipped — same as any other order for
+  // which it doesn't apply.
+  appData?: Order['appData']
+  inputToken?: Pick<Order['inputToken'], 'chainId'>
+}
 
-export function getUiOrderType({ fullAppData, composableCowInfo, class: orderClass }: UiOrderTypeParams): UiOrderType {
+export function getUiOrderType({
+  fullAppData,
+  composableCowInfo,
+  class: orderClass,
+  appData,
+  inputToken,
+}: UiOrderTypeParams): UiOrderType {
   // 1. Only TWAP orders have composableCowInfo, so it takes precedence over everything else.
   if (composableCowInfo) {
     return UiOrderType.TWAP
+  }
+
+  // 2. A Solana order placed while `isSolanaAppDataEnabled` was off signs one of two agreed constants
+  // as its opaque appData and registers no doc, so that raw value is the only limit/market signal.
+  // Checked before the doc below so such orders stay classified after the flag is turned on.
+  if (isSolanaLimitOrderAppData(inputToken, appData)) {
+    return UiOrderType.LIMIT
   }
 
   const parsedAppData = decodeAppData(fullAppData)
@@ -33,14 +55,25 @@ export function getUiOrderType({ fullAppData, composableCowInfo, class: orderCla
   const appDataOrderClass = parsedAppData?.metadata?.orderClass as AppDataMetadataOrderClass | undefined
   const typeFromAppData = APPDATA_ORDER_CLASS_TO_UI_ORDER_TYPE_MAP[appDataOrderClass?.orderClass || '']
 
-  // 2. Take value from AppData if presented
+  // 3. Take value from AppData if presented
   if (typeFromAppData) {
     return typeFromAppData
   }
 
-  // 3. As a last resort, map it to API classification.
+  // 4. As a last resort, map it to API classification.
   // Least precise as it doesn't distinguish twap type and uses backend logic which doesn't match frontend's classification
   // Solana's order-book has no `class` field at all, so an order of its that reached this point is a
   // market order: the limit ones are already caught by their appData above.
   return API_ORDER_CLASS_TO_UI_ORDER_TYPE_MAP[orderClass] ?? UiOrderType.SWAP
+}
+
+function isSolanaLimitOrderAppData(
+  inputToken: UiOrderTypeParams['inputToken'],
+  appData: UiOrderTypeParams['appData'],
+): boolean {
+  const isSolanaOrder = inputToken?.chainId === SupportedChainId.SOLANA
+
+  return (
+    isSolanaOrder && (appData === SOLANA_LIMIT_ORDER_STAGING_APP_DATA || appData === SOLANA_LIMIT_ORDER_PROD_APP_DATA)
+  )
 }

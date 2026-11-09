@@ -1,5 +1,46 @@
 # Changelog
 
+## [2.16.6](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.16.5...cow-fi-v2.16.6) (2026-11-05)
+
+### Patch Changes
+
+- fix(performance): wake countdowns once per displayed second (#8448)
+
+- Updated dependencies []:
+  - @cowprotocol/assets@2.8.0
+  - @cowprotocol/ui@3.20.0
+  - @cowprotocol/common-hooks@3.18.0
+  - @cowprotocol/wallet@3.20.0
+  - @cowprotocol/analytics@3.16.4
+  - @cowprotocol/common-const@3.18.0
+  - @cowprotocol/common-utils@3.21.2
+  - @cowprotocol/core@3.14.3
+  - @cowprotocol/events@4.17.2
+  - @cowprotocol/types@4.14.2
+  - @cowprotocol/widget-react@3.3.3
+
+## [2.16.5](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.16.4...cow-fi-v2.16.5) (2026-11-02)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/core@3.14.2
+  - @cowprotocol/ui@3.19.2
+  - @cowprotocol/wallet@3.19.2
+
+## [2.16.4](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.16.3...cow-fi-v2.16.4) (2026-10-28)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.17.1
+  - @cowprotocol/common-hooks@3.17.1
+  - @cowprotocol/analytics@3.16.3
+  - @cowprotocol/common-utils@3.21.1
+  - @cowprotocol/core@3.14.1
+  - @cowprotocol/ui@3.19.1
+  - @cowprotocol/wallet@3.19.1
+
 ## [2.16.3](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.16.2...cow-fi-v2.16.3) (2026-10-28)
 
 ### Patch Changes

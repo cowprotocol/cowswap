@@ -36,17 +36,19 @@ const ASSET: RwaAssetResponse = {
   degraded: false,
 }
 
+const UPDATED_SECONDS = Date.parse(MARKET.updatedAt ?? '') / 1000
+
 const POINTS: RwaChartPoint[] = [
-  { time: 1, value: 400 },
-  { time: 2, value: 410 },
-  { time: 3, value: 395 },
-  { time: 4, value: 404 },
+  { time: UPDATED_SECONDS - 4 * 3600, value: 400 },
+  { time: UPDATED_SECONDS - 3 * 3600, value: 410 },
+  { time: UPDATED_SECONDS - 2 * 3600, value: 395 },
+  { time: UPDATED_SECONDS - 3600, value: 404 },
 ]
 
 type FetchResult = Promise<object>
 
 function chart(points: RwaChartPoint[]): RwaChart {
-  return { ticker: TICKER, range: '1D', points }
+  return { ticker: TICKER, range: '1D', points, degraded: false }
 }
 
 function mockFetch(routes: { asset: () => FetchResult; chart: () => FetchResult }): jest.Mock {
@@ -80,19 +82,12 @@ async function settle(fetchMock: jest.Mock): Promise<void> {
 }
 
 describe('useAssetMarket', () => {
-  it('measures the 24h change and day range from the 1D chart to the price', async () => {
+  it('measures the day range from the 1D chart to the price and keeps the 24h change of the asset', async () => {
     const fetchMock = mockFetch({ asset: () => response(ASSET), chart: () => response(chart(POINTS)) })
 
     const { result } = renderAssetMarket()
 
-    await waitFor(() =>
-      expect(result.current.market).toEqual({
-        ...MARKET,
-        change24h: expect.closeTo(0.595),
-        dayLow: 395,
-        dayHigh: 410,
-      }),
-    )
+    await waitFor(() => expect(result.current.market).toEqual({ ...MARKET, dayLow: 395, dayHigh: 410 }))
     expect(result.current.data).toEqual(ASSET)
     expect(fetchMock).toHaveBeenCalledWith(expect.stringContaining(`/chart/${TICKER}?range=1D`))
   })
@@ -103,9 +98,7 @@ describe('useAssetMarket', () => {
 
     const { result } = renderAssetMarket()
 
-    await waitFor(() =>
-      expect(result.current.market).toEqual({ ...market, change24h: -2.5, dayLow: 390, dayHigh: 410 }),
-    )
+    await waitFor(() => expect(result.current.market).toEqual({ ...market, dayLow: 390, dayHigh: 410 }))
   })
 
   it('keeps the aggregate market while the chart is loading', async () => {

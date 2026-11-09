@@ -1,5 +1,114 @@
 # Changelog
 
+## [3.34.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.33.2...cowswap-v3.34.0) (2026-11-05)
+
+### Minor Changes
+
+- feat: Wait for cows UI bits & new confirmation (#8443)
+
+- feat: Wait & save widget toggle (#8473)
+
+- feat: price chart annotations & limit picker (#8358)
+
+- feat: Wait & save cow detection from solver competition (#8484)
+
+- feat(solana): integrate appData api (#8467)
+
+- feat(widget): hide eth flow classic banner with hideWrapBanner (#8461)
+
+- feat: add isAlphaNetworksOptionVisible flag (#8477)
+
+- feat: last-mile check for restricted addresses in orders and transactions (#8451)
+
+### Patch Changes
+
+- fix(progress-bar): give solver logos an edge and drop the Gnosis fallback (#8524)
+
+- fix: replace Accordion with Expandable, fix React crash (#8475)
+
+- fix(account): add bottom padding to unsupported network message (#8499)
+
+- fix(limit-orders): pre-launch fixes for invert percentage, chart on chain switch, long market price (#8508)
+
+- fix(widget): close modals on unmount (#8463)
+
+- fix(limit-orders): do not sign orders with an expired custom deadline (#8394)
+
+- fix(performance): wake countdowns once per displayed second (#8448)
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+- fix: share the result shown on the swap success screen (#8518)
+
+- fix(charts): remember visibility per trading mode and default Swap to off (#8455)
+
+- fix(solana): take the quote's feeAmount when it reports one (#8520)
+
+- fix(menu): remove "New" badges from Affiliate and My Rewards (#8497)
+
+- fix(price-chart): do not unsubscribe from a removed TradingView widget
+
+- fix(solana): account for quote costs in the estimated fill price (#8480)
+
+- fix(widget): display widget provider error in the UI (#8462)
+
+- fix(performance): remove render hotspots in token search, route matching and Solana balances (#8450)
+
+- Updated dependencies []:
+  - @cowprotocol/assets@2.8.0
+  - @cowprotocol/ui@3.20.0
+  - @cowprotocol/widget-lib@4.13.0
+  - @cowprotocol/common-hooks@3.18.0
+  - @cowprotocol/wallet@3.20.0
+  - @cowprotocol/analytics@3.16.4
+  - @cowprotocol/balances-and-allowances@3.18.5
+  - @cowprotocol/common-const@3.18.0
+  - @cowprotocol/common-utils@3.21.2
+  - @cowprotocol/core@3.14.3
+  - @cowprotocol/currency@1.9.2
+  - @cowprotocol/ens@3.11.4
+  - @cowprotocol/events@4.17.2
+  - @cowprotocol/multicall@3.11.5
+  - @cowprotocol/permit-utils@3.12.1
+  - @cowprotocol/tokens@3.17.3
+  - @cowprotocol/types@4.14.2
+  - @cowprotocol/snackbars@2.3.14
+  - @cowprotocol/iframe-transport@2.3.13
+  - @cowprotocol/hook-dapp-lib@2.5.1
+
+## [3.33.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.33.1...cowswap-v3.33.2) (2026-11-02)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/core@3.14.2
+  - @cowprotocol/tokens@3.17.2
+  - @cowprotocol/balances-and-allowances@3.18.4
+  - @cowprotocol/ui@3.19.2
+  - @cowprotocol/wallet@3.19.2
+  - @cowprotocol/snackbars@2.3.13
+  - @cowprotocol/multicall@3.11.4
+
+## [3.33.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.33.0...cowswap-v3.33.1) (2026-10-28)
+
+### Patch Changes
+
+- fix(solana): gate appData integration behind isSolanaAppDataEnabled (#8493)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.17.1
+  - @cowprotocol/common-hooks@3.17.1
+  - @cowprotocol/analytics@3.16.3
+  - @cowprotocol/balances-and-allowances@3.18.3
+  - @cowprotocol/common-utils@3.21.1
+  - @cowprotocol/core@3.14.1
+  - @cowprotocol/ens@3.11.3
+  - @cowprotocol/multicall@3.11.3
+  - @cowprotocol/tokens@3.17.1
+  - @cowprotocol/ui@3.19.1
+  - @cowprotocol/wallet@3.19.1
+  - @cowprotocol/snackbars@2.3.12
+
 ## [3.33.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.32.1...cowswap-v3.33.0) (2026-10-28)
 
 ### Minor Changes

@@ -2,6 +2,8 @@ import { AAPLX_ARBITRUM, AAPLX_MAINNET } from './fixtures'
 import {
   getAutoToken,
   getBestQuotedToken,
+  getBestQuoteLabel,
+  getCollapsedQuotedTokens,
   keepPreviousOrder,
   type QuotedToken,
   sortQuotedTokens,
@@ -64,16 +66,18 @@ describe('toQuotedTokens', () => {
     ).toEqual([null, null])
   })
 
-  it('matches stats by address', () => {
-    const stats = {
-      ticker: 'AAPL',
-      chainId: 1,
-      tokens: [{ address: AAPLON_MAINNET.address.toLowerCase(), onchainCap: 5, dexVolume24h: 1 }],
-      degraded: false,
-    }
+  it('matches stats by network and address', () => {
+    const stats = [
+      {
+        chainId: AAPLON_MAINNET.chainId,
+        address: AAPLON_MAINNET.address.toLowerCase(),
+        dexVolume24h: 5,
+      },
+      { chainId: 42161, address: AAPLX_MAINNET.address, dexVolume24h: 7 },
+    ]
 
     expect(
-      toQuotedTokens(CHAIN_TOKENS, undefined, stats, null, NO_SHARES).map((quoted) => quoted.stats?.onchainCap),
+      toQuotedTokens(CHAIN_TOKENS, undefined, stats, null, NO_SHARES).map((quoted) => quoted.stats?.dexVolume24h),
     ).toEqual([undefined, 5])
   })
 })
@@ -151,6 +155,31 @@ describe('getBestQuotedToken', () => {
 
     expect(quoted.map(({ isPriceOutlier }) => isPriceOutlier)).toEqual([false, true])
     expect(getBestQuotedToken(quoted, 'sell')).toBe(AAPLX_MAINNET)
+  })
+})
+
+describe('getCollapsedQuotedTokens', () => {
+  const quoted = toQuotedTokens([AAPLX_MAINNET, AAPLON_MAINNET, AAPLX_ARBITRUM], undefined, undefined, null, NO_SHARES)
+  const tokensOf = (list: QuotedToken[]): RwaToken[] => list.map(({ token }) => token)
+
+  it('keeps the first tokens', () => {
+    expect(tokensOf(getCollapsedQuotedTokens(quoted, AAPLX_MAINNET, 2))).toEqual([AAPLX_MAINNET, AAPLON_MAINNET])
+  })
+
+  it('keeps a selected token past them', () => {
+    expect(tokensOf(getCollapsedQuotedTokens(quoted, AAPLX_ARBITRUM, 1))).toEqual([AAPLX_MAINNET, AAPLX_ARBITRUM])
+  })
+})
+
+describe('getBestQuoteLabel', () => {
+  it('names the best quote by side', () => {
+    expect(getBestQuoteLabel('buy', false)).toBe('Lowest price')
+    expect(getBestQuoteLabel('sell', false)).toBe('Highest price')
+  })
+
+  it('limits the claim to verified quotes when cheaper unverified ones can be listed', () => {
+    expect(getBestQuoteLabel('buy', true)).toBe('Lowest verified price')
+    expect(getBestQuoteLabel('sell', true)).toBe('Highest verified price')
   })
 })
 

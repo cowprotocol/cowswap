@@ -1,12 +1,23 @@
 'use client'
 
 import { useAtomValue, useSetAtom } from 'jotai'
-import { type KeyboardEvent, type ReactNode, type RefObject, useEffect, useId, useRef, useState } from 'react'
+import {
+  type KeyboardEvent,
+  type ReactNode,
+  type RefObject,
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+} from 'react'
 
 import { useRouter } from 'next/navigation'
 
+import headerStyles from './Header.module.css'
 import styles from './HeaderSearch.module.css'
 
+import { useOpenOnPage } from '../lib/useOpenOnPage'
 import {
   debouncedHeaderSearchQueryAtom,
   headerSearchQueryAtom,
@@ -15,8 +26,16 @@ import {
 } from '../model/headerSearchAtoms'
 
 import { RWA_ASSET_TYPE_LABELS, type RwaAssetWithMarket } from '@/entities/asset'
-import { SearchIcon } from '@/shared/ui/icons'
+import { MEDIA_QUERIES } from '@/shared/config'
+import { trackEvent } from '@/shared/lib/analytics'
+import { useDismissOnEscape, useDismissOnMediaQueryChange, useDismissOnOutsideInteraction } from '@/shared/lib/dismiss'
+import { CloseIcon, SearchIcon } from '@/shared/ui/icons'
 import { TokenLogo } from '@/shared/ui/token-logo'
+
+interface SearchComboboxProps {
+  inputRef: RefObject<HTMLInputElement | null>
+  onOpenAsset(): void
+}
 
 interface SearchSuggestionsProps {
   listboxId: string
@@ -28,9 +47,70 @@ interface SearchSuggestionsProps {
 }
 
 export function HeaderSearch(): ReactNode {
+  const inputRef = useRef<HTMLInputElement>(null)
+  const toggleRef = useRef<HTMLButtonElement>(null)
+  const fieldId = useId()
+  const query = useAtomValue(headerSearchQueryAtom)
+  const { isOpen: isFieldShown, open: showField, close: closeField } = useOpenOnPage()
+
+  // Capture, because the full-screen search can open over the menu, which skips an Escape already handled
+  useDismissOnEscape(isFieldShown, closeField, toggleRef, { capture: true })
+  useDismissOnMediaQueryChange(isFieldShown, MEDIA_QUERIES.upToSmall, closeField)
+  useSlashShortcut(inputRef, showField)
+
+  useEffect(() => {
+    if (isFieldShown) inputRef.current?.focus()
+  }, [isFieldShown])
+
+  const hideField = (): void => {
+    closeField()
+    toggleRef.current?.focus()
+  }
+
+  return (
+    <div className={isFieldShown ? `${styles.root} ${styles.fieldShown}` : styles.root}>
+      <button
+        ref={toggleRef}
+        className={`${headerStyles.iconButton} ${styles.toggle}`}
+        type="button"
+        aria-label="Search"
+        aria-expanded={isFieldShown}
+        aria-controls={fieldId}
+        onClick={() => (isFieldShown ? closeField() : showField())}
+      >
+        <SearchIcon />
+      </button>
+      <div id={fieldId} className={styles.panel}>
+        <div className={styles.bar}>
+          <SearchCombobox inputRef={inputRef} onOpenAsset={closeField} />
+          <button
+            className={`${headerStyles.iconButton} ${styles.close}`}
+            type="button"
+            aria-label="Close search"
+            onClick={hideField}
+          >
+            <CloseIcon />
+          </button>
+        </div>
+        {!query && <p className={styles.hint}>Try NVIDIA, NVDA or a token address.</p>}
+      </div>
+    </div>
+  )
+}
+
+function isEditableTarget(target: EventTarget | null): boolean {
+  if (!(target instanceof HTMLElement)) return false
+
+  return target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)
+}
+
+function optionId(listboxId: string, ticker: string): string {
+  return `${listboxId}-${ticker}`
+}
+
+function SearchCombobox({ inputRef, onOpenAsset }: SearchComboboxProps): ReactNode {
   const router = useRouter()
   const containerRef = useRef<HTMLDivElement>(null)
-  const inputRef = useRef<HTMLInputElement>(null)
   const listboxId = useId()
   const query = useAtomValue(headerSearchQueryAtom)
   const setQuery = useSetAtom(setHeaderSearchQueryAtom)
@@ -39,14 +119,16 @@ export function HeaderSearch(): ReactNode {
   const items = useSuggestions(query)
   const activeItem = items?.[activeIndex]
   const isExpanded = isOpen && query.trim().length > 0
+  const closeSuggestions = useCallback(() => setIsOpen(false), [])
 
-  useSlashShortcut(inputRef)
-  useCloseOnClickOutside(containerRef, setIsOpen)
+  useDismissOnOutsideInteraction(isOpen, [containerRef], closeSuggestions, false)
 
   const openAsset = (ticker: string): void => {
     setIsOpen(false)
     setActiveIndex(-1)
+    onOpenAsset()
     inputRef.current?.blur()
+    trackEvent('search_asset_select', { ticker, search_term: query.trim() })
     router.push(`/asset/${ticker}`)
   }
 
@@ -117,16 +199,6 @@ export function HeaderSearch(): ReactNode {
   )
 }
 
-function isEditableTarget(target: EventTarget | null): boolean {
-  if (!(target instanceof HTMLElement)) return false
-
-  return target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)
-}
-
-function optionId(listboxId: string, ticker: string): string {
-  return `${listboxId}-${ticker}`
-}
-
 function SearchSuggestions({ listboxId, items, activeTicker, onSelect, onHover }: SearchSuggestionsProps): ReactNode {
   const query = useAtomValue(debouncedHeaderSearchQueryAtom)
   const { error } = useAtomValue(headerSearchResultQueryAtom)
@@ -162,31 +234,21 @@ function SearchSuggestions({ listboxId, items, activeTicker, onSelect, onHover }
   )
 }
 
-function useCloseOnClickOutside(ref: RefObject<HTMLElement | null>, setIsOpen: (isOpen: boolean) => void): void {
-  useEffect(() => {
-    const onPointerDown = (event: PointerEvent): void => {
-      if (event.target instanceof Node && !ref.current?.contains(event.target)) setIsOpen(false)
-    }
-
-    document.addEventListener('pointerdown', onPointerDown)
-
-    return () => document.removeEventListener('pointerdown', onPointerDown)
-  }, [ref, setIsOpen])
-}
-
-function useSlashShortcut(inputRef: RefObject<HTMLInputElement | null>): void {
+/** On narrow screens the field is hidden, so it is shown first and focused once it renders */
+function useSlashShortcut(inputRef: RefObject<HTMLInputElement | null>, showField: () => void): void {
   useEffect(() => {
     const onKeyDown = (event: globalThis.KeyboardEvent): void => {
       if (event.key !== '/' || event.metaKey || event.ctrlKey || event.altKey || isEditableTarget(event.target)) return
 
       event.preventDefault()
+      if (window.matchMedia(MEDIA_QUERIES.upToSmall).matches) showField()
       inputRef.current?.focus()
     }
 
     document.addEventListener('keydown', onKeyDown)
 
     return () => document.removeEventListener('keydown', onKeyDown)
-  }, [inputRef])
+  }, [inputRef, showField])
 }
 
 /** `undefined` until the results of the current query arrive */

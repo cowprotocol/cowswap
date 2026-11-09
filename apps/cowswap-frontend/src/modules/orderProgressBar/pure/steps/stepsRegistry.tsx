@@ -96,7 +96,8 @@ function FinishedStepWrapper(props: OrderProgressBarProps): ReactNode {
       randomBenefit={randomBenefit}
       debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS}
       onDismiss={props.onDismiss}
-      showWaitAndSaveOutcome={Boolean(props.showWaitAndSaveOutcome)}
+      solverCompetitionPending={props.solverCompetitionPending}
+      waitAndSave={props.waitAndSave}
     >
       <RenderProgressTopSection
         {...props}

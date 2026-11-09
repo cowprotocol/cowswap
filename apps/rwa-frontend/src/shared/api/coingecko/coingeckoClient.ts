@@ -1,8 +1,8 @@
 import 'server-only'
 
-import { unstable_cache } from 'next/cache'
-
 import { withRetryBackoff } from './retryBackoff'
+
+import { createCachedJsonFetcher } from '../cachedJson'
 
 /** `days` param of `/coins/{id}/market_chart` */
 export type CoingeckoChartDays = '1' | '7' | '30' | '365' | 'max'
@@ -23,6 +23,9 @@ export interface CoingeckoMarketChart {
   /** `[timestamp ms, price USD]` */
   prices: [number, number][]
 }
+
+/** `[timestamp ms of the candle close, open, high, low, close]`, USD */
+export type CoingeckoOhlc = [number, number, number, number, number]
 
 /** `[timestamp s, open, high, low, close, volume]`, USD */
 export type CoingeckoOhlcvCandle = [number, number, number, number, number, number]
@@ -56,6 +59,11 @@ export interface CoingeckoRwaMarket {
   } | null
 }
 
+export interface CoingeckoRwaMarketChart {
+  /** `[timestamp ms, price USD per share]` over every tokenized version of the RWA */
+  tokenized_prices: [number, number][]
+}
+
 interface CoingeckoConfig {
   baseUrl: string
   headers: Record<string, string>
@@ -78,7 +86,7 @@ const ONCHAIN_BATCH_SIZE = 30
 const RWA_MARKETS_PAGE_SIZE = 250
 const GECKOTERMINAL_BASE_URL = 'https://api.geckoterminal.com/api/v2'
 /** Bump when a cached upstream payload changes shape: the data cache outlives deployments */
-const RESPONSE_CACHE_KEY = ['coingecko-response', 'v1']
+const RESPONSE_CACHE_KEY = ['coingecko-response', 'v2']
 /** Fails a hanging request, so `withRetryBackoff` starts counting instead of waiting for the platform timeout */
 const REQUEST_TIMEOUT_MS = 10_000
 
@@ -123,6 +131,18 @@ export async function fetchMarketChart(
 ): Promise<CoingeckoMarketChart> {
   return fetchJson<CoingeckoMarketChart>(
     `${getConfig().baseUrl}/coins/${encodeURIComponent(id)}/market_chart?vs_currency=usd&days=${days}`,
+    revalidateSeconds,
+  )
+}
+
+/** The candle size follows `days`: 30 minutes up to 2 days, 4 hours up to 30 days, 4 days above */
+export async function fetchOhlc(
+  id: string,
+  days: CoingeckoChartDays,
+  revalidateSeconds: number,
+): Promise<CoingeckoOhlc[]> {
+  return fetchJson<CoingeckoOhlc[]>(
+    `${getConfig().baseUrl}/coins/${encodeURIComponent(id)}/ohlc?vs_currency=usd&days=${days}`,
     revalidateSeconds,
   )
 }
@@ -181,6 +201,20 @@ export async function fetchOnchainTokens(
   })
 }
 
+/** `id` is a RWA id (`/rwas/list`). `null` without the Pro plan or when CoinGecko has no such RWA */
+export async function fetchRwaMarketChart(
+  id: string,
+  days: CoingeckoChartDays,
+  revalidateSeconds: number,
+): Promise<CoingeckoRwaMarketChart | null> {
+  if (!isProPlan()) return null
+
+  return fetchJsonOrNotFound<CoingeckoRwaMarketChart>(
+    `${getConfig().baseUrl}/rwas/${encodeURIComponent(id)}/market_chart?vs_currency=usd&days=${days}`,
+    revalidateSeconds,
+  )
+}
+
 /**
  * Requests the pages that `expectedCount` markets fill concurrently, then the next ones until a short page.
  * Uncached and without retry backoff: the data cache would keep each page from a different moment,
@@ -212,28 +246,8 @@ function chunk<T>(items: T[], size: number): T[][] {
   return chunks
 }
 
-const cachedRequests = new Map<number, (url: string, allowNotFound: boolean) => Promise<unknown>>()
-
-/**
- * Data cache entry per URL. A failed refresh keeps serving the stale entry
- * and `withRetryBackoff` spaces out the next upstream attempts.
- * `null` when the upstream answers 404 and `allowNotFound` is set, otherwise a 404 is a failure
- */
-function fetchCachedJson(url: string, revalidate: number, allowNotFound: boolean): Promise<unknown> {
-  let load = cachedRequests.get(revalidate)
-
-  if (!load) {
-    load = unstable_cache(
-      (cacheUrl: string, cacheAllowNotFound: boolean) =>
-        withRetryBackoff(cacheUrl, () => requestJson(cacheUrl, cacheAllowNotFound)),
-      RESPONSE_CACHE_KEY,
-      { revalidate },
-    )
-    cachedRequests.set(revalidate, load)
-  }
-
-  return load(url, allowNotFound)
-}
+/** `null` when the upstream answers 404 and `allowNotFound` is set, otherwise a 404 is a failure */
+const fetchCachedJson = createCachedJsonFetcher(RESPONSE_CACHE_KEY, requestJsonWithBackoff)
 
 async function fetchJson<T>(url: string, revalidate: number): Promise<T> {
   return (await fetchCachedJson(url, revalidate, false)) as T
@@ -304,4 +318,9 @@ async function requestJson(url: string, allowNotFound: boolean): Promise<unknown
   if (isUpstreamErrorBody(body)) throw new UpstreamError(url, body.status.error_code)
 
   return body
+}
+
+/** Shares one upstream call with the data cache refresh of the same URL */
+function requestJsonWithBackoff(url: string, allowNotFound: boolean): Promise<unknown> {
+  return withRetryBackoff(url, () => requestJson(url, allowNotFound))
 }

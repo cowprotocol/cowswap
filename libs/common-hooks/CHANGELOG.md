@@ -1,5 +1,32 @@
 # Changelog
 
+## [3.18.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.17.1...common-hooks-v3.18.0) (2026-11-05)
+
+### Minor Changes
+
+- feat: add isAlphaNetworksOptionVisible flag (#8477)
+
+### Patch Changes
+
+- fix(performance): wake countdowns once per displayed second (#8448)
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.18.0
+  - @cowprotocol/common-utils@3.21.2
+  - @cowprotocol/types@4.14.2
+
+## [3.17.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.17.0...common-hooks-v3.17.1) (2026-10-28)
+
+### Patch Changes
+
+- fix(solana): gate appData integration behind isSolanaAppDataEnabled (#8493)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.17.1
+  - @cowprotocol/common-utils@3.21.1
+
 ## [3.17.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.16.1...common-hooks-v3.17.0) (2026-10-28)
 
 ### Minor Changes

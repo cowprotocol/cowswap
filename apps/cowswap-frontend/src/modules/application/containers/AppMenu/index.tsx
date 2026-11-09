@@ -52,7 +52,7 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
   const { chainId } = useWalletInfo()
   const isInjectedWidgetMode = isInjectedWidget()
   const menuItems = useMenuItems()
-  const { isSolversEnabled, isAlphaNetworksOptionVisible } = useFeatureFlags()
+  const { isSolversEnabled, isAlphaNetworksOptionVisible, isRwaEnabled } = useFeatureFlags()
   const [darkMode, toggleDarkMode] = useDarkModeManager()
   const [areAlphaNetworksEnabled, setAlphaNetworksEnabled] = useAtom(alphaNetworksEnabledAtom)
   const { setLocale } = useUserLocaleManager()
@@ -143,6 +143,7 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
       settingsNavItems={settingsNavItems}
       showGlobalSettings
       isInternationalizationEnabled={isInternationalizationEnabled}
+      isRwaEnabled={!!isRwaEnabled}
     />
   )
 }

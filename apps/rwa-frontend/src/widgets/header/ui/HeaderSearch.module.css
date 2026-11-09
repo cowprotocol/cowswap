@@ -1,9 +1,30 @@
+.root {
+  position: relative;
+  display: flex;
+}
+
+.root .toggle,
+.bar .close,
+.hint {
+  display: none;
+}
+
+.toggle svg {
+  width: 20px;
+  height: 20px;
+}
+
+.panel,
+.bar {
+  display: contents;
+}
+
 .search {
   position: relative;
   display: flex;
   align-items: center;
   gap: 10px;
-  width: 340px;
+  width: 100%;
   height: 44px;
   padding: 0 8px 0 16px;
   border: 1px solid var(--color-border);
@@ -20,18 +41,8 @@
   color: var(--color-text-secondary);
 }
 
-.input::placeholder {
-  color: var(--color-text-secondary);
-}
-
 .input {
-  flex: 1;
-  min-width: 0;
-  padding: 0;
-  border: none;
-  background: none;
   font-size: 14px;
-  outline: none;
 }
 
 .input::-webkit-search-cancel-button {
@@ -111,7 +122,69 @@
 }
 
 @media (max-width: 720px) {
-  .search {
-    width: 100%;
+  .root .toggle {
+    display: inline-flex;
+  }
+
+  .panel {
+    display: none;
+  }
+
+  body:has(.fieldShown) {
+    overflow: hidden;
+  }
+
+  .fieldShown .panel {
+    position: fixed;
+    z-index: 1000;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+    background: var(--color-bg);
+  }
+
+  .fieldShown .bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* iOS zooms into inputs under 16px */
+  .input {
+    font-size: 16px;
+  }
+
+  .shortcut {
+    display: none;
+  }
+
+  .bar .close {
+    display: inline-flex;
+    flex-shrink: 0;
+    color: var(--color-text-secondary);
+  }
+
+  .hint {
+    display: block;
+    margin: 0;
+    padding: 0 8px;
+    color: var(--color-text-secondary);
+    font-size: 13px;
+  }
+
+  /* 16px padding + 44px bar + 16px gap */
+  .popup {
+    position: fixed;
+    top: 76px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 0 16px 16px;
+    overflow-y: auto;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
   }
 }

@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import { coingeckoProvider, toChartPoints } from './marketData'
+import { coingeckoProvider, toCandles, toCandlesFromPoints, toChartPoints } from './marketData'
 
 jest.mock('next/cache', () => ({
   unstable_cache: <T extends unknown[], R>(load: (...args: T) => Promise<R>) => load,
@@ -106,12 +106,87 @@ describe('toChartPoints', () => {
   })
 })
 
-describe('coingeckoProvider.getNetworkStats', () => {
-  const TOKEN_MARKETS = {
-    'nvidia-ondo-tokenized-stock': { price: 230, marketCap: null, volume24h: null, logoUrl: null },
-  }
+describe('coingeckoProvider.getRwaChart', () => {
+  const env = { ...process.env }
 
-  it('values the network supply at the token price and keeps the DEX volume', async () => {
+  beforeEach(() => {
+    process.env.COINGECKO_API_KEY = 'key'
+    process.env.COINGECKO_API_PLAN = 'pro'
+  })
+
+  afterEach(() => {
+    process.env = { ...env }
+    jest.restoreAllMocks()
+  })
+
+  it('charts the tokenized prices of the RWA', async () => {
+    const fetchMock = mockFetch({
+      tokenized_prices: [
+        [1_000_000, 10],
+        [1_300_000, 11],
+      ],
+    })
+
+    expect(await coingeckoProvider.getRwaChart('nvidia', '1W')).toEqual([
+      { time: 1000, value: 10 },
+      { time: 1300, value: 11 },
+    ])
+    expect(String(fetchMock.mock.calls[0][0])).toBe(
+      'https://pro-api.coingecko.com/api/v3/rwas/nvidia/market_chart?vs_currency=usd&days=7',
+    )
+  })
+
+  it('builds the candles from the tokenized prices of the RWA', async () => {
+    mockFetch({
+      tokenized_prices: [
+        [0, 10],
+        [600_000, 12],
+        [1_200_000, 9],
+        [1_800_000, 11],
+      ],
+    })
+
+    expect(await coingeckoProvider.getRwaCandles('nvidia', '1D')).toEqual([
+      { time: 0, open: 10, high: 12, low: 9, close: 9 },
+      { time: 1800, open: 11, high: 11, low: 11, close: 11 },
+    ])
+  })
+
+  it('returns null without the Pro plan', async () => {
+    process.env.COINGECKO_API_PLAN = 'demo'
+    const fetchMock = mockFetch({})
+
+    expect(await coingeckoProvider.getRwaChart('nvidia', '1D')).toBeNull()
+    expect(await coingeckoProvider.getRwaCandles('nvidia', '1D')).toBeNull()
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+})
+
+describe('toCandlesFromPoints', () => {
+  it('groups the points into candles stamped with their open time', () => {
+    expect(
+      toCandlesFromPoints(
+        [
+          { time: 3600, value: 5 },
+          { time: 5400, value: 7 },
+          { time: 7200, value: 6 },
+          { time: 14_399, value: 4 },
+        ],
+        3600 * 2,
+      ),
+    ).toEqual([
+      { time: 0, open: 5, high: 7, low: 5, close: 7 },
+      { time: 7200, open: 6, high: 6, low: 4, close: 4 },
+    ])
+  })
+
+  it('returns no candles without points', () => {
+    expect(toCandlesFromPoints([], 3600)).toEqual([])
+  })
+})
+
+describe('coingeckoProvider.getNetworkStats', () => {
+  it('keeps the DEX volume of every token', async () => {
     const [ondo, xstock] = [NVDA.tokens[0], NVDA.tokens[2]]
     const fetchMock = mockFetch({
       data: [
@@ -129,7 +204,6 @@ describe('coingeckoProvider.getNetworkStats', () => {
     const stats = await coingeckoProvider.getNetworkStats(
       1,
       [ondo, xstock].filter((t) => t !== undefined),
-      TOKEN_MARKETS,
     )
 
     expect(fetchMock).toHaveBeenCalledTimes(1)
@@ -137,8 +211,8 @@ describe('coingeckoProvider.getNetworkStats', () => {
       `/networks/eth/tokens/multi/${ondo?.address},${xstock?.address}`,
     )
     expect(stats).toEqual([
-      { address: ondo?.address, onchainCap: 230_115, dexVolume24h: 814560.89 },
-      { address: xstock?.address, onchainCap: null, dexVolume24h: 0 },
+      { address: ondo?.address, dexVolume24h: 814560.89 },
+      { address: xstock?.address, dexVolume24h: 0 },
     ])
   })
 
@@ -148,7 +222,7 @@ describe('coingeckoProvider.getNetworkStats', () => {
     const fetchMock = mockFetch({ data: [] })
     const token = filler.tokens[35]
 
-    await coingeckoProvider.getNetworkStats(1, token ? [token] : [], TOKEN_MARKETS)
+    await coingeckoProvider.getNetworkStats(1, token ? [token] : [])
 
     const addresses = filler.tokens.slice(30).map(({ address }) => address)
 
@@ -161,9 +235,7 @@ describe('coingeckoProvider.getNetworkStats', () => {
 
     const [ondo] = NVDA.tokens
 
-    await expect(coingeckoProvider.getNetworkStats(1, ondo ? [ondo] : [], TOKEN_MARKETS)).rejects.toThrow(
-      'responded with 429',
-    )
+    await expect(coingeckoProvider.getNetworkStats(1, ondo ? [ondo] : [])).rejects.toThrow('responded with 429')
   })
 
   it('returns empty stats on a network the onchain API does not index', async () => {
@@ -171,8 +243,8 @@ describe('coingeckoProvider.getNetworkStats', () => {
 
     const [ondo] = NVDA.tokens
 
-    expect(await coingeckoProvider.getNetworkStats(57073, ondo ? [ondo] : [], TOKEN_MARKETS)).toEqual([
-      { address: ondo?.address, onchainCap: null, dexVolume24h: null },
+    expect(await coingeckoProvider.getNetworkStats(57073, ondo ? [ondo] : [])).toEqual([
+      { address: ondo?.address, dexVolume24h: null },
     ])
     expect(fetchMock).not.toHaveBeenCalled()
   })
@@ -409,5 +481,23 @@ describe('coingeckoProvider.getTokenMarkets', () => {
 
     expect(await coingeckoProvider.getTokenMarkets(NO_DATA.tokens)).toEqual({})
     expect(fetchMock).not.toHaveBeenCalled()
+  })
+})
+
+describe('toCandles', () => {
+  it('stamps candles with their open time and keeps time strictly ascending', () => {
+    expect(
+      toCandles(
+        [
+          [3_600_000, 1, 2, 0.5, 1.5],
+          [5_400_000, 1.5, 3, 1, 2],
+          [5_400_000, 9, 9, 9, 9],
+        ],
+        1_800,
+      ),
+    ).toEqual([
+      { time: 1_800, open: 1, high: 2, low: 0.5, close: 1.5 },
+      { time: 3_600, open: 1.5, high: 3, low: 1, close: 2 },
+    ])
   })
 })

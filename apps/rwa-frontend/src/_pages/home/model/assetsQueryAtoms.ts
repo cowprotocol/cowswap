@@ -1,3 +1,5 @@
+import { atom } from 'jotai'
+
 import { atomWithQuery } from 'jotai-tanstack-query'
 
 import { assetsFiltersAtom, debouncedAssetsFilterQueryAtom } from './assetsFiltersAtoms'
@@ -8,16 +10,24 @@ import { watchlistAtom } from './watchlistAtoms'
 import { assetsPageQueryOptions } from '@/entities/asset'
 
 export const assetsPageQueryAtom = atomWithQuery((get) => {
-  const { type, issuer, chainId, watchlistOnly } = get(assetsFiltersAtom)
+  const { type, issuers, chainIds, minMarketCap, minVolume24h, watchlistOnly } = get(assetsFiltersAtom)
 
   return assetsPageQueryOptions({
     page: get(assetsPageAtom),
     pageSize: ASSETS_PAGE_SIZE,
     ...get(assetsSortAtom),
     type: type ?? undefined,
-    issuer: issuer ?? undefined,
-    chainId: chainId ?? undefined,
+    issuers: issuers.length ? [...issuers].sort() : undefined,
+    chainIds: chainIds.length ? [...chainIds].sort((a, b) => a - b) : undefined,
+    minMarketCap: minMarketCap ?? undefined,
+    minVolume24h: minVolume24h ?? undefined,
     query: get(debouncedAssetsFilterQueryAtom) || undefined,
     tickers: watchlistOnly ? [...get(watchlistAtom)].sort() : undefined,
   })
+})
+
+export const assetsCountLabelAtom = atom((get) => {
+  const { data } = get(assetsPageQueryAtom)
+
+  return data && `${data.total} ${data.total === 1 ? 'asset' : 'assets'}`
 })

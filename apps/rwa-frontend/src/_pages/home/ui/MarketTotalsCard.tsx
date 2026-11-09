@@ -6,14 +6,12 @@ import styles from './MarketOverview.module.css'
 import { Sparkline } from './Sparkline'
 
 import { formatRefTime } from '../lib/formatRefTime'
+import { MARKET_DATA_HINT, TOTAL_VOLUME_HINT } from '../lib/marketDataHint'
 
 import { isUsMarketOpen, type RwaMarketOverview, type RwaTradingTime } from '@/entities/asset'
 import { formatCompactUsd } from '@/shared/lib/format'
 import { InfoIcon } from '@/shared/ui/icons'
 import { Tooltip } from '@/shared/ui/tooltip'
-
-const VOLUME_HINT =
-  'Trading volume of the listed assets across every chain and issuer over the last 24 hours, from CoinGecko'
 
 interface MarketTotalsCardProps {
   /** `undefined` while loading */
@@ -21,26 +19,31 @@ interface MarketTotalsCardProps {
 }
 
 export function MarketTotalsCard({ overview }: MarketTotalsCardProps): ReactNode {
-  const refTime = overview?.updatedAt
-    ? formatRefTime(overview.updatedAt, Intl.DateTimeFormat().resolvedOptions().timeZone)
-    : null
+  const refTime = overview?.updatedAt ? formatRefTime(overview.updatedAt, 'UTC') : null
 
   return (
     <section className={styles.card} aria-labelledby="market-totals-title">
       <header className={styles.cardHeader}>
-        <h2 id="market-totals-title" className={styles.cardTitle}>
-          Market overview
-        </h2>
+        <span className={styles.cardTitleGroup}>
+          <h2 id="market-totals-title" className={styles.cardTitle}>
+            Market overview
+          </h2>
+          <Tooltip className={styles.info} content={MARKET_DATA_HINT}>
+            <span role="img" aria-label="About market data">
+              <InfoIcon />
+            </span>
+          </Tooltip>
+        </span>
         <span className={styles.cardHint}>7D</span>
       </header>
       <div className={styles.totals}>
-        <Total label="Market cap" value={overview && formatCompactUsd(overview.totals.marketCap)} />
+        <Total label="Tokenized market cap" value={overview && formatCompactUsd(overview.totals.marketCap)} />
         <Total
           label={
             <>
-              24h volume
-              <Tooltip className={styles.info} content={VOLUME_HINT}>
-                <span role="img" aria-label={VOLUME_HINT}>
+              24h total volume
+              <Tooltip className={styles.info} content={TOTAL_VOLUME_HINT}>
+                <span role="img" aria-label="About total volume">
                   <InfoIcon />
                 </span>
               </Tooltip>

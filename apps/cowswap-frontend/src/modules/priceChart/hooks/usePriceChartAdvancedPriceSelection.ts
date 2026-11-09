@@ -1,5 +1,7 @@
 import { useLayoutEffect } from 'react'
 
+import { isChartWidgetRemoved } from '../lib/priceChartAdvancedWidget.utils'
+
 import type { IChartingLibraryWidget } from 'charting_library'
 
 export function usePriceChartAdvancedPriceSelection(
@@ -22,7 +24,9 @@ export function usePriceChartAdvancedPriceSelection(
     widget.subscribe('mouse_up', handleClick)
     return () => {
       chart.crossHairMoved().unsubscribe(null, handleCrosshair)
-      widget.unsubscribe('mouse_up', handleClick)
+      // The widget may already be gone: clearing the chart state and destroying the iframe are two separate
+      // steps, and `remove()` takes every subscription with it anyway.
+      if (!isChartWidgetRemoved(widget)) widget.unsubscribe('mouse_up', handleClick)
     }
   }, [widget, activeTicker, onSelectPrice])
 }

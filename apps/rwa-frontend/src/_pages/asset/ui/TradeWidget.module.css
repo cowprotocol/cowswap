@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  scroll-margin-top: 12px;
 }
 
 .notice {
@@ -13,22 +14,21 @@
   font-size: 13px;
 }
 
-.connectPrompt {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 10px 10px 10px 16px;
-  border-radius: var(--radius-card);
-  background: var(--color-bg);
-  box-shadow: var(--shadow-widget);
-  font-weight: 500;
+.disclaimer {
+  margin: 0;
+  padding: 0 6px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  line-height: 16px;
 }
 
 /* Browsers paint an opaque white backdrop behind an iframe whose color scheme differs from the embedding page */
 .widget iframe {
   color-scheme: normal;
+}
+
+.frameContainer {
+  container-type: inline-size;
 }
 
 .frame {
@@ -38,6 +38,15 @@
 /* The iframe is appended in an effect after the first paint; hold the skeleton height until then */
 .frame[data-loading] {
   min-height: 640px;
+}
+
+/* CoW Swap caps its form at 470px, so in a wider column the card keeps this row as wide as the others */
+@container (min-width: 471px) {
+  .frame {
+    border-radius: var(--radius-card);
+    background: var(--color-bg);
+    box-shadow: var(--shadow-widget);
+  }
 }
 
 .skeleton {

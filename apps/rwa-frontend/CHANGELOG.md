@@ -1,5 +1,23 @@
 # @cowprotocol/rwa-frontend
 
+## 0.1.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/widget-lib@4.13.0
+  - @cowprotocol/common-const@3.18.0
+  - @cowprotocol/common-utils@3.21.2
+  - @cowprotocol/widget-react@3.3.3
+
+## 0.1.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.17.1
+  - @cowprotocol/common-utils@3.21.1
+
 ## 0.1.3
 
 ### Patch Changes

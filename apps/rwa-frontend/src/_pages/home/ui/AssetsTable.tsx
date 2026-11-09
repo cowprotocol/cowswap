@@ -9,19 +9,39 @@ import styles from './AssetsTable.module.css'
 import { Sparkline, type SparklineTone } from './Sparkline'
 import { StarIcon } from './StarIcon'
 
-import { assetsPageAtom } from '../model/assetsPageAtom'
+import { MARKET_DATA_HINT, TOTAL_VOLUME_HINT } from '../lib/marketDataHint'
+import { ASSETS_PAGE_SIZE, assetsPageAtom } from '../model/assetsPageAtom'
 import { assetsSortAtom } from '../model/assetsSortAtom'
 import { toggleWatchlistAtom, watchlistAtom } from '../model/watchlistAtoms'
 
 import { getDefaultSortOrder, RWA_ASSET_TYPE_LABELS, type RwaAssetListItem, type RwaSortField } from '@/entities/asset'
-import { formatCompactUsd, formatPercent, formatUsd } from '@/shared/lib/format'
+import { EMPTY_VALUE, formatCompactUsd, formatPercent, formatUsd } from '@/shared/lib/format'
+import { InfoIcon } from '@/shared/ui/icons'
 import { NetworkLogos } from '@/shared/ui/network-logos'
 import { TokenLogo } from '@/shared/ui/token-logo'
 import { Tooltip } from '@/shared/ui/tooltip'
 
+const COLUMNS_COUNT = 7
+
+/** Widths of the asset title and meta bars, varied per row so the skeleton reads as text */
+const SKELETON_TEXT_WIDTHS: [number, number][] = [
+  [54, 28],
+  [100, 30],
+  [106, 26],
+]
+
 interface AssetsTableProps {
   id: string
-  assets: RwaAssetListItem[]
+  /** `null` while loading */
+  assets: RwaAssetListItem[] | null
+  /** Shown in place of the rows when `assets` is empty */
+  emptyState: ReactNode
+}
+
+interface ColumnHint {
+  text: string
+  /** Accessible name of the info icon */
+  label: string
 }
 
 interface SortableHeaderProps {
@@ -29,29 +49,47 @@ interface SortableHeaderProps {
   title: string
   numeric?: boolean
   className?: string
+  hint?: ColumnHint
 }
 
-export function AssetsTable({ id, assets }: AssetsTableProps): ReactNode {
+export function AssetsTable({ id, assets, emptyState }: AssetsTableProps): ReactNode {
   return (
     <div className={styles.frame}>
-      <table id={id} className={styles.table}>
+      <table id={id} className={styles.table} aria-busy={!assets}>
         <thead>
           <tr>
             <th className={styles.watchColumn}>
               <span className={styles.visuallyHidden}>Watchlist</span>
             </th>
             <SortableHeader field="title" title="Asset" />
-            <SortableHeader field="price" title="Stock price" numeric />
-            <SortableHeader field="change24h" title="24H change" numeric />
-            <SortableHeader field="volume24h" title="24h volume" numeric className={styles.optional} />
-            <SortableHeader field="marketCap" title="Market cap" numeric className={styles.optional} />
-            <th className={`${styles.numeric} ${styles.chartColumn}`}>24H chart</th>
+            <SortableHeader
+              field="price"
+              title="Reference price"
+              numeric
+              hint={{ text: MARKET_DATA_HINT, label: 'About market data' }}
+            />
+            <SortableHeader field="change24h" title="24h change" numeric />
+            <SortableHeader
+              field="volume24h"
+              title="24h total volume"
+              numeric
+              className={styles.optional}
+              hint={{ text: TOTAL_VOLUME_HINT, label: 'About total volume' }}
+            />
+            <SortableHeader field="marketCap" title="Tokenized market cap" numeric className={styles.optional} />
+            <th className={`${styles.numeric} ${styles.chartColumn}`}>24h chart</th>
           </tr>
         </thead>
         <tbody>
-          {assets.map((asset) => (
-            <AssetRow key={asset.ticker} asset={asset} />
-          ))}
+          {!assets ? (
+            Array.from({ length: ASSETS_PAGE_SIZE }, (_, index) => <SkeletonRow key={index} index={index} />)
+          ) : assets.length ? (
+            assets.map((asset) => <AssetRow key={asset.ticker} asset={asset} />)
+          ) : (
+            <tr className={styles.emptyRow}>
+              <td colSpan={COLUMNS_COUNT}>{emptyState}</td>
+            </tr>
+          )}
         </tbody>
       </table>
     </div>
@@ -60,6 +98,7 @@ export function AssetsTable({ id, assets }: AssetsTableProps): ReactNode {
 
 function AssetRow({ asset }: { asset: RwaAssetListItem }): ReactNode {
   const change = asset.market?.change24h
+  const issuersCount = new Set(asset.tokens.map((token) => token.issuer)).size
 
   return (
     <tr>
@@ -76,7 +115,9 @@ function AssetRow({ asset }: { asset: RwaAssetListItem }): ReactNode {
             <div className={styles.assetMeta}>
               <span>{asset.ticker}</span>
               <span className={styles.assetType}>{RWA_ASSET_TYPE_LABELS[asset.type]}</span>
-              <IssuersCount asset={asset} />
+              <span className={styles.issuers}>
+                {issuersCount} {issuersCount === 1 ? 'issuer' : 'issuers'}
+              </span>
               <NetworkLogos chainIds={[...new Set(asset.tokens.map((token) => token.chainId))]} />
             </div>
           </div>
@@ -88,7 +129,7 @@ function AssetRow({ asset }: { asset: RwaAssetListItem }): ReactNode {
       <td className={`${styles.numeric} ${styles.optional}`}>{formatCompactUsd(asset.market?.marketCap)}</td>
       <td className={`${styles.numeric} ${styles.chartColumn}`}>
         <span className={styles.sparkline}>
-          <Sparkline series={asset.series} tone={getTone(change)} />
+          <Sparkline series={asset.series} tone={getTone(change)} placeholder={EMPTY_VALUE} />
         </span>
       </td>
     </tr>
@@ -107,17 +148,48 @@ function getTone(change: number | null | undefined): SparklineTone {
   return change > 0 ? 'positive' : 'negative'
 }
 
-function IssuersCount({ asset }: { asset: RwaAssetListItem }): ReactNode {
-  const issuers = [...new Set(asset.tokens.map((token) => token.issuer))]
+function SkeletonRow({ index }: { index: number }): ReactNode {
+  const [titleWidth, tickerWidth] = SKELETON_TEXT_WIDTHS[index % SKELETON_TEXT_WIDTHS.length] ?? [80, 28]
 
   return (
-    <Tooltip className={styles.issuers} content={issuers.join(', ')}>
-      {issuers.length} {issuers.length === 1 ? 'issuer' : 'issuers'}
-    </Tooltip>
+    <tr className={styles.skeletonRow} aria-hidden="true">
+      <td className={styles.watchColumn}>
+        <span className={styles.skeletonStar}>
+          <StarIcon filled={false} />
+        </span>
+      </td>
+      <td>
+        <div className={styles.asset}>
+          <span className={`${styles.skeletonBar} ${styles.skeletonLogo}`} />
+          <div className={styles.assetText}>
+            <span className={styles.skeletonBar} style={{ width: titleWidth }} />
+            <span className={styles.skeletonMeta}>
+              <span className={styles.skeletonBar} style={{ width: tickerWidth }} />
+              <span className={styles.skeletonBar} style={{ width: 58 }} />
+            </span>
+          </div>
+        </div>
+      </td>
+      <td className={styles.numeric}>
+        <span className={styles.skeletonBar} />
+      </td>
+      <td className={styles.numeric}>
+        <span className={styles.skeletonBar} />
+      </td>
+      <td className={`${styles.numeric} ${styles.optional}`}>
+        <span className={styles.skeletonBar} />
+      </td>
+      <td className={`${styles.numeric} ${styles.optional}`}>
+        <span className={styles.skeletonBar} />
+      </td>
+      <td className={`${styles.numeric} ${styles.chartColumn}`}>
+        <span className={`${styles.skeletonBar} ${styles.skeletonChart}`} />
+      </td>
+    </tr>
   )
 }
 
-function SortableHeader({ field, title, numeric = false, className }: SortableHeaderProps): ReactNode {
+function SortableHeader({ field, title, numeric = false, className, hint }: SortableHeaderProps): ReactNode {
   const [{ sort, order }, setSort] = useAtom(assetsSortAtom)
   const setPage = useSetAtom(assetsPageAtom)
   const isActive = sort === field
@@ -138,6 +210,13 @@ function SortableHeader({ field, title, numeric = false, className }: SortableHe
         {isActive && <span aria-hidden="true">{order === 'asc' ? '↑' : '↓'}</span>}
         {title}
       </button>
+      {hint && (
+        <Tooltip className={styles.info} content={hint.text}>
+          <span role="img" aria-label={hint.label}>
+            <InfoIcon />
+          </span>
+        </Tooltip>
+      )}
     </th>
   )
 }
