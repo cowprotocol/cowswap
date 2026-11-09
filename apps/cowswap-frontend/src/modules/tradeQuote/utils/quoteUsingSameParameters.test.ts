@@ -91,3 +91,63 @@ describe('quoteUsingSameParameters() slippage', () => {
     })
   })
 })
+
+type AppDataDoc = Parameters<typeof quoteUsingSameParameters>[3]
+
+function appDataDoc(orderClass: string, slippageBips: number): AppDataDoc {
+  return {
+    appCode: 'CoW Swap',
+    metadata: { orderClass: { orderClass }, quote: { slippageBips } },
+  } as unknown as AppDataDoc
+}
+
+function evmNextParams(partiallyFillable: boolean): QuoteBridgeRequest {
+  return { ...nextParams(10), partiallyFillable } as QuoteBridgeRequest
+}
+
+function evmQuoteState(partiallyFillable: boolean): TradeQuoteState {
+  return {
+    ...DEFAULT_TRADE_QUOTE_STATE,
+    quote: {
+      quoteResults: { tradeParameters: { ...baseTradeParameters, slippageBps: 0, partiallyFillable } },
+    },
+  } as unknown as TradeQuoteState
+}
+
+describe('quoteUsingSameParameters() order type', () => {
+  it('requotes a Limit quote for a Swap form with the same pair and amount', () => {
+    expect(
+      quoteUsingSameParameters(
+        evmQuoteState(false),
+        evmNextParams(false),
+        appDataDoc('limit', 0),
+        appDataDoc('market', 10),
+        false,
+      ),
+    ).toBe(false)
+  })
+
+  it('requotes when partiallyFillable changes', () => {
+    expect(
+      quoteUsingSameParameters(
+        evmQuoteState(true),
+        evmNextParams(false),
+        appDataDoc('market', 10),
+        appDataDoc('market', 10),
+        false,
+      ),
+    ).toBe(false)
+  })
+
+  it('keeps the quote when only the quote slippage metadata changes', () => {
+    expect(
+      quoteUsingSameParameters(
+        evmQuoteState(false),
+        evmNextParams(false),
+        appDataDoc('market', 10),
+        appDataDoc('market', 50),
+        true,
+      ),
+    ).toBe(true)
+  })
+})
