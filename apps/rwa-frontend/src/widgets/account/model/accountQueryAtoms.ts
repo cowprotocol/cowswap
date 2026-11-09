@@ -3,8 +3,10 @@ import { areAddressesEqual, getAddressKey } from '@cowprotocol/cow-sdk'
 import { atomFamily } from 'jotai-family'
 import { atomWithQuery } from 'jotai-tanstack-query'
 
+import { orderCancellationsAtom } from './orderCancellations'
+
 import { activityProvider } from '../api/activity'
-import { getOpenOrders } from '../api/openOrders'
+import { getOpenOrders, type OpenOrder } from '../api/openOrders'
 
 import type { RwaTokenSummary } from '@/entities/asset'
 
@@ -27,11 +29,17 @@ function areParamsEqual(a: AccountQueryParams, b: AccountQueryParams): boolean {
 
 export const openOrdersQueryAtomFamily = atomFamily(
   ({ owner, scope, tokens }: AccountQueryParams) =>
-    atomWithQuery(() => ({
-      queryKey: [RWA_QUERY_KEY_ROOT, 'open-orders', getAddressKey(owner), scope],
-      queryFn: () => getOpenOrders({ owner, tokens }),
-      refetchInterval: OPEN_ORDERS_REFRESH_INTERVAL_MS,
-    })),
+    atomWithQuery((get) => {
+      const cancellations = get(orderCancellationsAtom)
+
+      return {
+        queryKey: [RWA_QUERY_KEY_ROOT, 'open-orders', getAddressKey(owner), scope],
+        queryFn: () => getOpenOrders({ owner, tokens }),
+        // The TWAP indexer notices a cancellation up to 100 blocks late: ComposableCoW.remove() emits no event
+        select: (orders: OpenOrder[]) => orders.filter(({ uid }) => cancellations[uid]?.status !== 'cancelled'),
+        refetchInterval: OPEN_ORDERS_REFRESH_INTERVAL_MS,
+      }
+    }),
   areParamsEqual,
 )
 

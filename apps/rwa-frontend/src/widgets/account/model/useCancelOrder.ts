@@ -12,6 +12,7 @@ import { normalizeError } from '@cowprotocol/common-utils/errors'
 
 import { type OrderCancellation, orderCancellationsAtom, setOrderCancellationAtom } from './orderCancellations'
 
+import { cancelCowShedTwap } from '../api/cancelCowShedTwap'
 import { cancelOrder, type CancellationType } from '../api/cancelOrder'
 
 import type { OpenOrder } from '../api/openOrders'
@@ -26,11 +27,13 @@ export function useCancelOrder(): (order: OpenOrder, type: CancellationType) => 
   const setCancellation = useSetAtom(setOrderCancellationAtom)
 
   return useCallback(
-    async ({ uid, chainId }: OpenOrder, type: CancellationType) => {
+    async ({ uid, chainId, cowShedTwap }: OpenOrder, type: CancellationType) => {
       setCancellation(uid, { status: 'signing', type })
 
       try {
-        const txHash = await cancelOrder({ config, chainId, orderUid: uid, type })
+        const txHash = cowShedTwap
+          ? await cancelCowShedTwap({ config, chainId, twap: cowShedTwap })
+          : await cancelOrder({ config, chainId, orderUid: uid, type })
 
         if (txHash) {
           if (!isHash(txHash)) throw new Error(`Unexpected transaction hash: ${txHash}`)

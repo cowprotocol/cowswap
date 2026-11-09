@@ -1,22 +1,29 @@
-import { isSupportedChain, type SupportedChainId, type Trade } from '@cowprotocol/cow-sdk'
+import { type EnrichedOrder, isSupportedChain, type SupportedChainId, type Trade } from '@cowprotocol/cow-sdk'
+import type { TwapOrder } from '@cowprotocol/sdk-composable'
 
 import { collectPages } from '../../lib/collectPages'
-import { getOrderType, type OrderType } from '../../lib/orderType'
+import { getOrderType } from '../../lib/orderType'
 import { getSupportedChainIds, resolveCounterTokens, settleChains, toTradeLeg } from '../../lib/tradeLeg'
+import { findTwapPart } from '../../lib/twapPart'
+import { collectTwapOrders } from '../twapOrders'
 
 import type { Activity, ActivityProvider, ActivityQuery } from './types'
 import type { RwaTokenSummary } from '@/entities/asset'
 
-import { orderBookApi } from '@/shared/api'
+import { orderBookApi, programmaticOrderApi } from '@/shared/api'
 import { getPublicClient } from '@/shared/lib/chain'
 
 const TRADES_PAGE_SIZE = 1000
 const MAX_TRADES_PAGES = 10
+const COW_SHEDS_PAGE_SIZE = 1000
 
 const blockTimestamps = new Map<string, number>()
-const orderTypes = new Map<string, OrderType>()
+const orderInfos = new Map<string, OrderInfo>()
 
-type TradeActivity = Omit<Activity, 'orderType'>
+type OrderInfo = Pick<Activity, 'orderType' | 'twapPart'>
+type TradeActivity = Omit<Activity, keyof OrderInfo>
+
+const UNKNOWN_ORDER_INFO: OrderInfo = { orderType: 'swap', twapPart: null }
 
 /** Trades settled by CoW Protocol only: the order book knows nothing about transfers and other protocols */
 export const orderBookActivityProvider: ActivityProvider = {
@@ -26,9 +33,9 @@ export const orderBookActivityProvider: ActivityProvider = {
     )
 
     const latest = activity.sort(byTimestampDesc).slice(0, limit)
-    const types = await readOrderTypes(latest)
+    const infos = await readOrderInfos(owner, latest)
 
-    return latest.map((item) => ({ ...item, orderType: types.get(getOrderKey(item)) ?? 'swap' }))
+    return latest.map((item) => ({ ...item, ...(infos.get(getOrderKey(item)) ?? UNKNOWN_ORDER_INFO) }))
   },
 }
 
@@ -42,15 +49,21 @@ async function getChainActivity(
   tokens: RwaTokenSummary[],
   limit: number,
 ): Promise<TradeActivity[]> {
-  const assetTrades = await collectPages(
-    (offset, pageLimit) => orderBookApi.getTrades({ owner, offset, limit: pageLimit }, { chainId }),
-    (trade) => {
-      const leg = toTradeLeg(chainId, tokens, trade)
+  const traders = await getTraders(chainId, owner)
+  const traderTrades = await Promise.all(
+    traders.map((trader) =>
+      collectPages(
+        (offset, pageLimit) => orderBookApi.getTrades({ owner: trader, offset, limit: pageLimit }, { chainId }),
+        (trade) => {
+          const leg = toTradeLeg(chainId, tokens, trade)
 
-      return leg ? { ...leg, trade } : null
-    },
-    { pageSize: TRADES_PAGE_SIZE, maxPages: MAX_TRADES_PAGES, limit },
+          return leg ? { ...leg, trade } : null
+        },
+        { pageSize: TRADES_PAGE_SIZE, maxPages: MAX_TRADES_PAGES, limit },
+      ),
+    ),
   )
+  const assetTrades = traderTrades.flat()
 
   // Trades carry no time, it comes from their blocks
   const [resolved, timestamps] = await Promise.all([
@@ -68,6 +81,12 @@ async function getChainActivity(
   }))
 }
 
+function getOrderInfo(order: EnrichedOrder, twaps: TwapOrder[] | undefined): OrderInfo {
+  const orderType = getOrderType(order)
+
+  return { orderType, twapPart: orderType === 'twap' && twaps ? findTwapPart(order, twaps) : null }
+}
+
 function getOrderKey({ chainId, orderUid }: Pick<TradeActivity, 'chainId' | 'orderUid'>): string {
   return `${chainId}:${orderUid}`
 }
@@ -79,6 +98,16 @@ function getTradeDetails(trade: Trade): Pick<TradeActivity, 'id' | 'kind' | 'txH
     txHash: trade.txHash,
     orderUid: trade.orderUid,
   }
+}
+
+/** The wallet and its CoW Shed proxies, which own the parts of the TWAPs placed by an EOA */
+async function getTraders(chainId: SupportedChainId, owner: string): Promise<string[]> {
+  const cowSheds = await programmaticOrderApi
+    .getDeployedCowSheds({ owner, chainId }, { limit: COW_SHEDS_PAGE_SIZE })
+    .then(({ items }) => items.map(({ address }) => address))
+    .catch((): string[] => [])
+
+  return [owner, ...cowSheds]
 }
 
 /** Block timestamps never change, so each block is read once per session */
@@ -108,35 +137,55 @@ async function readBlockTimestamps(chainId: number, blockNumbers: number[]): Pro
   return timestamps
 }
 
-/** An order type never changes, so each order is read once per session */
-async function readOrderTypes(items: TradeActivity[]): Promise<Map<string, OrderType>> {
-  const orders = new Map<string, { chainId: SupportedChainId; orderUid: string }>()
+/** An order never changes, so each order is read once per session, a TWAP part once its TWAP is found */
+async function readOrderInfos(owner: string, items: TradeActivity[]): Promise<Map<string, OrderInfo>> {
+  const infos = new Map<string, OrderInfo>()
+  const missing = new Map<string, { chainId: SupportedChainId; orderUid: string }>()
 
   for (const { chainId, orderUid } of items) {
-    if (orderUid && isSupportedChain(chainId)) orders.set(getOrderKey({ chainId, orderUid }), { chainId, orderUid })
+    if (!orderUid || !isSupportedChain(chainId)) continue
+
+    const key = getOrderKey({ chainId, orderUid })
+    const cached = orderInfos.get(key)
+
+    if (cached) infos.set(key, cached)
+    else missing.set(key, { chainId, orderUid })
   }
 
-  const types = new Map<string, OrderType>()
+  const orders = (
+    await Promise.all(
+      [...missing].map(async ([key, { chainId, orderUid }]) => {
+        const order = await orderBookApi.getOrder(orderUid, { chainId }).catch(() => null)
 
-  await Promise.all(
-    [...orders].map(async ([key, { chainId, orderUid }]) => {
-      const cached = orderTypes.get(key)
+        return order ? [{ key, chainId, order }] : []
+      }),
+    )
+  ).flat()
 
-      if (cached !== undefined) {
-        types.set(key, cached)
-        return
-      }
+  const twapChainIds = [
+    ...new Set(orders.filter(({ order }) => getOrderType(order) === 'twap').map(({ chainId }) => chainId)),
+  ]
+  const twaps = await readTwaps(twapChainIds, owner)
 
-      const order = await orderBookApi.getOrder(orderUid, { chainId }).catch(() => null)
+  for (const { key, chainId, order } of orders) {
+    const info = getOrderInfo(order, twaps.get(chainId))
 
-      if (!order) return
+    if (info.orderType !== 'twap' || info.twapPart) orderInfos.set(key, info)
 
-      const type = getOrderType(order)
+    infos.set(key, info)
+  }
 
-      orderTypes.set(key, type)
-      types.set(key, type)
+  return infos
+}
+
+async function readTwaps(chainIds: SupportedChainId[], owner: string): Promise<Map<SupportedChainId, TwapOrder[]>> {
+  const twaps = await Promise.all(
+    chainIds.map(async (chainId) => {
+      const chainTwaps = await collectTwapOrders(chainId, owner, (twap) => twap).catch(() => null)
+
+      return chainTwaps ? [[chainId, chainTwaps] as const] : []
     }),
   )
 
-  return types
+  return new Map(twaps.flat())
 }
