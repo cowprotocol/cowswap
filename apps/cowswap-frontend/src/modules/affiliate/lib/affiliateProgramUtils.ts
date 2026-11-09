@@ -15,6 +15,7 @@ import {
   AFFILIATE_REWARDS_UPDATE_INTERVAL_MS,
   AFFILIATE_REWARDS_UPDATE_LAG_MS,
   AFFILIATE_STATS_REFRESH_INTERVAL_MS,
+  AFFILIATE_SUPPORTED_CHAIN_IDS,
   PROGRAM_DEFAULTS,
   REF_CODE_PATTERN,
 } from '../config/affiliateProgram.const'
@@ -156,11 +157,7 @@ export function getDefaultTriggerVolume(): number {
   return PROGRAM_DEFAULTS.AFFILIATE_TRIGGER_VOLUME
 }
 
-export function getLocalTrades(
-  account: Address | undefined,
-  ordersState: OrdersState | undefined,
-  supportedChainIds: readonly SupportedChainId[],
-): SerializedOrder[] {
+export function getLocalTrades(account: Address | undefined, ordersState: OrdersState | undefined): SerializedOrder[] {
   if (!account || !ordersState) {
     return []
   }
@@ -170,7 +167,7 @@ export function getLocalTrades(
   for (const [networkId, networkState] of Object.entries(ordersState)) {
     const chainId = Number(networkId)
 
-    if (!isSupportedTradingNetwork(chainId, supportedChainIds)) {
+    if (!isSupportedTradingNetwork(chainId, AFFILIATE_SUPPORTED_CHAIN_IDS)) {
       continue
     }
 
