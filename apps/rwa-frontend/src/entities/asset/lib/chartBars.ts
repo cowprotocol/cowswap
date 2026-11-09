@@ -4,8 +4,8 @@ const DAY_SECONDS = 24 * 3600
 
 /**
  * TradingView resolution of each series: `market_chart` points are 5-minutely for 1 day, hourly up to 90 days and
- * daily above, `/ohlc` candles are 30-minute, 4-hour, then 4-day. 4-day candles are charted as daily bars: CoinGecko
- * doesn't align them to the TradingView 4D grid
+ * daily above, `/ohlc` candles are 30-minute, 4-hour, then 4-day. 4-day candles are charted as daily bars:
+ * CoinGecko doesn't align them to the TradingView 4D grid
  */
 export const CHART_RESOLUTIONS: Record<RwaChartType, Record<RwaChartRange, string>> = {
   line: { '1D': '5', '1W': '60', '1M': '60', '1Y': '1D', ALL: '1D' },
