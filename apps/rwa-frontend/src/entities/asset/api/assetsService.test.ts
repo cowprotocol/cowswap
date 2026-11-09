@@ -422,6 +422,13 @@ describe('getAssetChart', () => {
     expect(await getAssetChart(nvda(), '1D')).toMatchObject({ points: TOKEN_POINTS })
   })
 
+  it('charts a coin of the asset as degraded when the chart over every issuer fails', async () => {
+    getRwaChartMock.mockRejectedValue(new Error('upstream down'))
+    loadSharesPerTokenMock.mockResolvedValue({ byKey: {}, degraded: false })
+
+    expect(await getAssetChart(nvda(), '1D')).toMatchObject({ points: TOKEN_POINTS, degraded: true })
+  })
+
   it('converts the token prices to prices per share', async () => {
     loadSharesPerTokenMock.mockResolvedValue({ byKey: { [NVDAON_KEY]: 0.25 }, degraded: false })
 
@@ -508,6 +515,13 @@ describe('getAssetCandles', () => {
     expect(await getAssetCandles(nvda(), '1W')).toEqual({ ticker: 'NVDA', range: '1W', candles, degraded: false })
     expect(getRwaCandlesMock).toHaveBeenCalledWith('nvidia', '1W')
     expect(getCandlesMock).not.toHaveBeenCalled()
+  })
+
+  it('takes the candles of a coin of the asset as degraded when the candles over every issuer fail', async () => {
+    getRwaCandlesMock.mockRejectedValue(new Error('upstream down'))
+    loadSharesPerTokenMock.mockResolvedValue({ byKey: {}, degraded: false })
+
+    expect(await getAssetCandles(nvda(), '1W')).toMatchObject({ candles: TOKEN_CANDLES, degraded: true })
   })
 
   it('converts the token candles to candles per share', async () => {

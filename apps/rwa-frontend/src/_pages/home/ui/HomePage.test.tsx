@@ -313,7 +313,7 @@ describe('HomePage', () => {
     expect(totals.textContent).toContain('Tokenized market cap')
     expect(totals.textContent).toContain('24h total volume')
     expect(await screen.findByText('Ref. 14:00 UTC')).toBeTruthy()
-    expect(screen.getByText('24h total volume · All networks')).toBeTruthy()
+    expect(screen.getByText('24h total volume · DEX volume chart · All networks')).toBeTruthy()
   })
 
   it('stores starred assets and requests them in the watchlist mode', async () => {

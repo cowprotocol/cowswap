@@ -201,7 +201,7 @@ export async function fetchOnchainTokens(
   })
 }
 
-/** `id` is a RWA id (`/rwas/list`). `null` without the Pro plan */
+/** `id` is a RWA id (`/rwas/list`). `null` without the Pro plan or when CoinGecko has no such RWA */
 export async function fetchRwaMarketChart(
   id: string,
   days: CoingeckoChartDays,
@@ -209,7 +209,7 @@ export async function fetchRwaMarketChart(
 ): Promise<CoingeckoRwaMarketChart | null> {
   if (!isProPlan()) return null
 
-  return fetchJson<CoingeckoRwaMarketChart>(
+  return fetchJsonOrNotFound<CoingeckoRwaMarketChart>(
     `${getConfig().baseUrl}/rwas/${encodeURIComponent(id)}/market_chart?vs_currency=usd&days=${days}`,
     revalidateSeconds,
   )

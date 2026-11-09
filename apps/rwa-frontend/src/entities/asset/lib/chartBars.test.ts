@@ -50,6 +50,19 @@ describe('withLatestPrice', () => {
     ])
   })
 
+  it('closes the last candle at the price when the price time is within it', () => {
+    const fourDays = 4 * 24 * 3600
+    const candles = [
+      { time: 0, open: 10, high: 12, low: 9, close: 11 },
+      { time: fourDays, open: 11, high: 13, low: 10, close: 12 },
+    ]
+
+    expect(withLatestPrice(candles, 14, new Date((fourDays + 2 * 24 * 3600) * 1000).toISOString())).toEqual([
+      candles[0],
+      { time: fourDays, open: 11, high: 14, low: 10, close: 14 },
+    ])
+  })
+
   it('closes the last candle at the price without a price time', () => {
     expect(withLatestPrice(CANDLES, 14, null)).toEqual([
       CANDLES[0],

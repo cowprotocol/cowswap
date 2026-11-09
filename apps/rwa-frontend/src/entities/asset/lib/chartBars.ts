@@ -41,7 +41,8 @@ export function pointsToCandles(points: RwaChartPoint[]): RwaCandle[] {
 
 /**
  * Ends ascending `candles` at `price`, which refreshes more often than the cached chart: a flat candle at `updatedAt`,
- * or the last candle closed at `price` when `updatedAt` is missing or not after it
+ * or the last candle closed at `price` when `updatedAt` is missing or within that candle. A candle lasts the shortest
+ * gap between candles, since the series doesn't state its interval
  */
 export function withLatestPrice(candles: RwaCandle[], price: number | null, updatedAt: string | null): RwaCandle[] {
   const last = candles[candles.length - 1]
@@ -50,7 +51,7 @@ export function withLatestPrice(candles: RwaCandle[], price: number | null, upda
 
   const updatedSeconds = updatedAt ? Math.floor(Date.parse(updatedAt) / 1000) : NaN
 
-  if (Number.isFinite(updatedSeconds) && updatedSeconds > last.time) {
+  if (Number.isFinite(updatedSeconds) && updatedSeconds >= last.time + getShortestGap(candles)) {
     return [...candles, { time: updatedSeconds, open: price, high: price, low: price, close: price }]
   }
 
@@ -61,4 +62,14 @@ export function withLatestPrice(candles: RwaCandle[], price: number | null, upda
 
 function getResolutionSeconds(resolution: string): number {
   return resolution.endsWith('D') ? (Number(resolution.slice(0, -1)) || 1) * DAY_SECONDS : Number(resolution) * 60
+}
+
+function getShortestGap(candles: RwaCandle[]): number {
+  let gap = Infinity
+
+  for (let i = 1; i < candles.length; i++) {
+    gap = Math.min(gap, candles[i].time - candles[i - 1].time)
+  }
+
+  return Number.isFinite(gap) ? gap : 1
 }

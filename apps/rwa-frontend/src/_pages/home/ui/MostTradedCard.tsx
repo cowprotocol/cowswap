@@ -21,7 +21,7 @@ export function MostTradedCard({ items, degraded }: MostTradedCardProps): ReactN
           Most traded
         </h2>
       </header>
-      <p className={styles.cardSubtitle}>24h total volume · All networks</p>
+      <p className={styles.cardSubtitle}>24h total volume · DEX volume chart · All networks</p>
       <OverviewAssetRows
         items={items}
         degraded={degraded}
