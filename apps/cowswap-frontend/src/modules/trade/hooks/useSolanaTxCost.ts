@@ -9,8 +9,10 @@ import { useSolanaTradeOverhead } from 'modules/tradeFormValidation'
 
 import { useIsSolanaSponsoredTrade } from './useIsSolanaSponsoredTrade'
 
+import { getIsSolanaSmartContractWallet } from '../utils/getIsSolanaSmartContractWallet'
+
 export interface SolanaTxCost {
-  /** Rent for the accounts the bundle creates, plus the transaction fee. */
+  /** Rent for the accounts the bundle creates, plus the transaction fee unless `isFeePaidByVaultMember`. */
   amount: CurrencyAmount<Currency>
   /** The funder pays `amount`, except for whatever `ownerDeposit` names. */
   isSponsored: boolean
@@ -21,6 +23,12 @@ export interface SolanaTxCost {
    * owner's anyway.
    */
   ownerDeposit: CurrencyAmount<Currency> | null
+  /**
+   * `amount` carries no transaction fee, because a vault never signs one: its order is filed as a proposal
+   * and the member who executes it pays the fee from their own wallet. Mirrors what the EVM flow marks with
+   * `+ gas` for a Safe.
+   */
+  isFeePaidByVaultMember: boolean
 }
 
 /**
@@ -31,10 +39,14 @@ export interface SolanaTxCost {
  * `null` on every other chain and while the amount is unknown.
  */
 export function useSolanaTxCost(): SolanaTxCost | null {
-  const { chainId } = useWalletInfo()
+  const { chainId, account } = useWalletInfo()
   const isSponsored = useIsSolanaSponsoredTrade()
   const overhead = useSolanaTradeOverhead({ ignoreSponsor: true })
   const ownerOverhead = useSolanaTradeOverhead()
+  // `getIsSolanaSmartContractWallet` throws on anything that is not base58, and an EVM account can be
+  // current while a Solana quote is still in state.
+  const owner = isSolanaChain(chainId) ? account : undefined
+  const isFeePaidByVaultMember = Boolean(owner && getIsSolanaSmartContractWallet(owner))
 
   return useMemo(() => {
     if (!overhead || overhead.spent <= 0n || !isSolanaChain(chainId)) return null
@@ -46,6 +58,7 @@ export function useSolanaTxCost(): SolanaTxCost | null {
       isSponsored,
       ownerDeposit:
         ownerSpent > 0n ? CurrencyAmount.fromRawAmount(NATIVE_CURRENCIES[chainId], ownerSpent.toString()) : null,
+      isFeePaidByVaultMember,
     }
-  }, [chainId, overhead, ownerOverhead, isSponsored])
+  }, [chainId, overhead, ownerOverhead, isSponsored, isFeePaidByVaultMember])
 }
