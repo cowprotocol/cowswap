@@ -171,7 +171,7 @@ describe('getOpenOrders', () => {
     })
   })
 
-  it('shows open TWAPs as one order instead of their parts', async () => {
+  it('shows open TWAPs as one order with the part amounts instead of their parts', async () => {
     getOrdersMock.mockImplementation(async (_request: unknown, { chainId }: { chainId: number }) =>
       chainId === 1
         ? [
@@ -198,8 +198,8 @@ describe('getOpenOrders', () => {
     expect(orders[0]).toMatchObject({
       type: 'twap',
       side: 'buy',
-      assetAmount: '18000000000000000',
-      counterAmount: '3000000',
+      assetAmount: '9000000000000000',
+      counterAmount: '1500000',
       counterToken: { symbol: 'USDC' },
       filledFraction: 0.5,
       validTo: 1_790_001_200,

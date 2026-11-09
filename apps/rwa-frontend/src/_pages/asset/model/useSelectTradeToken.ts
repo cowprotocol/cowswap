@@ -10,11 +10,11 @@ import { tradeChainIdAtom, tradeSideAtom, tradeTokenKeyAtom } from './tradeSelec
 import { trackTradeTokenSelect } from '../lib/tradeAnalytics'
 
 import { getTokenKey, type RwaQuoteSide, type RwaToken } from '@/entities/asset'
+import { MEDIA_QUERIES } from '@/shared/config'
 import { trackEvent } from '@/shared/lib/analytics'
 
 export const TRADE_WIDGET_ID = 'trade-widget'
 
-const SINGLE_COLUMN_QUERY = '(max-width: 960px)'
 const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)'
 
 /** Switches the widget to `side`, then scrolls to it and, below the chart, focuses its side toggle */
@@ -84,7 +84,7 @@ function revealTradeWidget(side: RwaQuoteSide): void {
   const widget = document.getElementById(TRADE_WIDGET_ID)
   if (!widget) return
 
-  const isSingleColumn = window.matchMedia(SINGLE_COLUMN_QUERY).matches
+  const isSingleColumn = window.matchMedia(MEDIA_QUERIES.upToMedium).matches
 
   widget.scrollIntoView({
     behavior: window.matchMedia(REDUCED_MOTION_QUERY).matches ? 'auto' : 'smooth',

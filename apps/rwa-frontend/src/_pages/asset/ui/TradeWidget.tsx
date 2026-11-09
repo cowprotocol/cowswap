@@ -87,15 +87,17 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
     <section ref={widgetRef} id={TRADE_WIDGET_ID} className={styles.widget}>
       <TradeTokenSelector asset={asset} selection={selection} />
       {tradingPauseMessage && <p className={styles.notice}>{tradingPauseMessage}</p>}
-      <div className={styles.frame} data-loading={isWidgetLoading || undefined}>
-        <CowSwapWidget
-          params={params}
-          provider={provider}
-          listeners={listeners}
-          onReady={onWidgetSettled}
-          onLoadingError={onWidgetSettled}
-        />
-        {isWidgetLoading && <TradeWidgetSkeleton overlay />}
+      <div className={styles.frameContainer}>
+        <div className={styles.frame} data-loading={isWidgetLoading || undefined}>
+          <CowSwapWidget
+            params={params}
+            provider={provider}
+            listeners={listeners}
+            onReady={onWidgetSettled}
+            onLoadingError={onWidgetSettled}
+          />
+          {isWidgetLoading && <TradeWidgetSkeleton overlay />}
+        </div>
       </div>
       <p className={styles.disclaimer}>
         Tokens are issued by independent third parties and may not confer ownership of the underlying shares. Check

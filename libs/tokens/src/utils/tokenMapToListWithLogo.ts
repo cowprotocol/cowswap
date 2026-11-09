@@ -22,6 +22,13 @@ export function tokenMapToListWithLogo(tokenMaps: TokensMap[], chainId: number):
         if (!existing.logoURI && token.logoURI) {
           acc[key] = { ...existing, logoURI: token.logoURI }
         }
+
+        if (existing.extensions || token.extensions) {
+          acc[key] = {
+            ...acc[key],
+            extensions: { ...existing.extensions, ...token.extensions, rank: token.extensions?.rank },
+          }
+        }
       } else {
         acc[key] = token
       }

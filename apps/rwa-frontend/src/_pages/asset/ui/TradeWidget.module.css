@@ -27,6 +27,10 @@
   color-scheme: normal;
 }
 
+.frameContainer {
+  container-type: inline-size;
+}
+
 .frame {
   position: relative;
 }
@@ -36,8 +40,8 @@
   min-height: 640px;
 }
 
-/* CoW Swap caps its form at 470px, so where the single column is wider the card keeps this row as wide as the others */
-@media (min-width: 501px) and (max-width: 960px) {
+/* CoW Swap caps its form at 470px, so in a wider column the card keeps this row as wide as the others */
+@container (min-width: 471px) {
   .frame {
     border-radius: var(--radius-card);
     background: var(--color-bg);

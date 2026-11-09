@@ -5,10 +5,11 @@ import { buildSparqlQuery, EXCHANGES, matchEntities, toWikidataTicker } from './
 
 const US = [EXCHANGES.nyse, EXCHANGES.nasdaq, EXCHANGES.nyseArca, EXCHANGES.nyseAmerican]
 
-function binding(symbol, item, { article, industry } = {}) {
+function binding(symbol, item, { article, industry, exchange } = {}) {
   return {
     symbol: { value: symbol },
     item: { value: `http://www.wikidata.org/entity/${item}` },
+    ...(exchange ? { exchange: { value: `http://www.wikidata.org/entity/${exchange}` } } : {}),
     ...(article ? { article: { value: article } } : {}),
     ...(industry ? { industryLabel: { value: industry } } : {}),
   }
@@ -51,4 +52,14 @@ test('matchEntities keys matches by registry ticker', () => {
   assert.deepEqual(matches.get('XYZ'), { item: 'Q1', articleTitle: null, industry: null })
   assert.equal(matches.get('BRK.B').articleTitle, 'Berkshire_Hathaway')
   assert.equal(matches.get('MCD').articleTitle, "McDonald's")
+})
+
+test('matchEntities separates the same symbol across exchanges', () => {
+  const matches = matchEntities(
+    ['ABC', 'ABC.L'],
+    [binding('ABC', 'Q1', { exchange: EXCHANGES.nyse }), binding('ABC', 'Q2', { exchange: EXCHANGES.lse })],
+  )
+
+  assert.equal(matches.get('ABC')?.item, 'Q1')
+  assert.equal(matches.get('ABC.L')?.item, 'Q2')
 })

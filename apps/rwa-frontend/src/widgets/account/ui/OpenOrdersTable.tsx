@@ -106,7 +106,10 @@ function OpenOrderRow({ order, logoUrl, now }: OpenOrderRowProps): ReactNode {
       </td>
       <td className={styles.numeric}>
         <span className={styles.strong}>{formatPaidAmount(order)}</span>
-        <span className={styles.secondary}>for {formatReceivedAmount(order)}</span>
+        <span className={styles.secondary}>
+          for {formatReceivedAmount(order)}
+          {order.twapSchedule && ' per part'}
+        </span>
       </td>
       <td className={styles.numeric}>
         <span className={styles.strong}>{formatLegPrice(order)}</span>

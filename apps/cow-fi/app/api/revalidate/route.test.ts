@@ -104,6 +104,25 @@ describe('authenticated resource revalidation', () => {
     expect(revalidatePath).toHaveBeenCalledWith('/resources/tokens')
   })
 
+  it('revalidates the careers CMS page with and without an explicit path', () => {
+    for (const body of [{ path: 'careers/refer-to-earn' }, { path: '/careers' }, { path: '/affiliate-program' }, {}]) {
+      const { revalidatePath, revalidateTag } = createRevalidateMocks()
+      const result = handleRevalidatePost({
+        body,
+        configuredSecret: TEST_SECRET,
+        providedSecret: TEST_SECRET,
+        revalidatePath,
+        revalidateTag,
+      })
+
+      expect(result.status).toBe(200)
+      expect(revalidateTag).toHaveBeenCalledWith('cms-content')
+      expect(revalidatePath).toHaveBeenCalledWith('/careers/refer-to-earn', undefined)
+      expect(revalidatePath).toHaveBeenCalledWith('/careers', undefined)
+      expect(revalidatePath).toHaveBeenCalledWith('/affiliate-program', undefined)
+    }
+  })
+
   it('still accepts authenticated learn payloads', () => {
     const { revalidatePath, revalidateTag } = createRevalidateMocks()
     const result = handleRevalidatePost({
