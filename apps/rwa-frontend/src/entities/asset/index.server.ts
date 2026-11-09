@@ -5,6 +5,9 @@ export {
   getAssetCandles,
   getAssetChart,
   getAssetQuotes,
+  getAssetStock,
+  getAssetStockCandles,
+  getAssetStockChart,
   getAssetTokenStats,
   getMarketOverview,
   type ListAssetsParams,
@@ -18,6 +21,7 @@ export { validateRegistry } from './model/validateRegistry'
 export {
   RWA_ASSET_TYPES,
   RWA_CHART_RANGES,
+  RWA_MARKET_KINDS,
   RWA_QUOTE_SIDES,
   RWA_SORT_FIELDS,
   type RwaAssetsFilter,

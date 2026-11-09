@@ -1,4 +1,11 @@
-import type { RwaAssetsFilter, RwaChartRange, RwaQuoteSide, RwaSortField, RwaSortOrder } from '../model/types'
+import type {
+  RwaAssetsFilter,
+  RwaChartRange,
+  RwaMarketKind,
+  RwaQuoteSide,
+  RwaSortField,
+  RwaSortOrder,
+} from '../model/types'
 
 import { RWA_API_PREFIX } from '@/shared/api'
 
@@ -45,12 +52,12 @@ export function getAssetUrl(ticker: string): string {
   return `${RWA_API_PREFIX}asset/${encodeURIComponent(ticker)}`
 }
 
-export function getCandlesUrl(ticker: string, range: RwaChartRange): string {
-  return `${RWA_API_PREFIX}candles/${encodeURIComponent(ticker)}?range=${range}`
+export function getCandlesUrl(ticker: string, range: RwaChartRange, market: RwaMarketKind): string {
+  return `${RWA_API_PREFIX}candles/${encodeURIComponent(ticker)}?${getChartParams(range, market)}`
 }
 
-export function getChartUrl(ticker: string, range: RwaChartRange): string {
-  return `${RWA_API_PREFIX}chart/${encodeURIComponent(ticker)}?range=${range}`
+export function getChartUrl(ticker: string, range: RwaChartRange, market: RwaMarketKind): string {
+  return `${RWA_API_PREFIX}chart/${encodeURIComponent(ticker)}?${getChartParams(range, market)}`
 }
 
 export function getMarketOverviewUrl(): string {
@@ -67,10 +74,23 @@ export function getQuotesUrl(ticker: string, chainId: number, side: RwaQuoteSide
   return `${RWA_API_PREFIX}quotes/${encodeURIComponent(ticker)}?${params}`
 }
 
+export function getStockUrl(ticker: string): string {
+  return `${RWA_API_PREFIX}stock/${encodeURIComponent(ticker)}`
+}
+
 export function getTokenListUrl(): string {
   return `${RWA_API_PREFIX}token-list`
 }
 
 export function getTokenStatsUrl(ticker: string): string {
   return `${RWA_API_PREFIX}token-stats/${encodeURIComponent(ticker)}`
+}
+
+/** `tokenized` is the routes' default, left out so its URLs stay the ones the CDN already caches */
+function getChartParams(range: RwaChartRange, market: RwaMarketKind): URLSearchParams {
+  const params = new URLSearchParams({ range })
+
+  if (market !== 'tokenized') params.set('market', market)
+
+  return params
 }

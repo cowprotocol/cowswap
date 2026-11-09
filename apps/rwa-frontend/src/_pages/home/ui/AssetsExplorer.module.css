@@ -92,25 +92,7 @@
 }
 
 .filterInput input {
-  flex: 1;
-  min-width: 0;
-  padding: 0;
-  border: none;
-  border-radius: 0;
-  background: none;
   font-size: 14px;
-  text-overflow: ellipsis;
-  outline: none;
-}
-
-.filterInput input::placeholder {
-  color: var(--color-text-secondary);
-  text-overflow: ellipsis;
-}
-
-/* The empty field keeps room for its hidden clear button, which clips the placeholder */
-.filterInput input:placeholder-shown::-webkit-search-cancel-button {
-  display: none;
 }
 
 .footer {
@@ -170,11 +152,6 @@
     padding: 0 12px;
   }
 
-  .iconButton,
-  .filtersTrigger {
-    flex: none;
-  }
-
   .iconButton {
     position: relative;
     justify-content: center;
@@ -217,6 +194,7 @@
   }
 
   .types {
+    order: 1;
     flex: 0 0 calc(100% + 32px);
     gap: 4px;
     margin: -4px -16px;
@@ -236,7 +214,6 @@
   }
 
   .filterInput {
-    order: -1;
     height: 44px;
   }
 
@@ -247,11 +224,6 @@
 
   .filterInput input::placeholder {
     font-size: 14px;
-  }
-
-  .iconButton,
-  .filtersTrigger {
-    order: -1;
   }
 
   .iconButton {

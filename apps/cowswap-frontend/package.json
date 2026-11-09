@@ -139,7 +139,7 @@
     "timeago.js": "4.0.2",
     "tiny-invariant": "1.3.3",
     "use-async-memo": "1.2.4",
-    "viem": "2.48.8",
+    "viem": "2.55.19",
     "wagmi": "3.6.9",
     "workbox-core": "6.6.1",
     "workbox-expiration": "6.6.1",
