@@ -22,15 +22,25 @@ describe('featureFlags boot flag', () => {
       expect(IS_SOLANA_ENABLED).toBe(true)
     })
 
-    it('prefers the e2e override over the persisted value', () => {
+    it('prefers the e2e solanaVersion override over the persisted value', () => {
       localStorage.setItem(BOOT_FEATURE_FLAGS_KEY, JSON.stringify({ isSolanaEnabled: true }))
       ;(window as { __COWSWAP_E2E_FEATURE_FLAGS__?: unknown }).__COWSWAP_E2E_FEATURE_FLAGS__ = {
-        isSolanaEnabled: false,
+        solanaVersion: 'alpha',
       }
 
       const { IS_SOLANA_ENABLED } = require('./featureFlags')
 
       expect(IS_SOLANA_ENABLED).toBe(false)
+    })
+
+    it('is true when the e2e solanaVersion override is beta or higher', () => {
+      ;(window as { __COWSWAP_E2E_FEATURE_FLAGS__?: unknown }).__COWSWAP_E2E_FEATURE_FLAGS__ = {
+        solanaVersion: 'beta',
+      }
+
+      const { IS_SOLANA_ENABLED } = require('./featureFlags')
+
+      expect(IS_SOLANA_ENABLED).toBe(true)
     })
 
     it('falls back to false when the persisted value is malformed', () => {

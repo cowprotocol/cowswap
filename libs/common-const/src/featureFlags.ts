@@ -1,3 +1,5 @@
+import { isSolanaBetaOrHigher, parseSolanaVersion } from './solanaVersion'
+
 export type FeatureFlags = Record<string, FeatureFlagValue>
 
 export type FeatureFlagValue = boolean | number | undefined
@@ -48,18 +50,18 @@ export function syncBootFeatureFlags(flags: BootFeatureFlags, reload: () => void
  * a previous session, then to `false`.
  */
 function getBootFeatureFlag(key: keyof BootFeatureFlags): boolean {
-  return getE2eFlagOverride(key) ?? readPersistedBootFlags()[key] ?? false
+  return getE2eSolanaOverride() ?? readPersistedBootFlags()[key] ?? false
 }
 
-function getE2eFlagOverride(key: keyof BootFeatureFlags): boolean | undefined {
+function getE2eSolanaOverride(): boolean | undefined {
   if (typeof window === 'undefined') return undefined
 
   const overrides = (window as { __COWSWAP_E2E_FEATURE_FLAGS__?: Record<string, unknown> })
     .__COWSWAP_E2E_FEATURE_FLAGS__
 
-  if (!overrides || !(key in overrides)) return undefined
+  if (!overrides || !('solanaVersion' in overrides)) return undefined
 
-  return Boolean(overrides[key])
+  return isSolanaBetaOrHigher(parseSolanaVersion(overrides.solanaVersion))
 }
 
 function readPersistedBootFlags(): BootFeatureFlags {

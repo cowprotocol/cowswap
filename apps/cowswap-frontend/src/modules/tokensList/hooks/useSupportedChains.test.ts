@@ -55,8 +55,8 @@ describe('useSupportedChains', () => {
     expect(ids()).toContain(SupportedChainId.ROBINHOOD)
   })
 
-  it('shows Solana with its flag on, without the user enabling alpha networks', () => {
-    mockUseFlags.mockReturnValue({ isSolanaEnabled: true })
+  it('shows Solana from beta onwards, without the user enabling alpha networks', () => {
+    mockUseFlags.mockReturnValue({ solanaVersion: 'beta' })
 
     expect(renderHook(() => useSupportedChains()).result.current.map(({ id }) => id)).toContain(SupportedChainId.SOLANA)
   })

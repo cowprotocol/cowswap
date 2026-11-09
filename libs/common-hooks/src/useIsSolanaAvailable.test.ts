@@ -11,21 +11,33 @@ const mockUseFlags = jest.mocked(useFlags)
 
 describe('useIsSolanaAvailable', () => {
   it.each`
-    isSolanaEnabled | isAlphaNetworksOptionVisible | expected
-    ${true}         | ${false}                     | ${true}
-    ${false}        | ${true}                      | ${true}
-    ${false}        | ${false}                     | ${false}
+    solanaVersion | isAlphaNetworksOptionVisible | expected
+    ${'beta'}     | ${false}                     | ${true}
+    ${'ga'}       | ${false}                     | ${true}
+    ${'alpha'}    | ${true}                      | ${true}
+    ${'alpha'}    | ${false}                     | ${false}
   `(
-    'is $expected with isSolanaEnabled $isSolanaEnabled and the alpha networks option visible $isAlphaNetworksOptionVisible',
-    ({ isSolanaEnabled, isAlphaNetworksOptionVisible, expected }) => {
-      mockUseFlags.mockReturnValue({ isSolanaEnabled, isAlphaNetworksOptionVisible })
+    'is $expected with solanaVersion $solanaVersion and the alpha networks option visible $isAlphaNetworksOptionVisible',
+    ({ solanaVersion, isAlphaNetworksOptionVisible, expected }) => {
+      mockUseFlags.mockReturnValue({ solanaVersion, isAlphaNetworksOptionVisible })
 
       expect(renderHook(() => useIsSolanaAvailable()).result.current).toBe(expected)
     },
   )
 
+  it.each`
+    solanaVersion
+    ${undefined}
+    ${'nonsense'}
+    ${true}
+  `('falls back to alpha when solanaVersion is $solanaVersion', ({ solanaVersion }) => {
+    mockUseFlags.mockReturnValue({ solanaVersion, isAlphaNetworksOptionVisible: false })
+
+    expect(renderHook(() => useIsSolanaAvailable()).result.current).toBe(false)
+  })
+
   it('is false inside the widget, even with both flags on', () => {
-    mockUseFlags.mockReturnValue({ isSolanaEnabled: true, isAlphaNetworksOptionVisible: true })
+    mockUseFlags.mockReturnValue({ solanaVersion: 'ga', isAlphaNetworksOptionVisible: true })
     window.location.hash = '#/1/widget/swap'
 
     try {

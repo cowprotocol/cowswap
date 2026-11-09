@@ -7,7 +7,7 @@ import { useFlags } from 'launchdarkly-react-client-sdk'
 export interface FeatureFlags {
   isPriceChartEnabled?: boolean
   isTwapEoaEnabled?: boolean
-  isSolanaEnabled?: boolean
+  solanaVersion?: string
   isAlphaNetworksOptionVisible?: boolean
   isSolanaSponsoredOrdersEnabled?: boolean
   isAtaCreationDisabled?: boolean
@@ -27,9 +27,10 @@ declare global {
 // const defaults: Partial<FeatureFlags> = {
 // }
 
-// Solana is not supported in the widget yet (e.g. partner fees)
+// Solana is not supported in the widget yet (e.g. partner fees). `alpha` is the only version that
+// still defers to the alpha networks opt-in, which is forced off here too, so Solana stays unreachable.
 const WIDGET_FLAG_OVERRIDES: Partial<FeatureFlags> = {
-  isSolanaEnabled: false,
+  solanaVersion: 'alpha',
   isAlphaNetworksOptionVisible: false,
 }
 

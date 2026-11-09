@@ -211,7 +211,7 @@ describe('validateTradeForm - xStock logic', () => {
   })
 })
 
-describe('validateTradeForm - Solana Alpha trade limit', () => {
+describe('validateTradeForm - Solana trade restrictions', () => {
   const baseContext: Partial<TradeFormValidationContext> = {
     derivedTradeState: {
       orderKind: OrderKind.SELL,
@@ -255,7 +255,7 @@ describe('validateTradeForm - Solana Alpha trade limit', () => {
     isCaptchaRequired: false,
   }
 
-  test('shows the trade limit for sell orders when the sell amount is above $10,000', () => {
+  test('allows a sell order far above the former $10,000 cap', () => {
     const context = {
       ...baseContext,
       derivedTradeState: {
@@ -265,54 +265,10 @@ describe('validateTradeForm - Solana Alpha trade limit', () => {
       },
     } as unknown as TradeFormValidationContext
 
-    expect(validateTradeForm(context)).toEqual([TradeFormValidation.SolanaAlphaMaxTradeSize])
+    expect(validateTradeForm(context)).toBeNull()
   })
 
-  test('does not show the trade limit when the sell amount is exactly $10,000', () => {
-    const context = {
-      ...baseContext,
-      derivedTradeState: {
-        ...baseContext.derivedTradeState,
-        inputCurrencyFiatAmount: mockCurrencyAmount('10000'),
-        outputCurrencyFiatAmount: mockCurrencyAmount('9990'),
-      },
-    } as unknown as TradeFormValidationContext
-
-    const result = validateTradeForm(context)
-    expect(result || []).not.toContain(TradeFormValidation.SolanaAlphaMaxTradeSize)
-  })
-
-  test('does not show the trade limit when the sell amount is below $10,000', () => {
-    const context = {
-      ...baseContext,
-      derivedTradeState: {
-        ...baseContext.derivedTradeState,
-        inputCurrencyFiatAmount: mockCurrencyAmount('100'),
-        outputCurrencyFiatAmount: mockCurrencyAmount('99'),
-      },
-    } as unknown as TradeFormValidationContext
-
-    const result = validateTradeForm(context)
-    expect(result || []).not.toContain(TradeFormValidation.SolanaAlphaMaxTradeSize)
-  })
-
-  test('does not apply the limit on EVM chains', () => {
-    const context = {
-      ...baseContext,
-      derivedTradeState: {
-        ...baseContext.derivedTradeState,
-        inputCurrency: { address: '0x1', chainId: SupportedChainId.MAINNET } as unknown as Currency,
-        outputCurrency: { address: '0x2', chainId: SupportedChainId.MAINNET } as unknown as Currency,
-        inputCurrencyFiatAmount: mockCurrencyAmount('25000'),
-        outputCurrencyFiatAmount: mockCurrencyAmount('24990'),
-      },
-    } as unknown as TradeFormValidationContext
-
-    const result = validateTradeForm(context)
-    expect(result || []).not.toContain(TradeFormValidation.SolanaAlphaMaxTradeSize)
-  })
-
-  test('uses the buy-side USD amount for buy orders', () => {
+  test('allows a buy order far above the former $10,000 cap', () => {
     const context = {
       ...baseContext,
       derivedTradeState: {
@@ -323,27 +279,11 @@ describe('validateTradeForm - Solana Alpha trade limit', () => {
       },
     } as unknown as TradeFormValidationContext
 
-    expect(validateTradeForm(context)).toEqual([TradeFormValidation.SolanaAlphaMaxTradeSize])
+    expect(validateTradeForm(context)).toBeNull()
   })
 
-  test('prioritizes the trade limit over quote errors', () => {
-    const context = {
-      ...baseContext,
-      derivedTradeState: {
-        ...baseContext.derivedTradeState,
-        inputCurrencyFiatAmount: mockCurrencyAmount('25000'),
-        outputCurrencyFiatAmount: mockCurrencyAmount('24990'),
-      },
-      tradeQuote: {
-        isLoading: false,
-        error: new Error('Insufficient liquidity'),
-      },
-    } as unknown as TradeFormValidationContext
-
-    expect(validateTradeForm(context)).toEqual([TradeFormValidation.SolanaAlphaMaxTradeSize])
-  })
-
-  test('blocks the trade when the USD value of the sell amount is unknown', () => {
+  // The unknown USD value leaves the price impact unknown, which NoImpactWarning gates behind its checkbox
+  test('allows a trade whose sell amount has no USD estimate', () => {
     const context = {
       ...baseContext,
       derivedTradeState: {
@@ -353,117 +293,7 @@ describe('validateTradeForm - Solana Alpha trade limit', () => {
       },
     } as unknown as TradeFormValidationContext
 
-    expect(validateTradeForm(context)).toEqual([TradeFormValidation.SolanaAlphaUnknownUsdValue])
-  })
-
-  test('blocks the trade when only the sell amount USD value is unknown', () => {
-    const context = {
-      ...baseContext,
-      derivedTradeState: {
-        ...baseContext.derivedTradeState,
-        inputCurrencyFiatAmount: null,
-        outputCurrencyFiatAmount: mockCurrencyAmount('100'),
-      },
-    } as unknown as TradeFormValidationContext
-
-    expect(validateTradeForm(context)).toEqual([TradeFormValidation.SolanaAlphaUnknownUsdValue])
-  })
-
-  test('falls back to the sell-side USD amount for buy orders when the buy-side one is unknown', () => {
-    const context = {
-      ...baseContext,
-      derivedTradeState: {
-        ...baseContext.derivedTradeState,
-        orderKind: OrderKind.BUY,
-        inputCurrencyFiatAmount: mockCurrencyAmount('25000'),
-        outputCurrencyFiatAmount: null,
-      },
-    } as unknown as TradeFormValidationContext
-
-    expect(validateTradeForm(context)).toEqual([TradeFormValidation.SolanaAlphaMaxTradeSize])
-  })
-
-  test('shows impact loading instead of the unknown USD value while price impact is loading', () => {
-    const context = {
-      ...baseContext,
-      derivedTradeState: {
-        ...baseContext.derivedTradeState,
-        inputCurrencyFiatAmount: null,
-        outputCurrencyFiatAmount: null,
-      },
-      tradePriceImpact: { loading: true, priceImpact: undefined },
-    } as unknown as TradeFormValidationContext
-
-    expect(validateTradeForm(context)).toEqual([TradeFormValidation.ImpactLoading])
-  })
-
-  test('shows quote errors for buy orders whose sell amount has not been quoted yet', () => {
-    const context = {
-      ...baseContext,
-      derivedTradeState: {
-        ...baseContext.derivedTradeState,
-        orderKind: OrderKind.BUY,
-        inputCurrencyAmount: null,
-        inputCurrencyFiatAmount: null,
-        outputCurrencyFiatAmount: mockCurrencyAmount('100'),
-      },
-      tradeQuote: {
-        isLoading: false,
-        error: new Error('Insufficient liquidity'),
-      },
-    } as unknown as TradeFormValidationContext
-
-    const result = validateTradeForm(context) || []
-    expect(result).toContain(TradeFormValidation.QuoteErrors)
-    expect(result).not.toContain(TradeFormValidation.SolanaAlphaUnknownUsdValue)
-  })
-
-  test('does not block EVM trades with an unknown USD value', () => {
-    const context = {
-      ...baseContext,
-      derivedTradeState: {
-        ...baseContext.derivedTradeState,
-        inputCurrency: { address: '0x1', chainId: SupportedChainId.MAINNET } as unknown as Currency,
-        outputCurrency: { address: '0x2', chainId: SupportedChainId.MAINNET } as unknown as Currency,
-        inputCurrencyFiatAmount: null,
-        outputCurrencyFiatAmount: null,
-      },
-    } as unknown as TradeFormValidationContext
-
-    expect(validateTradeForm(context) || []).not.toContain(TradeFormValidation.SolanaAlphaUnknownUsdValue)
-  })
-
-  test('does not apply the cap to wrap/unwrap, where fiat amounts are always null', () => {
-    const context = {
-      ...baseContext,
-      isWrapUnwrap: true,
-      derivedTradeState: {
-        ...baseContext.derivedTradeState,
-        inputCurrencyFiatAmount: null,
-        outputCurrencyFiatAmount: null,
-      },
-    } as unknown as TradeFormValidationContext
-
-    const result = validateTradeForm(context) || []
-    expect(result).toContain(TradeFormValidation.WrapUnwrapFlow)
-    expect(result).not.toContain(TradeFormValidation.SolanaAlphaMaxTradeSize)
-    expect(result).not.toContain(TradeFormValidation.SolanaAlphaUnknownUsdValue)
-  })
-
-  test('prioritizes wallet connection over the trade limit', () => {
-    const context = {
-      ...baseContext,
-      account: undefined,
-      derivedTradeState: {
-        ...baseContext.derivedTradeState,
-        inputCurrencyFiatAmount: mockCurrencyAmount('25000'),
-        outputCurrencyFiatAmount: mockCurrencyAmount('24990'),
-      },
-    } as unknown as TradeFormValidationContext
-
-    const result = validateTradeForm(context) || []
-    expect(result[0]).toBe(TradeFormValidation.WalletNotConnected)
-    expect(result).not.toContain(TradeFormValidation.SolanaAlphaMaxTradeSize)
+    expect(validateTradeForm(context)).toBeNull()
   })
 })
 
@@ -880,32 +710,6 @@ describe('validateTradeForm - native sell in limit orders', () => {
     expect(result?.[0]).toBe(TradeFormValidation.SellNativeToken)
   })
 
-  test('keeps SellNativeToken as the primary validation above the Solana Alpha trade cap', () => {
-    const result = validateTradeForm({
-      ...baseContext,
-      derivedTradeState: {
-        ...baseContext.derivedTradeState,
-        inputCurrencyFiatAmount: mockCurrencyAmount('20000'),
-      },
-    } as unknown as TradeFormValidationContext)
-
-    expect(result?.[0]).toBe(TradeFormValidation.SellNativeToken)
-  })
-
-  test('keeps the Solana Alpha trade cap for an SPL limit order', () => {
-    const result = validateTradeForm({
-      ...baseContext,
-      isApproveRequired: ApproveRequiredReason.BundleApproveRequired,
-      derivedTradeState: {
-        ...baseContext.derivedTradeState,
-        inputCurrency: { address: SOLANA_USDC, chainId: SupportedChainId.SOLANA } as unknown as Currency,
-        inputCurrencyFiatAmount: mockCurrencyAmount('20000'),
-      },
-    } as unknown as TradeFormValidationContext)
-
-    expect(result).toEqual([TradeFormValidation.SolanaAlphaMaxTradeSize])
-  })
-
   test('does not block an SPL limit order', () => {
     const result = validateTradeForm({
       ...baseContext,
@@ -913,6 +717,7 @@ describe('validateTradeForm - native sell in limit orders', () => {
       derivedTradeState: {
         ...baseContext.derivedTradeState,
         inputCurrency: { address: SOLANA_USDC, chainId: SupportedChainId.SOLANA } as unknown as Currency,
+        inputCurrencyFiatAmount: mockCurrencyAmount('20000'),
       },
     } as unknown as TradeFormValidationContext)
 
