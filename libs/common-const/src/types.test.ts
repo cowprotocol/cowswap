@@ -33,3 +33,19 @@ describe('TokenWithLogo.fromToken Token-2022 tagging', () => {
     expect(getIsToken2022(token)).toBe(false)
   })
 })
+
+describe('TokenWithLogo.fromToken list metadata', () => {
+  it('preserves extensions, logos, and tags through conversion and reconversion', () => {
+    const extensions = { rank: 2, isToken2022: true }
+    const source = { ...tokenInfo({ tags: ['stablecoin'] }), extensions }
+    const token = TokenWithLogo.fromToken(source, 'token-logo.png')
+    const convertedAgain = TokenWithLogo.fromToken(token, token.logoURI)
+
+    expect(token).toMatchObject({ extensions, logoURI: 'token-logo.png', tags: ['stablecoin', TOKEN_2022_TAG] })
+    expect(convertedAgain).toMatchObject({
+      extensions,
+      logoURI: 'token-logo.png',
+      tags: ['stablecoin', TOKEN_2022_TAG],
+    })
+  })
+})

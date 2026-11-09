@@ -30,6 +30,7 @@ export type TokenInfo = {
   tokens?: string[]
   lpTokenProvider?: LpTokenProvider
   tags?: string[]
+  extensions?: Record<string, unknown>
 }
 
 export enum AccountType {
