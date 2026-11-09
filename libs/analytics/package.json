@@ -10,6 +10,12 @@
       "import": "./src/index.ts",
       "require": "./src/index.ts",
       "default": "./src/index.ts"
+    },
+    "./order-lifecycle": {
+      "types": "./src/widget/orderLifecyclePayloads.ts",
+      "import": "./src/widget/orderLifecyclePayloads.ts",
+      "require": "./src/widget/orderLifecyclePayloads.ts",
+      "default": "./src/widget/orderLifecyclePayloads.ts"
     }
   },
   "publishConfig": {
@@ -20,6 +26,11 @@
         "types": "./index.d.ts",
         "import": "./index.mjs",
         "require": "./index.js"
+      },
+      "./order-lifecycle": {
+        "types": "./widget/orderLifecyclePayloads.d.ts",
+        "import": "./widget/orderLifecyclePayloads.mjs",
+        "require": "./widget/orderLifecyclePayloads.js"
       }
     }
   },
@@ -33,7 +44,8 @@
     "@cowprotocol/currency": "workspace:*",
     "react": "19.1.2",
     "react-router": "7.5.2",
-    "web-vitals": "2.1.4"
+    "web-vitals": "2.1.4",
+    "viem": "2.55.19"
   },
   "devDependencies": {
     "@types/react": "19.1.3"

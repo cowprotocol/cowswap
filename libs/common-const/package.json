@@ -34,6 +34,12 @@
       "import": "./src/cowLinks.ts",
       "require": "./src/cowLinks.ts",
       "default": "./src/cowLinks.ts"
+    },
+    "./analytics": {
+      "types": "./src/analytics.ts",
+      "import": "./src/analytics.ts",
+      "require": "./src/analytics.ts",
+      "default": "./src/analytics.ts"
     }
   },
   "publishConfig": {
@@ -64,12 +70,17 @@
         "types": "./cowLinks.d.ts",
         "import": "./cowLinks.mjs",
         "require": "./cowLinks.js"
+      },
+      "./analytics": {
+        "types": "./analytics.d.ts",
+        "import": "./analytics.mjs",
+        "require": "./analytics.js"
       }
     }
   },
   "dependencies": {
     "@cowprotocol/cow-sdk": "9.3.3",
-    "viem": "2.48.8",
+    "viem": "2.55.19",
     "@cowprotocol/types": "workspace:*",
     "@lingui/core": "5.5.1",
     "@cowprotocol/currency": "workspace:*",

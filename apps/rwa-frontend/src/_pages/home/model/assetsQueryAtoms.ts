@@ -1,3 +1,5 @@
+import { atom } from 'jotai'
+
 import { atomWithQuery } from 'jotai-tanstack-query'
 
 import { assetsFiltersAtom, debouncedAssetsFilterQueryAtom } from './assetsFiltersAtoms'
@@ -22,4 +24,10 @@ export const assetsPageQueryAtom = atomWithQuery((get) => {
     query: get(debouncedAssetsFilterQueryAtom) || undefined,
     tickers: watchlistOnly ? [...get(watchlistAtom)].sort() : undefined,
   })
+})
+
+export const assetsCountLabelAtom = atom((get) => {
+  const { data } = get(assetsPageQueryAtom)
+
+  return data && `${data.total} ${data.total === 1 ? 'asset' : 'assets'}`
 })

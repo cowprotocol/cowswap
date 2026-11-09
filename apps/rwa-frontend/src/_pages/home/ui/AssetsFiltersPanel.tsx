@@ -11,6 +11,7 @@ import {
   NO_PANEL_FILTERS,
   updateAssetsFiltersAtom,
 } from '../model/assetsFiltersAtoms'
+import { assetsPageQueryAtom } from '../model/assetsQueryAtoms'
 
 import { getChainLabel } from '@/shared/lib/chain'
 import { formatCompactUsd } from '@/shared/lib/format'
@@ -24,15 +25,11 @@ const VOLUME_THRESHOLDS = [null, 100_000, 1_000_000, 10_000_000]
 interface AssetsFiltersPanelProps {
   id: string
   hidden: boolean
-  issuers: string[]
-  chainIds: number[]
 }
 
 interface AssetsFiltersSectionsProps {
-  issuers: string[]
-  chainIds: number[]
   /** Larger targets, and every option listed without the search, "Only" and folding of long lists */
-  isTouch?: boolean
+  isInDrawer?: boolean
 }
 
 interface FilterOption<T> {
@@ -45,7 +42,7 @@ interface OptionsSectionProps<T> {
   searchPlaceholder: string
   options: FilterOption<T>[]
   selected: T[]
-  isTouch: boolean
+  isInDrawer: boolean
   onChange(selected: T[]): void
 }
 
@@ -56,30 +53,33 @@ interface ThresholdSectionProps {
   onChange(value: number | null): void
 }
 
-export function AssetsFiltersPanel({ id, hidden, issuers, chainIds }: AssetsFiltersPanelProps): ReactNode {
+export function AssetsFiltersPanel({ id, hidden }: AssetsFiltersPanelProps): ReactNode {
   return (
     <div id={id} className={styles.panel} role="dialog" aria-label="Filters" hidden={hidden}>
       <div className={styles.header}>
         <h2 className={styles.title}>Filters</h2>
         <ClearAllFiltersButton />
       </div>
-      <AssetsFiltersSections issuers={issuers} chainIds={chainIds} />
+      <AssetsFiltersSections />
     </div>
   )
 }
 
-export function AssetsFiltersSections({ issuers, chainIds, isTouch = false }: AssetsFiltersSectionsProps): ReactNode {
+export function AssetsFiltersSections({ isInDrawer = false }: AssetsFiltersSectionsProps): ReactNode {
   const filters = useAtomValue(assetsFiltersAtom)
   const updateFilters = useSetAtom(updateAssetsFiltersAtom)
+  const { data } = useAtomValue(assetsPageQueryAtom)
+  const issuers = data?.issuers ?? []
+  const chainIds = data?.chainIds ?? []
 
   return (
-    <div className={styles.sections} data-touch={isTouch || undefined}>
+    <div className={styles.sections} data-in-drawer={isInDrawer || undefined}>
       <OptionsSection
         title="Issuer"
         searchPlaceholder="Search issuers…"
         options={issuers.map((issuer) => ({ value: issuer, label: issuer }))}
         selected={filters.issuers}
-        isTouch={isTouch}
+        isInDrawer={isInDrawer}
         onChange={(selected) => updateFilters({ issuers: selected })}
       />
       <OptionsSection
@@ -87,17 +87,17 @@ export function AssetsFiltersSections({ issuers, chainIds, isTouch = false }: As
         searchPlaceholder="Search networks…"
         options={chainIds.map((chainId) => ({ value: chainId, label: getChainLabel(chainId) }))}
         selected={filters.chainIds}
-        isTouch={isTouch}
+        isInDrawer={isInDrawer}
         onChange={(selected) => updateFilters({ chainIds: selected })}
       />
       <ThresholdSection
-        title="Onchain market cap"
+        title="Tokenized market cap"
         thresholds={MARKET_CAP_THRESHOLDS}
         value={filters.minMarketCap}
         onChange={(value) => updateFilters({ minMarketCap: value })}
       />
       <ThresholdSection
-        title="24h volume"
+        title="24h total volume"
         thresholds={VOLUME_THRESHOLDS}
         value={filters.minVolume24h}
         onChange={(value) => updateFilters({ minVolume24h: value })}
@@ -124,16 +124,16 @@ function OptionsSection<T extends string | number>({
   searchPlaceholder,
   options,
   selected,
-  isTouch,
+  isInDrawer,
   onChange,
 }: OptionsSectionProps<T>): ReactNode {
   const headingId = useId()
   const [search, setSearch] = useState('')
   const [isExpanded, setIsExpanded] = useState(false)
-  const isLong = !isTouch && options.length > SHORT_LIST_SIZE
+  const hasListTools = !isInDrawer && options.length > SHORT_LIST_SIZE
   const needle = search.trim().toLowerCase()
   const matches = needle ? options.filter((option) => option.label.toLowerCase().includes(needle)) : options
-  const canFold = isLong && !needle && !isExpanded && matches.length > SHORT_LIST_SIZE + 1
+  const canFold = hasListTools && !needle && !isExpanded && matches.length > SHORT_LIST_SIZE + 1
   const visible = canFold ? matches.slice(0, SHORT_LIST_SIZE) : matches
   const folded = matches.slice(visible.length)
 
@@ -154,7 +154,7 @@ function OptionsSection<T extends string | number>({
           </span>
         )}
       </div>
-      {isLong && (
+      {hasListTools && (
         <label className={styles.search}>
           <SearchIcon />
           <input
@@ -178,7 +178,7 @@ function OptionsSection<T extends string | number>({
               />
               {label}
             </label>
-            {isLong && (
+            {hasListTools && (
               <button
                 type="button"
                 className={styles.onlyButton}

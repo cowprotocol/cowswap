@@ -1,10 +1,8 @@
 import 'server-only'
 
-import { normalizeError } from '@cowprotocol/common-utils/errors'
-
-import { unstable_cache } from 'next/cache'
-
 import { withRetryBackoff } from './retryBackoff'
+
+import { createCachedJsonFetcher } from '../cachedJson'
 
 /** `days` param of `/coins/{id}/market_chart` */
 export type CoingeckoChartDays = '1' | '7' | '30' | '365' | 'max'
@@ -61,9 +59,9 @@ export interface CoingeckoRwaMarket {
   } | null
 }
 
-interface CachedResponse {
-  body: unknown
-  fetchedAt: number
+export interface CoingeckoRwaMarketChart {
+  /** `[timestamp ms, price USD per share]` over every tokenized version of the RWA */
+  tokenized_prices: [number, number][]
 }
 
 interface CoingeckoConfig {
@@ -89,11 +87,6 @@ const RWA_MARKETS_PAGE_SIZE = 250
 const GECKOTERMINAL_BASE_URL = 'https://api.geckoterminal.com/api/v2'
 /** Bump when a cached upstream payload changes shape: the data cache outlives deployments */
 const RESPONSE_CACHE_KEY = ['coingecko-response', 'v2']
-/**
- * Next serves an expired entry once before refreshing it, however old it is, so an entry
- * older than this many `revalidate` periods is refetched before it is served
- */
-const MAX_ENTRY_AGE_REVALIDATIONS = 2
 /** Fails a hanging request, so `withRetryBackoff` starts counting instead of waiting for the platform timeout */
 const REQUEST_TIMEOUT_MS = 10_000
 
@@ -208,6 +201,20 @@ export async function fetchOnchainTokens(
   })
 }
 
+/** `id` is a RWA id (`/rwas/list`). `null` without the Pro plan or when CoinGecko has no such RWA */
+export async function fetchRwaMarketChart(
+  id: string,
+  days: CoingeckoChartDays,
+  revalidateSeconds: number,
+): Promise<CoingeckoRwaMarketChart | null> {
+  if (!isProPlan()) return null
+
+  return fetchJsonOrNotFound<CoingeckoRwaMarketChart>(
+    `${getConfig().baseUrl}/rwas/${encodeURIComponent(id)}/market_chart?vs_currency=usd&days=${days}`,
+    revalidateSeconds,
+  )
+}
+
 /**
  * Requests the pages that `expectedCount` markets fill concurrently, then the next ones until a short page.
  * Uncached and without retry backoff: the data cache would keep each page from a different moment,
@@ -239,41 +246,8 @@ function chunk<T>(items: T[], size: number): T[][] {
   return chunks
 }
 
-const cachedRequests = new Map<number, (url: string, allowNotFound: boolean) => Promise<CachedResponse>>()
-
-/**
- * Data cache entry per URL. A failed refresh keeps serving the stale entry
- * and `withRetryBackoff` spaces out the next upstream attempts.
- * `null` when the upstream answers 404 and `allowNotFound` is set, otherwise a 404 is a failure
- */
-async function fetchCachedJson(url: string, revalidate: number, allowNotFound: boolean): Promise<unknown> {
-  let load = cachedRequests.get(revalidate)
-
-  if (!load) {
-    load = unstable_cache(
-      async (cacheUrl: string, cacheAllowNotFound: boolean): Promise<CachedResponse> => ({
-        body: await requestJsonWithBackoff(cacheUrl, cacheAllowNotFound),
-        fetchedAt: Date.now(),
-      }),
-      RESPONSE_CACHE_KEY,
-      { revalidate },
-    )
-    cachedRequests.set(revalidate, load)
-  }
-
-  const cached = await load(url, allowNotFound)
-
-  if (Date.now() - cached.fetchedAt <= revalidate * MAX_ENTRY_AGE_REVALIDATIONS * 1000) return cached.body
-
-  try {
-    return await requestJsonWithBackoff(url, allowNotFound)
-  } catch (err: unknown) {
-    const error = normalizeError(err)
-    console.warn(`[rwa] Serving a stale CoinGecko response of ${url}`, error)
-
-    return cached.body
-  }
-}
+/** `null` when the upstream answers 404 and `allowNotFound` is set, otherwise a 404 is a failure */
+const fetchCachedJson = createCachedJsonFetcher(RESPONSE_CACHE_KEY, requestJsonWithBackoff)
 
 async function fetchJson<T>(url: string, revalidate: number): Promise<T> {
   return (await fetchCachedJson(url, revalidate, false)) as T

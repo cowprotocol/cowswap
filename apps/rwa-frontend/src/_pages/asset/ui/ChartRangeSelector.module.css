@@ -30,3 +30,17 @@
   box-shadow: var(--shadow-pill);
   color: var(--color-text);
 }
+
+.ranges button[aria-disabled='true'] {
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+.hint {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

@@ -5,14 +5,20 @@
   "description": "CoW Protocol RWA frontend",
   "license": "ISC",
   "scripts": {
-    "update-registry": "node --env-file-if-exists=.env scripts/updateRegistry.mjs"
+    "test-scripts": "tsx --test scripts/*.test.mjs scripts/profiles/*.test.mjs",
+    "update-profiles": "tsx --env-file-if-exists=.env scripts/updateProfiles.mjs",
+    "update-registry": "tsx --env-file-if-exists=.env scripts/updateRegistry.mjs",
+    "update-websites": "tsx scripts/updateWebsites.mjs",
+    "validate-registry": "tsx scripts/validateRegistry.mjs"
   },
   "dependencies": {
     "@base-ui/react": "1.7.0",
+    "@cowprotocol/analytics": "workspace:*",
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
     "@cowprotocol/cow-sdk": "9.3.3",
     "@cowprotocol/events": "workspace:*",
+    "@cowprotocol/sdk-composable": "1.8.14",
     "@cowprotocol/sdk-viem-adapter": "0.3.39",
     "@cowprotocol/widget-lib": "workspace:*",
     "@cowprotocol/widget-react": "workspace:*",
@@ -29,7 +35,7 @@
     "react": "19.1.2",
     "react-dom": "19.1.2",
     "server-only": "0.0.1",
-    "viem": "2.48.8",
+    "viem": "2.55.19",
     "wagmi": "3.6.9"
   },
   "devDependencies": {

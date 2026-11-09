@@ -1,7 +1,7 @@
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
-import { getAddressKey } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { t } from '@lingui/core/macro'
 
@@ -104,7 +104,9 @@ export function buildVirtualRows(params: BuildVirtualRowsParams): TokensVirtualR
 }
 
 export function sortTokensByBalance(tokens: TokenWithLogo[], balances: BalancesMap): TokenWithLogo[] {
-  if (!balances) {
+  const hasRanks = tokens.some((token) => getSolanaTokenRank(token) !== Infinity)
+
+  if (!balances && !hasRanks) {
     return tokens
   }
 
@@ -112,7 +114,7 @@ export function sortTokensByBalance(tokens: TokenWithLogo[], balances: BalancesM
   const remainder: TokenWithLogo[] = []
 
   for (const token of tokens) {
-    const hasBalance = Boolean(balances[getAddressKey(token.address)])
+    const hasBalance = Boolean(balances?.[getAddressKey(token.address)])
     if (hasBalance || getIsNativeToken(token)) {
       prioritized.push(token)
     } else {
@@ -120,7 +122,34 @@ export function sortTokensByBalance(tokens: TokenWithLogo[], balances: BalancesM
     }
   }
 
-  const sortedPrioritized = prioritized.length > 1 ? [...prioritized].sort(tokensListSorter(balances)) : prioritized
+  if (balances) {
+    prioritized.sort(tokensListSorter(balances))
+  }
 
-  return [...sortedPrioritized, ...remainder]
+  if (hasRanks) {
+    remainder.sort(compareSolanaTokenRank)
+  }
+
+  return [...prioritized, ...remainder]
+}
+
+function compareSolanaTokenRank(a: TokenWithLogo, b: TokenWithLogo): number {
+  const rankA = getSolanaTokenRank(a)
+  const rankB = getSolanaTokenRank(b)
+
+  if (rankA !== rankB) return rankA - rankB
+
+  const symbolOrder = (a.symbol ?? '').localeCompare(b.symbol ?? '')
+  if (symbolOrder) return symbolOrder
+  if (areAddressesEqual(a.address, b.address)) return 0
+
+  return a.sortsBefore(b) ? -1 : 1
+}
+
+function getSolanaTokenRank(token: TokenWithLogo): number {
+  const rank = token.extensions?.rank
+
+  return token.chainId === SupportedChainId.SOLANA && typeof rank === 'number' && Number.isSafeInteger(rank) && rank > 0
+    ? rank
+    : Infinity
 }

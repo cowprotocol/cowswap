@@ -11,6 +11,6 @@
     "noImplicitAny": true,
     "types": ["node"]
   },
-  "include": ["src/**/*", "playwright.config.ts"],
+  "include": ["src/**/*", "playwright.config.ts", "playwright.rwa.config.ts"],
   "exclude": ["node_modules", "dist", "test-results", ".playwright"]
 }

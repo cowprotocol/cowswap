@@ -8,7 +8,7 @@ export type OrderCancellation =
   | { status: 'cancelled'; type: CancellationType }
   | { status: 'failed'; type: CancellationType; error: string }
 
-/** By order uid. A cancelled order keeps its entry until the open orders refetch drops it */
+/** By order uid. A cancelled order is left out of the open orders, see `openOrdersQueryAtomFamily` */
 export const orderCancellationsAtom = atom<Record<string, OrderCancellation>>({})
 
 export const setOrderCancellationAtom = atom(null, (get, set, uid: string, cancellation: OrderCancellation | null) => {

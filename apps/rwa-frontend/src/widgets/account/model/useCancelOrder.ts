@@ -12,11 +12,13 @@ import { normalizeError } from '@cowprotocol/common-utils/errors'
 
 import { type OrderCancellation, orderCancellationsAtom, setOrderCancellationAtom } from './orderCancellations'
 
+import { cancelCowShedTwap } from '../api/cancelCowShedTwap'
 import { cancelOrder, type CancellationType } from '../api/cancelOrder'
 
 import type { OpenOrder } from '../api/openOrders'
 
 import { RWA_QUERY_KEY_ROOT } from '@/shared/api'
+import { trackEvent } from '@/shared/lib/analytics'
 
 const USER_REJECTED_CODE = 4001
 
@@ -26,11 +28,13 @@ export function useCancelOrder(): (order: OpenOrder, type: CancellationType) => 
   const setCancellation = useSetAtom(setOrderCancellationAtom)
 
   return useCallback(
-    async ({ uid, chainId }: OpenOrder, type: CancellationType) => {
+    async ({ uid, chainId, cowShedTwap }: OpenOrder, type: CancellationType) => {
       setCancellation(uid, { status: 'signing', type })
 
       try {
-        const txHash = await cancelOrder({ config, chainId, orderUid: uid, type })
+        const txHash = cowShedTwap
+          ? await cancelCowShedTwap({ config, chainId, twap: cowShedTwap })
+          : await cancelOrder({ config, chainId, orderUid: uid, type })
 
         if (txHash) {
           if (!isHash(txHash)) throw new Error(`Unexpected transaction hash: ${txHash}`)
@@ -53,6 +57,7 @@ export function useCancelOrder(): (order: OpenOrder, type: CancellationType) => 
 
           if (replacement === 'cancelled') {
             setCancellation(uid, null)
+            trackEvent('order_cancel', { chainId, cancellationType: 'hard', result: 'rejected' })
 
             return
           }
@@ -62,11 +67,15 @@ export function useCancelOrder(): (order: OpenOrder, type: CancellationType) => 
         }
 
         setCancellation(uid, { status: 'cancelled', type })
+        trackEvent('order_cancel', { chainId, cancellationType: type, result: 'cancelled' })
         await queryClient.invalidateQueries({ queryKey: [RWA_QUERY_KEY_ROOT, 'open-orders'] })
       } catch (err: unknown) {
         const error = normalizeError(err)
 
-        setCancellation(uid, isUserRejection(error) ? null : { status: 'failed', type, error: getErrorMessage(error) })
+        const isRejected = isUserRejection(error)
+
+        setCancellation(uid, isRejected ? null : { status: 'failed', type, error: getErrorMessage(error) })
+        trackEvent('order_cancel', { chainId, cancellationType: type, result: isRejected ? 'rejected' : 'failed' })
       }
     },
     [config, queryClient, setCancellation],
