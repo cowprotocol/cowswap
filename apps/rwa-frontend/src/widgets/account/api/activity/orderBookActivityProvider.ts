@@ -1,6 +1,7 @@
-import type { SupportedChainId, Trade } from '@cowprotocol/cow-sdk'
+import { isSupportedChain, type SupportedChainId, type Trade } from '@cowprotocol/cow-sdk'
 
 import { collectPages } from '../../lib/collectPages'
+import { getOrderType, type OrderType } from '../../lib/orderType'
 import { getSupportedChainIds, resolveCounterTokens, settleChains, toTradeLeg } from '../../lib/tradeLeg'
 
 import type { Activity, ActivityProvider, ActivityQuery } from './types'
@@ -13,6 +14,9 @@ const TRADES_PAGE_SIZE = 1000
 const MAX_TRADES_PAGES = 10
 
 const blockTimestamps = new Map<string, number>()
+const orderTypes = new Map<string, OrderType>()
+
+type TradeActivity = Omit<Activity, 'orderType'>
 
 /** Trades settled by CoW Protocol only: the order book knows nothing about transfers and other protocols */
 export const orderBookActivityProvider: ActivityProvider = {
@@ -21,11 +25,14 @@ export const orderBookActivityProvider: ActivityProvider = {
       getChainActivity(chainId, owner, tokens, limit),
     )
 
-    return activity.sort(byTimestampDesc).slice(0, limit)
+    const latest = activity.sort(byTimestampDesc).slice(0, limit)
+    const types = await readOrderTypes(latest)
+
+    return latest.map((item) => ({ ...item, orderType: types.get(getOrderKey(item)) ?? 'swap' }))
   },
 }
 
-function byTimestampDesc(a: Activity, b: Activity): number {
+function byTimestampDesc(a: TradeActivity, b: TradeActivity): number {
   return (b.timestamp ?? 0) - (a.timestamp ?? 0)
 }
 
@@ -34,7 +41,7 @@ async function getChainActivity(
   owner: string,
   tokens: RwaTokenSummary[],
   limit: number,
-): Promise<Activity[]> {
+): Promise<TradeActivity[]> {
   const assetTrades = await collectPages(
     (offset, pageLimit) => orderBookApi.getTrades({ owner, offset, limit: pageLimit }, { chainId }),
     (trade) => {
@@ -61,7 +68,11 @@ async function getChainActivity(
   }))
 }
 
-function getTradeDetails(trade: Trade): Pick<Activity, 'id' | 'kind' | 'txHash' | 'orderUid'> {
+function getOrderKey({ chainId, orderUid }: Pick<TradeActivity, 'chainId' | 'orderUid'>): string {
+  return `${chainId}:${orderUid}`
+}
+
+function getTradeDetails(trade: Trade): Pick<TradeActivity, 'id' | 'kind' | 'txHash' | 'orderUid'> {
   return {
     id: `${trade.orderUid}:${trade.blockNumber}:${trade.logIndex}`,
     kind: 'trade',
@@ -95,4 +106,37 @@ async function readBlockTimestamps(chainId: number, blockNumbers: number[]): Pro
   )
 
   return timestamps
+}
+
+/** An order type never changes, so each order is read once per session */
+async function readOrderTypes(items: TradeActivity[]): Promise<Map<string, OrderType>> {
+  const orders = new Map<string, { chainId: SupportedChainId; orderUid: string }>()
+
+  for (const { chainId, orderUid } of items) {
+    if (orderUid && isSupportedChain(chainId)) orders.set(getOrderKey({ chainId, orderUid }), { chainId, orderUid })
+  }
+
+  const types = new Map<string, OrderType>()
+
+  await Promise.all(
+    [...orders].map(async ([key, { chainId, orderUid }]) => {
+      const cached = orderTypes.get(key)
+
+      if (cached !== undefined) {
+        types.set(key, cached)
+        return
+      }
+
+      const order = await orderBookApi.getOrder(orderUid, { chainId }).catch(() => null)
+
+      if (!order) return
+
+      const type = getOrderType(order)
+
+      orderTypes.set(key, type)
+      types.set(key, type)
+    }),
+  )
+
+  return types
 }
