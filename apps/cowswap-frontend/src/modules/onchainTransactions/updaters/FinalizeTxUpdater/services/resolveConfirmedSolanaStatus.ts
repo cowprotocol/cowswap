@@ -1,4 +1,4 @@
-import { getIsSolanaSmartContractWallet } from 'tradingSdk/solana/getIsSolanaSmartContractWallet'
+import { isSolanaSmartContractWallet } from '@cowprotocol/sdk-trading-solana'
 
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
 
@@ -49,5 +49,5 @@ function getIsMultisigFiling(transaction: EnhancedTransactionDetails): boolean {
     transaction.solanaOrderCreation || transaction.solanaCancelOrderIds || transaction.onChainCancellation,
   )
 
-  return decidesAnOrder && getIsSolanaSmartContractWallet(transaction.from)
+  return decidesAnOrder && isSolanaSmartContractWallet(transaction.from)
 }

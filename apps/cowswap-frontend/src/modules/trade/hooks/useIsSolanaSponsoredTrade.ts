@@ -1,8 +1,7 @@
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isSolanaChain } from '@cowprotocol/cow-sdk'
+import { isSolanaSmartContractWallet } from '@cowprotocol/sdk-trading-solana'
 import { useWalletInfo } from '@cowprotocol/wallet'
-
-import { getIsSolanaSmartContractWallet } from 'tradingSdk/solana/getIsSolanaSmartContractWallet'
 
 import { isSolanaQuoteAndPost, useTradeQuote } from 'modules/tradeQuote'
 
@@ -29,6 +28,6 @@ export function useIsSolanaSponsoredTrade(): boolean {
       derivedState?.tradeType !== TradeType.LIMIT_ORDER &&
       solanaQuote?.funder &&
       // No owner yet leaves the estimate alone: there is nothing to place.
-      (!owner || !getIsSolanaSmartContractWallet(owner)),
+      (!owner || !isSolanaSmartContractWallet(owner)),
   )
 }

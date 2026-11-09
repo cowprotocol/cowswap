@@ -4,12 +4,12 @@ import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Token } from '@cowprotocol/currency'
+import { isSolanaSmartContractWallet } from '@cowprotocol/sdk-trading-solana'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAppKitConnection } from '@reown/appkit-adapter-solana/react'
 import { renderHook, waitFor } from '@testing-library/react'
 import { SWRConfig } from 'swr'
-import { getIsSolanaSmartContractWallet } from 'tradingSdk/solana/getIsSolanaSmartContractWallet'
 
 import {
   getSolanaTradeOverhead,
@@ -26,7 +26,7 @@ import { useSolanaTradeOverhead } from './useSolanaTradeOverhead'
 jest.mock('@cowprotocol/wallet', () => ({ useWalletInfo: jest.fn() }))
 jest.mock('@cowprotocol/common-hooks', () => ({ useFeatureFlags: jest.fn() }))
 jest.mock('@reown/appkit-adapter-solana/react', () => ({ useAppKitConnection: jest.fn() }))
-jest.mock('tradingSdk/solana/getIsSolanaSmartContractWallet', () => ({ getIsSolanaSmartContractWallet: jest.fn() }))
+jest.mock('@cowprotocol/sdk-trading-solana', () => ({ isSolanaSmartContractWallet: jest.fn() }))
 jest.mock('modules/trade', () => ({
   getSolanaTradeOverhead: jest.fn(),
   getWrapFundedAccounts: jest.fn(),
@@ -43,7 +43,7 @@ jest.mock('modules/tradeQuote', () => ({
 const mockUseWalletInfo = jest.mocked(useWalletInfo)
 const mockUseFeatureFlags = jest.mocked(useFeatureFlags)
 const mockUseAppKitConnection = jest.mocked(useAppKitConnection)
-const mockGetIsSolanaSmartContractWallet = jest.mocked(getIsSolanaSmartContractWallet)
+const mockIsSolanaSmartContractWallet = jest.mocked(isSolanaSmartContractWallet)
 const mockGetSolanaTradeOverhead = jest.mocked(getSolanaTradeOverhead)
 const mockGetWrapFundedAccounts = jest.mocked(getWrapFundedAccounts)
 const mockPlanSolanaTradeFundedAccounts = jest.mocked(planSolanaTradeFundedAccounts)
@@ -81,7 +81,7 @@ beforeEach(() => {
   mockUseFeatureFlags.mockReturnValue({} as unknown as ReturnType<typeof useFeatureFlags>)
   mockUseAppKitConnection.mockReturnValue({ connection } as unknown as ReturnType<typeof useAppKitConnection>)
   mockUseIsWrapOrUnwrap.mockReturnValue(false)
-  mockGetIsSolanaSmartContractWallet.mockReturnValue(false)
+  mockIsSolanaSmartContractWallet.mockReturnValue(false)
   mockUseTradeQuote.mockReturnValue({ quote: { solanaQuote: {} } } as unknown as ReturnType<typeof useTradeQuote>)
   mockGetWrapFundedAccounts.mockReturnValue(WRAP_ACCOUNTS)
   mockPlanSolanaTradeFundedAccounts.mockReturnValue(FULL_ACCOUNTS)
@@ -124,19 +124,19 @@ describe('useSolanaTradeOverhead', () => {
   // bundle names it as payer for the accounts it creates.
   it('leaves the fees to the member executing a multisig proposal', async () => {
     setup({ inputCurrency: NATIVE_SOL, isSponsored: false })
-    mockGetIsSolanaSmartContractWallet.mockReturnValue(true)
+    mockIsSolanaSmartContractWallet.mockReturnValue(true)
 
     renderHook(() => useSolanaTradeOverhead(), { wrapper })
 
     await waitFor(() => expect(mockGetSolanaTradeOverhead).toHaveBeenCalled())
     expect(mockGetSolanaTradeOverhead).toHaveBeenCalledWith(connection, FULL_ACCOUNTS, { ownerPaysFees: false })
-    expect(mockGetIsSolanaSmartContractWallet.mock.calls[0]?.[0]?.toString()).toBe(OWNER)
+    expect(mockIsSolanaSmartContractWallet.mock.calls[0]?.[0]?.toString()).toBe(OWNER)
   })
 
   it('leaves the fees to the member on a multisig wrap, which is a proposal too', async () => {
     setup({ inputCurrency: NATIVE_SOL, isSponsored: false })
     mockUseIsWrapOrUnwrap.mockReturnValue(true)
-    mockGetIsSolanaSmartContractWallet.mockReturnValue(true)
+    mockIsSolanaSmartContractWallet.mockReturnValue(true)
 
     renderHook(() => useSolanaTradeOverhead(), { wrapper })
 

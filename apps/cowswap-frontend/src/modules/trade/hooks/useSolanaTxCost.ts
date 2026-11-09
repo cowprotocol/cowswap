@@ -3,9 +3,8 @@ import { useMemo } from 'react'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
+import { isSolanaSmartContractWallet } from '@cowprotocol/sdk-trading-solana'
 import { useWalletInfo } from '@cowprotocol/wallet'
-
-import { getIsSolanaSmartContractWallet } from 'tradingSdk/solana/getIsSolanaSmartContractWallet'
 
 import { useSolanaTradeOverhead } from 'modules/tradeFormValidation'
 
@@ -43,7 +42,7 @@ export function useSolanaTxCost(): SolanaTxCost | null {
   const isSponsored = useIsSolanaSponsoredTrade()
   const overhead = useSolanaTradeOverhead({ ignoreSponsor: true })
   const ownerOverhead = useSolanaTradeOverhead()
-  const isFeePaidByVaultMember = Boolean(isSolanaChain(chainId) && account && getIsSolanaSmartContractWallet(account))
+  const isFeePaidByVaultMember = Boolean(isSolanaChain(chainId) && account && isSolanaSmartContractWallet(account))
 
   return useMemo(() => {
     if (!overhead || overhead.spent <= 0n || !isSolanaChain(chainId)) return null

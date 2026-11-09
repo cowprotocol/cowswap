@@ -55,7 +55,7 @@ function createTransaction(addedTime = Date.now()): EnhancedTransactionDetails {
 
 const transaction = createTransaction()
 
-// A real Squads vault: off the ed25519 curve, so `getIsSolanaSmartContractWallet` recognises it.
+// A real Squads vault: off the ed25519 curve, so `isSolanaSmartContractWallet` recognises it.
 const VAULT = 'D9DvzXZjyqECswED5YgHi4wA1qTVjjiGP76sN6Dr8vGE'
 
 /** Each multisig test needs its own signature, matching how the real service memoises per signature. */

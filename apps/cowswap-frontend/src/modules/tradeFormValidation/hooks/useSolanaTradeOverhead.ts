@@ -3,12 +3,12 @@ import { useMemo } from 'react'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { isSolanaAddress, isSolanaChain } from '@cowprotocol/cow-sdk'
+import { isSolanaSmartContractWallet } from '@cowprotocol/sdk-trading-solana'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAppKitConnection } from '@reown/appkit-adapter-solana/react'
 import { PublicKey } from '@solana/web3.js'
 import useSWR from 'swr'
-import { getIsSolanaSmartContractWallet } from 'tradingSdk/solana/getIsSolanaSmartContractWallet'
 
 import {
   getSolanaTradeOverhead,
@@ -71,7 +71,7 @@ export function useSolanaTradeOverhead({
     // A vault never signs a transaction itself: its order rides inside `VaultTransactionExecute`, so
     // the member who executes the approved proposal pays the fee. The rents stay the vault's — the
     // bundle names it as payer for every account it creates.
-    const ownerPaysFees = !getIsSolanaSmartContractWallet(owner)
+    const ownerPaysFees = !isSolanaSmartContractWallet(owner)
 
     // A wrap/unwrap never goes through a sponsor, and has no quote involved.
     if (isWrapUnwrap) return { fundedAccounts: [], ownerPaysFees }

@@ -1,8 +1,8 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isSolanaSmartContractWallet } from '@cowprotocol/sdk-trading-solana'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { renderHook } from '@testing-library/react'
-import { getIsSolanaSmartContractWallet } from 'tradingSdk/solana/getIsSolanaSmartContractWallet'
 
 import { useSolanaTradeOverhead } from 'modules/tradeFormValidation'
 
@@ -12,12 +12,12 @@ import { useSolanaTxCost } from './useSolanaTxCost'
 jest.mock('@cowprotocol/wallet', () => ({ useWalletInfo: jest.fn() }))
 jest.mock('modules/tradeFormValidation', () => ({ useSolanaTradeOverhead: jest.fn() }))
 jest.mock('./useIsSolanaSponsoredTrade', () => ({ useIsSolanaSponsoredTrade: jest.fn() }))
-jest.mock('tradingSdk/solana/getIsSolanaSmartContractWallet', () => ({ getIsSolanaSmartContractWallet: jest.fn() }))
+jest.mock('@cowprotocol/sdk-trading-solana', () => ({ isSolanaSmartContractWallet: jest.fn() }))
 
 const mockUseWalletInfo = jest.mocked(useWalletInfo)
 const mockUseSolanaTradeOverhead = jest.mocked(useSolanaTradeOverhead)
 const mockUseIsSolanaSponsoredTrade = jest.mocked(useIsSolanaSponsoredTrade)
-const mockGetIsSolanaSmartContractWallet = jest.mocked(getIsSolanaSmartContractWallet)
+const mockIsSolanaSmartContractWallet = jest.mocked(isSolanaSmartContractWallet)
 
 const OWNER = '9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM'
 const PLACEMENT_COST = 3_000_000n
@@ -41,7 +41,7 @@ beforeEach(() => {
   mockUseWalletInfo.mockReturnValue({ chainId: SupportedChainId.SOLANA, account: OWNER } as unknown as ReturnType<
     typeof useWalletInfo
   >)
-  mockGetIsSolanaSmartContractWallet.mockReturnValue(false)
+  mockIsSolanaSmartContractWallet.mockReturnValue(false)
 })
 
 describe('useSolanaTxCost', () => {
@@ -81,13 +81,13 @@ describe('useSolanaTxCost', () => {
   // marks that with `+ gas` instead of pricing it against the vault, matching the EVM Safe flow.
   it('leaves the transaction fee to the member when the owner is a vault', () => {
     mockUseIsSolanaSponsoredTrade.mockReturnValue(false)
-    mockGetIsSolanaSmartContractWallet.mockReturnValue(true)
+    mockIsSolanaSmartContractWallet.mockReturnValue(true)
     mockOverheads({ full: PLACEMENT_COST, owner: PLACEMENT_COST })
 
     const { result } = renderHook(() => useSolanaTxCost())
 
     expect(result.current?.isFeePaidByVaultMember).toBe(true)
-    expect(mockGetIsSolanaSmartContractWallet).toHaveBeenCalledWith(OWNER)
+    expect(mockIsSolanaSmartContractWallet).toHaveBeenCalledWith(OWNER)
   })
 
   it('charges an ordinary wallet the transaction fee itself', () => {
