@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
 
 import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
-import { getAddressKey } from '@cowprotocol/cow-sdk'
+import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenInfo } from '@cowprotocol/types'
 
 import { blockedListSourcesAtom } from './blockedListSourcesAtom'
@@ -147,6 +147,17 @@ export const allActiveTokensAtom = atom(async (get) => {
   }
 
   const tokens = tokenMapToListWithLogo(tokenSources, chainId)
+
+  if (chainId === SupportedChainId.SOLANA) {
+    tokens.forEach((token) => {
+      if (token.extensions) {
+        token.extensions = {
+          ...token.extensions,
+          rank: tokensMap.activeTokens[getAddressKey(token.address)]?.extensions?.rank,
+        }
+      }
+    })
+  }
 
   return { tokens, chainId }
 })
