@@ -1,12 +1,12 @@
 'use client'
 
-import { type KeyboardEvent, type ReactNode, useCallback, useId, useRef, useState } from 'react'
+import { type ReactNode, useCallback, useId, useRef, useState } from 'react'
 
 import styles from './HeaderMoreMenu.module.css'
 
 import { MORE_SECTIONS } from '../config/navLinks'
 
-import { useDismissOnOutsideInteraction } from '@/shared/lib/dismiss'
+import { useDismissOnEscape, useDismissOnOutsideInteraction } from '@/shared/lib/dismiss'
 import { ChevronDownIcon } from '@/shared/ui/icons'
 
 export function HeaderMoreMenu(): ReactNode {
@@ -18,17 +18,10 @@ export function HeaderMoreMenu(): ReactNode {
   const close = useCallback(() => setIsOpen(false), [])
 
   useDismissOnOutsideInteraction(isOpen, [rootRef], close)
-
-  const onKeyDown = (event: KeyboardEvent<HTMLDivElement>): void => {
-    if (event.key !== 'Escape' || !isOpen) return
-
-    event.preventDefault()
-    close()
-    triggerRef.current?.focus()
-  }
+  useDismissOnEscape(isOpen, close, triggerRef)
 
   return (
-    <div ref={rootRef} className={styles.root} onKeyDown={onKeyDown}>
+    <div ref={rootRef} className={styles.root}>
       <button
         ref={triggerRef}
         className={styles.trigger}

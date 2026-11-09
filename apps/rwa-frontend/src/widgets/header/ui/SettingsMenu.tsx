@@ -1,11 +1,12 @@
 'use client'
 
 import { useSetAtom } from 'jotai'
-import { type KeyboardEvent, type ReactNode, useCallback, useEffect, useId, useRef, useState } from 'react'
+import { type ReactNode, useCallback, useEffect, useId, useRef, useState } from 'react'
 
+import headerStyles from './Header.module.css'
 import styles from './SettingsMenu.module.css'
 
-import { useDismissOnOutsideInteraction } from '@/shared/lib/dismiss'
+import { useDismissOnEscape, useDismissOnOutsideInteraction } from '@/shared/lib/dismiss'
 import { setThemePreferenceAtom, useIsDarkTheme } from '@/shared/lib/theme'
 
 export const SETTINGS_BUTTON_ID = 'header-settings'
@@ -22,18 +23,11 @@ export function SettingsMenu(): ReactNode {
   const close = useCallback(() => setIsOpen(false), [])
 
   useDismissOnOutsideInteraction(isOpen, [rootRef], close)
+  useDismissOnEscape(isOpen, close, triggerRef)
 
   useEffect(() => {
     if (isOpen) itemRef.current?.focus()
   }, [isOpen])
-
-  const onKeyDown = (event: KeyboardEvent<HTMLDivElement>): void => {
-    if (event.key !== 'Escape' || !isOpen) return
-
-    event.preventDefault()
-    close()
-    triggerRef.current?.focus()
-  }
 
   const toggleTheme = (): void => {
     setThemePreference(isDark ? 'light' : 'dark')
@@ -42,11 +36,11 @@ export function SettingsMenu(): ReactNode {
   }
 
   return (
-    <div ref={rootRef} className={styles.root} onKeyDown={onKeyDown}>
+    <div ref={rootRef} className={styles.root}>
       <button
         ref={triggerRef}
         id={SETTINGS_BUTTON_ID}
-        className={styles.trigger}
+        className={headerStyles.iconButton}
         type="button"
         aria-label="Settings"
         aria-haspopup="menu"
