@@ -88,6 +88,9 @@ function getCachedAta(
 
   let ata: PublicKey | null = null
   try {
+    // `allowOwnerOffCurve`: a multisig vault is a program address, so it sits off the ed25519 curve and the
+    // default guard rejects it as `TokenOwnerOffCurveError`. Duplicates `deriveAta` in
+    // `@cowprotocol/sdk-trading-solana`, which does not export it yet; drop this once it does.
     ata = getAssociatedTokenAddressSync(new PublicKey(mint), owner, true, programId, ASSOCIATED_TOKEN_PROGRAM_ID)
   } catch {
     // Malformed mint: leave the default `null` so the rest of the list still loads.
