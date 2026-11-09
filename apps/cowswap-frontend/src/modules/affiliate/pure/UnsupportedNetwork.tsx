@@ -3,10 +3,10 @@ import { ReactNode } from 'react'
 import { UnsupportedNetworkBanner } from 'common/pure/UnsupportedNetworkBanner'
 import { UnsupportedNetworksText } from 'common/pure/UnsupportedNetworksText'
 
-import { AFFILIATE_SUPPORTED_NETWORK_NAMES } from '../config/affiliateProgram.const'
+import { useAffiliateSupportedNetworkNames } from '../hooks/useAffiliateSupportedNetworkNames'
 
 export function UnsupportedNetwork(): ReactNode {
-  const supportedNetworks = AFFILIATE_SUPPORTED_NETWORK_NAMES.join(', ')
+  const supportedNetworks = useAffiliateSupportedNetworkNames().join(', ')
 
   return (
     <UnsupportedNetworkBanner>

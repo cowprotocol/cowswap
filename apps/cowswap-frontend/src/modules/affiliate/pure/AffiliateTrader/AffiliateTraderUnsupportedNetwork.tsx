@@ -5,10 +5,12 @@ import { AlertTriangle } from 'react-feather'
 
 import { UnsupportedNetworksText } from 'common/pure/UnsupportedNetworksText'
 
-import { AFFILIATE_SUPPORTED_NETWORK_NAMES } from '../../config/affiliateProgram.const'
+import { useAffiliateSupportedNetworkNames } from '../../hooks/useAffiliateSupportedNetworkNames'
 import { UnsupportedNetworkCard, UnsupportedNetworkHeader, UnsupportedNetworkMessage } from '../shared'
 
 export function AffiliateTraderUnsupportedNetwork(): ReactNode {
+  const supportedNetworks = useAffiliateSupportedNetworkNames().join(', ')
+
   return (
     <UnsupportedNetworkCard>
       <UnsupportedNetworkHeader>
@@ -17,7 +19,7 @@ export function AffiliateTraderUnsupportedNetwork(): ReactNode {
       </UnsupportedNetworkHeader>
       <UnsupportedNetworkMessage>
         <UnsupportedNetworksText />
-        <br />({AFFILIATE_SUPPORTED_NETWORK_NAMES.join(', ')})
+        <br />({supportedNetworks})
       </UnsupportedNetworkMessage>
     </UnsupportedNetworkCard>
   )
