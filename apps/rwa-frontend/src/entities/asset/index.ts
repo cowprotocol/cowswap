@@ -71,7 +71,7 @@ export {
 export { RWA_REGISTRY_EDIT_URL } from './model/registryEditUrl'
 export { AssetStats } from './ui/AssetStats'
 export { DividendNotes } from './ui/DividendNotes'
-export { pointsToCandles } from './lib/chartBars'
+export { pointsToCandles, withLatestPrice } from './lib/chartBars'
 export { PriceChart } from './ui/PriceChart'
 export { getDefaultSortOrder } from './model/assetsQuery'
 export {

@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import { coingeckoProvider, toCandles, toChartPoints } from './marketData'
+import { coingeckoProvider, toCandles, toCandlesFromPoints, toChartPoints } from './marketData'
 
 jest.mock('next/cache', () => ({
   unstable_cache: <T extends unknown[], R>(load: (...args: T) => Promise<R>) => load,
@@ -103,6 +103,85 @@ describe('toChartPoints', () => {
       { time: 2, value: 3 },
       { time: 3, value: 4 },
     ])
+  })
+})
+
+describe('coingeckoProvider.getRwaChart', () => {
+  const env = { ...process.env }
+
+  beforeEach(() => {
+    process.env.COINGECKO_API_KEY = 'key'
+    process.env.COINGECKO_API_PLAN = 'pro'
+  })
+
+  afterEach(() => {
+    process.env = { ...env }
+    jest.restoreAllMocks()
+  })
+
+  it('charts the tokenized prices of the RWA', async () => {
+    const fetchMock = mockFetch({
+      tokenized_prices: [
+        [1_000_000, 10],
+        [1_300_000, 11],
+      ],
+    })
+
+    expect(await coingeckoProvider.getRwaChart('nvidia', '1W')).toEqual([
+      { time: 1000, value: 10 },
+      { time: 1300, value: 11 },
+    ])
+    expect(String(fetchMock.mock.calls[0][0])).toBe(
+      'https://pro-api.coingecko.com/api/v3/rwas/nvidia/market_chart?vs_currency=usd&days=7',
+    )
+  })
+
+  it('builds the candles from the tokenized prices of the RWA', async () => {
+    mockFetch({
+      tokenized_prices: [
+        [0, 10],
+        [600_000, 12],
+        [1_200_000, 9],
+        [1_800_000, 11],
+      ],
+    })
+
+    expect(await coingeckoProvider.getRwaCandles('nvidia', '1D')).toEqual([
+      { time: 0, open: 10, high: 12, low: 9, close: 9 },
+      { time: 1800, open: 11, high: 11, low: 11, close: 11 },
+    ])
+  })
+
+  it('returns null without the Pro plan', async () => {
+    process.env.COINGECKO_API_PLAN = 'demo'
+    const fetchMock = mockFetch({})
+
+    expect(await coingeckoProvider.getRwaChart('nvidia', '1D')).toBeNull()
+    expect(await coingeckoProvider.getRwaCandles('nvidia', '1D')).toBeNull()
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+})
+
+describe('toCandlesFromPoints', () => {
+  it('groups the points into candles stamped with their open time', () => {
+    expect(
+      toCandlesFromPoints(
+        [
+          { time: 3600, value: 5 },
+          { time: 5400, value: 7 },
+          { time: 7200, value: 6 },
+          { time: 14_399, value: 4 },
+        ],
+        3600 * 2,
+      ),
+    ).toEqual([
+      { time: 0, open: 5, high: 7, low: 5, close: 7 },
+      { time: 7200, open: 6, high: 6, low: 4, close: 4 },
+    ])
+  })
+
+  it('returns no candles without points', () => {
+    expect(toCandlesFromPoints([], 3600)).toEqual([])
   })
 })
 

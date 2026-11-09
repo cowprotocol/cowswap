@@ -39,6 +39,26 @@ export function pointsToCandles(points: RwaChartPoint[]): RwaCandle[] {
   return points.map(({ time, value }) => ({ time, open: value, high: value, low: value, close: value }))
 }
 
+/**
+ * Ends ascending `candles` at `price`, which refreshes more often than the cached chart: a flat candle at `updatedAt`,
+ * or the last candle closed at `price` when `updatedAt` is missing or not after it
+ */
+export function withLatestPrice(candles: RwaCandle[], price: number | null, updatedAt: string | null): RwaCandle[] {
+  const last = candles[candles.length - 1]
+
+  if (!last || price === null || price <= 0) return candles
+
+  const updatedSeconds = updatedAt ? Math.floor(Date.parse(updatedAt) / 1000) : NaN
+
+  if (Number.isFinite(updatedSeconds) && updatedSeconds > last.time) {
+    return [...candles, { time: updatedSeconds, open: price, high: price, low: price, close: price }]
+  }
+
+  const closed = { ...last, high: Math.max(last.high, price), low: Math.min(last.low, price), close: price }
+
+  return [...candles.slice(0, -1), closed]
+}
+
 function getResolutionSeconds(resolution: string): number {
   return resolution.endsWith('D') ? (Number(resolution.slice(0, -1)) || 1) * DAY_SECONDS : Number(resolution) * 60
 }

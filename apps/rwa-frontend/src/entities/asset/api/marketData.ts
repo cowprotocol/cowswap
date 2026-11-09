@@ -28,6 +28,7 @@ import {
   fetchOhlc,
   fetchOnchainTokenOhlcv,
   fetchOnchainTokens,
+  fetchRwaMarketChart,
   fetchRwaMarkets,
   withRetryBackoff,
 } from '@/shared/api/index.server'
@@ -37,6 +38,10 @@ export interface MarketDataProvider {
   getChart(coingeckoId: string, range: RwaChartRange): Promise<RwaChartPoint[]>
   /** `coingeckoId` is a `RwaToken.coingeckoId`, empty when the coin has no prices in `range` */
   getCandles(coingeckoId: string, range: RwaChartRange): Promise<RwaCandle[]>
+  /** Per share over every issuer of the RWA `rwaId` (`RwaAsset.coingeckoId`), `null` when the provider has none */
+  getRwaChart(rwaId: string, range: RwaChartRange): Promise<RwaChartPoint[] | null>
+  /** Built from `getRwaChart`, which has no candle endpoint */
+  getRwaCandles(rwaId: string, range: RwaChartRange): Promise<RwaCandle[] | null>
   /** `tokens` are on `chainId` */
   getNetworkStats(chainId: number, tokens: RwaToken[]): Promise<RwaTokenNetworkStats[]>
   /** USD per hour over the last 24h summed over `tokens`, `null` when the provider has no candles for any of them */
@@ -102,6 +107,14 @@ export const coingeckoProvider: MarketDataProvider = {
     const ohlc = await fetchOhlc(coingeckoId, CHART_DAYS[range], CHART_REVALIDATE_SECONDS[range])
 
     return toCandles(ohlc, CANDLE_SECONDS[range])
+  },
+
+  getRwaChart: loadRwaChart,
+
+  async getRwaCandles(rwaId, range) {
+    const points = await loadRwaChart(rwaId, range)
+
+    return points && toCandlesFromPoints(points, CANDLE_SECONDS[range])
   },
 
   async getNetworkStats(chainId, tokens) {
@@ -181,6 +194,27 @@ export function toCandles(ohlc: CoingeckoOhlc[], candleSeconds: number): RwaCand
   return candles
 }
 
+/** Candles of `candleSeconds` stamped with their open time, like TradingView. `points` must be ascending */
+export function toCandlesFromPoints(points: RwaChartPoint[], candleSeconds: number): RwaCandle[] {
+  const candles: RwaCandle[] = []
+
+  for (const { time, value } of points) {
+    const candleTime = Math.floor(time / candleSeconds) * candleSeconds
+    const last = candles[candles.length - 1]
+
+    if (last?.time === candleTime) {
+      last.high = Math.max(last.high, value)
+      last.low = Math.min(last.low, value)
+      last.close = value
+      continue
+    }
+
+    candles.push({ time: candleTime, open: value, high: value, low: value, close: value })
+  }
+
+  return candles
+}
+
 export function toChartPoints(prices: [number, number][]): RwaChartPoint[] {
   const points: RwaChartPoint[] = []
 
@@ -214,6 +248,12 @@ function getRegistryCoingeckoIds(): string[] {
 
 function getTokenCoingeckoIds(tokens: RwaToken[]): string[] {
   return [...new Set(tokens.flatMap((token) => (token.coingeckoId ? [token.coingeckoId] : [])))]
+}
+
+async function loadRwaChart(rwaId: string, range: RwaChartRange): Promise<RwaChartPoint[] | null> {
+  const chart = await fetchRwaMarketChart(rwaId, CHART_DAYS[range], CHART_REVALIDATE_SECONDS[range])
+
+  return chart && toChartPoints(chart.tokenized_prices)
 }
 
 function orNull<T>(value: T | null | undefined): T | null {

@@ -106,6 +106,10 @@ export async function getAsset(ticker: string): Promise<RwaAssetResponse | null>
 
 /** Per share like `getAssetChart` */
 export async function getAssetCandles(asset: RwaAsset, range: RwaChartRange): Promise<RwaCandleChart> {
+  const rwaCandles = await marketDataProvider.getRwaCandles(asset.coingeckoId, range)
+
+  if (rwaCandles?.length) return { ticker: asset.ticker, range, candles: rwaCandles, degraded: false }
+
   const [{ items: candles, coinTokens }, { byKey, degraded }] = await Promise.all([
     loadFirstCoinWithData(asset.tokens, (coingeckoId) => marketDataProvider.getCandles(coingeckoId, range)),
     loadSharesPerToken(asset.tokens),
@@ -127,8 +131,15 @@ export async function getAssetCandles(asset: RwaAsset, range: RwaChartRange): Pr
   }
 }
 
-/** USD per share of the underlying, or per token when the charted coin has no single known multiplier */
+/**
+ * USD per share over every issuer of the asset. Without that chart, of the first coin of the asset with prices:
+ * per share, or per token when that coin has no single known multiplier
+ */
 export async function getAssetChart(asset: RwaAsset, range: RwaChartRange): Promise<RwaChart> {
+  const rwaPoints = await marketDataProvider.getRwaChart(asset.coingeckoId, range)
+
+  if (rwaPoints?.length) return { ticker: asset.ticker, range, points: rwaPoints, degraded: false }
+
   const [{ items: points, coinTokens }, { byKey, degraded }] = await Promise.all([
     loadFirstCoinWithData(asset.tokens, (coingeckoId) => marketDataProvider.getChart(coingeckoId, range)),
     loadSharesPerToken(asset.tokens),
