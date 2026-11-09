@@ -140,13 +140,12 @@ function getTwapOpenOrders(chainId: SupportedChainId, owner: string, tokens: Rwa
   return collectTwapOrders(chainId, owner, (twap) => {
     if (twap.status !== 'open') return null
 
-    const { sellToken, buyToken, partSellAmount, minPartLimit, numberOfParts } = twap.schedule
-    const parts = BigInt(numberOfParts)
+    const { sellToken, buyToken, partSellAmount, minPartLimit } = twap.schedule
     const leg = toTradeLeg(chainId, tokens, {
       sellToken,
-      sellAmount: (partSellAmount * parts).toString(),
+      sellAmount: partSellAmount.toString(),
       buyToken,
-      buyAmount: (minPartLimit * parts).toString(),
+      buyAmount: minPartLimit.toString(),
     })
 
     return leg ? { ...leg, ...getTwapDetails(twap) } : null

@@ -11,7 +11,9 @@ import { walletBarSlotAtom } from '../model/walletBarSlotAtom'
 
 import { ConnectButton } from '@/features/connect-wallet'
 
-/** The wallet, in a bar fixed to the bottom of the screen at 960px and below */
+/** In px, for JS that measures against the bar. CSS reads `--wallet-bar-height` */
+export const WALLET_BAR_HEIGHT = 56
+
 export function WalletBar(): ReactNode {
   const setSlot = useSetAtom(walletBarSlotAtom)
 

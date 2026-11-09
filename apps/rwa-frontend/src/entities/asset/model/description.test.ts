@@ -34,6 +34,7 @@ describe('findRwaDescriptionIssue', () => {
     'Visit www.example.org.',
     'Migrate at cow-claim.xyz today.',
     'Trading moved to Kaspi.kz.evil.io.',
+    'Pay at spi.kz instead.',
     'Write to support@example.com.',
   ])('rejects links and domains that are not in the title in %j', (description) => {
     expect(findRwaDescriptionIssue(description, 'Kaspi.kz JSC')).toBe('must not contain links or domains')

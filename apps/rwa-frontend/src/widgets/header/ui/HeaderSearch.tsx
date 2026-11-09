@@ -12,12 +12,12 @@ import {
   useState,
 } from 'react'
 
-import { usePathname, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
+import headerStyles from './Header.module.css'
 import styles from './HeaderSearch.module.css'
 
-import { useBodyScrollLock } from '../lib/useBodyScrollLock'
-import { useDismissOnMediaQueryExit } from '../lib/useDismissOnMediaQueryExit'
+import { useOpenOnPage } from '../lib/useOpenOnPage'
 import {
   debouncedHeaderSearchQueryAtom,
   headerSearchQueryAtom,
@@ -26,8 +26,9 @@ import {
 } from '../model/headerSearchAtoms'
 
 import { RWA_ASSET_TYPE_LABELS, type RwaAssetWithMarket } from '@/entities/asset'
+import { MEDIA_QUERIES } from '@/shared/config'
 import { trackEvent } from '@/shared/lib/analytics'
-import { useDismissOnOutsideInteraction } from '@/shared/lib/dismiss'
+import { useDismissOnEscape, useDismissOnMediaQueryChange, useDismissOnOutsideInteraction } from '@/shared/lib/dismiss'
 import { CloseIcon, SearchIcon } from '@/shared/ui/icons'
 import { TokenLogo } from '@/shared/ui/token-logo'
 
@@ -45,39 +46,49 @@ interface SearchSuggestionsProps {
   onHover(index: number): void
 }
 
-const FULL_SCREEN_QUERY = '(max-width: 720px)'
-
 export function HeaderSearch(): ReactNode {
   const inputRef = useRef<HTMLInputElement>(null)
+  const toggleRef = useRef<HTMLButtonElement>(null)
   const fieldId = useId()
   const query = useAtomValue(headerSearchQueryAtom)
-  const { rootRef, toggleRef, isFieldShown, setIsFieldShown } = useFieldToggle(inputRef)
+  const { isOpen: isFieldShown, open: showField, close: closeField } = useOpenOnPage()
 
-  useSlashShortcut(inputRef, setIsFieldShown)
-  useBodyScrollLock(isFieldShown, FULL_SCREEN_QUERY)
+  // Capture, because the full-screen search can open over the menu, which skips an Escape already handled
+  useDismissOnEscape(isFieldShown, closeField, toggleRef, { capture: true })
+  useDismissOnMediaQueryChange(isFieldShown, MEDIA_QUERIES.upToSmall, closeField)
+  useSlashShortcut(inputRef, showField)
+
+  useEffect(() => {
+    if (isFieldShown) inputRef.current?.focus()
+  }, [isFieldShown])
 
   const hideField = (): void => {
-    setIsFieldShown(false)
+    closeField()
     toggleRef.current?.focus()
   }
 
   return (
-    <div ref={rootRef} className={isFieldShown ? `${styles.root} ${styles.fieldShown}` : styles.root}>
+    <div className={isFieldShown ? `${styles.root} ${styles.fieldShown}` : styles.root}>
       <button
         ref={toggleRef}
-        className={styles.toggle}
+        className={`${headerStyles.iconButton} ${styles.toggle}`}
         type="button"
         aria-label="Search"
         aria-expanded={isFieldShown}
         aria-controls={fieldId}
-        onClick={() => setIsFieldShown(!isFieldShown)}
+        onClick={() => (isFieldShown ? closeField() : showField())}
       >
         <SearchIcon />
       </button>
       <div id={fieldId} className={styles.panel}>
         <div className={styles.bar}>
-          <SearchCombobox inputRef={inputRef} onOpenAsset={() => setIsFieldShown(false)} />
-          <button className={styles.close} type="button" aria-label="Close search" onClick={hideField}>
+          <SearchCombobox inputRef={inputRef} onOpenAsset={closeField} />
+          <button
+            className={`${headerStyles.iconButton} ${styles.close}`}
+            type="button"
+            aria-label="Close search"
+            onClick={hideField}
+          >
             <CloseIcon />
           </button>
         </div>
@@ -108,8 +119,9 @@ function SearchCombobox({ inputRef, onOpenAsset }: SearchComboboxProps): ReactNo
   const items = useSuggestions(query)
   const activeItem = items?.[activeIndex]
   const isExpanded = isOpen && query.trim().length > 0
+  const closeSuggestions = useCallback(() => setIsOpen(false), [])
 
-  useCloseOnClickOutside(containerRef, setIsOpen)
+  useDismissOnOutsideInteraction(isOpen, [containerRef], closeSuggestions, false)
 
   const openAsset = (ticker: string): void => {
     setIsOpen(false)
@@ -222,81 +234,21 @@ function SearchSuggestions({ listboxId, items, activeTicker, onSelect, onHover }
   )
 }
 
-function useCloseOnClickOutside(ref: RefObject<HTMLElement | null>, setIsOpen: (isOpen: boolean) => void): void {
-  useEffect(() => {
-    const onPointerDown = (event: PointerEvent): void => {
-      if (event.target instanceof Node && !ref.current?.contains(event.target)) setIsOpen(false)
-    }
-
-    document.addEventListener('pointerdown', onPointerDown)
-
-    return () => document.removeEventListener('pointerdown', onPointerDown)
-  }, [ref, setIsOpen])
-}
-
-function useFieldToggle(inputRef: RefObject<HTMLInputElement | null>): {
-  rootRef: RefObject<HTMLDivElement | null>
-  toggleRef: RefObject<HTMLButtonElement | null>
-  isFieldShown: boolean
-  setIsFieldShown(isShown: boolean): void
-} {
-  const pathname = usePathname()
-  const rootRef = useRef<HTMLDivElement>(null)
-  const toggleRef = useRef<HTMLButtonElement>(null)
-  // The page the field was shown on: the header outlives navigation, so Back and Forward must hide it
-  const [shownOn, setShownOn] = useState<string | null>(null)
-  const isFieldShown = shownOn === pathname
-
-  if (shownOn !== null && !isFieldShown) setShownOn(null)
-  const setIsFieldShown = useCallback((isShown: boolean) => setShownOn(isShown ? pathname : null), [pathname])
-  const hideField = useCallback(() => setShownOn(null), [])
-
-  // The on-screen keyboard resizes the viewport when the field gets the focus
-  useDismissOnOutsideInteraction(isFieldShown, [rootRef], hideField, false)
-  useDismissOnMediaQueryExit(isFieldShown, FULL_SCREEN_QUERY, hideField)
-
-  useEffect(() => {
-    if (isFieldShown) inputRef.current?.focus()
-  }, [inputRef, isFieldShown])
-
-  useEffect(() => {
-    if (!isFieldShown) return
-
-    const onKeyDown = (event: globalThis.KeyboardEvent): void => {
-      if (event.key !== 'Escape') return
-
-      event.preventDefault()
-      hideField()
-      toggleRef.current?.focus()
-    }
-
-    // Capture, so the field hides before the menu's Escape listener, which skips handled events
-    document.addEventListener('keydown', onKeyDown, true)
-
-    return () => document.removeEventListener('keydown', onKeyDown, true)
-  }, [isFieldShown, hideField])
-
-  return { rootRef, toggleRef, isFieldShown, setIsFieldShown }
-}
-
 /** On narrow screens the field is hidden, so it is shown first and focused once it renders */
-function useSlashShortcut(
-  inputRef: RefObject<HTMLInputElement | null>,
-  setIsFieldShown: (isShown: boolean) => void,
-): void {
+function useSlashShortcut(inputRef: RefObject<HTMLInputElement | null>, showField: () => void): void {
   useEffect(() => {
     const onKeyDown = (event: globalThis.KeyboardEvent): void => {
       if (event.key !== '/' || event.metaKey || event.ctrlKey || event.altKey || isEditableTarget(event.target)) return
 
       event.preventDefault()
-      if (window.matchMedia(FULL_SCREEN_QUERY).matches) setIsFieldShown(true)
+      if (window.matchMedia(MEDIA_QUERIES.upToSmall).matches) showField()
       inputRef.current?.focus()
     }
 
     document.addEventListener('keydown', onKeyDown)
 
     return () => document.removeEventListener('keydown', onKeyDown)
-  }, [inputRef, setIsFieldShown])
+  }, [inputRef, showField])
 }
 
 /** `undefined` until the results of the current query arrive */
