@@ -1,3 +1,4 @@
+import { hasAcceptedCookies, subscribeToCookieConsent, useCookieConsent } from '@cowprotocol/analytics'
 import {
   isCoinbaseWalletBrowser,
   isImTokenBrowser,
@@ -100,9 +101,29 @@ export function openFeedbackAppzi(params: { account?: string; walletName?: strin
   }
 }
 
+export function useIsAppziEnabled(): boolean {
+  const { consent } = useCookieConsent()
+
+  return isAppziEnabled && consent?.choice === 'accepted'
+}
+
 function initialize(): void {
   if (!isAppziEnabled || typeof window === 'undefined') return
 
+  if (hasAcceptedCookies()) {
+    loadAppzi()
+    return
+  }
+
+  const unsubscribe = subscribeToCookieConsent(() => {
+    if (!hasAcceptedCookies()) return
+
+    unsubscribe()
+    loadAppzi()
+  })
+}
+
+function loadAppzi(): void {
   window.appziSettings = window.appziSettings || {}
 
   try {

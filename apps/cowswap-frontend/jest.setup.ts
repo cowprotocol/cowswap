@@ -51,6 +51,20 @@ jest.mock('@cowprotocol/analytics', () => {
     initGtm: jest.fn().mockImplementation(() => ({
       sendEvent: jest.fn(),
     })),
+    initGtmWithConsent: jest.fn().mockImplementation(() => ({
+      sendEvent: jest.fn(),
+    })),
+    hasAcceptedCookies: jest.fn().mockReturnValue(false),
+    openCookieSettings: jest.fn(),
+    subscribeToCookieConsent: jest.fn().mockReturnValue(() => undefined),
+    useCookieConsent: jest.fn().mockReturnValue({
+      consent: null,
+      isBannerOpen: false,
+      acceptCookies: jest.fn(),
+      rejectCookies: jest.fn(),
+      openCookieSettings: jest.fn(),
+      closeCookieSettings: jest.fn(),
+    }),
     initPixelAnalytics: jest.fn().mockImplementation(() => ({
       sendEvent: jest.fn(),
     })),

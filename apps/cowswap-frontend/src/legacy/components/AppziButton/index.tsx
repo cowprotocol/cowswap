@@ -5,7 +5,7 @@ import { Media } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
-import { isAppziEnabled, openFeedbackAppzi } from 'appzi'
+import { openFeedbackAppzi, useIsAppziEnabled } from 'appzi'
 import { transparentize } from 'color2k'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
@@ -68,12 +68,13 @@ interface AppziButtonProps {
 export default function Appzi({ menuTitle }: AppziButtonProps) {
   const { account, chainId } = useWalletInfo()
   const { walletName } = useWalletDetails()
+  const isAppziAvailable = useIsAppziEnabled()
 
   const showFeedbackModal = useCallback(() => {
     openFeedbackAppzi({ account, chainId, walletName })
   }, [account, chainId, walletName])
 
-  if (!isAppziEnabled) {
+  if (!isAppziAvailable) {
     return null
   }
 

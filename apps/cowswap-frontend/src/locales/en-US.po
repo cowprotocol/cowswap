@@ -1696,6 +1696,10 @@ msgstr "Something went wrong. But don't worry! <0>CoW Swap solvers</0> are searc
 msgid "your orders"
 msgstr "your orders"
 
+#: apps/cowswap-frontend/src/common/containers/CookieConsentBanner/CookieConsentBanner.container.tsx
+msgid "Reject All"
+msgstr "Reject All"
+
 #: apps/cowswap-frontend/src/modules/tokensList/containers/LpTokenPage/index.tsx
 msgid "Symbol"
 msgstr "Symbol"
@@ -2265,6 +2269,10 @@ msgstr "A minimum of <0>{time}</0> between parts is required. Decrease the numbe
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ListItem/index.tsx
 msgid "Remove list"
 msgstr "Remove list"
+
+#: apps/cowswap-frontend/src/common/containers/CookieConsentBanner/CookieConsentBanner.container.tsx
+msgid "Accept All Cookies"
+msgstr "Accept All Cookies"
 
 #: apps/cowswap-frontend/src/common/pure/NetworksList/ActiveRowLinks/ActiveRowLinks.pure.tsx
 msgid "Help Center"
@@ -3256,6 +3264,10 @@ msgstr "Order validity is too long"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/ExpiredStep.tsx
 msgid "so we can investigate the problem."
 msgstr "so we can investigate the problem."
+
+#: apps/cowswap-frontend/src/common/containers/CookieConsentBanner/CookieConsentBanner.container.tsx
+msgid "Cookie policy"
+msgstr "Cookie policy"
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/index.tsx
 msgid "(via WalletConnect)"
@@ -5127,6 +5139,10 @@ msgstr "Select a token"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/LoadMore/Section/LoadMoreOrdersSection.tsx
 #~ msgid "Found 1 open order in the {limit} most recent ones."
 #~ msgstr "Found 1 open order in the {limit} most recent ones."
+
+#: apps/cowswap-frontend/src/common/containers/CookieConsentBanner/CookieConsentBanner.container.tsx
+msgid "Cookie consent"
+msgstr "Cookie consent"
 
 #: apps/cowswap-frontend/src/legacy/components/swap/UnsupportedCurrencyFooter/index.tsx
 msgid "Read more about unsupported tokens"
@@ -8179,6 +8195,10 @@ msgstr "more than trading alone"
 msgid "Confirm swap"
 msgstr "Confirm swap"
 
+#: apps/cowswap-frontend/src/common/containers/CookieConsentBanner/CookieConsentBanner.container.tsx
+msgid "By clicking “Accept All Cookies”, you agree to the storing of cookies on your device to enhance site navigation, analyze site usage, and assist in our marketing efforts."
+msgstr "By clicking “Accept All Cookies”, you agree to the storing of cookies on your device to enhance site navigation, analyze site usage, and assist in our marketing efforts."
+
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookDappIframeReview.pure.tsx
 msgid "Confirm hook"
 msgstr "Confirm hook"
@@ -10302,6 +10322,7 @@ msgstr "High"
 msgid "Refund started"
 msgstr "Refund started"
 
+#: apps/cowswap-frontend/src/common/containers/CookieConsentBanner/CookieConsentBanner.container.tsx
 #: apps/cowswap-frontend/src/common/pure/OrderSubmittedContent/TrackOrderBanner.pure.tsx
 #: apps/cowswap-frontend/src/common/pure/ToggleArrow/ToggleArrow.tsx
 #: apps/cowswap-frontend/src/modules/application/containers/NetworkSelector/NetworkSelector.container.tsx
