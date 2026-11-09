@@ -1,7 +1,6 @@
 import type { Dispatch, PointerEvent as ReactPointerEvent, SetStateAction } from 'react'
 
 import { CANVAS, hexToColor, type Point, rasterizeStroke, rasterizeText, textFontSize } from './raster.utils'
-import { clampScale, zoomAround } from './viewport.utils'
 
 import type { Draft, Plot, PlotDims, Tool, WallRefs } from './wall.types'
 
@@ -25,23 +24,30 @@ export interface PointerContext {
   resetPhase: () => void
 }
 
-/** Wheel zoom feel: spreading +100px ≈ ×1.42 regardless of how close the fingers started. */
-const PINCH_SENSITIVITY = 0.0035
-/** Cap on how far one pinch sample may change the scale. */
-const PINCH_STEP_LIMIT = 1.05
 /** Extra grab margin around the frame, in wall cells. */
 const FRAME_GRAB_MARGIN = 8
 /** Ignore pointer moves shorter than this, in wall cells. */
 const MIN_STROKE_STEP = 0.75
 const ERASE_COLOR = '#000000'
 
+/** Abandon any stroke, pan or frame drag in progress. */
+export function cancelInteraction(ctx: PointerContext): void {
+  const { drawingRef, strokePointsRef, panningRef, movingPlotRef } = ctx.refs
+
+  drawingRef.current = false
+  strokePointsRef.current = []
+  panningRef.current = false
+  movingPlotRef.current = null
+  ctx.setLiveCost(0)
+}
+
 export function handlePointerDown(event: CanvasPointerEvent, ctx: PointerContext): void {
-  const { pointersRef, pinchActiveRef, panningRef } = ctx.refs
+  const { activePointersRef, pinchActiveRef, panningRef } = ctx.refs
 
-  // Multi-touch bookkeeping: two fingers = pinch-zoom + pan, never draw.
-  pointersRef.current.set(event.pointerId, { x: event.clientX, y: event.clientY })
+  activePointersRef.current.add(event.pointerId)
 
-  if (pointersRef.current.size >= 2) return beginPinch(ctx)
+  // Two fingers are a pinch (owned by useCanvasGestures), never a stroke.
+  if (activePointersRef.current.size >= 2) return cancelInteraction(ctx)
   if (pinchActiveRef.current) return
 
   if (ctx.tool === 'text') return stampText(event, ctx)
@@ -58,17 +64,9 @@ export function handlePointerDown(event: CanvasPointerEvent, ctx: PointerContext
 }
 
 export function handlePointerMove(event: CanvasPointerEvent, ctx: PointerContext): void {
-  const { pointersRef, pinchActiveRef, pinchPrevRef, movingPlotRef, panningRef, viewRef } = ctx.refs
+  const { activePointersRef, pinchActiveRef, movingPlotRef, panningRef, viewRef } = ctx.refs
 
-  if (pointersRef.current.has(event.pointerId)) {
-    pointersRef.current.set(event.pointerId, { x: event.clientX, y: event.clientY })
-  }
-
-  if (pinchActiveRef.current && pointersRef.current.size >= 2) {
-    if (pinchPrevRef.current) applyPinch(ctx, pinchPrevRef.current)
-
-    return
-  }
+  if (activePointersRef.current.size >= 2 || pinchActiveRef.current) return
 
   if (movingPlotRef.current) return moveFrame(event, ctx)
 
@@ -83,15 +81,9 @@ export function handlePointerMove(event: CanvasPointerEvent, ctx: PointerContext
 }
 
 export function handlePointerUp(event: CanvasPointerEvent, ctx: PointerContext): void {
-  const { pointersRef, pinchActiveRef, pinchPrevRef, movingPlotRef, panningRef, drawingRef } = ctx.refs
+  const { activePointersRef, pinchActiveRef, movingPlotRef, panningRef, drawingRef } = ctx.refs
 
-  // multi-touch teardown
-  pointersRef.current.delete(event.pointerId)
-
-  if (pointersRef.current.size < 2) {
-    pinchActiveRef.current = false
-    pinchPrevRef.current = null
-  }
+  activePointersRef.current.delete(event.pointerId)
 
   try {
     event.currentTarget.releasePointerCapture(event.pointerId)
@@ -105,7 +97,8 @@ export function handlePointerUp(event: CanvasPointerEvent, ctx: PointerContext):
     return
   }
 
-  if (pinchActiveRef.current || pointersRef.current.size > 0) return
+  // Fingers still down belong to a pinch that is winding down.
+  if (pinchActiveRef.current || activePointersRef.current.size > 0) return
 
   if (panningRef.current) {
     panningRef.current = false
@@ -130,46 +123,6 @@ export function screenToCanvas({ canvasElRef, viewRef }: WallRefs, clientX: numb
   return {
     x: (clientX - rect.left - view.offsetX) / view.scale,
     y: (clientY - rect.top - view.offsetY) / view.scale,
-  }
-}
-
-/** Two-finger pinch zooms by pixels moved, and pans by the midpoint delta. */
-function applyPinch(ctx: PointerContext, prev: { dist: number; midX: number; midY: number }): void {
-  const { pointersRef, canvasElRef, viewRef, minScaleRef, pinchPrevRef } = ctx.refs
-  const [a, b] = Array.from(pointersRef.current.values())
-  const dist = Math.hypot(a.x - b.x, a.y - b.y)
-  const midX = (a.x + b.x) / 2
-  const midY = (a.y + b.y) / 2
-  const canvasEl = canvasElRef.current
-  const view = viewRef.current
-
-  if (canvasEl) {
-    const target = clampScale(view.scale * Math.exp((dist - prev.dist) * PINCH_SENSITIVITY), minScaleRef.current)
-    const next = Math.min(view.scale * PINCH_STEP_LIMIT, Math.max(view.scale / PINCH_STEP_LIMIT, target))
-    const rect = canvasEl.getBoundingClientRect()
-
-    zoomAround(view, midX - rect.left, midY - rect.top, next)
-  }
-
-  view.offsetX += midX - prev.midX
-  view.offsetY += midY - prev.midY
-  pinchPrevRef.current = { dist, midX, midY }
-}
-
-/** A second finger cancels any stroke: the pinch owns two-finger input from here. */
-function beginPinch(ctx: PointerContext): void {
-  const { drawingRef, strokePointsRef, panningRef, pinchActiveRef, pinchPrevRef, pointersRef } = ctx.refs
-  const [a, b] = Array.from(pointersRef.current.values())
-
-  drawingRef.current = false
-  strokePointsRef.current = []
-  ctx.setLiveCost(0)
-  panningRef.current = false
-  pinchActiveRef.current = true
-  pinchPrevRef.current = {
-    dist: Math.hypot(a.x - b.x, a.y - b.y),
-    midX: (a.x + b.x) / 2,
-    midY: (a.y + b.y) / 2,
   }
 }
 

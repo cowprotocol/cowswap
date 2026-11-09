@@ -182,7 +182,7 @@ export default defineConfig(({ mode, isPreview }) => {
 
     server: {
       port: 3000,
-      host: process.env.VITE_DEV_HOST || 'localhost',
+      host: 'localhost',
       fs: {
         allow: [
           // search up for workspace root
@@ -200,13 +200,6 @@ export default defineConfig(({ mode, isPreview }) => {
         // Mirrors the Vercel rewrite, run the RWA app with `pnpm start:rwa`
         '/rwa': {
           target: 'http://localhost:3002',
-          ws: true,
-        },
-        // Graffiti wall API (apps/graffiti-api) — see docs/graffiti/SPEC.md.
-        // The API defaults to 3199; 3000 is this dev server itself.
-        '/v1': {
-          target: process.env.GRAFFITI_API_TARGET || 'http://localhost:3199',
-          changeOrigin: true,
           ws: true,
         },
       },

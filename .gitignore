@@ -80,7 +80,3 @@ CLAUDE.md
 
 # Subagent-driven-development scratch workspace (ledgers, briefs, review packages)
 .superpowers/
-/core.*
-apps/graffiti-api/api.log
-apps/graffiti-api/data/
-apps/graffiti-api/.keys/

@@ -9,6 +9,7 @@ import type { ReactNode } from 'react'
 
 import { NetworkGate } from './NetworkGate.pure'
 import { useBrush } from './useBrush'
+import { useCanvasGestures } from './useCanvasGestures'
 import { useDraft } from './useDraft'
 import { useNarrowLayout } from './useNarrowLayout'
 import { usePlot } from './usePlot'
@@ -51,21 +52,6 @@ export default function GraffitiPage(): ReactNode {
     markSeq: sync.markSeq,
   })
 
-  const viewport = useViewport(refs, {
-    onSolana: gate.onSolana,
-    plotDims: plot.plotDims,
-    plotReady: plot.plot !== null,
-    plotLocked: session.plotLocked,
-  })
-  const actions = useSessionActions(refs, {
-    ...draft,
-    ...session,
-    busy: paint.busy,
-    setPlot: plot.setPlot,
-    plotDims: plot.plotDims,
-    zoomToPlot: viewport.zoomToPlot,
-    resetPhase: paint.resetPhase,
-  })
   const pointer = usePointerInput(refs, {
     brush,
     busy: paint.busy,
@@ -78,6 +64,23 @@ export default function GraffitiPage(): ReactNode {
     resetPhase: paint.resetPhase,
   })
 
+  const viewport = useViewport(refs, {
+    canvasEl: dom.canvasEl,
+    plotDims: plot.plotDims,
+    plotReady: plot.plot !== null,
+    plotLocked: session.plotLocked,
+  })
+  useCanvasGestures(refs, dom.canvasEl, pointer.cancelInteraction)
+
+  const actions = useSessionActions(refs, {
+    ...draft,
+    ...session,
+    busy: paint.busy,
+    setPlot: plot.setPlot,
+    plotDims: plot.plotDims,
+    zoomToPlot: viewport.zoomToPlot,
+    resetPhase: paint.resetPhase,
+  })
   useWallRenderLoop(refs)
 
   if (!gate.onSolana) {

@@ -26,8 +26,19 @@ DEV_INSECURE=1 node dist/src/server.js   # http://localhost:3199
 ```
 
 Or run it straight from source with `pnpx nx run graffiti-api:serve`.
-The Vite dev server proxies `/v1` and `/ws` to port 3199 (port 3000 is the
-frontend dev server itself); override with `GRAFFITI_API_TARGET`.
+
+Point the frontend at it with an absolute URL (the API allows any origin unless
+`CORS_ORIGINS` is set, and the WebSocket URL is derived from it):
+
+```bash
+REACT_APP_GRAFFITI_API=http://localhost:3199/v1 \
+REACT_APP_SOLANA_CLUSTER=devnet \
+REACT_APP_BOOT_FEATURE_FLAGS='{"isSolanaEnabled":true}' \
+pnpm start:cowswap
+```
+
+Leaving `REACT_APP_GRAFFITI_API` unset means same-origin `/v1`, for deployments
+that serve the built frontend from this API via `STATIC_DIR`.
 
 `DEV_INSECURE=1` **skips on-chain burn verification** (draws are accepted
 without a real burn tx; claims don't transfer) so the frontend can be

@@ -17,3 +17,6 @@ node_modules/
 # Env
 .env
 .env.local
+
+# Dev server log
+api.log

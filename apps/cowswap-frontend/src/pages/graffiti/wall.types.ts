@@ -52,9 +52,9 @@ export interface WallRefs {
   minScaleRef: MutableRefObject<number>
   drawingRef: MutableRefObject<boolean>
   panningRef: MutableRefObject<boolean>
-  pointersRef: MutableRefObject<Map<number, { x: number; y: number }>>
+  /** Pointers currently down on the canvas; two or more means a pinch, never a stroke. */
+  activePointersRef: MutableRefObject<Set<number>>
   pinchActiveRef: MutableRefObject<boolean>
-  pinchPrevRef: MutableRefObject<{ dist: number; midX: number; midY: number } | null>
   strokePointsRef: MutableRefObject<Array<Point>>
   brushSizeRef: MutableRefObject<number>
   colorRef: MutableRefObject<string>

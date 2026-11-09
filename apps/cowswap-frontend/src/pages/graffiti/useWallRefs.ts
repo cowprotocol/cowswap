@@ -8,6 +8,8 @@ export interface WallDomBindings {
   wrap: RefCallback<HTMLDivElement>
   canvas: RefCallback<HTMLCanvasElement>
   overlay: RefCallback<HTMLDivElement>
+  /** The mounted canvas, for hooks that attach native listeners to it. */
+  canvasEl: HTMLCanvasElement | null
 }
 
 export function createWallRefs(): WallRefs {
@@ -34,9 +36,8 @@ export function createWallRefs(): WallRefs {
     minScaleRef: ref(0.06),
     drawingRef: ref(false),
     panningRef: ref(false),
-    pointersRef: ref(new Map()),
+    activePointersRef: ref(new Set()),
     pinchActiveRef: ref(false),
-    pinchPrevRef: ref(null),
     strokePointsRef: ref([]),
     brushSizeRef: ref(DEFAULT_BRUSH),
     colorRef: ref(DEFAULT_COLOR),
@@ -49,6 +50,7 @@ export function createWallRefs(): WallRefs {
  * binds elements without ever touching a ref object.
  */
 export function useWallDomBindings({ wrapElRef, canvasElRef, plotOverlayRef }: WallRefs): WallDomBindings {
+  const [canvasEl, setCanvasEl] = useState<HTMLCanvasElement | null>(null)
   const wrap = useCallback(
     (el: HTMLDivElement | null): void => {
       wrapElRef.current = el
@@ -58,6 +60,7 @@ export function useWallDomBindings({ wrapElRef, canvasElRef, plotOverlayRef }: W
   const canvas = useCallback(
     (el: HTMLCanvasElement | null): void => {
       canvasElRef.current = el
+      setCanvasEl(el)
     },
     [canvasElRef],
   )
@@ -68,7 +71,7 @@ export function useWallDomBindings({ wrapElRef, canvasElRef, plotOverlayRef }: W
     [plotOverlayRef],
   )
 
-  return { wrap, canvas, overlay }
+  return { wrap, canvas, overlay, canvasEl }
 }
 
 /**

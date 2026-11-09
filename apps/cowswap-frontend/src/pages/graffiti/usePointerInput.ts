@@ -2,6 +2,7 @@ import { useCallback, useRef, useState, type Dispatch, type SetStateAction } fro
 
 import {
   type CanvasPointerEvent,
+  cancelInteraction,
   handlePointerDown,
   handlePointerMove,
   handlePointerUp,
@@ -18,6 +19,8 @@ export interface PointerInput {
   onPointerDown: (event: CanvasPointerEvent) => void
   onPointerMove: (event: CanvasPointerEvent) => void
   onPointerUp: (event: CanvasPointerEvent) => void
+  /** Abandon the stroke, pan or frame drag in progress. */
+  cancelInteraction: () => void
 }
 
 export interface UsePointerInputParams {
@@ -71,5 +74,9 @@ export function usePointerInput(refs: WallRefs, params: UsePointerInputParams): 
     handlePointerUp(event, contextRef.current)
   }, [])
 
-  return { liveCost, onPointerDown, onPointerMove, onPointerUp }
+  const cancel = useCallback((): void => {
+    cancelInteraction(contextRef.current)
+  }, [])
+
+  return { liveCost, onPointerDown, onPointerMove, onPointerUp, cancelInteraction: cancel }
 }

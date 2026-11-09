@@ -251,13 +251,13 @@ describe('moving the frame', () => {
   })
 })
 
-describe('two-finger pinch', () => {
+describe('multi-touch', () => {
   function twoFingers(h: Harness): void {
     handlePointerDown(pointerEvent(100, 100, { pointerId: 1 }), h.ctx)
     handlePointerDown(pointerEvent(200, 100, { pointerId: 2 }), h.ctx)
   }
 
-  it('cancels an in-progress stroke instead of drawing with two fingers', () => {
+  it('a second finger cancels the stroke instead of drawing', () => {
     const h = harness()
 
     handlePointerDown(pointerEvent(100, 100, { pointerId: 1 }), h.ctx)
@@ -267,42 +267,27 @@ describe('two-finger pinch', () => {
     handlePointerDown(pointerEvent(300, 100, { pointerId: 2 }), h.ctx)
 
     expect(h.ctx.refs.drawingRef.current).toBe(false)
-    expect(h.ctx.refs.pinchActiveRef.current).toBe(true)
     expect(h.liveCost()).toBe(0)
   })
 
-  it('zooms in when the fingers spread, and never draws', () => {
+  it('ignores moves while two fingers are down; the pinch gesture owns them', () => {
     const h = harness()
 
     twoFingers(h)
-    const before = h.ctx.refs.viewRef.current.scale
-
     handlePointerMove(pointerEvent(60, 100, { pointerId: 1 }), h.ctx)
     handlePointerMove(pointerEvent(240, 100, { pointerId: 2 }), h.ctx)
 
-    expect(h.ctx.refs.viewRef.current.scale).toBeGreaterThan(before)
     expect(h.draft().size).toBe(0)
+    expect(h.ctx.refs.viewRef.current).toEqual({ scale: 10, offsetX: 0, offsetY: 0 })
   })
 
-  it('limits how far one sample can change the zoom', () => {
+  it('ignores input while the gesture library reports a pinch', () => {
     const h = harness()
 
-    twoFingers(h)
-    const before = h.ctx.refs.viewRef.current.scale
+    h.ctx.refs.pinchActiveRef.current = true
+    stroke(h, [100, 100], [300, 100])
 
-    handlePointerMove(pointerEvent(-5000, 100, { pointerId: 1 }), h.ctx)
-
-    expect(h.ctx.refs.viewRef.current.scale).toBeLessThanOrEqual(before * 1.05 + 1e-9)
-  })
-
-  it('ends the pinch once a finger lifts', () => {
-    const h = harness()
-
-    twoFingers(h)
-    handlePointerUp(pointerEvent(100, 100, { pointerId: 1 }), h.ctx)
-
-    expect(h.ctx.refs.pinchActiveRef.current).toBe(false)
-    expect(h.ctx.refs.pinchPrevRef.current).toBeNull()
+    expect(h.draft().size).toBe(0)
   })
 
   it('does not start drawing from the finger left after a pinch', () => {
@@ -314,5 +299,17 @@ describe('two-finger pinch', () => {
     handlePointerUp(pointerEvent(220, 100, { pointerId: 2 }), h.ctx)
 
     expect(h.draft().size).toBe(0)
+    expect(h.ctx.refs.activePointersRef.current.size).toBe(0)
+  })
+
+  it('draws again normally once all fingers have lifted', () => {
+    const h = harness()
+
+    twoFingers(h)
+    handlePointerUp(pointerEvent(100, 100, { pointerId: 1 }), h.ctx)
+    handlePointerUp(pointerEvent(200, 100, { pointerId: 2 }), h.ctx)
+    stroke(h, [100, 100], [300, 100])
+
+    expect(h.draft().size).toBeGreaterThan(0)
   })
 })
