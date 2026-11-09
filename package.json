@@ -111,7 +111,26 @@
     "strictDepBuilds": true,
     "allowBuilds": {
       "nx": true,
-      "@swc/core": true
+      "@swc/core": true,
+      "esbuild": true,
+      "sharp": true,
+      "better-sqlite3": true,
+      "@parcel/watcher": true,
+      "bufferutil": true,
+      "utf-8-validate": true,
+      "keccak": true,
+      "secp256k1": true,
+      "bigint-buffer": true,
+      "protobufjs": true,
+      "unrs-resolver": true,
+      "core-js": true,
+      "core-js-pure": true,
+      "es5-ext": true,
+      "@sentry/cli": true,
+      "@reown/appkit": true,
+      "web3": true,
+      "web3-bzz": true,
+      "web3-shh": true
     },
     "overrides": {
       "@wagmi/core": "3.4.8",

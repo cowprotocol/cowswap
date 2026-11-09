@@ -5,7 +5,8 @@ import { RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
 import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
 import { EvmChains, SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { solana } from '@reown/appkit/networks'
+// GRAFFITI FORK: devnet build — flip back to `solana` for mainnet
+import { solanaDevnet as solana } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit/react'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
@@ -58,7 +59,8 @@ for (const chain of SUPPORTED_REOWN_NETWORKS) {
 
 const projectId = 'ac287751638b5d374a03c39e37f70376'
 
-const solanaRpcUrl = RPC_URLS[SupportedChainId.SOLANA]
+// GRAFFITI FORK: devnet RPC — flip back to RPC_URLS[SupportedChainId.SOLANA] for mainnet
+const solanaRpcUrl = 'https://api.devnet.solana.com'
 customRpcUrls[solana.caipNetworkId] = [{ url: solanaRpcUrl }]
 
 const metadata = {

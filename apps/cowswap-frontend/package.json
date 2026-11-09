@@ -93,6 +93,7 @@
     "@use-gesture/react": "10.3.1",
     "@wagmi/core": "3.4.8",
     "bignumber.js": "9.1.2",
+    "perfect-freehand": "1.2.3",
     "buffer": "6.0.3",
     "clsx": "2.1.1",
     "color2k": "2.0.2",

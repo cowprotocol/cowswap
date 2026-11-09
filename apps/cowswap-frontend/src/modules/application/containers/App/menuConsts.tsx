@@ -177,7 +177,15 @@ export const NAV_ITEMS = (chainId: SupportedChainId, isSolversEnabled: boolean):
     })),
   }
 
-  return [accountItem, learnItem, moreItem]
+  // GRAFFITI FORK: top-level menu entry (right after Learn) with a NEW badge.
+  // Must live INSIDE NAV_ITEMS — i18n isn't activated at module scope.
+  const graffitiItem: MenuItem = {
+    href: Routes.GRAFFITI,
+    label: i18n._(msg`Graffiti Wall`),
+    badge: 'NEW',
+  }
+
+  return [accountItem, learnItem, graffitiItem, moreItem]
 }
 
 export const ADDITIONAL_FOOTER_CONTENT = (

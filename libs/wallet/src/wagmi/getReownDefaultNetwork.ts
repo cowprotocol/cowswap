@@ -2,7 +2,8 @@ import { VIEM_CHAINS } from '@cowprotocol/common-const'
 import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { EvmChains, isEvmChain, isSolanaChain } from '@cowprotocol/cow-sdk'
 
-import { solana } from '@reown/appkit/networks'
+// GRAFFITI FORK: devnet build — flip back to `solana` for mainnet
+import { solanaDevnet as solana } from '@reown/appkit/networks'
 
 import { IS_SOLANA_WALLET_ENABLED } from '../constants'
 
