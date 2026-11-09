@@ -70,6 +70,7 @@ This file: rwa-frontend app-specific commands only.
 - The favicon is the CoW Swap one: `public/favicon-{light,dark}-mode.png` are copies of `apps/cowswap-frontend/public`, linked per color scheme. Update both apps together.
 - Icons (`/icons/[size]`) and Open Graph images (`/og-image`, `/asset/[ticker]/og-image`) are static route handlers, not the `icon`/`apple-icon`/`opengraph-image` file conventions: Next.js leaves the `basePath` out of their links, and resolves social images against the branch URL on Vercel previews. `buildPageMetadata` links them with absolute URLs (`DEPLOYMENT_URL`).
 - Asset pages are prerendered for upper-case tickers only (`dynamicParams = false`). `proxy.ts` redirects other casings.
+- Analytics goes through `trackEvent` from `@/shared/lib/analytics` (the CoW Swap GTM container, `GTM_ID` from `@cowprotocol/common-const/analytics`). Add a new event to `RwaAnalyticsEvents` and to `docs/analytics.md`.
 - The service worker (`public/sw.js`) is registered as `/rwa/sw.js?v=<NEXT_PUBLIC_APP_VERSION>` with the `/rwa` scope (allowed by the `Service-Worker-Allowed` header in `next.config.ts`), so each deploy gets fresh caches. It never caches `/api/`, because IndexedDB holds that data.
 
 ## CoinGecko website vs this app

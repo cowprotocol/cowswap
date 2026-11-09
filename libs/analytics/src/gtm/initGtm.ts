@@ -4,6 +4,8 @@
  * Ensures single initialization of GTM instance
  */
 
+import { GTM_ID } from '@cowprotocol/common-const'
+
 import { CowAnalyticsGtm } from './CowAnalyticsGtm'
 
 import { CowAnalytics } from '../CowAnalytics'
@@ -14,7 +16,7 @@ declare global {
   }
 }
 
-const DEFAULT_GTM_ID = 'GTM-TBX4BV5M'
+const DEFAULT_GTM_ID = GTM_ID
 
 // Module-level singleton state - maintains instance cache across both server and browser environments
 // Note: In server environments, each module load maintains its own cache, ensuring consistent

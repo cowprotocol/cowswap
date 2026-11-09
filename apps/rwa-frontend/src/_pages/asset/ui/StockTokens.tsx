@@ -63,7 +63,7 @@ interface VsStockProps {
 export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
   const market = useAtomValue(assetQueryAtomFamily(asset.ticker)).data?.market
   const selectedToken = useTradeSelection(asset)?.assetToken
-  const selectTradeToken = useSelectTradeToken()
+  const selectTradeToken = useSelectTradeToken(asset.ticker)
   const [issuer, setIssuer] = useState<string | null>(null)
   const [network, setNetwork] = useState<number | null>(null)
   const [areDividendNotesShown, setAreDividendNotesShown] = useState(false)

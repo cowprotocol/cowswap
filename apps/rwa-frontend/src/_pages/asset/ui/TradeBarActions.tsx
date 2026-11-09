@@ -7,6 +7,7 @@ import styles from './TradeBarActions.module.css'
 import { TRADE_SIDES } from '../config/tradeSides'
 import { TRADE_WIDGET_ID, useJumpToTrade } from '../model/useSelectTradeToken'
 
+import { trackEvent } from '@/shared/lib/analytics'
 import { WALLET_BAR_HEIGHT, WalletBarSlot } from '@/widgets/header'
 
 const MIN_VISIBLE_WIDGET_HEIGHT = 120
@@ -30,7 +31,10 @@ export function TradeBarActions({ ticker, widgetRef }: TradeBarActionsProps): Re
             className={side === 'buy' ? styles.buy : styles.sell}
             aria-label={`${title} ${ticker}`}
             aria-controls={TRADE_WIDGET_ID}
-            onClick={() => jumpToTrade(side)}
+            onClick={() => {
+              jumpToTrade(side)
+              trackEvent('trade_side_select', { ticker, side, placement: 'wallet_bar' })
+            }}
           >
             {title}
             <span className={styles.ticker}> {ticker}</span>
