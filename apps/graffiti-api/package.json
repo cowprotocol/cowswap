@@ -12,6 +12,7 @@
     "build": "tsc -p tsconfig.json",
     "start": "node dist/src/server.js",
     "dev": "tsx watch src/server.ts",
+    "test": "node --import tsx --test \"src/**/*.test.ts\"",
     "mint:create": "tsx scripts/create-mint.ts",
     "claims:gen": "tsx scripts/gen-claims.ts"
   },

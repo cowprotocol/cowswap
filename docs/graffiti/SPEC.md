@@ -13,7 +13,8 @@ costs an SPL token per pixel. Freehand strokes, rasterized to a pixel grid.
   treasury token account to the claimer's wallet, one use per code.
 
 ## Canvas
-- Grid: 512 x 512 cells. Each cell: RGB color (24-bit), no alpha layering —
+- Grid: CANVAS_WIDTH x CANVAS_HEIGHT cells (4096 x 2048 by default). Each cell:
+  RGB color (24-bit), no alpha layering —
   latest write wins.
 - A stroke = array of {x, y} float points in canvas coords + color + brush
   size. Client rasterizes with perfect-freehand `getStroke` outline, then
@@ -66,7 +67,7 @@ costs an SPL token per pixel. Freehand strokes, rasterized to a pixel grid.
 ## Backend stack
 - Node 20 + TypeScript, `ws`, `fastify`, `@solana/web3.js`, `@solana/spl-token`,
   SQLite (better-sqlite3) for cells + claims + seen signatures.
-- Canvas state: single Buffer 512*512*3, seeded from SQLite on boot.
+- Canvas state: single Buffer CANVAS_WIDTH*CANVAS_HEIGHT*3, seeded from SQLite on boot.
 - Env: RPC_URL, MINT, TREASURY_KEYPAIR (claims payer), PORT, NETWORK.
 - Lives in `apps/graffiti-api/` inside this repo (own package.json).
 

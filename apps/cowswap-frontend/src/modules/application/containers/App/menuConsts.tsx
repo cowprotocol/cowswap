@@ -114,6 +114,11 @@ const MORE_ITEM = (isSolversEnabled: boolean): UntranslatedMenuItem => ({
       label: msg`Careers`,
       external: true,
     },
+    {
+      href: Routes.GRAFFITI,
+      label: msg`Graffiti Wall`,
+      badge: msg`NEW`,
+    },
     ...(isSolversEnabled
       ? [
           {
@@ -170,22 +175,16 @@ export const NAV_ITEMS = (chainId: SupportedChainId, isSolversEnabled: boolean):
   const moreItemConfig = MORE_ITEM(isSolversEnabled)
   const moreItem: MenuItem = {
     label: i18n._(moreItemConfig.label),
-    children: moreItemConfig.children.map(({ href, label, external }) => ({
+    children: moreItemConfig.children.map(({ href, label, badge, badgeType, external }) => ({
       href,
       label: i18n._(label),
+      badge: badge ? i18n._(badge) : undefined,
+      badgeType,
       external,
     })),
   }
 
-  // GRAFFITI FORK: top-level menu entry (right after Learn) with a NEW badge.
-  // Must live INSIDE NAV_ITEMS — i18n isn't activated at module scope.
-  const graffitiItem: MenuItem = {
-    href: Routes.GRAFFITI,
-    label: i18n._(msg`Graffiti Wall`),
-    badge: 'NEW',
-  }
-
-  return [accountItem, learnItem, graffitiItem, moreItem]
+  return [accountItem, learnItem, moreItem]
 }
 
 export const ADDITIONAL_FOOTER_CONTENT = (

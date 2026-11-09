@@ -182,8 +182,7 @@ export default defineConfig(({ mode, isPreview }) => {
 
     server: {
       port: 3000,
-      host: true,
-      allowedHosts: true,
+      host: process.env.VITE_DEV_HOST || 'localhost',
       fs: {
         allow: [
           // search up for workspace root
@@ -203,13 +202,11 @@ export default defineConfig(({ mode, isPreview }) => {
           target: 'http://localhost:3002',
           ws: true,
         },
-        // Graffiti wall API (apps/graffiti-api) — see docs/graffiti/SPEC.md
+        // Graffiti wall API (apps/graffiti-api) — see docs/graffiti/SPEC.md.
+        // The API defaults to 3199; 3000 is this dev server itself.
         '/v1': {
-          target: process.env.GRAFFITI_API_TARGET || 'http://localhost:3000',
+          target: process.env.GRAFFITI_API_TARGET || 'http://localhost:3199',
           changeOrigin: true,
-        },
-        '/ws': {
-          target: process.env.GRAFFITI_API_TARGET || 'http://localhost:3000',
           ws: true,
         },
       },
@@ -327,9 +324,7 @@ export default defineConfig(({ mode, isPreview }) => {
       manifest: true,
       assetsInlineLimit: 0, // prevent inlining assets
       assetsDir: 'static', // All assets go to /static/ directory
-      // GRAFFITI FORK: sourcemaps off — the box has 7.6GB RAM and the
-      // sourcemap generation is what OOM-kills the render phase.
-      sourcemap: false,
+      sourcemap: !isPreview && process.env.BUNDLE_SIZE_BUILD !== 'true' && process.env.NO_SOURCEMAP !== 'true',
       rollupOptions: {
         output: {
           // Remove hash for font files to enable preloading

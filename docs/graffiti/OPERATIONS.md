@@ -76,18 +76,41 @@ Everything durable is one file: `data/graffiti.db`. `sqlite3 graffiti.db
 
 ## 4. Security model — what an attacker can and cannot do
 
-**Claim codes are bearer tokens.** A code is a ~130-bit random string; the
-only way to redeem one is to know it. Guessing is computationally hopeless.
-Each code is single-use, and redemption is atomic (the row is marked used
-*before* the on-chain transfer; if the transfer fails, the code is re-armed —
-so no double-pay and no lost codes). `DEV_INSECURE=1` disables all of this —
-never set it in production.
+**Claim codes are bearer tokens.** A code is 22 base58 characters (~129 bits)
+drawn from the OS CSPRNG with rejection sampling, so the alphabet is unbiased
+and codes are not predictable from ones already redeemed. The only way to
+redeem one is to know it; guessing is computationally hopeless, and
+`/v1/claim` is rate-limited per IP on top of that.
+
+Redemption uses a state machine rather than a boolean, because "the transfer
+failed" and "we don't know whether the transfer landed" are different:
+
+| State     | Meaning                                                              |
+| --------- | -------------------------------------------------------------------- |
+| `unused`  | Claimable.                                                            |
+| `pending` | Reserved atomically while the transfer is in flight.                   |
+| `used`    | Transfer confirmed. Terminal.                                          |
+| `failed`  | Submitted but never confirmed — it may still have landed. Terminal.    |
+
+A code is only returned to `unused` when nothing was submitted, or when the
+transaction landed and definitively failed. A submitted-but-unconfirmed
+transfer parks the code in `failed` and it is **never** auto-released: doing
+so is how a treasury pays twice for one code. Those codes surface at
+`GET /v1/admin/claims/failed` and need an operator to check the signature
+on-chain before deciding.
+
+The ATA creation and the transfer go out in a single transaction, so a claim
+cannot leave an account created but unfunded.
+
+`DEV_INSECURE=1` disables on-chain verification entirely; the server refuses
+to start with it set on a mainnet `NETWORK` or with `NODE_ENV=production`.
 
 **What the treasury hot wallet is, and why it must hold funds:**
 when someone redeems a code the *server* pays: it creates the claimer's
 token account if needed (~0.002 SOL rent) and transfers the tokens — so the
 treasury needs both SOL (fees + rent) and token balance ≥ outstanding codes ×
-amount. This key lives in a file on the server, i.e. a hot wallet:
+amount. This key lives on the server, i.e. a hot wallet — prefer `TREASURY_SECRET_KEY`
+injected from a secret manager over a file on disk:
 
 - **Fund it with only the claim pool.** If you printed 100 codes × 5000,
   the treasury needs 500,000 tokens and ~0.5 SOL — put exactly that there.

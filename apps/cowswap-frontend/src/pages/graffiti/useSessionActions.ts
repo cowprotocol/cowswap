@@ -1,0 +1,137 @@
+import { useCallback, useEffect, type Dispatch, type SetStateAction } from 'react'
+
+import { CANVAS } from './raster.utils'
+import { useSyncRef } from './useSyncRef'
+
+import type { Draft, Plot, PlotDims, Session, WallRefs } from './wall.types'
+
+export interface SessionActions {
+  /** Start → place: make the frame movable and bring it into view. */
+  startDrawing: () => void
+  /** Place → paint: lock the frame where it is. */
+  confirmPlot: () => void
+  undo: () => void
+  /** Wipe the draft and put the frame back in movable mode. */
+  clearAll: () => void
+  rotatePlot: () => void
+  /** Abandon the session and return to Start. */
+  resetToStart: () => void
+}
+
+export interface UseSessionActionsParams {
+  busy: boolean
+  setDraft: Dispatch<SetStateAction<Draft>>
+  pushHistory: () => void
+  popHistory: () => Draft | undefined
+  setPlot: Dispatch<SetStateAction<Plot | null>>
+  plotDims: PlotDims
+  setSession: Dispatch<SetStateAction<Session>>
+  setPlotConfirmed: Dispatch<SetStateAction<boolean>>
+  zoomToPlot: () => void
+  resetPhase: () => void
+}
+
+export function useSessionActions(refs: WallRefs, params: UseSessionActionsParams): SessionActions {
+  const { busy, setDraft, pushHistory, popHistory, setPlot, plotDims } = params
+  const { setSession, setPlotConfirmed, zoomToPlot, resetPhase } = params
+  const { busyRef, draftRef, plotConfirmedRef } = refs
+
+  useSyncRef(busyRef, busy)
+
+  const resetToStart = useCallback((): void => {
+    setDraft(new Map())
+    setPlotConfirmed(false)
+    setSession('start')
+    resetPhase()
+  }, [resetPhase, setDraft, setPlotConfirmed, setSession])
+
+  const undo = useCallback((): void => {
+    const previous = popHistory()
+    const nextSize = previous ? previous.size : draftRef.current.size
+
+    if (previous) setDraft(previous)
+
+    // Undoing back to nothing returns the frame to movable mode.
+    if (nextSize === 0 && plotConfirmedRef.current) {
+      setPlotConfirmed(false)
+      setSession('place')
+      zoomToPlot()
+    }
+  }, [draftRef, plotConfirmedRef, popHistory, setDraft, setPlotConfirmed, setSession, zoomToPlot])
+
+  const clearAll = useCallback((): void => {
+    pushHistory()
+    setDraft(new Map())
+    setPlotConfirmed(false)
+    setSession('place')
+    zoomToPlot()
+  }, [pushHistory, setDraft, setPlotConfirmed, setSession, zoomToPlot])
+
+  const startDrawing = useCallback((): void => {
+    setSession('place')
+    zoomToPlot()
+  }, [setSession, zoomToPlot])
+
+  const confirmPlot = useCallback((): void => {
+    setPlotConfirmed(true)
+    setSession('paint')
+    zoomToPlot()
+  }, [setPlotConfirmed, setSession, zoomToPlot])
+
+  const rotatePlot = useCallback((): void => {
+    setPlot((p) => {
+      if (!p) return p
+
+      const vertical = !p.vertical
+      const [pw, ph] = plotDims({ vertical })
+
+      return { x: clamp(p.x, CANVAS.w - pw), y: clamp(p.y, CANVAS.h - ph), vertical }
+    })
+  }, [plotDims, setPlot])
+
+  useUndoShortcut(undo)
+  useEscapeToCancel(refs, resetToStart)
+
+  return { startDrawing, confirmPlot, undo, clearAll, rotatePlot, resetToStart }
+}
+
+function clamp(value: number, max: number): number {
+  return Math.max(0, Math.min(max, value))
+}
+
+/** ESC during placement/painting behaves like ✕ cancel, but never mid-transaction. */
+function useEscapeToCancel({ busyRef, sessionRef }: WallRefs, resetToStart: () => void): void {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent): void => {
+      if (e.key !== 'Escape') return
+      if (document.fullscreenElement) return // ESC exits fullscreen first
+      if (busyRef.current || sessionRef.current === 'start') return
+
+      resetToStart()
+    }
+
+    window.addEventListener('keydown', onKey)
+
+    return () => window.removeEventListener('keydown', onKey)
+  }, [busyRef, resetToStart, sessionRef])
+}
+
+/** Cmd/Ctrl+Z, except while typing in a field. */
+function useUndoShortcut(undo: () => void): void {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent): void => {
+      if (!(e.metaKey || e.ctrlKey) || e.key.toLowerCase() !== 'z') return
+
+      const tag = (e.target instanceof HTMLElement ? e.target.tagName : '').toLowerCase()
+
+      if (tag === 'input' || tag === 'textarea') return
+
+      e.preventDefault()
+      undo()
+    }
+
+    window.addEventListener('keydown', onKey)
+
+    return () => window.removeEventListener('keydown', onKey)
+  }, [undo])
+}

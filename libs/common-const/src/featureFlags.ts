@@ -23,7 +23,10 @@ export function syncBootFeatureFlags(flags: BootFeatureFlags, reload: () => void
   if (typeof localStorage === 'undefined') return
 
   const isSolanaEnabled = Boolean(flags.isSolanaEnabled)
-  const bootFlagChanged = isSolanaEnabled !== IS_SOLANA_ENABLED
+  // An override wins at read time, so LD can never agree with it. Reconciling
+  // against LD here would reload the page forever.
+  const overridden = hasBootFlagOverride('isSolanaEnabled')
+  const bootFlagChanged = !overridden && isSolanaEnabled !== IS_SOLANA_ENABLED
 
   try {
     localStorage.setItem(BOOT_FEATURE_FLAGS_KEY, JSON.stringify({ isSolanaEnabled }))
@@ -48,7 +51,7 @@ export function syncBootFeatureFlags(flags: BootFeatureFlags, reload: () => void
  * a previous session, then to `false`.
  */
 function getBootFeatureFlag(key: keyof BootFeatureFlags): boolean {
-  return getE2eFlagOverride(key) ?? readPersistedBootFlags()[key] ?? false
+  return getE2eFlagOverride(key) ?? getEnvFlagOverride(key) ?? readPersistedBootFlags()[key] ?? false
 }
 
 function getE2eFlagOverride(key: keyof BootFeatureFlags): boolean | undefined {
@@ -60,6 +63,30 @@ function getE2eFlagOverride(key: keyof BootFeatureFlags): boolean | undefined {
   if (!overrides || !(key in overrides)) return undefined
 
   return Boolean(overrides[key])
+}
+
+/**
+ * Build-time override for self-hosted deployments that have no LaunchDarkly,
+ * e.g. `REACT_APP_BOOT_FEATURE_FLAGS='{"isSolanaEnabled":true}'`. Separate from
+ * the E2E hook so test plumbing stays out of production builds.
+ */
+function getEnvFlagOverride(key: keyof BootFeatureFlags): boolean | undefined {
+  const raw = process.env.REACT_APP_BOOT_FEATURE_FLAGS
+
+  if (!raw) return undefined
+
+  try {
+    const parsed = JSON.parse(raw) as Record<string, unknown>
+
+    return key in parsed ? Boolean(parsed[key]) : undefined
+  } catch {
+    return undefined
+  }
+}
+
+/** True when this flag is forced, by the e2e hook or a build-time override. */
+function hasBootFlagOverride(key: keyof BootFeatureFlags): boolean {
+  return getE2eFlagOverride(key) !== undefined || getEnvFlagOverride(key) !== undefined
 }
 
 function readPersistedBootFlags(): BootFeatureFlags {

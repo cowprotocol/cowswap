@@ -3,75 +3,127 @@
  *
  * Primary implementation: better-sqlite3. If the native module is not
  * available (build failure on this platform), JsonStore provides the same
- * interface backed by a single JSON file.
+ * interface backed by a single JSON file. The JSON store is dev-only: it has
+ * no durability guarantees under concurrency, so `openStore` refuses to fall
+ * back to it when ALLOW_JSON_STORE is not set.
  */
-import fs from "node:fs";
-import path from "node:path";
-import { createRequire } from "node:module";
-import { JsonStore } from "./jsonStore.js";
+import fs from 'node:fs'
+import { createRequire } from 'node:module'
+import path from 'node:path'
+
+import { JsonStore } from './jsonStore.js'
+
+export interface CellInput {
+  x: number
+  y: number
+  rgb: number
+}
 
 export interface CellRow {
-  seq: number;
-  x: number;
-  y: number;
-  rgb: number;
+  seq: number
+  x: number
+  y: number
+  rgb: number
 }
 
 export interface ClaimRow {
-  code: string;
-  amount: number;
-  usedAt: number | null;
+  code: string
+  amount: number
+  state: ClaimState
+  usedAt: number | null
+  txSignature: string | null
+  failureReason: string | null
 }
 
-export interface CellInput {
-  x: number;
-  y: number;
-  rgb: number;
+/**
+ * Lifecycle of a claim code.
+ * - `unused`: claimable.
+ * - `pending`: reserved while an on-chain transfer is in flight.
+ * - `used`: transfer confirmed; terminal.
+ * - `failed`: transfer outcome unknown (it may have landed on-chain). Terminal
+ *   until an operator resolves it — never auto-released, or the treasury pays
+ *   twice for one code.
+ */
+export type ClaimState = 'unused' | 'pending' | 'used' | 'failed'
+
+export interface ClientErrorInput {
+  wallet?: string | null
+  phase?: string | null
+  message: string
+  detail?: string | null
 }
 
 export interface Store {
-  readonly kind: "sqlite" | "json";
-  /** All cell writes with seq strictly greater than `since`, in seq order. */
-  getCellsSince(since: number): CellRow[];
+  readonly kind: 'sqlite' | 'json'
+  /**
+   * Cell writes with seq strictly greater than `since`, in seq order.
+   * `limit` caps the number of rows returned (omit to replay everything).
+   */
+  getCellsSince(since: number, limit?: number): CellRow[]
   /** Highest seq present (0 when empty). */
-  maxSeq(): number;
+  maxSeq(): number
   /** Atomically reserve the next seq number and append cells with it. */
-  appendCells(cells: CellInput[]): number;
-  hasSignature(sig: string): boolean;
-  addSignature(sig: string): void;
-  hasMemo(memo: string): boolean;
-  addMemo(memo: string): void;
-  getClaim(code: string): ClaimRow | null;
-  insertClaim(code: string, amount: number): void;
-  /** Returns false if the code does not exist or was already used. */
-  markClaimUsed(code: string): boolean;
+  appendCells(cells: CellInput[]): number
+  /**
+   * Atomically record a burn signature. Returns false when it was already
+   * recorded, which is the replay rejection: check-then-insert would let two
+   * concurrent requests through the same window.
+   */
+  claimSignature(sig: string): boolean
+  /** Release a signature reserved by `claimSignature` (rollback path). */
+  releaseSignature(sig: string): void
+  /** Atomically record a draw memo. Returns false when already recorded. */
+  claimMemo(memo: string): boolean
+  /** Release a memo reserved by `claimMemo` (rollback path). */
+  releaseMemo(memo: string): void
+  getClaim(code: string): ClaimRow | null
+  insertClaim(code: string, amount: number): void
+  /** `unused` -> `pending`. False when the code is missing or not claimable. */
+  reserveClaim(code: string): boolean
+  /** `pending` -> `used`, recording the transfer signature. */
+  settleClaim(code: string, txSignature: string): void
+  /** `pending` -> `unused`. Only safe when no transaction was submitted. */
+  releaseClaim(code: string): void
+  /** `pending` -> `failed`, for an outcome we could not determine. */
+  failClaim(code: string, reason: string): void
+  /** Codes stuck in `failed`, for the ops endpoint. */
+  listFailedClaims(limit: number): ClaimRow[]
   /** Client-side error sink for debugging paint-flow failures. */
-  logClientError(err: { wallet?: string | null; phase?: string | null; message: string; detail?: string | null }): void;
-  close(): void;
+  logClientError(err: ClientErrorInput): void
+  close(): void
 }
 
-const nodeRequire = createRequire(import.meta.url);
+/** Rows kept in the client-error sink; older rows are pruned on insert. */
+const CLIENT_ERROR_RETENTION = 5000
 
-export function openStore(dbPath: string): Store {
+const nodeRequire = createRequire(import.meta.url)
+
+export function openStore(dbPath: string, allowJsonFallback: boolean): Store {
   try {
-    const Database = nodeRequire("better-sqlite3") as typeof import("better-sqlite3");
-    return new SqliteStore(dbPath, Database);
-  } catch (err) {
-    console.warn(
-      `[store] better-sqlite3 unavailable (${(err as Error).message}); falling back to JSON store`
-    );
-    return new JsonStore(dbPath);
+    const Database = nodeRequire('better-sqlite3') as typeof import('better-sqlite3')
+    return new SqliteStore(dbPath, Database)
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err)
+    if (!allowJsonFallback) {
+      throw new Error(
+        `better-sqlite3 unavailable (${message}). The JSON fallback store is not safe for ` +
+          `concurrent use; set ALLOW_JSON_STORE=1 to use it anyway (dev only).`,
+      )
+    }
+    console.warn(`[store] better-sqlite3 unavailable (${message}); falling back to JSON store`)
+    return new JsonStore(dbPath)
   }
 }
 
 class SqliteStore implements Store {
-  readonly kind = "sqlite" as const;
-  private db: import("better-sqlite3").Database;
+  readonly kind = 'sqlite' as const
+  private db: import('better-sqlite3').Database
 
-  constructor(dbPath: string, Database: typeof import("better-sqlite3")) {
-    fs.mkdirSync(path.dirname(dbPath), { recursive: true });
-    this.db = new Database(dbPath);
-    this.db.pragma("journal_mode = WAL");
+  constructor(dbPath: string, Database: typeof import('better-sqlite3')) {
+    fs.mkdirSync(path.dirname(dbPath), { recursive: true })
+    this.db = new Database(dbPath)
+    this.db.pragma('journal_mode = WAL')
+    this.db.pragma('foreign_keys = ON')
     this.db.exec(`
       CREATE TABLE IF NOT EXISTS cells (
         seq   INTEGER NOT NULL,
@@ -95,74 +147,140 @@ class SqliteStore implements Store {
         amount INTEGER NOT NULL,
         used_at INTEGER
       );
-    `);
+    `)
+    this.migrateClaims()
   }
 
-  getCellsSince(since: number): CellRow[] {
+  /** Add the claim state machine columns to databases created before it. */
+  private migrateClaims(): void {
+    const columns = this.db.prepare('PRAGMA table_info(claims)').all() as Array<{ name: string }>
+    const names = new Set(columns.map((c) => c.name))
+    if (!names.has('state')) {
+      this.db.exec("ALTER TABLE claims ADD COLUMN state TEXT NOT NULL DEFAULT 'unused'")
+      // Pre-migration rows encoded "used" as a non-null used_at.
+      this.db.exec("UPDATE claims SET state = 'used' WHERE used_at IS NOT NULL")
+    }
+    if (!names.has('tx_signature')) {
+      this.db.exec('ALTER TABLE claims ADD COLUMN tx_signature TEXT')
+    }
+    if (!names.has('failure_reason')) {
+      this.db.exec('ALTER TABLE claims ADD COLUMN failure_reason TEXT')
+    }
+    this.db.exec('CREATE INDEX IF NOT EXISTS idx_claims_state ON claims(state)')
+  }
+
+  getCellsSince(since: number, limit?: number): CellRow[] {
+    if (limit === undefined) {
+      return this.db
+        .prepare('SELECT seq, x, y, rgb FROM cells WHERE seq > ? ORDER BY seq, rowid')
+        .all(since) as CellRow[]
+    }
     return this.db
-      .prepare("SELECT seq, x, y, rgb FROM cells WHERE seq > ? ORDER BY seq, rowid")
-      .all(since) as CellRow[];
+      .prepare('SELECT seq, x, y, rgb FROM cells WHERE seq > ? ORDER BY seq, rowid LIMIT ?')
+      .all(since, limit) as CellRow[]
   }
 
   maxSeq(): number {
-    const row = this.db.prepare("SELECT COALESCE(MAX(seq), 0) AS m FROM cells").get() as { m: number };
-    return row.m;
+    const row = this.db.prepare('SELECT COALESCE(MAX(seq), 0) AS m FROM cells').get() as { m: number }
+    return row.m
   }
 
   appendCells(cells: CellInput[]): number {
-    const insert = this.db.prepare("INSERT INTO cells (seq, x, y, rgb) VALUES (?, ?, ?, ?)");
+    const insert = this.db.prepare('INSERT INTO cells (seq, x, y, rgb) VALUES (?, ?, ?, ?)')
     const tx = this.db.transaction((list: CellInput[]) => {
-      const seq = this.maxSeq() + 1;
-      for (const c of list) insert.run(seq, c.x, c.y, c.rgb);
-      return seq;
-    });
-    return tx(cells) as number;
+      const seq = this.maxSeq() + 1
+      for (const c of list) insert.run(seq, c.x, c.y, c.rgb)
+      return seq
+    })
+    return tx(cells) as number
   }
 
-  hasSignature(sig: string): boolean {
-    return !!this.db.prepare("SELECT 1 FROM signatures WHERE sig = ?").get(sig);
+  claimSignature(sig: string): boolean {
+    return this.db.prepare('INSERT OR IGNORE INTO signatures (sig) VALUES (?)').run(sig).changes > 0
   }
 
-  addSignature(sig: string): void {
-    this.db.prepare("INSERT OR IGNORE INTO signatures (sig) VALUES (?)").run(sig);
+  releaseSignature(sig: string): void {
+    this.db.prepare('DELETE FROM signatures WHERE sig = ?').run(sig)
   }
 
-  hasMemo(memo: string): boolean {
-    return !!this.db.prepare("SELECT 1 FROM memos WHERE memo = ?").get(memo);
+  claimMemo(memo: string): boolean {
+    return this.db.prepare('INSERT OR IGNORE INTO memos (memo) VALUES (?)').run(memo).changes > 0
   }
 
-  addMemo(memo: string): void {
-    this.db.prepare("INSERT OR IGNORE INTO memos (memo) VALUES (?)").run(memo);
+  releaseMemo(memo: string): void {
+    this.db.prepare('DELETE FROM memos WHERE memo = ?').run(memo)
   }
 
   getClaim(code: string): ClaimRow | null {
     return (
       (this.db
-        .prepare("SELECT code, amount, used_at AS usedAt FROM claims WHERE code = ?")
+        .prepare(
+          `SELECT code, amount, state, used_at AS usedAt, tx_signature AS txSignature,
+                  failure_reason AS failureReason
+             FROM claims WHERE code = ?`,
+        )
         .get(code) as ClaimRow | undefined) ?? null
-    );
+    )
   }
 
   insertClaim(code: string, amount: number): void {
     this.db
-      .prepare("INSERT OR REPLACE INTO claims (code, amount, used_at) VALUES (?, ?, NULL)")
-      .run(code, amount);
+      .prepare(
+        `INSERT OR REPLACE INTO claims (code, amount, state, used_at, tx_signature, failure_reason)
+         VALUES (?, ?, 'unused', NULL, NULL, NULL)`,
+      )
+      .run(code, amount)
   }
 
-  markClaimUsed(code: string): boolean {
-    const res = this.db
-      .prepare("UPDATE claims SET used_at = ? WHERE code = ? AND used_at IS NULL")
-      .run(Date.now(), code);
-    return res.changes > 0;
+  reserveClaim(code: string): boolean {
+    return (
+      this.db.prepare("UPDATE claims SET state = 'pending' WHERE code = ? AND state = 'unused'").run(code).changes > 0
+    )
+  }
+
+  settleClaim(code: string, txSignature: string): void {
+    this.db
+      .prepare("UPDATE claims SET state = 'used', used_at = ?, tx_signature = ? WHERE code = ?")
+      .run(Date.now(), txSignature, code)
+  }
+
+  releaseClaim(code: string): void {
+    this.db.prepare("UPDATE claims SET state = 'unused', used_at = NULL WHERE code = ? AND state = 'pending'").run(code)
+  }
+
+  failClaim(code: string, reason: string): void {
+    this.db
+      .prepare("UPDATE claims SET state = 'failed', failure_reason = ? WHERE code = ? AND state = 'pending'")
+      .run(reason.slice(0, 500), code)
+  }
+
+  listFailedClaims(limit: number): ClaimRow[] {
+    return this.db
+      .prepare(
+        `SELECT code, amount, state, used_at AS usedAt, tx_signature AS txSignature,
+                failure_reason AS failureReason
+           FROM claims WHERE state = 'failed' ORDER BY code LIMIT ?`,
+      )
+      .all(limit) as ClaimRow[]
+  }
+
+  logClientError(err: ClientErrorInput): void {
+    const prune = this.db.transaction((e: ClientErrorInput) => {
+      this.db
+        .prepare('INSERT INTO client_errors (ts, wallet, phase, message, detail) VALUES (?, ?, ?, ?, ?)')
+        .run(Date.now(), e.wallet ?? null, e.phase ?? null, e.message, e.detail ?? null)
+      this.db
+        .prepare(
+          `DELETE FROM client_errors WHERE id <= (
+             SELECT MAX(id) - ? FROM client_errors
+           )`,
+        )
+        .run(CLIENT_ERROR_RETENTION)
+    })
+    prune(err)
   }
 
   close(): void {
-    this.db.close();
-  }
-
-  logClientError(err: { wallet?: string | null; phase?: string | null; message: string; detail?: string | null }): void {
-    this.db
-      .prepare("INSERT INTO client_errors (ts, wallet, phase, message, detail) VALUES (?, ?, ?, ?, ?)")
-      .run(Date.now(), err.wallet ?? null, err.phase ?? null, err.message, err.detail ?? null);
+    this.db.close()
   }
 }

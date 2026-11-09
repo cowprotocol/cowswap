@@ -1,9 +1,9 @@
 import { RELEASED_SUPPORTED_CHAIN_IDS, VIEM_CHAINS } from '@cowprotocol/common-const'
 import { isEvmChain, isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 
-// GRAFFITI FORK: devnet build — flip back to `solana` for mainnet
-import { solanaDevnet as solana } from '@reown/appkit/networks'
 import { type Chain } from 'viem/chains'
+
+import { SOLANA_NETWORK } from './solanaNetwork'
 
 import { IS_SOLANA_WALLET_ENABLED } from '../constants'
 
@@ -25,11 +25,11 @@ export const SUPPORTED_REOWN_NETWORKS = RELEASED_SUPPORTED_CHAIN_IDS.flatMap((ch
 ) as [AppKitNetwork, ...AppKitNetwork[]]
 
 if (IS_SOLANA_WALLET_ENABLED) {
-  SUPPORTED_REOWN_NETWORKS.push(solana)
+  SUPPORTED_REOWN_NETWORKS.push(SOLANA_NETWORK)
 }
 
 export function getReownNetwork(chainId: SupportedChainId): AppKitNetwork | undefined {
-  const reownNetworkId = isSolanaChain(chainId) ? solana.id : chainId
+  const reownNetworkId = isSolanaChain(chainId) ? SOLANA_NETWORK.id : chainId
 
   return SUPPORTED_REOWN_NETWORKS.find(({ id }) => id === reownNetworkId)
 }
