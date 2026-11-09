@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
-import { isSolanaChain } from '@cowprotocol/cow-sdk'
+import { isSolanaAddress, isSolanaChain } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAppKitConnection } from '@reown/appkit-adapter-solana/react'
@@ -61,12 +61,17 @@ export function useSolanaTradeOverhead({
   const { isAtaCreationDisabled } = useFeatureFlags()
 
   const request = useMemo<OverheadRequest | null>(() => {
-    if (!isSolanaChain(chainId) || !account) return null
+    // The chain id and the account arrive from separate sources, so a wallet switch or a page restore
+    // leaves a Solana chain id paired with an EVM account for a render or two. Decoding one as base58
+    // throws, and this runs during render, where the error boundary turns that into a blank page.
+    if (!isSolanaChain(chainId) || !isSolanaAddress(account)) return null
+
+    const owner = new PublicKey(account)
 
     // A vault never signs a transaction itself: its order rides inside `VaultTransactionExecute`, so
     // the member who executes the approved proposal pays the fee. The rents stay the vault's — the
     // bundle names it as payer for every account it creates.
-    const ownerPaysFees = !getIsSolanaSmartContractWallet(account)
+    const ownerPaysFees = !getIsSolanaSmartContractWallet(owner)
 
     // A wrap/unwrap never goes through a sponsor, and has no quote involved.
     if (isWrapUnwrap) return { fundedAccounts: [], ownerPaysFees }
@@ -76,14 +81,12 @@ export function useSolanaTradeOverhead({
     // The WSOL account a native sell opens is the owner's, so its rent is the owner's even here —
     // every other account the bundle creates is the sponsor's, as are the fees.
     if (isSponsored) {
-      return isNativeSell
-        ? { fundedAccounts: getWrapFundedAccounts(new PublicKey(account)), ownerPaysFees: false }
-        : null
+      return isNativeSell ? { fundedAccounts: getWrapFundedAccounts(owner), ownerPaysFees: false } : null
     }
 
     return {
       fundedAccounts: planSolanaTradeFundedAccounts({
-        owner: new PublicKey(account),
+        owner,
         quote: solanaQuote,
         isNativeSell,
         isAtaCreationDisabled: Boolean(isAtaCreationDisabled),

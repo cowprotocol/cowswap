@@ -130,7 +130,7 @@ describe('useSolanaTradeOverhead', () => {
 
     await waitFor(() => expect(mockGetSolanaTradeOverhead).toHaveBeenCalled())
     expect(mockGetSolanaTradeOverhead).toHaveBeenCalledWith(connection, FULL_ACCOUNTS, { ownerPaysFees: false })
-    expect(mockGetIsSolanaSmartContractWallet).toHaveBeenCalledWith(OWNER)
+    expect(mockGetIsSolanaSmartContractWallet.mock.calls[0]?.[0]?.toString()).toBe(OWNER)
   })
 
   it('leaves the fees to the member on a multisig wrap, which is a proposal too', async () => {
@@ -152,6 +152,25 @@ describe('useSolanaTradeOverhead', () => {
 
     await waitFor(() => expect(mockGetSolanaTradeOverhead).toHaveBeenCalled())
     expect(mockGetSolanaTradeOverhead).toHaveBeenCalledWith(connection, [], { ownerPaysFees: true })
+  })
+
+  /**
+   * `useWalletInfo` sources the chain id and the account separately, so reopening a Solana session left
+   * a Solana chain id paired with an EVM account for a render or two. Every base58 decode below throws
+   * on one, from inside render — which the error boundary turned into "Something went wrong".
+   */
+  it('stays quiet rather than decoding an EVM account left over from a wallet switch', async () => {
+    setup({ inputCurrency: NATIVE_SOL, isSponsored: false })
+    mockUseWalletInfo.mockReturnValue({
+      chainId: SupportedChainId.SOLANA,
+      account: '0x9FA3c00a92Ec5f96B1Ad2527ab41B3932EFEDa58',
+    } as unknown as ReturnType<typeof useWalletInfo>)
+
+    const { result } = renderHook(() => useSolanaTradeOverhead(), { wrapper })
+
+    await waitFor(() => expect(result.current).toBeNull())
+    expect(mockGetSolanaTradeOverhead).not.toHaveBeenCalled()
+    expect(mockPlanSolanaTradeFundedAccounts).not.toHaveBeenCalled()
   })
 
   it('ignores the sponsor when asked for the full placement cost', async () => {
