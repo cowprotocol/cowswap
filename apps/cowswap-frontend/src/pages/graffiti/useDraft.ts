@@ -20,10 +20,7 @@ export interface DraftState {
 /** Snapshots kept for undo. */
 const MAX_HISTORY = 50
 
-/**
- * Multi-stroke draft: strokes accumulate and the whole draft is committed with
- * ONE burn on Paint. `maxBox*` is the backend's per-draw bounding-box limit.
- */
+/** Strokes accumulate; the whole draft is committed with one burn. */
 export function useDraft({ snapshotRef }: WallRefs, maxBoxWidth: number, maxBoxHeight: number): DraftState {
   const [draft, setDraft] = useState<Draft>(new Map())
   const [historySize, setHistorySize] = useState(0)

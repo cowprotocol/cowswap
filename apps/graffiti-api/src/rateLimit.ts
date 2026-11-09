@@ -1,9 +1,6 @@
 /**
- * Fixed-window rate limiter, keyed by client address.
- *
- * In-process only: with more than one instance behind a load balancer each
- * replica enforces its own window, so set the limit per replica accordingly
- * (or move this to a shared store).
+ * In-process only: behind a load balancer each replica enforces its own window,
+ * so the limit is per replica.
  */
 export class RateLimiter {
   private hits = new Map<string, { count: number; resetAt: number }>()

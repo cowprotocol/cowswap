@@ -63,9 +63,7 @@ export const CAIP_TO_SUPPORTED_CHAIN_ID: Record<CaipNetworkId, SupportedChainId>
   'eip155:59144': SupportedChainId.LINEA,
   'eip155:11155111': SupportedChainId.SEPOLIA,
   'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': SupportedChainId.SOLANA,
-  // Devnet cluster, for builds running REACT_APP_SOLANA_CLUSTER=devnet: without
-  // it useAccountState never flips to Solana and the header keeps showing the
-  // EVM state while a Solana wallet is connected.
+  // Devnet, for REACT_APP_SOLANA_CLUSTER=devnet builds
   'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1': SupportedChainId.SOLANA,
 }
 

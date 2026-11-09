@@ -5,13 +5,9 @@ import { MAX_SCALE, zoomAround } from './viewport.utils'
 import type { WallRefs } from './wall.types'
 
 /**
- * Pinch-zoom and wheel-pan on the wall, via @use-gesture.
- *
- * The library unifies the three ways a zoom arrives: two fingers on touch,
- * ctrl/⌘+wheel on mice, and trackpad pinch (which browsers surface as a
- * ctrl+wheel, or as Safari's gesture* events). We only translate its output
- * into the wall's view: the zoom is anchored on the gesture's origin and the
- * two-finger midpoint drags the view along.
+ * @use-gesture unifies the three ways a zoom arrives: two fingers, ctrl/⌘+wheel,
+ * and trackpad pinch (a ctrl+wheel, or Safari's gesture* events). This only maps
+ * its output onto the view.
  */
 export function useCanvasGestures(
   { viewRef, minScaleRef, pinchActiveRef, requestRenderRef }: WallRefs,

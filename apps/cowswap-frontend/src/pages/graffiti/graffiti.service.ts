@@ -1,8 +1,5 @@
-// Graffiti wall backend client (SPEC: docs/graffiti/SPEC.md).
-//
-// REST base comes from REACT_APP_GRAFFITI_API (relative '/v1' by default, i.e.
-// same-origin — the Vite dev proxy / a prod rewrite serves it). The WS URL is
-// derived from it: relative → current host, absolute → its own host.
+// REST base comes from REACT_APP_GRAFFITI_API, defaulting to same-origin '/v1'.
+// The WS URL is derived from it: relative → current host, absolute → its own.
 
 import type { Cell } from './raster.utils'
 
@@ -64,14 +61,12 @@ export class ApiError extends Error {
   }
 }
 
-/** Solana explorer link for the cluster the wall is deployed against. */
 export function explorerTxUrl(signature: string, network: string): string {
   const cluster = network === 'mainnet' || network === 'mainnet-beta' ? '' : `?cluster=${network}`
 
   return `https://explorer.solana.com/tx/${signature}${cluster}`
 }
 
-/** Fetch the full canvas as raw RGB bytes via the PNG snapshot. */
 export async function fetchCanvasPng(width: number, height: number): Promise<Uint8ClampedArray> {
   const res = await fetch(`${API_BASE}/canvas.png`)
 
@@ -142,7 +137,7 @@ export function postClaim(payload: { code: string; walletPubkey: string }): Prom
   })
 }
 
-/** Client-side error sink — surfaces paint-flow failures in the server log. */
+/** Never rejects: reporting must not break the paint flow. */
 export function postClientError(payload: {
   message: string
   phase?: string
@@ -169,7 +164,6 @@ export function postDraw(payload: {
   })
 }
 
-/** Derive the WebSocket endpoint from the REST base. */
 export function wsUrl(): string {
   if (/^wss?:\/\//i.test(RAW_BASE)) return `${RAW_BASE.replace(/\/+$/, '')}/ws`
 

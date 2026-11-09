@@ -1,12 +1,6 @@
-// Crash-safe record of a burn that has landed on-chain but has not yet been
-// accepted by the backend.
-//
-// The paint flow burns tokens first and only then tells the server. Everything
-// between those two points — a reload, a dropped connection, the backend's RPC
-// not seeing the transaction yet — would otherwise destroy the user's tokens
-// with nothing painted. The burn is irreversible, so the signature is written
-// to localStorage the moment it exists and only cleared once the draw is
-// applied.
+// Tokens are burned before the server is told. Anything failing in between — a
+// reload, a dropped connection, RPC lag — would destroy them with nothing
+// painted, so the signature is persisted the moment it exists.
 
 import type { Cell } from './raster.utils'
 

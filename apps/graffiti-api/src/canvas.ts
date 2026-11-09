@@ -17,11 +17,7 @@ interface Bounds {
   maxY: number
 }
 
-/**
- * In-memory canvas: a CANVAS_WIDTH * CANVAS_HEIGHT * 3 RGB buffer, latest
- * write wins. Seeded from the store on boot; every accepted draw is persisted
- * with a monotonically increasing seq number before being applied.
- */
+/** An RGB buffer, latest write wins. Every draw is persisted before it is applied. */
 export class CanvasState {
   readonly width = CANVAS_WIDTH
   readonly height = CANVAS_HEIGHT
@@ -59,7 +55,6 @@ export class CanvasState {
     return x >= 0 && x < this.width && y >= 0 && y < this.height
   }
 
-  /** Parse and bounds-check one raw cell from a request body. */
   private parseCell(raw: unknown): { ok: true; cell: ValidCell } | { ok: false; reason: string } {
     if (typeof raw !== 'object' || raw === null) return { ok: false, reason: 'invalid cell' }
 
@@ -75,7 +70,6 @@ export class CanvasState {
     return { ok: true, cell: { x: xi, y: yi, rgb } }
   }
 
-  /** Parse and bounds-check raw cells from a request body. */
   private parseCells(raw: unknown): ValidateResult {
     if (!Array.isArray(raw) || raw.length === 0) return { ok: false, reason: 'cells must be a non-empty array' }
 
@@ -88,10 +82,7 @@ export class CanvasState {
     return { ok: true, cells }
   }
 
-  /**
-   * Bounding box of the drawing. Accumulated in a loop rather than
-   * `Math.max(...xs)`, which overflows the argument limit on large draws.
-   */
+  // A loop, not Math.max(...xs), which overflows the argument limit on large draws.
   private bounds(cells: ValidCell[]): Bounds {
     const b: Bounds = {
       minX: Number.POSITIVE_INFINITY,
@@ -135,7 +126,6 @@ export class CanvasState {
     return { ok: true, cells: chargeable }
   }
 
-  /** Persist and apply a validated draw. Returns the new seq. */
   applyDraw(cells: CellInput[]): number {
     const seq = this.store.appendCells(cells)
     for (const c of cells) this.setPixel(c.x, c.y, c.rgb)

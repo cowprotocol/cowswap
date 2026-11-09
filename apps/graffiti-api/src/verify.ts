@@ -29,9 +29,8 @@ export interface VerifyInput {
 }
 
 /**
- * On success the caller owns the signature/memo reservations and must call
- * `release` if it cannot apply the draw, so a transient failure downstream
- * does not consume the user's burn.
+ * On success the caller owns the reservations and must `release` them if it
+ * cannot apply the draw, or a downstream failure consumes the user's burn.
  */
 export type VerifyResult = { ok: true; burned: number; release: () => void } | Failure
 
@@ -53,7 +52,6 @@ interface Failure {
 
 type Rpc = Pick<Connection, 'getParsedTransaction'>
 
-/** Verify a draw request against the burn tx on-chain (spec §Draw verification). */
 export class DrawVerifier {
   private connection: Rpc | null
 
@@ -153,7 +151,6 @@ export class DrawVerifier {
   }
 }
 
-/** Failure if the transaction did not succeed or is outside the freshness window. */
 export function checkExecution(tx: ParsedTransactionWithMeta, maxAgeSec: number): Failure | null {
   // err === null means SUCCESS.
   if (!tx.meta || tx.meta.err) {
@@ -166,7 +163,7 @@ export function checkExecution(tx: ParsedTransactionWithMeta, maxAgeSec: number)
   return null
 }
 
-/** The `graffiti:v1:<wallet>:<ts>` memo, if present and inside the freshness window. */
+/** The `graffiti:v1:<wallet>:<ts>` memo, if fresh. */
 export function findMemo(tx: ParsedTransactionWithMeta, walletB58: string, maxAgeSec: number): MemoResult {
   const expected = new RegExp(`^graffiti:v1:${walletB58}:(\\d{10,13})$`)
   let found: { memo: string; ts: number } | null = null
@@ -185,10 +182,7 @@ export function findMemo(tx: ParsedTransactionWithMeta, walletB58: string, maxAg
   return { memo: found.memo }
 }
 
-/**
- * Total burned of `mint` that is attributable to the wallet. Burns by anyone
- * else in the same transaction must not count toward cost.
- */
+/** Burns by anyone else in the same transaction must not count toward cost. */
 export function sumBurnsBy(tx: ParsedTransactionWithMeta, walletB58: string, mint: string): number {
   const owners = tokenAccountOwners(tx, mint)
   let total = 0
@@ -215,7 +209,6 @@ function burnAmount(info: BurnInfo): number {
   return Number.isFinite(amount) && amount > 0 ? amount : 0
 }
 
-/** The `info` of a burn / burnChecked instruction on `mint`, or null for anything else. */
 function burnInfo(ix: AnyInstruction, mint: string): BurnInfo | null {
   if (!isParsed(ix) || !TOKEN_PROGRAMS.has(ix.programId.toBase58())) return null
 
@@ -226,10 +219,7 @@ function burnInfo(ix: AnyInstruction, mint: string): BurnInfo | null {
   return info.mint === mint ? info : null
 }
 
-/**
- * Whether the burn is attributable to the wallet: it either authorised the burn
- * itself, or owns the source token account (delegate burns).
- */
+/** The wallet authorised the burn, or owns the source account (delegate burns). */
 function isBurnedBy(info: BurnInfo, walletB58: string, owners: Map<string, string>): boolean {
   if (info.authority === walletB58) return true
   const account = typeof info.account === 'string' ? info.account : null
@@ -263,7 +253,7 @@ function reject(reason: string, retryable: boolean): Failure {
   return { ok: false, reason, retryable }
 }
 
-/** Owner of each token account of the graffiti mint, from pre-balances. */
+/** From pre-balances, which is the only place the owner appears. */
 function tokenAccountOwners(tx: ParsedTransactionWithMeta, mint: string): Map<string, string> {
   const keys = tx.transaction.message.accountKeys
   const owners = new Map<string, string>()

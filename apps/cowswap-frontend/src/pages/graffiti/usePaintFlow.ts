@@ -1,7 +1,5 @@
-// The paint flow: quote → burn → deliver the proof to the wall.
-//
-// The burn is irreversible, so everything after `sendTransaction` is written
-// down (see pendingBurn) and retried rather than surfaced as a dead end.
+// quote → burn → deliver the proof. The burn is irreversible, so everything
+// after sendTransaction is recorded (see pendingBurn.utils) and retried.
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 

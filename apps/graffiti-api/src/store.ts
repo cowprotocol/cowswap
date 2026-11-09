@@ -1,12 +1,5 @@
-/**
- * Persistence layer for the graffiti backend.
- *
- * Primary implementation: better-sqlite3. If the native module is not
- * available (build failure on this platform), JsonStore provides the same
- * interface backed by a single JSON file. The JSON store is dev-only: it has
- * no durability guarantees under concurrency, so `openStore` refuses to fall
- * back to it when ALLOW_JSON_STORE is not set.
- */
+// The JSON fallback store has no durability guarantees under concurrency, so
+// openStore refuses it unless ALLOW_JSON_STORE is set.
 import fs from 'node:fs'
 import { createRequire } from 'node:module'
 import path from 'node:path'
@@ -36,13 +29,8 @@ export interface ClaimRow {
 }
 
 /**
- * Lifecycle of a claim code.
- * - `unused`: claimable.
- * - `pending`: reserved while an on-chain transfer is in flight.
- * - `used`: transfer confirmed; terminal.
- * - `failed`: transfer outcome unknown (it may have landed on-chain). Terminal
- *   until an operator resolves it — never auto-released, or the treasury pays
- *   twice for one code.
+ * `failed` means the transfer outcome is unknown — it may have landed on-chain.
+ * It is never auto-released, or the treasury pays twice for one code.
  */
 export type ClaimState = 'unused' | 'pending' | 'used' | 'failed'
 
@@ -55,40 +43,30 @@ export interface ClientErrorInput {
 
 export interface Store {
   readonly kind: 'sqlite' | 'json'
-  /**
-   * Cell writes with seq strictly greater than `since`, in seq order.
-   * `limit` caps the number of rows returned (omit to replay everything).
-   */
+  /** In seq order. Omit `limit` to replay everything. */
   getCellsSince(since: number, limit?: number): CellRow[]
-  /** Highest seq present (0 when empty). */
+  /** 0 when empty. */
   maxSeq(): number
   /** Atomically reserve the next seq number and append cells with it. */
   appendCells(cells: CellInput[]): number
   /**
-   * Atomically record a burn signature. Returns false when it was already
-   * recorded, which is the replay rejection: check-then-insert would let two
-   * concurrent requests through the same window.
+   * False when already recorded, which is the replay rejection. Must stay a
+   * single atomic step: check-then-insert lets two concurrent requests through.
    */
   claimSignature(sig: string): boolean
-  /** Release a signature reserved by `claimSignature` (rollback path). */
   releaseSignature(sig: string): void
-  /** Atomically record a draw memo. Returns false when already recorded. */
+  /** False when already recorded. Atomic, as `claimSignature`. */
   claimMemo(memo: string): boolean
-  /** Release a memo reserved by `claimMemo` (rollback path). */
   releaseMemo(memo: string): void
   getClaim(code: string): ClaimRow | null
   insertClaim(code: string, amount: number): void
-  /** `unused` -> `pending`. False when the code is missing or not claimable. */
+  /** False when the code is missing or not claimable. */
   reserveClaim(code: string): boolean
-  /** `pending` -> `used`, recording the transfer signature. */
   settleClaim(code: string, txSignature: string): void
-  /** `pending` -> `unused`. Only safe when no transaction was submitted. */
+  /** Only safe when no transaction was submitted. */
   releaseClaim(code: string): void
-  /** `pending` -> `failed`, for an outcome we could not determine. */
   failClaim(code: string, reason: string): void
-  /** Codes stuck in `failed`, for the ops endpoint. */
   listFailedClaims(limit: number): ClaimRow[]
-  /** Client-side error sink for debugging paint-flow failures. */
   logClientError(err: ClientErrorInput): void
   close(): void
 }
@@ -151,7 +129,6 @@ class SqliteStore implements Store {
     this.migrateClaims()
   }
 
-  /** Add the claim state machine columns to databases created before it. */
   private migrateClaims(): void {
     const columns = this.db.prepare('PRAGMA table_info(claims)').all() as Array<{ name: string }>
     const names = new Set(columns.map((c) => c.name))

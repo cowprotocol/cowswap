@@ -1,9 +1,5 @@
-// Delivery of an already-burned draw to the backend.
-//
-// The burn is irreversible by the time this runs, so a transient failure must
-// never be treated as terminal: the backend answers 409 while it cannot yet
-// see the transaction at its commitment level, and we keep retrying until it
-// can. Only a terminal rejection gives up.
+// The burn has already happened, so a transient failure must never be treated
+// as terminal: 409 means the backend cannot see the transaction yet.
 
 import { ApiError, postDraw, type DrawResponse } from './graffiti.service'
 import { clearPendingBurn, savePendingBurn, type PendingBurn } from './pendingBurn.utils'
@@ -19,10 +15,7 @@ export type SubmitOutcome =
   /** Still retryable later — the record is kept so it can be resumed. */
   | { ok: false; reason: string; recoverable: true }
 
-/**
- * Hand a burn to the backend, retrying while it reports a retryable failure.
- * `onAttempt` reports progress so the UI can explain the wait.
- */
+/** Retries while the backend reports a retryable failure. */
 export async function submitDraw(
   burn: PendingBurn,
   onAttempt?: (attempt: number, max: number) => void,

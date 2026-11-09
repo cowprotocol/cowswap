@@ -65,11 +65,7 @@ function getE2eFlagOverride(key: keyof BootFeatureFlags): boolean | undefined {
   return Boolean(overrides[key])
 }
 
-/**
- * Build-time override for self-hosted deployments that have no LaunchDarkly,
- * e.g. `REACT_APP_BOOT_FEATURE_FLAGS='{"isSolanaEnabled":true}'`. Separate from
- * the E2E hook so test plumbing stays out of production builds.
- */
+/** Build-time override, e.g. REACT_APP_BOOT_FEATURE_FLAGS='{"isSolanaEnabled":true}'. */
 function getEnvFlagOverride(key: keyof BootFeatureFlags): boolean | undefined {
   const raw = process.env.REACT_APP_BOOT_FEATURE_FLAGS
 

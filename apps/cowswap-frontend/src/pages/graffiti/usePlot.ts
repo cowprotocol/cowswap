@@ -16,10 +16,7 @@ export interface PlotState {
   maxBoxHeight: number
 }
 
-/**
- * The fixed drawing frame: auto-placed at the first free spot once the wall has
- * loaded, draggable while the draft is empty, locked once you paint.
- */
+/** Auto-placed at the first free spot once the wall has loaded. */
 export function usePlot(refs: WallRefs, info: CanvasInfo | null, loaded: boolean): PlotState {
   const { freeSpotRef, pixelsRef } = refs
   const maxBoxWidth = info?.maxBoxWidth ?? DEFAULT_PLOT_WIDTH

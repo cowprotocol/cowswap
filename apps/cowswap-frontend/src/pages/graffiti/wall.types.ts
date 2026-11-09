@@ -25,21 +25,17 @@ export interface View {
 }
 
 /**
- * Live interaction state, mutated between React renders.
- *
- * Everything here changes on a pointer move or an animation frame, where a
- * re-render per change would be far too slow. State that React owns lives in
- * `snapshotRef` instead.
+ * Live interaction state, mutated between renders: a re-render per pointer move
+ * would be far too slow. State React owns lives in `snapshotRef`.
  */
 export interface WallRefs {
-  /** Latest committed React state; see WallSnapshot. */
   snapshotRef: MutableRefObject<WallSnapshot>
   /** Ask for an animation frame. Set by useWallRenderLoop; a no-op until it mounts. */
   requestRenderRef: MutableRefObject<() => void>
 
   // Wall pixels and their offscreen copy.
   pixelsRef: MutableRefObject<Uint8ClampedArray>
-  /** The pixel buffer changed and must be re-uploaded to the offscreen canvas. */
+  /** The pixel buffer changed and needs re-uploading. */
   dirtyRef: MutableRefObject<boolean>
   offscreenRef: MutableRefObject<HTMLCanvasElement | null>
   patternRef: MutableRefObject<CanvasPattern | null>
@@ -62,23 +58,17 @@ export interface WallRefs {
   strokePointsRef: MutableRefObject<Array<Point>>
   movingPlotRef: MutableRefObject<{ dx: number; dy: number } | null>
 
-  /** Highest sequence number applied from the server. */
   seqRef: MutableRefObject<number>
   /** Where the frame was first auto-placed; set once. */
   freeSpotRef: MutableRefObject<{ x: number; y: number } | null>
 }
 
 /**
- * The React state the render loop and the pointer handlers need, copied into a
- * ref after every commit.
- *
- * Both of them run outside React — the loop on animation frames, the handlers
- * on native events — so they cannot read state directly without capturing a
- * stale closure. Keeping one snapshot rather than a ref per field means there
- * is a single place to look for "what the canvas currently believes".
+ * React state copied into a ref after every commit. The render loop and pointer
+ * handlers run outside React, so reading state directly would capture a stale
+ * closure.
  */
 export interface WallSnapshot {
-  /** The wall snapshot has arrived; drawing is allowed. */
   loaded: boolean
   /** A burn is in flight: the wallet, the chain or the wall is working. */
   busy: boolean

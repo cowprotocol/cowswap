@@ -31,11 +31,7 @@ interface SubmittedTransfer {
   lastValidBlockHeight: number
 }
 
-/**
- * Claim codes + on-chain transfer from the treasury ATA to the claimer
- * (spec §Claim flow). Codes are single-use; the transfer is paid and signed
- * by the treasury keypair.
- */
+/** Codes are single-use; the treasury keypair pays for and signs the transfer. */
 export class ClaimService {
   private connection: Connection | null = null
   private treasuryKeypair: Keypair | null | undefined
@@ -65,7 +61,6 @@ export class ClaimService {
     return this.treasury()?.publicKey.toBase58() ?? null
   }
 
-  /** True when the service has everything it needs to settle a claim. */
   isConfigured(): boolean {
     return this.config.devInsecure || Boolean(this.config.mint && this.treasury())
   }
@@ -77,14 +72,13 @@ export class ClaimService {
     return this.mintDecimals
   }
 
-  /** GET /claim/:code → {valid, amount} without revealing more. */
+  /** Deliberately does not distinguish unknown from already-used. */
   check(code: string): { valid: boolean; amount: number } {
     const row = this.store.getClaim(code)
     if (!row || row.state !== 'unused') return { valid: false, amount: 0 }
     return { valid: true, amount: row.amount }
   }
 
-  /** Generate n codes (admin/ops). Returns the created codes. */
   generate(n: number, amount: number = DEFAULT_CLAIM_AMOUNT): string[] {
     const codes: string[] = []
     for (let i = 0; i < n; i++) {
@@ -95,14 +89,12 @@ export class ClaimService {
     return codes
   }
 
-  /** The treasury key and mint needed to settle a claim, or null when unconfigured. */
   private payer(): { treasury: Keypair; mint: string } | null {
     const treasury = this.treasury()
     const mint = this.config.mint
     return treasury && mint ? { treasury, mint } : null
   }
 
-  /** Why the server cannot settle claims, or null when it can. */
   private configurationError(): string | null {
     if (this.config.devInsecure) return null
     if (!this.config.mint) return 'server misconfigured: MINT not set'
@@ -110,11 +102,7 @@ export class ClaimService {
     return null
   }
 
-  /**
-   * Everything that can be rejected before touching the store or the chain.
-   * Configuration is checked before reserving so a misconfigured server does
-   * not burn through codes.
-   */
+  /** Configuration is checked before reserving, so a misconfigured server does not burn codes. */
   private prepareClaim(
     code: string,
     walletPubkey: string,
@@ -133,7 +121,6 @@ export class ClaimService {
     return { ok: true, row, dest }
   }
 
-  /** POST /claim {code, walletPubkey} — transfer from treasury, mark used. */
   async claim(code: string, walletPubkey: string): Promise<ClaimResult> {
     const prepared = this.prepareClaim(code, walletPubkey)
     if (!prepared.ok) return prepared
@@ -159,9 +146,8 @@ export class ClaimService {
   }
 
   /**
-   * Submit then confirm. The two phases fail differently: a failure before the
-   * transaction is submitted cannot have moved funds, so the code is released;
-   * a failure after it may have, so the code is parked for an operator.
+   * The two phases fail differently: before submission no funds can have moved,
+   * so the code is released; after it, the code is parked for an operator.
    */
   private async transfer(
     code: string,
@@ -222,11 +208,7 @@ export class ClaimService {
   }
 }
 
-/**
- * Treasury signing key, from TREASURY_SECRET_KEY (base58 or JSON array) or a
- * JSON keypair file at TREASURY_KEYPAIR. The env form exists so deployments
- * can inject the key from a secret manager instead of shipping a file.
- */
+/** TREASURY_SECRET_KEY (base58 or JSON array) wins over the TREASURY_KEYPAIR file. */
 export function loadTreasuryKeypair(config: Config): Keypair | null {
   const inline = config.treasurySecretKey
   if (inline) {
@@ -244,11 +226,7 @@ export function loadTreasuryKeypair(config: Config): Keypair | null {
   }
 }
 
-/**
- * One transaction: create the claimer's ATA if missing (idempotent, paid by
- * the treasury) and transfer. Two separate transactions could leave the ATA
- * created but the transfer unsent.
- */
+/** One transaction: two would risk leaving the ATA created but the transfer unsent. */
 function buildTransferTransaction(params: {
   treasury: Keypair
   mint: PublicKey

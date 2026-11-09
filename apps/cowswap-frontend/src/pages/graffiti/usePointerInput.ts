@@ -29,10 +29,7 @@ export interface UsePointerInputParams {
   resetPhase: () => void
 }
 
-/**
- * Canvas pointer handlers. Tool and session state reaches them through
- * `refs.snapshotRef`, so the context and every callback stay stable.
- */
+/** State reaches the handlers via `snapshotRef`, so these callbacks stay stable. */
 export function usePointerInput(refs: WallRefs, params: UsePointerInputParams): PointerInput {
   const { wallColorAt, pushHistory, setDraft, setPlot, resetPhase } = params
   const [liveCost, setLiveCost] = useState(0)

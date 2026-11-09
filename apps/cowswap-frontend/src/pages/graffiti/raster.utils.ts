@@ -1,13 +1,5 @@
-// Rasterization for the graffiti wall.
-//
-// A stroke is a list of {x, y} float points in canvas (cell) coordinates plus
-// a brush size. We compute the perfect-freehand outline polygon, then set
-// every grid cell whose CENTER falls inside that polygon. The same function is
-// used for the live preview, the live cost counter and the final draw payload,
-// so quoted cost === painted cells exactly.
-//
-// `rasterizeStroke` is pure and unit-testable; `rasterizeText` needs a DOM
-// 2d context to measure glyphs.
+// The preview, the live cost counter and the draw payload all rasterize through
+// the same function, so the quoted cost equals the painted cells exactly.
 
 import { getStroke } from 'perfect-freehand'
 
@@ -21,9 +13,8 @@ export interface CanvasSize {
 }
 
 /**
- * Wall geometry in use, replaced once GET /v1/info arrives. Rasterizing takes
- * the size explicitly instead of reading this, so a call made before /v1/info
- * lands cannot silently rasterize against the wrong grid.
+ * Replaced once GET /v1/info arrives. Rasterizing takes the size explicitly, so
+ * a call made before that cannot silently use the wrong grid.
  */
 export const CANVAS: CanvasSize = { w: CANVAS_W_DEFAULT, h: CANVAS_H_DEFAULT }
 
@@ -46,12 +37,12 @@ export interface RasterizedStroke {
   outline: Array<Point>
 }
 
-/** 24-bit number → `#rrggbb`, for canvas rendering and swatches. */
+/** 24-bit number → `#rrggbb`. */
 export function colorToHex(color: number): string {
   return `#${color.toString(16).padStart(6, '0')}`
 }
 
-/** `#rrggbb` → 24-bit number, for the draw payload. Invalid input → black. */
+/** `#rrggbb` → 24-bit number. Invalid input → black. */
 export function hexToColor(hex: string): number {
   const parsed = Number.parseInt(hex.replace('#', ''), 16)
 
