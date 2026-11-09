@@ -1,36 +1,62 @@
 import type { ReactNode } from 'react'
 
-import iconBuildWithCowSrc from '@cowprotocol/assets/images/icon-build-with-cow.svg'
-import iconBulbCowSrc from '@cowprotocol/assets/images/icon-bulb-cow.svg'
-import iconCowLensSrc from '@cowprotocol/assets/images/icon-cow-lens.svg'
-import iconCrownCowSrc from '@cowprotocol/assets/images/icon-crown-cow.svg'
-import iconFaqSrc from '@cowprotocol/assets/images/icon-faq.svg'
-import iconGhostSrc from '@cowprotocol/assets/images/icon-ghost.svg'
-import iconOwlSrc from '@cowprotocol/assets/images/icon-owl.svg'
-import { Color, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
+import svgCowHeadSrc from '@cowprotocol/assets/images/icon-cow-head.svg'
+import svgCowHeartEyesSrc from '@cowprotocol/assets/images/icon-cow-heart-eyes.svg'
 
+import Image from 'next/image'
 import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 
-import { SolanaMatchCard } from './SolanaMatchCard'
 import {
-  CardFooter,
-  DeveloperParagraphs,
+  AudienceCard,
+  ButtonRow,
+  CapsLine,
+  CardGrid,
+  CardLink,
+  CenteredBlock,
+  CowMark,
+  ctaColors,
+  CtaLink,
+  DarkPanel,
+  Disclaimer,
+  FaqIcon,
+  FaqItem,
+  FaqList,
+  HeadlineRoot,
+  HeroCopy,
+  HeroGrid,
   InlineLink,
+  KaminoLogo,
+  Lead,
   LeadAside,
+  LeadCard,
   LeadStat,
-  SignOff,
-  SolanaHero,
-  SubheadLine,
+  PartnerCard,
+  PartnerCopy,
+  PartnersClosing,
+  PartnersCopy,
+  PhotoFrame,
+  ReasonCard,
+  ScriptLine,
+  SectionHeader,
+  StatItem,
+  StatsBackdrop,
+  StatsPanel,
+  StatusLabel,
+  StatusTitle,
+  StepCopy,
+  StepRow,
+  toneButton,
+  ToneCard,
+  ToneCopy,
 } from './styled'
 
-import FAQ from '@/components/FAQ'
 import LazySVG from '@/components/LazySVG'
-import { Link, LinkType } from '@/components/Link'
 import {
   ACTIVE_HEADLINES,
   ALPHA_DISCLAIMER,
   DEVELOPERS,
-  FINAL_CTA,
+  FINAL_CTA_BODY,
+  HeadlineLine,
   HERO,
   HOW_IT_WORKS,
   PARTNERS,
@@ -40,553 +66,429 @@ import {
   TRUSTED,
   WHY_REASONS,
 } from '@/data/solana/const'
-import {
-  ContainerCard,
-  ContainerCardSection,
-  HeroButtonWrapper,
-  HeroContent,
-  HeroDescription,
-  HeroTitle,
-  MetricsCard,
-  MetricsItem,
-  SectionTitleDescription,
-  SectionTitleIcon,
-  SectionTitleText,
-  SectionTitleWrapper,
-  TopicCard,
-  TopicCardInner,
-  TopicDescription,
-  TopicImage,
-  TopicList,
-  TopicTitle,
-} from '@/styles/styled'
 
-const LINK_VARIANTS = {
-  solid: { bgColor: Color.cowfi_purple3, color: Color.cowfi_purple_bright },
-  ghost: { bgColor: 'transparent', color: Color.cowfi_purple3 },
-}
-
-interface PurpleLinkProps {
+interface CtaProps {
   href: string
   action: string
+  label: string
+  colors: keyof typeof ctaColors
   children: ReactNode
-  linkType?: LinkType
-  variant?: keyof typeof LINK_VARIANTS
-  newTab?: boolean
-  fontSize?: number
-  fontSizeMobile?: number
+}
+
+interface HeadlineProps {
+  lines: HeadlineLine[]
+  as?: 'h1' | 'h2'
+  align?: 'left' | 'center'
+  small?: boolean
 }
 
 export function DevelopersSection(): ReactNode {
-  const cards = [
-    { ...DEVELOPERS.advanced, bgColor: Color.cowfi_purple3 },
-    { ...DEVELOPERS.trusted, bgColor: Color.cowfi_purple_dark },
-  ]
-
   return (
-    <ContainerCard bgColor="transparent">
-      <ContainerCardSection>
-        <SectionTitleWrapper color={`var(${UI.COLOR_NEUTRAL_10})`} maxWidth={1000}>
-          <SectionTitleIcon $size={78}>
-            <LazySVG uniquifyIDs src={iconBuildWithCowSrc} />
-          </SectionTitleIcon>
-          <SectionTitleText>{ACTIVE_HEADLINES.developers}</SectionTitleText>
-          <SectionTitleDescription maxWidth={900} color={`var(${UI.COLOR_NEUTRAL_50})`}>
-            {DEVELOPERS.intro}
-          </SectionTitleDescription>
-        </SectionTitleWrapper>
+    <section>
+      <SectionHeader $padding="120px 0 80px">
+        <CowMark>
+          <Image src={svgCowHeadSrc} alt="" width={96} height={64} unoptimized />
+        </CowMark>
+        <Headline lines={ACTIVE_HEADLINES.developers} />
+        <Lead $caps>{DEVELOPERS.intro}</Lead>
+      </SectionHeader>
 
-        <TopicList columns={2} columnsTablet={1}>
-          {cards.map((card) => (
-            <TopicCard
-              key={card.title}
-              contentAlign="left"
-              bgColor={card.bgColor}
-              textColor={Color.cowfi_purple_bright}
-              padding="40px"
-              asProp="div"
-            >
-              <TopicCardInner contentAlign="left">
-                <TopicTitle color={Color.neutral98} fontSize={38} fontSizeMobile={28}>
-                  {card.title}
-                </TopicTitle>
-                <DeveloperParagraphs>
-                  {card.paragraphs.map((paragraph) => (
-                    <p key={paragraph}>{paragraph}</p>
-                  ))}
-                </DeveloperParagraphs>
-              </TopicCardInner>
-              <TopicImage
-                iconColor="transparent"
-                bgColor="transparent"
-                margin="auto 0 0 auto"
-                height={160}
-                width="auto"
-              >
-                <LazySVG uniquifyIDs src={card.imageSrc} />
-              </TopicImage>
-            </TopicCard>
-          ))}
-        </TopicList>
+      <CardGrid>
+        <ToneCard $tone="plum" $padding={48}>
+          <ToneCopy $large>
+            <h3>{DEVELOPERS.advanced.title}</h3>
+            {DEVELOPERS.advanced.paragraphs.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+          </ToneCopy>
+        </ToneCard>
+        <ToneCard $tone="pink" $padding={48}>
+          <ToneCopy $large>
+            <h3>{DEVELOPERS.trusted.title}</h3>
+            {DEVELOPERS.trusted.paragraphs.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+          </ToneCopy>
+        </ToneCard>
+      </CardGrid>
 
-        <DeveloperDoors />
+      <DeveloperDoors />
 
-        <SectionTitleWrapper maxWidth={900} margin="56px auto 0">
-          <SectionTitleText fontSize={38}>Build in the open</SectionTitleText>
-          <SectionTitleDescription fontSize={21} color={`var(${UI.COLOR_NEUTRAL_50})`}>
-            {DEVELOPERS.buildInTheOpen}
-          </SectionTitleDescription>
-          <HeroButtonWrapper width="auto" gap={12}>
-            <PurpleLink href={SOLANA_LINKS.docs} action="read-the-docs">
-              Read the docs
-            </PurpleLink>
-            <PurpleLink href={SOLANA_LINKS.github} action="view-on-github" variant="ghost">
-              View on GitHub
-            </PurpleLink>
-            <PurpleLink href={SOLANA_LINKS.discord} action="join-discord" variant="ghost">
-              Join the Discord
-            </PurpleLink>
-          </HeroButtonWrapper>
-        </SectionTitleWrapper>
-      </ContainerCardSection>
-    </ContainerCard>
+      <CenteredBlock $gap={40}>
+        <Headline lines={[{ text: DEVELOPERS.buildInTheOpen.title }]} small />
+        <Lead>{DEVELOPERS.buildInTheOpen.body}</Lead>
+        <ButtonRow $center>
+          <Cta href={SOLANA_LINKS.docs} action="sol_read_the_docs" label="build_in_the_open" colors="solid">
+            Read the docs
+          </Cta>
+          <Cta href={SOLANA_LINKS.github} action="sol_view_on_github" label="build_in_the_open" colors="ghost">
+            View on GitHub
+          </Cta>
+          <Cta href={SOLANA_LINKS.discord} action="sol_join_the_discord" label="build_in_the_open" colors="ghost">
+            Join the Discord
+          </Cta>
+        </ButtonRow>
+      </CenteredBlock>
+    </section>
   )
 }
 
 export function DisclaimerSection(): ReactNode {
   return (
-    <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_90})`} color={`var(${UI.COLOR_NEUTRAL_10})`} touchFooter>
-      <ContainerCardSection padding="0">
-        <SectionTitleWrapper maxWidth={1000} margin="0 auto">
-          <SectionTitleDescription fontSize={16} color={`var(${UI.COLOR_NEUTRAL_40})`}>
-            <b>* Solana Alpha · Unaudited:</b> {ALPHA_DISCLAIMER}
-          </SectionTitleDescription>
-        </SectionTitleWrapper>
-      </ContainerCardSection>
-    </ContainerCard>
+    <Disclaimer>
+      <b>* Solana Alpha · Unaudited:</b> {ALPHA_DISCLAIMER}
+    </Disclaimer>
   )
 }
 
 export function FaqSection(): ReactNode {
   return (
-    <ContainerCard bgColor="transparent" color={`var(${UI.COLOR_NEUTRAL_10})`}>
-      <ContainerCardSection>
-        <SectionTitleWrapper>
-          <SectionTitleIcon $size={62}>
-            <LazySVG uniquifyIDs src={iconFaqSrc} />
-          </SectionTitleIcon>
-          <SectionTitleText>{ACTIVE_HEADLINES.faq}</SectionTitleText>
-        </SectionTitleWrapper>
-
-        <FAQ faqs={SOLANA_FAQ} />
-      </ContainerCardSection>
-    </ContainerCard>
+    <section>
+      <SectionHeader $padding="120px 0 80px">
+        <Headline lines={ACTIVE_HEADLINES.faq} />
+      </SectionHeader>
+      <FaqList>
+        {SOLANA_FAQ.map((faq) => (
+          <FaqItem key={faq.question}>
+            <summary>
+              {faq.question}
+              <FaqIcon aria-hidden="true" />
+            </summary>
+            <p>{faq.answer}</p>
+          </FaqItem>
+        ))}
+      </FaqList>
+    </section>
   )
 }
 
 export function FinalCtaSection(): ReactNode {
   return (
-    <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_90})`} color={`var(${UI.COLOR_NEUTRAL_10})`} touchFooter>
-      <ContainerCardSection padding="0 0 100px">
-        <SectionTitleWrapper margin="0 auto" maxWidth={900}>
-          <SectionTitleIcon>
-            <ProductLogo variant={ProductVariant.CowProtocol} theme="light" logoIconOnly />
-          </SectionTitleIcon>
-          <SectionTitleText>{ACTIVE_HEADLINES.finalCta}</SectionTitleText>
-          <SectionTitleDescription fontSize={24} color={`var(${UI.COLOR_NEUTRAL_30})`}>
-            {FINAL_CTA.body}
-          </SectionTitleDescription>
-          <HeroButtonWrapper width="auto" gap={12}>
-            <PurpleLink href={SOLANA_LINKS.docs} action="integrate-cow-protocol">
-              Integrate CoW Protocol
-            </PurpleLink>
-            <PurpleLink href={SOLANA_LINKS.getInTouch} action="talk-to-the-team" variant="ghost">
-              Talk to the team
-            </PurpleLink>
-            <PurpleLink href={SOLANA_LINKS.tradeOnSolana} action="trade-on-cow-swap" variant="ghost">
-              Trade on CoW Swap
-            </PurpleLink>
-          </HeroButtonWrapper>
-          <SignOff>{FINAL_CTA.signOff}</SignOff>
-        </SectionTitleWrapper>
-      </ContainerCardSection>
-    </ContainerCard>
+    <CenteredBlock as="section" $padding="120px 0" $gap={60}>
+      <SectionHeader>
+        <CowMark>
+          <Image src={svgCowHeadSrc} alt="" width={96} height={64} unoptimized />
+        </CowMark>
+        <Headline lines={ACTIVE_HEADLINES.finalCta} />
+        <Lead $caps>{FINAL_CTA_BODY}</Lead>
+      </SectionHeader>
+      <ButtonRow $center>
+        <Cta href={SOLANA_LINKS.docs} action="sol_integrate_cow_protocol" label="final_cta" colors="solid">
+          Integrate CoW Protocol
+        </Cta>
+        <Cta href={SOLANA_LINKS.getInTouch} action="sol_talk_to_the_team" label="final_cta" colors="ghost">
+          Talk to the team
+        </Cta>
+      </ButtonRow>
+    </CenteredBlock>
   )
 }
 
 export function HeroSection(): ReactNode {
   return (
-    <SolanaHero variant="secondary">
-      <HeroContent variant="secondary">
-        <HeroTitle fontSize={67} fontSizeMobile={40} maxWidth={620}>
-          {ACTIVE_HEADLINES.hero}
-        </HeroTitle>
-        <HeroDescription>
-          {HERO.subhead.map((sentence) => (
-            <SubheadLine key={sentence}>{sentence}</SubheadLine>
-          ))}
-        </HeroDescription>
-        <HeroButtonWrapper>
-          <PurpleLink href={SOLANA_LINKS.getInTouch} action="get-in-touch" fontSize={27} fontSizeMobile={21}>
-            Get in touch
-          </PurpleLink>
-          <PurpleLink
-            href={SOLANA_LINKS.startBuilding}
-            action="start-building"
-            variant="ghost"
-            fontSize={27}
-            fontSizeMobile={21}
-          >
+    <HeroGrid>
+      <HeroCopy>
+        <Headline as="h1" align="left" lines={ACTIVE_HEADLINES.hero} />
+        <Lead $caps>{HERO.subhead}</Lead>
+        <ButtonRow>
+          <Cta href={SOLANA_LINKS.getInTouch} action="sol_talk_to_the_team" label="hero" colors="solid">
+            Let’s get serious
+          </Cta>
+          <Cta href={SOLANA_LINKS.startBuilding} action="sol_start_building" label="hero" colors="ghost">
             Start building
-          </PurpleLink>
-        </HeroButtonWrapper>
-      </HeroContent>
-
-      <SolanaMatchCard />
-    </SolanaHero>
+          </Cta>
+        </ButtonRow>
+      </HeroCopy>
+      <PhotoFrame>
+        <Image
+          src={HERO.image.src}
+          alt={HERO.image.alt}
+          width={1200}
+          height={1200}
+          sizes="(max-width: 960px) 100vw, 600px"
+          priority
+        />
+      </PhotoFrame>
+    </HeroGrid>
   )
 }
 
 export function HowItWorksSection(): ReactNode {
   return (
-    <ContainerCard bgColor="transparent">
-      <ContainerCardSection>
-        <SectionTitleWrapper>
-          <SectionTitleIcon $size={132}>
-            <LazySVG uniquifyIDs src={iconCowLensSrc} />
-          </SectionTitleIcon>
-          <SectionTitleText>{ACTIVE_HEADLINES.howItWorks}</SectionTitleText>
-          <SectionTitleDescription maxWidth={900} color={`var(${UI.COLOR_NEUTRAL_50})`}>
-            {HOW_IT_WORKS.intro}
-          </SectionTitleDescription>
-        </SectionTitleWrapper>
+    <section>
+      <SectionHeader $padding="120px 0 80px">
+        <CowMark>
+          <Image src={svgCowHeadSrc} alt="" width={96} height={64} unoptimized />
+        </CowMark>
+        <Headline lines={ACTIVE_HEADLINES.howItWorks} />
+        <Lead $caps>{HOW_IT_WORKS.intro}</Lead>
+      </SectionHeader>
 
-        <TopicList columns={1} columnsTablet={1} maxWidth={1470}>
-          {HOW_IT_WORKS.steps.map((step, index) => {
-            const image = (
-              <TopicImage
-                iconColor="transparent"
-                width={590}
-                height={590}
-                heightMobile="auto"
-                widthMobile="100%"
-                orderReverseMobile
-                orderReverseTablet
-                borderRadius={90}
-              >
-                <LazySVG uniquifyIDs src={step.imageSrc} />
-              </TopicImage>
-            )
-            const imageFirst = index % 2 === 1
+      {HOW_IT_WORKS.steps.map((step, index) => (
+        <StepRow key={step.title} $imageFirst={index % 2 === 1}>
+          <StepCopy>
+            <h3>{step.title}</h3>
+            <Lead>{step.description}</Lead>
+          </StepCopy>
+          <PhotoFrame>
+            <Image
+              src={step.image.src}
+              alt={step.image.alt}
+              width={1186}
+              height={1184}
+              sizes="(max-width: 960px) 100vw, 593px"
+            />
+          </PhotoFrame>
+        </StepRow>
+      ))}
 
-            return (
-              <TopicCard key={step.title} columns="1fr auto" columnsTablet="1fr" gap={100} horizontal asProp="div">
-                {imageFirst && image}
-                <TopicCardInner contentAlign="left">
-                  <TopicTitle fontSize={51}>
-                    {index + 1}. {step.title}
-                  </TopicTitle>
-                  <TopicDescription fontSize={28} color={`var(${UI.COLOR_NEUTRAL_50})`}>
-                    {step.description}
-                  </TopicDescription>
-                  <PurpleLink
-                    href={step.linkHref}
-                    action={`learn-more-step-${index + 1}`}
-                    linkType={LinkType.TopicButton}
-                  >
-                    Learn more
-                  </PurpleLink>
-                </TopicCardInner>
-                {!imageFirst && image}
-              </TopicCard>
-            )
-          })}
-        </TopicList>
-
-        <SectionTitleWrapper maxWidth={900} margin="56px auto 0">
-          <SectionTitleDescription fontSize={28} color={Color.cowfi_purple3} fontWeight="bold">
-            {HOW_IT_WORKS.closing}
-          </SectionTitleDescription>
-        </SectionTitleWrapper>
-      </ContainerCardSection>
-    </ContainerCard>
+      <CenteredBlock>
+        <Headline lines={[{ text: HOW_IT_WORKS.closing.title }]} small />
+        <Lead $caps>
+          {HOW_IT_WORKS.closing.lines[0]}
+          <br />
+          {HOW_IT_WORKS.closing.lines[1]}
+        </Lead>
+      </CenteredBlock>
+    </section>
   )
 }
 
 export function PartnersSection(): ReactNode {
   return (
-    <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_98})`}>
-      <ContainerCardSection>
-        <SectionTitleWrapper color={`var(${UI.COLOR_NEUTRAL_0})`} maxWidth={1000}>
-          <SectionTitleIcon $size={82}>
-            <LazySVG uniquifyIDs src={iconCrownCowSrc} />
-          </SectionTitleIcon>
-          <SectionTitleText>{ACTIVE_HEADLINES.partners}</SectionTitleText>
-          <SectionTitleDescription maxWidth={900} color={`var(${UI.COLOR_NEUTRAL_50})`}>
-            {PARTNERS.intro}
-          </SectionTitleDescription>
-        </SectionTitleWrapper>
+    <DarkPanel $marginTop={64} $marginBottom={64}>
+      <SectionHeader $marginBottom={90}>
+        <Headline lines={ACTIVE_HEADLINES.partners} />
+        <Lead $caps>{PARTNERS.intro}</Lead>
+      </SectionHeader>
 
-        <TopicList columns={3} columnsTablet={1}>
-          {PARTNERS.audiences.map((audience) => (
-            <TopicCard
-              key={audience.title}
-              contentAlign="left"
-              bgColor={Color.cowfi_purple_bright}
-              textColor={Color.cowfi_purple3}
-              padding="32px"
-              asProp="div"
-            >
-              <TopicCardInner contentAlign="left">
-                <TopicTitle color={Color.cowfi_purple_dark}>{audience.title}</TopicTitle>
-                <TopicDescription fontSize={21}>{audience.description}</TopicDescription>
-              </TopicCardInner>
-            </TopicCard>
-          ))}
-        </TopicList>
+      <CardGrid $columns={3}>
+        {PARTNERS.audiences.map((audience) => (
+          <AudienceCard key={audience.title}>
+            <h3>{audience.title}</h3>
+            <p>{audience.description}</p>
+          </AudienceCard>
+        ))}
+      </CardGrid>
 
-        <SectionTitleWrapper maxWidth={900} margin="56px auto 0" gap={24}>
-          <SectionTitleDescription fontSize={24} color={`var(${UI.COLOR_NEUTRAL_10})`}>
-            <b>The economics in one line:</b> {PARTNERS.economics}
-          </SectionTitleDescription>
-          <SectionTitleDescription fontSize={21} color={`var(${UI.COLOR_NEUTRAL_50})`}>
-            <b>One bonus for your users:</b> {PARTNERS.bonus}
-          </SectionTitleDescription>
-          <HeroButtonWrapper width="auto" gap={12}>
-            <PurpleLink href={SOLANA_LINKS.getInTouch} action="partners-talk-to-the-team">
-              Talk to the team
-            </PurpleLink>
-            <PurpleLink href={SOLANA_LINKS.widget} action="partners-get-the-widget" variant="ghost">
-              Get the widget
-            </PurpleLink>
-          </HeroButtonWrapper>
-        </SectionTitleWrapper>
-      </ContainerCardSection>
-    </ContainerCard>
+      <PartnersClosing>
+        <PartnersCopy>
+          <Lead>{PARTNERS.economics}</Lead>
+          <p>{PARTNERS.bonus}</p>
+        </PartnersCopy>
+        <ButtonRow $center>
+          <Cta href={SOLANA_LINKS.getInTouch} action="sol_talk_to_the_team" label="partners" colors="solid">
+            Talk to the team
+          </Cta>
+          <Cta href={SOLANA_LINKS.widget} action="sol_get_the_widget" label="partners" colors="ghostOnDark">
+            Get the widget
+          </Cta>
+        </ButtonRow>
+      </PartnersClosing>
+    </DarkPanel>
   )
 }
 
 export function StatsStrip(): ReactNode {
   return (
-    <MetricsCard bgColor={Color.cowfi_purple_bright} color={Color.cowfi_purple3} columns={3} touchFooter>
-      {STATS.map((stat, index) => (
-        <MetricsItem key={stat.value} dividerColor={index < STATS.length - 1 ? Color.cowfi_purple4 : undefined}>
-          <h2>{stat.value}</h2>
+    <StatsPanel>
+      {STATS.map((stat) => (
+        <StatItem key={stat.value}>
+          <strong>{stat.value}</strong>
           <p>{stat.caption}</p>
-        </MetricsItem>
+        </StatItem>
       ))}
-    </MetricsCard>
+    </StatsPanel>
   )
 }
 
 export function TrustedSection(): ReactNode {
   return (
-    <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_10})`} color={`var(${UI.COLOR_NEUTRAL_98})`}>
-      <ContainerCardSection>
-        <SectionTitleWrapper padding="150px 0 0">
-          <SectionTitleIcon $multiple $size={60}>
-            <LazySVG uniquifyIDs src={iconOwlSrc} />
-            <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly height={60} />
-            <LazySVG uniquifyIDs src={iconGhostSrc} />
-          </SectionTitleIcon>
-          <SectionTitleText>{ACTIVE_HEADLINES.trusted}</SectionTitleText>
-        </SectionTitleWrapper>
+    <DarkPanel $marginTop={64} $marginBottom={64}>
+      <SectionHeader $marginBottom={90}>
+        <CowMark>
+          <Image src={svgCowHeartEyesSrc} alt="" width={96} height={64} unoptimized />
+        </CowMark>
+        <Headline lines={ACTIVE_HEADLINES.trusted} />
+      </SectionHeader>
 
-        <TopicList columns={1} maxWidth={1200}>
-          <TopicCard
-            bgColor={Color.cowfi_purple3}
-            textColor={Color.cowfi_purple_bright}
-            padding="52px"
-            columns="minmax(0, 1fr) minmax(0, 1.6fr)"
-            columnsTablet="1fr"
-            gap={56}
-            horizontal
-            asProp="div"
-          >
-            <LeadAside>
-              <TopicImage
-                iconColor={Color.neutral98}
-                bgColor="transparent"
-                height={56}
-                width="auto"
-                margin="0 auto 0 0"
-              >
-                <LazySVG uniquifyIDs src={TRUSTED.lead.logo} title="Kamino" />
-              </TopicImage>
-              <LeadStat>
-                <strong>{TRUSTED.lead.stat.value}</strong>
-                <span>{TRUSTED.lead.stat.caption}</span>
-              </LeadStat>
-            </LeadAside>
-            <TopicCardInner contentAlign="left">
-              <TopicTitle fontSize={51} fontSizeMobile={32} color={Color.neutral98}>
-                {TRUSTED.lead.title}
-              </TopicTitle>
-              <TopicDescription fontSize={24}>{TRUSTED.lead.description}</TopicDescription>
-            </TopicCardInner>
-          </TopicCard>
-        </TopicList>
+      <LeadCard>
+        <LeadAside>
+          <KaminoLogo>
+            <LazySVG uniquifyIDs src={TRUSTED.lead.logo} title="Kamino" />
+          </KaminoLogo>
+          <LeadStat>
+            <strong>{TRUSTED.lead.stat.value}</strong>
+            <p>{TRUSTED.lead.stat.caption}</p>
+          </LeadStat>
+        </LeadAside>
+        <PartnerCopy>
+          <h3>{TRUSTED.lead.title}</h3>
+          <p>{TRUSTED.lead.description}</p>
+        </PartnerCopy>
+      </LeadCard>
 
-        <TopicList columns={2} columnsTablet={1} maxWidth={1200}>
-          {TRUSTED.cards.map((card) => (
-            <TopicCard key={card.title} bgColor={`var(${UI.COLOR_NEUTRAL_100})`} padding="52px" gap={16} asProp="div">
-              {card.logo && (
-                <TopicImage
-                  iconColor={`var(${UI.COLOR_NEUTRAL_10})`}
-                  bgColor="transparent"
-                  height={48}
-                  width="auto"
-                  margin="0 auto 0 0"
-                >
-                  <LazySVG uniquifyIDs src={card.logo} />
-                </TopicImage>
-              )}
-              <TopicCardInner contentAlign="left">
-                <TopicTitle fontSize={38}>{card.title}</TopicTitle>
-                <TopicDescription fontSize={21}>{card.description}</TopicDescription>
-              </TopicCardInner>
-              <CardFooter>
-                <PurpleLink href={card.link.href} action={card.link.action} linkType={LinkType.TopicButton} newTab>
-                  {card.link.text}
-                </PurpleLink>
-              </CardFooter>
-            </TopicCard>
-          ))}
-        </TopicList>
+      <CardGrid $marginTop={40}>
+        {TRUSTED.cards.map((card) => (
+          <PartnerCard key={card.title}>
+            <Image src={card.icon.src} alt={card.icon.alt} width={160} height={160} sizes="80px" />
+            <PartnerCopy>
+              <h3>{card.title}</h3>
+              <p>{card.description}</p>
+            </PartnerCopy>
+            <CardLink
+              href={card.link.href}
+              external
+              utmContent={card.link.href.startsWith('http') ? card.link.action : undefined}
+              data-click-event={toCowFiGtmEvent({
+                category: CowFiCategory.SOLANA,
+                action: card.link.action,
+                label: 'trusted',
+              })}
+            >
+              {card.link.text}
+            </CardLink>
+          </PartnerCard>
+        ))}
+      </CardGrid>
 
-        <SectionTitleWrapper maxWidth={900} margin="56px auto 100px">
-          <SectionTitleDescription fontSize={24} color={`var(${UI.COLOR_NEUTRAL_70})`}>
-            {TRUSTED.closing}
-          </SectionTitleDescription>
-        </SectionTitleWrapper>
-      </ContainerCardSection>
-    </ContainerCard>
+      <CenteredBlock $padding="80px 0 0" $gap={40}>
+        <StatusTitle>
+          <StatusLabel>{TRUSTED.closing.status}</StatusLabel> <ScriptLine $small>{TRUSTED.closing.value}</ScriptLine>
+        </StatusTitle>
+        <Lead $caps>
+          {TRUSTED.closing.lines[0]}
+          <br />
+          {TRUSTED.closing.lines[1]}
+        </Lead>
+      </CenteredBlock>
+    </DarkPanel>
   )
 }
 
 export function WhySection(): ReactNode {
   return (
-    <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_0})`} color={`var(${UI.COLOR_NEUTRAL_98})`}>
-      <ContainerCardSection>
-        <SectionTitleWrapper padding="150px 0 50px">
-          <SectionTitleIcon $size={128}>
-            <LazySVG uniquifyIDs src={iconBulbCowSrc} />
-          </SectionTitleIcon>
-          <SectionTitleText>{ACTIVE_HEADLINES.why}</SectionTitleText>
-        </SectionTitleWrapper>
+    <StatsBackdrop>
+      <DarkPanel $marginBottom={64} $paddingBottom={60}>
+        <SectionHeader $marginBottom={90}>
+          <CowMark>
+            <Image src={svgCowHeartEyesSrc} alt="" width={96} height={64} unoptimized />
+          </CowMark>
+          <Headline lines={ACTIVE_HEADLINES.why} />
+        </SectionHeader>
 
-        <TopicList columns={2} columnsTablet={1}>
+        <CardGrid>
           {WHY_REASONS.map((reason) => (
-            <TopicCard
-              key={reason.title}
-              contentAlign="left"
-              bgColor={reason.bgColor}
-              textColor={reason.textColor}
-              padding="32px"
-              asProp="div"
-            >
-              <TopicCardInner contentAlign="left">
-                <TopicTitle color={reason.titleColor} fontSize={38} fontSizeMobile={28}>
-                  {reason.title}
-                </TopicTitle>
-                <TopicDescription fontSize={21} color={reason.textColor}>
-                  {reason.description}
-                </TopicDescription>
-              </TopicCardInner>
-              <TopicImage
-                iconColor="transparent"
-                bgColor="transparent"
-                margin="auto 0 0 auto"
-                height={187}
-                width="auto"
-              >
-                <LazySVG uniquifyIDs src={reason.imageSrc} />
-              </TopicImage>
-            </TopicCard>
+            <ReasonCard key={reason.title}>
+              <div>
+                <h3>{reason.title}</h3>
+                <p>{reason.description}</p>
+              </div>
+              <PhotoFrame>
+                <Image
+                  src={reason.image.src}
+                  alt={reason.image.alt}
+                  width={1152}
+                  height={600}
+                  sizes="(max-width: 960px) 100vw, 576px"
+                />
+              </PhotoFrame>
+            </ReasonCard>
           ))}
-        </TopicList>
-      </ContainerCardSection>
-    </ContainerCard>
+        </CardGrid>
+      </DarkPanel>
+    </StatsBackdrop>
+  )
+}
+
+function Cta({ href, action, label, colors, children }: CtaProps): ReactNode {
+  const isExternal = href.startsWith('http')
+
+  return (
+    <CtaLink
+      {...ctaColors[colors]}
+      href={href}
+      external={isExternal}
+      utmContent={isExternal ? action : undefined}
+      data-click-event={toCowFiGtmEvent({ category: CowFiCategory.SOLANA, action, label })}
+    >
+      {children}
+    </CtaLink>
   )
 }
 
 function DeveloperDoors(): ReactNode {
   return (
     <>
-      <SectionTitleWrapper maxWidth={900} margin="56px auto 0" color={`var(${UI.COLOR_NEUTRAL_10})`}>
-        <SectionTitleText fontSize={38}>{DEVELOPERS.doorsIntro}</SectionTitleText>
-      </SectionTitleWrapper>
+      <SectionHeader $padding="120px 0 60px">
+        <Headline lines={ACTIVE_HEADLINES.doors} small />
+      </SectionHeader>
 
-      <TopicList columns={3} columnsTablet={1}>
+      <CardGrid $columns={3}>
         {DEVELOPERS.doors.map((door) => (
-          <TopicCard
-            key={door.title}
-            contentAlign="left"
-            bgColor={Color.cowfi_purple_bright}
-            textColor={Color.cowfi_purple3}
-            padding="32px"
-            asProp="div"
-          >
-            <TopicCardInner contentAlign="left">
-              <TopicTitle color={Color.cowfi_purple_dark}>{door.title}</TopicTitle>
-              <TopicDescription fontSize={18} margin="16px 0 24px">
-                {door.description}
-              </TopicDescription>
-            </TopicCardInner>
-            <CardFooter>
-              <PurpleLink
+          <ToneCard key={door.title} $tone={door.tone}>
+            <ToneCopy>
+              <h3>{door.title}</h3>
+              <p>{door.description}</p>
+            </ToneCopy>
+            <ButtonRow>
+              <CtaLink
+                {...toneButton(door.tone)}
                 href={door.linkHref}
-                action={`door-${door.title.toLowerCase()}`}
-                linkType={LinkType.TopicButton}
+                external={door.linkHref.startsWith('http')}
+                utmContent={door.linkHref.startsWith('http') ? door.action : undefined}
+                data-click-event={toCowFiGtmEvent({
+                  category: CowFiCategory.SOLANA,
+                  action: door.action,
+                  label: 'doors',
+                })}
               >
                 {door.linkText}
-              </PurpleLink>
-            </CardFooter>
-          </TopicCard>
+              </CtaLink>
+            </ButtonRow>
+          </ToneCard>
         ))}
-      </TopicList>
+      </CardGrid>
 
-      <SectionTitleWrapper maxWidth={800} margin="40px auto 0">
-        <SectionTitleDescription fontSize={21} color={`var(${UI.COLOR_NEUTRAL_50})`}>
+      <CenteredBlock>
+        <Lead>
           {DEVELOPERS.learn.before}
           <InlineLink
             href={DEVELOPERS.learn.href}
             external
-            utmContent="solana-page-learn-cow-fi"
-            data-click-event={toCowFiGtmEvent({ category: CowFiCategory.SOLANA, action: 'learn-cow-fi' })}
+            utmContent="sol_learn_cow_fi"
+            data-click-event={toCowFiGtmEvent({
+              category: CowFiCategory.SOLANA,
+              action: 'sol_learn_cow_fi',
+              label: 'doors',
+            })}
           >
             {DEVELOPERS.learn.linkText}
           </InlineLink>
           {DEVELOPERS.learn.after}
-        </SectionTitleDescription>
-      </SectionTitleWrapper>
+        </Lead>
+      </CenteredBlock>
     </>
   )
 }
 
-function PurpleLink({
-  href,
-  action,
-  children,
-  linkType = LinkType.SectionTitleButton,
-  variant = 'solid',
-  newTab = false,
-  fontSize,
-  fontSizeMobile,
-}: PurpleLinkProps): ReactNode {
+function Headline({ lines, as = 'h2', align = 'center', small = false }: HeadlineProps): ReactNode {
+  const scriptFirst = lines[0]?.script
+  const captionGap = small ? 14 : 24
+
   return (
-    <Link
-      bgColor={LINK_VARIANTS[variant].bgColor}
-      color={LINK_VARIANTS[variant].color}
-      href={href}
-      external={newTab || href.startsWith('http')}
-      linkType={linkType}
-      fontSize={fontSize}
-      fontSizeMobile={fontSizeMobile}
-      utmContent={href.startsWith('http') ? `solana-page-${action}` : undefined}
-      data-click-event={toCowFiGtmEvent({ category: CowFiCategory.SOLANA, action })}
-    >
-      {children}
-    </Link>
+    <HeadlineRoot as={as} $align={align} $gap={scriptFirst ? 0 : captionGap}>
+      {lines.map(({ text, script }) =>
+        script ? (
+          <ScriptLine key={text} $small={small}>
+            {text}{' '}
+          </ScriptLine>
+        ) : (
+          <CapsLine key={text} $small={small}>
+            {text}{' '}
+          </CapsLine>
+        ),
+      )}
+    </HeadlineRoot>
   )
 }

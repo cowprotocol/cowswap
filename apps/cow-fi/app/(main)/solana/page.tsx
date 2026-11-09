@@ -1,6 +1,11 @@
 'use client'
 
+import { useEffect } from 'react'
 import type { ReactNode } from 'react'
+
+import { useCowAnalytics } from '@cowprotocol/analytics'
+
+import { CowFiCategory } from 'src/common/analytics/types'
 
 import {
   DevelopersSection,
@@ -14,11 +19,18 @@ import {
   TrustedSection,
   WhySection,
 } from './sections'
-import { SolanaPageWrapper } from './styled'
+import { SolanaFonts, SolanaPageWrapper } from './styled'
 
 export default function Page(): ReactNode {
+  const analytics = useCowAnalytics()
+
+  useEffect(() => {
+    analytics.sendEvent({ category: CowFiCategory.SOLANA, action: 'sol_website_visit' })
+  }, [analytics])
+
   return (
     <SolanaPageWrapper>
+      <SolanaFonts />
       <HeroSection />
       <StatsStrip />
       <WhySection />
@@ -26,8 +38,8 @@ export default function Page(): ReactNode {
       <TrustedSection />
       <DevelopersSection />
       <PartnersSection />
-      <FaqSection />
       <FinalCtaSection />
+      <FaqSection />
       <DisclaimerSection />
     </SolanaPageWrapper>
   )
