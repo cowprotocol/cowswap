@@ -51,7 +51,7 @@ describe('checkIfTraderHasPastTrades', () => {
     ])
 
     // act
-    const result = await checkIfTraderHasPastTrades(OWNER)
+    const result = await checkIfTraderHasPastTrades(OWNER, AFFILIATE_SUPPORTED_CHAIN_IDS)
 
     // assert
     expect(result).toEqual({ hasPastTrades: true, refCode: undefined })
@@ -69,7 +69,7 @@ describe('checkIfTraderHasPastTrades', () => {
     ])
 
     // act
-    const result = await checkIfTraderHasPastTrades(OWNER)
+    const result = await checkIfTraderHasPastTrades(OWNER, AFFILIATE_SUPPORTED_CHAIN_IDS)
 
     // assert
     expect(result).toEqual({ hasPastTrades: false, refCode: undefined })
@@ -83,7 +83,7 @@ describe('checkIfTraderHasPastTrades', () => {
     ])
 
     // act
-    const result = await checkIfTraderHasPastTrades(OWNER)
+    const result = await checkIfTraderHasPastTrades(OWNER, AFFILIATE_SUPPORTED_CHAIN_IDS)
 
     // assert
     expect(result).toEqual({ hasPastTrades: false, refCode: undefined })
@@ -98,7 +98,7 @@ describe('checkIfTraderHasPastTrades', () => {
     ])
 
     // act
-    const result = await checkIfTraderHasPastTrades(OWNER)
+    const result = await checkIfTraderHasPastTrades(OWNER, AFFILIATE_SUPPORTED_CHAIN_IDS)
 
     // assert
     expect(result).toEqual({ hasPastTrades: true, refCode: 'ABCDE' })
@@ -122,7 +122,7 @@ describe('checkIfTraderHasPastTrades', () => {
     ])
 
     // act
-    const result = await checkIfTraderHasPastTrades(OWNER)
+    const result = await checkIfTraderHasPastTrades(OWNER, AFFILIATE_SUPPORTED_CHAIN_IDS)
 
     // assert
     expect(result).toEqual({ hasPastTrades: true, refCode: 'FIRST' })
@@ -155,7 +155,7 @@ describe('checkIfTraderHasPastTrades', () => {
     ])
 
     // act
-    const result = await checkIfTraderHasPastTrades(OWNER)
+    const result = await checkIfTraderHasPastTrades(OWNER, AFFILIATE_SUPPORTED_CHAIN_IDS)
 
     // assert
     expect(result).toEqual({ hasPastTrades: true, refCode: 'LEGIT1' })
@@ -184,7 +184,7 @@ describe('checkIfTraderHasPastTrades', () => {
     })
 
     // act
-    const result = await checkIfTraderHasPastTrades(OWNER)
+    const result = await checkIfTraderHasPastTrades(OWNER, AFFILIATE_SUPPORTED_CHAIN_IDS)
 
     // assert
     expect(result).toEqual({ hasPastTrades: true, refCode: 'VALID1' })
@@ -192,7 +192,7 @@ describe('checkIfTraderHasPastTrades', () => {
 
   it('uses order scan limit size of PAST_ORDERS_SCAN_LIMIT', async () => {
     // act
-    await checkIfTraderHasPastTrades(OWNER)
+    await checkIfTraderHasPastTrades(OWNER, AFFILIATE_SUPPORTED_CHAIN_IDS)
 
     // assert
     const expectedCallsCount = AFFILIATE_SUPPORTED_CHAIN_IDS.length * TRADE_ENVS_TO_CHECK.length

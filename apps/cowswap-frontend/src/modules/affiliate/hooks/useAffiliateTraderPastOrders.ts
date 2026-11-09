@@ -3,6 +3,8 @@ import { isSolanaAddress } from '@cowprotocol/sdk-common'
 
 import useSWR, { SWRResponse } from 'swr'
 
+import { useAffiliateSupportedChainIds } from './useAffiliateSupportedChainIds'
+
 import { checkIfTraderHasPastTrades, PastTradesCheckResult } from '../api/checkIfTraderHasPastTrades'
 import { AFFILIATE_ORDERBOOK_REFRESH_INTERVAL_MS } from '../config/affiliateProgram.const'
 
@@ -20,10 +22,13 @@ export function useAffiliateTraderPastOrders(
   params: UseAffiliateTraderPastOrdersParams,
 ): SWRResponse<PastTradesCheckResult, Error> {
   const { account, enabled } = params
+  const supportedChainIds = useAffiliateSupportedChainIds()
 
   return useSWR<PastTradesCheckResult>(
-    enabled && !!account && !isSolanaAddress(account) ? ['affiliate-orderbook-trades-check', account] : null,
-    async () => (!account ? EMPTY_RESULT : checkIfTraderHasPastTrades(account)),
+    enabled && !!account && !isSolanaAddress(account)
+      ? ['affiliate-orderbook-trades-check', account, supportedChainIds]
+      : null,
+    async () => (!account ? EMPTY_RESULT : checkIfTraderHasPastTrades(account, supportedChainIds)),
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,

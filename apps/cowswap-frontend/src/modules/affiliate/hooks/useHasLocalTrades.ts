@@ -8,6 +8,8 @@ import { useSelector } from 'react-redux'
 import { AppState } from 'legacy/state'
 import { OrdersState } from 'legacy/state/orders/reducer'
 
+import { useAffiliateSupportedChainIds } from './useAffiliateSupportedChainIds'
+
 import { getLocalTrades, isExecutedNonIntegratorOrder } from '../lib/affiliateProgramUtils'
 import { logAffiliate } from '../utils/logger'
 
@@ -16,13 +18,14 @@ import { logAffiliate } from '../utils/logger'
  */
 export function useHasLocalTrades(account: Address | undefined): boolean {
   const ordersState = useSelector<AppState, OrdersState | undefined>((state) => state.orders)
+  const supportedChainIds = useAffiliateSupportedChainIds()
 
   const hasPastTrades = useMemo(() => {
     if (!account || !ordersState) return false
 
-    const orders = getLocalTrades(account, ordersState).filter(isExecutedNonIntegratorOrder)
+    const orders = getLocalTrades(account, ordersState, supportedChainIds).filter(isExecutedNonIntegratorOrder)
     return orders.length > 0
-  }, [account, ordersState])
+  }, [account, ordersState, supportedChainIds])
 
   useEffect(() => {
     if (account && hasPastTrades) {

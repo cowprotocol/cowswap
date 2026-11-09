@@ -3,14 +3,14 @@ import { ReactNode } from 'react'
 import { UnsupportedNetworkBanner } from 'common/pure/UnsupportedNetworkBanner'
 import { UnsupportedNetworksText } from 'common/pure/UnsupportedNetworksText'
 
-import { useAffiliateSupportedNetworkNames } from '../hooks/useAffiliateSupportedNetworkNames'
+interface UnsupportedNetworkProps {
+  supportedNetworks: string[]
+}
 
-export function UnsupportedNetwork(): ReactNode {
-  const supportedNetworks = useAffiliateSupportedNetworkNames().join(', ')
-
+export function UnsupportedNetwork({ supportedNetworks }: UnsupportedNetworkProps): ReactNode {
   return (
     <UnsupportedNetworkBanner>
-      <UnsupportedNetworksText /> ({supportedNetworks})
+      <UnsupportedNetworksText /> ({supportedNetworks.join(', ')})
     </UnsupportedNetworkBanner>
   )
 }

@@ -15,7 +15,6 @@ import {
   AFFILIATE_REWARDS_UPDATE_INTERVAL_MS,
   AFFILIATE_REWARDS_UPDATE_LAG_MS,
   AFFILIATE_STATS_REFRESH_INTERVAL_MS,
-  AFFILIATE_SUPPORTED_CHAIN_IDS,
   PROGRAM_DEFAULTS,
   REF_CODE_PATTERN,
 } from '../config/affiliateProgram.const'
@@ -157,7 +156,11 @@ export function getDefaultTriggerVolume(): number {
   return PROGRAM_DEFAULTS.AFFILIATE_TRIGGER_VOLUME
 }
 
-export function getLocalTrades(account: Address | undefined, ordersState: OrdersState | undefined): SerializedOrder[] {
+export function getLocalTrades(
+  account: Address | undefined,
+  ordersState: OrdersState | undefined,
+  supportedChainIds: readonly SupportedChainId[],
+): SerializedOrder[] {
   if (!account || !ordersState) {
     return []
   }
@@ -167,7 +170,7 @@ export function getLocalTrades(account: Address | undefined, ordersState: Orders
   for (const [networkId, networkState] of Object.entries(ordersState)) {
     const chainId = Number(networkId)
 
-    if (!isSupportedTradingNetwork(chainId)) {
+    if (!isSupportedTradingNetwork(chainId, supportedChainIds)) {
       continue
     }
 
@@ -251,8 +254,11 @@ export function isSupportedPayoutsNetwork(chainId?: number): boolean {
   return chainId === AFFILIATE_PAYOUTS_CHAIN_ID
 }
 
-export function isSupportedTradingNetwork(chainId?: number): boolean {
-  return chainId !== undefined && AFFILIATE_SUPPORTED_CHAIN_IDS.includes(chainId)
+export function isSupportedTradingNetwork(
+  chainId: number | undefined,
+  supportedChainIds: readonly SupportedChainId[],
+): boolean {
+  return chainId !== undefined && supportedChainIds.includes(chainId)
 }
 
 export function toValidDate(value: string | undefined): Date | null {

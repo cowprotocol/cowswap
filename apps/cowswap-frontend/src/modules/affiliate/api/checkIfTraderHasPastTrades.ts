@@ -1,13 +1,9 @@
 import { safeShortenAddress } from '@cowprotocol/common-utils'
-import { Address } from '@cowprotocol/cow-sdk'
+import { Address, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { getOrders } from 'api/cowProtocol'
 
-import {
-  AFFILIATE_SUPPORTED_CHAIN_IDS,
-  PAST_ORDERS_SCAN_LIMIT,
-  TRADE_ENVS_TO_CHECK,
-} from '../config/affiliateProgram.const'
+import { PAST_ORDERS_SCAN_LIMIT, TRADE_ENVS_TO_CHECK } from '../config/affiliateProgram.const'
 import {
   extractFullAppDataFromOrder,
   getRefCodeFromAppData,
@@ -25,11 +21,14 @@ export interface PastTradesCheckResult {
  * the trader has past orders, which can be used to determine trader eligibility, plus the
  * first valid affiliate ref code found in their appData.
  */
-export async function checkIfTraderHasPastTrades(owner: Address): Promise<PastTradesCheckResult> {
+export async function checkIfTraderHasPastTrades(
+  owner: Address,
+  supportedChainIds: readonly SupportedChainId[],
+): Promise<PastTradesCheckResult> {
   logAffiliate(safeShortenAddress(owner), 'Calling cow api for each supported chain/env to check for executed trades')
 
   const ordersByChainAndEnv = await Promise.all(
-    AFFILIATE_SUPPORTED_CHAIN_IDS.flatMap((chainId) =>
+    supportedChainIds.flatMap((chainId) =>
       TRADE_ENVS_TO_CHECK.map(async (env) => {
         try {
           const orders = await getOrders({ owner, limit: PAST_ORDERS_SCAN_LIMIT }, { chainId, env })

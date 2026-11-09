@@ -7,6 +7,8 @@ import { useSelector } from 'react-redux'
 import { AppState } from 'legacy/state'
 import { OrdersState } from 'legacy/state/orders/reducer'
 
+import { useAffiliateSupportedChainIds } from './useAffiliateSupportedChainIds'
+
 import {
   extractFullAppDataFromOrder,
   getLocalTrades,
@@ -16,9 +18,10 @@ import {
 
 export function useRefCodeFromLocalTrades(account: Address | undefined): string | undefined {
   const ordersState = useSelector<AppState, OrdersState | undefined>((state) => state.orders)
+  const supportedChainIds = useAffiliateSupportedChainIds()
 
   return useMemo(() => {
-    const localTrades = getLocalTrades(account, ordersState).filter(isExecutedNonIntegratorOrder)
+    const localTrades = getLocalTrades(account, ordersState, supportedChainIds).filter(isExecutedNonIntegratorOrder)
 
     for (const order of localTrades) {
       const fullAppData = extractFullAppDataFromOrder(order)
@@ -28,5 +31,5 @@ export function useRefCodeFromLocalTrades(account: Address | undefined): string 
     }
 
     return undefined
-  }, [account, ordersState])
+  }, [account, ordersState, supportedChainIds])
 }
