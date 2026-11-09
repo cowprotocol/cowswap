@@ -1,10 +1,11 @@
 'use client'
 
 import { useAtomValue, useSetAtom } from 'jotai'
-import { type ReactNode, type RefObject, useCallback, useEffect, useId, useRef, useState } from 'react'
+import { type ReactNode, useCallback, useId, useRef, useState } from 'react'
+
+import dynamic from 'next/dynamic'
 
 import styles from './AssetsExplorer.module.css'
-import { AssetsFiltersDrawer } from './AssetsFiltersDrawer'
 import { AssetsFiltersPanel } from './AssetsFiltersPanel'
 import { StarIcon } from './StarIcon'
 import { FilterIcon } from './ToolbarIcons'
@@ -18,14 +19,18 @@ import {
   setAssetsFilterQueryAtom,
   updateAssetsFiltersAtom,
 } from '../model/assetsFiltersAtoms'
-import { assetsPageQueryAtom } from '../model/assetsQueryAtoms'
+import { assetsCountLabelAtom } from '../model/assetsQueryAtoms'
 
-import { useDismissOnOutsideInteraction } from '@/shared/lib/dismiss'
+import { MEDIA_QUERIES } from '@/shared/config'
+import { useDismissOnEscape, useDismissOnMediaQueryChange, useDismissOnOutsideInteraction } from '@/shared/lib/dismiss'
 import { SearchIcon } from '@/shared/ui/icons'
 
-const NARROWEST_WIDTH_QUERY = '(max-width: 320px)'
-const PHONE_WIDTH_QUERY = '(max-width: 720px)'
-const TABLET_WIDTH_QUERY = '(max-width: 960px)'
+const AssetsFiltersDrawer = dynamic(
+  () => import('./AssetsFiltersDrawer').then((module) => module.AssetsFiltersDrawer),
+  {
+    ssr: false,
+  },
+)
 
 export function AssetsFilters(): ReactNode {
   const query = useAtomValue(assetsFilterQueryAtom)
@@ -33,20 +38,24 @@ export function AssetsFilters(): ReactNode {
   const { watchlistOnly } = useAtomValue(assetsFiltersAtom)
   const activeFilters = useAtomValue(activePanelFiltersCountAtom)
   const updateFilters = useSetAtom(updateAssetsFiltersAtom)
-  const { data } = useAtomValue(assetsPageQueryAtom)
-  const [isPanelOpen, setIsPanelOpen] = useState(false)
-  const isPhoneWidth = useMediaQuery(PHONE_WIDTH_QUERY)
+  const assetsCount = useAtomValue(assetsCountLabelAtom)
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false)
+  const isPhoneWidth = useMediaQuery(MEDIA_QUERIES.upToSmall)
   const searchPlaceholder = useSearchPlaceholder()
   const wrapperRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
-  const panelId = useId()
-  const closePanel = useCallback(() => setIsPanelOpen(false), [])
-  const assetsCount = data && `${data.total} ${data.total === 1 ? 'asset' : 'assets'}`
-  const issuers = data?.issuers ?? []
-  const chainIds = data?.chainIds ?? []
+  const filtersId = useId()
+  const isPopoverOpen = isFiltersOpen && !isPhoneWidth
+  const closeFilters = useCallback(() => setIsFiltersOpen(false), [])
+  const closeAndFocusTrigger = useCallback(() => {
+    setIsFiltersOpen(false)
+    triggerRef.current?.focus()
+  }, [])
 
-  useDismissOnOutsideInteraction(isPanelOpen && !isPhoneWidth, [wrapperRef], closePanel, false)
-  useCloseWithFocusOnTrigger(isPanelOpen, closePanel, triggerRef)
+  useDismissOnOutsideInteraction(isPopoverOpen, [wrapperRef], closeFilters, false)
+  useDismissOnEscape(isPopoverOpen, closeFilters, triggerRef)
+  // Not `isPopoverOpen`: React commits between media query listeners, which would remove this one before it fires
+  useDismissOnMediaQueryChange(isFiltersOpen, MEDIA_QUERIES.upToSmall, closeAndFocusTrigger)
 
   return (
     <>
@@ -72,15 +81,15 @@ export function AssetsFilters(): ReactNode {
         <StarIcon filled={watchlistOnly} />
         <span className={styles.buttonLabel}>Watchlist</span>
       </button>
-      <div ref={wrapperRef} className={styles.filtersTrigger}>
+      <div ref={wrapperRef}>
         <button
           ref={triggerRef}
           type="button"
           className={`${styles.outlinedButton} ${styles.iconButton}`}
           data-active={activeFilters > 0}
-          aria-expanded={isPanelOpen}
-          aria-controls={isPhoneWidth && !isPanelOpen ? undefined : panelId}
-          onClick={() => setIsPanelOpen((open) => !open)}
+          aria-expanded={isFiltersOpen}
+          aria-controls={isFiltersOpen ? filtersId : undefined}
+          onClick={() => setIsFiltersOpen((isOpen) => !isOpen)}
         >
           <FilterIcon />
           <span className={styles.buttonLabel}>Filters</span>
@@ -93,16 +102,13 @@ export function AssetsFilters(): ReactNode {
         </button>
         {isPhoneWidth ? (
           <AssetsFiltersDrawer
-            id={panelId}
-            isOpen={isPanelOpen}
-            onOpenChange={setIsPanelOpen}
+            id={filtersId}
+            isOpen={isFiltersOpen}
+            onOpenChange={setIsFiltersOpen}
             triggerRef={triggerRef}
-            assetsCount={assetsCount}
-            issuers={issuers}
-            chainIds={chainIds}
           />
         ) : (
-          <AssetsFiltersPanel id={panelId} hidden={!isPanelOpen} issuers={issuers} chainIds={chainIds} />
+          <AssetsFiltersPanel id={filtersId} hidden={!isFiltersOpen} />
         )}
       </div>
       {activeFilters > 0 && (
@@ -118,40 +124,11 @@ export function AssetsFilters(): ReactNode {
   )
 }
 
-/** Closes on Escape, which the drawer handles itself, and when the width crosses to the other surface */
-function useCloseWithFocusOnTrigger(
-  isOpen: boolean,
-  close: () => void,
-  triggerRef: RefObject<HTMLButtonElement | null>,
-): void {
-  useEffect(() => {
-    if (!isOpen) return
-
-    const query = window.matchMedia(PHONE_WIDTH_QUERY)
-    const closeAndFocusTrigger = (): void => {
-      close()
-      triggerRef.current?.focus()
-    }
-    const onKeyDown = (event: KeyboardEvent): void => {
-      if (event.key === 'Escape' && !query.matches) closeAndFocusTrigger()
-    }
-
-    document.addEventListener('keydown', onKeyDown)
-    query.addEventListener('change', closeAndFocusTrigger)
-
-    return () => {
-      document.removeEventListener('keydown', onKeyDown)
-      query.removeEventListener('change', closeAndFocusTrigger)
-    }
-    // React commits between media query listeners, so `isDrawer` as a dependency would remove this one before it fires
-  }, [isOpen, close, triggerRef])
-}
-
 function useSearchPlaceholder(): string {
-  const isNarrowestWidth = useMediaQuery(NARROWEST_WIDTH_QUERY)
-  const isTabletWidth = useMediaQuery(TABLET_WIDTH_QUERY)
+  const isTinyWidth = useMediaQuery(MEDIA_QUERIES.upToTiny)
+  const isTabletWidth = useMediaQuery(MEDIA_QUERIES.upToMedium)
 
-  if (isNarrowestWidth) return 'Search…'
+  if (isTinyWidth) return 'Search…'
 
   return isTabletWidth ? 'Search assets…' : 'Search assets or tickers…'
 }
