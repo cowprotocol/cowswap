@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-11-08 08:30\n"
+"PO-Revision-Date: 2026-11-10 14:48\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -3210,6 +3210,7 @@ msgstr "Montant d’approbation insuffisant pour le montant saisi."
 #~ msgstr "including an extra {amount}"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/PricePercentageShortcuts/PricePercentageShortcuts.pure.tsx
+#: apps/cowswap-frontend/src/modules/trade/pure/PricePercentageShortcuts/PricePercentageShortcuts.pure.tsx
 msgid "Custom %"
 msgstr "% personnalisé"
 
@@ -6096,8 +6097,8 @@ msgid "Putting this order on-chain costs SOL in Solana transaction fees and acco
 msgstr "Placer cet ordre on-chain nécessite des SOL pour les frais de transaction Solana et les dépôts d’ouverture de comptes. CoW Swap prend ces coûts en charge pour vous."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/containers/TakeProfitPrompt/TakeProfitPrompt.container.tsx
-#~ msgid "Limit order to sell at a higher price. How much higher?"
-#~ msgstr "Limit order to sell at a higher price. How much higher?"
+msgid "Limit order to sell at a higher price. How much higher?"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 msgid "Swap bridged via your"
@@ -7883,8 +7884,8 @@ msgstr "Ne confirmez que si vous faites confiance à cette dapp et reconnaissez 
 #~ msgstr "at most "
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/containers/TakeProfitPrompt/TakeProfitPrompt.container.tsx
-#~ msgid "Take profit on your <0/>"
-#~ msgstr "Take profit on your <0/>"
+msgid "Take profit on your <0/>"
+msgstr ""
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "This hook allows you to withdraw rewards from your Gnosis Chain validators through CoW Swap. It automates the process of interacting with the Gnosis Deposit Contract, enabling you to claim any available rewards directly to your specified withdrawal address. The hook monitors your validator's accrued rewards and triggers the claimWithdrawals function when rewards are ready for withdrawal. This simplifies the management of Gnosis validator earnings without requiring ready for withdrawal. This simplifies the management of Gnosis validator earnings without requiring manual contract interaction, providing a smoother and more efficient experience for users."
