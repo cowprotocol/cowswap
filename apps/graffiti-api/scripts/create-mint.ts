@@ -26,9 +26,8 @@ import { parseSecretKey, readSecretKeyFile } from '../src/keypair.js'
 import { errorMessage } from '../src/util.js'
 
 interface RentCosts {
-  /** Rent-exempt minimum for the mint account. */
   mint: number
-  /** Rent-exempt minimum for one token account: what the treasury pays per claimer. */
+  /** What the treasury pays per claimer. */
   tokenAccount: number
 }
 
@@ -119,7 +118,7 @@ async function ensureFunded(connection: Connection, treasury: Keypair, rent: Ren
   }
 }
 
-/** Rent is a cluster parameter, so the cost of setup and of each claim is read, not assumed. */
+/** Rent is a cluster parameter: read it rather than assume it. */
 async function fetchRentCosts(connection: Connection): Promise<RentCosts> {
   const [mint, tokenAccount] = await Promise.all([
     connection.getMinimumBalanceForRentExemption(MINT_SIZE),
@@ -177,8 +176,7 @@ function printSummary(mint: PublicKey, treasury: TreasuryKey, perClaimLamports: 
       ? `Treasury keypair saved to ${path.join(KEYS_DIR, 'treasury.json')} (gitignored, mode 0600) — back it up, it is money.`
       : 'The supplied treasury key was not written to disk.',
   )
-  console.log(`Each redemption costs the treasury ${sol(perClaimLamports)} SOL (token-account rent + fee),`)
-  console.log(`so a pool of N codes needs N x that much on top of the token supply.`)
+  console.log(`Each redemption costs the treasury ${sol(perClaimLamports)} SOL, on top of the tokens.`)
   console.log('Run the API with:')
   console.log(`  MINT=${mint.toBase58()} ${treasury.envHint} \\`)
   console.log('  ADMIN_TOKEN=<secret> pnpm --filter @cowprotocol/graffiti-api run dev')
