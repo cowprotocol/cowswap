@@ -1,5 +1,20 @@
 # Changelog
 
+## [4.15.0](https://github.com/cowprotocol/cowswap/compare/types-v4.14.2...types-v4.15.0) (2026-11-10)
+
+### Minor Changes
+
+- feat(solana): pass appData to quote (#8509)
+
+### Patch Changes
+
+- fix(solana): use SDK for quote costs breakdown (#8522)
+
+- fix(tokens): use Solana volume ranks in the selector (#8523)
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.10.0
+
 ## [4.14.2](https://github.com/cowprotocol/cowswap/compare/types-v4.14.1...types-v4.14.2) (2026-11-05)
 
 ### Patch Changes

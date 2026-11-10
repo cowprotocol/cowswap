@@ -106,6 +106,7 @@ export function TradeBasicConfirmDetails(props: Props): ReactNode {
           isSponsored={solanaTxCost.isSponsored}
           ownerDeposit={solanaTxCost.ownerDeposit}
           ownerDepositUsd={solanaOwnerDepositUsd}
+          isFeePaidByVaultMember={solanaTxCost.isFeePaidByVaultMember}
           withTimelineDot={withTimelineDot}
         />
       )}

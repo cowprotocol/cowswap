@@ -1,5 +1,7 @@
 import { Fraction } from '@cowprotocol/currency'
 
+export const PRICE_PERCENTAGE_PRESETS = ['5', '10', '20']
+
 const MIN_PERCENTAGE = new Fraction(1, 100)
 const MAX_PERCENTAGE = new Fraction(99999, 100)
 const MAX_INVERTED_PERCENTAGE = new Fraction(9999, 100)
@@ -40,4 +42,12 @@ export function getRatePercentage(
   if (Number(roundedPercent) < Number(MIN_PERCENTAGE.toFixed(2))) return null
 
   return roundedPercent.replace(/\.?0+$/, '')
+}
+
+export function isValidPercentageInput(value: string): boolean {
+  return /^\d*(?:\.\d{0,2})?$/.test(value)
+}
+
+export function isValidPricePercentageParam(value: string): boolean {
+  return value === 'custom' || (/^\d+(?:\.\d{1,2})?$/.test(value) && !!getPercentageRate(new Fraction(1), value, false))
 }

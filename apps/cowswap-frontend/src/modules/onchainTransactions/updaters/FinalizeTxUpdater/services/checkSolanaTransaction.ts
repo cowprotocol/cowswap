@@ -1,3 +1,4 @@
+import { jotaiStore } from '@cowprotocol/core'
 import { Command } from '@cowprotocol/types'
 
 import { t } from '@lingui/core/macro'
@@ -9,14 +10,14 @@ import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/re
 import { invalidateOrdersBatch } from 'legacy/state/orders/actions'
 import { isOrderFulfilled, partialOrderUpdate } from 'legacy/state/orders/utils'
 
-import { emitCancelledOrderEvent } from 'modules/orders'
+import { emitCancelledOrderEvent, orderFailureReasonsAtom } from 'modules/orders'
+
+import { resolveConfirmedSolanaStatus, SolanaRevertReason, SolanaStatusResult } from './resolveConfirmedSolanaStatus'
 
 import { emitOnchainTransactionEvent } from '../../../utils/emitOnchainTransactionEvent'
 import { CheckEthereumTransactions } from '../types'
 
 import type { Connection } from '@solana/web3.js'
-
-type StatusResult = { type: 'success' | 'reverted'; slot: number } | { type: 'pending' }
 
 /**
  * `searchTransactionHistory` reaches into the RPC provider's own archival index rather than the
@@ -47,7 +48,7 @@ export function checkSolanaTransaction(
 
   let isCancelled = false
 
-  const finalize = (status: 'success' | 'reverted', slot: number): void => {
+  const finalize = (status: 'success' | 'reverted', slot: number, reason?: SolanaRevertReason): void => {
     const receipt = {
       to: null,
       from: transaction.from,
@@ -71,22 +72,21 @@ export function checkSolanaTransaction(
         void finalizeSuccessfulCancellation(orderId, params, hash)
       } else {
         clearCancellingState(orderId, params)
-        emitTransactionFailedEvent(transaction, hash, slot, t`Failed to cancel order selling ${sellTokenSymbol}`)
+        emitTransactionFailedEvent(
+          transaction,
+          hash,
+          slot,
+          reason === 'multisig-rejected'
+            ? t`Cancellation rejected in your multisig`
+            : t`Failed to cancel order selling ${sellTokenSymbol}`,
+        )
       }
 
       return
     }
 
     if (transaction.solanaCancelOrderIds) {
-      const orderIds = transaction.solanaCancelOrderIds
-
-      if (status === 'success') {
-        orderIds.forEach((orderId) => void finalizeSuccessfulCancellation(orderId, params, hash))
-      } else {
-        orderIds.forEach((orderId) => clearCancellingState(orderId, params))
-        const ordersCount = orderIds.length
-        emitTransactionFailedEvent(transaction, hash, slot, t`Failed to cancel ${ordersCount} orders`)
-      }
+      finalizeBatchCancellation(transaction.solanaCancelOrderIds, { transaction, params, slot, status, reason })
 
       return
     }
@@ -98,7 +98,7 @@ export function checkSolanaTransaction(
       // There is nothing to fail, and claiming a failure without failing anything would leave the
       // order in `CREATING` under a notification saying it had not been placed.
       if (status === 'reverted' && createdOrderId) {
-        failCreatedOrder(createdOrderId, transaction, params, slot)
+        failCreatedOrder(createdOrderId, transaction, params, slot, reason)
       }
 
       return
@@ -128,7 +128,7 @@ export function checkSolanaTransaction(
         return
       }
 
-      finalize(result.type === 'success' ? 'success' : 'reverted', result.slot)
+      finalize(result.type, result.slot, result.type === 'reverted' ? result.reason : undefined)
     })
     .catch((error) => {
       if (isCancelled) return
@@ -147,14 +147,17 @@ async function checkHistoricalStatus(
   signature: string,
   transaction: EnhancedTransactionDetails,
   fallbackSlot: number,
-): Promise<StatusResult> {
+): Promise<SolanaStatusResult> {
   const { value } = await connection.getSignatureStatuses([signature], { searchTransactionHistory: true })
   const [historicalStatus] = value
 
   if (historicalStatus) {
-    return historicalStatus.err
-      ? { type: 'reverted', slot: historicalStatus.slot }
-      : { type: 'success', slot: historicalStatus.slot }
+    if (historicalStatus.err) return { type: 'reverted', slot: historicalStatus.slot }
+
+    // Landing is not the same as succeeding: for a multisig filing the proposal decides. This path is
+    // reached within a minute or two of every send, once the signature ages out of the recent cache,
+    // so skipping the check here would retire the transaction before any vote could be cast.
+    return resolveConfirmedSolanaStatus(connection, signature, transaction, historicalStatus.slot)
   }
 
   // Still nothing, anywhere — but if we're only just past the blockhash's validity window, the archive
@@ -169,7 +172,7 @@ async function checkStatus(
   connection: Connection | undefined,
   signature: string,
   transaction: EnhancedTransactionDetails,
-): Promise<StatusResult> {
+): Promise<SolanaStatusResult> {
   if (!connection) return { type: 'pending' }
 
   // The cheap lookup: consults only the node's recent status cache.
@@ -181,7 +184,9 @@ async function checkStatus(
 
     const isConfirmed = status.confirmationStatus === 'confirmed' || status.confirmationStatus === 'finalized'
 
-    return isConfirmed ? { type: 'success', slot: status.slot } : { type: 'pending' }
+    if (!isConfirmed) return { type: 'pending' }
+
+    return resolveConfirmedSolanaStatus(connection, signature, transaction, status.slot)
   }
 
   const lastValidBlockHeight = getLastValidBlockHeight(transaction)
@@ -247,13 +252,63 @@ function failCreatedOrder(
   transaction: EnhancedTransactionDetails,
   params: CheckEthereumTransactions,
   slot: number,
+  reason?: SolanaRevertReason,
 ): void {
   const { chainId, dispatch, isSafeWallet } = params
 
+  if (reason) {
+    jotaiStore.set(orderFailureReasonsAtom, (reasons) => ({ ...reasons, [orderId]: reason }))
+  }
+
   dispatch(invalidateOrdersBatch({ chainId, ids: [orderId], isSafeWallet }))
   // Not `transaction.summary`, which reads as the steps the transaction bundled: what the user needs
-  // to know is that the order did not get placed.
-  emitTransactionFailedEvent(transaction, transaction.hash, slot, t`Failed to place order`)
+  // to know is that the order did not get placed, and why when we can say.
+  emitTransactionFailedEvent(
+    transaction,
+    transaction.hash,
+    slot,
+    reason === 'multisig-rejected' ? t`Order rejected in your multisig` : t`Failed to place order`,
+  )
+}
+
+/**
+ * A batch cancellation reports per order: each one either goes to cancelled, or is released back to open
+ * with a single snackbar explaining why — never silently left mid-cancellation.
+ */
+function finalizeBatchCancellation(
+  orderIds: string[],
+  {
+    transaction,
+    params,
+    slot,
+    status,
+    reason,
+  }: {
+    transaction: EnhancedTransactionDetails
+    params: CheckEthereumTransactions
+    slot: number
+    status: 'success' | 'reverted'
+    reason?: SolanaRevertReason
+  },
+): void {
+  if (status === 'success') {
+    orderIds.forEach((orderId) => void finalizeSuccessfulCancellation(orderId, params, transaction.hash))
+
+    return
+  }
+
+  orderIds.forEach((orderId) => clearCancellingState(orderId, params))
+
+  const ordersCount = orderIds.length
+
+  emitTransactionFailedEvent(
+    transaction,
+    transaction.hash,
+    slot,
+    reason === 'multisig-rejected'
+      ? t`Cancellation rejected in your multisig`
+      : t`Failed to cancel ${ordersCount} orders`,
+  )
 }
 
 /**
