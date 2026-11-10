@@ -6,12 +6,9 @@ import { getMinutesToUsMarketChange, isUsMarketOpen } from '../lib/usMarketStatu
 
 import type { RwaAsset, RwaMarketData, RwaMarketKind, RwaTradingTime } from '../model/types'
 
-import { formatPercent, formatUsd } from '@/shared/lib/format'
+import { formatDuration, formatPercent, formatUsd } from '@/shared/lib/format'
 import { InfoIcon } from '@/shared/ui/icons'
 import { Tooltip } from '@/shared/ui/tooltip'
-
-const MINUTES_PER_HOUR = 60
-const MINUTES_PER_DAY = 24 * MINUTES_PER_HOUR
 
 interface AssetStatsProps {
   asset: RwaAsset
@@ -42,13 +39,6 @@ export function AssetStats({ asset, market, marketKind, provider }: AssetStatsPr
       {market && asset.allowedTradingTime && <MarketStatus tradingTime={asset.allowedTradingTime} />}
     </div>
   )
-}
-
-function formatDuration(minutes: number): string {
-  if (minutes < MINUTES_PER_HOUR) return `${minutes} min`
-  if (minutes < MINUTES_PER_DAY) return `${Math.floor(minutes / MINUTES_PER_HOUR)}h`
-
-  return `${Math.floor(minutes / MINUTES_PER_DAY)}d`
 }
 
 function getPriceHint({ title }: RwaAsset, marketKind: RwaMarketKind, provider: string | null): string {

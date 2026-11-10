@@ -7,11 +7,14 @@ import { flushSync } from 'react-dom'
 
 import { tradeChainIdAtom, tradeSideAtom, tradeTokenKeyAtom } from './tradeSelectionAtoms'
 
+import { trackTradeTokenSelect } from '../lib/tradeAnalytics'
+
 import { getTokenKey, type RwaQuoteSide, type RwaToken } from '@/entities/asset'
+import { MEDIA_QUERIES } from '@/shared/config'
+import { trackEvent } from '@/shared/lib/analytics'
 
 export const TRADE_WIDGET_ID = 'trade-widget'
 
-const SINGLE_COLUMN_QUERY = '(max-width: 960px)'
 const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)'
 
 /** Switches the widget to `side`, then scrolls to it and, below the chart, focuses its side toggle */
@@ -48,8 +51,20 @@ export function useSelectTradeNetwork(): (chainId: number) => void {
   )
 }
 
+export function useSelectTradeSide(ticker: string): (side: RwaQuoteSide) => void {
+  const setSide = useSetAtom(tradeSideAtom)
+
+  return useCallback(
+    (side: RwaQuoteSide) => {
+      setSide(side)
+      trackEvent('trade_side_select', { ticker, side, placement: 'trade_widget' })
+    },
+    [ticker, setSide],
+  )
+}
+
 /** Picks a token from the "Stock tokens" table, then scrolls to the widget */
-export function useSelectTradeToken(): (token: RwaToken, side: RwaQuoteSide) => void {
+export function useSelectTradeToken(ticker: string): (token: RwaToken, side: RwaQuoteSide) => void {
   const jumpToTrade = useJumpToTrade()
   const selectNetwork = useSelectTradeNetwork()
   const setTokenKey = useSetAtom(tradeTokenKeyAtom)
@@ -59,8 +74,9 @@ export function useSelectTradeToken(): (token: RwaToken, side: RwaQuoteSide) => 
       selectNetwork(token.chainId)
       setTokenKey(getTokenKey(token))
       jumpToTrade(side)
+      trackTradeTokenSelect(ticker, token, side, 'stock_tokens')
     },
-    [jumpToTrade, selectNetwork, setTokenKey],
+    [ticker, jumpToTrade, selectNetwork, setTokenKey],
   )
 }
 
@@ -68,7 +84,7 @@ function revealTradeWidget(side: RwaQuoteSide): void {
   const widget = document.getElementById(TRADE_WIDGET_ID)
   if (!widget) return
 
-  const isSingleColumn = window.matchMedia(SINGLE_COLUMN_QUERY).matches
+  const isSingleColumn = window.matchMedia(MEDIA_QUERIES.upToMedium).matches
 
   widget.scrollIntoView({
     behavior: window.matchMedia(REDUCED_MOTION_QUERY).matches ? 'auto' : 'smooth',

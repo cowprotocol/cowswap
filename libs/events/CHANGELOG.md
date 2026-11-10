@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.18.0](https://github.com/cowprotocol/cowswap/compare/events-v4.17.2...events-v4.18.0) (2026-11-10)
+
+### Minor Changes
+
+- feat(solana): pass appData to quote (#8509)
+
+### Patch Changes
+
+- fix(solana): use SDK for quote costs breakdown (#8522)
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.15.0
+
 ## [4.17.2](https://github.com/cowprotocol/cowswap/compare/events-v4.17.1...events-v4.17.2) (2026-11-05)
 
 ### Patch Changes

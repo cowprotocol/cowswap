@@ -120,6 +120,7 @@ export function assetsPageQueryOptions(query: AssetsPageQuery): RwaQueryOptions<
     queryKey: [RWA_QUERY_KEY_ROOT, 'assets', query],
     queryFn: () => rwaFetcher<RwaAssetsPage>(getAssetsUrl(query)),
     placeholderData: keepPreviousData,
+    refetchInterval: MARKET_REFRESH_INTERVAL_MS,
   }
 }
 

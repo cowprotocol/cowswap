@@ -195,8 +195,6 @@ export interface RwaTokenMarketData {
 
 export interface RwaTokenNetworkStats {
   address: string
-  /** USD, supply on the network times the token price */
-  onchainCap: number | null
   /** USD, DEX trades on the network */
   dexVolume24h: number | null
 }

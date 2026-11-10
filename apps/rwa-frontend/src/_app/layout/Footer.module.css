@@ -235,10 +235,10 @@
   }
 }
 
-/* Clears the 56px wallet bar fixed to the bottom of the viewport by the header */
+/* Clears the wallet bar fixed to the bottom of the viewport by the header */
 @media (max-width: 960px) {
   .footer {
-    padding-bottom: 56px;
+    padding-bottom: var(--wallet-bar-height);
   }
 }
 

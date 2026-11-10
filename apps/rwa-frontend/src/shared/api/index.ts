@@ -8,6 +8,7 @@ export {
 } from './balances-watcher/balancesWatcherClient'
 export { readTokensMetadata, type TokenMetadata, type TokensMetadataMap } from './erc20/tokensMetadata'
 export { orderBookApi } from './order-book/orderBookApi'
+export { programmaticOrderApi } from './programmatic-orders/programmaticOrderApi'
 export {
   type DegradableResponse,
   isDegradedResponse,

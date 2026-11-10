@@ -7,11 +7,13 @@ export {
   type CoingeckoOhlcvTimeframe,
   type CoingeckoOnchainToken,
   type CoingeckoRwaMarket,
+  type CoingeckoRwaMarketChart,
   fetchCoinsMarkets,
   fetchMarketChart,
   fetchOhlc,
   fetchOnchainTokenOhlcv,
   fetchOnchainTokens,
+  fetchRwaMarketChart,
   fetchRwaMarkets,
 } from './coingecko/coingeckoClient'
 export { withRetryBackoff } from './coingecko/retryBackoff'

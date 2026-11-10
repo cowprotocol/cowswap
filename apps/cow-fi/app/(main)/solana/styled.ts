@@ -53,7 +53,7 @@ const TONES = {
   blue: { bg: BLUE, fg: INK, buttonBg: PAPER, buttonFg: INK },
 }
 
-export type CardTone = keyof typeof TONES
+type CardTone = keyof typeof TONES
 
 const bodyText = css`
   margin: 0;

@@ -419,6 +419,13 @@ export interface CowSwapWidgetParams {
   disablePriceChart?: boolean
 
   /**
+   * Hides the post-swap take-profit banner (price percentage shortcuts that open a limit order).
+   * Automatically treated as `true` when Limit is not included in `enabledTradeTypes`.
+   * Defaults to false.
+   */
+  disablePricePercentageShortcuts?: boolean
+
+  /**
    * Disable setting custom recipient for all trading widgets (swap,limit,twap)
    * Important! Cross-chain swaps are based on custom recipient functionality!
    * If you want always having recipient === order owner, then set disableCrossChainSwap=true as well

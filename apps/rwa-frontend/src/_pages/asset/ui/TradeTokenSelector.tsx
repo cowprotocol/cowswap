@@ -17,14 +17,16 @@ import styles from './TradeTokenSelector.module.css'
 import { TRADE_SIDES } from '../config/tradeSides'
 import { getBestQuoteLabel, getCollapsedQuotedTokens, isRankedQuote } from '../lib/quotedTokens'
 import { formatTokenStat } from '../lib/tokenStat'
-import { tradeSideAtom, tradeTokenKeyAtom } from '../model/tradeSelectionAtoms'
-import { useSelectTradeNetwork } from '../model/useSelectTradeToken'
+import { trackTradeTokenSelect } from '../lib/tradeAnalytics'
+import { tradeTokenKeyAtom } from '../model/tradeSelectionAtoms'
+import { useSelectTradeNetwork, useSelectTradeSide } from '../model/useSelectTradeToken'
 
 import type { QuotedToken } from '../lib/quotedTokens'
 import type { TradeSelection } from '../model/useTradeSelection'
 
 import { assetQueryAtomFamily, getTokenKey, type RwaAsset, type RwaMarketData } from '@/entities/asset'
 import { ConnectButton } from '@/features/connect-wallet'
+import { trackEvent } from '@/shared/lib/analytics'
 import { getChainLabel } from '@/shared/lib/chain'
 import { ChevronDownIcon, InfoIcon } from '@/shared/ui/icons'
 import { useNetworkOptions } from '@/shared/ui/network-logos'
@@ -58,7 +60,7 @@ interface TradeTokenSelectorProps {
 
 export function TradeTokenSelector({ asset, selection }: TradeTokenSelectorProps): ReactNode {
   const market = useAtomValue(assetQueryAtomFamily(asset.ticker)).data?.market
-  const setSide = useSetAtom(tradeSideAtom)
+  const selectSide = useSelectTradeSide(asset.ticker)
   const setTokenKey = useSetAtom(tradeTokenKeyAtom)
   const { isConnected } = useConnection()
   const { side, chainId, quotedTokens, bestToken, assetToken, isAutoSelected, isQuotesLoading, quotesError } = selection
@@ -85,7 +87,7 @@ export function TradeTokenSelector({ asset, selection }: TradeTokenSelectorProps
               type="button"
               aria-pressed={option === side}
               data-trade-side={option}
-              onClick={() => setSide(option)}
+              onClick={() => selectSide(option)}
             >
               {title}
             </button>
@@ -124,7 +126,10 @@ export function TradeTokenSelector({ asset, selection }: TradeTokenSelectorProps
               bestQuoteLabel={quoted.token === shownBestToken ? bestQuoteLabel : null}
               isSelected={quoted.token === assetToken}
               isLoading={isQuotesLoading}
-              onSelect={() => setTokenKey(getTokenKey(quoted.token))}
+              onSelect={() => {
+                setTokenKey(getTokenKey(quoted.token))
+                trackTradeTokenSelect(asset.ticker, quoted.token, side, 'trade_widget')
+              }}
             />
           </li>
         ))}
@@ -173,7 +178,12 @@ function NetworkSelect({ asset, chainId }: { asset: RwaAsset; chainId: number })
   const selectNetwork = useSelectTradeNetwork()
   const options = useNetworkOptions([...new Set(asset.tokens.map((token) => token.chainId))], 20)
 
-  return <Select variant="filled" aria-label="Network" value={chainId} options={options} onChange={selectNetwork} />
+  const onChange = (selectedChainId: number): void => {
+    selectNetwork(selectedChainId)
+    trackEvent('trade_network_select', { ticker: asset.ticker, chainId: selectedChainId })
+  }
+
+  return <Select variant="filled" aria-label="Network" value={chainId} options={options} onChange={onChange} />
 }
 
 function TradeTokenOption({
@@ -186,7 +196,8 @@ function TradeTokenOption({
 }: TradeTokenOptionProps): ReactNode {
   const isDisabled = isQuoteUnavailable(quoted, isLoading)
   const isChecked = isSelected && !isDisabled
-  const { stats } = quoted
+  const { stats, token } = quoted
+  const marketCap = token.coingeckoId ? market?.tokens[token.coingeckoId]?.marketCap : undefined
 
   return (
     <button
@@ -202,7 +213,7 @@ function TradeTokenOption({
         <TradeTokenName quoted={quoted} bestQuoteLabel={bestQuoteLabel} />
         <span className={styles.stats}>
           <span>
-            Onchain cap <strong>{formatTokenStat(stats?.onchainCap)}</strong>
+            Tokenized market cap <strong>{formatTokenStat(marketCap)}</strong>
           </span>
           <span aria-hidden="true">·</span>
           <span>
