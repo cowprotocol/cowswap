@@ -49,11 +49,9 @@ export function rejectCookies(): void {
   const wasAccepted = hasAcceptedCookies()
 
   saveConsent('rejected')
+  clearTrackerStorage()
 
-  if (wasAccepted) {
-    clearTrackerStorage()
-    reloadPage()
-  }
+  if (wasAccepted) reloadPage()
 }
 
 export function subscribeToCookieConsent(listener: Listener): () => void {

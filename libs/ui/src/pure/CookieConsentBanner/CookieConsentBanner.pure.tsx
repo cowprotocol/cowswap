@@ -12,6 +12,8 @@ export interface CookieConsentBannerProps {
   onReject(): void
   /** Shown when the banner is reopened from the cookie settings, after a choice was already made */
   onClose?: () => void
+  /** Pixels. Height of a bar the app fixes to the bottom of the screen up to `Media.upToMedium`. Default 0 */
+  bottomBarHeight?: number
 }
 
 export function CookieConsentBanner({
@@ -20,6 +22,7 @@ export function CookieConsentBanner({
   onAccept,
   onReject,
   onClose,
+  bottomBarHeight = 0,
 }: CookieConsentBannerProps): ReactNode {
   const messageId = useId()
   const cardRef = useRef<HTMLElement>(null)
@@ -32,7 +35,7 @@ export function CookieConsentBanner({
   }, [isReopened])
 
   return (
-    <styledEl.Wrapper>
+    <styledEl.Wrapper $bottomBarHeight={bottomBarHeight}>
       <styledEl.Card
         ref={cardRef}
         role="dialog"

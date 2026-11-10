@@ -6,6 +6,8 @@ import { CookieConsentBannerContainer } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 
+import { MOBILE_HEADER_CONTROLS_HEIGHT_PX } from 'common/constants/common'
+
 export function CookieConsentBanner(): ReactNode {
   if (isInjectedWidget() || window.__COWSWAP_E2E__) return null
 
@@ -18,5 +20,5 @@ export function CookieConsentBanner(): ReactNode {
     closeLabel: t`Close`,
   }
 
-  return <CookieConsentBannerContainer copy={copy} />
+  return <CookieConsentBannerContainer copy={copy} bottomBarHeight={MOBILE_HEADER_CONTROLS_HEIGHT_PX} />
 }

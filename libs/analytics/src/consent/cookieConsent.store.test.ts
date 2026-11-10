@@ -86,11 +86,11 @@ describe('cookieConsent.store', () => {
     expect(listener).not.toHaveBeenCalled()
   })
 
-  it('does not clear trackers or reload when rejecting without a prior acceptance', () => {
+  it('clears trackers without reloading when rejecting without a prior acceptance', () => {
     rejectCookies()
 
     expect(getCookieConsent()?.choice).toBe('rejected')
-    expect(clearTrackerStorage).not.toHaveBeenCalled()
+    expect(clearTrackerStorage).toHaveBeenCalledTimes(1)
     expect(reloadPage).not.toHaveBeenCalled()
   })
 

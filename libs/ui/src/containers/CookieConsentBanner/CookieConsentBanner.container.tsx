@@ -7,10 +7,13 @@ import { CookieConsentBanner } from '../../pure/CookieConsentBanner/CookieConsen
 
 export interface CookieConsentBannerContainerProps {
   copy?: CookieConsentCopy
+  /** Pixels. Height of a bar the app fixes to the bottom of the screen up to `Media.upToMedium`. Default 0 */
+  bottomBarHeight?: number
 }
 
 export function CookieConsentBannerContainer({
   copy = COOKIE_CONSENT_COPY,
+  bottomBarHeight,
 }: CookieConsentBannerContainerProps): ReactNode {
   const { consent, isBannerOpen, acceptCookies, rejectCookies, closeCookieSettings } = useCookieConsent()
 
@@ -23,6 +26,7 @@ export function CookieConsentBannerContainer({
       onAccept={acceptCookies}
       onReject={rejectCookies}
       onClose={consent ? closeCookieSettings : undefined}
+      bottomBarHeight={bottomBarHeight}
     />
   )
 }

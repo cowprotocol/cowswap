@@ -6,7 +6,7 @@ import { font } from '../../utils/font'
 import { ButtonPrimary } from '../Button'
 import { LinkStyledButton } from '../LinkStyledButton'
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div<{ $bottomBarHeight: number }>`
   position: fixed;
   right: 16px;
   bottom: 16px;
@@ -16,9 +16,13 @@ export const Wrapper = styled.div`
   justify-content: center;
   pointer-events: none;
 
+  ${Media.upToMedium()} {
+    bottom: ${({ $bottomBarHeight }) => $bottomBarHeight + 16}px;
+  }
+
   ${Media.upToExtraSmall()} {
     right: 8px;
-    bottom: 8px;
+    bottom: ${({ $bottomBarHeight }) => $bottomBarHeight + 8}px;
     left: 8px;
   }
 `
