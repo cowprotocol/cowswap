@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { TokenSymbol } from '@cowprotocol/ui'
+import { BannerOrientation, TokenSymbol } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import { PiTrendUpBold } from 'react-icons/pi'
@@ -36,19 +36,23 @@ export function TakeProfitPrompt({ order, onDismiss }: TakeProfitPromptProps): R
           <PiTrendUpBold aria-hidden />
         </styledEl.TrendIcon>
       }
+      orientation={BannerOrientation.Horizontal}
+      noWrapContent
       borderRadius="16px"
       padding="12px"
       margin="0"
-      customContent={<PricePercentageShortcuts isInverted={false} disabled={false} onSelect={openLimitOrder} />}
     >
-      <styledEl.Title>
-        <Trans>
-          Take profit on your <TokenSymbol token={takeProfitOrder.inputAmount.currency} />
-        </Trans>
-      </styledEl.Title>
-      <styledEl.Description>
-        <Trans>Limit order to sell at a higher price. How much higher?</Trans>
-      </styledEl.Description>
+      <styledEl.Content>
+        <styledEl.Title>
+          <Trans>
+            Take profit on your <TokenSymbol token={takeProfitOrder.inputAmount.currency} />
+          </Trans>
+        </styledEl.Title>
+        <styledEl.Description>
+          <Trans>Limit order to sell at a higher price. How much higher?</Trans>
+        </styledEl.Description>
+        <PricePercentageShortcuts isInverted={false} disabled={false} onSelect={openLimitOrder} />
+      </styledEl.Content>
     </styledEl.Banner>
   )
 }
