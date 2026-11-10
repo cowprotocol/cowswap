@@ -3,7 +3,7 @@ import { ReactNode, useState } from 'react'
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import { PricePercentageShortcuts } from './PricePercentageShortcuts.pure'
 
@@ -73,5 +73,13 @@ describe('PricePercentageShortcuts', () => {
 
     fireEvent.change(getCustomInput(true), { target: { value: '1.234' } })
     expect(getCustomInput(true).value).toBe('')
+  })
+
+  it('autofocuses the custom percentage input when focus is requested', async () => {
+    renderShortcuts(false, true)
+
+    await waitFor(() => {
+      expect(document.activeElement).toBe(getCustomInput(false))
+    })
   })
 })

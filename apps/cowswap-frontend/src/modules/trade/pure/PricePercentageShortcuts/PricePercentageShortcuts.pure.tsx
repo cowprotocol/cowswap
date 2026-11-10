@@ -32,9 +32,24 @@ export function PricePercentageShortcuts(props: PricePercentageShortcutsProps): 
       didFocusCustom.current = false
       return
     }
-    if (disabled || didFocusCustom.current) return
-    customField.current?.querySelector('input')?.focus()
-    didFocusCustom.current = true
+    // Market rate / pair loading can disable the field after an early focus attempt.
+    // Reset so we retry once the input is interactive again.
+    if (disabled) {
+      didFocusCustom.current = false
+      return
+    }
+    if (didFocusCustom.current) return
+
+    const input = customField.current?.querySelector('input')
+    if (!input) return
+
+    // Defer past navigation/modal teardown so focus isn't immediately stolen.
+    const frameId = requestAnimationFrame(() => {
+      input.focus()
+      didFocusCustom.current = document.activeElement === input
+    })
+
+    return () => cancelAnimationFrame(frameId)
   }, [focusCustom, disabled])
 
   return (
@@ -64,6 +79,7 @@ export function PricePercentageShortcuts(props: PricePercentageShortcutsProps): 
               if (isValidPercentageInput(value)) customInput.onChange(value)
             }}
             disabled={disabled}
+            autoFocus={focusCustom && !disabled}
             placeholder={t`Custom %`}
             aria-label={isInverted ? t`Custom percentage below market` : t`Custom percentage above market`}
             aria-invalid={customInput.invalid}

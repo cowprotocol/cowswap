@@ -413,7 +413,7 @@ export function RateInput() {
           }}
           customInput={{
             value: customValue,
-            selected: !selectedPreset && matchesRate(customRate, activeRate, isInverted),
+            selected: focusCustomPercentage || (!selectedPreset && matchesRate(customRate, activeRate, isInverted)),
             invalid: !!customValue && !customRate,
             focus: focusCustomPercentage,
             onChange: (value) => {

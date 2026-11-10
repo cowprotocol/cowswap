@@ -15,7 +15,7 @@ import { limitRateAtom, LimitRateState, updateLimitRateAtom } from '../../state/
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function InitialPriceUpdater() {
   const { inputCurrencyId, outputCurrencyId, chainId } = useLimitOrdersRawState()
-  const { isTypedValue, activeRate, percentageSelection } = useAtomValue(limitRateAtom)
+  const { isTypedValue, activeRate, percentageSelection, focusCustomPercentage } = useAtomValue(limitRateAtom)
   const updateLimitRateState = useSetAtom(updateLimitRateAtom)
   const updateRate = useUpdateActiveRate()
 
@@ -47,7 +47,16 @@ export function InitialPriceUpdater() {
      */
     const shouldSkipPriceUpdate = Boolean(hasActivePrice && price && prevPrice?.equalTo(price))
 
-    if (!price || percentageSelection || isInitialPriceSet || isLoading || shouldSkipPriceUpdate) return
+    if (
+      !price ||
+      percentageSelection ||
+      focusCustomPercentage ||
+      isInitialPriceSet ||
+      isLoading ||
+      shouldSkipPriceUpdate
+    ) {
+      return
+    }
 
     setIsInitialPriceSet(true)
 
@@ -62,6 +71,7 @@ export function InitialPriceUpdater() {
   }, [
     isInitialPriceSet,
     percentageSelection,
+    focusCustomPercentage,
     updateLimitRateState,
     updateRate,
     price,
