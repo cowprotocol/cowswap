@@ -15,17 +15,25 @@ export interface SolanaTokenAccountOwnerParams {
   /** The order's owner, whose own associated token account the receiver is unless it was customised. */
   orderOwner: AddressKey | undefined
   buyMint: AddressKey | undefined
+  /**
+   * The wallet the book says the account belongs to, when placement named one. The only answer for a
+   * custom receiver whose account is still unallocated: derivation only finds the order owner's own.
+   */
+  receiverWallet?: AddressKey
 }
 
-export async function resolveOwner(
-  tokenAccount: AddressKey,
-  orderOwner: AddressKey | undefined,
-  buyMint: AddressKey | undefined,
-): Promise<string | null> {
+export async function resolveOwner({
+  tokenAccount,
+  orderOwner,
+  buyMint,
+  receiverWallet,
+}: SolanaTokenAccountOwnerParams & { tokenAccount: AddressKey }): Promise<string | null> {
   // A native SOL buy is paid out as lamports, so the book names the wallet itself where every other
   // order names a token account. Nothing to read or derive, and no collision to fear: a wallet is
   // owned by the system program and cannot hold an SPL balance.
-  if (orderOwner && areAddressesEqual(tokenAccount, orderOwner)) return orderOwner
+  const namedWallet = receiverWallet ?? orderOwner
+
+  if (namedWallet && areAddressesEqual(tokenAccount, namedWallet)) return namedWallet
 
   const owner = await getTokenAccountOwner(tokenAccount)
 
@@ -34,6 +42,8 @@ export async function resolveOwner(
   // Reached only once the read came back empty, never on a failed one — it throws, and SWR records
   // that as an error instead. An account that exists may have been transferred away from the owner
   // it was derived for, and only a completed read rules that out.
+  if (receiverWallet) return receiverWallet
+
   if (!orderOwner || !buyMint) return null
 
   return (await isAssociatedTokenAccountOf(tokenAccount, orderOwner, buyMint)) ? orderOwner : null
@@ -48,10 +58,12 @@ export function useSolanaTokenAccountOwner({
   tokenAccount,
   orderOwner,
   buyMint,
+  receiverWallet,
 }: SolanaTokenAccountOwnerParams): SolanaTokenAccountOwner {
   const { data, isLoading } = useSWR(
-    tokenAccount ? (['solana-token-account-owner', tokenAccount, orderOwner, buyMint] as const) : null,
-    ([, account, owner, mint]) => resolveOwner(account, owner, mint),
+    tokenAccount ? (['solana-token-account-owner', tokenAccount, orderOwner, buyMint, receiverWallet] as const) : null,
+    ([, account, owner, mint, wallet]) =>
+      resolveOwner({ tokenAccount: account, orderOwner: owner, buyMint: mint, receiverWallet: wallet }),
     { onError: () => undefined },
   )
 

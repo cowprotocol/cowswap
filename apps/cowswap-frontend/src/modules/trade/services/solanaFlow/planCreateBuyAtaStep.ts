@@ -1,13 +1,9 @@
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import type { SolanaQuote } from '@cowprotocol/sdk-trading-solana'
+import { deriveAta, type SolanaQuote } from '@cowprotocol/sdk-trading-solana'
 
 import { t } from '@lingui/core/macro'
-import {
-  createAssociatedTokenAccountIdempotentInstruction,
-  getAssociatedTokenAddressSync,
-  TOKEN_PROGRAM_ID,
-} from '@solana/spl-token'
+import { createAssociatedTokenAccountIdempotentInstruction, TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { PublicKey } from '@solana/web3.js'
 
 import { SolanaFlowStep, SolanaFundedAccount } from './types'
@@ -17,6 +13,9 @@ export type BuyAtaQuote = Pick<SolanaQuote, 'intent' | 'buyTokenProgramId'>
 export interface IsBuyAtaCreationSkippedParams {
   quote: BuyAtaQuote
   owner: PublicKey
+  /** The wallet the order names to the order book as its receiver, when that is not the owner. Only a
+   * sponsored order posts one, so a self-paid order leaves it out. */
+  receiver?: PublicKey
   /** LaunchDarkly `isAtaCreationDisabled`. */
   isAtaCreationDisabled: boolean
 }
@@ -57,12 +56,14 @@ export function getCreateBuyAtaFundedAccounts(quote: BuyAtaQuote, isCreationSkip
  * Whether the bundle can leave the buy token account to the driver, which creates a missing one at
  * settle and charges its rent to the trader out of the fill.
  *
- * Only for the owner's own account: placement still refuses an order paying out to another wallet's
- * missing account, since the driver has no way to tell whom an arbitrary address belongs to.
+ * Only for a wallet the order names — the owner, or the `receiver` a sponsored order posts. The driver
+ * creates the associated token account of that wallet and nothing else, so an account belonging to a
+ * wallet it was never told about stays the bundle's own to create.
  */
 export function getIsBuyAtaCreationSkipped({
   quote,
   owner,
+  receiver,
   isAtaCreationDisabled,
 }: IsBuyAtaCreationSkippedParams): boolean {
   if (!isAtaCreationDisabled) {
@@ -70,10 +71,9 @@ export function getIsBuyAtaCreationSkipped({
   }
 
   const { intent, buyTokenProgramId } = quote
-  // `allowOwnerOffCurve`, so a receiver that is itself a PDA compares false instead of throwing.
-  const ownerAta = getAssociatedTokenAddressSync(intent.buyMint, owner, true, buyTokenProgramId)
+  const namedAta = deriveAta(intent.buyMint, receiver ?? owner, buyTokenProgramId)
 
-  return intent.buyTokenAccount.equals(ownerAta)
+  return intent.buyTokenAccount.equals(namedAta)
 }
 
 /**

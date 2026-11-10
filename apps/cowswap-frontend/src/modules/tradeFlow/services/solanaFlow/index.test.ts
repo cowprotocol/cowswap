@@ -182,12 +182,14 @@ function buildContext({
   orderClass = OrderClass.MARKET,
   buyAmount = outputAmount,
   quoteBuyToken = usdc.address,
+  quoteReceiver = RECEIVER_ADDRESS,
 }: {
   isNativeSell?: boolean
   delegationAmount?: bigint
   orderClass?: OrderClass
   buyAmount?: CurrencyAmount<Token>
   quoteBuyToken?: string
+  quoteReceiver?: string
 } = {}): SolanaTradeFlowContext {
   return {
     account: SOLANA_ACCOUNT,
@@ -229,7 +231,7 @@ function buildContext({
         },
         // The receiver the quote derived `intent.buyTokenAccount` from — the buy-ATA step must use this
         // one, not `context.receiver`, or it would name an account the order does not credit.
-        tradeParameters: { receiver: RECEIVER_ADDRESS },
+        tradeParameters: { receiver: quoteReceiver },
       },
       postSwapOrderFromQuote: jest.fn(),
     } as unknown as SolanaTradeFlowContext['tradeQuote'],
@@ -1163,6 +1165,24 @@ describe('solanaFlow · sponsored', () => {
 
     expect(result).toBe(true)
     expect(mockPostSolanaSponsoredOrder).toHaveBeenCalledTimes(1)
+  })
+
+  // Without this the settlement has no wallet to create the payout account for, and placement refuses
+  // the order as unreceivable — the custom-recipient failure the field exists to fix.
+  it('names the wallet the buy token account belongs to when it is not the owner', async () => {
+    await solanaFlow(buildContext(), buildAnalytics(), { isSponsored: true })
+
+    expect(mockPostSolanaSponsoredOrder).toHaveBeenCalledWith(
+      expect.objectContaining({ receiver: RECEIVER_ADDRESS }),
+      expect.anything(),
+    )
+  })
+
+  // Naming the owner means the same to placement as naming nobody, so the field stays off the wire.
+  it('names no receiver when the payout goes to the owner', async () => {
+    await solanaFlow(buildContext({ quoteReceiver: SOLANA_ACCOUNT }), buildAnalytics(), { isSponsored: true })
+
+    expect(mockPostSolanaSponsoredOrder.mock.calls[0]?.[0]).not.toHaveProperty('receiver')
   })
 
   // The real blockhash usually outlives the shown window (the estimate is capped), so the chain-level

@@ -4,6 +4,7 @@ import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 
 import { AdditionalTargetChainId, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isSolanaSmartContractWallet } from '@cowprotocol/sdk-trading-solana'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { fireEvent, render, screen, RenderResult } from '@testing-library/react'
@@ -45,12 +46,23 @@ jest.mock('common/pure/ChainPrefixWarning', () => ({
   default: () => <div data-testid="chain-prefix-warning" />,
 }))
 
+// PublicKey.isOnCurve misreports every point as on-curve under jsdom, so the real check can never
+// report a PDA here. The SDK covers it under the node environment.
+jest.mock('@cowprotocol/sdk-trading-solana', () => ({
+  ...jest.requireActual('@cowprotocol/sdk-trading-solana'),
+  isSolanaSmartContractWallet: jest.fn(() => false),
+}))
+
 const mockUseReceiverChainInfo = useReceiverChainInfo as jest.MockedFunction<typeof useReceiverChainInfo>
 const mockUseReceiverValidation = useReceiverValidation as jest.MockedFunction<typeof useReceiverValidation>
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
+const mockIsSolanaSmartContractWallet = isSolanaSmartContractWallet as jest.MockedFunction<
+  typeof isSolanaSmartContractWallet
+>
 
 beforeEach(() => {
   mockUseWalletInfo.mockReturnValue({ chainId: SupportedChainId.MAINNET })
+  mockIsSolanaSmartContractWallet.mockReturnValue(false)
 })
 
 i18n.load('en-US', {})
@@ -234,6 +246,39 @@ describe('ReceiverPanelBody — confirmation row visibility', () => {
   it('does NOT show for EOA when isSmartContractWallet is false (non-bridging mode)', () => {
     mockValidAddress()
     renderComponent({ value: VALID_EVM_ADDRESS, isSmartContractWalletBridging: false })
+    expect(screen.queryByRole('checkbox')).toBeNull()
+  })
+})
+
+describe('ReceiverPanelBody — program-derived recipient', () => {
+  function renderSolanaTrade(): void {
+    mockUseWalletInfo.mockReturnValue({ chainId: SupportedChainId.SOLANA })
+    mockSolanaChainInfo()
+    mockValidAddress()
+    renderComponent({ value: VALID_SOL_ADDRESS, targetChainId: SupportedChainId.SOLANA })
+  }
+
+  it('asks the trader to confirm a recipient no key pair can sign for', () => {
+    mockIsSolanaSmartContractWallet.mockReturnValue(true)
+    renderSolanaTrade()
+
+    expect(screen.getByRole('checkbox')).not.toBeNull()
+    expect(screen.getByText(/program address, not a wallet/)).not.toBeNull()
+  })
+
+  it('asks nothing of a plain wallet recipient', () => {
+    renderSolanaTrade()
+
+    expect(screen.queryByRole('checkbox')).toBeNull()
+  })
+
+  it('does not ask while the address is still invalid', () => {
+    mockIsSolanaSmartContractWallet.mockReturnValue(true)
+    mockUseWalletInfo.mockReturnValue({ chainId: SupportedChainId.SOLANA })
+    mockSolanaChainInfo()
+    mockInvalidAddress()
+    renderComponent({ value: 'bad', targetChainId: SupportedChainId.SOLANA })
+
     expect(screen.queryByRole('checkbox')).toBeNull()
   })
 })

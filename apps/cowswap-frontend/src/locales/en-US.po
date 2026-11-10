@@ -904,6 +904,10 @@ msgstr "Unwrapping {inputSymbol}"
 #~ msgid "Each TWAP part remains open for <0>{partDurationDisplay}</0> until the next part becomes active."
 #~ msgstr "Each TWAP part remains open for <0>{partDurationDisplay}</0> until the next part becomes active."
 
+#: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPdaConfirmationRow.pure.tsx
+msgid "Recipient is a program address, not a wallet. Confirm the program that owns it can transfer the tokens it receives — otherwise they cannot be recovered."
+msgstr "Recipient is a program address, not a wallet. Confirm the program that owns it can transfer the tokens it receives — otherwise they cannot be recovered."
+
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderCodeInfo.tsx
 msgid "Active referral code"
 msgstr "Active referral code"
@@ -7701,8 +7705,8 @@ msgstr "{sellTokenPart} for at least {buyTokenPart} to {recipientPart}"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/LimitOrdersSettings.pure.tsx
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapWidget/index.tsx
-msgid "Custom recipients are not available on Solana yet."
-msgstr "Custom recipients are not available on Solana yet."
+#~ msgid "Custom recipients are not available on Solana yet."
+#~ msgstr "Custom recipients are not available on Solana yet."
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
 msgid "No surplus for the given time period"

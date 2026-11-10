@@ -12,6 +12,11 @@ export interface SolanaOrderDetails {
   orderPda: string
   sellTokenAccount: string
   buyTokenAccount: string
+  /**
+   * The wallet `buyTokenAccount` belongs to, as named at placement. Undefined when it is the owner's
+   * own, and for an order placed on chain rather than through the book.
+   */
+  receiverWallet?: string
 }
 
 export type SolanaOrderKind = 'sell' | 'buy'
@@ -27,6 +32,11 @@ export interface SolanaRawOrder {
   /** `0x` + 64 hex, the hash of the encoded intent. An EVM uid is 112 hex. */
   uid: string
   owner: string
+  /**
+   * The wallet `buyTokenAccount` belongs to. `null` unless placement named one other than the owner,
+   * which also covers every order created on chain directly.
+   */
+  receiver: string | null
   sellToken: string
   buyToken: string
   sellTokenAccount: string

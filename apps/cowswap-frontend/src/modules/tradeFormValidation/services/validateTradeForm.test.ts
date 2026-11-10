@@ -1,6 +1,7 @@
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { OrderKind, PriceQuality, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
+import { isSolanaSmartContractWallet } from '@cowprotocol/sdk-trading-solana'
 
 import { TradeQuoteState } from 'modules/tradeQuote'
 
@@ -10,6 +11,21 @@ import { validateTradeForm } from './validateTradeForm'
 
 import { ApproveRequiredReason } from '../../erc20Approve'
 import { TradeFormValidation, TradeFormValidationContext } from '../types'
+
+// PublicKey.isOnCurve misreports every point as on-curve under jsdom, so the real check can never
+// report a PDA here. The SDK covers it under the node environment.
+jest.mock('@cowprotocol/sdk-trading-solana', () => ({
+  ...jest.requireActual('@cowprotocol/sdk-trading-solana'),
+  isSolanaSmartContractWallet: jest.fn(() => false),
+}))
+
+const mockIsSolanaSmartContractWallet = isSolanaSmartContractWallet as jest.MockedFunction<
+  typeof isSolanaSmartContractWallet
+>
+
+beforeEach(() => {
+  mockIsSolanaSmartContractWallet.mockReturnValue(false)
+})
 
 const mockCurrencyAmount = (value: string): CurrencyAmount<Currency> =>
   ({
@@ -792,6 +808,38 @@ describe('validateTradeForm - Solana swap recipient', () => {
       recipientEnsAddress: EVM_RECIPIENT,
     })
     expect(result).toContain(TradeFormValidation.RecipientInvalid)
+  })
+
+  describe('program-derived recipient', () => {
+    test('blocks the trade until the trader confirms it', () => {
+      mockIsSolanaSmartContractWallet.mockReturnValue(true)
+
+      expect(validateTradeForm(withRecipient(SOLANA_RECIPIENT))).toContain(TradeFormValidation.RecipientNotConfirmed)
+    })
+
+    test('lets it through once confirmed', () => {
+      mockIsSolanaSmartContractWallet.mockReturnValue(true)
+
+      const result = validateTradeForm({ ...withRecipient(SOLANA_RECIPIENT), isNonEvmReceiverConfirmed: true })
+
+      expect(result || []).not.toContain(TradeFormValidation.RecipientNotConfirmed)
+    })
+
+    test('asks nothing of a plain wallet recipient', () => {
+      const result = validateTradeForm(withRecipient(SOLANA_RECIPIENT))
+
+      expect(result || []).not.toContain(TradeFormValidation.RecipientNotConfirmed)
+    })
+
+    // Nothing is sent anywhere until the address itself parses, so the confirmation would be noise.
+    test('asks nothing while the recipient is invalid', () => {
+      mockIsSolanaSmartContractWallet.mockReturnValue(true)
+
+      const result = validateTradeForm(withRecipient(EVM_RECIPIENT)) || []
+
+      expect(result).toContain(TradeFormValidation.RecipientInvalid)
+      expect(result).not.toContain(TradeFormValidation.RecipientNotConfirmed)
+    })
   })
 
   describe('quote loading', () => {
