@@ -1,11 +1,7 @@
-import { createStore, Provider } from 'jotai'
-import { createElement, ReactNode } from 'react'
-
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { ChainInfo, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { renderHook } from '@testing-library/react'
-import { alphaNetworksEnabledAtom } from 'entities/alphaNetworks'
 import { useFlags } from 'launchdarkly-react-client-sdk'
 
 import { useSupportedChains } from './useSupportedChains'
@@ -55,21 +51,12 @@ describe('useSupportedChains', () => {
     expect(ids()).toContain(SupportedChainId.ROBINHOOD)
   })
 
-  it('shows Solana from beta onwards, without the user enabling alpha networks', () => {
-    mockUseFlags.mockReturnValue({ solanaVersion: 'beta' })
-
-    expect(renderHook(() => useSupportedChains()).result.current.map(({ id }) => id)).toContain(SupportedChainId.SOLANA)
-  })
-
-  it('shows Solana once the user enables alpha networks, while the option is visible', () => {
-    mockUseFlags.mockReturnValue({ isAlphaNetworksOptionVisible: true })
-    const store = createStore()
-    const wrapper = ({ children }: { children: ReactNode }): ReactNode => createElement(Provider, { store }, children)
-    const ids = (): number[] => renderHook(() => useSupportedChains(), { wrapper }).result.current.map(({ id }) => id)
+  it('hides Solana until isSolanaEnabled is on', () => {
+    const ids = (): number[] => renderHook(() => useSupportedChains()).result.current.map(({ id }) => id)
 
     expect(ids()).not.toContain(SupportedChainId.SOLANA)
 
-    store.set(alphaNetworksEnabledAtom, true)
+    mockUseFlags.mockReturnValue({ isSolanaEnabled: true })
 
     expect(ids()).toContain(SupportedChainId.SOLANA)
   })

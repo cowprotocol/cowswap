@@ -17,28 +17,20 @@ function wrap(element: ReactElement): ReactElement {
 }
 
 describe('ChainStatusBadge', () => {
-  it('marks Solana as alpha on the alpha version', () => {
-    render(wrap(<ChainStatusBadge chainId={SupportedChainId.SOLANA} version="alpha" />))
-
-    expect(screen.queryByText('ALPHA')).not.toBeNull()
-    expect(screen.queryByText('BETA')).toBeNull()
-  })
-
-  it('marks Solana as beta on the beta version', () => {
-    render(wrap(<ChainStatusBadge chainId={SupportedChainId.SOLANA} version="beta" />))
+  it('marks Solana as beta while the beta flag is on', () => {
+    render(wrap(<ChainStatusBadge chainId={SupportedChainId.SOLANA} isBeta />))
 
     expect(screen.queryByText('BETA')).not.toBeNull()
-    expect(screen.queryByText('ALPHA')).toBeNull()
   })
 
-  it('renders no badge once Solana reaches ga', () => {
-    const { container } = render(wrap(<ChainStatusBadge chainId={SupportedChainId.SOLANA} version="ga" />))
+  it('renders no badge once the beta flag is off', () => {
+    const { container } = render(wrap(<ChainStatusBadge chainId={SupportedChainId.SOLANA} isBeta={false} />))
 
     expect(container.firstChild).toBeNull()
   })
 
   it('renders nothing for a non-Solana chain', () => {
-    const { container } = render(wrap(<ChainStatusBadge chainId={SupportedChainId.MAINNET} version="alpha" />))
+    const { container } = render(wrap(<ChainStatusBadge chainId={SupportedChainId.MAINNET} isBeta />))
 
     expect(container.firstChild).toBeNull()
   })

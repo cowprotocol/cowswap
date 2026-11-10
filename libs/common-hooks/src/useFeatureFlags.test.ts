@@ -9,7 +9,7 @@ jest.mock('launchdarkly-react-client-sdk', () => ({
 
 const mockUseFlags = jest.mocked(useFlags)
 
-const LD_FLAGS = { solanaVersion: 'ga', isSolBridgeEnabled: true, isTwapEoaEnabled: true }
+const LD_FLAGS = { isSolanaEnabled: true, isSolBridgeEnabled: true, isTwapEoaEnabled: true }
 
 describe('useFeatureFlags', () => {
   beforeEach(() => {
@@ -26,14 +26,13 @@ describe('useFeatureFlags', () => {
     expect(result.current).toBe(LD_FLAGS)
   })
 
-  it('forces Solana and the alpha networks option off inside the widget and keeps the rest, including bridging to Solana', () => {
+  it('forces Solana off inside the widget and keeps the rest, including bridging to Solana', () => {
     window.location.hash = '#/1/widget/swap'
 
     const { result } = renderHook(() => useFeatureFlags())
 
     expect(result.current).toEqual({
-      solanaVersion: 'alpha',
-      isAlphaNetworksOptionVisible: false,
+      isSolanaEnabled: false,
       isSolBridgeEnabled: true,
       isTwapEoaEnabled: true,
     })

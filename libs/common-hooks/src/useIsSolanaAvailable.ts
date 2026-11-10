@@ -1,13 +1,10 @@
 import { useFeatureFlags } from './useFeatureFlags'
-import { useIsSolanaBetaOrHigher } from './useSolanaVersion'
 
 /**
- * Whether Solana's wallet connector, chain and quotes are loaded. Ignores the user's alpha networks opt-in,
- * which only decides whether Solana is listed, so direct Solana links keep working without it.
+ * Whether Solana's wallet connector, chain and quotes are loaded.
  */
 export function useIsSolanaAvailable(): boolean {
-  const { isAlphaNetworksOptionVisible } = useFeatureFlags()
-  const isBetaOrHigher = useIsSolanaBetaOrHigher()
+  const { isSolanaEnabled } = useFeatureFlags()
 
-  return isBetaOrHigher || !!isAlphaNetworksOptionVisible
+  return !!isSolanaEnabled
 }

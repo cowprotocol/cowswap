@@ -501,11 +501,11 @@ never a logic bug in the test — check infrastructure contention first.
   absolute number from that fixture, unrelated to whatever amount the test actually trades.
 - **Solana availability needs two independent flags, Bitcoin needs only one.** `isSolBridgeEnabled` /
   `isBtcBridgeEnabled` (the LD-bypass flags above) gate chain *availability* in
-  `useSupportedTargetChains`, but Solana additionally needs `solanaVersion` to be `beta` or higher for
-  `CHAIN_INFO` to have a Solana entry to look up at all (`libs/common-const/src/featureFlags.ts` exports the
-  resolved `IS_SOLANA_ENABLED` boot flag, read once at module load — before LaunchDarkly's client exists — so
-  it honors the same `window.__COWSWAP_E2E_FEATURE_FLAGS__` override the other LD-bypass flags above use).
-  Set it via the `installLaunchDarkly` mock's `setFlag('solanaVersion', 'beta')`, applied via
+  `useSupportedTargetChains`, but Solana additionally needs `isSolanaEnabled` for `CHAIN_INFO` to have a
+  Solana entry to look up at all (`libs/common-const/src/featureFlags.ts` exports the resolved
+  `IS_SOLANA_ENABLED` boot flag, read once at module load — before LaunchDarkly's client exists — so it
+  honors the same `window.__COWSWAP_E2E_FEATURE_FLAGS__` override the other LD-bypass flags above use).
+  Set it via the `installLaunchDarkly` mock's `setFlag('isSolanaEnabled', true)`, applied via
   `context.addInitScript` before navigating — same mechanism as `isSolBridgeEnabled`/`isBtcBridgeEnabled`.
 - **Near Intents' real dest-tokens fixture has no usable exact-"BTC" entry.** Its one `blockchain: "btc"`
   token with `symbol: "BTC"` (`nep141:btc.omft.near`) is on the SDK's own hardcoded deprecated-asset-id

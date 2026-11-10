@@ -1,14 +1,12 @@
-import { useAtom } from 'jotai'
 import { PropsWithChildren, ReactNode, useMemo } from 'react'
 
 import { SUPPORTED_LOCALES } from '@cowprotocol/common-const'
-import { useFeatureFlags, useIsSolanaBetaOrHigher, useMediaQuery } from '@cowprotocol/common-hooks'
+import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { Color, MenuBar, type CowSwapTheme } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
-import { alphaNetworksEnabledAtom } from 'entities/alphaNetworks'
 import SVG from 'react-inlinesvg'
 import { NavLink } from 'react-router'
 
@@ -52,10 +50,8 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
   const { chainId } = useWalletInfo()
   const isInjectedWidgetMode = isInjectedWidget()
   const menuItems = useMenuItems()
-  const { isSolversEnabled, isAlphaNetworksOptionVisible, isRwaEnabled } = useFeatureFlags()
-  const isSolanaBetaOrHigher = useIsSolanaBetaOrHigher()
+  const { isSolversEnabled, isRwaEnabled } = useFeatureFlags()
   const [darkMode, toggleDarkMode] = useDarkModeManager()
-  const [areAlphaNetworksEnabled, setAlphaNetworksEnabled] = useAtom(alphaNetworksEnabledAtom)
   const { setLocale } = useUserLocaleManager()
   const isMobile = useMediaQuery(isMobileQuery(false))
   const resolvedCustomTheme = useCustomTheme()
@@ -70,24 +66,8 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
         label: darkMode ? t`Light Mode` : t`Dark Mode`,
         onClick: toggleDarkMode,
       },
-      ...(isAlphaNetworksOptionVisible && !isSolanaBetaOrHigher
-        ? [
-            {
-              label: areAlphaNetworksEnabled ? t`Disable Alpha Networks` : t`Enable Alpha Networks`,
-              onClick: () => setAlphaNetworksEnabled(!areAlphaNetworksEnabled),
-            },
-          ]
-        : []),
     ],
-    [
-      darkMode,
-      toggleDarkMode,
-      isAlphaNetworksOptionVisible,
-      isSolanaBetaOrHigher,
-      areAlphaNetworksEnabled,
-      setAlphaNetworksEnabled,
-      t,
-    ],
+    [darkMode, toggleDarkMode, t],
   )
 
   const languageNavItems = {

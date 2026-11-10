@@ -93,7 +93,7 @@ describe('FeatureFlagsUpdater', () => {
 
   it('does not sync boot-critical flags inside the widget', () => {
     const store = createStore()
-    useFeatureFlagsMock.mockReturnValue({ solanaVersion: 'alpha' })
+    useFeatureFlagsMock.mockReturnValue({ isSolanaEnabled: false })
     useLDClientMock.mockReturnValue({} as ReturnType<typeof useLDClient>)
     window.location.hash = '#/1/widget/swap'
 

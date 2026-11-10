@@ -16,13 +16,11 @@ import type { BrowserContext } from '@playwright/test'
  * load (`tradingSdk/bridgingSdk.ts`), before flags ever matter.
  */
 export interface LaunchDarklyMock {
-  setFlag(key: string, value: FeatureFlagOverride): Promise<void>
+  setFlag(key: string, value: boolean): Promise<void>
   reset(): Promise<void>
 }
 
-type FeatureFlagOverride = boolean | string
-
-const DEFAULT_FLAGS: Readonly<Record<string, FeatureFlagOverride>> = {
+const DEFAULT_FLAGS: Readonly<Record<string, boolean>> = {
   isBungeeBridgeProviderEnabled: true,
   isNearIntentsBridgeProviderEnabled: true,
   isAcrossBridgeProviderEnabled: false,
@@ -30,12 +28,12 @@ const DEFAULT_FLAGS: Readonly<Record<string, FeatureFlagOverride>> = {
 }
 
 export async function installLaunchDarkly(context: BrowserContext): Promise<LaunchDarklyMock> {
-  let flags: Record<string, FeatureFlagOverride> = { ...DEFAULT_FLAGS }
+  let flags: Record<string, boolean> = { ...DEFAULT_FLAGS }
 
   async function applyInitScript(): Promise<void> {
-    await context.addInitScript((flagsToApply: Record<string, FeatureFlagOverride>) => {
+    await context.addInitScript((flagsToApply: Record<string, boolean>) => {
       ;(
-        window as unknown as { __COWSWAP_E2E_FEATURE_FLAGS__?: Record<string, FeatureFlagOverride> }
+        window as unknown as { __COWSWAP_E2E_FEATURE_FLAGS__?: Record<string, boolean> }
       ).__COWSWAP_E2E_FEATURE_FLAGS__ = flagsToApply
     }, flags)
   }
