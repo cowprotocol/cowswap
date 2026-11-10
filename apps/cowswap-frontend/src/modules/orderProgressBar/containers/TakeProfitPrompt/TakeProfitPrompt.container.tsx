@@ -4,6 +4,7 @@ import { Command } from '@cowprotocol/types'
 import { BannerOrientation, TokenSymbol } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { PiTrendUpBold } from 'react-icons/pi'
 
 import { Order } from 'legacy/state/orders/actions'
@@ -13,6 +14,7 @@ import { getTakeProfitNavigation, getTakeProfitOrder, PricePercentageShortcuts }
 import { useNavigate } from 'common/hooks/useNavigate'
 
 import * as styledEl from './TakeProfitPrompt.styled'
+import { isTakeProfitPromptEnabled } from './takeProfitPrompt.utils'
 
 export interface TakeProfitPromptProps {
   order: Order
@@ -21,6 +23,10 @@ export interface TakeProfitPromptProps {
 
 export function TakeProfitPrompt({ order, onDismiss }: TakeProfitPromptProps): ReactNode {
   const navigate = useNavigate()
+  const widgetParams = useInjectedWidgetParams()
+
+  if (!isTakeProfitPromptEnabled(widgetParams)) return null
+
   const takeProfitOrder = getTakeProfitOrder(order)
   if (!takeProfitOrder) return null
 
