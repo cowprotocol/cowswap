@@ -13,11 +13,12 @@ export const Wrapper = styled.div<{ $bottomBarHeight: number }>`
   left: 16px;
   z-index: ${OVERLAY_Z_INDEX.overlay - 1};
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   pointer-events: none;
 
   ${Media.upToMedium()} {
     bottom: ${({ $bottomBarHeight }) => $bottomBarHeight + 16}px;
+    justify-content: center;
   }
 
   ${Media.upToExtraSmall()} {
@@ -32,7 +33,7 @@ export const Card = styled.section`
   flex-flow: column nowrap;
   gap: 16px;
   width: 100%;
-  max-width: 640px;
+  max-width: 400px;
   padding: 20px;
   border: 1px solid var(${UI.COLOR_BORDER});
   border-radius: 16px;
@@ -48,6 +49,10 @@ export const Card = styled.section`
   &:focus-visible {
     outline: 2px solid var(${UI.COLOR_PRIMARY});
     outline-offset: 2px;
+  }
+
+  ${Media.upToMedium()} {
+    max-width: 640px;
   }
 
   ${Media.upToExtraSmall()} {
