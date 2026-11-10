@@ -8,7 +8,7 @@ export interface FeatureFlags {
   isPriceChartEnabled?: boolean
   isTwapEoaEnabled?: boolean
   isSolanaEnabled?: boolean
-  isBeta?: boolean
+  isSolanaBeta?: boolean
   isSolanaSponsoredOrdersEnabled?: boolean
   isAtaCreationDisabled?: boolean
   isSolanaAppDataEnabled?: boolean

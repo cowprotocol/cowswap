@@ -10,7 +10,7 @@ import { render, screen } from '@testing-library/react'
 import { ChainsList } from './ChainsList'
 
 jest.mock('launchdarkly-react-client-sdk', () => ({
-  useFlags: () => ({ isBeta: true }),
+  useFlags: () => ({ isSolanaBeta: true }),
 }))
 
 i18n.load('en-US', {})

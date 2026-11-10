@@ -7,7 +7,7 @@ import { ChainStatusBadge, ChainStatusBadgeProps } from 'common/pure/ChainStatus
 export type ChainStatusBadgeContainerProps = Omit<ChainStatusBadgeProps, 'isBeta'>
 
 export function ChainStatusBadgeContainer(props: ChainStatusBadgeContainerProps): ReactNode {
-  const { isBeta } = useFeatureFlags()
+  const { isSolanaBeta } = useFeatureFlags()
 
-  return <ChainStatusBadge {...props} isBeta={!!isBeta} />
+  return <ChainStatusBadge {...props} isBeta={!!isSolanaBeta} />
 }
