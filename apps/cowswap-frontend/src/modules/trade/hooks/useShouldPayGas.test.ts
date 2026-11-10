@@ -4,6 +4,7 @@ import { useWalletDetails, useWalletInfo, WalletDetails, WalletInfo } from '@cow
 import { renderHook } from '@testing-library/react'
 
 import { useIsEoaEthFlow } from './useIsEoaEthFlow'
+import { useIsSwapEth } from './useIsSwapEth'
 import { useShouldPayGas } from './useShouldPayGas'
 
 jest.mock('@cowprotocol/wallet', () => ({
@@ -16,9 +17,14 @@ jest.mock('./useIsEoaEthFlow', () => ({
   useIsEoaEthFlow: jest.fn(),
 }))
 
+jest.mock('./useIsSwapEth', () => ({
+  useIsSwapEth: jest.fn(),
+}))
+
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
 const mockUseWalletDetails = useWalletDetails as jest.MockedFunction<typeof useWalletDetails>
 const mockUseIsEoaEthFlow = useIsEoaEthFlow as jest.MockedFunction<typeof useIsEoaEthFlow>
+const mockUseIsSwapEth = useIsSwapEth as jest.MockedFunction<typeof useIsSwapEth>
 
 const ACCOUNT = '0x0000000000000000000000000000000000000001'
 
@@ -27,6 +33,7 @@ interface Scenario {
   account?: string
   allowsOffchainSigning: boolean
   isEoaEthFlow?: boolean
+  isSwapEth?: boolean
 }
 
 function renderShouldPayGas({
@@ -34,17 +41,23 @@ function renderShouldPayGas({
   account,
   allowsOffchainSigning,
   isEoaEthFlow = false,
+  isSwapEth = false,
 }: Scenario): boolean {
   mockUseWalletInfo.mockReturnValue({ chainId, account } as WalletInfo)
   mockUseWalletDetails.mockReturnValue({ allowsOffchainSigning } as WalletDetails)
   mockUseIsEoaEthFlow.mockReturnValue(isEoaEthFlow)
+  mockUseIsSwapEth.mockReturnValue(isSwapEth)
 
   return renderHook(() => useShouldPayGas()).result.current
 }
 
 describe('useShouldPayGas', () => {
-  it('returns false when no wallet is connected', () => {
+  it('returns false when no wallet is connected and the sell token is not native', () => {
     expect(renderShouldPayGas({ account: undefined, allowsOffchainSigning: false })).toBe(false)
+  })
+
+  it('returns true when no wallet is connected and the native token is sold', () => {
+    expect(renderShouldPayGas({ account: undefined, allowsOffchainSigning: false, isSwapEth: true })).toBe(true)
   })
 
   it('returns false on Solana', () => {

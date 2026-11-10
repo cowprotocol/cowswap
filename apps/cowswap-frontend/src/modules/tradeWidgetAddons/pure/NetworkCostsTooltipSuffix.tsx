@@ -1,20 +1,25 @@
 import { ReactNode } from 'react'
 
+import { useWalletInfo } from '@cowprotocol/wallet'
+
 import { t } from '@lingui/core/macro'
 
-import { useIsEoaEthFlow, useShouldPayGas } from 'modules/trade'
+import { useIsEoaEthFlow, useIsSwapEth, useShouldPayGas } from 'modules/trade'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 export function NetworkCostsTooltipSuffix(): ReactNode {
+  const { account } = useWalletInfo()
   const isEoaEthFlow = useIsEoaEthFlow()
+  const isSwapEth = useIsSwapEth()
   const shouldPayGas = useShouldPayGas()
   const native = useNativeCurrency()
 
   if (!shouldPayGas) return null
 
   const nativeSymbol = native.symbol || ''
-  const reason = isEoaEthFlow
+  const isEthFlow = isEoaEthFlow || (!account && isSwapEth)
+  const reason = isEthFlow
     ? t`Because you are selling ${nativeSymbol} (native currency)`
     : t`Because you are using a smart contract wallet`
 
