@@ -17,6 +17,7 @@ import QRCode from 'qrcode'
 import fs from 'node:fs'
 import path from 'node:path'
 
+import { isClaimCode } from '../src/claimCode.js'
 import { PKG_ROOT } from '../src/config.js'
 
 interface BlockMetrics {
@@ -158,6 +159,27 @@ main().catch((err: unknown) => {
   console.error(`[claims:pdf] ${error.message}`)
   process.exit(1)
 })
+
+/**
+ * Refuse anything that is not a claim code.
+ *
+ * Both npm and pnpm print their script banner to stdout, so `claims:gen >
+ * codes.txt` silently captures those lines; without this check they are
+ * printed as cards whose QR leads nowhere.
+ */
+function assertClaimCodes(codes: string[], file: string): void {
+  const bad = codes.filter((code) => !isClaimCode(code))
+
+  if (bad.length === 0) return
+
+  const shown = bad.slice(0, 3).map((code) => JSON.stringify(code.slice(0, 60)))
+
+  throw new Error(
+    `${file}: ${bad.length} line(s) are not claim codes, e.g. ${shown.join(', ')}. ` +
+      `A shell redirect captures the npm/pnpm banner — generate with ` +
+      `"claims:gen -- --out <file>" instead, or delete the stray lines.`,
+  )
+}
 
 /** The URL a QR encodes; the app serves the claim page behind a hash route. */
 function claimUrl(baseUrl: string, code: string): string {
@@ -569,6 +591,8 @@ function readCodes(file: string, limit: number | null): string[] {
   if (unique.length !== cleaned.length) {
     console.error(`[claims:pdf] warning: dropped ${cleaned.length - unique.length} duplicate code(s)`)
   }
+
+  assertClaimCodes(unique, file)
 
   return limit === null ? unique : unique.slice(0, limit)
 }

@@ -74,10 +74,14 @@ Offline, or before the server is up (writes straight to the SQLite file; point i
 at the same DB the server uses):
 ```bash
 cd apps/graffiti-api
-GRAFFITI_DB=data/graffiti.db pnpm claims:gen -- --n 1000 --amount 1000 > data/codes.txt
+GRAFFITI_DB=data/graffiti.db pnpm claims:gen -- --n 1000 --amount 1000 --out data/codes.txt
 ```
-Codes go to stdout one per line, the summary to stderr — so the redirect above
-gives a clean list. Both outputs feed the PDF step below.
+Use `--out`, not a shell redirect: **npm and pnpm both print their script banner
+to stdout**, so `claims:gen > codes.txt` puts two lines like
+`> @cowprotocol/graffiti-api@1.0.0 claims:gen` at the top of the file. The PDF
+step refuses a file containing anything that is not a claim code, so this fails
+loudly rather than printing cards whose QR leads nowhere. Both this file and the
+admin endpoint's JSON feed the PDF step below.
 
 **Before printing 1000 codes, fund the treasury for them.** 1000 × 1000 tokens is
 1,000,000 units — the whole initial supply that `scripts/create-mint.ts` mints —
@@ -115,6 +119,19 @@ pnpm claims:pdf -- --codes data/codes.txt --base-url https://swap.cow.fi \
 pnpm claims:pdf -- --codes data/codes.txt --base-url https://swap.cow.fi \
   --out data/claim-cards.pdf
 ```
+
+`--base-url` is also how you test the cards before they point at production.
+Against the API serving the built frontend same-origin, use its own port; against
+the Vite dev server, use that one:
+```bash
+pnpm claims:pdf -- --codes data/codes.txt --base-url http://localhost:3199 --limit 12 \
+  --out data/local.pdf
+```
+`localhost` only resolves on the machine running it — to scan a printed card with
+a phone, pass that machine's LAN address instead (for example
+`--base-url http://192.168.1.20:3000`), and make sure the codes in the PDF exist
+in the DB that deployment reads. `APP_BASE_URL` sets the default if you would
+rather not repeat the flag.
 
 `--codes` takes either the one-per-line list or the admin endpoint's JSON.
 Duplicates are dropped with a warning; `pnpm claims:pdf -- --help` lists every

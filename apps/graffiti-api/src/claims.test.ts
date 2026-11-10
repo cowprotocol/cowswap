@@ -4,7 +4,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { test, describe } from 'node:test'
 
-import { generateClaimCode } from './claimCode.js'
+import { generateClaimCode, isClaimCode } from './claimCode.js'
 import { JsonStore } from './jsonStore.js'
 
 const BASE58 = /^[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{22}$/
@@ -102,5 +102,22 @@ describe('replay protection', () => {
     const store = tempStore()
     assert.equal(store.claimMemo('graffiti:v1:wallet:1700000000'), true)
     assert.equal(store.claimMemo('graffiti:v1:wallet:1700000000'), false)
+  })
+})
+
+describe('isClaimCode', () => {
+  test('accepts generated codes', () => {
+    for (let i = 0; i < 100; i++) assert.equal(isClaimCode(generateClaimCode()), true)
+  })
+
+  test('rejects an npm/pnpm script banner line', () => {
+    assert.equal(isClaimCode('> @cowprotocol/graffiti-api@1.0.0 claims:gen'), false)
+    assert.equal(isClaimCode('> tsx scripts/gen-claims.ts -- --n 2'), false)
+  })
+
+  test('rejects wrong length and non-base58 characters', () => {
+    assert.equal(isClaimCode('tooshort'), false)
+    assert.equal(isClaimCode(`${generateClaimCode()}x`), false)
+    assert.equal(isClaimCode('0OIl'.padEnd(22, 'a')), false)
   })
 })

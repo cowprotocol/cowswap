@@ -2,6 +2,7 @@ import crypto from 'node:crypto'
 
 const BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
 const CLAIM_CODE_LENGTH = 22
+const CLAIM_CODE_PATTERN = new RegExp(`^[${BASE58_ALPHABET}]{${CLAIM_CODE_LENGTH}}$`)
 
 /**
  * Claim codes are bearer tokens, so they must come from a CSPRNG. Bytes >= 232
@@ -20,4 +21,9 @@ export function generateClaimCode(): string {
     }
   }
   return code
+}
+
+/** Whether a string could be a claim code this module would produce. */
+export function isClaimCode(value: string): boolean {
+  return CLAIM_CODE_PATTERN.test(value)
 }
