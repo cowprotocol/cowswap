@@ -15,7 +15,8 @@
     "test": "node --import tsx --test \"src/**/*.test.ts\"",
     "mint:create": "tsx scripts/create-mint.ts",
     "claims:gen": "tsx scripts/gen-claims.ts",
-    "claims:pdf": "tsx scripts/make-claim-pdf.ts"
+    "claims:pdf": "tsx scripts/make-claim-pdf.ts",
+    "claims:import": "tsx scripts/import-claims.ts"
   },
   "dependencies": {
     "@fastify/static": "10.1.10",
