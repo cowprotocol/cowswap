@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { SOLANA_ALPHA_MAX_TRADE_SIZE_USD_DISPLAY } from '@cowprotocol/common-const'
-import { useIsSolanaAvailable, useIsSolanaBeta } from '@cowprotocol/common-hooks'
+import { useIsSolanaAvailable, useIsSolanaPublicLaunched } from '@cowprotocol/common-hooks'
 import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { DismissableInlineBanner, LinkStyledButton, StatusColorVariant } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -24,9 +24,9 @@ export function SolanaAlphaBanner(): ReactNode {
   const { openModal } = useSolanaAlphaRiskModal()
   const { isAcknowledgementRequired } = useSolanaAlphaAcknowledgement()
   const isSolanaAvailable = useIsSolanaAvailable()
-  const isSolanaBeta = useIsSolanaBeta()
+  const isSolanaPublicLaunched = useIsSolanaPublicLaunched()
 
-  if (isSolanaBeta || !isSolanaAvailable || !isSolanaChain(chainId) || isAcknowledgementRequired) return null
+  if (isSolanaPublicLaunched || !isSolanaAvailable || !isSolanaChain(chainId) || isAcknowledgementRequired) return null
 
   return (
     <DismissableInlineBanner bannerId={BANNER_IDS.SOLANA_ALPHA} bannerType={StatusColorVariant.Alert} iconSize={32}>

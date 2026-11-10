@@ -53,7 +53,7 @@ describe('validateTradeForm - xStock logic', () => {
     isProxySetupValid: true,
     customTokenError: undefined,
     isRestrictedForCountry: false,
-    isSolanaBeta: false,
+    isSolanaPublicLaunched: false,
     isBalancesLoading: false,
     isBundlingSupported: true,
     isInputCurrencyXstock: false,
@@ -246,7 +246,7 @@ describe('validateTradeForm - Solana Alpha trade limit', () => {
     isProxySetupValid: true,
     customTokenError: undefined,
     isRestrictedForCountry: false,
-    isSolanaBeta: false,
+    isSolanaPublicLaunched: false,
     isBalancesLoading: false,
     isBundlingSupported: true,
     isInputCurrencyXstock: false,
@@ -298,10 +298,10 @@ describe('validateTradeForm - Solana Alpha trade limit', () => {
     expect(result || []).not.toContain(TradeFormValidation.SolanaAlphaMaxTradeSize)
   })
 
-  test('drops the trade limit once Solana is in beta', () => {
+  test('drops the trade limit once Solana is publicly launched', () => {
     const context = {
       ...baseContext,
-      isSolanaBeta: true,
+      isSolanaPublicLaunched: true,
       derivedTradeState: {
         ...baseContext.derivedTradeState,
         inputCurrencyFiatAmount: mockCurrencyAmount('25000'),
@@ -312,10 +312,10 @@ describe('validateTradeForm - Solana Alpha trade limit', () => {
     expect(validateTradeForm(context) || []).not.toContain(TradeFormValidation.SolanaAlphaMaxTradeSize)
   })
 
-  test('allows a trade with no USD estimate once Solana is in beta', () => {
+  test('allows a trade with no USD estimate once Solana is publicly launched', () => {
     const context = {
       ...baseContext,
-      isSolanaBeta: true,
+      isSolanaPublicLaunched: true,
       derivedTradeState: {
         ...baseContext.derivedTradeState,
         inputCurrencyFiatAmount: null,

@@ -26,7 +26,7 @@ describe('useFeatureFlags', () => {
     expect(result.current).toBe(LD_FLAGS)
   })
 
-  it('forces Solana and the alpha networks option off inside the widget and keeps the rest, including bridging to Solana', () => {
+  it('forces every Solana flag off inside the widget and keeps the rest, including bridging to Solana', () => {
     window.location.hash = '#/1/widget/swap'
 
     const { result } = renderHook(() => useFeatureFlags())
@@ -34,7 +34,7 @@ describe('useFeatureFlags', () => {
     expect(result.current).toEqual({
       isSolanaEnabled: false,
       isAlphaNetworksOptionVisible: false,
-      isSolanaBeta: false,
+      isSolanaPublicLaunched: false,
       isSolBridgeEnabled: true,
       isTwapEoaEnabled: true,
     })

@@ -7,14 +7,14 @@ import { Trans } from '@lingui/react/macro'
 
 export interface ChainStatusBadgeProps {
   chainId: TargetChainId
-  isBeta: boolean
+  isPublicLaunched: boolean
   type?: BadgeType
   style?: CSSProperties
 }
 
 export function ChainStatusBadge({
   chainId,
-  isBeta,
+  isPublicLaunched,
   type = BadgeTypes.ALERT2,
   style,
 }: ChainStatusBadgeProps): ReactNode {
@@ -22,7 +22,7 @@ export function ChainStatusBadge({
 
   return (
     <Badge type={type} style={style}>
-      {isBeta ? <Trans>BETA</Trans> : <Trans>ALPHA</Trans>}
+      {isPublicLaunched ? <Trans>NEW</Trans> : <Trans>ALPHA</Trans>}
     </Badge>
   )
 }

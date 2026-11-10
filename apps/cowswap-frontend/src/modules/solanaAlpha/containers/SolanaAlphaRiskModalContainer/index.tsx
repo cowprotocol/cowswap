@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useEffect } from 'react'
 
-import { useIsSolanaAvailable, useIsSolanaBeta } from '@cowprotocol/common-hooks'
+import { useIsSolanaAvailable, useIsSolanaPublicLaunched } from '@cowprotocol/common-hooks'
 import { isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -20,10 +20,10 @@ export function SolanaAlphaRiskModalContainer(): ReactNode {
   const { isOpen: isRiskModalOpen, closeModal } = useSolanaAlphaRiskModal()
   const onSelectNetwork = useOnSelectNetwork()
   const isSolanaAvailable = useIsSolanaAvailable()
-  const isSolanaBeta = useIsSolanaBeta()
+  const isSolanaPublicLaunched = useIsSolanaPublicLaunched()
 
   // A Solana URL isn't validated until LaunchDarkly resolves, so wait for the flags instead of flashing the modal
-  const isSolana = isSolanaAvailable && !isSolanaBeta && isSolanaChain(chainId)
+  const isSolana = isSolanaAvailable && !isSolanaPublicLaunched && isSolanaChain(chainId)
 
   useEffect(() => {
     if (!isSolana) closeModal()

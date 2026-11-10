@@ -2,7 +2,7 @@ import { useAtom } from 'jotai'
 import { PropsWithChildren, ReactNode, useMemo } from 'react'
 
 import { SUPPORTED_LOCALES } from '@cowprotocol/common-const'
-import { useFeatureFlags, useIsSolanaBeta, useMediaQuery } from '@cowprotocol/common-hooks'
+import { useFeatureFlags, useIsSolanaPublicLaunched, useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { Color, MenuBar, type CowSwapTheme } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -53,7 +53,7 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
   const isInjectedWidgetMode = isInjectedWidget()
   const menuItems = useMenuItems()
   const { isSolversEnabled, isAlphaNetworksOptionVisible, isRwaEnabled } = useFeatureFlags()
-  const isSolanaBeta = useIsSolanaBeta()
+  const isSolanaPublicLaunched = useIsSolanaPublicLaunched()
   const [darkMode, toggleDarkMode] = useDarkModeManager()
   const [areAlphaNetworksEnabled, setAlphaNetworksEnabled] = useAtom(alphaNetworksEnabledAtom)
   const { setLocale } = useUserLocaleManager()
@@ -70,7 +70,7 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
         label: darkMode ? t`Light Mode` : t`Dark Mode`,
         onClick: toggleDarkMode,
       },
-      ...(isAlphaNetworksOptionVisible && !isSolanaBeta
+      ...(isAlphaNetworksOptionVisible && !isSolanaPublicLaunched
         ? [
             {
               label: areAlphaNetworksEnabled ? t`Disable Alpha Networks` : t`Enable Alpha Networks`,
@@ -83,7 +83,7 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
       darkMode,
       toggleDarkMode,
       isAlphaNetworksOptionVisible,
-      isSolanaBeta,
+      isSolanaPublicLaunched,
       areAlphaNetworksEnabled,
       setAlphaNetworksEnabled,
       t,

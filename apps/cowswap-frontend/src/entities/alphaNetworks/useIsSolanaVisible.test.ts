@@ -15,18 +15,18 @@ const mockUseFlags = jest.mocked(useFlags)
 
 describe('useIsSolanaVisible', () => {
   it.each`
-    isSolanaEnabled | isAlphaNetworksOptionVisible | isSolanaBeta | optedIn  | expected
-    ${true}         | ${false}                     | ${false}     | ${false} | ${true}
-    ${true}         | ${true}                      | ${false}     | ${false} | ${true}
-    ${false}        | ${true}                      | ${false}     | ${false} | ${false}
-    ${false}        | ${true}                      | ${false}     | ${true}  | ${true}
-    ${false}        | ${false}                     | ${false}     | ${true}  | ${false}
-    ${false}        | ${false}                     | ${true}      | ${false} | ${true}
-    ${false}        | ${true}                      | ${true}      | ${false} | ${true}
+    isSolanaEnabled | isAlphaNetworksOptionVisible | isSolanaPublicLaunched | optedIn  | expected
+    ${true}         | ${false}                     | ${false}               | ${false} | ${true}
+    ${true}         | ${true}                      | ${false}               | ${false} | ${true}
+    ${false}        | ${true}                      | ${false}               | ${false} | ${false}
+    ${false}        | ${true}                      | ${false}               | ${true}  | ${true}
+    ${false}        | ${false}                     | ${false}               | ${true}  | ${false}
+    ${false}        | ${false}                     | ${true}                | ${false} | ${true}
+    ${false}        | ${true}                      | ${true}                | ${false} | ${true}
   `(
-    'is $expected with isSolanaEnabled $isSolanaEnabled, option visible $isAlphaNetworksOptionVisible, beta $isSolanaBeta, opted in $optedIn',
-    ({ isSolanaEnabled, isAlphaNetworksOptionVisible, isSolanaBeta, optedIn, expected }) => {
-      mockUseFlags.mockReturnValue({ isSolanaEnabled, isAlphaNetworksOptionVisible, isSolanaBeta })
+    'is $expected with isSolanaEnabled $isSolanaEnabled, option visible $isAlphaNetworksOptionVisible, public launch $isSolanaPublicLaunched, opted in $optedIn',
+    ({ isSolanaEnabled, isAlphaNetworksOptionVisible, isSolanaPublicLaunched, optedIn, expected }) => {
+      mockUseFlags.mockReturnValue({ isSolanaEnabled, isAlphaNetworksOptionVisible, isSolanaPublicLaunched })
       const store = createStore()
       store.set(alphaNetworksEnabledAtom, optedIn)
       const wrapper = ({ children }: { children: ReactNode }): ReactNode => createElement(Provider, { store }, children)

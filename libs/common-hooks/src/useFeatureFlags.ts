@@ -9,7 +9,7 @@ export interface FeatureFlags {
   isTwapEoaEnabled?: boolean
   isSolanaEnabled?: boolean
   isAlphaNetworksOptionVisible?: boolean
-  isSolanaBeta?: boolean
+  isSolanaPublicLaunched?: boolean
   isSolanaSponsoredOrdersEnabled?: boolean
   isAtaCreationDisabled?: boolean
   isSolanaAppDataEnabled?: boolean
@@ -32,7 +32,7 @@ declare global {
 const WIDGET_FLAG_OVERRIDES: Partial<FeatureFlags> = {
   isSolanaEnabled: false,
   isAlphaNetworksOptionVisible: false,
-  isSolanaBeta: false,
+  isSolanaPublicLaunched: false,
 }
 
 export function useFeatureFlags(): FeatureFlags {

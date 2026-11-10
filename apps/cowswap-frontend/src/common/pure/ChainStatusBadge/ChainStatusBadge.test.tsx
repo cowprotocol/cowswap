@@ -17,22 +17,22 @@ function wrap(element: ReactElement): ReactElement {
 }
 
 describe('ChainStatusBadge', () => {
-  it('marks Solana as alpha while beta is off', () => {
-    render(wrap(<ChainStatusBadge chainId={SupportedChainId.SOLANA} isBeta={false} />))
+  it('marks Solana as alpha before the public launch', () => {
+    render(wrap(<ChainStatusBadge chainId={SupportedChainId.SOLANA} isPublicLaunched={false} />))
 
     expect(screen.queryByText('ALPHA')).not.toBeNull()
-    expect(screen.queryByText('BETA')).toBeNull()
+    expect(screen.queryByText('NEW')).toBeNull()
   })
 
-  it('marks Solana as beta once beta is on', () => {
-    render(wrap(<ChainStatusBadge chainId={SupportedChainId.SOLANA} isBeta />))
+  it('marks Solana as new once it is publicly launched', () => {
+    render(wrap(<ChainStatusBadge chainId={SupportedChainId.SOLANA} isPublicLaunched />))
 
-    expect(screen.queryByText('BETA')).not.toBeNull()
+    expect(screen.queryByText('NEW')).not.toBeNull()
     expect(screen.queryByText('ALPHA')).toBeNull()
   })
 
   it('renders nothing for a non-Solana chain', () => {
-    const { container } = render(wrap(<ChainStatusBadge chainId={SupportedChainId.MAINNET} isBeta />))
+    const { container } = render(wrap(<ChainStatusBadge chainId={SupportedChainId.MAINNET} isPublicLaunched />))
 
     expect(container.firstChild).toBeNull()
   })

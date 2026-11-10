@@ -53,8 +53,8 @@ export interface TradeFormValidationCommonContext {
   isProxySetupValid: boolean | null | undefined
   customTokenError?: string
   isRestrictedForCountry: boolean
-  /** Beta switches the Solana Alpha trade limits off; see `validateTradeForm` */
-  isSolanaBeta: boolean
+  /** Solana's public launch switches the Solana Alpha trade limits off; see `validateTradeForm` */
+  isSolanaPublicLaunched: boolean
   isBalancesLoading: boolean
   balancesError: string | null
   isInputCurrencyXstock: boolean

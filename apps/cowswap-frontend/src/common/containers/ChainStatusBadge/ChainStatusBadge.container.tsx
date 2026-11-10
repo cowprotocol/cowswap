@@ -1,13 +1,13 @@
 import { ReactNode } from 'react'
 
-import { useIsSolanaBeta } from '@cowprotocol/common-hooks'
+import { useIsSolanaPublicLaunched } from '@cowprotocol/common-hooks'
 
 import { ChainStatusBadge, ChainStatusBadgeProps } from 'common/pure/ChainStatusBadge/ChainStatusBadge.pure'
 
-export type ChainStatusBadgeContainerProps = Omit<ChainStatusBadgeProps, 'isBeta'>
+export type ChainStatusBadgeContainerProps = Omit<ChainStatusBadgeProps, 'isPublicLaunched'>
 
 export function ChainStatusBadgeContainer(props: ChainStatusBadgeContainerProps): ReactNode {
-  const isBeta = useIsSolanaBeta()
+  const isPublicLaunched = useIsSolanaPublicLaunched()
 
-  return <ChainStatusBadge {...props} isBeta={isBeta} />
+  return <ChainStatusBadge {...props} isPublicLaunched={isPublicLaunched} />
 }
