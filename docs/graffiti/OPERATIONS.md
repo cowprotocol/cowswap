@@ -57,17 +57,99 @@ healthy. A watchdog that restarts the process and alerts on failure is
 strongly recommended (we run one on a 5-minute loop).
 
 ### Generate claim codes
+
+Against a running server (the codes land in the live DB immediately):
 ```bash
-curl -X POST <url>/v1/admin/claims -H 'authorization: Bearer <ADMIN_TOKEN>' \
-  -d '{"n": 100, "amount": 5000}'
-# → {"ok":true,"codes":[{"code":"…","amount":5000}, …]}
+curl -sS -X POST https://<host>/v1/admin/claims \
+  -H 'authorization: Bearer <ADMIN_TOKEN>' \
+  -H 'content-type: application/json' \
+  -d '{"n": 1000, "amount": 1000}' > codes.json
+jq '.codes | length' codes.json   # → 1000
 ```
-Claim URL to print/QR: `<url>/#/graffiti/claim?code=<code>`.
+`n` is clamped to 1000 per request, so 1000 codes is exactly one call; for more,
+repeat the call and concatenate. The `content-type` header is required — without
+it Fastify rejects the body.
+
+Offline, or before the server is up (writes straight to the SQLite file; point it
+at the same DB the server uses):
+```bash
+cd apps/graffiti-api
+GRAFFITI_DB=data/graffiti.db pnpm claims:gen -- --n 1000 --amount 1000 > data/codes.txt
+```
+Codes go to stdout one per line, the summary to stderr — so the redirect above
+gives a clean list. Both outputs feed the PDF step below.
+
+**Before printing 1000 codes, fund the treasury for them.** 1000 × 1000 tokens is
+1,000,000 units — the whole initial supply that `scripts/create-mint.ts` mints —
+and the server pays each claimer's account rent, so it also needs
+**~2.1 SOL** (1000 × ~0.00204 SOL ATA rent + fees). Check both before the event,
+not during it.
+
 Codes are **database rows, not on-chain objects**: unlimited, generable in
 advance, and they survive a token migration — the QR only contains
 `domain + code`; which mint backs them is server config (`MINT`). Print QRs
 before the final token exists if you like; swap `MINT` later and they pay out
 the new token.
+
+### Print claim cards
+
+`scripts/make-claim-pdf.ts` turns a code list into a print-ready PDF: 12 cards
+per A4 page (3 x 4 squares of 64.7 mm, the largest 12-up square A4 allows),
+each card the artwork at full bleed with crop marks in the paper margin.
+
+The artwork (`assets/cows-in-love.png`) reserves two zones and the script fills
+them: the white splash panel takes the headline, the submessage and the code —
+its three placeholder rules are painted out — and the framed square takes the
+QR, over its placeholder brackets. Zone coordinates live in `ART_TEXT_BOX` /
+`ART_QR_BOX` as fractions of the card; new artwork needs them re-measured, or
+passed as `--text-box` / `--qr-box`.
+
+```bash
+cd apps/graffiti-api
+
+# 1. proof one page first — cut a card out and scan it off paper
+pnpm claims:pdf -- --codes data/codes.txt --base-url https://swap.cow.fi \
+  --limit 12 --out data/proof.pdf
+
+# 2. the full run: 1000 codes -> 84 pages, ~4 MB
+pnpm claims:pdf -- --codes data/codes.txt --base-url https://swap.cow.fi \
+  --out data/claim-cards.pdf
+```
+
+`--codes` takes either the one-per-line list or the admin endpoint's JSON.
+Duplicates are dropped with a warning; `pnpm claims:pdf -- --help` lists every
+flag. Relative paths resolve against `apps/graffiti-api/`, and `data/` is
+gitignored — keep the code list and the PDF there so neither is ever committed.
+`--image none` renders the layout as a grey proof, without the artwork.
+
+**Check the module size the run reports.** It prints e.g.
+`QR 16.6mm at 37 modules (ecc M) -> 0.41mm per module`, and that number, not the
+print resolution, decides whether a phone reads the card. Below 0.40 mm it warns.
+Three levers, in order of effect: a shorter `--base-url` (the claim URL is 63
+characters today, which costs a whole QR version), `--ecc L` (fewer modules, less
+damage tolerance), or fewer cards per page. Print the proof, cut one card out and
+scan it with a phone before committing to 84 pages.
+
+Type is set in Permanent Marker (headline) and Barlow Condensed (body), bundled
+under `assets/fonts/` with their licences; `--font-display` / `--font-body` take
+any other TTF. Sizes are not fixed: the script fits the headline, submessage and
+code to the panel together, so changing `--main-text` / `--sub-text` reflows
+rather than overflows. A warning is printed if the text cannot be made to fit.
+
+Artwork must be **PNG or JPEG** (PDF embedding takes nothing else — convert an
+SVG first, e.g. `magick -density 300 art.svg art.png`). Cards inherit the
+image's aspect ratio, so a square asset gives square cards. Supply it at
+>= 1200 px on the long edge for 300 dpi.
+
+Printing: no scaling ("actual size", not "fit to page"), and a stock around
+200-250 g/m². The artwork is embedded once and the QRs are vectors, so 1000
+cards stay around 4 MB and stay sharp at any resolution. Cards tile edge to
+edge by design: a slightly off cut shows a sliver of the neighbouring card
+rather than a white edge.
+
+**Treat the PDF like cash.** Every card is a bearer token for `amount` tokens;
+anyone who photographs one can redeem it. Don't mail it around, and reprint from
+fresh codes rather than reusing a leaked batch.
 
 ### Backups
 Everything durable is one file: `data/graffiti.db`. `sqlite3 graffiti.db
