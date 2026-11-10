@@ -9,6 +9,7 @@ export const USER_STATE_STORAGE_KEY = 'redux_localstorage_simple_user'
 export enum CustomTheme {
   CHRISTMAS = 'CHRISTMAS',
   HALLOWEEN = 'HALLOWEEN',
+  SOLANA = 'SOLANA',
   NONE = 'NONE',
 }
 
@@ -31,12 +32,15 @@ export function getCustomThemePriority(): CustomTheme[] {
 const CUSTOM_THEME_FLAG_KEYS: Readonly<CustomThemeFlagKeys> = Object.freeze({
   [CustomTheme.CHRISTMAS]: 'isChristmasEnabled',
   [CustomTheme.HALLOWEEN]: 'isHalloweenEnabled',
+  [CustomTheme.SOLANA]: 'isSolanaThemeEnabled',
 })
 
 export const APRILS_FOOLS_FLAG_KEY = 'isAprilsFoolsEnabled'
 
 export interface CustomThemeContext {
   darkModeEnabled: boolean
+  /** Whether the active network is Solana. */
+  onSolanaChain?: boolean
 }
 
 export function isCustomThemeEnabled(theme: CustomTheme, featureFlags?: FeatureFlags): boolean {
@@ -53,13 +57,19 @@ export function isCustomThemeEnabled(theme: CustomTheme, featureFlags?: FeatureF
 }
 
 /**
- * Resolve the active custom theme for a given UI context. Halloween has global priority but
- * requires dark mode; if it is enabled by flags yet dark mode is off, no seasonal theme is applied.
+ * Resolve the active custom theme for a given UI context. Solana is chain-scoped rather than
+ * seasonal, so it wins on its own network. Among the seasonal themes Halloween has global
+ * priority but requires dark mode; if it is enabled by flags yet dark mode is off, no seasonal
+ * theme is applied.
  */
 export function resolveCustomThemeForContext(
   featureFlags: FeatureFlags | undefined,
   context: CustomThemeContext,
 ): CustomTheme | undefined {
+  if (context.onSolanaChain && isCustomThemeEnabled(CustomTheme.SOLANA, featureFlags)) {
+    return CustomTheme.SOLANA
+  }
+
   for (const theme of getCustomThemePriority()) {
     if (!isCustomThemeEnabled(theme, featureFlags)) {
       continue

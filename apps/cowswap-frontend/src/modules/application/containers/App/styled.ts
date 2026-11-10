@@ -10,6 +10,7 @@ import svgBackgroundCowswapHalloweenDarkMediumSrc from '@cowprotocol/assets/imag
 import svgBackgroundCowswapHalloweenDarkSrc from '@cowprotocol/assets/images/background-cowswap-halloween-dark.svg'
 import svgBackgroundCowswapLightmodeNocowsSrc from '@cowprotocol/assets/images/background-cowswap-lightmode-nocows.svg'
 import svgBackgroundCowswapLightmodeSrc from '@cowprotocol/assets/images/background-cowswap-lightmode.svg'
+import { GRAFFITI_CANVAS_PNG_URL, wallCssBlendMode } from '@cowprotocol/common-const'
 import { CowSwapTheme, Media, UI } from '@cowprotocol/ui'
 
 import * as CSS from 'csstype'
@@ -24,6 +25,13 @@ export function isChristmasTheme(theme?: CowSwapTheme): boolean {
 
   return ['darkChristmas', 'lightChristmas'].includes(theme)
 }
+
+export function isSolanaTheme(theme?: CowSwapTheme): boolean {
+  return theme === 'darkSolana'
+}
+
+/** The live graffiti wall, laid over the regular CoW Swap backdrop. */
+const WALL_LAYER = `url(${GRAFFITI_CANVAS_PNG_URL}) no-repeat center / cover`
 
 export const AppWrapper = styled.div<Partial<CSS.Properties>>`
   display: flex;
@@ -104,17 +112,29 @@ export const BodyWrapper = styled.div<{
           : `url(${svgBackgroundCowswapLightmodeSrc})`
       }
 
-      return `${backgroundColor} ${backgroundImage} no-repeat bottom -1px center / contain`
+      const cowsLayer = `${backgroundImage} no-repeat bottom -1px center / contain`
+
+      // The background shorthand only accepts a colour on its last layer.
+      if (isSolanaTheme(customTheme)) {
+        return `${WALL_LAYER}, ${cowsLayer} ${backgroundColor}`
+      }
+
+      return `${backgroundColor} ${cowsLayer}`
     }
   }};
+  background-blend-mode: ${({ theme, customTheme }) =>
+    isSolanaTheme(customTheme) ? `${wallCssBlendMode(theme.darkMode)}, normal` : 'normal'};
 
   ${Media.upToMedium()} {
     padding: ${({ theme, $hasActiveSpeechBubbleNotification }) =>
       theme.isWidget ? '0 0 16px' : $hasActiveSpeechBubbleNotification ? '150px 16px 330px' : '150px 16px 150px'};
     flex: none;
     min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 200px)')};
-    background-size: ${({ customTheme }) =>
-      customTheme === 'darkHalloween' || isChristmasTheme(customTheme) ? 'contain' : 'auto'};
+    background-size: ${({ customTheme }) => {
+      if (isSolanaTheme(customTheme)) return 'cover, contain'
+
+      return customTheme === 'darkHalloween' || isChristmasTheme(customTheme) ? 'contain' : 'auto'
+    }};
 
     ${({ customTheme, backgroundVariant, theme }) =>
       backgroundVariant !== 'nocows' &&
@@ -137,8 +157,11 @@ export const BodyWrapper = styled.div<{
     padding: ${({ theme, $hasActiveSpeechBubbleNotification }) =>
       theme.isWidget ? '0 0 16px' : $hasActiveSpeechBubbleNotification ? '90px 16px 400px' : '90px 16px 200px'};
     min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 100px)')};
-    background-size: ${({ customTheme }) =>
-      customTheme === 'darkHalloween' || isChristmasTheme(customTheme) ? 'contain' : 'auto'};
+    background-size: ${({ customTheme }) => {
+      if (isSolanaTheme(customTheme)) return 'cover, contain'
+
+      return customTheme === 'darkHalloween' || isChristmasTheme(customTheme) ? 'contain' : 'auto'
+    }};
 
     ${({ customTheme, backgroundVariant, theme }) =>
       backgroundVariant !== 'nocows' &&
