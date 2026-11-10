@@ -127,7 +127,7 @@ export function CostSection({ plotLocked, draftCost, cost }: CostSectionProps): 
         {plotLocked ? (
           <Trans>📍 frame locked — undo everything to move it</Trans>
         ) : (
-          <Trans>📍 drag the frame to position it, then ✓ draw here</Trans>
+          <Trans>📍 drag the frame to position it, then ✓ draw here (or press Enter)</Trans>
         )}
       </styledEl.Muted>
       <styledEl.SectionTitle>

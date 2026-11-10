@@ -183,6 +183,38 @@ describe('drawing session', () => {
     expect(screen.getByText(/START DRAWING/)).toBeTruthy()
   })
 
+  it('confirms the frame when Enter is pressed', async () => {
+    await renderLoadedWall(ACCOUNT)
+
+    fireEvent.click(screen.getByText(/START DRAWING/))
+    await screen.findByText('✓ draw here')
+
+    fireEvent.keyDown(window, { key: 'Enter' })
+
+    expect(screen.queryByText('✓ draw here')).toBeNull()
+    expect(screen.getByText(/frame locked/)).toBeTruthy()
+  })
+
+  it('leaves Enter to the label field while typing', async () => {
+    await renderLoadedWall(ACCOUNT)
+
+    fireEvent.click(screen.getByText(/START DRAWING/))
+    await screen.findByText('✓ draw here')
+    fireEvent.click(screen.getByText('T text'))
+
+    fireEvent.keyDown(screen.getByPlaceholderText('type text…'), { key: 'Enter' })
+
+    expect(screen.getByText('✓ draw here')).toBeTruthy()
+  })
+
+  it('ignores Enter before the session starts', async () => {
+    await renderLoadedWall(ACCOUNT)
+
+    fireEvent.keyDown(window, { key: 'Enter' })
+
+    expect(screen.getByText(/START DRAWING/)).toBeTruthy()
+  })
+
   it('offers rotate while the frame is movable', async () => {
     await renderLoadedWall(ACCOUNT)
 

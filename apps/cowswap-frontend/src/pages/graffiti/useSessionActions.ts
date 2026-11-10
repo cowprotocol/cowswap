@@ -87,12 +87,45 @@ export function useSessionActions(refs: WallRefs, params: UseSessionActionsParam
 
   useUndoShortcut(undo)
   useEscapeToCancel(refs, resetToStart)
+  useEnterToConfirmPlot(refs, confirmPlot)
 
   return { startDrawing, confirmPlot, undo, clearAll, rotatePlot, resetToStart }
 }
 
 function clamp(value: number, max: number): number {
   return Math.max(0, Math.min(max, value))
+}
+
+const INTERACTIVE_TAGS = new Set(['a', 'button', 'input', 'select', 'textarea'])
+
+/** A focused control owns Enter: it must fire its own action, not the frame's. */
+function ownsEnter(target: EventTarget | null): boolean {
+  if (!(target instanceof HTMLElement)) return false
+
+  return INTERACTIVE_TAGS.has(targetTag(target)) || target.isContentEditable
+}
+
+function targetTag(target: EventTarget | null): string {
+  return target instanceof HTMLElement ? target.tagName.toLowerCase() : ''
+}
+
+/** Enter while placing confirms the frame, the keyboard twin of ✓ draw here. */
+function useEnterToConfirmPlot({ snapshotRef }: WallRefs, confirmPlot: () => void): void {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent): void => {
+      if (e.key !== 'Enter' || ownsEnter(e.target)) return
+
+      const { busy, session, plotLocked, fullscreen } = snapshotRef.current
+
+      if (busy || fullscreen || plotLocked || session !== 'place') return
+
+      confirmPlot()
+    }
+
+    window.addEventListener('keydown', onKey)
+
+    return () => window.removeEventListener('keydown', onKey)
+  }, [confirmPlot, snapshotRef])
 }
 
 /** ESC during placement/painting behaves like ✕ cancel, but never mid-transaction. */
@@ -120,7 +153,7 @@ function useUndoShortcut(undo: () => void): void {
     const onKey = (e: KeyboardEvent): void => {
       if (!(e.metaKey || e.ctrlKey) || e.key.toLowerCase() !== 'z') return
 
-      const tag = (e.target instanceof HTMLElement ? e.target.tagName : '').toLowerCase()
+      const tag = targetTag(e.target)
 
       if (tag === 'input' || tag === 'textarea') return
 
