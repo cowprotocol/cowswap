@@ -2,7 +2,9 @@ name: Docker (graffiti-api)
 
 on:
   push:
-    branches: [develop, main]
+    # graffity-base is the graffiti integration branch: it publishes so the deployment has a tag to
+    # pin before the stack reaches develop. Drop it once graffiti is merged.
+    branches: [develop, main, graffity-base]
     paths:
       - "apps/graffiti-api/**"
       - "pnpm-lock.yaml"
