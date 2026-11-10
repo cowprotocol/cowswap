@@ -83,12 +83,14 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     validations.push(TradeFormValidation.BrowserOffline)
   }
 
-  if (customTokenError) {
-    validations.push(TradeFormValidation.CustomTokenError)
-  }
-
+  // Outranks customTokenError: its weekend notice tells the user to come back on Monday, which a
+  // geoblocked user never can.
   if (isRestrictedForCountry) {
     validations.push(TradeFormValidation.RestrictedForCountry)
+  }
+
+  if (customTokenError) {
+    validations.push(TradeFormValidation.CustomTokenError)
   }
 
   // Return early as these take precedence
