@@ -35,7 +35,6 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isProxySetupValid,
     customTokenError,
     isRestrictedForCountry,
-    isSolanaPublicLaunched,
     isBalancesLoading,
     isBundlingSupported,
     injectedWidgetParams,
@@ -108,7 +107,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   // Same precedence as the xstock limit: the Solana Alpha messages must win over
   // quote-loading and wallet-connection states. Wrap/unwrap is exempt: it never touches
   // the settlement program and its fiat amounts are deliberately null (useTradeUsdAmounts).
-  if (!isSolanaPublicLaunched && !isWrapUnwrap && !inputAmountIsNotSet && !isBlockedNativeSell) {
+  if (!isWrapUnwrap && !inputAmountIsNotSet && !isBlockedNativeSell) {
     // Fail closed: a trade that cannot be priced in USD cannot be checked against the cap
     if (getIsSolanaSellUsdValueUnknown(context)) {
       return [
