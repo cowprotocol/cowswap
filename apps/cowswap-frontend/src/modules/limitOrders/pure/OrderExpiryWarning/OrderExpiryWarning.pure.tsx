@@ -8,6 +8,7 @@ import { Trans } from '@lingui/react/macro'
 import * as styledEl from './OrderExpiryWarning.styled'
 
 import { OrderExpiryWarningTier } from '../../utils/getOrderExpiryWarningTier.utils'
+import { WarningAcknowledgement } from '../WarningAcknowledgement/WarningAcknowledgement.pure'
 
 export interface OrderExpiryWarningProps {
   tier: OrderExpiryWarningTier
@@ -58,19 +59,13 @@ export function OrderExpiryWarning({
           </Trans>
         </p>
       </InlineBanner>
-      <styledEl.AcknowledgeBox>
-        <label>
-          <input
-            type="checkbox"
-            checked={isAccepted}
-            onChange={(event) => onAcknowledgeChange(event.target.checked)}
-            data-testid="order-expiry-warning-checkbox"
-          />
-          <span>
-            <Trans>I understand this order can fill whenever funds return to my wallet</Trans>
-          </span>
-        </label>
-      </styledEl.AcknowledgeBox>
+      <WarningAcknowledgement
+        isAccepted={isAccepted}
+        onAcknowledgeChange={onAcknowledgeChange}
+        checkboxTestId="order-expiry-warning-checkbox"
+      >
+        <Trans>I understand this order can fill whenever funds return to my wallet</Trans>
+      </WarningAcknowledgement>
     </styledEl.ProminentWrapper>
   )
 }
