@@ -1,0 +1,78 @@
+name: Docker (graffiti-api)
+
+on:
+  push:
+    # graffity-base is the graffiti integration branch: it publishes so the deployment has a tag to
+    # pin before the stack reaches develop. Drop it once graffiti is merged.
+    branches: [develop, main, graffity-base]
+    paths:
+      - "apps/graffiti-api/**"
+      - "pnpm-lock.yaml"
+      - "package.json"
+      - "pnpm-workspace.yaml"
+      - ".npmrc"
+      - ".dockerignore"
+      - ".github/workflows/docker-graffiti-api.yml"
+  pull_request:
+    paths:
+      - "apps/graffiti-api/**"
+      - "pnpm-lock.yaml"
+      - "package.json"
+      - "pnpm-workspace.yaml"
+      - ".npmrc"
+      - ".dockerignore"
+      - ".github/workflows/docker-graffiti-api.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Set up Docker Buildx
+        id: setup-buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # `sha-<commit>` is the tag a deployment pins to. `pr-<n>` is published too, so a barn
+      # deployment can be pointed at an open pull request by hand, as bff and cow-drop allow.
+      - name: Image metadata
+        id: meta
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
+        with:
+          images: ghcr.io/${{ github.repository }}/graffiti-api
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,format=long
+
+      # amd64 only: better-sqlite3 is a native module, and an arm64 leg would build it under QEMU
+      # for nodes we do not run. Add linux/arm64 here if the cluster ever gains Graviton workers.
+      - name: Build and push
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: apps/graffiti-api/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          builder: ${{ steps.setup-buildx.outputs.name }}
+          build-args: COMMIT_HASH=${{ github.sha }}
+          platforms: linux/amd64
+          cache-from: type=gha,scope=graffiti-api
+          cache-to: type=gha,mode=max,scope=graffiti-api
