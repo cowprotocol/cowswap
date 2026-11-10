@@ -57,17 +57,80 @@ healthy. A watchdog that restarts the process and alerts on failure is
 strongly recommended (we run one on a 5-minute loop).
 
 ### Generate claim codes
+
+Against a running server:
 ```bash
-curl -X POST <url>/v1/admin/claims -H 'authorization: Bearer <ADMIN_TOKEN>' \
-  -d '{"n": 100, "amount": 5000}'
-# → {"ok":true,"codes":[{"code":"…","amount":5000}, …]}
+curl -sS -X POST https://<host>/v1/admin/claims \
+  -H 'authorization: Bearer <ADMIN_TOKEN>' \
+  -H 'content-type: application/json' \
+  -d '{"n": 1000, "amount": 1000}' > codes.json
 ```
-Claim URL to print/QR: `<url>/#/graffiti/claim?code=<code>`.
-Codes are **database rows, not on-chain objects**: unlimited, generable in
-advance, and they survive a token migration — the QR only contains
-`domain + code`; which mint backs them is server config (`MINT`). Print QRs
-before the final token exists if you like; swap `MINT` later and they pay out
-the new token.
+`n` is capped at 1000 per call; repeat for more. The `content-type` header is
+required.
+
+Offline, straight into the SQLite file the server reads:
+```bash
+cd apps/graffiti-api
+GRAFFITI_DB=data/graffiti.db pnpm claims:gen -- --n 1000 --amount 1000 --out data/codes.txt
+```
+Use `--out`, not `>`: npm and pnpm print their script banner to stdout and it
+lands in the file. `claims:pdf` rejects such a file rather than printing dead QRs.
+
+**Fund the treasury before printing.** 1000 codes x 1000 tokens is the whole
+1,000,000 initial supply, plus ~2.1 SOL for the claimers' account rent.
+
+Codes are database rows, not on-chain objects, and survive a token migration: the
+QR holds only domain + code, and `MINT` decides which token pays out.
+
+### Print claim cards
+
+`scripts/make-claim-pdf.ts` renders a code list as a print-ready PDF: 12 cards
+per A4 page, each the artwork at full bleed, crop marks in the margin.
+
+```bash
+cd apps/graffiti-api
+
+# proof one page, then the full run
+pnpm claims:pdf -- --codes data/codes.txt --base-url https://swap.cow.fi \
+  --limit 12 --out data/proof.pdf
+pnpm claims:pdf -- --codes data/codes.txt --base-url https://swap.cow.fi \
+  --out data/claim-cards.pdf
+```
+
+Cut a card out of the proof and scan it with a phone before running 84 pages.
+
+`--codes` takes the one-per-line list or the admin JSON. Paths resolve against
+`apps/graffiti-api/`, and `data/` is gitignored — keep both files there.
+`--help` lists every flag.
+
+**Scannability.** Every run reports the printed module size, e.g.
+`QR 16.6mm at 37 modules (ecc M) -> 0.41mm per module`. That number, not print
+resolution, decides whether a phone reads the card, and it warns below 0.40 mm.
+To raise it: shorten `--base-url` (the 63-character claim URL costs a whole QR
+version), `--ecc L`, or fewer cards per page.
+
+**Testing locally.** `--base-url http://localhost:3199` aims the QRs at a local
+server; `APP_BASE_URL` sets the default. `localhost` only resolves on that
+machine, so to scan from a phone use its LAN address instead
+(`http://192.168.1.20:3000`), and make sure those codes exist in the DB it reads.
+
+**Artwork.** `assets/cows-in-love.png` reserves two zones: the splash panel takes
+the text, the framed square takes the QR, and their placeholder marks are painted
+over. Coordinates are card fractions in `ART_TEXT_BOX` / `ART_QR_BOX`, or
+`--text-box` / `--qr-box` for other artwork. PNG or JPEG only, >= 1200 px; cards
+inherit the image's aspect ratio. `--image none` proofs the layout without it.
+
+**Type.** Permanent Marker (headline) and Barlow Condensed (body) ship in
+`assets/fonts/`; `--font-display` / `--font-body` take other TTFs. The three
+sizes are fitted to the panel together, so new text reflows instead of
+overflowing.
+
+**Printing.** Actual size, not "fit to page", on 200-250 g/m². 1000 cards is
+~4 MB: one embedded image, vector QRs. Cards tile edge to edge, so a slightly
+off cut shows the neighbour rather than a white sliver.
+
+**Treat the PDF like cash** — every card is a bearer token for `amount` tokens.
+Don't mail it around, and reprint from fresh codes if a batch leaks.
 
 ### Backups
 Everything durable is one file: `data/graffiti.db`. `sqlite3 graffiti.db
