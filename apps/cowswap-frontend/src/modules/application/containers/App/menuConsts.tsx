@@ -101,7 +101,7 @@ const LEARN_ITEM_SUBMENU = {
   ],
 }
 
-const MORE_ITEM = (isSolversEnabled: boolean): UntranslatedMenuItem => ({
+const MORE_ITEM = ({ isSolversEnabled, isGraffitiWallEnabled }: NavItemsFlags): UntranslatedMenuItem => ({
   label: msg`More`,
   children: [
     {
@@ -114,11 +114,15 @@ const MORE_ITEM = (isSolversEnabled: boolean): UntranslatedMenuItem => ({
       label: msg`Careers`,
       external: true,
     },
-    {
-      href: Routes.GRAFFITI,
-      label: msg`Graffiti Wall`,
-      badge: msg`NEW`,
-    },
+    ...(isGraffitiWallEnabled
+      ? [
+          {
+            href: Routes.GRAFFITI,
+            label: msg`Graffiti Wall`,
+            badge: msg`NEW`,
+          },
+        ]
+      : []),
     ...(isSolversEnabled
       ? [
           {
@@ -141,7 +145,12 @@ const MORE_ITEM = (isSolversEnabled: boolean): UntranslatedMenuItem => ({
   ],
 })
 
-export const NAV_ITEMS = (chainId: SupportedChainId, isSolversEnabled: boolean): MenuItem[] => {
+export interface NavItemsFlags {
+  isSolversEnabled: boolean
+  isGraffitiWallEnabled: boolean
+}
+
+export const NAV_ITEMS = (chainId: SupportedChainId, flags: NavItemsFlags): MenuItem[] => {
   const _ACCOUNT_ITEM = ACCOUNT_ITEM(chainId)
   const accountItem: MenuItem = {
     label: i18n._(_ACCOUNT_ITEM.label),
@@ -172,7 +181,7 @@ export const NAV_ITEMS = (chainId: SupportedChainId, isSolversEnabled: boolean):
     ],
   }
 
-  const moreItemConfig = MORE_ITEM(isSolversEnabled)
+  const moreItemConfig = MORE_ITEM(flags)
   const moreItem: MenuItem = {
     label: i18n._(moreItemConfig.label),
     children: moreItemConfig.children.map(({ href, label, badge, badgeType, external }) => ({

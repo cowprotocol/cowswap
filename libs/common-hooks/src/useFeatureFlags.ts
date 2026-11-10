@@ -13,6 +13,7 @@ export interface FeatureFlags {
   isAtaCreationDisabled?: boolean
   isSolanaAppDataEnabled?: boolean
   isWaitForCowsEnabled?: boolean
+  isGraffitiWallEnabled?: boolean
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any

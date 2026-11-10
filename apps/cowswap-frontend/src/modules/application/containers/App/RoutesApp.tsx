@@ -23,6 +23,7 @@ import {
 } from 'modules/accountProxy'
 
 import { Routes as RoutesEnum, RoutesValues } from 'common/constants/routes'
+import { useIsGraffitiWallEnabled } from 'common/hooks/featureFlags/useIsGraffitiWallEnabled'
 import Account, { AccountOverview } from 'pages/Account'
 import { AccountProxy } from 'pages/Account/AccountProxy'
 import { AdvancedOrdersPage } from 'pages/AdvancedOrders/AdvancedOrders.page'
@@ -50,7 +51,7 @@ const AccountAffiliateTrader = lazy(
 )
 const AccountNotFound = lazy(() => import(/* webpackChunkName: "not_found" */ 'pages/error/NotFound'))
 
-type LazyRouteProps = { route: RoutesValues; element: ReactNode; key?: number }
+type LazyRouteProps = { route: RoutesValues; element: ReactNode; key?: string }
 
 function ExternalRedirect({ url }: { url: string }): null {
   useEffect(() => {
@@ -77,14 +78,19 @@ const lazyRoutes: LazyRouteProps[] = [
   { route: RoutesEnum.FAQ_ETH_FLOW, element: <ExternalRedirect url={COWDAO_KNOWLEDGE_BASE_LINK} /> },
   { route: RoutesEnum.PLAY_COWRUNNER, element: <CowRunner /> },
   { route: RoutesEnum.PLAY_MEVSLICER, element: <MevSlicer /> },
-  { route: RoutesEnum.GRAFFITI, element: <Graffiti /> },
-  { route: RoutesEnum.GRAFFITI_CLAIM, element: <GraffitiClaim /> },
   { route: RoutesEnum.PRIVACY_POLICY, element: LegalExternal },
   { route: RoutesEnum.COOKIE_POLICY, element: LegalExternal },
   { route: RoutesEnum.TERMS_CONDITIONS, element: LegalExternal },
 ]
 
+const graffitiRoutes: LazyRouteProps[] = [
+  { route: RoutesEnum.GRAFFITI, element: <Graffiti /> },
+  { route: RoutesEnum.GRAFFITI_CLAIM, element: <GraffitiClaim /> },
+]
+
 export function RoutesApp(): ReactNode {
+  const isGraffitiWallEnabled = useIsGraffitiWallEnabled()
+
   return (
     <Routes>
       {/*Account*/}
@@ -114,7 +120,8 @@ export function RoutesApp(): ReactNode {
       <Route path={RoutesEnum.HOOKS} element={<HooksPage />} />
       <Route path={RoutesEnum.SEND} element={<RedirectPathToSwapOnly />} />
 
-      {lazyRoutes.map((item, key) => LazyRoute({ ...item, key }))}
+      {lazyRoutes.map((item) => LazyRoute({ ...item, key: item.route }))}
+      {isGraffitiWallEnabled ? graffitiRoutes.map((item) => LazyRoute({ ...item, key: item.route })) : null}
 
       <Route path={RoutesEnum.ANYSWAP_AFFECTED} element={<AnySwapAffectedUsers />} />
       <Route path={RoutesEnum.CHAT} element={<ExternalRedirect url={DISCORD_LINK} />} />
