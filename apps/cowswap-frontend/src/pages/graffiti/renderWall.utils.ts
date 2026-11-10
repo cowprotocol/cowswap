@@ -3,6 +3,11 @@
 // Everything it needs arrives through refs: the pass runs outside React and
 // must never close over state directly. React state reaches it through
 // `snapshotRef`, published after every commit.
+//
+// Two stacked canvases. The paint layer holds only wall pixels, so it can carry
+// a CSS blend mode and mix with the CoW Swap background behind the page; the
+// chrome layer above it stays unblended, keeping the grid, the plot frame and
+// its dimming readable whatever the paint layer does.
 
 import { CANVAS, colorToHex, rasterizeStroke } from './raster.utils'
 
@@ -13,6 +18,7 @@ export type WallRenderRefs = Pick<
   WallRefs,
   | 'snapshotRef'
   | 'canvasElRef'
+  | 'paintCanvasElRef'
   | 'wrapElRef'
   | 'offscreenRef'
   | 'pixelsRef'
@@ -37,6 +43,9 @@ function isPlotFrameVisible(snapshot: WallSnapshot): boolean {
 const GRID_MIN_SCALE = 6
 const GRID_STEP = 8
 
+/** The eraser's colour. Erased cells fall back to the page background, not to black. */
+const ERASED = 0
+
 /** Fill a run of wall cells as screen-space rectangles. */
 export function fillCellRects(ctx: CanvasRenderingContext2D, cells: Array<{ x: number; y: number }>, view: View): void {
   ctx.beginPath()
@@ -55,43 +64,41 @@ export function fillCellRects(ctx: CanvasRenderingContext2D, cells: Array<{ x: n
 
 /** One frame of the wall. Safe to call when nothing is mounted yet. */
 export function renderWall(refs: WallRenderRefs): void {
-  const canvasEl = refs.canvasElRef.current
+  const chromeEl = refs.canvasElRef.current
+  const paintEl = refs.paintCanvasElRef.current
   const wrapEl = refs.wrapElRef.current
   const offscreen = refs.offscreenRef.current
 
-  if (!canvasEl || !wrapEl || !offscreen) return
+  if (!chromeEl || !paintEl || !wrapEl || !offscreen) return
 
-  if (canvasEl.width !== wrapEl.clientWidth || canvasEl.height !== wrapEl.clientHeight) {
-    canvasEl.width = wrapEl.clientWidth
-    canvasEl.height = wrapEl.clientHeight
+  const width = wrapEl.clientWidth
+  const height = wrapEl.clientHeight
+
+  // `||` would short-circuit and leave the second canvas at the stale size.
+  if ([resizeCanvas(chromeEl, width, height), resizeCanvas(paintEl, width, height)].some(Boolean)) {
     refs.dirtyRef.current = true
   }
 
   syncOffscreen(refs)
 
-  const ctx = canvasEl.getContext('2d')
+  const paint = paintEl.getContext('2d')
+  const chrome = chromeEl.getContext('2d')
 
-  if (!ctx) return
+  if (!paint || !chrome) return
 
   const view = refs.viewRef.current
 
-  ctx.fillStyle = '#0a0a12'
-  ctx.fillRect(0, 0, canvasEl.width, canvasEl.height)
-  ctx.imageSmoothingEnabled = false
+  paint.clearRect(0, 0, width, height)
+  paint.imageSmoothingEnabled = false
+  paint.drawImage(offscreen, view.offsetX, view.offsetY, CANVAS.w * view.scale, CANVAS.h * view.scale)
+  drawDraft(paint, refs.snapshotRef.current.draft, view)
+  drawStrokePreview(paint, refs)
 
-  if (!refs.patternRef.current) refs.patternRef.current = backdropPattern(ctx)
-
-  if (refs.patternRef.current) {
-    ctx.fillStyle = refs.patternRef.current
-    ctx.fillRect(0, 0, canvasEl.width, canvasEl.height)
-  }
-
-  ctx.drawImage(offscreen, view.offsetX, view.offsetY, CANVAS.w * view.scale, CANVAS.h * view.scale)
-
-  drawGrid(ctx, view)
-  drawDraft(ctx, refs.snapshotRef.current.draft, view)
-  drawPlotFrame(ctx, refs)
-  drawStrokePreview(ctx, refs)
+  chrome.clearRect(0, 0, width, height)
+  chrome.imageSmoothingEnabled = false
+  drawBackdrop(chrome, refs, view)
+  drawGrid(chrome, view)
+  drawPlotFrame(chrome, refs)
 }
 
 /** Diagonal hatch marking everything that is not the wall. */
@@ -105,8 +112,7 @@ function backdropPattern(ctx: CanvasRenderingContext2D): CanvasPattern | null {
 
   if (!tctx) return null
 
-  tctx.fillStyle = '#12121f'
-  tctx.fillRect(0, 0, 16, 16)
+  // The tile stays transparent apart from the hatch so the page shows through.
   tctx.strokeStyle = 'rgba(255,255,255,0.09)'
   tctx.beginPath()
   tctx.moveTo(-4, 20)
@@ -143,10 +149,20 @@ function dimOutsidePlot(
 }
 
 /** Cells committed to the draft but not yet burned, grouped by colour. */
+function drawBackdrop(ctx: CanvasRenderingContext2D, refs: WallRenderRefs, view: View): void {
+  if (!refs.patternRef.current) refs.patternRef.current = backdropPattern(ctx)
+
+  const pattern = refs.patternRef.current
+
+  if (!pattern) return
+
+  ctx.fillStyle = pattern
+  ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+  ctx.clearRect(view.offsetX, view.offsetY, CANVAS.w * view.scale, CANVAS.h * view.scale)
+}
+
 function drawDraft(ctx: CanvasRenderingContext2D, draft: Map<number, number>, view: View): void {
   if (draft.size === 0) return
-
-  ctx.globalAlpha = 0.95
 
   const byColor = new Map<number, Array<{ x: number; y: number }>>()
 
@@ -158,11 +174,19 @@ function drawDraft(ctx: CanvasRenderingContext2D, draft: Map<number, number>, vi
   })
 
   byColor.forEach((cells, color) => {
-    ctx.fillStyle = colorToHex(color)
-    fillCellRects(ctx, cells, view)
-  })
+    ctx.save()
 
-  ctx.globalAlpha = 1
+    if (color === ERASED) {
+      ctx.globalCompositeOperation = 'destination-out'
+      ctx.fillStyle = '#000000'
+    } else {
+      ctx.globalAlpha = 0.95
+      ctx.fillStyle = colorToHex(color)
+    }
+
+    fillCellRects(ctx, cells, view)
+    ctx.restore()
+  })
 }
 
 function drawGrid(ctx: CanvasRenderingContext2D, view: View): void {
@@ -259,10 +283,11 @@ function drawStrokePreview(ctx: CanvasRenderingContext2D, refs: WallRenderRefs):
   const view = refs.viewRef.current
   const plot = snapshot.plot
 
+  ctx.save()
+
   if (plot) {
     const [plotW, plotH] = snapshot.plotDims(plot)
 
-    ctx.save()
     ctx.beginPath()
     ctx.rect(
       view.offsetX + plot.x * view.scale,
@@ -274,7 +299,14 @@ function drawStrokePreview(ctx: CanvasRenderingContext2D, refs: WallRenderRefs):
   }
 
   ctx.globalAlpha = 0.6
-  ctx.fillStyle = refs.snapshotRef.current.color
+
+  if (snapshot.tool === 'erase') {
+    ctx.globalCompositeOperation = 'destination-out'
+    ctx.fillStyle = '#000000'
+  } else {
+    ctx.fillStyle = snapshot.color
+  }
+
   ctx.beginPath()
 
   outline.forEach((p, idx) => {
@@ -287,9 +319,17 @@ function drawStrokePreview(ctx: CanvasRenderingContext2D, refs: WallRenderRefs):
 
   ctx.closePath()
   ctx.fill()
-  ctx.globalAlpha = 1
+  ctx.restore()
+}
 
-  if (plot) ctx.restore()
+/** Match a canvas to the wrapper, reporting whether it had to change. */
+function resizeCanvas(el: HTMLCanvasElement, width: number, height: number): boolean {
+  if (el.width === width && el.height === height) return false
+
+  el.width = width
+  el.height = height
+
+  return true
 }
 
 /** Push the wall's pixel buffer into the offscreen canvas when it changed. */

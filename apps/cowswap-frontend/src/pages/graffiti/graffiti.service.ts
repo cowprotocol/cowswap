@@ -1,12 +1,12 @@
 // REST base comes from REACT_APP_GRAFFITI_API, defaulting to same-origin '/v1'.
 // The WS URL is derived from it: relative → current host, absolute → its own.
 
+import { GRAFFITI_API_BASE, GRAFFITI_API_RAW_BASE, GRAFFITI_CANVAS_PNG_URL } from '@cowprotocol/common-const'
+
 import type { Cell } from './raster.utils'
 
-const RAW_BASE = process.env.REACT_APP_GRAFFITI_API || '/v1'
-
 /** REST base, no trailing slash. */
-export const API_BASE = RAW_BASE.replace(/\/+$/, '')
+export const API_BASE = GRAFFITI_API_BASE
 
 /** Abort a request that has not responded in this long. */
 const REQUEST_TIMEOUT_MS = 20_000
@@ -68,7 +68,7 @@ export function explorerTxUrl(signature: string, network: string): string {
 }
 
 export async function fetchCanvasPng(width: number, height: number): Promise<Uint8ClampedArray> {
-  const res = await fetch(`${API_BASE}/canvas.png`)
+  const res = await fetch(GRAFFITI_CANVAS_PNG_URL)
 
   if (!res.ok) throw new Error(`canvas.png: HTTP ${res.status}`)
 
@@ -89,8 +89,11 @@ export async function fetchCanvasPng(width: number, height: number): Promise<Uin
 
     const { data } = ctx.getImageData(0, 0, width, height)
 
-    // PNG may carry an alpha channel; the wall is opaque RGB — force alpha to 255.
-    for (let i = 3; i < data.length; i += 4) data[i] = 255
+    // The PNG's own alpha is unreliable, and black is the wall's unpainted/erased
+    // value: those cells stay transparent so the page background shows through.
+    for (let i = 0; i < data.length; i += 4) {
+      data[i + 3] = data[i] === 0 && data[i + 1] === 0 && data[i + 2] === 0 ? 0 : 255
+    }
 
     return data
   } finally {
@@ -165,10 +168,10 @@ export function postDraw(payload: {
 }
 
 export function wsUrl(): string {
-  if (/^wss?:\/\//i.test(RAW_BASE)) return `${RAW_BASE.replace(/\/+$/, '')}/ws`
+  if (/^wss?:\/\//i.test(GRAFFITI_API_RAW_BASE)) return `${GRAFFITI_API_RAW_BASE.replace(/\/+$/, '')}/ws`
 
-  if (/^https?:\/\//i.test(RAW_BASE)) {
-    return `${RAW_BASE.replace(/^http/i, 'ws').replace(/\/+$/, '')}/ws`
+  if (/^https?:\/\//i.test(GRAFFITI_API_RAW_BASE)) {
+    return `${GRAFFITI_API_RAW_BASE.replace(/^http/i, 'ws').replace(/\/+$/, '')}/ws`
   }
 
   // Relative path: build from window.location.

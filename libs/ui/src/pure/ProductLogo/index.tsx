@@ -392,7 +392,9 @@ export const ProductLogo = ({
 }: LogoProps): ReactNode => {
   const themeMode = useTheme()
   const selectedTheme = customThemeMode || (themeMode.darkMode ? 'dark' : 'light')
-  const logoForTheme = LOGOS[variant][selectedTheme] || LOGOS[variant]['light'] // Fallback to light theme if selected theme is not available
+  // A theme without its own logo falls back within its own brightness family,
+  // otherwise a dark theme renders the dark-blue light-mode logo on a dark page.
+  const logoForTheme = LOGOS[variant][selectedTheme] || LOGOS[variant][themeMode.darkMode ? 'dark' : 'light']
   const logoInfo = logoIconOnly && logoForTheme.logoIconOnly ? logoForTheme.logoIconOnly : logoForTheme.default
 
   const initialColor = logoInfo.preserveOriginalColors ? undefined : overrideColor || logoInfo.color

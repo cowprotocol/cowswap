@@ -16,6 +16,7 @@ describe('resolveCowSwapTheme', () => {
     name: string
     darkMode: boolean
     featureFlags?: FeatureFlags
+    onSolanaChain?: boolean
     expected: CowSwapTheme | undefined
   }> = [
     {
@@ -72,9 +73,44 @@ describe('resolveCowSwapTheme', () => {
       featureFlags: buildFlags({ isHalloweenEnabled: true, isChristmasEnabled: true }),
       expected: 'darkHalloween',
     },
+    {
+      name: 'activates the Solana theme on the Solana chain',
+      darkMode: true,
+      featureFlags: buildFlags({ isSolanaThemeEnabled: true }),
+      onSolanaChain: true,
+      expected: 'darkSolana',
+    },
+    {
+      name: 'activates the Solana theme in light mode too',
+      darkMode: false,
+      featureFlags: buildFlags({ isSolanaThemeEnabled: true }),
+      onSolanaChain: true,
+      expected: 'darkSolana',
+    },
+    {
+      name: 'skips the Solana theme off the Solana chain',
+      darkMode: true,
+      featureFlags: buildFlags({ isSolanaThemeEnabled: true }),
+      onSolanaChain: false,
+      expected: undefined,
+    },
+    {
+      name: 'skips the Solana theme when its flag is off',
+      darkMode: true,
+      featureFlags: buildFlags(),
+      onSolanaChain: true,
+      expected: undefined,
+    },
+    {
+      name: 'prefers Solana over a seasonal theme on the Solana chain',
+      darkMode: true,
+      featureFlags: buildFlags({ isSolanaThemeEnabled: true, isHalloweenEnabled: true }),
+      onSolanaChain: true,
+      expected: 'darkSolana',
+    },
   ]
 
-  test.each(cases)('$name', ({ darkMode, featureFlags, expected }) => {
-    expect(resolveCowSwapTheme(darkMode, featureFlags)).toBe(expected)
+  test.each(cases)('$name', ({ darkMode, featureFlags, onSolanaChain, expected }) => {
+    expect(resolveCowSwapTheme(darkMode, featureFlags, onSolanaChain)).toBe(expected)
   })
 })

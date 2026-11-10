@@ -34,7 +34,8 @@ export function useWallPixels({ pixelsRef, dirtyRef, requestRenderRef }: WallRef
         pixels[i] = (rgb >> 16) & 0xff
         pixels[i + 1] = (rgb >> 8) & 0xff
         pixels[i + 2] = rgb & 0xff
-        pixels[i + 3] = 255
+        // Black is the eraser's colour: those cells fall back to the page background.
+        pixels[i + 3] = rgb === 0 ? 0 : 255
       }
 
       if (cells.length > 0) {
