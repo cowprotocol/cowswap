@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-11-10 14:48\n"
+"PO-Revision-Date: 2026-11-10 17:18\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -256,6 +256,10 @@ msgstr "Votre activité s’affichera ici..."
 #: apps/cowswap-frontend/src/common/pure/AddressInputPanel/hooks/useReceiverPlaceholder.ts
 msgid "Solana address"
 msgstr "Adresse Solana"
+
+#: apps/cowswap-frontend/src/modules/onchainTransactions/updaters/FinalizeTxUpdater/services/checkSolanaTransaction.ts
+msgid "Order rejected in your multisig"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/OrderTypeField.tsx
 msgid "(Partially fillable)"
@@ -1466,6 +1470,10 @@ msgstr "Solde COW disponible"
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeTransactionLink/index.tsx
 msgid "Bridge explorer"
 msgstr "Explorateur du bridge"
+
+#: apps/cowswap-frontend/src/modules/trade/pure/TxCostRow/index.tsx
+msgid "Because you are trading from a multisig vault, the member who executes the proposal pays the Solana transaction fee separately, from their own wallet."
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/hooks/useClaimData.ts
 msgid "You possibly have other items to claim, but not Airdrops"
@@ -6055,6 +6063,10 @@ msgstr "Verrouiller le prix limite"
 msgid "Target"
 msgstr "Cible"
 
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx
+msgid "Your multisig rejected this order, so it was not placed."
+msgstr ""
+
 #: libs/common-utils/src/legacyAddressUtils.ts
 #~ msgid "View on {explorerTitle}"
 #~ msgstr "View on {explorerTitle}"
@@ -7829,6 +7841,10 @@ msgstr "Montant de l’approbation"
 #~ msgid "https:// or ipfs:// or ENS name"
 #~ msgstr "https:// or ipfs:// or ENS name"
 
+#: apps/cowswap-frontend/src/modules/trade/pure/TxCostRow/index.tsx
+msgid "Solana charges a deposit for the accounts your order needs. It comes out of the vault's SOL balance, on top of the amount you sell rather than out of your trade."
+msgstr ""
+
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 msgid "Trade tokens"
 msgstr "Trader des tokens"
@@ -8628,6 +8644,11 @@ msgstr "rendement"
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/QuoteVerificationIndicator.tsx
 msgid "Quote not yet verified by CoW Protocol simulation"
 msgstr "Cotation pas encore vérifiée par la simulation de CoW Protocol"
+
+#: apps/cowswap-frontend/src/modules/onchainTransactions/updaters/FinalizeTxUpdater/services/checkSolanaTransaction.ts
+#: apps/cowswap-frontend/src/modules/onchainTransactions/updaters/FinalizeTxUpdater/services/checkSolanaTransaction.ts
+msgid "Cancellation rejected in your multisig"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartHeader.tsx
 msgid "Chart metric"
