@@ -60,8 +60,11 @@ describe('useQuoteBridgeContext', () => {
       typeof useBridgeSupportedNetwork
     >)
     mockedUseBridgeQuoteRecipient.mockReturnValue('0x1234567890123456789012345678901234567890')
-    // Echo the passed amount back as its USD value so the test can tell which amount each field was derived from.
-    mockedUseUsdAmount.mockImplementation((amount) => ({ value: amount ?? null }) as unknown as UsdAmountResult)
+    // Wrap the passed amount so the test can tell which amount each USD field was derived from, and so that
+    // assigning the raw amount without going through useUsdAmount would fail the assertions.
+    mockedUseUsdAmount.mockImplementation(
+      (amount) => ({ value: amount ? { usdOf: amount } : null }) as unknown as UsdAmountResult,
+    )
   })
 
   it('derives bridgeMinDepositAmountUsd from the deposit amount, not the bridge receive amount', () => {
@@ -69,15 +72,15 @@ describe('useQuoteBridgeContext', () => {
 
     // The deposit amount shown to the user is swapMinReceiveAmount, so its USD must come from the same amount.
     expect(result.current?.bridgeMinDepositAmount).toBe(swapMinReceiveAmount)
-    expect(result.current?.bridgeMinDepositAmountUsd).toBe(swapMinReceiveAmount)
+    expect(result.current?.bridgeMinDepositAmountUsd).toEqual({ usdOf: swapMinReceiveAmount })
     // Regression: it must not reuse the destination-chain bridgeMinReceiveAmount for the deposit USD.
-    expect(result.current?.bridgeMinDepositAmountUsd).not.toBe(bridgeMinReceiveAmount)
+    expect(result.current?.bridgeMinDepositAmountUsd).not.toEqual({ usdOf: bridgeMinReceiveAmount })
   })
 
   it('still derives bridgeMinReceiveAmountUsd from the bridge receive amount', () => {
     const { result } = renderHook(() => useQuoteBridgeContext())
 
     expect(result.current?.bridgeMinReceiveAmount).toBe(bridgeMinReceiveAmount)
-    expect(result.current?.bridgeMinReceiveAmountUsd).toBe(bridgeMinReceiveAmount)
+    expect(result.current?.bridgeMinReceiveAmountUsd).toEqual({ usdOf: bridgeMinReceiveAmount })
   })
 })
