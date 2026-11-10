@@ -201,7 +201,7 @@ export class RwaPage {
   private async storeCookieChoice(): Promise<void> {
     await this.page.addInitScript(
       ({ name, policyVersion }) => {
-        const record = { v: 1, choice: 'rejected', decidedAt: new Date().toISOString(), policyVersion }
+        const record = { choice: 'rejected', decidedAt: new Date().toISOString(), policyVersion }
 
         document.cookie = `${name}=${encodeURIComponent(JSON.stringify(record))}; Path=/`
       },

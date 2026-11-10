@@ -21,15 +21,7 @@ export function clearTrackerStorage(): void {
 export function getCookieDomainCandidates(hostname: string): string[] {
   const labels = hostname.split('.')
 
-  return labels.slice(0, -1).flatMap((_, index) => {
-    const domain = labels.slice(index).join('.')
-
-    return [domain, `.${domain}`]
-  })
-}
-
-export function hasTrackerPrefix(name: string, prefixes: string[]): boolean {
-  return prefixes.some((prefix) => name.startsWith(prefix))
+  return labels.slice(0, -1).map((_, index) => labels.slice(index).join('.'))
 }
 
 export function reloadPage(): void {
@@ -51,6 +43,10 @@ function getCookieNames(cookieString: string): string[] {
       return name.trim()
     })
     .filter(Boolean)
+}
+
+function hasTrackerPrefix(name: string, prefixes: string[]): boolean {
+  return prefixes.some((prefix) => name.startsWith(prefix))
 }
 
 function removeTrackerKeys(getStorage: () => Storage): void {

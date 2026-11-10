@@ -10,7 +10,6 @@ const CONSENT_CHOICES: CookieConsentChoice[] = ['accepted', 'rejected']
 
 export function createConsentRecord(choice: CookieConsentChoice, now: number): CookieConsentRecord {
   return {
-    v: 1,
     choice,
     decidedAt: new Date(now).toISOString(),
     policyVersion: COOKIE_CONSENT_POLICY_VERSION,
@@ -83,7 +82,6 @@ function isConsentRecord(value: unknown): value is CookieConsentRecord {
   const record = value as Record<string, unknown>
 
   return (
-    record['v'] === 1 &&
     CONSENT_CHOICES.includes(record['choice'] as CookieConsentChoice) &&
     typeof record['decidedAt'] === 'string' &&
     !Number.isNaN(Date.parse(record['decidedAt'])) &&

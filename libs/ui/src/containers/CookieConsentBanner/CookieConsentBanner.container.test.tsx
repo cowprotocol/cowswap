@@ -50,7 +50,7 @@ describe('CookieConsentBannerContainer', () => {
 
   it('offers to close the settings once a choice exists', () => {
     const controls = mockConsent({
-      consent: { v: 1, choice: 'accepted', decidedAt: '2026-11-09T12:00:00.000Z', policyVersion: 1 },
+      consent: { choice: 'accepted', decidedAt: '2026-11-09T12:00:00.000Z', policyVersion: 1 },
     })
 
     render(<CookieConsentBannerContainer />)

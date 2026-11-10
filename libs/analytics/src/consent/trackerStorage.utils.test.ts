@@ -13,8 +13,8 @@ function getCookieNames(): string[] {
 }
 
 describe('getCookieDomainCandidates', () => {
-  it('lists every parent domain with and without a leading dot', () => {
-    expect(getCookieDomainCandidates('swap.cow.fi')).toEqual(['swap.cow.fi', '.swap.cow.fi', 'cow.fi', '.cow.fi'])
+  it('lists the host and every parent domain', () => {
+    expect(getCookieDomainCandidates('swap.cow.fi')).toEqual(['swap.cow.fi', 'cow.fi'])
   })
 
   it('returns nothing for a single-label host', () => {

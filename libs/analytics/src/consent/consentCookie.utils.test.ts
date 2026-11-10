@@ -53,7 +53,6 @@ describe('parseConsentRecord', () => {
     ['malformed JSON', '%7Bnot-json'],
     ['unknown choice', encode({ ...createConsentRecord('accepted', NOW), choice: 'maybe' })],
     ['invalid date', encode({ ...createConsentRecord('accepted', NOW), decidedAt: 'yesterday' })],
-    ['unknown version', encode({ ...createConsentRecord('accepted', NOW), v: 2 })],
     [
       'older policy version',
       encode({ ...createConsentRecord('accepted', NOW), policyVersion: COOKIE_CONSENT_POLICY_VERSION - 1 }),

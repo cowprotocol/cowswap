@@ -26,12 +26,12 @@ export function __resetGtmWithConsentInstance(): void {
  * Loads GTM only once the visitor accepts cookies. Until then it sends nothing and keeps only the latest
  * context, account and page view, which are replayed into GTM on acceptance.
  */
-export function initGtmWithConsent(gtmId?: string): CowAnalytics {
+export function initGtmWithConsent(): CowAnalytics {
   if (!state.instance) {
     state.instance = new ConsentGatedCowAnalytics(() => {
       grantGoogleConsent()
 
-      return initGtm(gtmId)
+      return initGtm()
     })
   }
 
