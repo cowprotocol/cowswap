@@ -13,6 +13,7 @@ import { SellNativeWarningBanner } from 'modules/tradeWidgetAddons'
 import { useSwapAmountDifference } from 'modules/twap/hooks/useSwapAmountDifference'
 
 import {
+  CowBatchCadenceSuggestion,
   FallbackHandlerWarning,
   ReceiveZeroFromNetworkCostsWarning,
   SmallPartTimeWarning,
@@ -25,12 +26,13 @@ import { SwapPriceDifferenceWarning } from './warnings/SwapPriceDifferenceWarnin
 
 import { getHasTwapFormInput, getTwapSellAmountUsdBucket } from '../../analytics/twapDemandAnalytics.utils'
 import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVerification'
+import { useTwapCowBatchCadenceSuggestion } from '../../hooks/useTwapCowBatchCadenceSuggestion'
 import { useTwapDemandAnalytics } from '../../hooks/useTwapDemandAnalytics'
 import { useTwapSlippage } from '../../hooks/useTwapSlippage'
 import { useTwapSwapSuggestion } from '../../hooks/useTwapSwapSuggestion'
 import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
 import { TwapFormState } from '../../pure/PrimaryActionButton/getTwapFormState'
-import { twapDeadlineAtom } from '../../state/twapOrderAtom'
+import { twapDeadlineAtom, twapTimeIntervalAtom } from '../../state/twapOrderAtom'
 import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
 import { isPriceProtectionNotEnough } from '../../utils/isPriceProtectionNotEnough'
 
@@ -39,6 +41,7 @@ interface QuoteWarningsParams {
   showSwapSuggestion: boolean
   isFallbackHandlerSetupAccepted: boolean
   swapPriceDifferenceWarning: ReactNode
+  cowBatchCadenceSuggestion: ReactNode
   toggleFallbackHandlerSetupFlag: (isFallbackHandlerSetupAccepted: boolean) => void
   showTradeFormWarnings: boolean
   deadline: number
@@ -57,7 +60,9 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
   const slippage = useTwapSlippage()
   const deadline = useAtomValue(twapDeadlineAtom)
   const swapAmountDifference = useSwapAmountDifference()
-  const { suggestion, feeFiatAmount } = useTwapSwapSuggestion()
+  const partTime = useAtomValue(twapTimeIntervalAtom)
+  const { suggestion, feeFiatAmount, isPartsCountAffordable } = useTwapSwapSuggestion()
+  const cadenceSuggestion = useTwapCowBatchCadenceSuggestion(isPartsCountAffordable)
   const primaryFormValidation = useGetTradeFormValidation()
 
   const { chainId, account } = useWalletInfo()
@@ -86,6 +91,13 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
     [updateTwapOrdersSettings],
   )
 
+  const applyCadenceParts = useCallback(
+    (numberOfPartsValue: number) => {
+      updateTwapOrdersSettings({ numberOfPartsValue })
+    },
+    [updateTwapOrdersSettings],
+  )
+
   const handleUnsupportedWalletShown = useCallback(() => {
     trackUnsupportedWalletShown({ hasFormInput, sellAmountUsdBucket })
   }, [hasFormInput, sellAmountUsdBucket, trackUnsupportedWalletShown])
@@ -108,6 +120,10 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
       suggestion={suggestion}
       swapAmountDifference={swapAmountDifference}
     />
+  )
+
+  const cowBatchCadenceSuggestion = cadenceSuggestion && (
+    <CowBatchCadenceSuggestion suggestion={cadenceSuggestion} currentPartTime={partTime} onApply={applyCadenceParts} />
   )
 
   return (
@@ -161,6 +177,7 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
           showSwapSuggestion,
           isFallbackHandlerSetupAccepted,
           swapPriceDifferenceWarning,
+          cowBatchCadenceSuggestion,
           toggleFallbackHandlerSetupFlag,
           showTradeFormWarnings,
           deadline,
@@ -180,6 +197,7 @@ function renderQuoteWarnings({
   showSwapSuggestion,
   isFallbackHandlerSetupAccepted,
   swapPriceDifferenceWarning,
+  cowBatchCadenceSuggestion,
   toggleFallbackHandlerSetupFlag,
   showTradeFormWarnings,
   deadline,
@@ -203,6 +221,7 @@ function renderQuoteWarnings({
         <SmallPriceProtectionWarning />
       )}
       {swapPriceDifferenceWarning}
+      {showTradeFormWarnings && !showSwapSuggestion && cowBatchCadenceSuggestion}
     </>
   )
 }

@@ -1,9 +1,14 @@
-import React from 'react'
+import { useAtomValue } from 'jotai'
+import React, { ReactNode, useCallback, useRef, useState } from 'react'
+
+import { COW_BATCH_TIME_SECONDS } from '@cowprotocol/common-const'
+import { useCountdown } from '@cowprotocol/common-hooks'
+import { formatBatchCountdown } from '@cowprotocol/common-utils'
 
 import { t } from '@lingui/core/macro'
 import { Plural, Trans } from '@lingui/react/macro'
 
-import { useGetReceiveAmountInfo } from 'modules/trade'
+import { cowBatchValidFromAtom, useGetReceiveAmountInfo } from 'modules/trade'
 import { ConfirmDetailsItem } from 'modules/trade/pure/ConfirmDetailsItem'
 import { ReviewOrderModalAmountRow } from 'modules/trade/pure/ReviewOrderModalAmountRow'
 import { useUsdAmount } from 'modules/usdAmount'
@@ -11,16 +16,17 @@ import { useUsdAmount } from 'modules/usdAmount'
 import * as styledEl from './TwapConfirmDetails.styled'
 
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
+import { getTwapCowBatchStartTime } from '../../utils/twapCowBatchCadence'
 
 export type TwapConfirmDetailsProps = {
-  startTime: number | undefined
+  startsAtCowBatch: boolean
   numOfParts: number | undefined
   partDuration: number | undefined
   totalDuration: number | undefined
 }
 
 export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: TwapConfirmDetailsProps) {
-  const { partDuration, totalDuration, numOfParts } = props
+  const { partDuration, totalDuration, numOfParts, startsAtCowBatch } = props
 
   const partsCount = numOfParts ?? 0
   const sellLabel = t`Sell amount per part (1/${partsCount})`
@@ -75,11 +81,15 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
 
       {/* Start time */}
       <ConfirmDetailsItem
-        tooltip={t`The first part of your TWAP order will become active as soon as you confirm the order below.`}
+        tooltip={
+          startsAtCowBatch
+            ? t`The first part of your TWAP order will become active at the next CoW batch after you confirm the order below, so every part can be matched with other traders' orders.`
+            : t`The first part of your TWAP order will become active as soon as you confirm the order below.`
+        }
         label={startTimeLabel}
         withArrow={false}
       >
-        <Trans>Now</Trans>
+        {startsAtCowBatch ? <CowBatchStartCountdown /> : <Trans>Now</Trans>}
       </ConfirmDetailsItem>
 
       {/* Part duration */}
@@ -102,3 +112,31 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
     </styledEl.Wrapper>
   )
 })
+
+function CowBatchStartCountdown(): ReactNode {
+  const countdownRef = useRef<HTMLSpanElement | null>(null)
+  const nextBatch = useAtomValue(cowBatchValidFromAtom)
+  const [skippedBatch, setSkippedBatch] = useState<number | undefined>(undefined)
+  const isNextBatchSkipped = nextBatch !== undefined && nextBatch === skippedBatch
+  const startTime = isNextBatchSkipped ? nextBatch + COW_BATCH_TIME_SECONDS : nextBatch
+
+  const onRemainingChange = useCallback(
+    (remainingSec: number) => {
+      if (nextBatch === undefined || isNextBatchSkipped) return
+
+      if (getTwapCowBatchStartTime(nextBatch - remainingSec) !== nextBatch) setSkippedBatch(nextBatch)
+    },
+    [isNextBatchSkipped, nextBatch],
+  )
+
+  useCountdown({ targetRef: countdownRef, targetEpochSec: startTime, format: formatBatchCountdown, onRemainingChange })
+
+  // Single inline wrapper: the parent is a flex row, which would drop the space before the countdown
+  return (
+    <span>
+      <Trans>
+        Next CoW batch · in <span ref={countdownRef} />
+      </Trans>
+    </span>
+  )
+}

@@ -5,6 +5,16 @@ import { Nullish } from 'types'
 
 import { MINIMUM_PART_SELL_AMOUNT_FIAT } from '../const'
 
+export function isPartSellAmountTooSmall(
+  totalSellAmount: Nullish<CurrencyAmount<Currency>>,
+  parts: number,
+  chainId: SupportedChainId | undefined,
+): boolean {
+  if (!totalSellAmount || !Number.isInteger(parts) || parts < 1) return false
+
+  return isSellAmountTooSmall(totalSellAmount.divide(parts), chainId)
+}
+
 export function isSellAmountTooSmall(
   sellAmount: Nullish<CurrencyAmount<Currency>>,
   chainId: SupportedChainId | undefined,

@@ -49,7 +49,7 @@ export interface TwapTradeConfirmationDetailsProps {
   recipient: Nullish<string>
   recipientAddress: Nullish<string>
   account: Nullish<string>
-  startTime: number | undefined
+  startsAtCowBatch: boolean
   numOfParts: number
   partDuration: number | undefined
   totalDuration: number | undefined
@@ -64,7 +64,7 @@ export function TwapTradeConfirmationDetails({
   recipient,
   recipientAddress,
   account,
-  startTime,
+  startsAtCowBatch,
   numOfParts,
   partDuration,
   totalDuration,
@@ -109,7 +109,7 @@ export function TwapTradeConfirmationDetails({
       {isRewardsRowEnabled && <AffiliateTraderRewardsRow />}
       <DividerHorizontal />
       <TwapConfirmDetails
-        startTime={startTime}
+        startsAtCowBatch={startsAtCowBatch}
         numOfParts={numOfParts}
         partDuration={partDuration}
         totalDuration={totalDuration}

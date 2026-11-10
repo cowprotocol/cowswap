@@ -1,3 +1,4 @@
+export { CowBatchCadenceSuggestion } from './CowBatchCadenceSuggestion'
 export { FallbackHandlerWarning } from './FallbackHandlerWarning'
 export { ReceiveZeroFromNetworkCostsWarning } from './ReceiveZeroFromNetworkCostsWarning'
 export { SmallPartTimeWarning } from './SmallPartTimeWarning'
