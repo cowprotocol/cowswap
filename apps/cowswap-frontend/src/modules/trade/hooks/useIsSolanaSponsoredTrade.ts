@@ -1,4 +1,7 @@
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
+import { isSolanaSmartContractWallet } from '@cowprotocol/sdk-trading-solana'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { isSolanaQuoteAndPost, useTradeQuote } from 'modules/tradeQuote'
 
@@ -11,17 +14,23 @@ import { useWalletAcceptsForeignFeePayer } from './useWalletAcceptsForeignFeePay
 // order itself needs. The owner still funds the WSOL account a native sell opens, since that account
 // is theirs to close — see `useSolanaTradeOverhead`. Limit orders never go through that path.
 export function useIsSolanaSponsoredTrade(): boolean {
+  const { chainId, account } = useWalletInfo()
   const { isSolanaSponsoredOrdersEnabled } = useFeatureFlags()
   const { quote } = useTradeQuote()
   const derivedState = useDerivedTradeState()
   const walletAcceptsForeignFeePayer = useWalletAcceptsForeignFeePayer()
 
   const solanaQuote = isSolanaQuoteAndPost(quote) ? quote.solanaQuote : null
+  // A quote outlives the wallet that asked for it, so an EVM account can be current while a Solana
+  // quote is still in state.
+  const owner = isSolanaChain(chainId) ? account : undefined
 
   return Boolean(
     isSolanaSponsoredOrdersEnabled &&
       walletAcceptsForeignFeePayer &&
       derivedState?.tradeType !== TradeType.LIMIT_ORDER &&
-      solanaQuote?.funder,
+      solanaQuote?.funder &&
+      // No owner yet leaves the estimate alone: there is nothing to place.
+      (!owner || !isSolanaSmartContractWallet(owner)),
   )
 }
