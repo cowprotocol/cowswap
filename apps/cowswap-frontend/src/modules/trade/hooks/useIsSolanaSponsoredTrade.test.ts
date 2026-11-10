@@ -11,6 +11,7 @@ import { TradeType } from 'common/modules/tradeNavigation'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useIsSolanaSponsoredTrade } from './useIsSolanaSponsoredTrade'
+import { useWalletAcceptsForeignFeePayer } from './useWalletAcceptsForeignFeePayer'
 
 jest.mock('@cowprotocol/common-hooks', () => ({ useFeatureFlags: jest.fn() }))
 jest.mock('@cowprotocol/wallet', () => ({ useWalletInfo: jest.fn() }))
@@ -19,11 +20,13 @@ jest.mock('modules/tradeQuote', () => ({
   isSolanaQuoteAndPost: (quote: unknown) => Boolean(quote),
 }))
 jest.mock('./useDerivedTradeState', () => ({ useDerivedTradeState: jest.fn() }))
+jest.mock('./useWalletAcceptsForeignFeePayer', () => ({ useWalletAcceptsForeignFeePayer: jest.fn() }))
 
 const mockUseFeatureFlags = jest.mocked(useFeatureFlags)
 const mockUseWalletInfo = jest.mocked(useWalletInfo)
 const mockUseTradeQuote = jest.mocked(useTradeQuote)
 const mockUseDerivedTradeState = jest.mocked(useDerivedTradeState)
+const mockUseWalletAcceptsForeignFeePayer = jest.mocked(useWalletAcceptsForeignFeePayer)
 
 const KEYPAIR_OWNER = new PublicKey(new Uint8Array(32).fill(6)).toBase58()
 // A real Squads vault. jsdom's crypto shim breaks `findProgramAddressSync`, so the PDA is written out
@@ -45,6 +48,7 @@ function setup({
   mockUseDerivedTradeState.mockReturnValue({ tradeType: TradeType.SWAP } as unknown as ReturnType<
     typeof useDerivedTradeState
   >)
+  mockUseWalletAcceptsForeignFeePayer.mockReturnValue(true)
 }
 
 beforeEach(() => {
@@ -68,6 +72,15 @@ describe('useIsSolanaSponsoredTrade', () => {
     expect(renderHook(() => useIsSolanaSponsoredTrade()).result.current).toBe(false)
   })
 
+  // The costs this drives have to match what `useSolanaFlowOptions` tells the flow: showing a
+  // sponsored price while the flow makes the owner pay would understate the SOL they need.
+  it('is not sponsored while the wallet rejects a foreign fee payer', () => {
+    setup()
+    mockUseWalletAcceptsForeignFeePayer.mockReturnValue(false)
+
+    expect(renderHook(() => useIsSolanaSponsoredTrade()).result.current).toBe(false)
+  })
+
   it('leaves the estimate sponsored while no wallet is connected', () => {
     setup({ account: undefined as unknown as string })
 
@@ -81,6 +94,13 @@ describe('useIsSolanaSponsoredTrade', () => {
     setup({ account: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984', chainId: SupportedChainId.MAINNET })
 
     expect(() => renderHook(() => useIsSolanaSponsoredTrade())).not.toThrow()
+  })
+
+  it('is not sponsored while the feature flag is off', () => {
+    setup()
+    mockUseFeatureFlags.mockReturnValue({} as unknown as ReturnType<typeof useFeatureFlags>)
+
+    expect(renderHook(() => useIsSolanaSponsoredTrade()).result.current).toBe(false)
   })
 
   it('is not sponsored for a limit order', () => {

@@ -1,5 +1,26 @@
 # Changelog
 
+## [3.22.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.21.2...common-utils-v3.22.0) (2026-11-10)
+
+### Minor Changes
+
+- feat(solana): report order submission failures under one sentry scope (#8525)
+
+- feat(networks): networks update (#8456)
+
+- feat(solana): pass appData to quote (#8509)
+
+### Patch Changes
+
+- fix(solana): use SDK for quote costs breakdown (#8522)
+
+- fix(wallet): display custom message for rpc internal error (#8515)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.19.0
+  - @cowprotocol/currency@1.10.0
+  - @cowprotocol/types@4.15.0
+
 ## [3.21.2](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.21.1...common-utils-v3.21.2) (2026-11-05)
 
 ### Patch Changes

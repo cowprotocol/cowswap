@@ -8,6 +8,7 @@ import { isSolanaQuoteAndPost, useTradeQuote } from 'modules/tradeQuote'
 import { TradeType } from 'common/modules/tradeNavigation'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
+import { useWalletAcceptsForeignFeePayer } from './useWalletAcceptsForeignFeePayer'
 
 // Mirrors `solanaFlow`'s sponsor pick: the quote's funder pays the fees and rents the accounts the
 // order itself needs. The owner still funds the WSOL account a native sell opens, since that account
@@ -17,6 +18,7 @@ export function useIsSolanaSponsoredTrade(): boolean {
   const { isSolanaSponsoredOrdersEnabled } = useFeatureFlags()
   const { quote } = useTradeQuote()
   const derivedState = useDerivedTradeState()
+  const walletAcceptsForeignFeePayer = useWalletAcceptsForeignFeePayer()
 
   const solanaQuote = isSolanaQuoteAndPost(quote) ? quote.solanaQuote : null
   // A quote outlives the wallet that asked for it, so an EVM account can be current while a Solana
@@ -25,6 +27,7 @@ export function useIsSolanaSponsoredTrade(): boolean {
 
   return Boolean(
     isSolanaSponsoredOrdersEnabled &&
+      walletAcceptsForeignFeePayer &&
       derivedState?.tradeType !== TradeType.LIMIT_ORDER &&
       solanaQuote?.funder &&
       // No owner yet leaves the estimate alone: there is nothing to place.

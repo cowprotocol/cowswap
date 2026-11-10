@@ -1,5 +1,22 @@
 # Changelog
 
+## [3.19.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.18.0...common-hooks-v3.19.0) (2026-11-10)
+
+### Minor Changes
+
+- feat(networks): networks update (#8456)
+
+- feat(solana): pass appData to quote (#8509)
+
+### Patch Changes
+
+- fix(solana): use SDK for quote costs breakdown (#8522)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.22.0
+  - @cowprotocol/common-const@3.19.0
+  - @cowprotocol/types@4.15.0
+
 ## [3.18.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.17.1...common-hooks-v3.18.0) (2026-11-05)
 
 ### Minor Changes

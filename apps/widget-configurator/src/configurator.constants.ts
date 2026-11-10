@@ -180,6 +180,7 @@ export const DEFAULT_CONFIGURATOR_FORM_VALUES: ConfiguratorFormValues = {
 
   disableProgressBar: false,
   disablePostTradeTips: false,
+  disablePricePercentageShortcuts: false,
   disableTokenImport: false,
   disableSwitchingTokens: false,
   hideRecentTokens: false,

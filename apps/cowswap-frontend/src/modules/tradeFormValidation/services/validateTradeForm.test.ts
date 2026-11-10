@@ -604,6 +604,40 @@ describe('validateTradeForm - balance vs slippage', () => {
     )
   })
 
+  // Wrap/unwrap is never quoted, but the previous pair's quote stays in the store (quotes are keyed by the
+  // sell token), so `swapMaximumSellAmount` can still carry the sell amount of that stale quote.
+  // balance (120) covers the wrap amount (100) but not the stale swap quote's maximum sell amount (150)
+  test('does not show BalanceInsufficient in wrap/unwrap mode when only a stale swapMaximumSellAmount exceeds the balance', () => {
+    const context = {
+      ...baseContext,
+      isWrapUnwrap: true,
+      swapMaximumSellAmount: mockCurrencyAmount('150'),
+    } as unknown as TradeFormValidationContext
+
+    const result = validateTradeForm(context) || []
+    expect(result).toContain(TradeFormValidation.WrapUnwrapFlow)
+    expect(result).not.toContain(TradeFormValidation.BalanceInsufficient)
+  })
+
+  // balance (120) covers the stale swap quote's maximum sell amount (50) but not the wrap amount (130)
+  test('shows BalanceInsufficient in wrap/unwrap mode when the input amount exceeds the balance, regardless of a stale swapMaximumSellAmount', () => {
+    const context = {
+      ...baseContext,
+      isWrapUnwrap: true,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        inputCurrencyAmount: mockCurrencyAmount('130'),
+      },
+      swapMaximumSellAmount: mockCurrencyAmount('50'),
+    } as unknown as TradeFormValidationContext
+
+    const result = validateTradeForm(context) || []
+    expect(result).toContain(TradeFormValidation.BalanceInsufficient)
+    expect(result.indexOf(TradeFormValidation.BalanceInsufficient)).toBeLessThan(
+      result.indexOf(TradeFormValidation.WrapUnwrapFlow),
+    )
+  })
+
   test('ranks BalanceInsufficient ahead of SolanaInsufficientNativeBalance when both apply', () => {
     const context = {
       ...baseContext,
