@@ -1235,6 +1235,10 @@ msgstr "Partial approval"
 msgid "Cancelling order with id {shortId}:<0/><1>{orderSummary}</1>"
 msgstr "Cancelling order with id {shortId}:<0/><1>{orderSummary}</1>"
 
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
+msgid "The first part of your TWAP order will become active at the next CoW batch after you confirm the order below, so every part can be matched with other traders' orders."
+msgstr "The first part of your TWAP order will become active at the next CoW batch after you confirm the order below, so every part can be matched with other traders' orders."
+
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Sell per part"
 msgstr "Sell per part"
@@ -1477,6 +1481,10 @@ msgstr "You possibly have other items to claim, but not Airdrops"
 #: apps/cowswap-frontend/src/modules/tokensList/containers/LpTokenPage/index.tsx
 msgid "APR"
 msgstr "APR"
+
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/CowBatchCadenceSuggestion.tsx
+msgid "Match CoW batches"
+msgstr "Match CoW batches"
 
 #: apps/cowswap-frontend/src/common/pure/NetworksList/ActiveRowLinks/ActiveRowLinks.pure.tsx
 msgid "CoW Protocol Explorer"
@@ -5419,6 +5427,10 @@ msgstr " or <0/>"
 msgid "Careers"
 msgstr "Careers"
 
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/CowBatchCadenceSuggestion.tsx
+msgid "A part duration of <0>{currentPartTimeDisplay}</0> falls between CoW batches, which run every {batchTimeDisplay}. With <1>{parts} parts</1> ({suggestedPartTimeDisplay} each), every part joins a batch with other traders and has more chances to be matched."
+msgstr "A part duration of <0>{currentPartTimeDisplay}</0> falls between CoW batches, which run every {batchTimeDisplay}. With <1>{parts} parts</1> ({suggestedPartTimeDisplay} each), every part joins a batch with other traders and has more chances to be matched."
+
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapWidget/index.tsx
 msgid "Expected sell amount"
 msgstr "Expected sell amount"
@@ -5796,6 +5808,10 @@ msgstr "Change trade alert settings here"
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/RateInput/HeadingText.tsx
 msgid "Select input and output"
 msgstr "Select input and output"
+
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
+msgid "Next CoW batch · in <0/>"
+msgstr "Next CoW batch · in <0/>"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
 msgid "Switch to a {swapOrderLink}."
@@ -7605,6 +7621,10 @@ msgstr "Search hooks by title or description"
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "Safe Nonce: <0>{nonce}</0>"
 msgstr "Safe Nonce: <0>{nonce}</0>"
+
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/CowBatchCadenceSuggestion.tsx
+msgid "Use {parts} parts"
+msgstr "Use {parts} parts"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 #~ msgid "You can protect all your Ethereum transactions from MEV - not just trades on CoW Swap - by installing MEV Blocker."

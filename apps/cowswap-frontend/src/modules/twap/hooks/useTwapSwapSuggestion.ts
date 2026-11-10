@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 
@@ -14,6 +14,8 @@ import { getTwapSwapSuggestion, quoteMatchesCurrentInput, TwapSwapSuggestion } f
 export interface TwapSwapSuggestionState {
   suggestion: TwapSwapSuggestion | null
   feeFiatAmount: CurrencyAmount<Token> | null
+  /** Whether `parts` stays under the network-cost threshold. Unknown costs only allow the current count or fewer. */
+  isPartsCountAffordable: (parts: number) => boolean
 }
 
 export function useTwapSwapSuggestion(): TwapSwapSuggestionState {
@@ -31,18 +33,31 @@ export function useTwapSwapSuggestion(): TwapSwapSuggestionState {
     inputCurrencyAmount.currency.equals(perPartBeforeSell.currency) &&
     quoteMatchesCurrentInput(inputCurrencyAmount.quotient, perPartBeforeSell.quotient, numberOfPartsValue)
 
-  const suggestion = useMemo(() => {
+  const quotedPartCosts = useMemo(() => {
     // A changed sell amount or part count keeps the previous part quote until the next response.
     if ((isLoading && hasParamsChanged) || !quoteIsForCurrentInput) return null
     if (!perPartNetworkBuy || !perPartBeforeBuy) return null
     if (!perPartNetworkBuy.currency.equals(perPartBeforeBuy.currency)) return null
 
-    return getTwapSwapSuggestion({
-      perPartNetworkBuy: perPartNetworkBuy.quotient,
-      perPartBeforeBuy: perPartBeforeBuy.quotient,
-      currentParts: numberOfPartsValue,
-    })
-  }, [hasParamsChanged, isLoading, numberOfPartsValue, perPartBeforeBuy, perPartNetworkBuy, quoteIsForCurrentInput])
+    return { perPartNetworkBuy: perPartNetworkBuy.quotient, perPartBeforeBuy: perPartBeforeBuy.quotient }
+  }, [hasParamsChanged, isLoading, perPartBeforeBuy, perPartNetworkBuy, quoteIsForCurrentInput])
 
-  return { suggestion, feeFiatAmount }
+  const suggestion = useMemo(() => {
+    if (!quotedPartCosts) return null
+
+    return getTwapSwapSuggestion({ ...quotedPartCosts, currentParts: numberOfPartsValue })
+  }, [numberOfPartsValue, quotedPartCosts])
+
+  const isPartsCountAffordable = useCallback(
+    (parts: number): boolean => {
+      if (!quotedPartCosts) return parts <= numberOfPartsValue
+
+      return (
+        getTwapSwapSuggestion({ ...quotedPartCosts, currentParts: parts, quotedParts: numberOfPartsValue }) === null
+      )
+    },
+    [numberOfPartsValue, quotedPartCosts],
+  )
+
+  return { suggestion, feeFiatAmount, isPartsCountAffordable }
 }

@@ -5,8 +5,9 @@ import { maxUint256, type Hex } from 'viem'
 import { useConfig, useWalletClient } from 'wagmi'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { createCowLogger, getExplorerTwapOrderLink, normalizeError } from '@cowprotocol/common-utils'
+import { localTimeOffsetAtom, useFeatureFlags } from '@cowprotocol/common-hooks'
+import { createCowLogger, getExplorerTwapOrderLink, getServerNowSec, normalizeError } from '@cowprotocol/common-utils'
+import { jotaiStore } from '@cowprotocol/core'
 import { type AccountAddress, isEvmChain, OrderKind } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { PermitHookData } from '@cowprotocol/permit-utils'
@@ -74,6 +75,7 @@ import { EoaTwapPlacementCancelledError, startEoaTwapPlacement } from '../utils/
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
 import { getEoaTwapPollerAmountToApprove } from '../utils/getEoaTwapPollerAmountToApprove'
 import { getErrorMessage } from '../utils/parseTwapError'
+import { withTwapCowBatchStartTime } from '../utils/twapCowBatchCadence'
 import { twapOrderToStruct } from '../utils/twapOrderToStruct'
 
 interface TwapAnalyticsEvent {
@@ -280,10 +282,10 @@ export function useCreateTwapOrder() {
           updatedTwapOrder = { ...twapOrder, appData: updatedAppData.appDataKeccak256 }
         }
 
-        const paramsStruct = buildTwapOrderParamsStruct(chainId, updatedTwapOrder, salt)
+        let paramsStruct = buildTwapOrderParamsStruct(chainId, updatedTwapOrder, salt)
 
         // ComposableCoW order hash (keccak256 of params). Matches indexed `order.hash` until eventId arrives; not a CoW orderbook UID.
-        const twapOrderHash = getConditionalOrderId(paramsStruct)
+        let twapOrderHash = getConditionalOrderId(paramsStruct)
 
         tradeConfirmActions.onSign(pendingTrade)
 
@@ -376,6 +378,14 @@ export function useCreateTwapOrder() {
               approvalNeeds: pollerNeeds,
             })
           }
+
+          // Snapped after approvals so a slow approval cannot push the first part's window into the past
+          updatedTwapOrder = withTwapCowBatchStartTime(
+            updatedTwapOrder,
+            getServerNowSec(jotaiStore.get(localTimeOffsetAtom)),
+          )
+          paramsStruct = buildTwapOrderParamsStruct(chainId, updatedTwapOrder, salt)
+          twapOrderHash = getConditionalOrderId(paramsStruct)
 
           const {
             proxyAddress,

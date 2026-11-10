@@ -23,9 +23,11 @@ import { useCreateTwapOrder } from '../../hooks/useCreateTwapOrder'
 import { useEoaTwapDismissOnFinalStatus } from '../../hooks/useEoaTwapDismissOnFinalStatus'
 import { useEoaTwapLeaveConfirmation } from '../../hooks/useEoaTwapLeaveConfirmation'
 import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVerification'
+import { useIsEoaTwap } from '../../hooks/useIsEoaTwap'
 import { useTwapOrder } from '../../hooks/useTwapOrder'
 import { useTwapSlippage } from '../../hooks/useTwapSlippage'
 import { EoaTwapLeaveSetupModal } from '../../pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.pure'
+import { isTwapPartTimeOnCowBatchCadence } from '../../utils/twapCowBatchCadence'
 import { EoaTwapSigningPendingContent } from '../EoaTwapSigningPendingContent/EoaTwapSigningPendingContent'
 import { EoaTwapSuccessHeading } from '../EoaTwapSigningPendingContent/EoaTwapSuccessContent.pure'
 import { TwapFormWarnings } from '../TwapFormWarnings/TwapFormWarnings.container'
@@ -40,10 +42,12 @@ export function TwapConfirmModal(): ReactNode {
   const createTwapOrder = useCreateTwapOrder()
   const priceImpact = useTradePriceImpact()
   const fallbackHandlerIsNotSet = useIsFallbackHandlerRequired()
+  const isEoaTwap = useIsEoaTwap()
 
   const { timeInterval, numOfParts } = twapOrder || {}
   const partDuration = timeInterval
   const totalDuration = timeInterval && numOfParts ? timeInterval * numOfParts : undefined
+  const startsAtCowBatch = isEoaTwap && !!timeInterval && isTwapPartTimeOnCowBatchCadence(timeInterval)
 
   const {
     inputCurrencyInfo,
@@ -96,7 +100,7 @@ export function TwapConfirmModal(): ReactNode {
         recipient={recipient}
         recipientAddress={recipientAddress}
         account={account}
-        startTime={twapOrder?.startTime}
+        startsAtCowBatch={startsAtCowBatch}
         numOfParts={numOfParts}
         partDuration={partDuration}
         totalDuration={totalDuration}
