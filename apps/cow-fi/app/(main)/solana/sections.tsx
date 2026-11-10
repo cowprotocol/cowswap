@@ -1,17 +1,19 @@
 import type { ReactNode } from 'react'
 
-import svgCowHeadSrc from '@cowprotocol/assets/images/icon-cow-head.svg'
+import svgCowCrownSrc from '@cowprotocol/assets/images/icon-cow-crown.svg'
 import svgCowHeartEyesSrc from '@cowprotocol/assets/images/icon-cow-heart-eyes.svg'
+import svgCowHornsSrc from '@cowprotocol/assets/images/icon-cow-horns.svg'
+import svgCowKissSrc from '@cowprotocol/assets/images/icon-cow-kiss.svg'
 
 import Image from 'next/image'
 import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 
 import {
   AudienceCard,
+  Banner,
   ButtonRow,
   CapsLine,
   CardGrid,
-  CardLink,
   CenteredBlock,
   CowMark,
   ctaColors,
@@ -22,6 +24,7 @@ import {
   FaqItem,
   FaqList,
   HeadlineRoot,
+  HeadlineSize,
   HeroCopy,
   HeroGrid,
   InlineLink,
@@ -33,7 +36,6 @@ import {
   PartnerCard,
   PartnerCopy,
   PartnersClosing,
-  PartnersCopy,
   PhotoFrame,
   ReasonCard,
   ScriptLine,
@@ -55,7 +57,7 @@ import {
   ACTIVE_HEADLINES,
   ALPHA_DISCLAIMER,
   DEVELOPERS,
-  FINAL_CTA_BODY,
+  FINAL_CTA,
   HeadlineLine,
   HERO,
   HOW_IT_WORKS,
@@ -79,43 +81,49 @@ interface HeadlineProps {
   lines: HeadlineLine[]
   as?: 'h1' | 'h2'
   align?: 'left' | 'center'
-  small?: boolean
+  size?: HeadlineSize
+}
+
+const MARKS = {
+  crown: { $src: svgCowCrownSrc, $width: 90, $height: 96 },
+  heartEyes: { $src: svgCowHeartEyesSrc, $width: 96, $height: 64 },
+  horns: { $src: svgCowHornsSrc, $width: 170, $height: 78 },
+  kiss: { $src: svgCowKissSrc, $width: 136, $height: 104 },
 }
 
 export function DevelopersSection(): ReactNode {
   return (
     <section>
       <SectionHeader $padding="120px 0 80px">
-        <CowMark>
-          <Image src={svgCowHeadSrc} alt="" width={96} height={64} unoptimized />
-        </CowMark>
+        <CowMark {...MARKS.horns} aria-hidden="true" />
         <Headline lines={ACTIVE_HEADLINES.developers} />
-        <Lead $caps>{DEVELOPERS.intro}</Lead>
+        <Lead>{DEVELOPERS.intro}</Lead>
       </SectionHeader>
 
       <CardGrid>
-        <ToneCard $tone="plum" $padding={48}>
-          <ToneCopy $large>
-            <h3>{DEVELOPERS.advanced.title}</h3>
-            {DEVELOPERS.advanced.paragraphs.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
-          </ToneCopy>
-        </ToneCard>
-        <ToneCard $tone="pink" $padding={48}>
-          <ToneCopy $large>
-            <h3>{DEVELOPERS.trusted.title}</h3>
-            {DEVELOPERS.trusted.paragraphs.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
-          </ToneCopy>
-        </ToneCard>
+        {DEVELOPERS.features.map((feature) => (
+          <ReasonCard key={feature.title} $muted>
+            <div>
+              <h3>{feature.title}</h3>
+              <p>{feature.description}</p>
+            </div>
+            <PhotoFrame>
+              <Image
+                src={feature.image.src}
+                alt={feature.image.alt}
+                width={1280}
+                height={700}
+                sizes="(max-width: 960px) 100vw, 640px"
+              />
+            </PhotoFrame>
+          </ReasonCard>
+        ))}
       </CardGrid>
 
       <DeveloperDoors />
 
       <CenteredBlock $gap={40}>
-        <Headline lines={[{ text: DEVELOPERS.buildInTheOpen.title }]} small />
+        <Headline lines={[{ text: DEVELOPERS.buildInTheOpen.title }]} size="small" />
         <Lead>{DEVELOPERS.buildInTheOpen.body}</Lead>
         <ButtonRow $center>
           <Cta href={SOLANA_LINKS.docs} action="sol_read_the_docs" label="build_in_the_open" colors="solid">
@@ -166,12 +174,19 @@ export function FinalCtaSection(): ReactNode {
   return (
     <CenteredBlock as="section" $padding="120px 0" $gap={60}>
       <SectionHeader>
-        <CowMark>
-          <Image src={svgCowHeadSrc} alt="" width={96} height={64} unoptimized />
-        </CowMark>
+        <CowMark {...MARKS.heartEyes} aria-hidden="true" />
         <Headline lines={ACTIVE_HEADLINES.finalCta} />
-        <Lead $caps>{FINAL_CTA_BODY}</Lead>
+        <Lead>{FINAL_CTA.body}</Lead>
       </SectionHeader>
+      <Banner>
+        <Image
+          src={FINAL_CTA.image.src}
+          alt={FINAL_CTA.image.alt}
+          width={2944}
+          height={1234}
+          sizes="(max-width: 1760px) 100vw, 1640px"
+        />
+      </Banner>
       <ButtonRow $center>
         <Cta href={SOLANA_LINKS.docs} action="sol_integrate_cow_protocol" label="final_cta" colors="solid">
           Integrate CoW Protocol
@@ -188,8 +203,8 @@ export function HeroSection(): ReactNode {
   return (
     <HeroGrid>
       <HeroCopy>
-        <Headline as="h1" align="left" lines={ACTIVE_HEADLINES.hero} />
-        <Lead $caps>{HERO.subhead}</Lead>
+        <Headline as="h1" align="left" size="hero" lines={ACTIVE_HEADLINES.hero} />
+        <Lead>{HERO.subhead}</Lead>
         <ButtonRow>
           <Cta href={SOLANA_LINKS.getInTouch} action="sol_talk_to_the_team" label="hero" colors="solid">
             Let’s get serious
@@ -217,11 +232,9 @@ export function HowItWorksSection(): ReactNode {
   return (
     <section>
       <SectionHeader $padding="120px 0 80px">
-        <CowMark>
-          <Image src={svgCowHeadSrc} alt="" width={96} height={64} unoptimized />
-        </CowMark>
+        <CowMark {...MARKS.kiss} aria-hidden="true" />
         <Headline lines={ACTIVE_HEADLINES.howItWorks} />
-        <Lead $caps>{HOW_IT_WORKS.intro}</Lead>
+        <Lead>{HOW_IT_WORKS.intro}</Lead>
       </SectionHeader>
 
       {HOW_IT_WORKS.steps.map((step, index) => (
@@ -243,8 +256,8 @@ export function HowItWorksSection(): ReactNode {
       ))}
 
       <CenteredBlock>
-        <Headline lines={[{ text: HOW_IT_WORKS.closing.title }]} small />
-        <Lead $caps>
+        <Headline lines={[{ text: HOW_IT_WORKS.closing.title }]} size="small" />
+        <Lead>
           {HOW_IT_WORKS.closing.lines[0]}
           <br />
           {HOW_IT_WORKS.closing.lines[1]}
@@ -258,8 +271,9 @@ export function PartnersSection(): ReactNode {
   return (
     <DarkPanel $marginTop={64} $marginBottom={64}>
       <SectionHeader $marginBottom={90}>
+        <CowMark {...MARKS.crown} aria-hidden="true" />
         <Headline lines={ACTIVE_HEADLINES.partners} />
-        <Lead $caps>{PARTNERS.intro}</Lead>
+        <Lead>{PARTNERS.intro}</Lead>
       </SectionHeader>
 
       <CardGrid $columns={3}>
@@ -272,10 +286,7 @@ export function PartnersSection(): ReactNode {
       </CardGrid>
 
       <PartnersClosing>
-        <PartnersCopy>
-          <Lead>{PARTNERS.economics}</Lead>
-          <p>{PARTNERS.bonus}</p>
-        </PartnersCopy>
+        <Lead>{PARTNERS.economics}</Lead>
         <ButtonRow $center>
           <Cta href={SOLANA_LINKS.getInTouch} action="sol_talk_to_the_team" label="partners" colors="solid">
             Talk to the team
@@ -306,9 +317,7 @@ export function TrustedSection(): ReactNode {
   return (
     <DarkPanel $marginTop={64} $marginBottom={64}>
       <SectionHeader $marginBottom={90}>
-        <CowMark>
-          <Image src={svgCowHeartEyesSrc} alt="" width={96} height={64} unoptimized />
-        </CowMark>
+        <CowMark {...MARKS.heartEyes} aria-hidden="true" />
         <Headline lines={ACTIVE_HEADLINES.trusted} />
       </SectionHeader>
 
@@ -317,10 +326,7 @@ export function TrustedSection(): ReactNode {
           <KaminoLogo>
             <LazySVG uniquifyIDs src={TRUSTED.lead.logo} title="Kamino" />
           </KaminoLogo>
-          <LeadStat>
-            <strong>{TRUSTED.lead.stat.value}</strong>
-            <p>{TRUSTED.lead.stat.caption}</p>
-          </LeadStat>
+          <LeadStat>{TRUSTED.lead.stat}</LeadStat>
         </LeadAside>
         <PartnerCopy>
           <h3>{TRUSTED.lead.title}</h3>
@@ -336,27 +342,16 @@ export function TrustedSection(): ReactNode {
               <h3>{card.title}</h3>
               <p>{card.description}</p>
             </PartnerCopy>
-            <CardLink
-              href={card.link.href}
-              external
-              utmContent={card.link.href.startsWith('http') ? card.link.action : undefined}
-              data-click-event={toCowFiGtmEvent({
-                category: CowFiCategory.SOLANA,
-                action: card.link.action,
-                label: 'trusted',
-              })}
-            >
-              {card.link.text}
-            </CardLink>
           </PartnerCard>
         ))}
       </CardGrid>
 
       <CenteredBlock $padding="80px 0 0" $gap={40}>
         <StatusTitle>
-          <StatusLabel>{TRUSTED.closing.status}</StatusLabel> <ScriptLine $small>{TRUSTED.closing.value}</ScriptLine>
+          <StatusLabel>{TRUSTED.closing.status}</StatusLabel>{' '}
+          <ScriptLine $size="small">{TRUSTED.closing.value}</ScriptLine>
         </StatusTitle>
-        <Lead $caps>
+        <Lead>
           {TRUSTED.closing.lines[0]}
           <br />
           {TRUSTED.closing.lines[1]}
@@ -370,10 +365,8 @@ export function WhySection(): ReactNode {
   return (
     <StatsBackdrop>
       <DarkPanel $marginBottom={64} $paddingBottom={60}>
-        <SectionHeader $marginBottom={90}>
-          <CowMark>
-            <Image src={svgCowHeartEyesSrc} alt="" width={96} height={64} unoptimized />
-          </CowMark>
+        <SectionHeader $marginBottom={72}>
+          <CowMark {...MARKS.heartEyes} aria-hidden="true" />
           <Headline lines={ACTIVE_HEADLINES.why} />
         </SectionHeader>
 
@@ -389,7 +382,7 @@ export function WhySection(): ReactNode {
                   src={reason.image.src}
                   alt={reason.image.alt}
                   width={1152}
-                  height={600}
+                  height={700}
                   sizes="(max-width: 960px) 100vw, 576px"
                 />
               </PhotoFrame>
@@ -421,7 +414,7 @@ function DeveloperDoors(): ReactNode {
   return (
     <>
       <SectionHeader $padding="120px 0 60px">
-        <Headline lines={ACTIVE_HEADLINES.doors} small />
+        <Headline lines={ACTIVE_HEADLINES.doors} size="small" />
       </SectionHeader>
 
       <CardGrid $columns={3}>
@@ -472,19 +465,19 @@ function DeveloperDoors(): ReactNode {
   )
 }
 
-function Headline({ lines, as = 'h2', align = 'center', small = false }: HeadlineProps): ReactNode {
+function Headline({ lines, as = 'h2', align = 'center', size = 'section' }: HeadlineProps): ReactNode {
   const scriptFirst = lines[0]?.script
-  const captionGap = small ? 14 : 24
+  const captionGap = size === 'small' ? 14 : 24
 
   return (
     <HeadlineRoot as={as} $align={align} $gap={scriptFirst ? 0 : captionGap}>
       {lines.map(({ text, script }) =>
         script ? (
-          <ScriptLine key={text} $small={small}>
+          <ScriptLine key={text} $size={size}>
             {text}{' '}
           </ScriptLine>
         ) : (
-          <CapsLine key={text} $small={small}>
+          <CapsLine key={text} $size={size}>
             {text}{' '}
           </CapsLine>
         ),

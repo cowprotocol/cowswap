@@ -11,6 +11,7 @@ import { Link } from '@/components/Link'
 const INK = '#23191a'
 const PAPER = '#f0f1eb'
 const FAQ_ROW = '#e6e7e1'
+const CARD_MUTED = '#e9e9df'
 const PINK = '#ff4db6'
 const ON_PINK = '#750543'
 const PLUM = '#5e073a'
@@ -25,11 +26,14 @@ const DESIGN_WIDTH = 1600
 // Scales with the viewport up to the Figma frame's width, where it reaches the designed size
 const fluid = (min: number, max: number): string => `clamp(${min}px, ${(max / DESIGN_WIDTH) * 100}vw, ${max}px)`
 
-const SIZE_SCRIPT = fluid(56, 120)
+const SIZE_SCRIPT_HERO = fluid(56, 120)
+const SIZE_SCRIPT = fluid(52, 110)
 const SIZE_SCRIPT_SMALL = fluid(48, 80)
-const SIZE_CAPS = fluid(40, 90)
+const SIZE_CAPS_HERO = fluid(40, 90)
+const SIZE_CAPS = fluid(38, 80)
 const SIZE_CAPS_SMALL = fluid(28, 48)
-const SIZE_STEP_TITLE = fluid(36, 70)
+const SIZE_STEP_TITLE = fluid(34, 60)
+const SIZE_LEAD_STAT = fluid(40, 64)
 const SIZE_STAT = fluid(44, 60)
 const SIZE_CARD_TITLE = fluid(28, 48)
 const SIZE_CARD_TITLE_SMALL = fluid(26, 40)
@@ -37,6 +41,11 @@ const SIZE_FAQ_QUESTION = fluid(22, 40)
 const SIZE_LEAD = fluid(18, 28)
 const SIZE_BODY = fluid(16, 24)
 const SIZE_BUTTON = fluid(18, 27)
+
+const SCRIPT_SIZES = { hero: SIZE_SCRIPT_HERO, section: SIZE_SCRIPT, small: SIZE_SCRIPT_SMALL }
+const CAPS_SIZES = { hero: SIZE_CAPS_HERO, section: SIZE_CAPS, small: SIZE_CAPS_SMALL }
+
+export type HeadlineSize = keyof typeof SCRIPT_SIZES
 
 const TONES = {
   plum: { bg: PLUM, fg: PINK, buttonBg: PINK, buttonFg: PLUM },
@@ -52,6 +61,7 @@ const bodyText = css`
   font-size: ${SIZE_BODY};
   font-weight: ${Font.weight.medium};
   line-height: 1.2;
+  text-transform: uppercase;
   text-wrap: pretty;
 `
 
@@ -107,6 +117,10 @@ export const SolanaPageWrapper = styled.div`
   font-family: ${FONT_MONO};
 
   ${Media.upToLarge()} {
+    padding: 0 40px;
+  }
+
+  ${Media.upToMedium()} {
     padding: 0 24px;
   }
 
@@ -136,29 +150,29 @@ export const HeadlineRoot = styled.h2<{ $gap: number; $align: 'left' | 'center' 
   text-align: ${({ $align }) => $align};
 `
 
-export const ScriptLine = styled.span<{ $small?: boolean }>`
+export const ScriptLine = styled.span<{ $size?: HeadlineSize }>`
   font-family: ${FONT_SCRIPT};
-  font-size: ${({ $small }) => ($small ? SIZE_SCRIPT_SMALL : SIZE_SCRIPT)};
+  font-size: ${({ $size }) => SCRIPT_SIZES[$size ?? 'section']};
   font-weight: ${Font.weight.regular};
   line-height: 0.84;
   text-wrap: balance;
 `
 
-export const CapsLine = styled.span<{ $small?: boolean }>`
+export const CapsLine = styled.span<{ $size?: HeadlineSize }>`
   font-family: ${FONT_SERIF};
-  font-size: ${({ $small }) => ($small ? SIZE_CAPS_SMALL : SIZE_CAPS)};
+  font-size: ${({ $size }) => CAPS_SIZES[$size ?? 'section']};
   font-weight: ${Font.weight.bold};
   line-height: 1;
   text-transform: uppercase;
   text-wrap: balance;
 `
 
-export const Lead = styled.p<{ $caps?: boolean }>`
+export const Lead = styled.p`
   margin: 0;
   font-size: ${SIZE_LEAD};
   font-weight: ${Font.weight.medium};
   line-height: 1.2;
-  text-transform: ${({ $caps }) => ($caps ? 'uppercase' : 'none')};
+  text-transform: uppercase;
   text-wrap: pretty;
 `
 
@@ -212,27 +226,6 @@ export const ctaColors = {
   ghostOnDark: { $fg: PAPER, $ghost: true },
 }
 
-export const CardLink = styled(Link)`
-  && {
-    align-self: flex-start;
-    margin-top: auto;
-    background: transparent;
-    color: ${INK};
-    font-family: ${FONT_MONO};
-    font-size: ${SIZE_BODY};
-    font-weight: ${Font.weight.semibold};
-    text-decoration: underline;
-    text-decoration-skip-ink: none;
-    text-underline-position: from-font;
-    text-transform: uppercase;
-    transition: opacity 0.2s ease-in-out;
-
-    &:hover {
-      opacity: 0.85;
-    }
-  }
-`
-
 export const HeroGrid = styled.div`
   display: grid;
   grid-template-columns: minmax(0, 788fr) minmax(0, 600fr);
@@ -279,6 +272,27 @@ export const PhotoFrame = styled.div`
   }
 `
 
+export const Banner = styled.div`
+  width: 100%;
+  overflow: hidden;
+  border-radius: 60px;
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  ${Media.upToMedium()} {
+    border-radius: 28px;
+
+    img {
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+    }
+  }
+`
+
 export const StatsPanel = styled.div`
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -316,7 +330,6 @@ export const StatItem = styled.div`
   p {
     ${bodyText}
     max-width: 400px;
-    text-transform: uppercase;
     text-wrap: balance;
   }
 
@@ -372,20 +385,16 @@ export const SectionHeader = styled.div<{ $padding?: string; $marginBottom?: num
   }
 `
 
-export const CowMark = styled.span`
+export const CowMark = styled.span<{ $src: string; $width: number; $height: number }>`
   display: block;
-  width: 96px;
-  height: 64px;
-
-  img {
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
+  width: ${({ $width }) => $width}px;
+  height: ${({ $height }) => $height}px;
+  background: currentColor;
+  mask: url(${({ $src }) => $src}) center / contain no-repeat;
 
   ${Media.upToMedium()} {
-    width: 72px;
-    height: 48px;
+    width: ${({ $width }) => $width * 0.75}px;
+    height: ${({ $height }) => $height * 0.75}px;
   }
 `
 
@@ -402,13 +411,13 @@ export const CardGrid = styled.div<{ $columns?: number; $marginTop?: number }>`
   }
 `
 
-export const ReasonCard = styled.div`
+export const ReasonCard = styled.div<{ $muted?: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 40px;
   padding: 40px;
   border-radius: 40px;
-  background: ${PAPER};
+  background: ${({ $muted }) => ($muted ? CARD_MUTED : PAPER)};
   color: ${INK};
 
   ${PhotoFrame} {
@@ -524,7 +533,7 @@ export const LeadAside = styled.div`
 
 export const KaminoLogo = styled.span`
   display: block;
-  width: min(323px, 70%);
+  width: min(303px, 70%);
 
   svg {
     display: block;
@@ -533,20 +542,12 @@ export const KaminoLogo = styled.span`
   }
 `
 
-export const LeadStat = styled.div`
-  strong {
-    display: block;
-    font-family: ${FONT_SERIF};
-    font-size: ${SIZE_CAPS};
-    font-weight: ${Font.weight.bold};
-    line-height: 1.24;
-  }
-
-  p {
-    ${bodyText}
-    max-width: 505px;
-    text-transform: uppercase;
-  }
+export const LeadStat = styled.strong`
+  display: block;
+  font-family: ${FONT_SERIF};
+  font-size: ${SIZE_LEAD_STAT};
+  font-weight: ${Font.weight.bold};
+  line-height: 1.24;
 `
 
 export const PartnerCopy = styled.div`
@@ -607,13 +608,13 @@ export const StatusLabel = styled.span`
   text-transform: uppercase;
 `
 
-export const ToneCard = styled.div<{ $tone: CardTone; $padding?: number }>`
+export const ToneCard = styled.div<{ $tone: CardTone }>`
   --ring: ${({ $tone }) => TONES[$tone].fg};
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: 40px;
-  padding: ${({ $padding }) => $padding ?? 32}px;
+  padding: 32px;
   border-radius: 32px;
   background: ${({ $tone }) => TONES[$tone].bg};
   color: ${({ $tone }) => TONES[$tone].fg};
@@ -630,24 +631,20 @@ export const toneButton = (tone: CardTone): { $bg: string; $fg: string } => ({
   $fg: TONES[tone].buttonFg,
 })
 
-export const ToneCopy = styled.div<{ $large?: boolean }>`
+export const ToneCopy = styled.div`
   display: flex;
   flex-direction: column;
   gap: 24px;
 
   h3 {
     ${serifTitle}
-    font-size: ${({ $large }) => ($large ? SIZE_CARD_TITLE : SIZE_CARD_TITLE_SMALL)};
-    line-height: ${({ $large }) => ($large ? 1.24 : 1)};
+    font-size: ${SIZE_CARD_TITLE_SMALL};
+    line-height: 1;
   }
 
   p {
     ${bodyText}
-    max-width: ${({ $large }) => ($large ? 'none' : '380px')};
-  }
-
-  p + p {
-    margin-top: 4px;
+    max-width: 380px;
   }
 
   ${Media.upToMedium()} {
@@ -703,20 +700,13 @@ export const PartnersClosing = styled.div`
   margin-top: 80px;
   text-align: center;
 
+  ${Lead} {
+    max-width: 1050px;
+  }
+
   ${Media.upToMedium()} {
     gap: 32px;
     margin-top: 40px;
-  }
-`
-
-export const PartnersCopy = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 29px;
-  max-width: 1050px;
-
-  p:last-child {
-    ${bodyText}
   }
 `
 
@@ -768,6 +758,7 @@ export const FaqItem = styled.details`
     ${bodyText}
     max-width: 1084px;
     padding: 8px 32px 32px;
+    text-transform: none;
 
     ${Media.upToMedium()} {
       padding: 4px 24px 24px;
