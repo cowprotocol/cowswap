@@ -9,7 +9,7 @@ jest.mock('launchdarkly-react-client-sdk', () => ({
 
 const mockUseFlags = jest.mocked(useFlags)
 
-const LD_FLAGS = { isSolanaEnabled: true, isSolBridgeEnabled: true, isTwapEoaEnabled: true }
+const LD_FLAGS = { isSolanaEnabled: true, isSolanaBeta: true, isSolBridgeEnabled: true, isTwapEoaEnabled: true }
 
 describe('useFeatureFlags', () => {
   beforeEach(() => {
@@ -33,6 +33,7 @@ describe('useFeatureFlags', () => {
 
     expect(result.current).toEqual({
       isSolanaEnabled: false,
+      isSolanaBeta: false,
       isSolBridgeEnabled: true,
       isTwapEoaEnabled: true,
     })

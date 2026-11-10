@@ -60,4 +60,10 @@ describe('useSupportedChains', () => {
 
     expect(ids()).toContain(SupportedChainId.SOLANA)
   })
+
+  it('shows Solana on isSolanaBeta alone, without isSolanaEnabled', () => {
+    mockUseFlags.mockReturnValue({ isSolanaBeta: true })
+
+    expect(renderHook(() => useSupportedChains()).result.current.map(({ id }) => id)).toContain(SupportedChainId.SOLANA)
+  })
 })
