@@ -1,6 +1,7 @@
 import { useAtomValue } from 'jotai'
-import React, { ReactNode, useRef } from 'react'
+import React, { ReactNode, useCallback, useRef, useState } from 'react'
 
+import { COW_BATCH_TIME_SECONDS } from '@cowprotocol/common-const'
 import { useCountdown } from '@cowprotocol/common-hooks'
 import { formatBatchCountdown } from '@cowprotocol/common-utils'
 
@@ -15,6 +16,7 @@ import { useUsdAmount } from 'modules/usdAmount'
 import * as styledEl from './TwapConfirmDetails.styled'
 
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
+import { getTwapCowBatchStartTime } from '../../utils/twapCowBatchCadence'
 
 export type TwapConfirmDetailsProps = {
   startsAtCowBatch: boolean
@@ -113,9 +115,21 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
 
 function CowBatchStartCountdown(): ReactNode {
   const countdownRef = useRef<HTMLSpanElement | null>(null)
-  const validFrom = useAtomValue(cowBatchValidFromAtom)
+  const nextBatch = useAtomValue(cowBatchValidFromAtom)
+  const [skippedBatch, setSkippedBatch] = useState<number | undefined>(undefined)
+  const isNextBatchSkipped = nextBatch !== undefined && nextBatch === skippedBatch
+  const startTime = isNextBatchSkipped ? nextBatch + COW_BATCH_TIME_SECONDS : nextBatch
 
-  useCountdown({ targetRef: countdownRef, targetEpochSec: validFrom, format: formatBatchCountdown })
+  const onRemainingChange = useCallback(
+    (remainingSec: number) => {
+      if (nextBatch === undefined || isNextBatchSkipped) return
+
+      if (getTwapCowBatchStartTime(nextBatch - remainingSec) !== nextBatch) setSkippedBatch(nextBatch)
+    },
+    [isNextBatchSkipped, nextBatch],
+  )
+
+  useCountdown({ targetRef: countdownRef, targetEpochSec: startTime, format: formatBatchCountdown, onRemainingChange })
 
   // Single inline wrapper: the parent is a flex row, which would drop the space before the countdown
   return (

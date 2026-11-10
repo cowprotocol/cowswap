@@ -5,7 +5,7 @@ import { maxUint256, type Hex } from 'viem'
 import { useConfig, useWalletClient } from 'wagmi'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { localTimeOffsetAtom, useFeatureFlags } from '@cowprotocol/common-hooks'
+import { localTimeOffsetAtom } from '@cowprotocol/common-hooks'
 import { createCowLogger, getExplorerTwapOrderLink, getServerNowSec, normalizeError } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { type AccountAddress, isEvmChain, OrderKind } from '@cowprotocol/cow-sdk'
@@ -15,7 +15,6 @@ import { ComposableCowPoller } from '@cowprotocol/sdk-composable'
 import { COW_SHED_2_1_0_VERSION, CowShedSdk } from '@cowprotocol/sdk-cow-shed'
 import { UiOrderType } from '@cowprotocol/types'
 import {
-  isEoaAtom,
   isSafeAppAtom,
   isSafeViaWcAtom,
   isSafeWalletAtom,
@@ -49,6 +48,7 @@ import { getAreBridgeCurrencies } from 'common/utils/getAreBridgeCurrencies'
 
 import { useEoaTwapFlowUpdater } from './useEoaTwapSigningStep'
 import { useExtensibleFallbackContext } from './useExtensibleFallbackContext'
+import { useIsEoaTwap } from './useIsEoaTwap'
 import { useTwapOrder } from './useTwapOrder'
 import { useTwapOrderCreationContext } from './useTwapOrderCreationContext'
 
@@ -112,8 +112,7 @@ export function useCreateTwapOrder() {
   const isSafeApp = useAtomValue(isSafeAppAtom)
   const isSafeViaWc = useAtomValue(isSafeViaWcAtom)
   const isTxBundlingSupported = useIsTxBundlingSupported()
-  const isEoa = useAtomValue(isEoaAtom)
-  const { isTwapEoaEnabled } = useFeatureFlags()
+  const isEoaTwap = useIsEoaTwap()
   const config = useConfig()
 
   const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
@@ -184,7 +183,6 @@ export function useCreateTwapOrder() {
     // eslint-disable-next-line max-lines-per-function, complexity
     async (fallbackHandlerIsNotSet: boolean): Promise<boolean | undefined> => {
       const isSafeTwap = (isSafeApp === true || isSafeViaWc === true) && isSafeWallet && isTxBundlingSupported === true
-      const isEoaTwap = isSafeApp === false && !!isTwapEoaEnabled && isEoa === true
 
       if (!isEvmChain(chainId) || (!isSafeTwap && !isEoaTwap)) {
         return
@@ -519,9 +517,8 @@ export function useCreateTwapOrder() {
       }
     },
     [
-      isTwapEoaEnabled,
+      isEoaTwap,
       isSafeWallet,
-      isEoa,
       isSafeApp,
       isSafeViaWc,
       isTxBundlingSupported,

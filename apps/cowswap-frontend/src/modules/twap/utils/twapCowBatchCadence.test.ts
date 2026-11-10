@@ -2,7 +2,9 @@ import { COW_BATCH_TIME_SECONDS } from '@cowprotocol/common-const'
 
 import {
   getTwapCowBatchCadenceSuggestion,
+  getTwapCowBatchStartTime,
   isTwapPartTimeOnCowBatchCadence,
+  TWAP_COW_BATCH_MIN_START_LEAD,
   withTwapCowBatchStartTime,
 } from './twapCowBatchCadence'
 
@@ -81,6 +83,27 @@ describe('getTwapCowBatchCadenceSuggestion', () => {
         isPartsCountAllowed: allowAll,
       }),
     ).toEqual({ parts: 3, partTime: 5 * MINUTE })
+  })
+})
+
+describe('getTwapCowBatchStartTime', () => {
+  const batch = 1_700_000_100
+
+  it('returns the next batch when it is far enough ahead', () => {
+    expect(getTwapCowBatchStartTime(batch - 120)).toBe(batch)
+  })
+
+  it('returns the next batch when the lead equals the minimum', () => {
+    expect(getTwapCowBatchStartTime(batch - TWAP_COW_BATCH_MIN_START_LEAD)).toBe(batch)
+  })
+
+  it('skips to the batch after next when the next one is too close', () => {
+    expect(getTwapCowBatchStartTime(batch - TWAP_COW_BATCH_MIN_START_LEAD + 1)).toBe(batch + COW_BATCH_TIME_SECONDS)
+    expect(getTwapCowBatchStartTime(batch - 0.5)).toBe(batch + COW_BATCH_TIME_SECONDS)
+  })
+
+  it('returns the following batch when now is exactly on a boundary', () => {
+    expect(getTwapCowBatchStartTime(batch)).toBe(batch + COW_BATCH_TIME_SECONDS)
   })
 })
 

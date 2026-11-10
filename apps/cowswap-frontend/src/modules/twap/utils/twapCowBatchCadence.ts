@@ -48,14 +48,27 @@ export function isTwapPartTimeOnCowBatchCadence(partTime: number): boolean {
   return partTime > 0 && partTime % COW_BATCH_TIME_SECONDS === 0
 }
 
+/** Seconds. Minimum gap between snapping and the first part, so the setup tx can land before it opens. */
+export const TWAP_COW_BATCH_MIN_START_LEAD = 60
+
 /**
- * Aligns the order start with the next canonical CoW batch when its part time is on cadence.
+ * Next canonical CoW batch at least `TWAP_COW_BATCH_MIN_START_LEAD` ahead of `nowSec`.
+ * @param nowSec - Server-adjusted unix seconds.
+ */
+export function getTwapCowBatchStartTime(nowSec: number): number {
+  const nextBatch = getCowBatchValidFrom(nowSec)
+
+  return nextBatch - nowSec < TWAP_COW_BATCH_MIN_START_LEAD ? nextBatch + COW_BATCH_TIME_SECONDS : nextBatch
+}
+
+/**
+ * Aligns the order start with a canonical CoW batch when its part time is on cadence.
  * @param nowSec - Server-adjusted unix seconds.
  */
 export function withTwapCowBatchStartTime(order: TWAPOrder, nowSec: number): TWAPOrder {
   if (!isTwapPartTimeOnCowBatchCadence(order.timeInterval)) return order
 
-  return { ...order, startTime: getCowBatchValidFrom(nowSec) }
+  return { ...order, startTime: getTwapCowBatchStartTime(nowSec) }
 }
 
 function getPartTime(totalDuration: number, parts: number): number {
