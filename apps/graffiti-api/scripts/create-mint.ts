@@ -119,6 +119,15 @@ async function ensureFunded(connection: Connection, treasury: Keypair, rent: Ren
 }
 
 /** Rent is a cluster parameter: read it rather than assume it. */
+/** .keys/mint.json is reused across runs, so it may name a mint another environment already created. */
+async function ensureMintAvailable(connection: Connection, mint: PublicKey): Promise<boolean> {
+  if ((await connection.getAccountInfo(mint)) === null) return true
+
+  console.error(`\n[mint] ${mint.toBase58()} already exists on this cluster.`)
+  console.error('[mint] Move .keys/mint.json aside, or set MINT_SECRET_KEY, to use a different address.')
+  return false
+}
+
 async function fetchRentCosts(connection: Connection): Promise<RentCosts> {
   const [mint, tokenAccount] = await Promise.all([
     connection.getMinimumBalanceForRentExemption(MINT_SIZE),
@@ -157,6 +166,8 @@ async function main(): Promise<void> {
 
   // Persist before any network call so a failed funding step can be resumed.
   saveKeys(mint, treasury)
+
+  if (!(await ensureMintAvailable(connection, mint.keypair.publicKey))) process.exit(1)
 
   const rent = await fetchRentCosts(connection)
   if (!(await ensureFunded(connection, treasury.keypair, rent))) process.exit(1)
