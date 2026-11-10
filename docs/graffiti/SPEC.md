@@ -13,7 +13,7 @@ costs an SPL token per pixel. Freehand strokes, rasterized to a pixel grid.
   treasury token account to the claimer's wallet, one use per code.
 
 ## Canvas
-- Grid: CANVAS_WIDTH x CANVAS_HEIGHT cells (4096 x 2048 by default). Each cell:
+- Grid: CANVAS_WIDTH x CANVAS_HEIGHT cells (3840 x 2160 by default). Each cell:
   RGB color (24-bit), no alpha layering —
   latest write wins.
 - A stroke = array of {x, y} float points in canvas coords + color + brush

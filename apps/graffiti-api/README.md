@@ -1,6 +1,6 @@
 # graffiti-api
 
-Backend for the Graffiti Wall: a collaborative pixel canvas (4096×2048 by
+Backend for the Graffiti Wall: a collaborative pixel canvas (3840×2160 by
 default, see `CANVAS_WIDTH`/`CANVAS_HEIGHT`) where drawing costs one SPL token
 per pixel, proven by an on-chain SPL burn.
 
@@ -52,7 +52,8 @@ pnpx nx run graffiti-api:build
 node dist/scripts/create-mint.js
 ```
 
-Creates the mint (decimals 0), mints 1,000,000 tokens to a fresh treasury,
+Creates the mint (decimals 0), mints `INITIAL_SUPPLY` (default 10,000,000) tokens
+to a fresh treasury,
 saves keypairs under `.keys/` (gitignored) and prints `MINT` / `TREASURY`.
 Then run the real server:
 
@@ -62,6 +63,34 @@ TREASURY_KEYPAIR=$PWD/.keys/treasury.json \
 ADMIN_TOKEN=$(openssl rand -hex 32) \
 node dist/src/server.js
 ```
+
+### Supplying keys to the script from the environment
+
+`create-mint.ts` takes the keys it signs with from the environment, in the same
+two encodings the server accepts — a `solana-keygen` JSON byte array
+(`[12,34,...]`) or a base58 string:
+
+| Var | What it overrides |
+| --- | --- |
+| `TREASURY_SECRET_KEY` | The treasury (payer, mint authority, supply holder). Beats `TREASURY_KEYPAIR`. |
+| `TREASURY_KEYPAIR` | Path to a treasury keypair file, in either encoding. Beats `.keys/treasury.json`. |
+| `MINT_SECRET_KEY` | A pre-generated (e.g. vanity) mint address. Defaults to `.keys/mint.json`. |
+
+```bash
+TREASURY_SECRET_KEY="$(cat /secure/treasury.json)" \
+  pnpm mint:create -- --rpc <rpc-url>
+```
+
+A key supplied this way is **never written to `.keys/`** — one held in a secret
+manager should not come to rest on the build host's disk. Only keypairs the
+script generates itself are persisted, so a run that supplies both keys writes
+nothing. A secret that is set but unparseable, or a `TREASURY_KEYPAIR` path that
+cannot be read, aborts the run rather than silently falling back to a fresh,
+unfunded treasury.
+
+Prefer the env var over a shell argument: arguments land in shell history and are
+visible to every process via `ps`. Read it from a file or a secret manager as
+above rather than typing it inline.
 
 ## Configuration (env)
 
@@ -86,8 +115,8 @@ node dist/src/server.js
 | `RATE_LIMIT_PER_MINUTE`| `60`                             | Per-IP budget for write endpoints (reads get 10×)                   |
 | `WS_MAX_CLIENTS`       | `2000`                           | Max simultaneous WebSocket clients                                  |
 | `WS_HEARTBEAT_MS`      | `30000`                          | Ping interval for dropping half-open sockets                        |
-| `CANVAS_WIDTH`         | `4096`                           | Wall width in cells                                                 |
-| `CANVAS_HEIGHT`        | `2048`                           | Wall height in cells                                                |
+| `CANVAS_WIDTH`         | `3840`                           | Wall width in cells; pin it per environment, see below              |
+| `CANVAS_HEIGHT`        | `2160`                           | Wall height in cells; pin it per environment, see below             |
 | `MAX_BOX_WIDTH`        | `256`                            | Max bounding box of one draw (long side)                            |
 | `MAX_BOX_HEIGHT`       | `128`                            | Max bounding box of one draw (short side)                           |
 | `STATIC_DIR`           | —                                | Serve a built frontend from this directory                          |
@@ -128,7 +157,7 @@ forever and memos are unique per pubkey — both reject replays.
 
 ## Claim codes
 
-Ops generates codes with `pnpm --filter @cowprotocol/graffiti-api run claims:gen -- --n 20 --amount 1000`,
+Ops generates codes with `pnpm --filter @cowprotocol/graffiti-api run claims:gen -- --n 20 --amount 5000`,
 or via `POST /v1/admin/claims` with the `ADMIN_TOKEN` bearer header.
 (or `POST /v1/admin/claims`). Codes are random 22-char base58 ids, single
 use. QR encodes `<app-url>/#/graffiti/claim?code=<id>`; claiming transfers

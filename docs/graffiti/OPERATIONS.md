@@ -30,8 +30,8 @@ One process, one SQLite file, one hot wallet. That's the whole system.
 | `MINT` | — | SPL mint address. **Defines which token the wall accepts.** Swap this = new token/canvas pairing |
 | `TREASURY_KEYPAIR` | — | Path to treasury wallet JSON (pays claims, holds supply) |
 | `ADMIN_TOKEN` | — | Bearer token for `/v1/admin/*`. **Set a strong one for anything public** |
-| `CANVAS_WIDTH` | 4096 | Wall width in pixels |
-| `CANVAS_HEIGHT` | 2048 | Wall height in pixels |
+| `CANVAS_WIDTH` | 3840 | Wall width in pixels. Sized against the ink in circulation, see below |
+| `CANVAS_HEIGHT` | 2160 | Wall height in pixels |
 | `MAX_BOX_WIDTH` | 256 | Widest a single commit's bounding box may be |
 | `MAX_BOX_HEIGHT` | 128 | Tallest a single commit's bounding box may be |
 | `MAX_CELLS_PER_DRAW` | 20000 | Hard cap on cells per commit |
@@ -43,6 +43,23 @@ One process, one SQLite file, one hot wallet. That's the whole system.
 The frontend reads geometry (`width`, `height`, `maxBox*`) from `GET /v1/info`
 at load — changing canvas size is a server env change plus restart, no frontend
 rebuild. Changing `MAX_BOX_*` shapes the drawing frame users position.
+
+**Sizing the canvas.** One token paints one cell, so the wall should be sized
+against the ink in circulation, not picked for its own sake. Aim for a full
+spend of every outstanding code to land near 50-60% coverage: a wall that
+saturates gets repainted over itself and the early painters lose their work,
+while one far too large reads as faint noise behind the app.
+
+    cells ~= (codes x amount) / 0.55
+
+1000 codes x 5000 tokens is 5M cells of paint, hence the 3840x2160 default
+(8.29M cells). Realistic turnout — not every card is redeemed, and few painters
+spend their whole balance — lands nearer 20%. Keep it 16:9 so `cover` crops
+nothing on a widescreen desktop; a phone in portrait sees the central ~26% of
+the width whatever the ratio, so treat the middle as the hero area.
+
+**Do not change it after launch.** Cells are stored as absolute coordinates, so
+a resize re-interprets every pixel already painted.
 
 ## 3. Day-to-day operations
 
@@ -63,7 +80,7 @@ Against a running server:
 curl -sS -X POST https://<host>/v1/admin/claims \
   -H 'authorization: Bearer <ADMIN_TOKEN>' \
   -H 'content-type: application/json' \
-  -d '{"n": 1000, "amount": 1000}' > codes.json
+  -d '{"n": 1000, "amount": 5000}' > codes.json
 ```
 `n` is capped at 1000 per call; repeat for more. The `content-type` header is
 required.
@@ -71,13 +88,20 @@ required.
 Offline, straight into the SQLite file the server reads:
 ```bash
 cd apps/graffiti-api
-GRAFFITI_DB=data/graffiti.db pnpm claims:gen -- --n 1000 --amount 1000 --out data/codes.txt
+GRAFFITI_DB=data/graffiti.db pnpm claims:gen -- --n 1000 --amount 5000 --out data/codes.txt
 ```
 Use `--out`, not `>`: npm and pnpm print their script banner to stdout and it
 lands in the file. `claims:pdf` rejects such a file rather than printing dead QRs.
 
-**Fund the treasury before printing.** 1000 codes x 1000 tokens is the whole
-1,000,000 initial supply, plus ~2.1 SOL for the claimers' account rent.
+**SOL per redemption.** The treasury pays the claimer's token-account rent plus
+one signature on every claim: `getMinimumBalanceForRentExemption(165)` + 5000
+lamports, currently **0.00149 SOL**. Rent is a cluster parameter, so read it
+rather than trusting this number — `create-mint.ts` prints it on success.
+
+**Fund the treasury before printing.** 1000 codes x 5000 tokens is a 5,000,000
+token pool, plus ~1.5 SOL for the claimers' account rent. Mint the pool and a
+reserve (`INITIAL_SUPPLY`), then move the reserve off the treasury: what sits in
+the hot wallet should be the outstanding liability and no more.
 
 Codes are database rows, not on-chain objects, and survive a token migration: the
 QR holds only domain + code, and `MINT` decides which token pays out.
@@ -176,7 +200,7 @@ amount. This key lives on the server, i.e. a hot wallet — prefer `TREASURY_SEC
 injected from a secret manager over a file on disk:
 
 - **Fund it with only the claim pool.** If you printed 100 codes × 5000,
-  the treasury needs 500,000 tokens and ~0.5 SOL — put exactly that there.
+  the treasury needs 500,000 tokens and ~0.15 SOL — put exactly that there.
   A server compromise then costs you the pool, not the token's supply.
 - Keep the mint authority / remaining supply in cold storage off-server.
 - Monitor the treasury: alert when SOL < ~0.1 or tokens < outstanding codes.
@@ -195,9 +219,14 @@ rate-limit-free today (add per-IP limits at the proxy for launch).
 
 ## 5. Migrating / launching on a new token (e.g. production)
 
-1. Create the mint (same chain or mainnet): `scripts/create-mint.ts`.
-2. Fund the treasury: claim pool of tokens + SOL for rent/fees.
-3. Point the deployment at it: `MINT=<new> TREASURY_KEYPAIR=<funded>`.
+1. Create the mint (same chain or mainnet): `scripts/create-mint.ts`. Hand it the
+   treasury from your secret manager rather than a file on the build host:
+   `TREASURY_SECRET_KEY='[12,34,...]'` (JSON byte array or base58) — a key passed
+   that way is never copied into `.keys/`. `MINT_SECRET_KEY` does the same for a
+   pre-generated mint address.
+2. Fund the treasury: claim pool of tokens + SOL for rent/fees. On mainnet there is
+   no airdrop; `create-mint.ts` prints the exact setup cost if the balance is short.
+3. Point the deployment at it: `MINT=<new> TREASURY_SECRET_KEY=<funded>`.
 4. Decide the DB: a **fresh empty DB** = fresh canvas (usual choice);
    the old canvas lives on in the old DB/backup.
 5. Pre-printed QRs keep working — same domain, same codes, new token.
