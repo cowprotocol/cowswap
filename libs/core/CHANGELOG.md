@@ -1,5 +1,23 @@
 # Changelog
 
+## [3.15.0](https://github.com/cowprotocol/cowswap/compare/core-v3.14.3...core-v3.15.0) (2026-11-10)
+
+### Minor Changes
+
+- feat(networks): networks update (#8456)
+
+- feat(solana): pass appData to quote (#8509)
+
+### Patch Changes
+
+- fix(rwa): updated rwa token lists (#8487)
+
+- fix(solana): use SDK for quote costs breakdown (#8522)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.22.0
+  - @cowprotocol/common-const@3.19.0
+
 ## [3.14.3](https://github.com/cowprotocol/cowswap/compare/core-v3.14.2...core-v3.14.3) (2026-11-05)
 
 ### Patch Changes

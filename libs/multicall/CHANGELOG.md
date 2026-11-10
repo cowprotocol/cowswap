@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.12.0](https://github.com/cowprotocol/cowswap/compare/multicall-v3.11.5...multicall-v3.12.0) (2026-11-10)
+
+### Minor Changes
+
+- feat(solana): pass appData to quote (#8509)
+
+### Patch Changes
+
+- fix(solana): use SDK for quote costs breakdown (#8522)
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.21.0
+  - @cowprotocol/common-const@3.19.0
+  - @cowprotocol/types@4.15.0
+  - @cowprotocol/wallet-provider@2.3.0
+
 ## [3.11.5](https://github.com/cowprotocol/cowswap/compare/multicall-v3.11.4...multicall-v3.11.5) (2026-11-05)
 
 ### Patch Changes
