@@ -27,20 +27,20 @@ describe('Solana list sources', () => {
 })
 
 describe('DEFAULT_TOKENS_LISTS', () => {
-  it('includes the Reserve Protocol BNB token list', () => {
+  it('includes the Reserve Protocol BNB token list disabled by default', () => {
     const reserveList = DEFAULT_TOKENS_LISTS[SupportedChainId.BNB]?.find(
       (list) => list.source === RESERVE_BNB_TOKEN_LIST_URL,
     )
 
     expect(reserveList).toEqual(expect.objectContaining({ priority: 6, source: RESERVE_BNB_TOKEN_LIST_URL }))
+    expect(reserveList?.enabledByDefault).toBeUndefined()
   })
 
-  it('enables every RWA list by default, so geoblocked users still see the tokens', () => {
-    const rwaLists = Object.values(DEFAULT_TOKENS_LISTS).flatMap((lists) =>
-      (lists || []).filter((list) => list.category === 'RWA'),
+  it('enables the Solana RWA list by default, and no other RWA list', () => {
+    const enabledRwaSources = Object.values(DEFAULT_TOKENS_LISTS).flatMap((lists) =>
+      (lists || []).filter((list) => list.category === 'RWA' && list.enabledByDefault).map((list) => list.source),
     )
 
-    expect(rwaLists.length).toBeGreaterThan(0)
-    expect(rwaLists.filter((list) => !list.enabledByDefault)).toEqual([])
+    expect(enabledRwaSources).toEqual([SOLANA_RWA_TOKENS_LIST_SOURCE])
   })
 })
