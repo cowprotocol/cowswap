@@ -2,6 +2,12 @@ import type { MutableRefObject } from 'react'
 
 import type { Point } from './raster.utils'
 
+/**
+ * Which view the stage re-applies when it is resized. `null` once the user has
+ * zoomed or panned: their view is then theirs to keep.
+ */
+export type AutoView = 'cover' | 'contain' | 'frame' | null
+
 /** Painted-but-unburned cells: `y * CANVAS.w + x` → 24-bit colour. */
 export type Draft = Map<number, number>
 
@@ -51,6 +57,7 @@ export interface WallRefs {
   // Viewport.
   viewRef: MutableRefObject<View>
   minScaleRef: MutableRefObject<number>
+  autoViewRef: MutableRefObject<AutoView>
 
   // Pointer state machine.
   drawingRef: MutableRefObject<boolean>

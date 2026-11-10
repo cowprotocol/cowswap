@@ -10,7 +10,7 @@ import type { WallRefs } from './wall.types'
  * its output onto the view.
  */
 export function useCanvasGestures(
-  { viewRef, minScaleRef, pinchActiveRef, requestRenderRef }: WallRefs,
+  { viewRef, minScaleRef, autoViewRef, pinchActiveRef, requestRenderRef }: WallRefs,
   canvasEl: HTMLCanvasElement | null,
   onPinchStart: () => void,
 ): void {
@@ -18,6 +18,7 @@ export function useCanvasGestures(
     {
       onPinchStart: () => {
         pinchActiveRef.current = true
+        autoViewRef.current = null
         onPinchStart()
       },
       onPinchEnd: () => {
@@ -45,6 +46,7 @@ export function useCanvasGestures(
         if (pinching) return
 
         event.preventDefault()
+        autoViewRef.current = null
         viewRef.current.offsetX -= dx
         viewRef.current.offsetY -= dy
         requestRenderRef.current()

@@ -8,6 +8,10 @@
 
 import { useMemo, type ReactNode } from 'react'
 
+import { useBodyScrollbarLocker } from '@cowprotocol/common-hooks'
+
+import { useFullBleedPage } from 'modules/application'
+
 import { NetworkGate } from './NetworkGate.pure'
 import { useBrush } from './useBrush'
 import { useCanvasGestures } from './useCanvasGestures'
@@ -33,6 +37,9 @@ import type { WallSnapshot } from './wall.types'
 const BALANCE_POLL_MS = 15_000
 
 export default function GraffitiPage(): ReactNode {
+  useFullBleedPage()
+  useBodyScrollbarLocker(true)
+
   const gate = useSolanaGate()
   const layout = useNarrowLayout()
   const refs = useWallRefs()
@@ -59,7 +66,9 @@ export default function GraffitiPage(): ReactNode {
   const viewport = useViewport(refs, {
     canvasEl: dom.canvasEl,
     plotDims: plot.plotDims,
-    plotReady: plot.plot !== null,
+    // Not on the landing screen: framing the auto-placed plot there would
+    // override the view that fills the stage. startDrawing frames it instead.
+    plotReady: plot.plot !== null && session.session !== 'start',
     plotLocked: session.plotLocked,
   })
   const pointer = usePointerInput(refs, {

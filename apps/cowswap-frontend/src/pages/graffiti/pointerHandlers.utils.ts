@@ -61,13 +61,15 @@ export function handlePointerDown(event: CanvasPointerEvent, ctx: PointerContext
 }
 
 export function handlePointerMove(event: CanvasPointerEvent, ctx: PointerContext): void {
-  const { activePointersRef, pinchActiveRef, movingPlotRef, panningRef, viewRef, requestRenderRef } = ctx.refs
+  const { activePointersRef, pinchActiveRef, movingPlotRef, panningRef, viewRef, autoViewRef, requestRenderRef } =
+    ctx.refs
 
   if (activePointersRef.current.size >= 2 || pinchActiveRef.current) return
 
   if (movingPlotRef.current) return moveFrame(event, ctx)
 
   if (panningRef.current) {
+    autoViewRef.current = null
     viewRef.current.offsetX += event.movementX
     viewRef.current.offsetY += event.movementY
     requestRenderRef.current()

@@ -46,6 +46,14 @@ const GRID_STEP = 8
 /** The eraser's colour. Erased cells fall back to the page background, not to black. */
 const ERASED = 0
 
+/**
+ * Capped at 2: every frame redraws a 4096x2048 offscreen, and a 3x backing store
+ * on a large display costs more fill than the extra sharpness is worth.
+ */
+export function devicePixelRatio(): number {
+  return Math.min(window.devicePixelRatio || 1, 2)
+}
+
 /** Fill a run of wall cells as screen-space rectangles. */
 export function fillCellRects(ctx: CanvasRenderingContext2D, cells: Array<{ x: number; y: number }>, view: View): void {
   ctx.beginPath()
@@ -71,11 +79,12 @@ export function renderWall(refs: WallRenderRefs): void {
 
   if (!chromeEl || !paintEl || !wrapEl || !offscreen) return
 
+  const dpr = devicePixelRatio()
   const width = wrapEl.clientWidth
   const height = wrapEl.clientHeight
 
   // `||` would short-circuit and leave the second canvas at the stale size.
-  if ([resizeCanvas(chromeEl, width, height), resizeCanvas(paintEl, width, height)].some(Boolean)) {
+  if ([resizeCanvas(chromeEl, width, height, dpr), resizeCanvas(paintEl, width, height, dpr)].some(Boolean)) {
     refs.dirtyRef.current = true
   }
 
@@ -85,6 +94,12 @@ export function renderWall(refs: WallRenderRefs): void {
   const chrome = chromeEl.getContext('2d')
 
   if (!paint || !chrome) return
+
+  // Both layers draw in CSS pixels, which is what the view maths and the pointer
+  // hit-testing use; the transform is what turns the extra device pixels into
+  // sharper edges rather than a different coordinate space.
+  paint.setTransform(dpr, 0, 0, dpr, 0, 0)
+  chrome.setTransform(dpr, 0, 0, dpr, 0, 0)
 
   const view = refs.viewRef.current
 
@@ -157,7 +172,7 @@ function drawBackdrop(ctx: CanvasRenderingContext2D, refs: WallRenderRefs, view:
   if (!pattern) return
 
   ctx.fillStyle = pattern
-  ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+  ctx.fillRect(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight)
   ctx.clearRect(view.offsetX, view.offsetY, CANVAS.w * view.scale, CANVAS.h * view.scale)
 }
 
@@ -323,11 +338,14 @@ function drawStrokePreview(ctx: CanvasRenderingContext2D, refs: WallRenderRefs):
 }
 
 /** Match a canvas to the wrapper, reporting whether it had to change. */
-function resizeCanvas(el: HTMLCanvasElement, width: number, height: number): boolean {
-  if (el.width === width && el.height === height) return false
+function resizeCanvas(el: HTMLCanvasElement, width: number, height: number, dpr: number): boolean {
+  const deviceWidth = Math.round(width * dpr)
+  const deviceHeight = Math.round(height * dpr)
 
-  el.width = width
-  el.height = height
+  if (el.width === deviceWidth && el.height === deviceHeight) return false
+
+  el.width = deviceWidth
+  el.height = deviceHeight
 
   return true
 }

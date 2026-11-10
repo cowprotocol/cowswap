@@ -15,9 +15,14 @@ export interface NetworkGateProps {
   onSwitch: () => void
 }
 
+const GateScreen = styled(styledEl.Page)`
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+`
+
 const GatePanel = styled(styledEl.Panel)`
   max-width: 460px;
-  margin: 10vh auto;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -44,7 +49,7 @@ export function NetworkGate({ chainId, switching, onSwitch }: NetworkGateProps):
   const chainName = getChainInfo(chainId).name.toUpperCase()
 
   return (
-    <styledEl.Page $auto>
+    <GateScreen>
       <GatePanel>
         <styledEl.BigEmoji>🖍</styledEl.BigEmoji>
         <styledEl.WallHeading>GRAFFITI WALL</styledEl.WallHeading>
@@ -66,6 +71,6 @@ export function NetworkGate({ chainId, switching, onSwitch }: NetworkGateProps):
           <Trans>or pick Solana from the network selector in the header</Trans>
         </styledEl.Muted>
       </GatePanel>
-    </styledEl.Page>
+    </GateScreen>
   )
 }
