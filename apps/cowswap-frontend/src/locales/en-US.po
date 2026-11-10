@@ -7066,8 +7066,8 @@ msgid "This is taking longer than usual. We're still getting your order ready."
 msgstr "This is taking longer than usual. We're still getting your order ready."
 
 #: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
-msgid "📍 drag the frame to position it, then ✓ draw here"
-msgstr "📍 drag the frame to position it, then ✓ draw here"
+#~ msgid "📍 drag the frame to position it, then ✓ draw here"
+#~ msgstr "📍 drag the frame to position it, then ✓ draw here"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/SolanaTradeAmountsRow/index.tsx
 msgid "to"
@@ -7416,6 +7416,10 @@ msgstr "Clear search input"
 #: apps/cowswap-frontend/src/modules/affiliate/hooks/useAffiliateTraderVerification.ts
 msgid "You cannot apply your own referral code."
 msgstr "You cannot apply your own referral code."
+
+#: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
+msgid "📍 drag the frame to position it, then ✓ draw here (or press Enter)"
+msgstr "📍 drag the frame to position it, then ✓ draw here (or press Enter)"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderFillsAt/OrderFillsAt.pure.tsx
 msgid "The fill price of this order is close or at the market price (<0>fills at <1/></0>, {priceDiff}% from market) and is expected to {filledValue} fill soon."
