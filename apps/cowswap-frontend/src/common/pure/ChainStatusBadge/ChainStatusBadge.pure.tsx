@@ -18,11 +18,11 @@ export function ChainStatusBadge({
   type = BadgeTypes.ALERT2,
   style,
 }: ChainStatusBadgeProps): ReactNode {
-  if (!isBeta || !isSolanaChain(chainId)) return null
+  if (!isSolanaChain(chainId)) return null
 
   return (
     <Badge type={type} style={style}>
-      <Trans>BETA</Trans>
+      {isBeta ? <Trans>BETA</Trans> : <Trans>ALPHA</Trans>}
     </Badge>
   )
 }

@@ -9,7 +9,7 @@ import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
  *
  * Always true on Solana: the approval there is a token delegation bundled into the order
  * transaction, so an unlimited one leaves the settlement authority able to move the whole token
- * account.
+ * account. The Alpha trade limit does not cover this — it caps the trade, not the delegation.
  */
 export function useIsInfiniteApproveDisabled(): boolean {
   const { chainId } = useWalletInfo()

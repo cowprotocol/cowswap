@@ -7,6 +7,7 @@ import { Media } from '@cowprotocol/ui'
 import { isNetworkSwitchUnsupportedAtom, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans, useLingui } from '@lingui/react/macro'
+import { useIsSolanaVisible } from 'entities/alphaNetworks'
 
 import { useModalIsOpen, useToggleModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
@@ -66,7 +67,7 @@ export function NetworkSelector(): ReactNode {
   const onSelectChain = useOnSelectNetwork()
   const isDarkMode = useIsDarkMode()
   const logoUrl = isDarkMode ? info.logo.dark : info.logo.light
-  const availableChains = useAvailableChains()
+  const availableChains = useAvailableChains({ excludeSolana: !useIsSolanaVisible() })
   const { t } = useLingui()
 
   const handleClose = createCloseHandler(isOpen, toggleModal)

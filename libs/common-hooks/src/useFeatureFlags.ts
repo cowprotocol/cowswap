@@ -8,6 +8,7 @@ export interface FeatureFlags {
   isPriceChartEnabled?: boolean
   isTwapEoaEnabled?: boolean
   isSolanaEnabled?: boolean
+  isAlphaNetworksOptionVisible?: boolean
   isSolanaBeta?: boolean
   isSolanaSponsoredOrdersEnabled?: boolean
   isAtaCreationDisabled?: boolean
@@ -30,6 +31,7 @@ declare global {
 // Solana is not supported in the widget yet (e.g. partner fees)
 const WIDGET_FLAG_OVERRIDES: Partial<FeatureFlags> = {
   isSolanaEnabled: false,
+  isAlphaNetworksOptionVisible: false,
   isSolanaBeta: false,
 }
 

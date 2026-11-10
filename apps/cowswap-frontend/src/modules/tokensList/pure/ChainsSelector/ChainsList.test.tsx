@@ -9,10 +9,6 @@ import { render, screen } from '@testing-library/react'
 
 import { ChainsList } from './ChainsList'
 
-jest.mock('launchdarkly-react-client-sdk', () => ({
-  useFlags: () => ({ isSolanaBeta: true }),
-}))
-
 i18n.load('en-US', {})
 i18n.activate('en-US')
 
@@ -30,18 +26,18 @@ describe('ChainsList status badge', () => {
   it('shows the badge when picking the sell network', () => {
     renderList()
 
-    expect(screen.queryByText('BETA')).not.toBeNull()
+    expect(screen.queryByText('ALPHA')).not.toBeNull()
   })
 
   it('shows the badge for a same-chain buy', () => {
     renderList(SupportedChainId.SOLANA)
 
-    expect(screen.queryByText('BETA')).not.toBeNull()
+    expect(screen.queryByText('ALPHA')).not.toBeNull()
   })
 
   it('hides the badge for a cross-chain buy destination', () => {
     renderList(SupportedChainId.MAINNET)
 
-    expect(screen.queryByText('BETA')).toBeNull()
+    expect(screen.queryByText('ALPHA')).toBeNull()
   })
 })

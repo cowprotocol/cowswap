@@ -17,16 +17,18 @@ function wrap(element: ReactElement): ReactElement {
 }
 
 describe('ChainStatusBadge', () => {
-  it('marks Solana as beta while the beta flag is on', () => {
+  it('marks Solana as alpha while beta is off', () => {
+    render(wrap(<ChainStatusBadge chainId={SupportedChainId.SOLANA} isBeta={false} />))
+
+    expect(screen.queryByText('ALPHA')).not.toBeNull()
+    expect(screen.queryByText('BETA')).toBeNull()
+  })
+
+  it('marks Solana as beta once beta is on', () => {
     render(wrap(<ChainStatusBadge chainId={SupportedChainId.SOLANA} isBeta />))
 
     expect(screen.queryByText('BETA')).not.toBeNull()
-  })
-
-  it('renders no badge once the beta flag is off', () => {
-    const { container } = render(wrap(<ChainStatusBadge chainId={SupportedChainId.SOLANA} isBeta={false} />))
-
-    expect(container.firstChild).toBeNull()
+    expect(screen.queryByText('ALPHA')).toBeNull()
   })
 
   it('renders nothing for a non-Solana chain', () => {
