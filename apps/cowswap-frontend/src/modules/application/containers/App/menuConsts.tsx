@@ -114,6 +114,11 @@ const MORE_ITEM = (isSolversEnabled: boolean): UntranslatedMenuItem => ({
       label: msg`Careers`,
       external: true,
     },
+    {
+      href: Routes.GRAFFITI,
+      label: msg`Graffiti Wall`,
+      badge: msg`NEW`,
+    },
     ...(isSolversEnabled
       ? [
           {
@@ -170,9 +175,11 @@ export const NAV_ITEMS = (chainId: SupportedChainId, isSolversEnabled: boolean):
   const moreItemConfig = MORE_ITEM(isSolversEnabled)
   const moreItem: MenuItem = {
     label: i18n._(moreItemConfig.label),
-    children: moreItemConfig.children.map(({ href, label, external }) => ({
+    children: moreItemConfig.children.map(({ href, label, badge, badgeType, external }) => ({
       href,
       label: i18n._(label),
+      badge: badge ? i18n._(badge) : undefined,
+      badgeType,
       external,
     })),
   }

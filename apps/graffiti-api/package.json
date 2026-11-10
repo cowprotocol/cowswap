@@ -1,0 +1,47 @@
+{
+  "name": "@cowprotocol/graffiti-api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Graffiti Wall backend: canvas state store, draw-burn verification, claim codes, REST + WebSocket API",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/src/server.js",
+    "dev": "tsx watch src/server.ts",
+    "test": "node --import tsx --test \"src/**/*.test.ts\"",
+    "mint:create": "tsx scripts/create-mint.ts",
+    "claims:gen": "tsx scripts/gen-claims.ts",
+    "claims:pdf": "tsx scripts/make-claim-pdf.ts"
+  },
+  "dependencies": {
+    "@fastify/static": "10.1.10",
+    "@solana/spl-token": "0.4.15",
+    "@solana/web3.js": "1.99.0",
+    "better-sqlite3": "12.11.1",
+    "bs58": "6.0.0",
+    "fastify": "5.12.8",
+    "pdfkit": "0.20.2",
+    "qrcode": "1.5.4",
+    "ws": "8.22.1"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "7.6.13",
+    "@types/node": "22.20.5",
+    "@types/pdfkit": "0.17.7",
+    "@types/qrcode": "1.5.6",
+    "@types/ws": "8.18.2",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3"
+  },
+  "allowScripts": {
+    "better-sqlite3@12.11.1": true,
+    "esbuild@0.28.2": true,
+    "bufferutil@4.1.0": true,
+    "utf-8-validate@5.0.10": true,
+    "utf-8-validate@6.0.6": true
+  }
+}

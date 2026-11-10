@@ -36,6 +36,8 @@ import YieldPage from 'pages/Yield'
 const NotFound = lazy(() => import(/* webpackChunkName: "not_found" */ 'pages/error/NotFound'))
 const CowRunner = lazy(() => import(/* webpackChunkName: "cow_runner" */ 'pages/games/CowRunner'))
 const MevSlicer = lazy(() => import(/* webpackChunkName: "mev_slicer" */ 'pages/games/MevSlicer'))
+const Graffiti = lazy(() => import(/* webpackChunkName: "graffiti" */ 'pages/graffiti'))
+const GraffitiClaim = lazy(() => import(/* webpackChunkName: "graffiti_claim" */ 'pages/graffiti/Claim'))
 
 // External routes
 const LegalExternal = <ExternalRedirect url={COWDAO_LEGAL_LINK} />
@@ -75,6 +77,8 @@ const lazyRoutes: LazyRouteProps[] = [
   { route: RoutesEnum.FAQ_ETH_FLOW, element: <ExternalRedirect url={COWDAO_KNOWLEDGE_BASE_LINK} /> },
   { route: RoutesEnum.PLAY_COWRUNNER, element: <CowRunner /> },
   { route: RoutesEnum.PLAY_MEVSLICER, element: <MevSlicer /> },
+  { route: RoutesEnum.GRAFFITI, element: <Graffiti /> },
+  { route: RoutesEnum.GRAFFITI_CLAIM, element: <GraffitiClaim /> },
   { route: RoutesEnum.PRIVACY_POLICY, element: LegalExternal },
   { route: RoutesEnum.COOKIE_POLICY, element: LegalExternal },
   { route: RoutesEnum.TERMS_CONDITIONS, element: LegalExternal },
