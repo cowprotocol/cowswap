@@ -16,18 +16,20 @@ export function clampScale(scale: number, min: number): number {
 export function computeMinScale(canvasEl: HTMLCanvasElement | null): number {
   if (!canvasEl) return FALLBACK_MIN_SCALE
 
-  return Math.min(canvasEl.clientWidth / (CANVAS.w * 1.05), canvasEl.clientHeight / (CANVAS.h * 1.05))
+  return Math.min(canvasEl.clientWidth / CANVAS.w, canvasEl.clientHeight / CANVAS.h)
 }
 
-/** A view that fits the whole wall, centred. */
-export function fitView(canvasEl: HTMLCanvasElement): View {
-  const scale = Math.min(canvasEl.clientWidth / (CANVAS.w * 1.02), canvasEl.clientHeight / (CANVAS.h * 1.05))
+/**
+ * A view that fills the stage on both axes, centred. The wall is 2:1 and the stage
+ * rarely is, so the longer axis overflows and is reached by panning.
+ */
+export function coverView(canvasEl: HTMLCanvasElement): View {
+  return centredView(canvasEl, Math.max(canvasEl.clientWidth / CANVAS.w, canvasEl.clientHeight / CANVAS.h))
+}
 
-  return {
-    scale,
-    offsetX: (canvasEl.clientWidth - CANVAS.w * scale) / 2,
-    offsetY: (canvasEl.clientHeight - CANVAS.h * scale) / 2,
-  }
+/** A view that fits the whole wall, centred. Letterboxes the axis the wall is shorter on. */
+export function fitView(canvasEl: HTMLCanvasElement): View {
+  return centredView(canvasEl, computeMinScale(canvasEl))
 }
 
 /** Centre the view on the frame, large enough to grab. Mutates `view`. */
@@ -51,4 +53,12 @@ export function zoomAround(view: View, mx: number, my: number, nextScale: number
   view.offsetX = mx - ((mx - view.offsetX) / view.scale) * nextScale
   view.offsetY = my - ((my - view.offsetY) / view.scale) * nextScale
   view.scale = nextScale
+}
+
+function centredView(canvasEl: HTMLCanvasElement, scale: number): View {
+  return {
+    scale,
+    offsetX: (canvasEl.clientWidth - CANVAS.w * scale) / 2,
+    offsetY: (canvasEl.clientHeight - CANVAS.h * scale) / 2,
+  }
 }

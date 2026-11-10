@@ -2,7 +2,7 @@ import { type MutableRefObject, type RefCallback, useCallback, useState } from '
 
 import { DEFAULT_BRUSH, DEFAULT_COLOR, DEFAULT_PLOT_HEIGHT, DEFAULT_PLOT_WIDTH, PIXELS_LENGTH } from './wall.constants'
 
-import type { WallRefs, WallSnapshot } from './wall.types'
+import type { AutoView, WallRefs, WallSnapshot } from './wall.types'
 
 function defaultPlotDims(plot: { vertical?: boolean } | null): [number, number] {
   return plot?.vertical ? [DEFAULT_PLOT_HEIGHT, DEFAULT_PLOT_WIDTH] : [DEFAULT_PLOT_WIDTH, DEFAULT_PLOT_HEIGHT]
@@ -50,6 +50,7 @@ export function createWallRefs(): WallRefs {
 
     viewRef: ref({ scale: 1, offsetX: 0, offsetY: 0 }),
     minScaleRef: ref(0.06),
+    autoViewRef: ref<AutoView>('cover'),
 
     drawingRef: ref(false),
     panningRef: ref(false),

@@ -40,8 +40,16 @@ const monospace = `'IBM Plex Mono', 'Fira Mono', ui-monospace, monospace`
 export const Page = styled.div<{ $auto?: boolean }>`
   position: relative;
   width: 100%;
-  height: ${({ $auto }) => ($auto ? 'auto' : 'calc(100vh - 170px)')};
-  min-height: 480px;
+  /*
+   * The wall takes its height from the shell, via align-self. A percentage
+   * height cannot work here: the body's height comes from flex layout, so there
+   * is nothing for it to resolve against, and a non-auto cross size also opts
+   * the item out of stretching at all.
+   */
+  height: auto;
+  align-self: ${({ $auto }) => ($auto ? 'auto' : 'stretch')};
+  flex: 1 1 auto;
+  min-height: ${({ $auto }) => ($auto ? '480px' : '0')};
   display: flex;
   flex-direction: column;
   user-select: none;
@@ -67,6 +75,14 @@ export const Header = styled.header`
   border-bottom: 1px solid ${wallColors.borderSubtle};
   background: ${wallColors.backdrop};
   backdrop-filter: blur(6px);
+
+  ${onNarrow(css`
+    flex-wrap: nowrap;
+    gap: 8px;
+    padding: 6px 12px;
+    overflow: hidden;
+    white-space: nowrap;
+  `)}
 `
 
 export const Logo = styled.span`
@@ -108,7 +124,6 @@ export const Main = styled.div`
   flex: 1;
   display: flex;
   min-height: 0;
-  margin-top: 14px;
 
   ${onNarrow(css`
     flex-direction: column;
@@ -127,7 +142,7 @@ export const CanvasWrap = styled.div`
   ${onNarrow(css`
     width: 100%;
     height: auto;
-    min-height: 46vh;
+    min-height: 0;
     flex: 1 1 auto;
   `)}
 `
@@ -171,7 +186,7 @@ export const Sidebar = styled.aside`
     right: 0;
     bottom: 0;
     width: 100%;
-    max-height: 72vh;
+    max-height: 60dvh;
     overflow-y: auto;
     overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
@@ -347,6 +362,19 @@ export const Footer = styled.footer`
   background: rgba(10, 10, 18, 0.9);
   font-size: 12px;
   color: ${wallColors.textMuted};
+
+  ${onNarrow(css`
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 7;
+    min-height: 0;
+    padding: 4px 12px;
+    border-top: none;
+    background: ${wallColors.backdrop};
+    pointer-events: none;
+  `)}
 `
 
 export const Hints = styled.div`

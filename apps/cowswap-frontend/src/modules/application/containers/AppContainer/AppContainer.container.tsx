@@ -31,7 +31,7 @@ import { CowSpeechBubbleNotificationBanner } from './CowSpeechBubble/CowSpeechBu
 import { RecoveryBanner } from './RecoveryBanner'
 import { SnowfallOverlay } from './SnowfallOverlay.pure'
 
-import { PageBackgroundContext, PageBackgroundVariant } from '../../contexts/PageBackgroundContext'
+import { PageBackgroundContext, PageBackgroundVariant, PageLayoutVariant } from '../../contexts/PageBackgroundContext'
 import { ADDITIONAL_FOOTER_CONTENT, PRODUCT_VARIANT } from '../App/menuConsts'
 import * as styledEl from '../App/styled'
 import { isChristmasTheme as isChristmasThemeHelper } from '../App/styled'
@@ -44,6 +44,7 @@ interface AppContainerProps {
 
 interface CowSpeechBubbleVisibilityParams {
   isInjectedWidgetMode: boolean
+  isFullBleed: boolean
   pageScene: ReactNode | null
   pageBackgroundVariant: PageBackgroundVariant
   customTheme: CustomThemeKey
@@ -81,6 +82,8 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
   const [darkMode] = useDarkModeManager()
   const [pageBackgroundVariant, setPageBackgroundVariant] = useState<PageBackgroundVariant>('default')
   const [pageScene, setPageScene] = useState<ReactNode | null>(null)
+  const [pageLayout, setPageLayout] = useState<PageLayoutVariant>('default')
+  const isFullBleed = pageLayout === 'fullBleed'
 
   const isMobile = useMediaQuery(Media.upToMedium(false))
 
@@ -91,14 +94,17 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
       setVariant: setPageBackgroundVariant,
       scene: pageScene,
       setScene: setPageScene,
+      layout: pageLayout,
+      setLayout: setPageLayout,
     }),
-    [pageBackgroundVariant, pageScene],
+    [pageBackgroundVariant, pageScene, pageLayout],
   )
 
   const networkAndAccountControls = <NetworkAndAccountControls />
   const isChristmasTheme = isChristmasThemeHelper(customTheme)
   const shouldRenderCowSpeechBubble = shouldDisplayCowSpeechBubble({
     isInjectedWidgetMode,
+    isFullBleed,
     pageScene,
     pageBackgroundVariant,
     customTheme,
@@ -111,7 +117,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
 
   return (
     <PageBackgroundContext.Provider value={pageBackgroundValue}>
-      <styledEl.AppWrapper>
+      <styledEl.AppWrapper $fullBleed={isFullBleed}>
         <URLWarning />
         <RecoveryBanner />
         <InvalidLocalTimeWarning />
@@ -128,14 +134,15 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
           customTheme={customTheme}
           backgroundVariant={pageBackgroundVariant}
           $hasActiveSpeechBubbleNotification={hasActiveSpeechBubbleNotification}
+          $fullBleed={isFullBleed}
         >
           {children}
-          <styledEl.Marginer />
+          {!isFullBleed && <styledEl.Marginer />}
         </styledEl.BodyWrapper>
 
         <SnowfallOverlay show={showSnowfall} isMobile={isMobile} darkMode={darkMode} />
         <FooterSection
-          show={!isInjectedWidgetMode}
+          show={!isInjectedWidgetMode && !isFullBleed}
           showCowSpeechBubble={shouldRenderCowSpeechBubble}
           isGraffitiWallBubbleDismissed={Boolean(closedBanners[BANNER_IDS.GRAFFITI_WALL_SPEECH_BUBBLE])}
           currentNotification={currentNotification}
@@ -191,6 +198,7 @@ function FooterSection({
 
 function shouldDisplayCowSpeechBubble({
   isInjectedWidgetMode,
+  isFullBleed,
   pageScene,
   pageBackgroundVariant,
   customTheme,
@@ -198,6 +206,7 @@ function shouldDisplayCowSpeechBubble({
 }: CowSpeechBubbleVisibilityParams): boolean {
   return (
     !isInjectedWidgetMode &&
+    !isFullBleed &&
     !pageScene &&
     pageBackgroundVariant !== 'nocows' &&
     customTheme !== 'darkHalloween' &&

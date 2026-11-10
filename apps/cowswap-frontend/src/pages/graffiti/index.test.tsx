@@ -24,6 +24,12 @@ jest.mock('@reown/appkit-adapter-solana/react', () => ({
   useAppKitConnection: () => ({ connection: null }),
 }))
 
+// The application barrel re-exports the whole app shell, which jest cannot
+// tree-shake; the page only needs the full-bleed hook from it.
+jest.mock('modules/application', () => ({
+  useFullBleedPage: () => undefined,
+}))
+
 jest.mock('./graffiti.service', () => ({
   ...jest.requireActual('./graffiti.service'),
   getInfo: jest.fn(),

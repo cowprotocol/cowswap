@@ -14,7 +14,7 @@ import { GRAFFITI_CANVAS_PNG_URL, wallCssBlendMode } from '@cowprotocol/common-c
 import { CowSwapTheme, Media, UI } from '@cowprotocol/ui'
 
 import * as CSS from 'csstype'
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 
 import type { PageBackgroundVariant } from '../../contexts/PageBackgroundContext'
 
@@ -33,13 +33,20 @@ export function isSolanaTheme(theme?: CowSwapTheme): boolean {
 /** The live graffiti wall, laid over the regular CoW Swap backdrop. */
 const WALL_LAYER = `url(${GRAFFITI_CANVAS_PNG_URL}) no-repeat center / cover`
 
-export const AppWrapper = styled.div<Partial<CSS.Properties>>`
+export const AppWrapper = styled.div<Partial<CSS.Properties> & { $fullBleed?: boolean }>`
   display: flex;
   flex-flow: column;
   align-items: flex-start;
   min-height: ${({ theme }) => (theme.isWidget ? 'auto' : '100vh')};
   height: ${({ theme }) => (theme.isWidget ? 'initial' : '100%')};
   position: relative;
+
+  ${({ $fullBleed, theme }) =>
+    $fullBleed &&
+    !theme.isWidget &&
+    css`
+      min-height: 100dvh;
+    `}
 `
 
 export const Marginer = styled.div`
@@ -73,6 +80,7 @@ export const BodyWrapper = styled.div<{
   customTheme?: CowSwapTheme
   backgroundVariant?: PageBackgroundVariant
   $hasActiveSpeechBubbleNotification?: boolean
+  $fullBleed?: boolean
 }>`
   --marginBottomOffset: 65px;
   display: flex;
@@ -179,4 +187,30 @@ export const BodyWrapper = styled.div<{
         background-image: url(${theme.darkMode ? svgBackgroundCowswapChristmasDarkSmallSrc : svgBackgroundCowswapChristmasLightSmallSrc});
       `}
   }
+
+  /* Last block wins: media queries add no specificity, so this must stay at the end. */
+  ${({ $fullBleed, theme }) =>
+    $fullBleed &&
+    !theme.isWidget &&
+    css`
+      padding: 0;
+      margin: 0;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      align-items: stretch;
+      flex: 1 1 auto;
+      min-height: 0;
+      background: transparent;
+
+      ${Media.upToMedium()} {
+        padding: 0;
+        flex: 1 1 auto;
+        min-height: 0;
+      }
+
+      ${Media.upToSmall()} {
+        padding: 0;
+        min-height: 0;
+      }
+    `}
 `
