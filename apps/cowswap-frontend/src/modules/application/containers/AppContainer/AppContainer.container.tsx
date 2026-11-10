@@ -1,10 +1,11 @@
+import { useAtomValue } from 'jotai'
 import { type CSSProperties, type ReactNode, useMemo, useState } from 'react'
 
 import { useAnalyticsReporter } from '@cowprotocol/analytics'
 import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import type { NotificationModel } from '@cowprotocol/core'
-import { Footer, Media } from '@cowprotocol/ui'
+import { closableBannersStateAtom, Footer, Media } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
@@ -18,11 +19,13 @@ import { useInjectedWidgetMetaData } from 'modules/injectedWidget'
 import { useSpeechBubbleNotification } from 'modules/notifications'
 import { useInitializeUtm } from 'modules/utm'
 
+import { BANNER_IDS } from 'common/constants/banners'
 import { CoWAmmBanner } from 'common/containers/CoWAmmBanner'
 import { InvalidLocalTimeWarning } from 'common/containers/InvalidLocalTimeWarning'
 import { useCustomTheme } from 'common/hooks/useCustomTheme'
 import { useGetMarketDimension } from 'common/hooks/useGetMarketDimension'
 
+import { CowSpeechBubbleGraffitiWallBanner } from './CowSpeechBubble/CowSpeechBubbleGraffitiWallBanner'
 import { CowSpeechBubbleHiringBanner } from './CowSpeechBubble/CowSpeechBubbleHiringBanner'
 import { CowSpeechBubbleNotificationBanner } from './CowSpeechBubble/CowSpeechBubbleNotificationBanner'
 import { RecoveryBanner } from './RecoveryBanner'
@@ -52,6 +55,7 @@ type CustomThemeKey = ReturnType<typeof useCustomTheme>
 interface FooterSectionProps {
   show: boolean
   showCowSpeechBubble: boolean
+  isGraffitiWallBubbleDismissed: boolean
   currentNotification: NotificationModel | null
   onDismissNotification: () => void
   pageScene: ReactNode | null
@@ -101,6 +105,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
     isChristmasTheme,
   })
   const { currentNotification, dismiss } = useSpeechBubbleNotification()
+  const closedBanners = useAtomValue(closableBannersStateAtom)
   const hasActiveSpeechBubbleNotification = shouldRenderCowSpeechBubble && Boolean(currentNotification)
   const showSnowfall = !isInjectedWidgetMode && isChristmasTheme
 
@@ -132,6 +137,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
         <FooterSection
           show={!isInjectedWidgetMode}
           showCowSpeechBubble={shouldRenderCowSpeechBubble}
+          isGraffitiWallBubbleDismissed={Boolean(closedBanners[BANNER_IDS.GRAFFITI_WALL_SPEECH_BUBBLE])}
           currentNotification={currentNotification}
           onDismissNotification={dismiss}
           pageScene={pageScene}
@@ -149,6 +155,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
 function FooterSection({
   show,
   showCowSpeechBubble,
+  isGraffitiWallBubbleDismissed,
   currentNotification,
   onDismissNotification,
   pageScene,
@@ -161,8 +168,10 @@ function FooterSection({
   const bubbleElement: ReactNode = showCowSpeechBubble ? (
     currentNotification ? (
       <CowSpeechBubbleNotificationBanner currentNotification={currentNotification} onClose={onDismissNotification} />
-    ) : (
+    ) : isGraffitiWallBubbleDismissed ? (
       <CowSpeechBubbleHiringBanner />
+    ) : (
+      <CowSpeechBubbleGraffitiWallBanner />
     )
   ) : null
 

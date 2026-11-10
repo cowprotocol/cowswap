@@ -227,6 +227,10 @@ msgstr "You don't have any orders at the moment."
 msgid "Active referrals"
 msgstr "Active referrals"
 
+#: apps/cowswap-frontend/src/modules/application/containers/AppContainer/CowSpeechBubble/CowSpeechBubbleGraffitiWallBanner.tsx
+msgid "Dismiss graffiti wall message"
+msgstr "Dismiss graffiti wall message"
+
 #: apps/cowswap-frontend/src/modules/usdAmount/apis/getBffUsdPrice.ts
 msgid "Unexpected response from BFF: {resStatus}"
 msgstr "Unexpected response from BFF: {resStatus}"
@@ -775,6 +779,10 @@ msgstr "Free"
 #: apps/cowswap-frontend/src/modules/account/pure/ConnectedAccountBlocked/index.tsx
 #~ msgid "Blocked Address"
 #~ msgstr "Blocked Address"
+
+#: apps/cowswap-frontend/src/modules/application/containers/AppContainer/CowSpeechBubble/CowSpeechBubbleGraffitiWallBanner.tsx
+msgid "Graffiti artists painted it to celebrate our Solana launch."
+msgstr "Graffiti artists painted it to celebrate our Solana launch."
 
 #: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverConfirmationRow.pure.tsx
 msgid "Recipient is on {chainName} network. Confirm this is the correct address and that it exists on this chain."
@@ -4975,6 +4983,10 @@ msgstr "Enter a price"
 msgid "Couldn't verify {accountProxyLabel}, please try later"
 msgstr "Couldn't verify {accountProxyLabel}, please try later"
 
+#: apps/cowswap-frontend/src/modules/application/containers/AppContainer/CowSpeechBubble/CowSpeechBubbleGraffitiWallBanner.tsx
+msgid "Visit the graffiti wall"
+msgstr "Visit the graffiti wall"
+
 #: apps/cowswap-frontend/src/pages/graffiti/StartOverlay.pure.tsx
 msgid "⛶ fullscreen"
 msgstr "⛶ fullscreen"
@@ -6102,6 +6114,10 @@ msgstr "Unable to create affiliate code."
 #: apps/cowswap-frontend/src/modules/bridge/pure/RouteOverviewTitle/index.tsx
 msgid "2 stops"
 msgstr "2 stops"
+
+#: apps/cowswap-frontend/src/modules/application/containers/AppContainer/CowSpeechBubble/CowSpeechBubbleGraffitiWallBanner.tsx
+msgid "Visit the wall"
+msgstr "Visit the wall"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/TradeApproveButton/TradeApproveButton.tsx
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/TradeSignPermitButton/TradeSignPermitButton.tsx
@@ -9738,6 +9754,10 @@ msgstr "Partner fee recipient must be set!"
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/index.tsx
 msgid "Unlock Enhanced Yield Features"
 msgstr "Unlock Enhanced Yield Features"
+
+#: apps/cowswap-frontend/src/modules/application/containers/AppContainer/CowSpeechBubble/CowSpeechBubbleGraffitiWallBanner.tsx
+msgid "Mooo, check out our wall!"
+msgstr "Mooo, check out our wall!"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/FAQContent.pure.tsx
 msgid "Recover!"
