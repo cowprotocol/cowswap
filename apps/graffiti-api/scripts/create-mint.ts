@@ -10,8 +10,9 @@
  */
 import {
   ACCOUNT_SIZE,
+  createAssociatedTokenAccountIdempotent,
   createMint,
-  getOrCreateAssociatedTokenAccount,
+  getMint,
   MINT_SIZE,
   mintTo,
   TOKEN_PROGRAM_ID,
@@ -50,42 +51,27 @@ const SETUP_FEE_LAMPORTS = 20 * SIGNATURE_FEE_LAMPORTS
 const MAINNET_GENESIS_HASH = '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d'
 
 async function createToken(connection: Connection, treasury: Keypair, mint: Keypair): Promise<PublicKey> {
-  console.log('[mint] Creating mint (decimals: 0) ...')
-  const mintPubkey = await createMint(
-    connection,
-    treasury, // payer
-    treasury.publicKey, // mint authority
-    null, // freeze authority
-    0, // decimals
-    mint,
-    undefined,
-    TOKEN_PROGRAM_ID,
-  )
+  const mintPubkey = await ensureMint(connection, treasury, mint)
 
-  console.log('[mint] Creating treasury ATA ...')
-  const treasuryAta = await getOrCreateAssociatedTokenAccount(
+  console.log('[mint] Ensuring treasury ATA ...')
+  const treasuryAta = await createAssociatedTokenAccountIdempotent(
     connection,
     treasury,
     mintPubkey,
     treasury.publicKey,
-    false,
-    undefined,
     undefined,
     TOKEN_PROGRAM_ID,
   )
 
-  console.log(`[mint] Minting initial supply (${INITIAL_SUPPLY.toLocaleString()} units) ...`)
-  await mintTo(
-    connection,
-    treasury,
-    mintPubkey,
-    treasuryAta.address,
-    treasury,
-    INITIAL_SUPPLY,
-    [],
-    undefined,
-    TOKEN_PROGRAM_ID,
-  )
+  const supply = (await getMint(connection, mintPubkey, undefined, TOKEN_PROGRAM_ID)).supply
+  const missing = BigInt(INITIAL_SUPPLY) - supply
+  if (missing <= 0n) {
+    console.log(`[mint] Supply is already ${supply.toLocaleString()}; nothing left to mint.`)
+    return mintPubkey
+  }
+
+  console.log(`[mint] Minting ${missing.toLocaleString()} unit(s) ...`)
+  await mintTo(connection, treasury, mintPubkey, treasuryAta, treasury, missing, [], undefined, TOKEN_PROGRAM_ID)
   return mintPubkey
 }
 
@@ -119,13 +105,23 @@ async function ensureFunded(connection: Connection, treasury: Keypair, rent: Ren
 }
 
 /** Rent is a cluster parameter: read it rather than assume it. */
-/** .keys/mint.json is reused across runs, so it may name a mint another environment already created. */
-async function ensureMintAvailable(connection: Connection, mint: PublicKey): Promise<boolean> {
-  if ((await connection.getAccountInfo(mint)) === null) return true
+/** Re-runnable: a mint this treasury already owns is adopted rather than recreated. */
+async function ensureMint(connection: Connection, treasury: Keypair, mint: Keypair): Promise<PublicKey> {
+  if ((await connection.getAccountInfo(mint.publicKey)) === null) {
+    console.log('[mint] Creating mint (decimals: 0) ...')
+    return createMint(connection, treasury, treasury.publicKey, null, 0, mint, undefined, TOKEN_PROGRAM_ID)
+  }
 
-  console.error(`\n[mint] ${mint.toBase58()} already exists on this cluster.`)
-  console.error('[mint] Move .keys/mint.json aside, or set MINT_SECRET_KEY, to use a different address.')
-  return false
+  const existing = await getMint(connection, mint.publicKey, undefined, TOKEN_PROGRAM_ID)
+  if (!existing.mintAuthority?.equals(treasury.publicKey)) {
+    throw new Error(
+      `${mint.publicKey.toBase58()} already exists and this treasury is not its mint authority; ` +
+        'move .keys/mint.json aside, or set MINT_SECRET_KEY, to use a different address.',
+    )
+  }
+
+  console.log(`[mint] Adopting existing mint ${mint.publicKey.toBase58()} (supply ${existing.supply}).`)
+  return mint.publicKey
 }
 
 async function fetchRentCosts(connection: Connection): Promise<RentCosts> {
@@ -166,8 +162,6 @@ async function main(): Promise<void> {
 
   // Persist before any network call so a failed funding step can be resumed.
   saveKeys(mint, treasury)
-
-  if (!(await ensureMintAvailable(connection, mint.keypair.publicKey))) process.exit(1)
 
   const rent = await fetchRentCosts(connection)
   if (!(await ensureFunded(connection, treasury.keypair, rent))) process.exit(1)
