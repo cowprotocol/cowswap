@@ -1,11 +1,7 @@
-import { useMemo } from 'react'
+import { useAtomValue } from 'jotai'
 
-import { CHAIN_INFO } from '@cowprotocol/common-const'
-
-import { useAffiliateSupportedChainIds } from './useAffiliateSupportedChainIds'
+import { affiliateSupportedNetworkNamesAtom } from '../state/affiliateSupportedChainIdsAtom'
 
 export function useAffiliateSupportedNetworkNames(): string[] {
-  const supportedChainIds = useAffiliateSupportedChainIds()
-
-  return useMemo(() => supportedChainIds.map((chainId) => CHAIN_INFO[chainId].label), [supportedChainIds])
+  return useAtomValue(affiliateSupportedNetworkNamesAtom)
 }

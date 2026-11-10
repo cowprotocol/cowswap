@@ -21,8 +21,10 @@ export function AffiliateTraderUnsupportedNetwork({
         <Trans>Switch network</Trans>
       </UnsupportedNetworkHeader>
       <UnsupportedNetworkMessage>
-        <UnsupportedNetworksText />
-        <br />({supportedNetworks.join(', ')})
+        <p>
+          <UnsupportedNetworksText />
+        </p>
+        <p>({supportedNetworks.join(', ')})</p>
       </UnsupportedNetworkMessage>
     </UnsupportedNetworkCard>
   )
