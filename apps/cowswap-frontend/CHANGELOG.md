@@ -1,5 +1,76 @@
 # Changelog
 
+## [3.35.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.34.0...cowswap-v3.35.0) (2026-11-10)
+
+### Minor Changes
+
+- feat(solana): report order submission failures under one sentry scope (#8525)
+
+- feat(networks): networks update (#8456)
+
+- feat(rwa): filter widget token selectors to the asset tokens (#8491)
+
+- feat: log price impact confirmation to Sentry (#8552)
+
+- feat(rwa): standardize header and footer with CoW product links (#8516)
+
+- feat(solana): pass appData to quote (#8509)
+
+- feat(rwa): follow the CoW Swap mobile layout and breakpoints (#8517)
+
+- feat(rwa): apply production design (#8503)
+
+- feat: Wait & save cow detection from solver competition (#8484)
+
+### Patch Changes
+
+- fix(trade): place self-paid solana orders for wallets that reject a foreign fee payer
+
+- fix(solana): improve quote fetching (#8500)
+
+- fix(wallet): clear the app signer when the connection has no evm account
+
+- fix: Fix charts range initialisation (#8554)
+
+- fix(wallet): survive a walletconnect session with no evm account
+
+- fix(solana): use SDK for quote costs breakdown (#8522)
+
+- fix(swap): check the wrap/unwrap balance against the input amount, not a stale swap quote (#8559)
+
+- fix(tokens): use Solana volume ranks in the selector (#8523)
+
+- fix(wallet): display custom message for rpc internal error (#8515)
+
+- fix(charts): remember visibility per trading mode and default Swap to off (#8455)
+
+- fix: adjust modal height (#8482)
+
+- fix(limit-orders): hide chart price picker when price chart flag is off (#8541)
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.21.0
+  - @cowprotocol/balances-and-allowances@3.19.0
+  - @cowprotocol/common-utils@3.22.0
+  - @cowprotocol/core@3.15.0
+  - @cowprotocol/tokens@3.18.0
+  - @cowprotocol/analytics@3.17.0
+  - @cowprotocol/common-const@3.19.0
+  - @cowprotocol/common-hooks@3.19.0
+  - @cowprotocol/currency@1.10.0
+  - @cowprotocol/ens@3.12.0
+  - @cowprotocol/events@4.18.0
+  - @cowprotocol/multicall@3.12.0
+  - @cowprotocol/permit-utils@3.13.0
+  - @cowprotocol/types@4.15.0
+  - @cowprotocol/ui@3.21.0
+  - @cowprotocol/widget-lib@4.14.0
+  - @cowprotocol/wallet-provider@2.3.0
+  - @cowprotocol/assets@2.9.0
+  - @cowprotocol/snackbars@2.3.15
+  - @cowprotocol/iframe-transport@2.3.14
+  - @cowprotocol/hook-dapp-lib@2.5.2
+
 ## [3.34.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.33.2...cowswap-v3.34.0) (2026-11-05)
 
 ### Minor Changes

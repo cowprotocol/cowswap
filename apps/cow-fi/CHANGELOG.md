@@ -1,5 +1,31 @@
 # Changelog
 
+## [2.17.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.16.6...cow-fi-v2.17.0) (2026-11-10)
+
+### Minor Changes
+
+- feat(networks): networks update (#8456)
+
+- feat(rwa): standardize header and footer with CoW product links (#8516)
+
+- feat(cow-fi): manage careers and affiliate copy in CMS (#8471)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.21.0
+  - @cowprotocol/common-utils@3.22.0
+  - @cowprotocol/core@3.15.0
+  - @cowprotocol/analytics@3.17.0
+  - @cowprotocol/common-const@3.19.0
+  - @cowprotocol/common-hooks@3.19.0
+  - @cowprotocol/events@4.18.0
+  - @cowprotocol/types@4.15.0
+  - @cowprotocol/ui@3.21.0
+  - @cowprotocol/wallet-provider@2.3.0
+  - @cowprotocol/assets@2.9.0
+  - @cowprotocol/widget-react@3.3.4
+
 ## [2.16.6](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.16.5...cow-fi-v2.16.6) (2026-11-05)
 
 ### Patch Changes
