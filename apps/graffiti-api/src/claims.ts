@@ -6,12 +6,12 @@ import {
   TOKEN_PROGRAM_ID,
 } from '@solana/spl-token'
 import { Connection, Keypair, PublicKey, Transaction } from '@solana/web3.js'
-import bs58 from 'bs58'
 
 import fs from 'node:fs'
 
 import { generateClaimCode } from './claimCode.js'
 import { DEFAULT_CLAIM_AMOUNT } from './config.js'
+import { parseSecretKey } from './keypair.js'
 import { errorMessage, parsePublicKey } from './util.js'
 
 import type { Config } from './config.js'
@@ -248,16 +248,4 @@ function buildTransferTransaction(params: {
 
 function failure(status: number, reason: string): ClaimFailure {
   return { ok: false, status, reason }
-}
-
-function parseSecretKey(raw: string): Keypair | null {
-  const text = raw.trim()
-  try {
-    if (text.startsWith('[')) {
-      return Keypair.fromSecretKey(Uint8Array.from(JSON.parse(text) as number[]))
-    }
-    return Keypair.fromSecretKey(bs58.decode(text))
-  } catch {
-    return null
-  }
 }

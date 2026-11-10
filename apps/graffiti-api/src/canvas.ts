@@ -27,8 +27,11 @@ export class CanvasState {
 
   constructor(private readonly store: Store) {
     this.buf = Buffer.alloc(this.width * this.height * 3, 0)
-    // Replay history in order so the buffer matches what clients saw.
-    for (const row of store.getCellsSince(0)) this.setPixel(row.x, row.y, row.rgb)
+    // Replay in order so the buffer matches what clients saw. setPixel indexes by
+    // `y * width + x`, so a cell stored under a wider canvas would fold onto the wrong row.
+    for (const row of store.getCellsSince(0)) {
+      if (this.inBounds(row.x, row.y)) this.setPixel(row.x, row.y, row.rgb)
+    }
   }
 
   get seq(): number {

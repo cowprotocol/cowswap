@@ -140,13 +140,20 @@ function text(name: string, def: string): string {
 
 // Rectangular wall (landscape — iPads/laptops). All geometry is
 // ENV-parametrizable so a new canvas is a config change, not a code change.
-export const CANVAS_WIDTH = num('CANVAS_WIDTH', 4096)
-export const CANVAS_HEIGHT = num('CANVAS_HEIGHT', 2048)
+//
+// Sized so a full spend of every outstanding code covers ~60% of the wall (see
+// OPERATIONS.md). Cells are stored as absolute coordinates, so a resize after
+// launch re-interprets every pixel already painted.
+export const CANVAS_WIDTH = num('CANVAS_WIDTH', 3840)
+export const CANVAS_HEIGHT = num('CANVAS_HEIGHT', 2160)
 /** Max bounding box a single commit may cover, so nobody paints a whole-wall banner. */
 export const MAX_BOX_WIDTH = num('MAX_BOX_WIDTH', 256)
 export const MAX_BOX_HEIGHT = num('MAX_BOX_HEIGHT', 128)
 
 /** Claims default amount when generating codes without an explicit amount. */
-export const DEFAULT_CLAIM_AMOUNT = 1000
-/** Initial supply minted to the treasury by scripts/create-mint.ts. */
-export const INITIAL_SUPPLY = 1_000_000
+export const DEFAULT_CLAIM_AMOUNT = 5000
+/**
+ * Minted to the treasury by scripts/create-mint.ts. The default is a full batch of codes
+ * (the 1000-per-call cap x DEFAULT_CLAIM_AMOUNT) plus an equal reserve to keep off-server.
+ */
+export const INITIAL_SUPPLY = num('INITIAL_SUPPLY', 10_000_000)

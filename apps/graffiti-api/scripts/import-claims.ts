@@ -5,7 +5,7 @@
  * paper into a later environment. This reads the same code list `claims:pdf` consumed and inserts
  * those exact codes.
  *
- * Usage: pnpm claims:import -- --codes data/codes.txt --amount 1000
+ * Usage: pnpm claims:import -- --codes data/codes.txt --amount 5000
  */
 import fs from 'node:fs'
 import path from 'node:path'
