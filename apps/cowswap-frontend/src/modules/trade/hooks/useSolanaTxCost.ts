@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
+import { isSolanaSmartContractWallet } from '@cowprotocol/sdk-trading-solana'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useSolanaTradeOverhead } from 'modules/tradeFormValidation'
@@ -10,7 +11,7 @@ import { useSolanaTradeOverhead } from 'modules/tradeFormValidation'
 import { useIsSolanaSponsoredTrade } from './useIsSolanaSponsoredTrade'
 
 export interface SolanaTxCost {
-  /** Rent for the accounts the bundle creates, plus the transaction fee. */
+  /** Rent for the accounts the bundle creates, plus the transaction fee unless `isFeePaidByVaultMember`. */
   amount: CurrencyAmount<Currency>
   /** The funder pays `amount`, except for whatever `ownerDeposit` names. */
   isSponsored: boolean
@@ -21,6 +22,12 @@ export interface SolanaTxCost {
    * owner's anyway.
    */
   ownerDeposit: CurrencyAmount<Currency> | null
+  /**
+   * `amount` carries no transaction fee, because a vault never signs one: its order is filed as a proposal
+   * and the member who executes it pays the fee from their own wallet. Mirrors what the EVM flow marks with
+   * `+ gas` for a Safe.
+   */
+  isFeePaidByVaultMember: boolean
 }
 
 /**
@@ -31,10 +38,11 @@ export interface SolanaTxCost {
  * `null` on every other chain and while the amount is unknown.
  */
 export function useSolanaTxCost(): SolanaTxCost | null {
-  const { chainId } = useWalletInfo()
+  const { chainId, account } = useWalletInfo()
   const isSponsored = useIsSolanaSponsoredTrade()
   const overhead = useSolanaTradeOverhead({ ignoreSponsor: true })
   const ownerOverhead = useSolanaTradeOverhead()
+  const isFeePaidByVaultMember = Boolean(isSolanaChain(chainId) && account && isSolanaSmartContractWallet(account))
 
   return useMemo(() => {
     if (!overhead || overhead.spent <= 0n || !isSolanaChain(chainId)) return null
@@ -46,6 +54,7 @@ export function useSolanaTxCost(): SolanaTxCost | null {
       isSponsored,
       ownerDeposit:
         ownerSpent > 0n ? CurrencyAmount.fromRawAmount(NATIVE_CURRENCIES[chainId], ownerSpent.toString()) : null,
+      isFeePaidByVaultMember,
     }
-  }, [chainId, overhead, ownerOverhead, isSponsored])
+  }, [chainId, overhead, ownerOverhead, isSponsored, isFeePaidByVaultMember])
 }

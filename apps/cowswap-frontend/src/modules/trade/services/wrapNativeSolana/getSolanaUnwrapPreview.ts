@@ -2,10 +2,10 @@ import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
-import { ACCOUNT_SIZE, getAssociatedTokenAddressSync, TOKEN_PROGRAM_ID } from '@solana/spl-token'
+import { ACCOUNT_SIZE } from '@solana/spl-token'
 import { Connection, PublicKey } from '@solana/web3.js'
 
-import { WSOL_MINT } from './const'
+import { getWsolAssociatedTokenAccount } from './const'
 
 export interface SolanaUnwrapPreview {
   /** Current WSOL balance of the owner's associated token account, read fresh from the chain. */
@@ -49,7 +49,7 @@ export async function getSolanaUnwrapPreview(
  * A missing account is a zero balance — the owner simply never held WSOL.
  */
 async function readWsolBalance(connection: Connection, owner: PublicKey): Promise<bigint> {
-  const associatedTokenAccount = getAssociatedTokenAddressSync(WSOL_MINT, owner, false, TOKEN_PROGRAM_ID)
+  const associatedTokenAccount = getWsolAssociatedTokenAccount(owner)
   const accountInfo = await connection.getAccountInfo(associatedTokenAccount)
 
   if (!accountInfo) return 0n

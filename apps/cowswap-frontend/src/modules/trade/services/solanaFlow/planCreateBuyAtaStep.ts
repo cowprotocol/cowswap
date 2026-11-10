@@ -1,13 +1,9 @@
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import type { SolanaQuote } from '@cowprotocol/sdk-trading-solana'
+import { deriveAta, type SolanaQuote } from '@cowprotocol/sdk-trading-solana'
 
 import { t } from '@lingui/core/macro'
-import {
-  createAssociatedTokenAccountIdempotentInstruction,
-  getAssociatedTokenAddressSync,
-  TOKEN_PROGRAM_ID,
-} from '@solana/spl-token'
+import { createAssociatedTokenAccountIdempotentInstruction, TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { PublicKey } from '@solana/web3.js'
 
 import { SolanaFlowStep, SolanaFundedAccount } from './types'
@@ -70,8 +66,7 @@ export function getIsBuyAtaCreationSkipped({
   }
 
   const { intent, buyTokenProgramId } = quote
-  // `allowOwnerOffCurve`, so a receiver that is itself a PDA compares false instead of throwing.
-  const ownerAta = getAssociatedTokenAddressSync(intent.buyMint, owner, true, buyTokenProgramId)
+  const ownerAta = deriveAta(intent.buyMint, owner, buyTokenProgramId)
 
   return intent.buyTokenAccount.equals(ownerAta)
 }
