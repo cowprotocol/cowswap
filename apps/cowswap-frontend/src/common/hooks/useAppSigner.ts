@@ -7,7 +7,8 @@ import { Nullish } from 'types'
 
 /**
  * Returns the signer from the global ViemAdapter instance set by CowSdkUpdater.
- * Available when a wallet is connected (walletClient is present).
+ * Available once a wallet with an EVM account has connected, and cleared again when the connection
+ * no longer has one — a WalletConnect session approved for Solana only, for instance.
  */
 export function useAppSigner(): Signer | undefined {
   return useAtomValue(appSignerAtom)
