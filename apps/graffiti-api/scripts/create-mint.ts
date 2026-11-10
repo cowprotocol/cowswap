@@ -8,7 +8,14 @@
  *
  * Usage: pnpm mint:create  [RPC_URL=… | -- --rpc …]
  */
-import { createMint, getOrCreateAssociatedTokenAccount, mintTo, TOKEN_PROGRAM_ID } from '@solana/spl-token'
+import {
+  ACCOUNT_SIZE,
+  createMint,
+  getOrCreateAssociatedTokenAccount,
+  MINT_SIZE,
+  mintTo,
+  TOKEN_PROGRAM_ID,
+} from '@solana/spl-token'
 import { clusterApiUrl, Connection, Keypair, LAMPORTS_PER_SOL, type PublicKey } from '@solana/web3.js'
 
 import fs from 'node:fs'
@@ -17,6 +24,13 @@ import path from 'node:path'
 import { INITIAL_SUPPLY, PKG_ROOT } from '../src/config.js'
 import { parseSecretKey, readSecretKeyFile } from '../src/keypair.js'
 import { errorMessage } from '../src/util.js'
+
+interface RentCosts {
+  /** Rent-exempt minimum for the mint account. */
+  mint: number
+  /** Rent-exempt minimum for one token account: what the treasury pays per claimer. */
+  tokenAccount: number
+}
 
 interface ResolvedKey {
   keypair: Keypair
@@ -30,8 +44,10 @@ interface TreasuryKey extends ResolvedKey {
 }
 
 const KEYS_DIR = path.resolve(PKG_ROOT, '.keys')
-const MIN_TREASURY_LAMPORTS = LAMPORTS_PER_SOL
 const AIRDROP_LAMPORTS = 2 * LAMPORTS_PER_SOL
+const SIGNATURE_FEE_LAMPORTS = 5_000
+/** Slack for the handful of signatures setup spends. */
+const SETUP_FEE_LAMPORTS = 20 * SIGNATURE_FEE_LAMPORTS
 const MAINNET_GENESIS_HASH = '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d'
 
 async function createToken(connection: Connection, treasury: Keypair, mint: Keypair): Promise<PublicKey> {
@@ -75,13 +91,14 @@ async function createToken(connection: Connection, treasury: Keypair, mint: Keyp
 }
 
 /** Returns false (after telling the operator what to do) when the treasury cannot be funded. */
-async function ensureFunded(connection: Connection, treasury: Keypair): Promise<boolean> {
-  if ((await connection.getBalance(treasury.publicKey)) >= MIN_TREASURY_LAMPORTS) return true
+async function ensureFunded(connection: Connection, treasury: Keypair, rent: RentCosts): Promise<boolean> {
+  const required = rent.mint + rent.tokenAccount + SETUP_FEE_LAMPORTS
+  const balance = await connection.getBalance(treasury.publicKey)
+  if (balance >= required) return true
 
   if (await isMainnet(connection)) {
-    console.error(`\n[mint] treasury ${treasury.publicKey.toBase58()} holds under 1 SOL.`)
-    console.error('[mint] Mainnet has no faucet: send it SOL, then re-run. Budget roughly')
-    console.error('       0.00204 SOL per claim redemption, i.e. ~2.1 SOL per 1000 codes.')
+    console.error(`\n[mint] treasury ${treasury.publicKey.toBase58()} holds ${sol(balance)} SOL.`)
+    console.error(`[mint] Setup needs ${sol(required)} SOL. Mainnet has no faucet: send it some, then re-run.`)
     return false
   }
 
@@ -100,6 +117,15 @@ async function ensureFunded(connection: Connection, treasury: Keypair): Promise<
     console.error(`      (https://faucet.solana.com — captcha, one-time) then re-run the script.`)
     return false
   }
+}
+
+/** Rent is a cluster parameter, so the cost of setup and of each claim is read, not assumed. */
+async function fetchRentCosts(connection: Connection): Promise<RentCosts> {
+  const [mint, tokenAccount] = await Promise.all([
+    connection.getMinimumBalanceForRentExemption(MINT_SIZE),
+    connection.getMinimumBalanceForRentExemption(ACCOUNT_SIZE),
+  ])
+  return { mint, tokenAccount }
 }
 
 async function isMainnet(connection: Connection): Promise<boolean> {
@@ -133,13 +159,14 @@ async function main(): Promise<void> {
   // Persist before any network call so a failed funding step can be resumed.
   saveKeys(mint, treasury)
 
-  if (!(await ensureFunded(connection, treasury.keypair))) process.exit(1)
+  const rent = await fetchRentCosts(connection)
+  if (!(await ensureFunded(connection, treasury.keypair, rent))) process.exit(1)
 
   const mintPubkey = await createToken(connection, treasury.keypair, mint.keypair)
-  printSummary(mintPubkey, treasury)
+  printSummary(mintPubkey, treasury, rent.tokenAccount + SIGNATURE_FEE_LAMPORTS)
 }
 
-function printSummary(mint: PublicKey, treasury: TreasuryKey): void {
+function printSummary(mint: PublicKey, treasury: TreasuryKey, perClaimLamports: number): void {
   console.log('')
   console.log('=========================================')
   console.log(`MINT     = ${mint.toBase58()}`)
@@ -150,6 +177,8 @@ function printSummary(mint: PublicKey, treasury: TreasuryKey): void {
       ? `Treasury keypair saved to ${path.join(KEYS_DIR, 'treasury.json')} (gitignored, mode 0600) — back it up, it is money.`
       : 'The supplied treasury key was not written to disk.',
   )
+  console.log(`Each redemption costs the treasury ${sol(perClaimLamports)} SOL (token-account rent + fee),`)
+  console.log(`so a pool of N codes needs N x that much on top of the token supply.`)
   console.log('Run the API with:')
   console.log(`  MINT=${mint.toBase58()} ${treasury.envHint} \\`)
   console.log('  ADMIN_TOKEN=<secret> pnpm --filter @cowprotocol/graffiti-api run dev')
@@ -223,3 +252,7 @@ main().catch((err: unknown) => {
   console.error(err)
   process.exit(1)
 })
+
+function sol(lamports: number): string {
+  return (lamports / LAMPORTS_PER_SOL).toFixed(6)
+}
