@@ -1,4 +1,4 @@
-import { COOKIE_CONSENT_COPY, CookieConsentControls, useCookieConsent } from '@cowprotocol/analytics'
+import { COOKIE_CONSENT_COPY, CookieConsentBannerControls, useCookieConsentBanner } from '@cowprotocol/analytics'
 
 import { fireEvent, render, screen } from '@testing-library/react'
 
@@ -6,62 +6,90 @@ import { CookieConsentBannerContainer } from './CookieConsentBanner.container'
 
 jest.mock('@cowprotocol/analytics', () => ({
   ...jest.requireActual('@cowprotocol/analytics/consent'),
-  useCookieConsent: jest.fn(),
+  useCookieConsentBanner: jest.fn(),
 }))
 
-const useCookieConsentMock = jest.mocked(useCookieConsent)
+const MESSAGE_ID = 'cookie-message'
 
-function mockConsent(overrides: Partial<CookieConsentControls>): CookieConsentControls {
-  const controls: CookieConsentControls = {
-    consent: null,
-    isBannerOpen: true,
-    acceptCookies: jest.fn(),
-    rejectCookies: jest.fn(),
-    openCookieSettings: jest.fn(),
-    closeCookieSettings: jest.fn(),
+function mockBanner(overrides: Partial<CookieConsentBannerControls> = {}): CookieConsentBannerControls {
+  const banner: CookieConsentBannerControls = {
+    isOpen: true,
+    isReopened: false,
+    messageId: MESSAGE_ID,
+    dialogProps: {
+      ref: { current: null },
+      role: 'dialog',
+      'aria-modal': false,
+      'aria-describedby': MESSAGE_ID,
+      tabIndex: -1,
+    },
+    accept: jest.fn(),
+    reject: jest.fn(),
+    close: jest.fn(),
     ...overrides,
   }
 
-  useCookieConsentMock.mockReturnValue(controls)
+  jest.mocked(useCookieConsentBanner).mockReturnValue(banner)
 
-  return controls
+  return banner
 }
 
 describe('CookieConsentBannerContainer', () => {
   it('renders nothing while the banner is closed', () => {
-    mockConsent({ isBannerOpen: false })
+    mockBanner({ isOpen: false })
 
     const { container } = render(<CookieConsentBannerContainer />)
 
     expect(container.childElementCount).toBe(0)
   })
 
-  it('wires the choices to the consent store', () => {
-    const controls = mockConsent({})
+  it('labels the banner and links the cookie policy in a new tab', () => {
+    mockBanner()
+    render(<CookieConsentBannerContainer />)
+
+    const banner = screen.getByRole('dialog', { name: COOKIE_CONSENT_COPY.ariaLabel })
+    const link = screen.getByRole('link', { name: COOKIE_CONSENT_COPY.policyLinkLabel })
+
+    expect(document.getElementById(MESSAGE_ID)?.textContent).toContain(COOKIE_CONSENT_COPY.message)
+    expect(banner.contains(link)).toBe(true)
+    expect(link.getAttribute('href')).toBe('https://cow.fi/legal/cowswap-cookie-policy')
+    expect(link.getAttribute('target')).toBe('_blank')
+    expect(link.getAttribute('rel')).toBe('noopener noreferrer')
+  })
+
+  it('gives Reject All and Accept All the same button styling', () => {
+    mockBanner()
+    render(<CookieConsentBannerContainer />)
+
+    const reject = screen.getByRole('button', { name: COOKIE_CONSENT_COPY.rejectLabel })
+    const accept = screen.getByRole('button', { name: COOKIE_CONSENT_COPY.acceptLabel })
+
+    expect(reject.className).toBe(accept.className)
+  })
+
+  it('reports each choice, with no way to close on a first visit', () => {
+    const banner = mockBanner()
 
     render(<CookieConsentBannerContainer />)
     fireEvent.click(screen.getByRole('button', { name: COOKIE_CONSENT_COPY.acceptLabel }))
     fireEvent.click(screen.getByRole('button', { name: COOKIE_CONSENT_COPY.rejectLabel }))
 
-    expect(controls.acceptCookies).toHaveBeenCalledTimes(1)
-    expect(controls.rejectCookies).toHaveBeenCalledTimes(1)
+    expect(banner.accept).toHaveBeenCalledTimes(1)
+    expect(banner.reject).toHaveBeenCalledTimes(1)
     expect(screen.queryByRole('button', { name: COOKIE_CONSENT_COPY.closeLabel })).toBeNull()
   })
 
-  it('offers to close the settings once a choice exists', () => {
-    const controls = mockConsent({
-      consent: { choice: 'accepted', decidedAt: '2026-11-09T12:00:00.000Z', policyVersion: 1 },
-    })
+  it('offers to close when reopened', () => {
+    const banner = mockBanner({ isReopened: true })
 
     render(<CookieConsentBannerContainer />)
     fireEvent.click(screen.getByRole('button', { name: COOKIE_CONSENT_COPY.closeLabel }))
 
-    expect(controls.closeCookieSettings).toHaveBeenCalledTimes(1)
+    expect(banner.close).toHaveBeenCalledTimes(1)
   })
 
   it('uses the copy it is given', () => {
-    mockConsent({})
-
+    mockBanner()
     render(<CookieConsentBannerContainer copy={{ ...COOKIE_CONSENT_COPY, acceptLabel: 'Alle akzeptieren' }} />)
 
     expect(screen.getByRole('button', { name: 'Alle akzeptieren' })).toBeTruthy()

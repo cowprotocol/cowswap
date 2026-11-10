@@ -1,4 +1,4 @@
-import { initGtmWithConsent } from '@cowprotocol/analytics'
+import { initGtm } from '@cowprotocol/analytics'
 import svgBitsSrc from '@cowprotocol/assets/images/image-bits.svg'
 import svgCoinsSrc from '@cowprotocol/assets/images/image-coins.svg'
 import svgDiscordSrc from '@cowprotocol/assets/images/image-discord.svg'
@@ -24,7 +24,7 @@ import {
   TopicTitle,
 } from '@/styles/styled'
 
-const analytics = initGtmWithConsent()
+const analytics = initGtm()
 
 export const PRODUCT_LIST = [
   {

@@ -4,7 +4,7 @@ import { type ReactNode, useEffect, useRef } from 'react'
 
 import { useConnection } from 'wagmi'
 
-import { useCookieConsent } from '@cowprotocol/analytics/consent'
+import { useHasAcceptedCookies } from '@cowprotocol/analytics/consent'
 import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 
 import { usePathname } from 'next/navigation'
@@ -21,8 +21,7 @@ const NOT_CONNECTED_WALLET_NAME = 'Not connected'
 
 /** Loads GTM and tracks page views and wallet connections once cookies are accepted, see `docs/analytics.md` */
 export function Analytics(): ReactNode {
-  const { consent } = useCookieConsent()
-  const isAccepted = consent?.choice === 'accepted'
+  const isAccepted = useHasAcceptedCookies()
 
   useEffect(() => {
     if (isAccepted) loadGtm()

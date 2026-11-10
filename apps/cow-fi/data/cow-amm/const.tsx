@@ -1,4 +1,4 @@
-import { initGtmWithConsent } from '@cowprotocol/analytics'
+import { initGtm } from '@cowprotocol/analytics'
 import svgCowammLp1Src from '@cowprotocol/assets/images/image-cowamm-lp-1.svg'
 import svgCowammLp2Src from '@cowprotocol/assets/images/image-cowamm-lp-2.svg'
 import svgCowammLp3Src from '@cowprotocol/assets/images/image-cowamm-lp-3.svg'
@@ -10,7 +10,7 @@ import { CowFiCategory } from 'src/common/analytics/types'
 
 import { Link } from '@/components/Link'
 
-const analytics = initGtmWithConsent()
+const analytics = initGtm()
 
 export const QUOTES = [
   {

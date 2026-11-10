@@ -1,11 +1,11 @@
-import { initGtmWithConsent } from '@cowprotocol/analytics'
+import { initGtm } from '@cowprotocol/analytics'
 import { MenuItem, ProductVariant, UI } from '@cowprotocol/ui'
 
 import { CowFiCategory } from 'src/common/analytics/types'
 
 import { COW_SWAP_CTA } from '@/const/cta'
 
-const analytics = initGtmWithConsent()
+const analytics = initGtm()
 
 export const PAGE_MAX_WIDTH = 1760
 export const THEME_MODE = 'light'

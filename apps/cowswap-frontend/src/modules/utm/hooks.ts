@@ -244,13 +244,13 @@ function processUtmParams(
     handleUrlNavigation(newSearch, hasQueryParamsOutOfHashbang, navigate, pathname, hash)
   }
 
-  if (isInjectedWidget() || window.__COWSWAP_E2E__) {
-    // Widget and E2E runs never load GTM or show the cookie banner, so waitForAnalytics would never resolve
+  if (isInjectedWidget()) {
+    // Widget mode does not load GTM; avoid long waitForAnalytics polling.
     timeoutId = window.setTimeout(performUtmCleanup, 0)
     return cleanup
   }
 
-  // Wait for the cookie choice, and for analytics after an acceptance, before cleaning up UTM parameters
+  // Wait for analytics to be ready before cleaning up UTM parameters
   waitForAnalytics()
     .then(() => {
       logUtmDebug('Analytics ready, cleaning up UTM params after delay', {})

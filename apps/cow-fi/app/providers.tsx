@@ -2,7 +2,7 @@
 
 import { Suspense, useState } from 'react'
 
-import { CowAnalyticsProvider, initGtmWithConsent } from '@cowprotocol/analytics'
+import { CowAnalyticsProvider, initGtm } from '@cowprotocol/analytics'
 import { CookieConsentBannerContainer } from '@cowprotocol/ui'
 
 import { ApolloProvider } from '@apollo/client'
@@ -16,7 +16,7 @@ import { ThemeProvider } from '../theme'
 import { WithLDProvider } from '@/components/WithLDProvider'
 import GlobalStyles from '@/styles/global.styles'
 
-const cowAnalytics = initGtmWithConsent()
+const cowAnalytics = initGtm()
 
 export function Providers({ children }: { children: React.ReactNode }): React.ReactNode {
   return (

@@ -1,7 +1,4 @@
-import { grantGoogleConsent } from './grantGoogleConsent'
-import { initGtm } from './initGtm'
-
-import { hasAcceptedCookies, subscribeToCookieConsent } from '../consent/cookieConsent.store'
+import { onCookiesAccepted } from '../consent/cookieConsent.store'
 import { AnalyticsContext, AnalyticsEvent, CowAnalytics, OutboundLinkParams } from '../CowAnalytics'
 
 type PageViewArgs = Parameters<CowAnalytics['sendPageView']>
@@ -11,53 +8,18 @@ interface UserAccount {
   walletName?: string
 }
 
-const state = {
-  instance: null as CowAnalytics | null,
-}
-
-/** @internal Testing only */
-export function __resetGtmWithConsentInstance(): void {
-  if (process.env.NODE_ENV === 'test') {
-    state.instance = null
-  }
-}
-
 /**
- * Loads GTM only once the visitor accepts cookies. Until then it sends nothing and keeps only the latest
- * context, account and page view, which are replayed into GTM on acceptance.
+ * Loads the wrapped analytics only once the visitor accepts cookies. Until then it sends nothing and keeps only
+ * the latest context, account and page view, which it replays on acceptance.
  */
-export function initGtmWithConsent(): CowAnalytics {
-  if (!state.instance) {
-    state.instance = new ConsentGatedCowAnalytics(() => {
-      grantGoogleConsent()
-
-      return initGtm()
-    })
-  }
-
-  return state.instance
-}
-
-class ConsentGatedCowAnalytics implements CowAnalytics {
+export class ConsentGatedCowAnalytics implements CowAnalytics {
   private analytics: CowAnalytics | null = null
   private readonly pendingContext = new Map<AnalyticsContext, string | undefined>()
   private pendingAccount: UserAccount | null = null
   private pendingPageView: PageViewArgs | null = null
 
   constructor(private readonly loadAnalytics: () => CowAnalytics) {
-    if (typeof window === 'undefined') return
-
-    if (hasAcceptedCookies()) {
-      this.analytics = loadAnalytics()
-      return
-    }
-
-    const unsubscribe = subscribeToCookieConsent(() => {
-      if (!hasAcceptedCookies()) return
-
-      unsubscribe()
-      this.activate()
-    })
+    if (typeof window !== 'undefined') onCookiesAccepted(() => this.activate())
   }
 
   setUserAccount(account: string | undefined, walletName?: string): void {
@@ -104,6 +66,7 @@ class ConsentGatedCowAnalytics implements CowAnalytics {
     }
   }
 
+  // Context goes first, so the replayed account and page view carry it as their dimensions
   private activate(): void {
     const analytics = this.loadAnalytics()
 

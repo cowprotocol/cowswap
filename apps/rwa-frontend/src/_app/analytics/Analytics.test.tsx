@@ -12,7 +12,7 @@ const mockConsent = { accepted: true }
 jest.mock('@cowprotocol/analytics/consent', () => ({
   grantGoogleConsent: jest.fn(),
   hasAcceptedCookies: () => mockConsent.accepted,
-  useCookieConsent: () => ({ consent: mockConsent.accepted ? { choice: 'accepted' } : null }),
+  useHasAcceptedCookies: () => mockConsent.accepted,
 }))
 
 const ADDRESS = '0x1111111111111111111111111111111111111111'

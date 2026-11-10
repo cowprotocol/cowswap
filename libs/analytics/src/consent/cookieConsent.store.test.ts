@@ -4,14 +4,15 @@ import {
   __resetCookieConsentStore,
   acceptCookies,
   closeCookieSettings,
-  getCookieConsent,
   getCookieConsentState,
   hasAcceptedCookies,
+  onCookiesAccepted,
   openCookieSettings,
   rejectCookies,
   subscribeToCookieConsent,
-  waitForCookieConsentDecision,
+  waitForCookieChoice,
 } from './cookieConsent.store'
+import { CookieConsentChoice } from './cookieConsent.types'
 import { clearTrackerStorage, reloadPage } from './trackerStorage.utils'
 
 jest.mock('./trackerStorage.utils', () => ({
@@ -19,8 +20,23 @@ jest.mock('./trackerStorage.utils', () => ({
   reloadPage: jest.fn(),
 }))
 
+const LATER_MS = 1000
+
+function chooseInAnotherTab(choice: CookieConsentChoice): void {
+  const now = Date.now()
+
+  writeConsentCookie(createConsentRecord(choice, now + LATER_MS), now)
+  document.dispatchEvent(new Event('visibilitychange'))
+}
+
 function clearConsentCookie(): void {
   document.cookie = `${COOKIE_CONSENT_NAME}=; Max-Age=0; Path=/`
+}
+
+function storeChoice(choice: CookieConsentChoice): void {
+  const now = Date.now()
+
+  writeConsentCookie(createConsentRecord(choice, now), now)
 }
 
 describe('cookieConsent.store', () => {
@@ -31,36 +47,27 @@ describe('cookieConsent.store', () => {
   })
 
   it('starts undecided when no cookie is stored', () => {
-    expect(getCookieConsent()).toBeNull()
+    expect(getCookieConsentState().consent).toBeNull()
     expect(hasAcceptedCookies()).toBe(false)
   })
 
   it('reads a stored choice', () => {
-    const now = Date.now()
+    storeChoice('rejected')
 
-    writeConsentCookie(createConsentRecord('rejected', now), now)
-    __resetCookieConsentStore()
-
-    expect(getCookieConsent()?.choice).toBe('rejected')
+    expect(getCookieConsentState().consent?.choice).toBe('rejected')
   })
 
   it('clears leftover tracker storage when a stored rejection is read', () => {
-    const now = Date.now()
-
-    writeConsentCookie(createConsentRecord('rejected', now), now)
-    __resetCookieConsentStore()
-    getCookieConsent()
+    storeChoice('rejected')
+    getCookieConsentState()
 
     expect(clearTrackerStorage).toHaveBeenCalledTimes(1)
     expect(reloadPage).not.toHaveBeenCalled()
   })
 
   it('keeps tracker storage when a stored acceptance is read', () => {
-    const now = Date.now()
-
-    writeConsentCookie(createConsentRecord('accepted', now), now)
-    __resetCookieConsentStore()
-    getCookieConsent()
+    storeChoice('accepted')
+    getCookieConsentState()
 
     expect(clearTrackerStorage).not.toHaveBeenCalled()
   })
@@ -89,7 +96,7 @@ describe('cookieConsent.store', () => {
   it('clears trackers without reloading when rejecting without a prior acceptance', () => {
     rejectCookies()
 
-    expect(getCookieConsent()?.choice).toBe('rejected')
+    expect(getCookieConsentState().consent?.choice).toBe('rejected')
     expect(clearTrackerStorage).toHaveBeenCalledTimes(1)
     expect(reloadPage).not.toHaveBeenCalled()
   })
@@ -98,8 +105,15 @@ describe('cookieConsent.store', () => {
     acceptCookies()
     rejectCookies()
 
-    expect(getCookieConsent()?.choice).toBe('rejected')
+    expect(getCookieConsentState().consent?.choice).toBe('rejected')
     expect(clearTrackerStorage).toHaveBeenCalledTimes(1)
+    expect(reloadPage).toHaveBeenCalledTimes(1)
+  })
+
+  it('reloads when withdrawing an acceptance stored on an earlier visit', () => {
+    storeChoice('accepted')
+    rejectCookies()
+
     expect(reloadPage).toHaveBeenCalledTimes(1)
   })
 
@@ -115,20 +129,82 @@ describe('cookieConsent.store', () => {
     expect(getCookieConsentState().isSettingsOpen).toBe(false)
   })
 
-  describe('waitForCookieConsentDecision', () => {
+  describe('onCookiesAccepted', () => {
+    it('runs right away when cookies are already accepted', () => {
+      const callback = jest.fn()
+
+      acceptCookies()
+      onCookiesAccepted(callback)
+
+      expect(callback).toHaveBeenCalledTimes(1)
+    })
+
+    it('waits through a rejection and runs once on acceptance', () => {
+      const callback = jest.fn()
+
+      onCookiesAccepted(callback)
+      rejectCookies()
+      expect(callback).not.toHaveBeenCalled()
+
+      acceptCookies()
+      openCookieSettings()
+      expect(callback).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('waitForCookieChoice', () => {
     it('resolves with an existing choice', async () => {
       acceptCookies()
 
-      await expect(waitForCookieConsentDecision()).resolves.toBe('accepted')
+      await expect(waitForCookieChoice()).resolves.toBe('accepted')
     })
 
     it('waits until a choice is made', async () => {
-      const decision = waitForCookieConsentDecision()
+      const choice = waitForCookieChoice()
 
       openCookieSettings()
       rejectCookies()
 
-      await expect(decision).resolves.toBe('rejected')
+      await expect(choice).resolves.toBe('rejected')
+    })
+  })
+
+  describe('a choice made in another tab', () => {
+    it('is adopted when the tab becomes visible', () => {
+      const callback = jest.fn()
+
+      onCookiesAccepted(callback)
+      chooseInAnotherTab('accepted')
+
+      expect(hasAcceptedCookies()).toBe(true)
+      expect(callback).toHaveBeenCalledTimes(1)
+      expect(reloadPage).not.toHaveBeenCalled()
+    })
+
+    it('reloads a page that has run trackers when the other tab rejects', () => {
+      acceptCookies()
+      chooseInAnotherTab('rejected')
+
+      expect(hasAcceptedCookies()).toBe(false)
+      expect(clearTrackerStorage).toHaveBeenCalledTimes(1)
+      expect(reloadPage).toHaveBeenCalledTimes(1)
+    })
+
+    it('does not reload a page that never ran trackers', () => {
+      getCookieConsentState()
+      chooseInAnotherTab('rejected')
+
+      expect(getCookieConsentState().consent?.choice).toBe('rejected')
+      expect(reloadPage).not.toHaveBeenCalled()
+    })
+
+    it('keeps the current choice when the cookie is gone', () => {
+      acceptCookies()
+      clearConsentCookie()
+      document.dispatchEvent(new Event('visibilitychange'))
+
+      expect(hasAcceptedCookies()).toBe(true)
+      expect(reloadPage).not.toHaveBeenCalled()
     })
   })
 })

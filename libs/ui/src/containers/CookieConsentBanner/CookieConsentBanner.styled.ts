@@ -2,9 +2,9 @@ import styled from 'styled-components/macro'
 
 import { Media, OVERLAY_Z_INDEX } from '../../consts'
 import { UI } from '../../enum'
+import { ButtonPrimary } from '../../pure/Button'
+import { LinkStyledButton } from '../../pure/LinkStyledButton'
 import { font } from '../../utils/font'
-import { ButtonPrimary } from '../Button'
-import { LinkStyledButton } from '../LinkStyledButton'
 
 export const Wrapper = styled.div<{ $bottomBarHeight: number }>`
   position: fixed;

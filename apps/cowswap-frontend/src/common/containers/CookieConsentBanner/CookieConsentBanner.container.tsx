@@ -1,7 +1,6 @@
 import { ReactNode } from 'react'
 
 import { CookieConsentCopy } from '@cowprotocol/analytics'
-import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { CookieConsentBannerContainer } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
@@ -9,8 +8,6 @@ import { t } from '@lingui/core/macro'
 import { MOBILE_HEADER_CONTROLS_HEIGHT_PX } from 'common/constants/common'
 
 export function CookieConsentBanner(): ReactNode {
-  if (isInjectedWidget() || window.__COWSWAP_E2E__) return null
-
   const copy: CookieConsentCopy = {
     ariaLabel: t`Cookie consent`,
     message: t`By clicking “Accept All Cookies”, you agree to the storing of cookies on your device to enhance site navigation, analyze site usage, and assist in our marketing efforts.`,

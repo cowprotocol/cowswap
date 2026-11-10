@@ -1,12 +1,14 @@
 /**
  * GTM initialization module
  * Provides type-safe initialization of Google Tag Manager
- * Ensures single initialization of GTM instance
+ * Ensures single initialization of GTM instance, and only once the visitor accepts cookies
  */
 
 import { GTM_ID } from '@cowprotocol/common-const'
 
+import { ConsentGatedCowAnalytics } from './ConsentGatedCowAnalytics'
 import { CowAnalyticsGtm } from './CowAnalyticsGtm'
+import { grantGoogleConsent } from './grantGoogleConsent'
 
 import { CowAnalytics } from '../CowAnalytics'
 
@@ -37,7 +39,8 @@ export function __resetGtmInstance() {
 }
 
 /**
- * Initialize GTM and return a CowAnalytics instance
+ * Return a CowAnalytics instance that loads GTM only once the visitor accepts cookies
+ * Until then it sends nothing; on acceptance it replays the latest context, account and page view
  * This function ensures GTM is initialized only once and properly cached in both server and browser environments
  * @param gtmId - Optional GTM container ID
  * @returns CowAnalytics instance backed by GTM
@@ -63,20 +66,16 @@ export function initGtm(gtmId: string = DEFAULT_GTM_ID): CowAnalytics {
     return analytics.instance
   }
 
-  // Store GTM ID before any environment-specific logic
   analytics.gtmId = gtmId
+  analytics.instance = new ConsentGatedCowAnalytics(() => loadGtm(gtmId))
 
-  // Handle server-side initialization
-  // This check will be true when running on the server (Node.js environment)
-  if (typeof window === 'undefined') {
-    // Create and cache instance for server-side
-    // This ensures we don't create new instances on subsequent server-side calls
-    analytics.instance = new CowAnalyticsGtm()
-    return analytics.instance
-  }
+  return analytics.instance
+}
 
-  // Browser-specific initialization
+function loadGtm(gtmId: string): CowAnalytics {
   try {
+    grantGoogleConsent()
+
     // Initialize dataLayer for browser environment
     window.dataLayer = window.dataLayer || []
     window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' })
@@ -99,9 +98,7 @@ export function initGtm(gtmId: string = DEFAULT_GTM_ID): CowAnalytics {
     noscript.appendChild(iframe)
     document.body.insertBefore(noscript, document.body.firstChild)
 
-    // Create and store singleton instance
-    analytics.instance = new CowAnalyticsGtm()
-    return analytics.instance
+    return new CowAnalyticsGtm()
   } catch (error) {
     console.error('Failed to initialize GTM:', error)
     throw error

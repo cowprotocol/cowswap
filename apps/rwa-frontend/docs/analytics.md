@@ -41,8 +41,9 @@ Nothing reaches GTM before the visitor clicks **Accept All Cookies** in the cook
 sends a `page_view` for the current page and `wallet_connected` for an already connected wallet.
 
 The choice comes from `@cowprotocol/analytics/consent`, shared with CoW Swap, cow.fi and the Explorer through a
-`.cow.fi` cookie, so a choice made on one of them applies here too. **Cookie settings** in the footer reopens the
-banner; rejecting after an acceptance clears the tracker cookies and reloads the page.
+`.cow.fi` cookie, so a choice made on one of them applies here too, and an open tab picks up a choice made in another
+tab. **Cookie settings** in the footer reopens the banner; rejecting after an acceptance clears the tracker cookies
+and reloads the page.
 
 ## Dimensions
 

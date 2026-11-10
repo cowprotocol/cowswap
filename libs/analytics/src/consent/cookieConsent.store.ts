@@ -7,6 +7,7 @@ type Listener = () => void
 const store = {
   state: null as CookieConsentState | null,
   listeners: new Set<Listener>(),
+  isWatchingOtherTabs: false,
 }
 
 /** @internal Testing only */
@@ -18,27 +19,24 @@ export function __resetCookieConsentStore(): void {
 }
 
 export function acceptCookies(): void {
-  saveConsent('accepted')
+  saveChoice('accepted')
 }
 
 export function closeCookieSettings(): void {
   setState({ ...getCookieConsentState(), isSettingsOpen: false })
 }
 
-export function getCookieConsent(): CookieConsentRecord | null {
-  return getCookieConsentState().consent
-}
-
 export function getCookieConsentState(): CookieConsentState {
-  if (!store.state) {
-    store.state = { consent: loadStoredConsent(), isSettingsOpen: false }
-  }
-
-  return store.state
+  return store.state ?? loadState()
 }
 
 export function hasAcceptedCookies(): boolean {
-  return getCookieConsent()?.choice === 'accepted'
+  return getCookieConsentState().consent?.choice === 'accepted'
+}
+
+/** Runs the callback once: right away if cookies are accepted, otherwise when the visitor accepts them */
+export function onCookiesAccepted(callback: () => void): void {
+  onFirst(() => hasAcceptedCookies() || undefined, callback)
 }
 
 export function openCookieSettings(): void {
@@ -46,12 +44,7 @@ export function openCookieSettings(): void {
 }
 
 export function rejectCookies(): void {
-  const wasAccepted = hasAcceptedCookies()
-
-  saveConsent('rejected')
-  clearTrackerStorage()
-
-  if (wasAccepted) reloadPage()
+  saveChoice('rejected')
 }
 
 export function subscribeToCookieConsent(listener: Listener): () => void {
@@ -62,24 +55,31 @@ export function subscribeToCookieConsent(listener: Listener): () => void {
   }
 }
 
-export function waitForCookieConsentDecision(): Promise<CookieConsentChoice> {
-  const consent = getCookieConsent()
-
-  if (consent) return Promise.resolve(consent.choice)
-
-  return new Promise((resolve) => {
-    const unsubscribe = subscribeToCookieConsent(() => {
-      const decided = getCookieConsent()
-
-      if (!decided) return
-
-      unsubscribe()
-      resolve(decided.choice)
-    })
-  })
+export function waitForCookieChoice(): Promise<CookieConsentChoice> {
+  return new Promise((resolve) => onFirst(() => getCookieConsentState().consent?.choice, resolve))
 }
 
-function loadStoredConsent(): CookieConsentRecord | null {
+function adoptChoiceFromAnotherTab(): void {
+  const stored = readConsentCookie(Date.now())
+  const current = getCookieConsentState()
+
+  if (!stored || stored.decidedAt === current.consent?.decidedAt) return
+
+  applyChoice(current, stored)
+}
+
+function applyChoice(previous: CookieConsentState, consent: CookieConsentRecord): void {
+  // Third-party scripts can't be unloaded, so a page that has run them reloads once consent is gone
+  const mustReload = previous.consent?.choice === 'accepted' && consent.choice === 'rejected'
+
+  if (consent.choice === 'rejected') clearTrackerStorage()
+
+  setState({ consent, isSettingsOpen: false })
+
+  if (mustReload) reloadPage()
+}
+
+function loadState(): CookieConsentState {
   const now = Date.now()
   const consent = readConsentCookie(now)
 
@@ -89,18 +89,53 @@ function loadStoredConsent(): CookieConsentRecord | null {
   // GA rewrites its session cookie while the page unloads, after a withdrawal has already cleared it
   if (consent?.choice === 'rejected') clearTrackerStorage()
 
-  return consent
+  watchOtherTabs()
+
+  const state = { consent, isSettingsOpen: false }
+
+  store.state = state
+
+  return state
 }
 
-function saveConsent(choice: CookieConsentChoice): void {
+function onFirst<T>(select: () => T | undefined, callback: (value: T) => void): void {
+  const value = select()
+
+  if (value !== undefined) {
+    callback(value)
+    return
+  }
+
+  const unsubscribe = subscribeToCookieConsent(() => {
+    const next = select()
+
+    if (next === undefined) return
+
+    unsubscribe()
+    callback(next)
+  })
+}
+
+function saveChoice(choice: CookieConsentChoice): void {
   const now = Date.now()
   const consent = createConsentRecord(choice, now)
+  const previous = getCookieConsentState()
 
   writeConsentCookie(consent, now)
-  setState({ consent, isSettingsOpen: false })
+  applyChoice(previous, consent)
 }
 
 function setState(state: CookieConsentState): void {
   store.state = state
   store.listeners.forEach((listener) => listener())
+}
+
+function watchOtherTabs(): void {
+  if (store.isWatchingOtherTabs || typeof document === 'undefined') return
+
+  store.isWatchingOtherTabs = true
+  document.addEventListener('visibilitychange', adoptChoiceFromAnotherTab)
+
+  // Unlike visibilitychange, a cookie change also reaches tabs that stay in the background
+  if ('cookieStore' in window) window.cookieStore.addEventListener('change', adoptChoiceFromAnotherTab)
 }

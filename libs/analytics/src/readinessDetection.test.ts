@@ -1,11 +1,14 @@
 import { COOKIE_CONSENT_NAME } from './consent/cookieConsent.constants'
 import { __resetCookieConsentStore, acceptCookies, rejectCookies } from './consent/cookieConsent.store'
+import { __resetNoopCowAnalyticsInstance, createNoopCowAnalytics } from './noop/createNoopCowAnalytics'
 import { waitForAnalytics } from './readinessDetection'
 
 jest.mock('./consent/trackerStorage.utils', () => ({
   clearTrackerStorage: jest.fn(),
   reloadPage: jest.fn(),
 }))
+
+type TestWindow = { cowAnalyticsInstance?: unknown; dataLayer?: unknown[] }
 
 describe('waitForAnalytics', () => {
   beforeEach(() => {
@@ -16,11 +19,19 @@ describe('waitForAnalytics', () => {
 
   afterEach(() => {
     jest.useRealTimers()
-    delete (window as unknown as { dataLayer?: unknown }).dataLayer
+    __resetNoopCowAnalyticsInstance()
+    delete (window as TestWindow).cowAnalyticsInstance
+    delete (window as TestWindow).dataLayer
   })
 
   it('resolves right away after a rejection', async () => {
     rejectCookies()
+
+    await expect(waitForAnalytics()).resolves.toBeUndefined()
+  })
+
+  it('resolves right away with no-op analytics, without a cookie choice', async () => {
+    createNoopCowAnalytics()
 
     await expect(waitForAnalytics()).resolves.toBeUndefined()
   })
@@ -43,7 +54,7 @@ describe('waitForAnalytics', () => {
     const onResolved = jest.fn()
 
     acceptCookies()
-    window.dataLayer = []
+    ;(window as TestWindow).dataLayer = []
     waitForAnalytics().then(onResolved)
 
     await jest.advanceTimersByTimeAsync(3_000)

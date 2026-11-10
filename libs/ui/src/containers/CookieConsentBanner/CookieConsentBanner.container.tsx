@@ -1,9 +1,9 @@
 import { ReactNode } from 'react'
 
-import { COOKIE_CONSENT_COPY, CookieConsentCopy, useCookieConsent } from '@cowprotocol/analytics'
+import { COOKIE_CONSENT_COPY, CookieConsentCopy, useCookieConsentBanner } from '@cowprotocol/analytics'
 import { COWSWAP_COOKIE_POLICY_LINK } from '@cowprotocol/common-const'
 
-import { CookieConsentBanner } from '../../pure/CookieConsentBanner/CookieConsentBanner.pure'
+import * as styledEl from './CookieConsentBanner.styled'
 
 export interface CookieConsentBannerContainerProps {
   copy?: CookieConsentCopy
@@ -13,20 +13,37 @@ export interface CookieConsentBannerContainerProps {
 
 export function CookieConsentBannerContainer({
   copy = COOKIE_CONSENT_COPY,
-  bottomBarHeight,
+  bottomBarHeight = 0,
 }: CookieConsentBannerContainerProps): ReactNode {
-  const { consent, isBannerOpen, acceptCookies, rejectCookies, closeCookieSettings } = useCookieConsent()
+  const banner = useCookieConsentBanner()
 
-  if (!isBannerOpen) return null
+  if (!banner.isOpen) return null
 
   return (
-    <CookieConsentBanner
-      copy={copy}
-      policyHref={COWSWAP_COOKIE_POLICY_LINK}
-      onAccept={acceptCookies}
-      onReject={rejectCookies}
-      onClose={consent ? closeCookieSettings : undefined}
-      bottomBarHeight={bottomBarHeight}
-    />
+    <styledEl.Wrapper $bottomBarHeight={bottomBarHeight}>
+      <styledEl.Card {...banner.dialogProps} aria-label={copy.ariaLabel}>
+        {banner.isReopened && (
+          <styledEl.Header>
+            <styledEl.CloseButton type="button" onClick={banner.close}>
+              {copy.closeLabel}
+            </styledEl.CloseButton>
+          </styledEl.Header>
+        )}
+        <styledEl.Message id={banner.messageId}>
+          {copy.message}{' '}
+          <a href={COWSWAP_COOKIE_POLICY_LINK} target="_blank" rel="noopener noreferrer">
+            {copy.policyLinkLabel}
+          </a>
+        </styledEl.Message>
+        <styledEl.Actions>
+          <styledEl.ChoiceButton type="button" onClick={banner.reject}>
+            {copy.rejectLabel}
+          </styledEl.ChoiceButton>
+          <styledEl.ChoiceButton type="button" onClick={banner.accept}>
+            {copy.acceptLabel}
+          </styledEl.ChoiceButton>
+        </styledEl.Actions>
+      </styledEl.Card>
+    </styledEl.Wrapper>
   )
 }

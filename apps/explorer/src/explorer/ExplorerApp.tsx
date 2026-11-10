@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { CowAnalyticsProvider, initGtmWithConsent, useAnalyticsReporter } from '@cowprotocol/analytics'
+import { CowAnalyticsProvider, initGtm, useAnalyticsReporter } from '@cowprotocol/analytics'
 import { CHAIN_INFO_ARRAY } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
@@ -23,7 +23,7 @@ import { NetworkUpdater } from '../state/network/NetworkUpdater'
 import { environmentName } from '../utils/env'
 
 // Initialize analytics instances
-const cowAnalytics = initGtmWithConsent()
+const cowAnalytics = initGtm()
 
 const SENTRY_DSN = process.env.REACT_APP_EXPLORER_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE

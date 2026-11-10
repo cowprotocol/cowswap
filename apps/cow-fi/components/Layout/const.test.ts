@@ -1,7 +1,7 @@
 import { getNavItems, NAV_ADDITIONAL_BUTTONS } from './const'
 
 jest.mock('@cowprotocol/analytics', () => ({
-  initGtmWithConsent: () => ({
+  initGtm: () => ({
     sendEvent: jest.fn(),
   }),
 }))

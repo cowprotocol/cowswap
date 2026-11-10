@@ -4,8 +4,9 @@
  * Matches the utm-fix.js attribution loading system
  */
 
-import { waitForCookieConsentDecision } from './consent/cookieConsent.store'
+import { waitForCookieChoice } from './consent/cookieConsent.store'
 import { isGtmReady } from './gtm/gtmDetection'
+import { isNoopCowAnalyticsActive } from './noop/createNoopCowAnalytics'
 import { isSafaryReady } from './safary/safaryDetection'
 
 export interface AnalyticsReadiness {
@@ -25,10 +26,12 @@ export function isAnalyticsReady(): AnalyticsReadiness {
 
 /**
  * Waits for the visitor's cookie choice, then for GTM and Safary if they accepted.
- * Resolves right away after a rejection, and stays pending while no choice is made.
+ * Resolves right away after a rejection or with no-op analytics, and stays pending while no choice is made.
  */
 export async function waitForAnalytics(): Promise<void> {
-  const choice = await waitForCookieConsentDecision()
+  if (isNoopCowAnalyticsActive()) return
+
+  const choice = await waitForCookieChoice()
 
   if (choice !== 'accepted') return
 
