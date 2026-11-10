@@ -104,7 +104,6 @@ async function ensureFunded(connection: Connection, treasury: Keypair, rent: Ren
   }
 }
 
-/** Rent is a cluster parameter: read it rather than assume it. */
 /** Re-runnable: a mint this treasury already owns is adopted rather than recreated. */
 async function ensureMint(connection: Connection, treasury: Keypair, mint: Keypair): Promise<PublicKey> {
   if ((await connection.getAccountInfo(mint.publicKey)) === null) {
@@ -124,6 +123,7 @@ async function ensureMint(connection: Connection, treasury: Keypair, mint: Keypa
   return mint.publicKey
 }
 
+/** Rent is a cluster parameter: read it rather than assume it. */
 async function fetchRentCosts(connection: Connection): Promise<RentCosts> {
   const [mint, tokenAccount] = await Promise.all([
     connection.getMinimumBalanceForRentExemption(MINT_SIZE),
