@@ -198,7 +198,9 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
     // For Swap, the balance must cover the slippage-inclusive maximum sell amount, not just the raw input
     // amount, otherwise the order could be unfillable if the price moves against the user up to slippage.
-    const balanceCheckAmount = swapMaximumSellAmount ?? inputCurrencyAmount
+    // Wrap/unwrap is 1:1 and never quoted, so a `swapMaximumSellAmount` there can only come from the previous
+    // pair's quote (quotes are keyed by the sell token) and must not be used.
+    const balanceCheckAmount = (isWrapUnwrap ? null : swapMaximumSellAmount) ?? inputCurrencyAmount
 
     if (inputCurrencyBalance && balanceCheckAmount && inputCurrencyBalance.lessThan(balanceCheckAmount)) {
       validations.push(TradeFormValidation.BalanceInsufficient)

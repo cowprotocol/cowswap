@@ -1,5 +1,31 @@
 # Changelog
 
+## [3.18.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.17.3...tokens-v3.18.0) (2026-11-10)
+
+### Minor Changes
+
+- feat(networks): networks update (#8456)
+
+- feat(solana): pass appData to quote (#8509)
+
+### Patch Changes
+
+- fix(rwa): updated rwa token lists (#8487)
+
+- fix(solana): use SDK for quote costs breakdown (#8522)
+
+- fix(tokens): use Solana volume ranks in the selector (#8523)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.22.0
+  - @cowprotocol/core@3.15.0
+  - @cowprotocol/common-const@3.19.0
+  - @cowprotocol/common-hooks@3.19.0
+  - @cowprotocol/currency@1.10.0
+  - @cowprotocol/types@4.15.0
+  - @cowprotocol/ui@3.21.0
+  - @cowprotocol/wallet-provider@2.3.0
+
 ## [3.17.3](https://github.com/cowprotocol/cowswap/compare/tokens-v3.17.2...tokens-v3.17.3) (2026-11-05)
 
 ### Patch Changes
