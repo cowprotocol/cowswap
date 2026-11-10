@@ -18,6 +18,7 @@ import { useGetTradeUrlParams } from 'modules/trade'
 
 import { APP_HEADER_ELEMENT_ID } from 'common/constants/common'
 import { Routes } from 'common/constants/routes'
+import { useIsGraffitiWallEnabled } from 'common/hooks/featureFlags/useIsGraffitiWallEnabled'
 import { useIsInternationalizationEnabled } from 'common/hooks/featureFlags/useIsInternationalizationEnabled'
 import { useCustomTheme } from 'common/hooks/useCustomTheme'
 import { useMenuItems } from 'common/hooks/useMenuItems'
@@ -62,6 +63,7 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
   const getTradeUrlParams = useGetTradeUrlParams()
   const { t } = useLingui()
   const isInternationalizationEnabled = useIsInternationalizationEnabled()
+  const isGraffitiWallEnabled = useIsGraffitiWallEnabled()
 
   const settingsNavItems = useMemo(
     () => [
@@ -115,9 +117,9 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
           }
         }),
       },
-      ...NAV_ITEMS(chainId, !!isSolversEnabled),
+      ...NAV_ITEMS(chainId, { isSolversEnabled: !!isSolversEnabled, isGraffitiWallEnabled }),
     ]
-  }, [t, tradeMenuItems, chainId, getTradeUrlParams, isSolversEnabled])
+  }, [t, tradeMenuItems, chainId, getTradeUrlParams, isSolversEnabled, isGraffitiWallEnabled])
 
   if (isInjectedWidgetMode) return null
 
