@@ -70,7 +70,7 @@
     "remark-gfm": "4.0.1",
     "styled-components": "5.3.11",
     "swiper": "11.1.1",
-    "viem": "2.48.8",
+    "viem": "2.55.19",
     "wagmi": "3.6.9",
     "workbox-core": "6.6.1",
     "workbox-expiration": "6.6.1",

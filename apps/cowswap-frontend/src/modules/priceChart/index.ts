@@ -1,5 +1,6 @@
 export * from './api/fetchPriceHistory'
 export * from './api/fetchTokenSupply'
+export * from './hooks/useIsPriceChartAvailable'
 export * from './pure/PriceChartToggleButton'
 export * from './containers/PriceChart.container'
 export * from './pure/PriceChartSettings'

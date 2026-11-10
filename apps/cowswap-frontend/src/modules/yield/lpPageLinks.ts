@@ -13,6 +13,7 @@ const COW_AMM_CHAINS = {
   [SupportedChainId.LINEA]: '', // TODO: confirm
   [SupportedChainId.PLASMA]: '', // TODO: confirm
   [SupportedChainId.INK]: '', // TODO: confirm
+  [SupportedChainId.ROBINHOOD]: '',
   [SupportedChainId.SOLANA]: '',
 }
 
@@ -30,6 +31,7 @@ const UNI_CHAINS = {
   [SupportedChainId.LINEA]: '', // TODO: confirm
   [SupportedChainId.PLASMA]: '', // TODO: confirm
   [SupportedChainId.INK]: '',
+  [SupportedChainId.ROBINHOOD]: '',
   [SupportedChainId.SOLANA]: '', // doesn't support
 }
 
@@ -47,6 +49,7 @@ const SUSHI_CHAINS = {
   [SupportedChainId.LINEA]: '', // TODO: confirm. This one is actually supported.
   [SupportedChainId.PLASMA]: '', // TODO: confirm
   [SupportedChainId.INK]: '',
+  [SupportedChainId.ROBINHOOD]: '',
   [SupportedChainId.SOLANA]: '', // Doesnt' support
 }
 
@@ -64,6 +67,7 @@ const PANCAKE_CHAINS = {
   [SupportedChainId.LINEA]: '', // TODO: confirm. This one is actually supported.
   [SupportedChainId.PLASMA]: '', // TODO: confirm
   [SupportedChainId.INK]: '',
+  [SupportedChainId.ROBINHOOD]: '',
   [SupportedChainId.SOLANA]: '',
 }
 

@@ -1,12 +1,13 @@
 import { isSellOrder } from '@cowprotocol/common-utils'
-import { getQuoteAmountsAndCosts } from '@cowprotocol/cow-sdk'
+import { getQuoteAmountsAndCosts, type OrderParameters } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Price } from '@cowprotocol/currency'
 import { QuoteAmountsAndCosts } from '@cowprotocol/sdk-order-book'
+import { getSolanaQuoteAmountsAndCosts } from '@cowprotocol/sdk-trading-solana'
 
 import { applyConsumedHookGasReceive, hookGasConsumesQuotedPart } from './applyConsumedHookGasReceive'
-import { applySolanaQuoteCosts } from './applySolanaQuoteCosts'
 import { positiveIntegerAtom } from './positiveIntegerAtom'
 import { reportsFeeInSellToken } from './reportsFeeInSellToken'
+import { splitSolanaAccountRent } from './splitSolanaAccountRent'
 import { ReceiveAmountInfoParams } from './types'
 
 import { ReceiveAmountInfo } from '../types'
@@ -24,20 +25,15 @@ export function getReceiveAmountInfo(
   params: ReceiveAmountInfoParams,
   buyAmountOverride?: CurrencyAmount<Currency>,
 ): ReceiveAmountInfo {
-  const { inputCurrency, outputCurrency, slippagePercent, partnerFeeBps = 0, protocolFeeBps } = params
+  const { inputCurrency, outputCurrency, solanaQuoteResponse } = params
   const consumedByHookGas = hookGasConsumesQuotedPart(params.orderParams, params.quotedOrderParams)
   const orderParams = consumedByHookGas && params.quotedOrderParams ? params.quotedOrderParams : params.orderParams
   const currencies = { inputCurrency, outputCurrency: buyAmountOverride?.currency ?? outputCurrency }
   const isSell = isSellOrder(orderParams.kind)
 
-  const result = getQuoteAmountsAndCosts({
-    orderParams: {
-      ...orderParams,
-      buyAmount: buyAmountOverride ? buyAmountOverride.quotient.toString() : orderParams.buyAmount,
-    },
-    slippagePercentBps: Number(slippagePercent.numerator),
-    partnerFeeBps,
-    protocolFeeBps,
+  const result = getAmountsAndCosts(params, {
+    ...orderParams,
+    buyAmount: buyAmountOverride ? buyAmountOverride.quotient.toString() : orderParams.buyAmount,
   })
 
   const beforeNetworkCosts = mapSellBuyAmounts(result.beforeNetworkCosts, currencies)
@@ -45,10 +41,7 @@ export function getReceiveAmountInfo(
 
   const info: ReceiveAmountInfo = {
     isSell,
-    quotePrice: new Price<Currency, Currency>({
-      baseAmount: beforeNetworkCosts.sellAmount,
-      quoteAmount: afterNetworkCosts.buyAmount,
-    }),
+    quotePrice: getQuotePrice(beforeNetworkCosts, afterNetworkCosts),
     costs: {
       networkFee: calculateNetworkFee(result.costs.networkFee, currencies),
       partnerFee: mapFeeAmounts(isSell, result.costs.partnerFee, currencies),
@@ -68,7 +61,7 @@ export function getReceiveAmountInfo(
     return applyConsumedHookGasReceive(info, networkFeeInSellAtoms ?? beforeNetworkCosts.sellAmount.quotient)
   }
 
-  return applySolanaQuoteCosts(info, params.solanaQuoteCosts, reportsFeeInSellToken(params.orderParams))
+  return splitSolanaAccountRent(info, solanaQuoteResponse?.quote.costs)
 }
 
 function calculateNetworkFee(
@@ -85,6 +78,34 @@ function calculateNetworkFee(
       networkFee.amountInBuyCurrency.toString(),
     ),
   }
+}
+
+function getAmountsAndCosts(params: ReceiveAmountInfoParams, orderParams: OrderParameters): QuoteAmountsAndCosts {
+  const { slippagePercent, partnerFeeBps = 0, protocolFeeBps, solanaQuoteResponse } = params
+  const slippagePercentBps = Number(slippagePercent.numerator)
+
+  // The SDK restores the pre-cost amounts from `costs`, which a quote carrying `feeAmount` already did
+  if (solanaQuoteResponse && !reportsFeeInSellToken(orderParams)) {
+    return getSolanaQuoteAmountsAndCosts({
+      quoteResponse: { ...solanaQuoteResponse, quote: { ...solanaQuoteResponse.quote, ...orderParams } },
+      slippagePercentBps,
+      partnerFeeBps,
+    })
+  }
+
+  return getQuoteAmountsAndCosts({ orderParams, slippagePercentBps, partnerFeeBps, protocolFeeBps })
+}
+
+function getQuotePrice(
+  beforeNetworkCosts: ReceiveAmountInfo['beforeNetworkCosts'],
+  afterNetworkCosts: ReceiveAmountInfo['afterNetworkCosts'],
+): Price<Currency, Currency> {
+  // A malformed Solana buy quote whose costs exceed its sell amount floors this at zero
+  const baseAmount = beforeNetworkCosts.sellAmount.greaterThan(0)
+    ? beforeNetworkCosts.sellAmount
+    : afterNetworkCosts.sellAmount
+
+  return new Price<Currency, Currency>({ baseAmount, quoteAmount: afterNetworkCosts.buyAmount })
 }
 
 function mapFeeAmounts(

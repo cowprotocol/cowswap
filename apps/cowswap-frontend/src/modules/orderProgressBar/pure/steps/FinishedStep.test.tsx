@@ -241,6 +241,29 @@ describe('FinishedStep', () => {
     expect(screen.getByTestId('trade-token-pair')).toBeTruthy()
   })
 
+  it('keeps the token pair mounted while executed amounts are still zero', () => {
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={
+          {
+            ...order,
+            apiAdditionalInfo: {
+              executedBuyAmount: '0',
+              executedSellAmount: '0',
+            },
+          } as Order
+        }
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+      >
+        <div />
+      </FinishedStep>,
+    )
+
+    expect(screen.getByTestId('trade-token-pair')).toBeTruthy()
+  })
+
   it('omits solver expand and auction when there are no solvers', () => {
     renderFinished(
       <FinishedStep

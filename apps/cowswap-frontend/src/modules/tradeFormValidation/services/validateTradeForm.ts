@@ -2,7 +2,7 @@ import { getCurrencyAddress, getIsNativeToken, isFractionFalsy, isSellOrder } fr
 import { areAddressesEqual, isEvmChain } from '@cowprotocol/cow-sdk'
 
 import { getIsNativeSellUnsupported } from 'modules/trade'
-import { getIsFastQuote, isQuoteExpired } from 'modules/tradeQuote'
+import { getAreAllQuotesReceived, getIsFastQuote, isQuoteExpired } from 'modules/tradeQuote'
 
 import { TradeType } from 'common/modules/tradeNavigation'
 import { getAddressValidationStrategy } from 'common/utils/addressValidation'
@@ -70,6 +70,8 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   const { isLoading: isQuoteLoading, fetchParams } = tradeQuote
   const isFastQuote = getIsFastQuote(fetchParams)
+  const isLimitOrder = derivedTradeState.tradeType === TradeType.LIMIT_ORDER
+  const isQuoteRefreshing = !isLimitOrder && !getAreAllQuotesReceived(tradeQuote)
 
   const isXstockTradeBelowLimit = getIsXstockTradeBelowLimit(context)
   const isWalletNotConnected = !isSwapUnsupported && !account
@@ -196,7 +198,9 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
     // For Swap, the balance must cover the slippage-inclusive maximum sell amount, not just the raw input
     // amount, otherwise the order could be unfillable if the price moves against the user up to slippage.
-    const balanceCheckAmount = swapMaximumSellAmount ?? inputCurrencyAmount
+    // Wrap/unwrap is 1:1 and never quoted, so a `swapMaximumSellAmount` there can only come from the previous
+    // pair's quote (quotes are keyed by the sell token) and must not be used.
+    const balanceCheckAmount = (isWrapUnwrap ? null : swapMaximumSellAmount) ?? inputCurrencyAmount
 
     if (inputCurrencyBalance && balanceCheckAmount && inputCurrencyBalance.lessThan(balanceCheckAmount)) {
       validations.push(TradeFormValidation.BalanceInsufficient)
@@ -235,7 +239,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
       validations.push(TradeFormValidation.CurrencyNotSupported)
     }
 
-    if (isFastQuote || !tradeQuote.quote || (isBridging && tradeQuote.isLoading)) {
+    if (isFastQuote || !tradeQuote.quote || isQuoteRefreshing || (isBridging && tradeQuote.isLoading)) {
       validations.push(TradeFormValidation.QuoteLoading)
     }
 

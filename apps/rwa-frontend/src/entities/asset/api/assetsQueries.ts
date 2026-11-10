@@ -1,4 +1,4 @@
-import { keepPreviousData } from '@tanstack/query-core'
+import { keepPreviousData, type QueryKey } from '@tanstack/query-core'
 
 import { atomFamily } from 'jotai-family'
 import { type AtomWithQueryOptions, atomWithQuery } from 'jotai-tanstack-query'
@@ -8,11 +8,13 @@ import {
   getAssetsSearchUrl,
   getAssetsUrl,
   getAssetUrl,
+  getCandlesUrl,
   getChartUrl,
   getMarketOverviewUrl,
-  getNetworkStatsUrl,
   getNewsUrl,
   getQuotesUrl,
+  getStockUrl,
+  getTokenStatsUrl,
   getTokenListUrl,
 } from './assetsApi'
 
@@ -23,10 +25,13 @@ import type {
   RwaAssetsByTickers,
   RwaAssetsPage,
   RwaAssetsSearchResult,
+  RwaAssetStock,
+  RwaAssetTokenStats,
+  RwaCandleChart,
   RwaChart,
   RwaChartRange,
+  RwaMarketKind,
   RwaMarketOverview,
-  RwaNetworkStats,
   RwaQuoteSide,
   RwaTokenList,
 } from '../model/types'
@@ -36,6 +41,7 @@ import { RWA_QUERY_KEY_ROOT, rwaFetcher } from '@/shared/api'
 type RwaQueryOptions<T> = AtomWithQueryOptions<T, Error>
 
 const MARKET_REFRESH_INTERVAL_MS = 60_000
+const TOKEN_STATS_REFRESH_INTERVAL_MS = 300_000
 /** `/api/v1/assets` accepts up to 100 `tickers` and returns up to 100 items */
 const MAX_ASSETS_PAGE_TICKERS = 100
 /** Same as the `/api/v1/token-list` cache max-age */
@@ -43,22 +49,29 @@ const TOKEN_LIST_STALE_TIME_MS = 60 * 60 * 1000
 /** Same as the `/api/v1/news` cache max-age */
 const NEWS_STALE_TIME_MS = 15 * 60 * 1000
 
-export function assetChartQueryOptions(ticker: string, range: RwaChartRange): RwaQueryOptions<RwaChart> {
+export function assetCandlesQueryOptions(
+  ticker: string,
+  range: RwaChartRange,
+  market: RwaMarketKind,
+): RwaQueryOptions<RwaCandleChart> {
   return {
-    queryKey: [RWA_QUERY_KEY_ROOT, 'chart', ticker, range],
-    queryFn: () => rwaFetcher<RwaChart>(getChartUrl(ticker, range)),
-    placeholderData: keepPreviousData,
+    queryKey: [RWA_QUERY_KEY_ROOT, 'candles', ticker, range, market],
+    queryFn: () => rwaFetcher<RwaCandleChart>(getCandlesUrl(ticker, range, market)),
+    placeholderData: keepPreviousDataOfMarket(market),
     refetchOnWindowFocus: false,
   }
 }
 
-/** `/api/v1/network-stats` caches stats for the same interval */
-export function assetNetworkStatsQueryOptions(ticker: string, chainId: number): RwaQueryOptions<RwaNetworkStats> {
+export function assetChartQueryOptions(
+  ticker: string,
+  range: RwaChartRange,
+  market: RwaMarketKind,
+): RwaQueryOptions<RwaChart> {
   return {
-    queryKey: [RWA_QUERY_KEY_ROOT, 'network-stats', ticker, chainId],
-    queryFn: () => rwaFetcher<RwaNetworkStats>(getNetworkStatsUrl(ticker, chainId)),
-    placeholderData: keepPreviousData,
-    refetchInterval: MARKET_REFRESH_INTERVAL_MS,
+    queryKey: [RWA_QUERY_KEY_ROOT, 'chart', ticker, range, market],
+    queryFn: () => rwaFetcher<RwaChart>(getChartUrl(ticker, range, market)),
+    placeholderData: keepPreviousDataOfMarket(market),
+    refetchOnWindowFocus: false,
   }
 }
 
@@ -119,6 +132,25 @@ export function assetsSearchQueryOptions(query: string, limit?: number): RwaQuer
   }
 }
 
+/** `/api/v1/stock` caches the stock market for the same interval */
+export function assetStockQueryOptions(ticker: string): RwaQueryOptions<RwaAssetStock> {
+  return {
+    queryKey: [RWA_QUERY_KEY_ROOT, 'stock', ticker],
+    queryFn: () => rwaFetcher<RwaAssetStock>(getStockUrl(ticker)),
+    refetchInterval: MARKET_REFRESH_INTERVAL_MS,
+  }
+}
+
+/** Polled at the cache period of the onchain data, which every network adds a call to */
+export function assetTokenStatsQueryOptions(ticker: string): RwaQueryOptions<RwaAssetTokenStats> {
+  return {
+    queryKey: [RWA_QUERY_KEY_ROOT, 'token-stats', ticker],
+    queryFn: () => rwaFetcher<RwaAssetTokenStats>(getTokenStatsUrl(ticker)),
+    placeholderData: keepPreviousData,
+    refetchInterval: TOKEN_STATS_REFRESH_INTERVAL_MS,
+  }
+}
+
 /** Requests `tickers` in batches that fit a single `/api/v1/assets` page. Degraded when any page is */
 export async function fetchAssetsByTickers(tickers: string[]): Promise<RwaAssetsByTickers> {
   const batches: string[][] = []
@@ -162,4 +194,15 @@ export const assetNewsQueryAtomFamily = atomFamily((ticker: string) =>
 
 export const assetQueryAtomFamily = atomFamily((ticker: string) => atomWithQuery(() => assetQueryOptions(ticker)))
 
+export const assetStockQueryAtomFamily = atomFamily((ticker: string) =>
+  atomWithQuery(() => assetStockQueryOptions(ticker)),
+)
+
 export const tokenListQueryAtom = atomWithQuery(() => tokenListQueryOptions())
+
+/** Another range of the same market stands in while loading, never the other market's series */
+function keepPreviousDataOfMarket<T>(
+  market: RwaMarketKind,
+): (previousData: T | undefined, previousQuery: { queryKey: QueryKey } | undefined) => T | undefined {
+  return (previousData, previousQuery) => (previousQuery?.queryKey.at(-1) === market ? previousData : undefined)
+}

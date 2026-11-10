@@ -34,6 +34,7 @@ const quote = {
 const VALID_TO = 1_700_000_600
 
 const SIGNED_APP_DATA_BYTES = new Uint8Array(32).fill(0xcd)
+const SIGNED_FULL_APP_DATA = '{"appCode":"CoW Swap","metadata":{}}'
 const SIGNED_SELL_AMOUNT = 1_234_567n
 const SIGNED_BUY_AMOUNT = 7_654_321n
 
@@ -42,6 +43,7 @@ const builtOrder = {
   orderId: '0xdeadbeef',
   signingScheme: SigningScheme.PRESIGN,
   intent: { appData: SIGNED_APP_DATA_BYTES, sellAmount: SIGNED_SELL_AMOUNT, buyAmount: SIGNED_BUY_AMOUNT },
+  appDataInfo: { doc: APP_DATA_DOC, fullAppData: SIGNED_FULL_APP_DATA, appDataKeccak256: '0xcd' },
 } as unknown as SolanaSwapOrder
 
 describe('planCreateOrderStep', () => {
@@ -142,8 +144,6 @@ describe('planCreateOrderStep', () => {
     )
   })
 
-  // buildSolanaOrder() in solanaFlow/index.ts needs the bytes actually signed to record on the local
-  // order — the quote's own OrderParameters.appData is a meaningless stub for Solana (see getSolanaQuote.ts).
   it('returns the actually-signed appData as a 0x-prefixed hex string', async () => {
     const { appData } = await planCreateOrderStep({
       ...quote,
@@ -154,6 +154,32 @@ describe('planCreateOrderStep', () => {
     })
 
     expect(appData).toBe(bytesToHex(SIGNED_APP_DATA_BYTES))
+  })
+
+  it("returns the SDK's merged doc, not the app's", async () => {
+    const { fullAppData } = await planCreateOrderStep({
+      ...quote,
+      appDataDoc: APP_DATA_DOC,
+      sellSymbol: 'SOL',
+      buySymbol: 'USDC',
+      validTo: VALID_TO,
+    })
+
+    expect(fullAppData).toBe(SIGNED_FULL_APP_DATA)
+  })
+
+  it('fails when the SDK returns no signed doc', async () => {
+    mockBuildSolanaSwapOrder.mockResolvedValue({ ...builtOrder, appDataInfo: undefined })
+
+    await expect(
+      planCreateOrderStep({
+        ...quote,
+        appDataDoc: APP_DATA_DOC,
+        sellSymbol: 'SOL',
+        buySymbol: 'USDC',
+        validTo: VALID_TO,
+      }),
+    ).rejects.toThrow('appDataInfo')
   })
 
   // buildSolanaOrder() needs the amounts actually encoded into the instruction, not the quote's own —

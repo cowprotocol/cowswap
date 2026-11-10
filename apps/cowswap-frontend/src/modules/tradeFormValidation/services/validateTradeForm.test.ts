@@ -1,5 +1,5 @@
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
-import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { OrderKind, PriceQuality, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { TradeQuoteState } from 'modules/tradeQuote'
@@ -604,6 +604,40 @@ describe('validateTradeForm - balance vs slippage', () => {
     )
   })
 
+  // Wrap/unwrap is never quoted, but the previous pair's quote stays in the store (quotes are keyed by the
+  // sell token), so `swapMaximumSellAmount` can still carry the sell amount of that stale quote.
+  // balance (120) covers the wrap amount (100) but not the stale swap quote's maximum sell amount (150)
+  test('does not show BalanceInsufficient in wrap/unwrap mode when only a stale swapMaximumSellAmount exceeds the balance', () => {
+    const context = {
+      ...baseContext,
+      isWrapUnwrap: true,
+      swapMaximumSellAmount: mockCurrencyAmount('150'),
+    } as unknown as TradeFormValidationContext
+
+    const result = validateTradeForm(context) || []
+    expect(result).toContain(TradeFormValidation.WrapUnwrapFlow)
+    expect(result).not.toContain(TradeFormValidation.BalanceInsufficient)
+  })
+
+  // balance (120) covers the stale swap quote's maximum sell amount (50) but not the wrap amount (130)
+  test('shows BalanceInsufficient in wrap/unwrap mode when the input amount exceeds the balance, regardless of a stale swapMaximumSellAmount', () => {
+    const context = {
+      ...baseContext,
+      isWrapUnwrap: true,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        inputCurrencyAmount: mockCurrencyAmount('130'),
+      },
+      swapMaximumSellAmount: mockCurrencyAmount('50'),
+    } as unknown as TradeFormValidationContext
+
+    const result = validateTradeForm(context) || []
+    expect(result).toContain(TradeFormValidation.BalanceInsufficient)
+    expect(result.indexOf(TradeFormValidation.BalanceInsufficient)).toBeLessThan(
+      result.indexOf(TradeFormValidation.WrapUnwrapFlow),
+    )
+  })
+
   test('ranks BalanceInsufficient ahead of SolanaInsufficientNativeBalance when both apply', () => {
     const context = {
       ...baseContext,
@@ -792,6 +826,39 @@ describe('validateTradeForm - Solana swap recipient', () => {
       recipientEnsAddress: EVM_RECIPIENT,
     })
     expect(result).toContain(TradeFormValidation.RecipientInvalid)
+  })
+
+  describe('quote loading', () => {
+    function withPendingQuotes(
+      pendingQuotes: TradeQuoteState['pendingQuotes'],
+      tradeType = TradeType.SWAP,
+    ): TradeFormValidationContext {
+      return {
+        ...baseContext,
+        derivedTradeState: { ...baseContext.derivedTradeState, tradeType },
+        tradeQuote: { isLoading: false, quote: {}, fetchParams: { priceQuality: 'verified' }, pendingQuotes },
+      } as unknown as TradeFormValidationContext
+    }
+
+    const FAST_PENDING = {
+      fetchStartTimestamp: 1,
+      hasParamsChanged: false,
+      requests: [{ hasParamsChanged: false, priceQuality: PriceQuality.FAST, fetchStartTimestamp: 1 }],
+    }
+
+    test('adds QuoteLoading until every quote of the fetch round has arrived', () => {
+      expect(validateTradeForm(withPendingQuotes(FAST_PENDING))).toContain(TradeFormValidation.QuoteLoading)
+    })
+
+    test('does not add QuoteLoading once every quote has arrived', () => {
+      expect(validateTradeForm(withPendingQuotes(null)) || []).not.toContain(TradeFormValidation.QuoteLoading)
+    })
+
+    test('does not add QuoteLoading for a limit order while its quote refreshes', () => {
+      expect(validateTradeForm(withPendingQuotes(FAST_PENDING, TradeType.LIMIT_ORDER)) || []).not.toContain(
+        TradeFormValidation.QuoteLoading,
+      )
+    })
   })
 })
 

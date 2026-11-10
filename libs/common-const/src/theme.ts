@@ -1,5 +1,11 @@
 import type { FeatureFlags } from './featureFlags'
 
+/**
+ * localStorage key of the persisted CoW Swap `user` state (the default `redux-localstorage-simple` key of `user`).
+ * Its `userDarkMode` (`null` follows the system) is the theme of CoW Swap and of the RWA app on `swap.cow.fi/rwa`.
+ */
+export const USER_STATE_STORAGE_KEY = 'redux_localstorage_simple_user'
+
 export enum CustomTheme {
   CHRISTMAS = 'CHRISTMAS',
   HALLOWEEN = 'HALLOWEEN',

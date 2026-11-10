@@ -26,11 +26,13 @@ export interface PlannedCreateOrderStep {
   step: SolanaFlowStep
   orderId: string
   signingScheme: SolanaSwapOrder['signingScheme']
-  /** The intent's opaque 32 bytes as actually signed, hex-encoded — not the quote's own `appData` (a
-   * meaningless stub for Solana, see `getSolanaQuote.ts`'s `ZERO_APP_DATA`). The local order needs this,
-   * not the quote's, to record what's genuinely on-chain — mirroring why `buildSolanaOrder()` already
-   * overrides `sellAmount`/`buyAmount`/`receiver`/`validTo` from the signed intent instead of the quote. */
+  /** The intent's opaque 32 bytes as actually signed, hex-encoded. The quote's own `appData` is the
+   * digest of a different doc, so the local order records this one, as it already does for
+   * `sellAmount`/`buyAmount`/`receiver`/`validTo`. */
   appData: string
+  /** The doc `appData` is the digest of. Swap only: the SDK merges `appDataDoc` onto the quote's doc, so
+   * it can carry keys `appDataDoc` lacks (the SDK's default UTM). A limit order signs the app's own hash. */
+  fullAppData?: string
   sellAmount: bigint
   buyAmount: bigint
   /** Who the transaction carrying the step must name as fee payer. */
@@ -65,11 +67,15 @@ export async function planCreateOrderStep({
   sponsor,
   appDataDoc,
 }: PlanCreateOrderStepParams): Promise<PlannedCreateOrderStep> {
-  const { instruction, orderId, signingScheme, intent, feePayer } = await buildSolanaSwapOrder(
+  const { instruction, orderId, signingScheme, intent, feePayer, appDataInfo } = await buildSolanaSwapOrder(
     { quoteResults, solanaQuote },
     { quoteRequest: { validTo }, appData: appDataDoc },
     { sponsor },
   )
+
+  if (!appDataInfo) {
+    throw new Error('buildSolanaSwapOrder returned no appDataInfo for an appData override')
+  }
 
   return {
     step: {
@@ -82,6 +88,7 @@ export async function planCreateOrderStep({
     signingScheme,
     feePayer,
     appData: bytesToHex(intent.appData),
+    fullAppData: appDataInfo.fullAppData,
     sellAmount: intent.sellAmount,
     buyAmount: intent.buyAmount,
   }
