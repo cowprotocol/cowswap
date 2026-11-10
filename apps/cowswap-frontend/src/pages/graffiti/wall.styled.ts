@@ -1,3 +1,5 @@
+import { WALL_PAINT_MIX_BLEND_MODE } from '@cowprotocol/common-const'
+
 import styled, { css, keyframes } from 'styled-components/macro'
 
 import { NARROW_BREAKPOINT_PX } from './wall.constants'
@@ -40,7 +42,6 @@ export const Page = styled.div<{ $auto?: boolean }>`
   width: 100%;
   height: ${({ $auto }) => ($auto ? 'auto' : 'calc(100vh - 170px)')};
   min-height: 480px;
-  z-index: 2;
   display: flex;
   flex-direction: column;
   user-select: none;
@@ -49,7 +50,12 @@ export const Page = styled.div<{ $auto?: boolean }>`
   overflow: hidden;
   color: ${wallColors.text};
   font-family: ${monospace};
-  background: radial-gradient(1200px 700px at 70% -10%, #131324 0%, #0a0a12 55%, #060609 100%);
+  /*
+   * Transparent so the CoW Swap page background shows through the wall, and
+   * without a z-index: a stacking context here would isolate the paint layer's
+   * blend mode from that background.
+   */
+  background: transparent;
 `
 
 export const Header = styled.header`
@@ -136,6 +142,17 @@ export const Canvas = styled.canvas<{ $cursor: string }>`
   -webkit-user-select: none;
   -webkit-touch-callout: none;
   cursor: ${({ $cursor }) => $cursor};
+`
+
+/** Wall pixels only, under `Canvas`, so it can blend with the page background. */
+export const PaintCanvas = styled.canvas`
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+  mix-blend-mode: ${WALL_PAINT_MIX_BLEND_MODE};
 `
 
 export const Sidebar = styled.aside`

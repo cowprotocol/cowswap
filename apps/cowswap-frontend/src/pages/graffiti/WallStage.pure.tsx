@@ -21,7 +21,7 @@ export interface WallStageProps {
 /** The canvas and everything laid over it. */
 export function WallStage({ wall }: WallStageProps): ReactNode {
   const { gate, layout, sync, brush, session, paint, viewport, actions, pointer, balance } = wall
-  const { wrap, canvas, overlay } = wall.dom
+  const { wrap, canvas, paintCanvas, overlay } = wall.dom
   const inSession = session.session !== 'start' && !viewport.isFullscreen
   const spent = wall.draft.draft.size + pointer.liveCost
   const balanceLeft = balance === null ? null : Math.max(0, Math.floor(balance - spent))
@@ -47,6 +47,7 @@ export function WallStage({ wall }: WallStageProps): ReactNode {
       {!viewport.isFullscreen && !layout.toolsVisible && (
         <ShowToolsButton onClick={() => layout.setToolsVisible(true)} />
       )}
+      <styledEl.PaintCanvas ref={paintCanvas} />
       <styledEl.Canvas
         ref={canvas}
         $cursor={CURSOR[brush.tool]}

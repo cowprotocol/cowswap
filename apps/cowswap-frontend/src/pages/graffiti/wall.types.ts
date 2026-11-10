@@ -41,7 +41,10 @@ export interface WallRefs {
   patternRef: MutableRefObject<CanvasPattern | null>
 
   // DOM.
+  /** Top layer: grid, plot frame and the hatch backdrop. Also the pointer target. */
   canvasElRef: MutableRefObject<HTMLCanvasElement | null>
+  /** Bottom layer: wall pixels only, so it can blend with the page background. */
+  paintCanvasElRef: MutableRefObject<HTMLCanvasElement | null>
   wrapElRef: MutableRefObject<HTMLDivElement | null>
   plotOverlayRef: MutableRefObject<HTMLDivElement | null>
 
