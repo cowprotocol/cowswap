@@ -35,7 +35,7 @@ One process, one SQLite file, one hot wallet. That's the whole system.
 | `MAX_BOX_WIDTH` | 256 | Widest a single commit's bounding box may be |
 | `MAX_BOX_HEIGHT` | 128 | Tallest a single commit's bounding box may be |
 | `MAX_CELLS_PER_DRAW` | 20000 | Hard cap on cells per commit |
-| `TX_MAX_AGE_SEC` | 90 | A commit tx older than this is rejected (replay window) |
+| `TX_MAX_AGE_SEC` | 3600 | A commit tx (and its memo) older than this is rejected. Bounds how long an unconfirmed burn can still be recovered |
 | `GRAFFITI_DB` | `data/graffiti.db` | SQLite path (claims + pixels + seq) |
 | `STATIC_DIR` | — | Serve a built frontend same-origin (recommended) |
 | `DEV_INSECURE` | 0 | **Never in production**: skips burn verification and fakes claims |
