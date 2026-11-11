@@ -7,6 +7,7 @@ export interface HeadlineLine {
 
 const script = (text: string): HeadlineLine => ({ text, script: true })
 const caps = (text: string): HeadlineLine => ({ text })
+const keepHyphenated = (text: string): string => text.split('-').join('\u2060-\u2060')
 
 export const SOLANA_LINKS = {
   getInTouch: 'mailto:hello@cow.fi?subject=Building%20with%20CoW%20Protocol%20on%20Solana',
@@ -22,8 +23,7 @@ const LAUNCH_HEADLINES = {
   why: [script('Four Reasons'), caps('more is more')],
   howItWorks: [caps('From “I want” to “done”'), script('in Three Simple Steps')],
   trusted: [caps('References'), script('Available')],
-  // Word joiners stop the line breaking at the hyphen
-  developers: [caps('More than'), script('A One⁠-⁠Swap Stand')],
+  developers: [caps('More than'), script(keepHyphenated('A One-Swap Stand'))],
   doors: [caps('Looking for the easy way in?'), script('Pick your door.')],
   partners: [script('Better trades.'), caps('better business.')],
   faq: [caps('FAQs')],
@@ -167,7 +167,7 @@ export const DEVELOPERS = {
   doors: [
     {
       title: 'SDK',
-      description: 'Quote, sign, and submit orders with the same tools you’d use on EVM.',
+      description: keepHyphenated('Quote, sign, and submit orders with an easy-to-use SDK.'),
       linkText: 'Read the SDK docs',
       linkHref: 'https://docs.cow.fi/cow-protocol/reference/sdks/cow-sdk',
       action: 'sol_read_the_sdk_docs',
@@ -191,10 +191,12 @@ export const DEVELOPERS = {
     },
   ],
   learn: {
-    before: 'And when you get stuck: real documentation, plus a live-coding environment at ',
+    before: keepHyphenated(
+      'And when you get stuck: real documentation, plus an in-browser live-coding environment at ',
+    ),
     linkText: 'learn.cow.fi',
     href: 'https://learn.cow.fi',
-    after: ' that runs in your browser. No setup, no stale code samples.',
+    after: '.',
   },
   buildInTheOpen: {
     title: 'Build in the open',
@@ -235,7 +237,7 @@ export const SOLANA_FAQ = [
   {
     question: 'What does it cost to integrate?',
     answer:
-      'There’s no integration fee. The Solana launch has been proposed at a 0 bps volume fee for the first 12 months, and partners can earn through the Partner Fee program.',
+      'There’s no integration fee. Partners can earn revenue from their integrations thanks to CoW Protocol’s partner fee policies.',
   },
   {
     question: 'Is it audited?',

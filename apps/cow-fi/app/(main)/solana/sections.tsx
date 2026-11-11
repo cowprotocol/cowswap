@@ -39,6 +39,7 @@ import {
   PhotoFrame,
   ReasonCard,
   ScriptLine,
+  Section,
   SectionHeader,
   StatItem,
   StatsBackdrop,
@@ -93,7 +94,7 @@ const MARKS = {
 
 export function DevelopersSection(): ReactNode {
   return (
-    <section>
+    <Section>
       <SectionHeader $padding="120px 0 80px">
         <CowMark {...MARKS.horns} aria-hidden="true" />
         <Headline lines={ACTIVE_HEADLINES.developers} />
@@ -137,7 +138,7 @@ export function DevelopersSection(): ReactNode {
           </Cta>
         </ButtonRow>
       </CenteredBlock>
-    </section>
+    </Section>
   )
 }
 
@@ -151,7 +152,7 @@ export function DisclaimerSection(): ReactNode {
 
 export function FaqSection(): ReactNode {
   return (
-    <section>
+    <Section>
       <SectionHeader $padding="120px 0 80px">
         <Headline lines={ACTIVE_HEADLINES.faq} />
       </SectionHeader>
@@ -166,36 +167,38 @@ export function FaqSection(): ReactNode {
           </FaqItem>
         ))}
       </FaqList>
-    </section>
+    </Section>
   )
 }
 
 export function FinalCtaSection(): ReactNode {
   return (
-    <CenteredBlock as="section" $padding="120px 0" $gap={60}>
-      <SectionHeader>
-        <CowMark {...MARKS.heartEyes} aria-hidden="true" />
-        <Headline lines={ACTIVE_HEADLINES.finalCta} />
+    <Section>
+      <CenteredBlock $padding="120px 0" $gap={60}>
+        <SectionHeader>
+          <CowMark {...MARKS.heartEyes} aria-hidden="true" />
+          <Headline lines={ACTIVE_HEADLINES.finalCta} />
+        </SectionHeader>
+        <Banner>
+          <Image
+            src={FINAL_CTA.image.src}
+            alt={FINAL_CTA.image.alt}
+            width={2944}
+            height={1234}
+            sizes="(max-width: 960px) 100vw, 1520px"
+          />
+        </Banner>
         <Lead>{FINAL_CTA.body}</Lead>
-      </SectionHeader>
-      <Banner>
-        <Image
-          src={FINAL_CTA.image.src}
-          alt={FINAL_CTA.image.alt}
-          width={2944}
-          height={1234}
-          sizes="(max-width: 1760px) 100vw, 1640px"
-        />
-      </Banner>
-      <ButtonRow $center>
-        <Cta href={SOLANA_LINKS.docs} action="sol_integrate_cow_protocol" label="final_cta" colors="solid">
-          Integrate CoW Protocol
-        </Cta>
-        <Cta href={SOLANA_LINKS.getInTouch} action="sol_talk_to_the_team" label="final_cta" colors="ghost">
-          Talk to the team
-        </Cta>
-      </ButtonRow>
-    </CenteredBlock>
+        <ButtonRow $center>
+          <Cta href={SOLANA_LINKS.docs} action="sol_integrate_cow_protocol" label="final_cta" colors="solid">
+            Integrate CoW Protocol
+          </Cta>
+          <Cta href={SOLANA_LINKS.getInTouch} action="sol_talk_to_the_team" label="final_cta" colors="ghost">
+            Talk to the team
+          </Cta>
+        </ButtonRow>
+      </CenteredBlock>
+    </Section>
   )
 }
 
@@ -230,7 +233,7 @@ export function HeroSection(): ReactNode {
 
 export function HowItWorksSection(): ReactNode {
   return (
-    <section>
+    <Section>
       <SectionHeader $padding="120px 0 80px">
         <CowMark {...MARKS.kiss} aria-hidden="true" />
         <Headline lines={ACTIVE_HEADLINES.howItWorks} />
@@ -263,7 +266,7 @@ export function HowItWorksSection(): ReactNode {
           {HOW_IT_WORKS.closing.lines[1]}
         </Lead>
       </CenteredBlock>
-    </section>
+    </Section>
   )
 }
 

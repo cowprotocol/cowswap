@@ -37,7 +37,6 @@ const SIZE_LEAD_STAT = fluid(40, 64)
 const SIZE_STAT = fluid(44, 60)
 const SIZE_CARD_TITLE = fluid(28, 48)
 const SIZE_CARD_TITLE_SMALL = fluid(26, 40)
-const SIZE_FAQ_QUESTION = fluid(22, 40)
 const SIZE_LEAD = fluid(18, 28)
 const SIZE_BODY = fluid(16, 24)
 const SIZE_BUTTON = fluid(18, 27)
@@ -54,6 +53,18 @@ const TONES = {
 }
 
 type CardTone = keyof typeof TONES
+
+const PANEL_PADDING_X = 60
+
+const alignToPanelContent = css`
+  padding-left: ${PANEL_PADDING_X}px;
+  padding-right: ${PANEL_PADDING_X}px;
+
+  ${Media.upToMedium()} {
+    padding-left: 0;
+    padding-right: 0;
+  }
+`
 
 const bodyText = css`
   margin: 0;
@@ -138,6 +149,10 @@ export const SolanaPageWrapper = styled.div`
     outline: 3px solid var(--ring, currentColor);
     outline-offset: 3px;
   }
+`
+
+export const Section = styled.section`
+  ${alignToPanelContent}
 `
 
 export const HeadlineRoot = styled.h2<{ $gap: number; $align: 'left' | 'center' }>`
@@ -231,7 +246,7 @@ export const HeroGrid = styled.div`
   grid-template-columns: minmax(0, 788fr) minmax(0, 600fr);
   gap: 92px;
   align-items: center;
-  padding: 46px 0 94px;
+  padding: 46px ${PANEL_PADDING_X}px 94px;
 
   ${Media.upToLarge()} {
     gap: 48px;
@@ -349,7 +364,7 @@ export const StatsBackdrop = styled.div`
 
 export const DarkPanel = styled.section<{ $marginTop?: number; $marginBottom?: number; $paddingBottom?: number }>`
   margin: ${({ $marginTop }) => $marginTop ?? 0}px 0 ${({ $marginBottom }) => $marginBottom ?? 0}px;
-  padding: 90px 60px ${({ $paddingBottom }) => $paddingBottom ?? 80}px;
+  padding: 90px ${PANEL_PADDING_X}px ${({ $paddingBottom }) => $paddingBottom ?? 80}px;
   border-radius: 40px 40px 60px 60px;
   background: ${INK};
   color: ${PAPER};
@@ -729,13 +744,13 @@ export const FaqItem = styled.details`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 48px;
-    padding: 16px 16px 16px 32px;
+    gap: 32px;
+    padding: 4px 4px 4px 28px;
     border-radius: 32px;
     font-family: ${FONT_SERIF};
-    font-size: ${SIZE_FAQ_QUESTION};
+    font-size: 26px;
     font-weight: ${Font.weight.medium};
-    line-height: 1.1;
+    line-height: 1.2;
     cursor: pointer;
     list-style: none;
 
@@ -746,7 +761,8 @@ export const FaqItem = styled.details`
 
     ${Media.upToMedium()} {
       gap: 16px;
-      padding: 12px 12px 12px 24px;
+      padding: 14px 4px 14px 20px;
+      font-size: 18px;
     }
   }
 
@@ -756,12 +772,15 @@ export const FaqItem = styled.details`
 
   p {
     ${bodyText}
-    max-width: 1084px;
-    padding: 8px 32px 32px;
+    max-width: 960px;
+    padding: 8px 28px 28px;
+    font-size: 24px;
+    line-height: 1.8;
     text-transform: none;
 
     ${Media.upToMedium()} {
-      padding: 4px 24px 24px;
+      padding: 4px 20px 20px;
+      font-size: 18px;
     }
   }
 `
@@ -774,21 +793,14 @@ export const FaqIcon = styled.span`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 60px;
-    height: 60px;
+    width: 56px;
+    height: 56px;
     border-radius: 20px;
     font-family: ${FONT_MONO};
-    font-size: 40px;
+    font-size: 32px;
     font-weight: ${Font.weight.semibold};
     line-height: 1;
     transition: background 0.2s ease-in-out;
-
-    ${Media.upToMedium()} {
-      width: 44px;
-      height: 44px;
-      border-radius: 16px;
-      font-size: 28px;
-    }
   }
 
   details[open] &::before {
