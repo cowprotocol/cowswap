@@ -1,6 +1,6 @@
 {
-  "version": "0.1.20",
-  "lastModificationTime": "2026-11-11T11:06:11.217Z",
+  "version": "0.1.22",
+  "lastModificationTime": "2026-11-11T11:28:22.905Z",
   "allowedTradingTimes": {
     "0": {
       "title": "US market open",
@@ -303,7 +303,18 @@
     "333": "Financials · Insurance Brokers",
     "334": "Consumer Discretionary · Specialized Consumer Services",
     "335": "ETF · US Long-Term Treasury Bonds",
-    "336": "ETF · US Energy Equity"
+    "336": "ETF · US Energy Equity",
+    "337": "ETF · US Mid Cap",
+    "338": "ETF · Global Real Estate",
+    "339": "ETF · Global Sukuk Bonds",
+    "340": "ETF · Taiwan Equity",
+    "341": "ETF · Steel",
+    "342": "ETF · Water Resources",
+    "343": "ETF · Multi-Asset Allocation",
+    "344": "ETF · Global Government Bonds",
+    "345": "ETF · Timber & Forestry",
+    "346": "ETF · Leveraged Inverse Long-Term Treasuries",
+    "347": "ETF · High Yield Municipal Bonds"
   },
   "assets": [
     {
@@ -1746,6 +1757,10 @@
       "type": "index",
       "priority": 8,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An exchange-traded fund that seeks to track the performance of the S&P 500 Index, which covers a broad group of large publicly traded US companies. It is structured as a unit investment trust and holds the index's constituent stocks.",
+        "sector": 101
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -2980,6 +2995,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An exchange-traded fund that seeks to track the investment results of the S&P 500 Index, which measures the performance of large-capitalization US equities. It holds a broad basket of the index's constituent stocks and is managed by BlackRock's iShares business.",
+        "sector": 101
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -4693,6 +4712,11 @@
       "newsFeed": {
         "source": "Microsoft Source",
         "url": "https://news.microsoft.com/source/topics/company-news/feed/"
+      },
+      "profile": {
+        "description": "Microsoft is a technology company that develops operating systems, productivity software, and cloud computing services. It also offers PCs, gaming consoles and content, business and developer tools, and online services such as search, email, and professional networking.",
+        "sector": 316,
+        "website": "https://www.microsoft.com"
       },
       "tokens": [
         {
@@ -7874,6 +7898,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "CURRENC Group is a financial technology company that provides cross-border payment and remittance services, along with digital financial solutions, through licensed operations in Asia and other regions. It serves consumers and businesses with money transfer and currency exchange products.",
+        "sector": 137
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -7963,6 +7991,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An exchange-traded fund that seeks to track the investment results of an index of large-capitalization US companies exhibiting growth characteristics, drawn from the Russell 1000 universe. It holds a diversified basket of growth-oriented US stocks, with a heavy tilt toward technology and other fast-growing businesses.",
+        "sector": 102
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -12305,6 +12337,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An exchange-traded fund that seeks to track the investment results of an index of mid-capitalization US companies, offering diversified exposure to the middle segment of the US stock market. It holds the stocks of the index in similar proportions.",
+        "sector": 337
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -16929,6 +16965,11 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Abbott is a global health care company that develops and sells medical devices, diagnostic tests, nutritional products and branded pharmaceuticals outside the United States. Its well-known products include infant formula, adult nutrition drinks, glucose monitoring systems and point-of-care testing tools.",
+        "sector": 141,
+        "website": "https://abbott.com"
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -21793,6 +21834,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "ProShares Ultra CRC is a leveraged exchange-traded fund that seeks daily investment results corresponding to a multiple of the daily performance of Circle Internet Group common stock. It uses derivatives to amplify single-day returns and is designed for short-term trading rather than long-term holding.",
+        "sector": 71
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -21855,6 +21900,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "SharonAI provides GPU-based cloud computing and AI infrastructure services, offering high-performance compute capacity and data center resources to customers running artificial intelligence and machine learning workloads.",
+        "sector": 166
+      },
       "tokens": [
         {
           "chainId": 56,
@@ -21911,6 +21960,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An exchange-traded fund that seeks to track the performance of the S&P 500 Index by holding the stocks of large US companies in approximately the same proportions as the index. It is managed by Vanguard and provides broad exposure to the large-cap segment of the US equity market.",
+        "sector": 101
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -22649,6 +22702,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "The fund holds the stocks of the Nasdaq-100 Index and writes call options on that index to generate income, which it distributes to shareholders on a regular basis. Selling the calls limits participation in large index gains in exchange for option premiums.",
+        "sector": 278
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -23539,6 +23596,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "The fund holds the stocks in the S&P 500 index and writes call options on the index to generate income. It aims to provide regular distributions, giving up some potential price gains in exchange for the option premiums collected.",
+        "sector": 278
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -23982,6 +24043,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "TON Strategy Company is a US-listed company that holds Toncoin, the native token of the TON blockchain, as a treasury asset. It is the renamed successor to the former Verb Technology, whose software business was wound down in favor of this strategy.",
+        "sector": 128
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -25064,6 +25129,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "This exchange-traded fund seeks to deliver a multiple of the inverse of the daily performance of SK Hynix, a South Korean memory semiconductor maker. It uses swaps and other derivatives to pursue its objective and is designed for short-term trading rather than long-term holding.",
+        "sector": 69
+      },
       "tokens": [
         {
           "chainId": 56,
@@ -25138,6 +25207,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "This exchange-traded fund seeks to deliver twice the daily performance of SK Hynix, the South Korean memory chip maker, using swaps and other derivative instruments. It resets its leverage each day, so results over longer periods can differ substantially from twice the stock's return.",
+        "sector": 71
+      },
       "tokens": [
         {
           "chainId": 56,
@@ -27366,6 +27439,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An exchange-traded fund that seeks to track the performance of the S&P 500 Index, a benchmark of large-cap US companies. It holds the index's constituent stocks to give investors broad exposure to the US large-cap equity market.",
+        "sector": 101
+      },
       "tokens": [
         {
           "chainId": 8453,
@@ -27811,6 +27888,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "This exchange-traded fund tracks an index of large US companies drawn from the S&P 500 that pass screens for compliance with Islamic investment principles. The screens exclude businesses involved in prohibited activities and companies with excessive debt or interest-based income.",
+        "sector": 101
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -28683,6 +28764,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Webull operates a digital investing platform and mobile app that lets retail customers trade stocks, options, ETFs and other securities, with market data, research tools and account services. It also offers its brokerage technology and services to partner institutions in multiple markets.",
+        "sector": 132
+      },
       "tokens": [
         {
           "chainId": 4663,
@@ -28948,6 +29033,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "The fund is a grantor trust that holds physical silver bullion in vaulted storage and issues shares representing an interest in that metal. Its shares are designed to track the price of silver, less the trust's expenses.",
+        "sector": 49
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -29177,6 +29266,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An exchange-traded fund that seeks to track the performance of an index of large non-financial companies listed on the Nasdaq stock exchange, with a heavy weighting toward technology and growth-oriented businesses. It is a lower-cost share class designed for long-term buy-and-hold investors.",
+        "sector": 102
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -29441,6 +29534,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An exchange-traded fund that seeks to track the investment results of an index of small-capitalization US companies selected for size, liquidity and financial viability. It holds a broad basket of small-cap US stocks across many sectors.",
+        "sector": 103
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -30901,6 +30998,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "FGI Industries designs, sources and supplies kitchen and bath products, including sanitaryware, bath furniture, shower systems and cabinetry. It sells mainly to home improvement retailers, wholesalers and e-commerce channels in North America and other international markets.",
+        "sector": 154
+      },
       "tokens": [
         {
           "chainId": 8453,
@@ -31260,6 +31361,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An exchange-traded fund that seeks to track an index of US companies with a record of consistent dividend payments, screened for fundamental strength. It holds a diversified basket of dividend-paying US stocks and aims to provide dividend income alongside long-term capital appreciation.",
+        "sector": 97
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -31289,6 +31394,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Ero Copper is a Canadian-headquartered mining company that produces copper and related by-products, with operations in Brazil. It operates copper mines in the Brazilian states of Bahia and Pará and also holds a gold mining operation in Brazil.",
+        "sector": 197
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -32096,6 +32205,11 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "1-800-Flowers.Com is a US retailer and distributor of floral arrangements, gift baskets and food gifts, sold through its own brands and online and phone ordering channels. Its offerings centre on gifting for holidays and personal occasions.",
+        "sector": 325,
+        "website": "https://www.1800flowers.com"
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -32218,6 +32332,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An exchange-traded fund that tracks an index of global technology companies screened to meet Shariah-compliant investment principles. It holds shares of technology businesses from developed and emerging markets that pass the index's religious and financial screens.",
+        "sector": 94
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -32427,6 +32545,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Waterdrop is a Chinese technology company that operates an online insurance marketplace connecting users with insurance products from partner insurers, alongside a crowdfunding platform that helps individuals raise money for medical expenses and a mutual aid platform.",
+        "sector": 333
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -32607,6 +32729,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An actively managed exchange-traded fund that seeks to track an index of diversified commodity futures, using an optimized approach to select contracts. It holds the futures through a subsidiary and invests the remaining assets in short-term fixed income, and issues a standard tax form rather than a partnership one.",
+        "sector": 46
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -32723,6 +32849,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "The fund is a Grayscale trust that holds Ether and stakes a portion of it on the Ethereum network to earn staking rewards. Its shares trade on a US exchange and give investors exposure to Ether without buying or storing it directly.",
+        "sector": 51
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -32822,6 +32952,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "The Invesco S&P 500 Momentum ETF is an exchange-traded fund that tracks an index of large-cap US stocks drawn from the S&P 500 that have shown the strongest recent price momentum. The index weights its holdings by a combination of market capitalization and momentum score, and is periodically rebalanced.",
+        "sector": 99
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -32876,6 +33010,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "This exchange-traded fund seeks to track an index of large and mid-sized companies from developed markets outside the United States. It applies screens based on Shariah-compliant principles to the companies it holds.",
+        "sector": 62
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -34172,6 +34310,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An exchange-traded fund that invests in companies involved in photonics and optics, including those that develop technologies using light for data transmission, sensing, and related applications. It aims to track an index of firms tied to this theme.",
+        "sector": 94
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -34846,6 +34988,11 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Sunrun provides residential solar power systems and home battery storage to homeowners, typically through service agreements and leases rather than outright purchase. It designs, installs and maintains the equipment and earns revenue from the energy and services it supplies.",
+        "sector": 157,
+        "website": "https://www.sunrun.com"
+      },
       "tokens": [
         {
           "chainId": 4663,
@@ -34926,6 +35073,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "PLBY Group is a pleasure and leisure company that licenses the Playboy brand and operates direct-to-consumer businesses in lifestyle products, apparel, beauty, and intimate wellness. It earns revenue through licensing partnerships and online and retail sales of branded goods.",
+        "sector": 11
+      },
       "tokens": [
         {
           "chainId": 8453,
@@ -35049,6 +35200,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "HP designs and sells personal computers, laptops, printers, and related supplies, along with accessories and support services for consumers and businesses. Its products include notebooks, desktops, workstations, and printing hardware and ink.",
+        "sector": 194
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -35834,6 +35989,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "The Fidelity Wise Origin Bitcoin Fund is a spot bitcoin exchange-traded fund that holds bitcoin directly and aims to track the price of bitcoin. It lets investors gain exposure to bitcoin through a brokerage account without buying or storing the digital asset themselves.",
+        "sector": 51
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -35906,6 +36065,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An exchange-traded fund that tracks an index of US companies expected to pay above-average dividends, excluding real estate investment trusts. It holds a broad portfolio of large, established dividend-paying stocks across many sectors.",
+        "sector": 97
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -35953,6 +36116,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Tootsie Roll Industries is a Chicago-based manufacturer of candy and other confectionery. It is best known for Tootsie Rolls and Tootsie Pops, which it sells in the United States and in markets abroad, including Canada and Mexico.",
+        "sector": 32
+      },
       "tokens": [
         {
           "chainId": 8453,
@@ -36252,6 +36419,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "The fund seeks to track an index of publicly traded real estate investment trusts from developed and emerging markets around the world. Holdings are screened to meet Sharia-compliant investing standards, excluding businesses and financial practices that conflict with those principles.",
+        "sector": 338
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -36324,6 +36495,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Jersey Mike's Subs is a franchisor of sandwich shops that serve made-to-order hot and cold subs. Its restaurants are mostly operated by independent franchise owners across the United States.",
+        "sector": 28
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -36395,6 +36570,11 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "UiPath develops software that automates business processes and workflows, including tools for building and coordinating AI agents. Its platform is used by organizations to reduce repetitive manual work across their operations.",
+        "sector": 167,
+        "website": "https://www.uipath.com"
+      },
       "tokens": [
         {
           "chainId": 4663,
@@ -37301,6 +37481,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An exchange-traded fund that tracks an index of Shariah-compliant sukuk, which are Islamic bonds issued by governments, government-related entities and corporations around the world. It aims to give investors fixed-income exposure that follows Islamic investment principles.",
+        "sector": 339
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -37451,6 +37635,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Everpure, formerly known as Pure Storage, develops data storage hardware and software, including all-flash storage arrays and a subscription-based storage platform. Its products are used by enterprises and cloud providers to store, manage and protect data.",
+        "sector": 171
+      },
       "tokens": [
         {
           "chainId": 4663,
@@ -38382,6 +38570,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An exchange-traded fund that seeks to track the performance of an index of large-, mid-, and small-cap stocks from emerging market countries. It holds a broad basket of companies across many developing economies and sectors, offering diversified exposure to those markets.",
+        "sector": 52
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -38680,6 +38872,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "The Grayscale Bitcoin Trust ETF is an exchange-traded fund that holds bitcoin and aims to track its price, minus fund expenses. It lets investors gain exposure to bitcoin through a brokerage account without buying or storing the digital asset directly.",
+        "sector": 51
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -38752,6 +38948,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Franklin Bitcoin ETF is a spot bitcoin exchange-traded fund that holds bitcoin directly and aims to track the price of bitcoin, net of fees and expenses. It is issued by Franklin Templeton and gives investors exposure to bitcoin through a brokerage account without having to hold the asset themselves.",
+        "sector": 51
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -39658,6 +39858,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An actively managed fund that seeks current income by generating returns from options tied to the shares of Strategy Inc (formerly MicroStrategy), using a synthetic covered call approach. It does not hold the underlying stock directly and its upside participation in the shares is limited.",
+        "sector": 278
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -39792,6 +39996,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "A spot bitcoin exchange-traded fund sponsored by ARK Investment Management and 21Shares. It holds bitcoin directly and aims to track the price of bitcoin, giving investors exposure through a brokerage account without needing to hold the asset themselves.",
+        "sector": 51
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -39924,6 +40132,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "The iShares MSCI Taiwan ETF is an exchange-traded fund that seeks to track the investment results of an index composed of large- and mid-capitalization Taiwanese equities. It gives investors exposure to a broad range of companies listed in Taiwan through a single traded share.",
+        "sector": 340
+      },
       "tokens": [
         {
           "chainId": 4663,
@@ -40156,6 +40368,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "The fund seeks to track an index of smaller-capitalization companies involved in uranium mining, exploration, and related activities, including those holding physical uranium or uranium royalties. It invests mainly in junior uranium miners worldwide and is managed by Sprott.",
+        "sector": 110
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -40404,6 +40620,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Strategy Inc., formerly MicroStrategy, is a business intelligence software company that holds bitcoin as its primary treasury reserve asset and raises capital through equity and debt offerings to buy more. STRD is one of its perpetual preferred stock issues, which pays non-cumulative dividends.",
+        "sector": 128
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -40608,6 +40828,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An exchange-traded fund that seeks to track an index of US companies with a history of increasing their dividends over time. It holds a diversified basket of large, established US stocks and excludes the highest-yielding companies.",
+        "sector": 98
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -40655,6 +40879,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Forgent Power Solutions designs and manufactures electrical power distribution equipment such as switchgear, busway and power control systems. Its products serve data centers, utilities and industrial and commercial facilities.",
+        "sector": 157
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -41182,6 +41410,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "This exchange-traded fund seeks to track an index of small-capitalization US companies that show value characteristics, selected from a broader small-cap benchmark. It holds the index's stocks and offers diversified exposure to value-oriented smaller US businesses.",
+        "sector": 104
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -41500,6 +41732,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "A leveraged exchange-traded fund that seeks to deliver a multiple of the daily performance of the price of Ether, the digital asset of the Ethereum network. It uses derivatives and other financial instruments to obtain its leveraged exposure and resets that exposure each day.",
+        "sector": 51
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -41673,6 +41909,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Strategy Inc, formerly MicroStrategy, is a business intelligence software company that also holds bitcoin as a primary treasury reserve asset. STRF is its Series A perpetual preferred stock, a fixed-income-style security used to raise capital, in part to purchase additional bitcoin.",
+        "sector": 128
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -41876,7 +42116,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Interactive Brokers Group is a holding company whose subsidiaries operate an electronic brokerage that provides trade execution and clearing services to individual investors, advisors, and institutions. Clients can trade stocks, options, futures, currencies, bonds, and funds across many markets worldwide through its proprietary trading platforms.",
-        "sector": 132
+        "sector": 132,
+        "website": "https://www.interactivebrokers.com"
       },
       "tokens": [
         {
@@ -42136,6 +42377,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "AbCellera is a Canadian biotechnology company that runs a technology platform for discovering antibody candidates for therapeutic use. It works with pharmaceutical and biotech partners to find antibodies from natural immune responses, and also develops its own antibody-based drug candidates.",
+        "sector": 138
+      },
       "tokens": [
         {
           "chainId": 4663,
@@ -42216,6 +42461,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "The VanEck Bitcoin ETF is an exchange-traded fund that holds bitcoin directly and seeks to track the price of bitcoin, less fees and expenses. Its shares trade on a US exchange and give investors exposure to bitcoin without requiring them to buy or store it themselves.",
+        "sector": 51
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -42263,6 +42512,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An exchange-traded fund that seeks to track an index of companies involved in steel production and the mining and processing of iron ore and other raw materials used in steelmaking. It holds shares of publicly traded steel producers and related firms across multiple countries.",
+        "sector": 341
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -42310,6 +42563,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An actively managed exchange-traded fund that holds shares of seven large US technology and growth-oriented companies, commonly referred to as the Magnificent Seven. It also uses options-based strategies on its holdings in an effort to adjust the fund's exposure to those stocks.",
+        "sector": 95
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -42428,6 +42685,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An exchange-traded fund that tracks an index of large and mid-sized US companies screened for compliance with Islamic investment principles. Holdings exclude businesses involved in activities such as alcohol, gambling, conventional financial services and other non-permissible sectors.",
+        "sector": 101
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -42475,6 +42736,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Ambarella is a fabless semiconductor company that designs low-power chips for video compression, image processing, and computer vision. Its system-on-chip products are used in security cameras, driver assistance and in-cabin monitoring systems, autonomous driving, and robotics.",
+        "sector": 190
+      },
       "tokens": [
         {
           "chainId": 4663,
@@ -43017,6 +43282,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An actively managed exchange-traded fund that holds a concentrated portfolio of large-cap dividend-paying US stocks. It also writes covered call options on selected holdings to generate additional income alongside the dividends.",
+        "sector": 278
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -44523,6 +44792,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "American Bitcoin is a company that mines bitcoin and accumulates it as a strategic reserve asset. It operates mining hardware and builds out bitcoin mining capacity in the United States.",
+        "sector": 127
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -44637,6 +44910,11 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "QuantumScape develops solid-state lithium-metal batteries designed for electric vehicles. The company is based in California and counts a major automaker among its investors.",
+        "sector": 253,
+        "website": "https://www.quantumscape.com"
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -44758,6 +45036,11 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Adecoagro is an agribusiness company operating in South America, primarily in Argentina, Brazil and Uruguay. It produces crops such as soybeans, corn and wheat, along with rice, dairy products, sugar, ethanol and bioenergy.",
+        "sector": 30,
+        "website": "https://www.adecoagro.com"
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -45208,6 +45491,11 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "VEON is a multinational telecommunications and digital services company that provides mobile connectivity and digital products to consumers across several markets in Europe and Asia. It operates well-known local mobile brands and is headquartered in the United Arab Emirates.",
+        "sector": 8,
+        "website": "https://www.veon.com"
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -45255,6 +45543,11 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Sellas Life Sciences Group is a biopharmaceutical company, formed through the combination of Galena Biopharma and Sellas Life Sciences Group Ltd. It develops drug candidates for the treatment of cancer.",
+        "sector": 138,
+        "website": "https://sellaslifesciences.com"
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -45311,6 +45604,11 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Navan provides a cloud-based platform that lets businesses manage employee travel and spending in one place. Its tools cover travel booking, corporate payment cards, expense reporting, and analytics.",
+        "sector": 167,
+        "website": "https://navan.com"
+      },
       "tokens": [
         {
           "chainId": 4663,
@@ -45331,6 +45629,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An exchange-traded fund that seeks to track an index of companies involved in the space industry, including those providing satellite, launch, and other space-related products and services. It holds a basket of global equities tied to space exploration and related activities.",
+        "sector": 288
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -45464,6 +45766,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "The fund seeks to track an index of US-listed companies involved in the water industry, including those that provide water utilities, purification and filtration equipment, and related infrastructure and services. It is a passively managed fund that holds a basket of these stocks.",
+        "sector": 342
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -45701,6 +46007,11 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Aptiv designs and manufactures technology and components for the automotive industry, supplying vehicle makers worldwide from facilities and technical centers across many countries. The company is incorporated in Jersey and traces its origins to Delphi Automotive, formerly a General Motors subsidiary.",
+        "sector": 253,
+        "website": "https://www.aptiv.com"
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -45988,6 +46299,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "The Teucrium Wheat Fund is an exchange-traded commodity pool that seeks to track the price of wheat by holding futures contracts on wheat traded on the Chicago Board of Trade. It does not hold physical wheat, and its returns reflect futures price movements and the costs of rolling contracts.",
+        "sector": 46
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -47794,6 +48109,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "ProShares UltraPro Short S&P 500 is a leveraged inverse exchange-traded fund that seeks daily investment results corresponding to a multiple of the inverse of the daily performance of the S&P 500 index. It uses derivatives such as swaps and futures, and is intended for short-term trading rather than long-term holding.",
+        "sector": 65
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -48101,6 +48420,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Prospect Capital is a publicly traded business development company that provides financing to middle-market businesses. It makes debt and equity investments across industries, including senior and subordinated loans, structured credit and real estate holdings, and distributes income to shareholders.",
+        "sector": 220
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -48355,6 +48678,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Diageo is a London-based multinational producer and distributor of alcoholic beverages, with a portfolio spanning Scotch whisky, vodka, stout and other spirits. Its well-known brands include Guinness, Johnnie Walker and Smirnoff, sold in markets around the world.",
+        "sector": 31
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -48375,6 +48702,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An actively managed exchange-traded fund from Fidelity that invests mainly in a broad mix of investment-grade debt securities, including government, corporate and mortgage-backed bonds. It seeks income and may hold a smaller portion in lower-rated or non-US issuers.",
+        "sector": 230
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -48569,6 +48900,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "The fund holds bitcoin directly and aims to track the price of bitcoin, less fees and expenses. It gives investors exposure to bitcoin through a regular brokerage account without needing to buy or store the digital asset themselves.",
+        "sector": 51
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -48713,6 +49048,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An actively managed exchange-traded fund that invests in companies involved in space exploration, aerospace, and defense, including satellites, launch services, drones, and related technologies. It aims for long-term growth by holding firms positioned to benefit from innovation in these areas.",
+        "sector": 288
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -49048,6 +49387,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An exchange-traded fund that seeks to track an index of companies involved in space technology, including those that build satellites, launch vehicles and related infrastructure, and that provide space-based data and services. It holds a basket of global equities tied to commercial and government space activity.",
+        "sector": 288
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -49077,6 +49420,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "BeOne Medicines (formerly BeiGene) is a global oncology company that discovers, develops, manufactures and commercializes cancer medicines, including targeted therapies and immunotherapies. It runs clinical research programs and sells its products in markets across Asia, North America and Europe.",
+        "sector": 138
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -49279,6 +49626,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Netcapital operates an online investment platform that connects private companies seeking funding with investors, enabling securities offerings under crowdfunding and related exemptions. It also provides fundraising and marketing services to the businesses that raise capital through its platform and holds equity stakes in some of them.",
+        "sector": 123
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -49595,6 +49946,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "The fund holds bitcoin directly and aims to track the performance of the price of bitcoin, less fees and expenses. It is sponsored by Invesco in partnership with Galaxy Digital and provides exposure to bitcoin through a brokerage account without requiring investors to hold the asset themselves.",
+        "sector": 51
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -49642,6 +49997,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An actively managed exchange-traded fund that invests in companies involved in bitcoin mining and related digital asset infrastructure, such as miners, hardware makers and data center operators. It aims to give investors equity exposure to the bitcoin mining industry rather than direct ownership of bitcoin.",
+        "sector": 42
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -49917,6 +50276,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Kyivstar Group is a Ukrainian telecommunications and digital services company. It provides mobile voice and data, fixed broadband, and digital services such as television, financial services, and cloud offerings to consumers and businesses.",
+        "sector": 8
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -50406,6 +50769,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An exchange-traded fund that seeks to track the performance of an index of large- and mid-cap South Korean companies. It holds shares of South Korean businesses across a range of industries and trades on a US exchange.",
+        "sector": 89
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -50723,6 +51090,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An actively managed exchange-traded fund sub-advised by Bridgewater Associates that seeks to deliver returns across different economic environments. It allocates across global equities, nominal and inflation-linked bonds, commodities and other assets, using leverage to balance risk among them.",
+        "sector": 343
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -50779,6 +51150,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An actively managed exchange-traded fund from BlackRock that seeks income by investing mainly in securitized debt, such as mortgage-backed and asset-backed securities. Portfolio managers select holdings across the securitized credit market rather than tracking an index.",
+        "sector": 82
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -50920,6 +51295,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "REalloys is a rare earth supply chain company that produces rare earth metals, alloys and magnets for use in defense, electric vehicle and industrial applications. It focuses on building a North American source of heavy rare earth materials, from processing through to finished components.",
+        "sector": 204
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -51072,6 +51451,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "MidCap Financial Investment Corporation is an externally managed business development company that provides debt financing to middle-market companies, mainly through senior secured loans. It is managed by an affiliate of Apollo and aims to generate income for shareholders.",
+        "sector": 120
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -51324,6 +51707,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "FEMSA is a Mexican multinational that operates convenience stores, drugstores and fuel stations across Latin America, and holds a large stake in a major Coca-Cola bottler. It also provides logistics services and distributes cleaning and maintenance supplies in the United States.",
+        "sector": 309
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -51446,6 +51833,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An exchange-traded fund that seeks to track an index of companies involved in digital asset and blockchain-related businesses, such as cryptocurrency exchanges, miners, and firms that provide related infrastructure and services. It holds shares of these companies rather than the digital assets themselves.",
+        "sector": 42
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -51867,6 +52258,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "The fund is a spot bitcoin exchange-traded product that holds bitcoin directly and issues shares whose value tracks the price of bitcoin, net of fund expenses. It is sponsored by CoinShares and provides exposure to bitcoin through a brokerage account without requiring investors to hold the asset themselves.",
+        "sector": 51
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -51914,6 +52309,11 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Rubrik provides software that helps organizations manage, protect and recover their data across cloud, on-premises and software-as-a-service environments. Its platform focuses on data backup, cyber resilience and security against ransomware and other threats.",
+        "sector": 173,
+        "website": "https://www.rubrik.com"
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -51995,6 +52395,11 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "eToro Group operates an online trading platform that lets retail customers invest in a range of financial assets. It also runs a social trading system in which users can follow and copy the portfolios of other traders.",
+        "sector": 132,
+        "website": "https://www.etoro.com"
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -52708,6 +53113,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "A leveraged exchange-traded fund that seeks daily investment results equal to a multiple of the daily performance of Tesla common stock, using swaps and other derivatives. It is designed for short-term trading, and its returns over longer periods can differ significantly from the stated multiple of the stock's return.",
+        "sector": 71
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -53524,6 +53933,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An actively managed exchange-traded fund from iShares that invests mainly in equity securities of companies in the defense and industrial sectors, including aerospace and defense contractors and their suppliers. Portfolio managers select holdings rather than tracking a fixed index.",
+        "sector": 39
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -53689,6 +54102,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Blackstone Secured Lending Fund is a publicly traded business development company that provides financing to private US companies. It focuses on senior secured loans and is externally managed by an affiliate of Blackstone.",
+        "sector": 120
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -54313,6 +54730,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "WisdomTree is an asset manager and sponsor of exchange-traded funds and exchange-traded products, headquartered in New York. Its funds cover equities, currencies, fixed income and alternative strategies across U.S. and international markets.",
+        "sector": 120
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -54962,6 +55383,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An actively managed exchange-traded fund that invests mainly in investment-grade government bonds issued by countries around the world. It seeks to hedge most of its non-US currency exposure back to the US dollar, aiming for income and capital preservation.",
+        "sector": 344
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -55889,6 +56314,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "The WisdomTree Bitcoin Fund is a spot bitcoin exchange-traded product that holds bitcoin directly and aims to track its price, less fees and expenses. Shares give investors exposure to bitcoin through a brokerage account without needing to buy or store the asset themselves.",
+        "sector": 51
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -56082,6 +56511,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "TSLQ is an exchange-traded fund that seeks to deliver the inverse of the daily performance of Tesla common stock, using leveraged short exposure obtained mainly through swap agreements and other derivatives. It resets daily, so results over periods longer than one day can differ significantly from the stated multiple of the stock's return.",
+        "sector": 69
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -56389,6 +56822,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An exchange-traded note issued by Barclays that tracks an index of short-term futures contracts on the CBOE Volatility Index. It is designed to reflect changes in expected US stock market volatility and is used mainly for short-term hedging or trading rather than long-term holding.",
+        "sector": 73
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -56670,6 +57107,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Goldman Sachs BDC is an externally managed business development company that provides debt financing, primarily senior secured loans, to middle-market companies in the United States. It is managed by an affiliate of Goldman Sachs and generates income mainly from interest on its loan portfolio.",
+        "sector": 120
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -57158,6 +57599,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Bakkt provides a software-as-a-service and API platform that lets businesses and customers hold and trade cryptocurrency and convert traditional currency into stablecoins. It was started by Intercontinental Exchange, the operator of the New York Stock Exchange.",
+        "sector": 300
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -57585,6 +58030,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "This exchange-traded fund tracks an index of US-listed companies that pay dividends and meet Islamic (Shariah) screening criteria. It aims to give income-focused investors exposure to dividend-paying stocks while avoiding businesses and financial practices considered impermissible under Islamic principles.",
+        "sector": 97
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -57717,6 +58166,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "The fund seeks to track an index of South Korean companies involved in the defense industry, such as makers of aircraft, missiles, naval vessels, and ground weapons systems. It is managed by a Korean asset manager and holds the shares of listed defense-related firms.",
+        "sector": 39
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -57945,6 +58398,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An exchange-traded fund that seeks to track an index of global companies involved in timber and forestry, including owners and operators of forests and timberlands and producers of wood and paper products. It holds a diversified basket of these companies' shares across developed and emerging markets.",
+        "sector": 345
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -58295,6 +58752,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An actively managed bond fund from BlackRock that uses systematic, data-driven models to select a diversified portfolio of fixed income securities. It seeks to deliver income and total return across a broad range of bond sectors.",
+        "sector": 75
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -58403,6 +58864,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "ProShares UltraShort 20+ Year Treasury is a leveraged inverse exchange-traded fund that seeks daily results equal to a multiple of the inverse of the performance of an index of long-maturity US Treasury bonds. It uses derivatives to gain this exposure and is designed for short-term tactical use rather than long-term holding.",
+        "sector": 346
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -58459,6 +58924,11 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Brookfield Asset Management is an alternative asset manager that raises and manages capital on behalf of institutional and other investors. It focuses on control investments in real estate, renewable power, infrastructure, private equity and credit, and was spun off from the company now known as Brookfield Corporation.",
+        "sector": 120,
+        "website": "https://www.brookfield.com"
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -58902,6 +59372,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Marqeta operates a cloud-based card issuing and payment processing platform that lets businesses create, manage and customize physical, virtual and tokenized payment cards through application programming interfaces. Its clients include digital banks, on-demand delivery companies, expense management providers and buy now, pay later services.",
+        "sector": 137
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -59161,6 +59635,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Morgan Stanley Direct Lending Fund is an externally managed business development company that makes direct loans to private, U.S. middle-market companies, mainly senior secured loans to businesses backed by private equity sponsors. It is advised by an affiliate of Morgan Stanley and generates income from interest on its loan portfolio.",
+        "sector": 120
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -59258,6 +59736,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "RELX provides information-based analytics and decision tools to professional and business customers. Its offerings cover legal and risk data, scientific and medical research publishing, insurance and financial risk analytics, and trade exhibitions.",
+        "sector": 163
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -59278,6 +59760,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "New Mountain Finance is a publicly traded business development company that provides debt and equity financing to middle market companies in the United States. It is externally managed by an affiliate of New Mountain Capital and focuses on defensive growth businesses.",
+        "sector": 120
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -59325,6 +59811,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An actively managed fund that seeks to deliver short-term, tax-efficient returns similar to short-dated Treasury bills. It uses a box spread strategy, building synthetic financing positions with index options on a broad US equity index.",
+        "sector": 108
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -59372,6 +59862,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An actively managed exchange-traded fund that seeks to generate high current income by gaining exposure to oil through a United States oil fund and selling call options on it. The strategy aims to earn option premium income while keeping some participation in oil price movements.",
+        "sector": 48
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -59419,6 +59913,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Barings BDC is an externally managed business development company that provides financing to middle-market companies, primarily through senior secured private loans and other credit investments. It is managed by an affiliate of Barings, an investment manager, and distributes income to shareholders as a regulated investment company.",
+        "sector": 120
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -59466,6 +59964,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Toll Brothers is an American homebuilder that designs, builds, markets and finances residential communities across the United States. It also develops some commercial properties, with homes sold at a range of price levels across different regions.",
+        "sector": 20
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -59893,6 +60395,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Carlyle Secured Lending is a publicly traded business development company that provides financing to middle-market companies, primarily through first lien senior secured loans. It is externally managed by an affiliate of the Carlyle Group and generates income from interest on its loan portfolio.",
+        "sector": 120
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -60211,6 +60717,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Bain Capital Specialty Finance is an externally managed, publicly traded business development company that provides direct loans and other debt financing to middle-market companies in the United States and abroad. It is managed by an affiliate of Bain Capital and invests mainly in senior secured loans, with additional exposure to junior debt and equity investments.",
+        "sector": 120
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -60421,6 +60931,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Capital Southwest is an externally managed business development company that provides debt and equity financing to lower middle market and middle market companies. It generates income mainly from interest on its loans and distributes most of its earnings to shareholders.",
+        "sector": 121
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -60552,6 +61066,11 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "ACI Worldwide develops software that lets banks, merchants, billers and other payment providers process and secure electronic payments across many channels. Its platforms handle payment transactions for customers around the world.",
+        "sector": 292,
+        "website": "https://www.aciworldwide.com"
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -60660,6 +61179,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An actively managed fund of funds that invests in a basket of other YieldMax option income ETFs, each of which uses options strategies tied to individual stocks or other assets. It seeks to pass through the combined income those underlying funds generate.",
+        "sector": 278
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -60976,6 +61499,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Trinity Capital is a specialty lender and externally managed business development company that provides debt financing and equity investments to venture-backed and growth-stage companies. It serves sectors such as technology, life sciences and sustainability, offering loans, equipment financing and related capital solutions.",
+        "sector": 120
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -61791,6 +62318,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Cantor Equity Partners I is a blank check company, a special purpose acquisition vehicle sponsored by an affiliate of Cantor Fitzgerald. It was formed to raise capital through a public listing and use the proceeds to complete a merger or similar business combination with an operating company.",
+        "sector": 123
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -62007,6 +62538,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Amentum Holdings provides engineering, technical and project management services to government and commercial customers. Its work spans defense, nuclear, environmental remediation, space, infrastructure and critical systems support.",
+        "sector": 287
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -62229,6 +62764,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Boyd Gaming is a gambling and hospitality company that owns and operates casino properties with hotels, slot machines and table games across multiple U.S. states. Most of its revenue comes from gambling, and the company is headquartered in Nevada.",
+        "sector": 15
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -62276,6 +62815,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An exchange-traded fund that seeks to track an index of below-investment-grade, tax-exempt US municipal bonds. It holds a broad basket of high yield municipal securities that pay interest generally exempt from federal income tax.",
+        "sector": 347
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -62591,6 +63134,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An exchange-traded fund that seeks daily investment results equal to a multiple of the inverse of the daily performance of Tesla common stock. It uses swaps and other derivatives to gain short exposure and is designed for short-term trading rather than long-term holding.",
+        "sector": 69
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -65181,6 +65728,11 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Quest Diagnostics is a clinical laboratory company that provides diagnostic testing and information services to patients, physicians, hospitals and employers. Its tests cover areas such as cancer, heart disease, infectious disease, neurological disorders and drug screening.",
+        "sector": 139,
+        "website": "https://www.questdiagnostics.com"
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -66311,6 +66863,11 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Blink Charging owns and operates a network of electric vehicle charging stations and sells charging equipment and related services. It serves property owners, businesses, and drivers across the United States and in other countries.",
+        "sector": 157,
+        "website": "https://www.blinkcharging.com"
+      },
       "tokens": [
         {
           "chainId": 8453,
@@ -66509,6 +67066,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Celltrion is a South Korean biopharmaceutical company that develops, manufactures and markets biosimilar medicines, which are follow-on versions of existing biologic drugs. Its products treat conditions such as autoimmune diseases and cancer, and it sells them in markets around the world.",
+        "sector": 138
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -66529,6 +67090,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Cemex is a Mexican building materials company that produces and distributes cement, ready-mix concrete and aggregates. It operates cement plants, concrete facilities, quarries, distribution centers and marine terminals across several continents.",
+        "sector": 196
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -66716,6 +67281,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An exchange-traded fund from Defiance ETFs that seeks daily investment results equal to twice the daily performance of Moderna's common stock. It uses swaps and other derivatives to obtain leveraged exposure and resets its leverage each day.",
+        "sector": 71
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -66849,6 +67418,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Doosan Enerbility is a South Korean heavy industries company that designs and manufactures equipment for power generation, including nuclear reactor components, gas and steam turbines, boilers, and wind turbines. It also provides plant construction, servicing, and water treatment and desalination systems.",
+        "sector": 158
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -67032,6 +67605,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "GeneDx Holdings is a genomics company that provides genetic testing and analysis services, including exome and genome sequencing, to help diagnose rare and inherited conditions. It works with clinicians and health systems and also offers data and insights from its genomic database.",
+        "sector": 139
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -67088,6 +67665,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An exchange-traded fund that seeks to deliver a multiple of the inverse of the daily performance of Coinbase Global common stock, using swaps and other derivatives. It is designed for short-term trading, as the leveraged inverse exposure resets each day.",
+        "sector": 69
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -67144,6 +67725,11 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Groupon runs an online marketplace that connects consumers with local merchants, offering discounted deals on activities, travel, services and goods. The company has increasingly focused on digital vouchers and local experiences rather than physical products.",
+        "sector": 325,
+        "website": "https://www.groupon.com"
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -67199,6 +67785,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Hana Financial Group is a South Korean financial holding company whose subsidiaries provide banking, securities brokerage, credit card, insurance and asset management services to retail and corporate customers. Its main banking arm operates a domestic branch network alongside overseas operations.",
+        "sector": 129
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -67296,6 +67886,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Hyundai Mobis is a South Korean automotive supplier that designs and manufactures modules and components such as chassis, cockpit and front-end systems, along with safety, electrification and lamp technologies. It also supplies aftermarket replacement parts and provides parts to Hyundai Motor Group vehicle brands.",
+        "sector": 253
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -68191,6 +68785,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Microvision develops lidar sensors and perception software for automotive safety and autonomous driving applications. The company also has a history in laser beam scanning technology used in display and sensing products.",
+        "sector": 177
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -68271,6 +68869,11 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Newegg Commerce is an online retailer of computer hardware, consumer electronics, gaming gear and related technology products. It sells through its own web store and a third-party marketplace, serves PC builders and business customers, and also offers private-label brands.",
+        "sector": 325,
+        "website": "https://www.newegg.com"
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -68326,6 +68929,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Offerpad Solutions operates a technology-enabled platform for residential real estate that buys homes directly from sellers, makes repairs and updates, and resells them. It also offers related services such as listing support and home sales for homeowners.",
+        "sector": 276
+      },
       "tokens": [
         {
           "chainId": 8453,
@@ -68423,6 +69030,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Oruka Therapeutics is a clinical-stage biopharmaceutical company developing antibody therapies for chronic inflammatory and immunological skin diseases such as psoriasis. Its lead programs target key inflammatory pathways and are engineered to remain active in the body for a long time, allowing less frequent dosing.",
+        "sector": 138
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -68559,6 +69170,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "ProPetro Holding Corp. is an oilfield services company that provides hydraulic fracturing and other completion services to oil and gas producers, primarily in the Permian Basin of West Texas. It also offers wireline, cementing and power generation services to support well completion and field operations.",
+        "sector": 114
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -69163,6 +69778,10 @@
       "type": "index",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "An exchange-traded fund that holds U.S.-listed stocks which have drawn heavy retail investor attention and social media interest. It follows an index built around these so-called meme stocks, selected by factors such as online activity and trading behavior.",
+        "sector": 95
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -69218,6 +69837,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Samsung SDI is a South Korean company that develops and manufactures rechargeable batteries for electric vehicles, energy storage systems and small devices. It also supplies electronic materials used in semiconductor and display manufacturing.",
+        "sector": 157
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -69238,6 +69861,11 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Serve Robotics designs, builds, and operates autonomous sidewalk robots that carry food and other goods to customers over the last stretch of a delivery. It began as the robotics unit of Postmates and later became independent, and its robots run in several US cities through partnerships with delivery platforms such as Uber Eats and DoorDash.",
+        "sector": 229,
+        "website": "https://www.serverobotics.com"
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -69380,6 +70008,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Shinhan Financial Group is a South Korean financial holding company whose subsidiaries provide banking, credit card, securities brokerage, life insurance and asset management services. Its operations serve retail and corporate customers in South Korea and in overseas markets.",
+        "sector": 129
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -69399,6 +70031,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "SK Inc. is a South Korean holding company that oversees a group of affiliates spanning energy and chemicals, semiconductors, telecommunications, and other businesses. It also invests in and develops areas such as biopharmaceuticals, materials, and digital services through its portfolio companies.",
+        "sector": 159
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -69853,6 +70489,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Viper Energy owns and acquires mineral and royalty interests in oil and natural gas properties, primarily in the Permian Basin. It earns revenue from royalties paid by the operators who drill and produce on its acreage, and is a subsidiary of Diamondback Energy.",
+        "sector": 115
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -70231,6 +70871,10 @@
       "type": "stock",
       "priority": 0,
       "allowedTradingTime": 0,
+      "profile": {
+        "description": "Xponential Fitness franchises boutique fitness studios across a range of workout styles, including Pilates, yoga, cycling, and strength training. The company licenses its brands to franchisees, supports them with training, technology, and marketing, and earns revenue from franchise fees, royalties, and equipment sales.",
+        "sector": 331
+      },
       "tokens": [
         {
           "chainId": 42161,
