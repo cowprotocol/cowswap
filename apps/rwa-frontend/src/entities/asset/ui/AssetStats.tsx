@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 
 import styles from './AssetStats.module.css'
 
-import { getMinutesToUsMarketChange, isUsMarketOpen } from '../lib/usMarketStatus'
+import { getMinutesToUsMarketChange, isUsMarketOpen, US_MARKET_EARLY_CLOSE } from '../lib/usMarketStatus'
 
 import type { RwaAsset, RwaMarketData, RwaMarketKind, RwaTradingTime } from '../model/types'
 
@@ -52,6 +52,7 @@ function getPriceHint({ title }: RwaAsset, marketKind: RwaMarketKind, provider: 
 
   return `The price and chart show the ${title} share on its exchange${source}, including extended-hours sessions. Token prices may differ from the stock price. ${disclaimer}`
 }
+
 function getTimeZoneCity(timeZone: string): string {
   return (timeZone.split('/').pop() ?? timeZone).replace(/_/g, ' ')
 }
@@ -64,7 +65,7 @@ function MarketStatus({ tradingTime }: { tradingTime: RwaTradingTime }): ReactNo
   return (
     <Tooltip
       className={styles.status}
-      content={`US regular session · ${tradingTime.start} – ${tradingTime.end} ${getTimeZoneCity(tradingTime.timeZone)} time · Mon – Fri, except US market holidays`}
+      content={`US regular session · ${tradingTime.start} – ${tradingTime.end} ${getTimeZoneCity(tradingTime.timeZone)} time · Mon – Fri, except US market holidays · ${US_MARKET_EARLY_CLOSE} close on early-close days`}
     >
       <span className={open ? styles.statusOpen : styles.statusClosed}>US market {open ? 'open' : 'closed'}</span>
       {minutesToChange !== null && (

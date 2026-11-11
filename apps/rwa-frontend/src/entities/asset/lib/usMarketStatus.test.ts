@@ -49,6 +49,14 @@ describe('getMinutesToUsMarketChange', () => {
     expect(getMinutesToUsMarketChange(US_HOURS, new Date(now))).toBe(expected)
   })
 
+  it('skips an early-close day that closes before the session starts', () => {
+    const afternoonHours = { ...US_HOURS, start: '14:00' }
+    const earlyCloseNoon = new Date('2026-11-27T17:00:00Z')
+
+    expect(isUsMarketOpen(afternoonHours, earlyCloseNoon)).toBe(false)
+    expect(getMinutesToUsMarketChange(afternoonHours, earlyCloseNoon)).toBe(3 * 1440 + 120)
+  })
+
   it('is null for an unparsable trading time', () => {
     expect(getMinutesToUsMarketChange({ ...US_HOURS, end: '4pm' }, new Date('2026-10-01T14:00:00Z'))).toBeNull()
   })

@@ -4,8 +4,12 @@ import type { RwaTradingTime } from '../model/types'
 
 const MS_PER_MINUTE = 60_000
 const MINUTES_PER_HOUR = 60
-const EARLY_CLOSE_MINUTES = 13 * MINUTES_PER_HOUR
+const EARLY_CLOSE_HOUR = 13
+const EARLY_CLOSE_MINUTES = EARLY_CLOSE_HOUR * MINUTES_PER_HOUR
 const MAX_DAYS_TO_NEXT_OPEN = 14
+
+/** Exchange-local close of US market early-close days, `HH:mm` */
+export const US_MARKET_EARLY_CLOSE = `${EARLY_CLOSE_HOUR}:00`
 
 interface DaySession {
   start: number
@@ -70,7 +74,9 @@ function getDaySession(date: CalendarDate, { start, end }: DaySession): DaySessi
 
   if (marketDay === 'closed') return null
 
-  return { start, end: marketDay === 'earlyClose' ? Math.min(end, EARLY_CLOSE_MINUTES) : end }
+  const dayEnd = marketDay === 'earlyClose' ? Math.min(end, EARLY_CLOSE_MINUTES) : end
+
+  return dayEnd > start ? { start, end: dayEnd } : null
 }
 
 /** `timeZone` minus UTC at `date` */
