@@ -7,7 +7,7 @@ import { useWalletChainId } from '@cowprotocol/wallet-provider'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
-import { openAffiliateFeedbackAppzi, useIsAppziEnabled } from 'appzi'
+import { isAppziEnabled, openAffiliateFeedbackAppzi } from 'appzi'
 import SVG from 'react-inlinesvg'
 import { useLocation } from 'react-router'
 
@@ -41,7 +41,6 @@ export function AffiliateFeedbackButton(): ReactNode {
 function AffiliateFeedbackTrigger({ canShow, chainId }: AffiliateFeedbackTriggerProps): ReactNode {
   const { account } = useWalletInfo()
   const { walletName } = useWalletDetails()
-  const isAppziAvailable = useIsAppziEnabled()
 
   const handleClick = useCallback((): void => {
     if (!chainId) return
@@ -49,7 +48,7 @@ function AffiliateFeedbackTrigger({ canShow, chainId }: AffiliateFeedbackTrigger
     openAffiliateFeedbackAppzi({ account, chainId, walletName })
   }, [account, chainId, walletName])
 
-  if (!isAppziAvailable || !account || !chainId || !canShow) {
+  if (!isAppziEnabled || !account || !chainId || !canShow) {
     return null
   }
 

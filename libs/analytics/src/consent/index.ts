@@ -1,4 +1,4 @@
-export { hasAcceptedCookies, onCookiesAccepted, openCookieSettings } from './cookieConsent.store'
+export { hasAcceptedCookies, openCookieSettings } from './cookieConsent.store'
 export { grantGoogleConsent } from '../gtm/grantGoogleConsent'
 export { COOKIE_CONSENT_COPY } from './cookieConsent.copy'
 export type { CookieConsentCopy } from './cookieConsent.copy'

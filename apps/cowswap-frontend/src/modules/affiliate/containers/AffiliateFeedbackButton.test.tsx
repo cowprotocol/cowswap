@@ -32,7 +32,7 @@ jest.mock('@cowprotocol/wallet-provider', () => ({
 }))
 
 jest.mock('appzi', () => ({
-  useIsAppziEnabled: () => true,
+  isAppziEnabled: true,
   openAffiliateFeedbackAppzi: jest.fn(),
 }))
 
