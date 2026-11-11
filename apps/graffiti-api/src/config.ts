@@ -12,6 +12,8 @@ export interface Config {
   dbPath: string
   devInsecure: boolean
   allowJsonStore: boolean
+  /** Commit the image was built from; null when it was not built by CI. */
+  commitHash: string | null
   adminToken: string | null
   /** Allowed CORS origins; `*` only when explicitly configured. */
   corsOrigins: string[]
@@ -82,6 +84,7 @@ export function loadConfig(): Config {
     dbPath: text('GRAFFITI_DB', path.resolve(PKG_ROOT, 'data', 'graffiti.db')),
     devInsecure,
     allowJsonStore,
+    commitHash: optional('COMMIT_HASH'),
     adminToken: optional('ADMIN_TOKEN'),
     corsOrigins: corsOrigins.length > 0 ? corsOrigins : ['*'],
     verifyCommitment: process.env.VERIFY_COMMITMENT === 'confirmed' ? 'confirmed' : 'finalized',

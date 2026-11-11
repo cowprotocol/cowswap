@@ -25,6 +25,7 @@ export function registerReadRoutes(app: FastifyInstance, ctx: ServerContext): vo
     treasury: ctx.claims.treasuryPubkey(),
     network: ctx.config.network,
     devInsecure: ctx.config.devInsecure,
+    commit: ctx.config.commitHash,
   }))
 
   app.get('/v1/stats', async () => ({ paintersOnline: ctx.hub.paintersOnline() }))

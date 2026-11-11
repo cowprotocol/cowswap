@@ -41,6 +41,23 @@ const cell = (x: number, y: number, color = 0xff0000): Record<string, number> =>
 const draw = (server: BuiltServer, body: Record<string, unknown>): Promise<LightMyRequestResponse> =>
   server.app.inject({ method: 'POST', url: '/v1/draw', payload: body })
 
+describe('GET /v1/info', () => {
+  test('reports the commit the backend was built from', async () => {
+    const server = await start({ commitHash: 'abc123' })
+    const res = await server.app.inject({ method: 'GET', url: '/v1/info' })
+
+    assert.equal(res.statusCode, 200)
+    assert.equal((res.json() as { commit: string | null }).commit, 'abc123')
+  })
+
+  test('reports a null commit rather than omitting it when the build set none', async () => {
+    const server = await start({ commitHash: null })
+    const res = await server.app.inject({ method: 'GET', url: '/v1/info' })
+
+    assert.equal((res.json() as { commit: string | null }).commit, null)
+  })
+})
+
 describe('admin endpoints', () => {
   test('are disabled, not open, when ADMIN_TOKEN is unset', async () => {
     const server = await start({ adminToken: null })
