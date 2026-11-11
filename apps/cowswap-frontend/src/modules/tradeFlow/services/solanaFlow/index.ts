@@ -48,6 +48,7 @@ import {
 
 import { assertSignedAppData } from './assertSignedAppData'
 import { getSolanaErrorLogs } from './getSolanaErrorLogs'
+import { isSquadsSetupError } from './isSquadsSetupError'
 import { LEGACY_SOLANA_LIMIT_APP_DATA_HASH, LEGACY_SOLANA_SWAP_APP_DATA } from './legacySolanaAppData'
 import { isSolanaOrderSubmitted, reportSolanaOrderError, SolanaOrderPhase } from './reportSolanaOrderError'
 
@@ -346,6 +347,7 @@ export async function solanaFlow(
         tradeAmounts,
         errorMessage: swapErrorMessage,
         logs: getSolanaErrorLogs(error),
+        isSquadsSetupRequired: isSquadsSetupError(error),
       })
     }
 

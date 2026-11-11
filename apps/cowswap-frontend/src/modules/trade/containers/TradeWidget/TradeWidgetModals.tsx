@@ -238,6 +238,7 @@ export function TradeWidgetModals({
       <SolanaOrderNotPlaced
         errorMessage={solanaOrderNotPlaced.errorMessage}
         logs={solanaOrderNotPlaced.logs}
+        isSquadsSetupRequired={solanaOrderNotPlaced.isSquadsSetupRequired}
         inputAmount={solanaOrderNotPlaced.tradeAmounts.inputAmount}
         outputAmount={solanaOrderNotPlaced.tradeAmounts.outputAmount}
         onDismiss={onSolanaFailureDismiss}
