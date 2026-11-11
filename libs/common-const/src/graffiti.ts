@@ -27,7 +27,7 @@ export const GRAFFITI_CANVAS_PNG_URL = `${GRAFFITI_API_BASE}/canvas.png`
  */
 export type WallComposite = 'over' | 'blend'
 
-export const WALL_COMPOSITE: WallComposite = 'over'
+export const WALL_COMPOSITE: WallComposite = 'blend'
 
 /**
  * The paint layer's CSS `mix-blend-mode`. The wall page's own chrome is dark in both

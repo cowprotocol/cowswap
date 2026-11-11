@@ -33,6 +33,10 @@ export function isSolanaTheme(theme?: CowSwapTheme): boolean {
 /** The live graffiti wall, laid over the regular CoW Swap backdrop. */
 const WALL_LAYER = `url(${GRAFFITI_CANVAS_PNG_URL}) no-repeat center / cover`
 
+/** Rendered plaster, laid over the paint so the graffiti picks up the surface instead of floating on it. */
+const WALL_SURFACE_LAYER =
+  'repeating-linear-gradient(135deg, rgba(14, 15, 45, 0.55) 0 3px, rgba(120, 150, 255, 0.06) 3px 9px)'
+
 export const AppWrapper = styled.div<Partial<CSS.Properties> & { $fullBleed?: boolean }>`
   display: flex;
   flex-flow: column;
@@ -124,14 +128,14 @@ export const BodyWrapper = styled.div<{
 
       // The background shorthand only accepts a colour on its last layer.
       if (isSolanaTheme(customTheme)) {
-        return `${WALL_LAYER}, ${cowsLayer} ${backgroundColor}`
+        return `${cowsLayer}, ${WALL_SURFACE_LAYER}, ${WALL_LAYER} ${backgroundColor}`
       }
 
       return `${backgroundColor} ${cowsLayer}`
     }
   }};
   background-blend-mode: ${({ theme, customTheme }) =>
-    isSolanaTheme(customTheme) ? `${wallCssBlendMode(theme.darkMode)}, normal` : 'normal'};
+    isSolanaTheme(customTheme) ? `normal, normal, ${wallCssBlendMode(theme.darkMode)}` : 'normal'};
 
   ${Media.upToMedium()} {
     padding: ${({ theme, $hasActiveSpeechBubbleNotification }) =>
@@ -139,7 +143,7 @@ export const BodyWrapper = styled.div<{
     flex: none;
     min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 200px)')};
     background-size: ${({ customTheme }) => {
-      if (isSolanaTheme(customTheme)) return 'cover, contain'
+      if (isSolanaTheme(customTheme)) return 'contain, auto, cover'
 
       return customTheme === 'darkHalloween' || isChristmasTheme(customTheme) ? 'contain' : 'auto'
     }};
@@ -166,7 +170,7 @@ export const BodyWrapper = styled.div<{
       theme.isWidget ? '0 0 16px' : $hasActiveSpeechBubbleNotification ? '90px 16px 400px' : '90px 16px 200px'};
     min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 100px)')};
     background-size: ${({ customTheme }) => {
-      if (isSolanaTheme(customTheme)) return 'cover, contain'
+      if (isSolanaTheme(customTheme)) return 'contain, auto, cover'
 
       return customTheme === 'darkHalloween' || isChristmasTheme(customTheme) ? 'contain' : 'auto'
     }};
