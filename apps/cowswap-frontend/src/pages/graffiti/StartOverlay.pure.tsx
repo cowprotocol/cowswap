@@ -1,12 +1,16 @@
-import { useState, type ReactNode } from 'react'
+import { useState, type FormEvent, type ReactNode } from 'react'
 
-import graffitiCowsImage from '@cowprotocol/assets/cow-swap/graffiti-cows.png'
 import { TWITTER_LINK } from '@cowprotocol/common-const'
 
-import { Trans } from '@lingui/react/macro'
-import styled, { css } from 'styled-components/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
+import styled from 'styled-components/macro'
 
-import { API_BASE } from './graffiti.service'
+import { Routes } from 'common/constants/routes'
+import { useNavigate } from 'common/hooks/useNavigate'
+
+import { parseClaimCode } from './claimCode.utils'
+import { downloadWallImage } from './graffiti.service'
+import { HeroPanel } from './HeroPanel.pure'
 import { CANVAS } from './raster.utils'
 import { TOKEN_SYMBOL } from './wall.constants'
 import * as styledEl from './wall.styled'
@@ -18,86 +22,47 @@ const TWITTER_HANDLE = '@CoWSwap'
 export interface StartOverlayProps {
   phase: PaintPhase
   phaseError: string | null
+  connected: boolean
+  /** Wall-token balance of the connected wallet, null while it is unknown. */
+  balance: number | null
   onStart: () => void
+  onConnect: () => void
   onFullscreen: () => void
+}
+
+interface StartActionProps {
+  connected: boolean
+  balance: number | null
+  onStart: () => void
+  onConnect: () => void
+  onGetTokens: () => void
 }
 
 type StartView = 'welcome' | 'claim'
 
-function downloadWallImage(): void {
-  const link = document.createElement('a')
+const Hint = styled(styledEl.PanelText).attrs({ $tone: 'muted' })`
+  font-size: 12px;
+  text-align: center;
+`
 
-  link.href = `${API_BASE}/canvas.png`
-  link.download = 'graffiti-wall.png'
-  link.click()
-}
+const HintAction = styled.button`
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: ${styledEl.wallColors.neonAlt};
+  font-weight: 700;
+  cursor: pointer;
 
-const Actions = styled.div`
-  display: flex;
-  gap: 8px;
-  width: 100%;
-
-  > * {
-    flex: 1;
+  &:hover {
+    text-decoration: underline;
   }
-
-  ${styledEl.onNarrow(css`
-    width: auto;
-  `)}
 `
 
 const Result = styled.p<{ $failed: boolean }>`
   margin: 0;
   font-size: 12px;
   color: ${({ $failed }) => ($failed ? styledEl.wallColors.danger : styledEl.wallColors.neon)};
-`
-
-/** Mural on the left, everything else on the right; the mural drops out on a phone. */
-const Split = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 24px;
-
-  ${styledEl.onNarrow(css`
-    display: contents;
-  `)}
-`
-
-const HeroSide = styled.div`
-  flex: 0 0 auto;
-
-  ${styledEl.onNarrow(css`
-    display: none;
-  `)}
-`
-
-const Column = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 320px;
-  text-align: left;
-
-  ${styledEl.onNarrow(css`
-    display: contents;
-    text-align: center;
-  `)}
-`
-
-const Hero = styled.img`
-  width: 300px;
-  max-width: 100%;
-  display: block;
-  border-radius: 12px;
-  border: 1px solid ${styledEl.wallColors.border};
-  box-shadow: 0 0 22px rgba(168, 85, 247, 0.45);
-`
-
-const Lede = styled.p`
-  margin: 0;
-  font-size: 13px;
-  line-height: 1.6;
-  color: ${styledEl.wallColors.text};
 `
 
 const ClaimButton = styled(styledEl.Button)`
@@ -123,18 +88,33 @@ const ClaimSteps = styled.ul`
   color: ${styledEl.wallColors.text};
 `
 
-const TwitterLink = styled.a`
-  color: ${styledEl.wallColors.neonAlt};
-  font-weight: 700;
-  text-decoration: none;
+const CodeForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+`
 
-  &:hover {
-    text-decoration: underline;
-  }
+const CodeLabel = styled.label`
+  font-size: 13px;
+  line-height: 1.6;
+  color: ${styledEl.wallColors.text};
+`
+
+const TwitterLink = styled(styledEl.PanelLink)`
+  font-weight: 700;
 `
 
 /** The landing panel: start drawing, export the wall, or view it fullscreen. */
-export function StartOverlay({ phase, phaseError, onStart, onFullscreen }: StartOverlayProps): ReactNode {
+export function StartOverlay({
+  phase,
+  phaseError,
+  connected,
+  balance,
+  onStart,
+  onConnect,
+  onFullscreen,
+}: StartOverlayProps): ReactNode {
   const [view, setView] = useState<StartView>('welcome')
   const settled = phase === 'done' || phase === 'error'
   const width = CANVAS.w
@@ -144,84 +124,161 @@ export function StartOverlay({ phase, phaseError, onStart, onFullscreen }: Start
     <styledEl.OverlayLayer>
       <styledEl.StartPanel>
         {view === 'claim' ? (
-          <Split>
-            <HeroSide>
-              <Hero src={graffitiCowsImage} alt="" />
-            </HeroSide>
-            <Column>
-              <styledEl.WallHeading>
-                <Trans>GET {TOKEN_SYMBOL}</Trans>
-              </styledEl.WallHeading>
-              <styledEl.Muted>
-                <Trans>Free tokens, one per pixel you paint</Trans>
-              </styledEl.Muted>
-
-              <ClaimSteps>
-                <li>
-                  <Trans>
-                    🐮 At Solana Breakpoint? Find us at the CoW Protocol booth and ask for the {TOKEN_SYMBOL} airdrop.
-                  </Trans>
-                </li>
-                <li>
-                  <Trans>
-                    🐦 Not at Breakpoint? Follow{' '}
-                    <TwitterLink href={TWITTER_LINK} target="_blank" rel="noopener noreferrer">
-                      {TWITTER_HANDLE}
-                    </TwitterLink>{' '}
-                    and tag us — we will share some with you.
-                  </Trans>
-                </li>
-              </ClaimSteps>
-
-              <Actions>
-                <styledEl.Button onClick={() => setView('welcome')}>
-                  <Trans>← back</Trans>
-                </styledEl.Button>
-              </Actions>
-            </Column>
-          </Split>
+          <ClaimView onBack={() => setView('welcome')} />
         ) : (
-          <Split>
-            <HeroSide>
-              <Hero src={graffitiCowsImage} alt="" />
-            </HeroSide>
-            <Column>
-              <styledEl.WideOnly>
-                <styledEl.WallHeading>GRAFFITI WALL</styledEl.WallHeading>
-                <Lede>
-                  <Trans>
-                    A {width}×{height} pixel wall shared by everyone, painted live on Solana. Pick your frame, draw
-                    whatever you like, and burn 1 {TOKEN_SYMBOL} per pixel to put it on the wall for good.
-                  </Trans>
-                </Lede>
-              </styledEl.WideOnly>
+          <HeroPanel>
+            <styledEl.WideOnly>
+              <styledEl.WallHeading>GRAFFITI WALL</styledEl.WallHeading>
+              <styledEl.PanelText>
+                <Trans>
+                  A {width}×{height} pixel wall shared by everyone, painted live on Solana. Pick your frame, draw
+                  whatever you like, and burn 1 {TOKEN_SYMBOL} per pixel to put it on the wall for good.
+                </Trans>
+              </styledEl.PanelText>
+            </styledEl.WideOnly>
 
-              <styledEl.PrimaryButton onClick={onStart}>
-                <Trans>✏ START DRAWING</Trans>
-              </styledEl.PrimaryButton>
+            <StartAction
+              connected={connected}
+              balance={balance}
+              onStart={onStart}
+              onConnect={onConnect}
+              onGetTokens={() => setView('claim')}
+            />
 
-              <ClaimButton onClick={() => setView('claim')}>
-                <Trans>🎁 Claim {TOKEN_SYMBOL} tokens</Trans>
-              </ClaimButton>
+            <ClaimButton onClick={() => setView('claim')}>
+              <Trans>🎁 Claim {TOKEN_SYMBOL} tokens</Trans>
+            </ClaimButton>
 
-              <Actions>
-                <styledEl.Button onClick={downloadWallImage}>
-                  <Trans>⬇ image</Trans>
-                </styledEl.Button>
-                <styledEl.Button onClick={onFullscreen}>
-                  <Trans>⛶ fullscreen</Trans>
-                </styledEl.Button>
-              </Actions>
+            <styledEl.PanelActions>
+              <styledEl.Button onClick={() => void downloadWallImage()}>
+                <Trans>⬇ download wall</Trans>
+              </styledEl.Button>
+              <styledEl.Button onClick={onFullscreen}>
+                <Trans>⛶ view wall</Trans>
+              </styledEl.Button>
+            </styledEl.PanelActions>
 
-              {settled && (
-                <Result $failed={phase === 'error'}>
-                  {phase === 'done' ? <Trans>✓ your pixels are on the wall</Trans> : phaseError}
-                </Result>
-              )}
-            </Column>
-          </Split>
+            {settled && (
+              <Result $failed={phase === 'error'}>
+                {phase === 'done' ? <Trans>✓ your pixels are on the wall</Trans> : phaseError}
+              </Result>
+            )}
+          </HeroPanel>
         )}
       </styledEl.StartPanel>
     </styledEl.OverlayLayer>
+  )
+}
+
+/** How to come by wall tokens, and the box that redeems a code for them. */
+function ClaimView({ onBack }: { onBack: () => void }): ReactNode {
+  const { t } = useLingui()
+  const navigate = useNavigate()
+  const [codeInput, setCodeInput] = useState('')
+  const code = parseClaimCode(codeInput)
+
+  const openClaim = (event: FormEvent<HTMLFormElement>): void => {
+    event.preventDefault()
+
+    if (!code) return
+
+    navigate(`${Routes.GRAFFITI_CLAIM}?code=${encodeURIComponent(code)}`)
+  }
+
+  return (
+    <HeroPanel>
+      <styledEl.WallHeading>
+        <Trans>GET {TOKEN_SYMBOL}</Trans>
+      </styledEl.WallHeading>
+      <styledEl.Muted>
+        <Trans>Free tokens, one per pixel you paint</Trans>
+      </styledEl.Muted>
+
+      <CodeForm onSubmit={openClaim}>
+        <CodeLabel htmlFor="graffiti-claim-code">
+          <Trans>🎟 Got a claim code? Redeem it here.</Trans>
+        </CodeLabel>
+        <styledEl.TextInput
+          id="graffiti-claim-code"
+          value={codeInput}
+          onChange={(event) => setCodeInput(event.target.value)}
+          placeholder={t`code or scanned link`}
+          autoComplete="off"
+          autoCapitalize="off"
+          spellCheck={false}
+        />
+        <styledEl.PrimaryButton type="submit" disabled={!code}>
+          <Trans>CLAIM {TOKEN_SYMBOL}</Trans>
+        </styledEl.PrimaryButton>
+      </CodeForm>
+
+      <ClaimSteps>
+        <li>
+          <Trans>
+            🐮 At Solana Breakpoint? Find us at the CoW Protocol booth and ask for the {TOKEN_SYMBOL} airdrop.
+          </Trans>
+        </li>
+        <li>
+          <Trans>
+            🐦 Not at Breakpoint? Follow{' '}
+            <TwitterLink href={TWITTER_LINK} target="_blank" rel="noopener noreferrer">
+              {TWITTER_HANDLE}
+            </TwitterLink>{' '}
+            and send us a love message. We will share some with you.
+          </Trans>
+        </li>
+      </ClaimSteps>
+
+      <styledEl.PanelActions>
+        <styledEl.Button onClick={onBack}>
+          <Trans>← back</Trans>
+        </styledEl.Button>
+      </styledEl.PanelActions>
+    </HeroPanel>
+  )
+}
+
+/**
+ * The wall's primary button, which is only ever `start drawing` once a wallet
+ * that can pay for pixels is connected: painting burns a token per cell, so an
+ * empty wallet reaches the commit step and can go no further.
+ */
+function StartAction({ connected, balance, onStart, onConnect, onGetTokens }: StartActionProps): ReactNode {
+  if (!connected) {
+    return (
+      <>
+        <styledEl.PrimaryButton onClick={onConnect}>
+          <Trans>CONNECT SOLANA WALLET</Trans>
+        </styledEl.PrimaryButton>
+        <Hint>
+          <Trans>Connect first: painting burns {TOKEN_SYMBOL} from your wallet.</Trans>
+        </Hint>
+      </>
+    )
+  }
+
+  if (balance === 0) {
+    return (
+      <>
+        <styledEl.PrimaryButton disabled>
+          <Trans>NO {TOKEN_SYMBOL} IN YOUR WALLET</Trans>
+        </styledEl.PrimaryButton>
+        <Hint>
+          <Trans>
+            Every pixel burns 1 {TOKEN_SYMBOL}, and your wallet holds none.{' '}
+            <HintAction type="button" onClick={onGetTokens}>
+              Get some
+            </HintAction>{' '}
+            to start drawing.
+          </Trans>
+        </Hint>
+      </>
+    )
+  }
+
+  return (
+    <styledEl.PrimaryButton onClick={onStart}>
+      <Trans>✏ START DRAWING</Trans>
+    </styledEl.PrimaryButton>
   )
 }

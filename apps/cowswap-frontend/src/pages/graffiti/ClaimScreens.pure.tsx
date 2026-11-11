@@ -6,23 +6,15 @@ import type { ReactNode } from 'react'
 import { Confetti } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
-import { Link } from 'react-router'
 import styled from 'styled-components/macro'
 
-import { explorerTxUrl } from './graffiti.service'
+import { Routes } from 'common/constants/routes'
+
+import { explorerAddressUrl, explorerTxUrl } from './graffiti.service'
+import { HeroPanel } from './HeroPanel.pure'
 import { useConfettiBurst } from './useConfettiBurst'
 import { TOKEN_SYMBOL } from './wall.constants'
 import * as styledEl from './wall.styled'
-
-const Card = styled(styledEl.Panel)`
-  max-width: 420px;
-  width: 100%;
-  padding: 28px 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  align-items: center;
-`
 
 const Amount = styled.p`
   margin: 0;
@@ -37,35 +29,9 @@ const Unit = styled.span`
   color: ${styledEl.wallColors.textMuted};
 `
 
-const BigEmoji = styled.p`
-  margin: 0;
-  font-size: 54px;
-`
-
-const Note = styled.p<{ $tone?: 'muted' | 'danger' | 'success' }>`
-  margin: 0;
-  font-size: 13px;
-  line-height: 1.6;
-  color: ${({ $tone }) =>
-    $tone === 'danger'
-      ? styledEl.wallColors.dangerSoft
-      : $tone === 'success'
-        ? styledEl.wallColors.neon
-        : styledEl.wallColors.textMuted};
-  font-weight: ${({ $tone }) => ($tone === 'success' ? 700 : 400)};
-`
-
-const ExplorerLink = styled.a`
-  color: ${styledEl.wallColors.neonAlt};
-  text-decoration: none;
-  word-break: break-all;
+const SmallLink = styled(styledEl.PanelLink)`
   font-size: 12px;
-`
-
-const WallLink = styled(Link)`
-  color: ${styledEl.wallColors.neonAlt};
-  text-decoration: none;
-  font-size: 12px;
+  line-height: 1.5;
 `
 
 export interface ErrorScreenProps {
@@ -77,7 +43,8 @@ export interface ReadyScreenProps {
   amount: number | null
   connected: boolean
   claiming: boolean
-  shortAddress: string
+  address: string
+  network: string
   onConnect: () => void
   onClaim: () => void
 }
@@ -91,53 +58,53 @@ export interface SuccessScreenProps {
 
 export function CheckingScreen(): ReactNode {
   return (
-    <Card>
-      <BigEmoji>⏳</BigEmoji>
-      <Note>
+    <ClaimCard>
+      <styledEl.BigEmoji $size={54}>⏳</styledEl.BigEmoji>
+      <styledEl.PanelText $tone="muted">
         <Trans>Checking claim code…</Trans>
-      </Note>
-    </Card>
+      </styledEl.PanelText>
+    </ClaimCard>
   )
 }
 
 export function ErrorScreen({ error, onRetry }: ErrorScreenProps): ReactNode {
   return (
-    <Card>
-      <BigEmoji>💥</BigEmoji>
-      <Note $tone="danger">
+    <ClaimCard>
+      <styledEl.BigEmoji $size={54}>💥</styledEl.BigEmoji>
+      <styledEl.PanelText $tone="danger">
         <Trans>Claim failed</Trans>
-      </Note>
-      <Note>{error}</Note>
+      </styledEl.PanelText>
+      <styledEl.PanelText $tone="muted">{error}</styledEl.PanelText>
       <styledEl.Button onClick={onRetry}>
         <Trans>try again</Trans>
       </styledEl.Button>
-    </Card>
+    </ClaimCard>
   )
 }
 
 export function InvalidCodeScreen(): ReactNode {
   return (
-    <Card>
-      <BigEmoji>🚫</BigEmoji>
-      <Note $tone="danger">
+    <ClaimCard>
+      <styledEl.BigEmoji $size={54}>🚫</styledEl.BigEmoji>
+      <styledEl.PanelText $tone="danger">
         <Trans>This claim code is invalid or has already been used.</Trans>
-      </Note>
-    </Card>
+      </styledEl.PanelText>
+    </ClaimCard>
   )
 }
 
 export function MissingCodeScreen(): ReactNode {
   return (
-    <Card>
-      <BigEmoji>❓</BigEmoji>
-      <Note>
+    <ClaimCard>
+      <styledEl.BigEmoji $size={54}>❓</styledEl.BigEmoji>
+      <styledEl.PanelText $tone="muted">
         <Trans>
           No claim code found.
           <br />
           Scan a graffiti QR code or open a link like <code>/graffiti/claim?code=…</code>
         </Trans>
-      </Note>
-    </Card>
+      </styledEl.PanelText>
+    </ClaimCard>
   )
 }
 
@@ -145,15 +112,16 @@ export function ReadyScreen({
   amount,
   connected,
   claiming,
-  shortAddress,
+  address,
+  network,
   onConnect,
   onClaim,
 }: ReadyScreenProps): ReactNode {
   return (
-    <Card>
-      <Note>
+    <ClaimCard>
+      <styledEl.PanelText $tone="muted">
         <Trans>This code is worth</Trans>
-      </Note>
+      </styledEl.PanelText>
       <ClaimAmount amount={amount} />
 
       {connected ? (
@@ -166,10 +134,21 @@ export function ReadyScreen({
         </styledEl.PrimaryButton>
       )}
 
-      <Note>
-        {connected ? <Trans>to {shortAddress}</Trans> : <Trans>tokens are sent straight to your wallet</Trans>}
-      </Note>
-    </Card>
+      {connected ? (
+        <styledEl.PanelText $tone="muted">
+          <Trans>
+            to{' '}
+            <SmallLink href={explorerAddressUrl(address, network)} target="_blank" rel="noopener noreferrer">
+              {address}
+            </SmallLink>
+          </Trans>
+        </styledEl.PanelText>
+      ) : (
+        <styledEl.PanelText $tone="muted">
+          <Trans>tokens are sent straight to your wallet</Trans>
+        </styledEl.PanelText>
+      )}
+    </ClaimCard>
   )
 }
 
@@ -178,32 +157,28 @@ export function SuccessScreen({ amount, balance, txSignature, network }: Success
   const bursting = useConfettiBurst()
 
   return (
-    <Card>
+    <ClaimCard>
       <Confetti start={bursting} />
-      <BigEmoji>🎨</BigEmoji>
-      <Note $tone="success">
+      <styledEl.BigEmoji $size={54}>🎨</styledEl.BigEmoji>
+      <styledEl.PanelText $tone="success">
         <Trans>CLAIMED!</Trans>
-      </Note>
+      </styledEl.PanelText>
       <ClaimAmount amount={amount} />
 
       {balance !== null && (
-        <Note>
+        <styledEl.PanelText $tone="muted">
           <Trans>
             wallet balance: {balance} {TOKEN_SYMBOL}
           </Trans>
-        </Note>
+        </styledEl.PanelText>
       )}
 
       {txSignature && (
-        <ExplorerLink href={explorerTxUrl(txSignature, network)} target="_blank" rel="noopener noreferrer">
+        <SmallLink href={explorerTxUrl(txSignature, network)} target="_blank" rel="noopener noreferrer">
           <Trans>view transaction ↗</Trans>
-        </ExplorerLink>
+        </SmallLink>
       )}
-
-      <WallLink to="/graffiti">
-        <Trans>→ go paint the wall</Trans>
-      </WallLink>
-    </Card>
+    </ClaimCard>
   )
 }
 
@@ -212,5 +187,21 @@ function ClaimAmount({ amount }: { amount: number | null }): ReactNode {
     <Amount>
       {amount ?? '…'} <Unit>{TOKEN_SYMBOL}</Unit>
     </Amount>
+  )
+}
+
+/** The wall's panel shape, so the claim page matches the wall's own modals. */
+function ClaimCard({ children }: { children: ReactNode }): ReactNode {
+  return (
+    <styledEl.ModalPanel>
+      <HeroPanel centered>
+        {children}
+        <styledEl.PanelActions>
+          <styledEl.ButtonLink to={Routes.GRAFFITI}>
+            <Trans>← back to the wall</Trans>
+          </styledEl.ButtonLink>
+        </styledEl.PanelActions>
+      </HeroPanel>
+    </styledEl.ModalPanel>
   )
 }

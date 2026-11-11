@@ -238,9 +238,10 @@ rate-limit-free today (add per-IP limits at the proxy for launch).
       `data/*.db` (gitignored — verify), `docs/graffiti/OPERATIONS.md` stays.
 - [ ] Search for `GRAFFITI FORK` comments — each marks a fork-specific change;
       review or revert per upstream taste.
-- [ ] Token naming is centralized as strings in the page (`index.tsx`,
-      `Claim.tsx`) — no fixed name is baked anywhere else; rename is a
-      find/replace. Final name TBD (MOOOXELS / MOOSELS / …).
+- [ ] Token naming is centralized as `TOKEN_SYMBOL` in
+      `pages/graffiti/wall.constants.ts` — no name is baked into the mint, which
+      is a classic SPL mint with no on-chain metadata, so a rename never touches
+      a deployment. Currently `GRASS`.
 - [ ] Feature-flag the page (it currently rides on Solana-enabled flags);
       confirm the routing entry under "Learn" + the NEW badge are wanted.
 - [ ] Defaults for the env table above are devnet-shaped; upstream config

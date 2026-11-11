@@ -6,6 +6,7 @@ import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
+import { HeroPanel } from './HeroPanel.pure'
 import { TOKEN_SYMBOL } from './wall.constants'
 import * as styledEl from './wall.styled'
 
@@ -14,31 +15,6 @@ export interface NetworkGateProps {
   switching: boolean
   onSwitch: () => void
 }
-
-const GateScreen = styled(styledEl.Page)`
-  align-items: center;
-  justify-content: center;
-  padding: 24px 16px;
-`
-
-const GatePanel = styled(styledEl.Panel)`
-  max-width: 460px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  align-items: center;
-`
-
-const GateButton = styled(styledEl.PrimaryButton)`
-  min-width: 240px;
-`
-
-const Blurb = styled.p`
-  margin: 0;
-  line-height: 1.5;
-  color: #b8b8cc;
-`
 
 const Accent = styled.strong`
   color: ${styledEl.wallColors.neon};
@@ -49,28 +25,35 @@ export function NetworkGate({ chainId, switching, onSwitch }: NetworkGateProps):
   const chainName = getChainInfo(chainId).name.toUpperCase()
 
   return (
-    <GateScreen>
-      <GatePanel>
-        <styledEl.BigEmoji>🖍</styledEl.BigEmoji>
-        <styledEl.WallHeading>GRAFFITI WALL</styledEl.WallHeading>
-        <Blurb>
-          <Trans>
-            Welcome! This wall is painted with <Accent>{TOKEN_SYMBOL}</Accent>, a Solana token — every painted cell
-            burns 1 {TOKEN_SYMBOL}.
-          </Trans>
-          <br />
-          <Trans>
-            You&apos;re currently on <strong>{chainName}</strong>. Select the <Accent>Solana</Accent> network to start
-            painting.
-          </Trans>
-        </Blurb>
-        <GateButton disabled={switching} onClick={onSwitch}>
-          {switching ? <Trans>Switching…</Trans> : <Trans>→ Switch to Solana</Trans>}
-        </GateButton>
-        <styledEl.Muted>
-          <Trans>or pick Solana from the network selector in the header</Trans>
-        </styledEl.Muted>
-      </GatePanel>
-    </GateScreen>
+    <styledEl.Page $auto>
+      <styledEl.CenteredPage>
+        <styledEl.ModalPanel>
+          <HeroPanel>
+            <styledEl.WallHeading>GRAFFITI WALL</styledEl.WallHeading>
+
+            <styledEl.PanelText>
+              <Trans>
+                Welcome! This wall is painted with <Accent>{TOKEN_SYMBOL}</Accent>, a Solana token. Every painted cell
+                burns 1 {TOKEN_SYMBOL}.
+              </Trans>
+            </styledEl.PanelText>
+            <styledEl.PanelText>
+              <Trans>
+                You&apos;re currently on <strong>{chainName}</strong>. Select the <Accent>Solana</Accent> network to
+                start painting.
+              </Trans>
+            </styledEl.PanelText>
+
+            <styledEl.PrimaryButton disabled={switching} onClick={onSwitch}>
+              {switching ? <Trans>Switching…</Trans> : <Trans>→ Switch to Solana</Trans>}
+            </styledEl.PrimaryButton>
+
+            <styledEl.Muted>
+              <Trans>or pick Solana from the network selector in the header</Trans>
+            </styledEl.Muted>
+          </HeroPanel>
+        </styledEl.ModalPanel>
+      </styledEl.CenteredPage>
+    </styledEl.Page>
   )
 }

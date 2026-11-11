@@ -40,16 +40,6 @@ const ClaimTitle = styled.h1`
   text-shadow: ${styledEl.neonShadow};
 `
 
-const ClaimLayout = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  padding: 24px;
-`
-
 export default function GraffitiClaimPage(): ReactNode {
   const [searchParams] = useSearchParams()
   const code = searchParams.get('code')?.trim() || ''
@@ -136,11 +126,11 @@ export default function GraffitiClaimPage(): ReactNode {
   }, [code, solanaAccount])
 
   const connected = Boolean(solanaAccount)
-  const shortAddress = solanaAccount ? `${solanaAccount.slice(0, 4)}…${solanaAccount.slice(-4)}` : ''
+  const network = info?.network ?? 'devnet'
 
   return (
     <styledEl.Page $auto>
-      <ClaimLayout>
+      <styledEl.CenteredPage>
         <ClaimTitle>🖍 Graffiti Wall</ClaimTitle>
 
         {screen === 'missing-code' && <MissingCodeScreen />}
@@ -152,25 +142,21 @@ export default function GraffitiClaimPage(): ReactNode {
             amount={amount}
             connected={connected}
             claiming={screen === 'claiming'}
-            shortAddress={shortAddress}
+            address={solanaAccount ?? ''}
+            network={network}
             onConnect={openWalletModal}
             onClaim={claim}
           />
         )}
 
         {screen === 'success' && (
-          <SuccessScreen
-            amount={amount}
-            balance={balance}
-            txSignature={txSignature}
-            network={info?.network ?? 'devnet'}
-          />
+          <SuccessScreen amount={amount} balance={balance} txSignature={txSignature} network={network} />
         )}
 
         {screen === 'error' && (
           <ErrorScreen error={error} onRetry={() => setScreen(amount !== null ? 'ready' : 'invalid-code')} />
         )}
-      </ClaimLayout>
+      </styledEl.CenteredPage>
     </styledEl.Page>
   )
 }
