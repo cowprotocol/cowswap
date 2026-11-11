@@ -57,7 +57,7 @@ describe('useInitializeUtm delayed cleanup', () => {
 
     await decide()
 
-    expect(mockReplace).toHaveBeenCalledWith('/learn?category=defi#guides')
+    expect(mockReplace).toHaveBeenCalledWith('/learn?category=defi#guides', { scroll: false })
   })
 
   it('does not return to the landing page when the current route has no UTM parameters', async () => {
