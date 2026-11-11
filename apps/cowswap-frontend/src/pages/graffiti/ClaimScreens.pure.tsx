@@ -3,11 +3,14 @@
 
 import type { ReactNode } from 'react'
 
+import { Confetti } from '@cowprotocol/ui'
+
 import { Trans } from '@lingui/react/macro'
 import { Link } from 'react-router'
 import styled from 'styled-components/macro'
 
 import { explorerTxUrl } from './graffiti.service'
+import { useConfettiBurst } from './useConfettiBurst'
 import { TOKEN_SYMBOL } from './wall.constants'
 import * as styledEl from './wall.styled'
 
@@ -171,8 +174,12 @@ export function ReadyScreen({
 }
 
 export function SuccessScreen({ amount, balance, txSignature, network }: SuccessScreenProps): ReactNode {
+  // This screen is only mounted once a claim has settled, so mounting is the event.
+  const bursting = useConfettiBurst()
+
   return (
     <Card>
+      <Confetti start={bursting} />
       <BigEmoji>🎨</BigEmoji>
       <Note $tone="success">
         <Trans>CLAIMED!</Trans>
