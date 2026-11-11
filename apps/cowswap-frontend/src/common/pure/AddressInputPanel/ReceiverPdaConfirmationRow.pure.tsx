@@ -4,14 +4,17 @@ import { Trans } from '@lingui/react/macro'
 
 import { ConfirmationLabel, ConfirmationRow } from './styled'
 
-interface Props {
+export interface ReceiverPdaConfirmationRowProps {
   confirmed: boolean
   onConfirmChange(v: boolean): void
 }
 
 const CHECKBOX_ID = 'receiver-pda-confirmation'
 
-export function ReceiverPdaConfirmationRow({ confirmed, onConfirmChange }: Props): ReactElement {
+export function ReceiverPdaConfirmationRow({
+  confirmed,
+  onConfirmChange,
+}: ReceiverPdaConfirmationRowProps): ReactElement {
   return (
     <ConfirmationRow $isConfirmed={confirmed}>
       <input id={CHECKBOX_ID} type="checkbox" checked={confirmed} onChange={(e) => onConfirmChange(e.target.checked)} />
