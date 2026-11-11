@@ -69,6 +69,10 @@ jest.mock('../hooks/useAffiliateStateViewAnalytics', () => ({
   useAffiliateStateViewAnalytics: jest.fn(),
 }))
 
+jest.mock('../hooks/useAffiliateSupportedNetworkNames', () => ({
+  useAffiliateSupportedNetworkNames: () => [],
+}))
+
 jest.mock('../hooks/useAffiliateTraderRecoverySideEffect', () => ({
   useAffiliateTraderRecoverySideEffect: jest.fn(),
 }))

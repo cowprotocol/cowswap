@@ -8,6 +8,11 @@ export interface SolanaOrderNotPlacedState {
   errorMessage: string
   /** Program logs when the failure carried any — a wallet-level error usually does not. */
   logs: string[] | null
+  /**
+   * The SquadsX extension is not an active proposer on the Squad, which is a setup step the user
+   * has to complete in Squads — so the screen explains that instead of blaming the transaction.
+   */
+  isSquadsSetupRequired: boolean
 }
 
 /**

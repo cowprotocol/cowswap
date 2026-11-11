@@ -29,7 +29,17 @@ const nextConfig: NextConfig = {
     return [{ source: '/sw.js', headers: [{ key: 'Service-Worker-Allowed', value: BASE_PATH }] }]
   },
   async redirects() {
-    return [{ source: '/', destination: BASE_PATH, basePath: false, permanent: false }]
+    return [
+      { source: '/', destination: BASE_PATH, basePath: false, permanent: false },
+      // Vercel answers paths outside the basePath with its own 404 on this deployment's host. `asset/:ticker` is left
+      // out because Next.js checks redirects again without the basePath for an unlisted ticker, which would loop
+      {
+        source: `/:path((?!${BASE_PATH.slice(1)}(?:/|$)|asset/[^/]+$|_next/|_vercel/|\\.well-known/).+)`,
+        destination: `${BASE_PATH}/:path`,
+        basePath: false,
+        permanent: false,
+      },
+    ]
   },
   env: {
     NEXT_PUBLIC_APP_VERSION: appVersion,

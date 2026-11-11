@@ -11,21 +11,27 @@ const mockUseFlags = jest.mocked(useFlags)
 
 describe('useIsSolanaAvailable', () => {
   it.each`
-    isSolanaEnabled | isAlphaNetworksOptionVisible | expected
-    ${true}         | ${false}                     | ${true}
-    ${false}        | ${true}                      | ${true}
-    ${false}        | ${false}                     | ${false}
+    isSolanaEnabled | isAlphaNetworksOptionVisible | isSolanaPublicLaunched | expected
+    ${true}         | ${false}                     | ${false}               | ${true}
+    ${false}        | ${true}                      | ${false}               | ${true}
+    ${false}        | ${false}                     | ${true}                | ${true}
+    ${false}        | ${false}                     | ${false}               | ${false}
+    ${undefined}    | ${undefined}                 | ${undefined}           | ${false}
   `(
-    'is $expected with isSolanaEnabled $isSolanaEnabled and the alpha networks option visible $isAlphaNetworksOptionVisible',
-    ({ isSolanaEnabled, isAlphaNetworksOptionVisible, expected }) => {
-      mockUseFlags.mockReturnValue({ isSolanaEnabled, isAlphaNetworksOptionVisible })
+    'is $expected with isSolanaEnabled $isSolanaEnabled, alpha option $isAlphaNetworksOptionVisible, public launch $isSolanaPublicLaunched',
+    ({ isSolanaEnabled, isAlphaNetworksOptionVisible, isSolanaPublicLaunched, expected }) => {
+      mockUseFlags.mockReturnValue({ isSolanaEnabled, isAlphaNetworksOptionVisible, isSolanaPublicLaunched })
 
       expect(renderHook(() => useIsSolanaAvailable()).result.current).toBe(expected)
     },
   )
 
-  it('is false inside the widget, even with both flags on', () => {
-    mockUseFlags.mockReturnValue({ isSolanaEnabled: true, isAlphaNetworksOptionVisible: true })
+  it('is false inside the widget, even with all three flags on', () => {
+    mockUseFlags.mockReturnValue({
+      isSolanaEnabled: true,
+      isAlphaNetworksOptionVisible: true,
+      isSolanaPublicLaunched: true,
+    })
     window.location.hash = '#/1/widget/swap'
 
     try {

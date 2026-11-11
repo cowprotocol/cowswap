@@ -15,6 +15,8 @@ export { AffiliateTraderStats } from './containers/AffiliateTraderStats'
 
 export { useAffiliateChainId } from './hooks/useAffiliateChainId'
 export { useAffiliatePartnerInfo } from './hooks/useAffiliatePartnerInfo'
+export { useAffiliateSupportedNetworkNames } from './hooks/useAffiliateSupportedNetworkNames'
+export { useIsAffiliateSupportedTradingNetwork } from './hooks/useIsAffiliateSupportedTradingNetwork'
 export { useIsRefCodeExpired } from './hooks/useIsRefCodeExpired'
 export { useShouldShowAffiliateTraderHeaderButton } from './hooks/useShouldShowAffiliateTraderHeaderButton'
 export { useAffiliateStateViewAnalytics } from './hooks/useAffiliateStateViewAnalytics'
@@ -24,7 +26,7 @@ export { useIsRewardsRowEnabled } from './hooks/useIsRewardsRowEnabled'
 export { useTraderActivity } from './hooks/useTraderActivity'
 export { useNotifyAffiliateLinkedCode } from './hooks/useNotifyAffiliateLinkedCode'
 
-export { isSupportedPayoutsNetwork, isSupportedTradingNetwork } from './lib/affiliateProgramUtils'
+export { isSupportedPayoutsNetwork } from './lib/affiliateProgramUtils'
 
 export { AffiliatePageState } from './analytics/affiliateAnalytics.types'
 export { getAffiliatePartnerPageState, getAffiliateTraderPageState } from './analytics/affiliateAnalytics.utils'

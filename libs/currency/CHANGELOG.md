@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.10.0](https://github.com/cowprotocol/cowswap/compare/currency-v1.9.2...currency-v1.10.0) (2026-11-10)
+
+### Minor Changes
+
+- feat(solana): pass appData to quote (#8509)
+
+### Patch Changes
+
+- fix(solana): use SDK for quote costs breakdown (#8522)
+
 ## [1.9.2](https://github.com/cowprotocol/cowswap/compare/currency-v1.9.1...currency-v1.9.2) (2026-11-05)
 
 ### Patch Changes
