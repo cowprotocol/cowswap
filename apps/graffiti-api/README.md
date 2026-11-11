@@ -107,6 +107,7 @@ above rather than typing it inline.
 | `ALLOW_JSON_STORE`     | `0`                              | `1` = permit the dev-only JSON fallback store                       |
 | `DEV_INSECURE`         | `0`                              | `1` = skip on-chain verification (refused on mainnet/production)    |
 | `ADMIN_TOKEN`          | —                                | Bearer token for `/v1/admin/*`; **unset disables those routes**     |
+| `COMMIT_HASH`          | — (`unknown` in the image)       | Commit the image was built from; CI sets it, served as `commit` on `/v1/info` |
 | `CORS_ORIGINS`         | `*` (required in production)     | Comma-separated allowed origins, also enforced on the WebSocket     |
 | `TX_MAX_AGE_SEC`       | `300`                            | Max age of an accepted draw tx and of its memo timestamp            |
 | `VERIFY_COMMITMENT`    | `finalized`                      | Commitment used to read the burn back (`confirmed` is weaker)       |

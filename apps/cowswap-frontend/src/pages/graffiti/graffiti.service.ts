@@ -23,6 +23,8 @@ export interface CanvasInfo {
   treasury: string | null
   network: string
   devInsecure?: boolean
+  /** Commit the backend was built from; null when it was not built by CI. */
+  commit?: string | null
 }
 
 export interface CellsResponse {
