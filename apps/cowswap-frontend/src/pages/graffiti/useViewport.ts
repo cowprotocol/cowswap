@@ -16,8 +16,6 @@ export interface Viewport {
   zoomBy: (factor: number) => void
   /** Fit the whole wall in view. */
   resetView: () => void
-  /** Fill the stage with the wall, cropping the overflowing axis. */
-  fillView: () => void
   /** Centre on the drawing frame, large enough to grab. */
   zoomToPlot: () => void
   isFullscreen: boolean
@@ -53,14 +51,6 @@ export function useViewport(
     autoViewRef.current = 'contain'
 
     if (canvasEl) viewRef.current = fitView(canvasEl)
-
-    requestRenderRef.current()
-  }, [autoViewRef, canvasEl, requestRenderRef, viewRef])
-
-  const fillView = useCallback((): void => {
-    autoViewRef.current = 'cover'
-
-    if (canvasEl) viewRef.current = coverView(canvasEl)
 
     requestRenderRef.current()
   }, [autoViewRef, canvasEl, requestRenderRef, viewRef])
@@ -107,8 +97,10 @@ export function useViewport(
     return () => observer.disconnect()
   }, [applyAutoView, canvasEl])
 
-  // Entering or leaving fullscreen is a deliberate reframe: always fill the new stage.
-  const { isFullscreen, toggleFullscreen } = useFullscreen(refs, fillView)
+  // Entering or leaving fullscreen is a deliberate reframe, and fullscreen is
+  // the view-the-whole-wall mode: fit the new stage rather than fill it, which
+  // would crop the axis the wall overflows on.
+  const { isFullscreen, toggleFullscreen } = useFullscreen(refs, resetView)
 
-  return { zoomBy, resetView, fillView, zoomToPlot, isFullscreen, toggleFullscreen }
+  return { zoomBy, resetView, zoomToPlot, isFullscreen, toggleFullscreen }
 }

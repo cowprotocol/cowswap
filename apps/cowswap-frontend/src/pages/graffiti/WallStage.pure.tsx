@@ -32,7 +32,10 @@ export function WallStage({ wall }: WallStageProps): ReactNode {
         <StartOverlay
           phase={paint.phase}
           phaseError={paint.phaseError}
+          connected={gate.connected}
+          balance={balance}
           onStart={actions.startDrawing}
+          onConnect={gate.openSolanaWalletModal}
           onFullscreen={viewport.toggleFullscreen}
         />
       )}

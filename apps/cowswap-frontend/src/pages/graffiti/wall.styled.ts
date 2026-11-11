@@ -1,5 +1,6 @@
 import { WALL_PAINT_MIX_BLEND_MODE } from '@cowprotocol/common-const'
 
+import { Link } from 'react-router'
 import styled, { css, keyframes } from 'styled-components/macro'
 
 import { NARROW_BREAKPOINT_PX } from './wall.constants'
@@ -258,6 +259,58 @@ export const Button = styled.button`
   ${buttonBase};
 `
 
+/** `Button` for a destination rather than an action, so both read the same. */
+export const ButtonLink = styled(Link)`
+  ${buttonBase};
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  text-decoration: none;
+`
+
+/** Body copy inside a panel. `muted` is the default for secondary status lines. */
+export const PanelText = styled.p<{ $tone?: 'muted' | 'danger' | 'success' }>`
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: ${({ $tone }) =>
+    $tone === 'danger'
+      ? wallColors.dangerSoft
+      : $tone === 'success'
+        ? wallColors.neon
+        : $tone === 'muted'
+          ? wallColors.textMuted
+          : wallColors.text};
+  font-weight: ${({ $tone }) => ($tone === 'success' ? 700 : 400)};
+`
+
+/** Any link inside a panel: long values wrap rather than overflow the column. */
+export const PanelLink = styled.a`
+  color: ${wallColors.neonAlt};
+  text-decoration: none;
+  word-break: break-all;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`
+
+/** The row a panel's secondary controls sit in; each one shares the width. */
+export const PanelActions = styled.div`
+  display: flex;
+  gap: 8px;
+  width: 100%;
+
+  > * {
+    flex: 1;
+  }
+
+  ${onNarrow(css`
+    width: auto;
+  `)}
+`
+
 /** Accent border + glow for the currently selected tool. */
 export const ToolButton = styled.button<{ $active: boolean; $accent: string; $tint: boolean }>`
   ${buttonBase};
@@ -326,6 +379,23 @@ export const Panel = styled.div`
   border: 1px solid ${wallColors.border};
   background: ${wallColors.surface};
   padding: 28px;
+`
+
+/** A panel standing alone on a page: it hugs its content rather than stretching. */
+export const ModalPanel = styled(Panel)`
+  width: fit-content;
+  max-width: 100%;
+`
+
+/** A page whose only content is one centred panel. */
+export const CenteredPage = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 24px;
 `
 
 export const CostBox = styled.div<{ $variant?: 'default' | 'danger' | 'success' }>`

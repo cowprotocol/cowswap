@@ -2,6 +2,7 @@
 // The WS URL is derived from it: relative → current host, absolute → its own.
 
 import { GRAFFITI_API_BASE, GRAFFITI_API_RAW_BASE, GRAFFITI_CANVAS_PNG_URL } from '@cowprotocol/common-const'
+import { normalizeError } from '@cowprotocol/common-utils'
 
 import type { Cell } from './raster.utils'
 
@@ -12,6 +13,8 @@ export const API_BASE = GRAFFITI_API_BASE
 const REQUEST_TIMEOUT_MS = 20_000
 /** A claim waits on the treasury's transfer being confirmed on mainnet, which 20s does not cover. */
 const CLAIM_TIMEOUT_MS = 90_000
+
+const WALL_IMAGE_FILENAME = 'graffiti-wall.png'
 
 export interface CanvasInfo {
   width: number
@@ -67,10 +70,44 @@ export class ApiError extends Error {
   }
 }
 
-export function explorerTxUrl(signature: string, network: string): string {
-  const cluster = network === 'mainnet' || network === 'mainnet-beta' ? '' : `?cluster=${network}`
+/**
+ * Save the wall as a PNG.
+ *
+ * The API is its own origin, and a cross-origin `download` attribute is ignored:
+ * the browser navigates to the image instead of saving it. Fetching the bytes
+ * first puts them behind a same-origin blob URL, which the attribute honours.
+ */
+export async function downloadWallImage(): Promise<void> {
+  try {
+    const res = await fetch(GRAFFITI_CANVAS_PNG_URL)
 
-  return `https://explorer.solana.com/tx/${signature}${cluster}`
+    if (!res.ok) throw new Error(`canvas.png: HTTP ${res.status}`)
+
+    const objectUrl = URL.createObjectURL(await res.blob())
+    const link = document.createElement('a')
+
+    link.href = objectUrl
+    link.download = WALL_IMAGE_FILENAME
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+
+    // Revoking in the same task can cancel the save before the blob is read.
+    setTimeout(() => URL.revokeObjectURL(objectUrl), 0)
+  } catch (err: unknown) {
+    const error = normalizeError(err)
+
+    console.error('wall image download failed', error)
+    window.open(GRAFFITI_CANVAS_PNG_URL, '_blank', 'noopener,noreferrer')
+  }
+}
+
+export function explorerAddressUrl(address: string, network: string): string {
+  return `https://explorer.solana.com/address/${address}${clusterQuery(network)}`
+}
+
+export function explorerTxUrl(signature: string, network: string): string {
+  return `https://explorer.solana.com/tx/${signature}${clusterQuery(network)}`
 }
 
 export async function fetchCanvasPng(width: number, height: number): Promise<Uint8ClampedArray> {
@@ -295,4 +332,9 @@ export function subscribeDiffs(
 
     socket?.close()
   }
+}
+
+/** Mainnet is the explorer's default, every other cluster has to be named. */
+function clusterQuery(network: string): string {
+  return network === 'mainnet' || network === 'mainnet-beta' ? '' : `?cluster=${network}`
 }

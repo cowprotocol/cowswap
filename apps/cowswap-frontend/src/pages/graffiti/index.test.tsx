@@ -5,6 +5,7 @@ import { fireEvent, render as baseRender, screen, waitFor } from '@testing-libra
 
 import { fetchCanvasPng, getInfo, subscribeDiffs } from './graffiti.service'
 import { setCanvasSize } from './raster.utils'
+import { useTokenBalance } from './useTokenBalance'
 
 import { LinguiWrapper } from '../../../LinguiJestProvider'
 
@@ -28,6 +29,10 @@ jest.mock('@reown/appkit-adapter-solana/react', () => ({
 // tree-shake; the page only needs the full-bleed hook from it.
 jest.mock('modules/application', () => ({
   useFullBleedPage: () => undefined,
+}))
+
+jest.mock('./useTokenBalance', () => ({
+  useTokenBalance: jest.fn(),
 }))
 
 jest.mock('./graffiti.service', () => ({
@@ -62,17 +67,18 @@ const useWalletInfoMock = jest.mocked(useWalletInfo)
 const getInfoMock = jest.mocked(getInfo)
 const fetchCanvasPngMock = jest.mocked(fetchCanvasPng)
 const subscribeDiffsMock = jest.mocked(subscribeDiffs)
+const useTokenBalanceMock = jest.mocked(useTokenBalance)
 
 function onChain(chainId: SupportedChainId, account: string | null = null): void {
   useWalletInfoMock.mockReturnValue({ chainId } as ReturnType<typeof useWalletInfo>)
   useSolanaAccountMock.mockReturnValue(account)
 }
 
-async function renderLoadedWall(account: string | null = null): Promise<void> {
+async function renderLoadedWall(account: string | null = ACCOUNT): Promise<void> {
   onChain(SupportedChainId.SOLANA, account)
   render(<GraffitiPage />)
   // Frame placement happens once the snapshot has loaded.
-  await screen.findByText(/START DRAWING/)
+  await screen.findByText(account ? /START DRAWING/ : /CONNECT SOLANA WALLET/)
 }
 
 beforeAll(() => {
@@ -94,6 +100,7 @@ beforeAll(() => {
 
 beforeEach(() => {
   setCanvasSize(WIDTH, HEIGHT)
+  useTokenBalanceMock.mockReturnValue(null)
   getInfoMock.mockResolvedValue(INFO)
   fetchCanvasPngMock.mockResolvedValue(new Uint8ClampedArray(WIDTH * HEIGHT * 4))
   subscribeDiffsMock.mockClear()
@@ -125,14 +132,14 @@ describe('wall screen', () => {
     await renderLoadedWall()
 
     expect(screen.getByText('GRAFFITI WALL')).toBeTruthy()
-    expect(screen.getByText(`${WIDTH}×${HEIGHT} · 1 MOOOXELS per pixel · devnet`)).toBeTruthy()
+    expect(screen.getByText(`${WIDTH}×${HEIGHT} · 1 GRASS per pixel · devnet`)).toBeTruthy()
   })
 
   it('subscribes to live diffs and unsubscribes on unmount', async () => {
     const unsubscribe = jest.fn()
 
     subscribeDiffsMock.mockReturnValue(unsubscribe)
-    onChain(SupportedChainId.SOLANA)
+    onChain(SupportedChainId.SOLANA, ACCOUNT)
     const { unmount } = render(<GraffitiPage />)
 
     await screen.findByText(/START DRAWING/)
@@ -160,7 +167,7 @@ describe('wall screen', () => {
 
   it('survives the wall info being unavailable', async () => {
     getInfoMock.mockRejectedValue(new Error('down'))
-    onChain(SupportedChainId.SOLANA)
+    onChain(SupportedChainId.SOLANA, ACCOUNT)
     render(<GraffitiPage />)
 
     expect(await screen.findByText(/START DRAWING/)).toBeTruthy()
@@ -231,6 +238,25 @@ describe('drawing session', () => {
     expect(screen.getByText('CONNECT WALLET TO PAINT')).toBeTruthy()
   })
 
+  it('offers the wallet rather than the frame while disconnected', async () => {
+    await renderLoadedWall(null)
+
+    expect(screen.getByText('CONNECT SOLANA WALLET')).toBeTruthy()
+    expect(screen.queryByText(/START DRAWING/)).toBeNull()
+  })
+
+  it('will not start a session a wallet with no tokens cannot finish', async () => {
+    useTokenBalanceMock.mockReturnValue(0)
+    onChain(SupportedChainId.SOLANA, ACCOUNT)
+    render(<GraffitiPage />)
+
+    const button = (await screen.findByText('NO GRASS IN YOUR WALLET')) as HTMLButtonElement
+
+    expect(button.disabled).toBe(true)
+    expect(screen.queryByText(/START DRAWING/)).toBeNull()
+    expect(screen.getByText(/Every pixel burns 1 GRASS/)).toBeTruthy()
+  })
+
   it('does not let a connected wallet paint an empty draft', async () => {
     await renderLoadedWall(ACCOUNT)
 
@@ -242,11 +268,11 @@ describe('drawing session', () => {
   it('shows the wallet balance chip only inside a session', async () => {
     await renderLoadedWall(ACCOUNT)
 
-    expect(screen.queryByText(/MOOOXELS left/)).toBeNull()
+    expect(screen.queryByText(/GRASS left/)).toBeNull()
 
     fireEvent.click(screen.getByText(/START DRAWING/))
 
-    expect(await screen.findByText(/MOOOXELS left/)).toBeTruthy()
+    expect(await screen.findByText(/GRASS left/)).toBeTruthy()
   })
 })
 
