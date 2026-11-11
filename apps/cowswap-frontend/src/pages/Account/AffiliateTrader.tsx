@@ -17,6 +17,7 @@ import {
   TraderWalletStatus,
   getAffiliateTraderPageState,
   useAffiliateStateViewAnalytics,
+  useAffiliateSupportedNetworkNames,
   useAffiliateTraderWallet,
   useTraderActivity,
   AffiliateTraderIneligible,
@@ -32,6 +33,7 @@ import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetwo
 
 export default function AffiliateTrader(): ReactNode {
   const { i18n } = useLingui()
+  const supportedNetworks = useAffiliateSupportedNetworkNames()
 
   const { savedCode } = useAtomValue(affiliateTraderSavedCodeAtom)
   const walletStatus = useAffiliateTraderWallet()
@@ -64,14 +66,14 @@ export default function AffiliateTrader(): ReactNode {
 
   return (
     <>
-      {showAffiliateBanner && <UnsupportedNetwork />}
+      {showAffiliateBanner && <UnsupportedNetwork supportedNetworks={supportedNetworks} />}
       <PageWrapper>
         <PageTitle title={i18n._(PAGE_TITLES.MY_REWARDS)} />
 
         {walletStatus === TraderWalletStatus.INELIGIBLE ? (
           <AffiliateTraderIneligible />
         ) : walletStatus === TraderWalletStatus.UNSUPPORTED ? (
-          <AffiliateTraderUnsupportedNetwork />
+          <AffiliateTraderUnsupportedNetwork supportedNetworks={supportedNetworks} />
         ) : showLoadingSkeleton ? (
           <AffiliateTraderLoading />
         ) : !savedCode || walletStatus === TraderWalletStatus.DISCONNECTED ? (
