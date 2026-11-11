@@ -17,6 +17,7 @@ import GlobalStyles from '@/styles/global.styles'
 
 const cowAnalytics = initGtm()
 
+/** Root client providers: styling, Apollo, feature flags, theme, and analytics. */
 export function Providers({ children }: { children: React.ReactNode }): React.ReactNode {
   return (
     <CacheProvider>
@@ -36,6 +37,7 @@ export function Providers({ children }: { children: React.ReactNode }): React.Re
   )
 }
 
+/** Collects styled-components styles during SSR and injects them into the server HTML. */
 function StyledComponentsRegistry({ children }: { children: React.ReactNode }): React.ReactNode {
   // Only create stylesheet once with lazy initial state
   // x-ref: https://reactjs.org/docs/hooks-reference.html#lazy-initial-state

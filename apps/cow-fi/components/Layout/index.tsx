@@ -42,6 +42,7 @@ interface LayoutProps {
   contentMinHeight?: string
 }
 
+/** Shared page layout: menu bar, content area, optional saucer scene, and footer. */
 export function Layout({ children, bgColor, host, showCowSaucer, contentMinHeight }: Readonly<LayoutProps>): ReactNode {
   const { isSolversEnabled, isRwaEnabled } = useFeatureFlags()
 
