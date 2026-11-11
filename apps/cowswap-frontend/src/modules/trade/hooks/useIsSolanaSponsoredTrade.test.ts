@@ -1,5 +1,8 @@
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { PublicKey } from '@solana/web3.js'
 import { renderHook } from '@testing-library/react'
 
 import { useTradeQuote } from 'modules/tradeQuote'
@@ -11,59 +14,107 @@ import { useIsSolanaSponsoredTrade } from './useIsSolanaSponsoredTrade'
 import { useWalletAcceptsForeignFeePayer } from './useWalletAcceptsForeignFeePayer'
 
 jest.mock('@cowprotocol/common-hooks', () => ({ useFeatureFlags: jest.fn() }))
-jest.mock('modules/tradeQuote', () => ({ useTradeQuote: jest.fn(), isSolanaQuoteAndPost: () => true }))
+jest.mock('@cowprotocol/wallet', () => ({ useWalletInfo: jest.fn() }))
+jest.mock('modules/tradeQuote', () => ({
+  useTradeQuote: jest.fn(),
+  isSolanaQuoteAndPost: (quote: unknown) => Boolean(quote),
+}))
 jest.mock('./useDerivedTradeState', () => ({ useDerivedTradeState: jest.fn() }))
 jest.mock('./useWalletAcceptsForeignFeePayer', () => ({ useWalletAcceptsForeignFeePayer: jest.fn() }))
 
 const mockUseFeatureFlags = jest.mocked(useFeatureFlags)
+const mockUseWalletInfo = jest.mocked(useWalletInfo)
 const mockUseTradeQuote = jest.mocked(useTradeQuote)
 const mockUseDerivedTradeState = jest.mocked(useDerivedTradeState)
 const mockUseWalletAcceptsForeignFeePayer = jest.mocked(useWalletAcceptsForeignFeePayer)
 
-const FUNDER = 'Co1dPLQ6ZBWbKTFXrmcCzfkfRCCVRuSzDCtYkUwEqTYD'
+const KEYPAIR_OWNER = new PublicKey(new Uint8Array(32).fill(6)).toBase58()
+// A real Squads vault. jsdom's crypto shim breaks `findProgramAddressSync`, so the PDA is written out
+// rather than derived; the test asserts it really is off the curve.
+const VAULT_OWNER = 'D9DvzXZjyqECswED5YgHi4wA1qTVjjiGP76sN6Dr8vGE'
+const FUNDER = new PublicKey(new Uint8Array(32).fill(8)).toBase58()
 
-function setQuote(funder: string | undefined): void {
-  mockUseTradeQuote.mockReturnValue({ quote: { solanaQuote: { funder } } } as unknown as ReturnType<
+function setup({
+  account = KEYPAIR_OWNER,
+  chainId = SupportedChainId.SOLANA,
+}: { account?: string; chainId?: SupportedChainId } = {}): void {
+  mockUseFeatureFlags.mockReturnValue({ isSolanaSponsoredOrdersEnabled: true } as unknown as ReturnType<
+    typeof useFeatureFlags
+  >)
+  mockUseWalletInfo.mockReturnValue({ account, chainId } as unknown as ReturnType<typeof useWalletInfo>)
+  mockUseTradeQuote.mockReturnValue({ quote: { solanaQuote: { funder: FUNDER } } } as unknown as ReturnType<
     typeof useTradeQuote
   >)
+  mockUseDerivedTradeState.mockReturnValue({ tradeType: TradeType.SWAP } as unknown as ReturnType<
+    typeof useDerivedTradeState
+  >)
+  mockUseWalletAcceptsForeignFeePayer.mockReturnValue(true)
 }
 
 beforeEach(() => {
-  mockUseFeatureFlags.mockReturnValue({ isSolanaSponsoredOrdersEnabled: true })
-  mockUseDerivedTradeState.mockReturnValue({ tradeType: TradeType.SWAP } as ReturnType<typeof useDerivedTradeState>)
-  mockUseWalletAcceptsForeignFeePayer.mockReturnValue(true)
-  setQuote(FUNDER)
+  jest.clearAllMocks()
 })
 
 describe('useIsSolanaSponsoredTrade', () => {
-  it('sponsors a swap once the quote names a funder', () => {
+  it('is sponsored for an ordinary keypair owner', () => {
+    setup()
+
     expect(renderHook(() => useIsSolanaSponsoredTrade()).result.current).toBe(true)
+  })
+
+  // The displayed cost has to agree with the path `solanaFlow` takes, or the UI promises a sponsor
+  // the flow will not use and the owner is billed for what the screen called free.
+  it('is not sponsored for a smart contract wallet owner', () => {
+    expect(PublicKey.isOnCurve(VAULT_OWNER)).toBe(false)
+
+    setup({ account: VAULT_OWNER })
+
+    expect(renderHook(() => useIsSolanaSponsoredTrade()).result.current).toBe(false)
   })
 
   // The costs this drives have to match what `useSolanaFlowOptions` tells the flow: showing a
   // sponsored price while the flow makes the owner pay would understate the SOL they need.
-  it('does not sponsor while the wallet rejects a foreign fee payer', () => {
+  it('is not sponsored while the wallet rejects a foreign fee payer', () => {
+    setup()
     mockUseWalletAcceptsForeignFeePayer.mockReturnValue(false)
 
     expect(renderHook(() => useIsSolanaSponsoredTrade()).result.current).toBe(false)
   })
 
-  it('does not sponsor while the feature flag is off', () => {
-    mockUseFeatureFlags.mockReturnValue({})
+  it('leaves the estimate sponsored while no wallet is connected', () => {
+    setup({ account: undefined as unknown as string })
+
+    expect(renderHook(() => useIsSolanaSponsoredTrade()).result.current).toBe(true)
+  })
+
+  // A quote outlives the wallet that asked for it, so switching to an EVM wallet leaves an EVM
+  // account beside a stale Solana quote. `PublicKey.isOnCurve` throws on a non-base58 string, which
+  // would take the whole trade widget down during render.
+  it('does not throw when an EVM account is current beside a stale solana quote', () => {
+    setup({ account: '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984', chainId: SupportedChainId.MAINNET })
+
+    expect(() => renderHook(() => useIsSolanaSponsoredTrade())).not.toThrow()
+  })
+
+  it('is not sponsored while the feature flag is off', () => {
+    setup()
+    mockUseFeatureFlags.mockReturnValue({} as unknown as ReturnType<typeof useFeatureFlags>)
 
     expect(renderHook(() => useIsSolanaSponsoredTrade()).result.current).toBe(false)
   })
 
-  it('does not sponsor a limit order', () => {
-    mockUseDerivedTradeState.mockReturnValue({ tradeType: TradeType.LIMIT_ORDER } as ReturnType<
+  it('is not sponsored for a limit order', () => {
+    setup()
+    mockUseDerivedTradeState.mockReturnValue({ tradeType: TradeType.LIMIT_ORDER } as unknown as ReturnType<
       typeof useDerivedTradeState
     >)
 
     expect(renderHook(() => useIsSolanaSponsoredTrade()).result.current).toBe(false)
   })
 
-  it('does not sponsor while the quote names no funder', () => {
-    setQuote(undefined)
+  it('is not sponsored when the quote reports no funder', () => {
+    setup()
+    mockUseTradeQuote.mockReturnValue({ quote: { solanaQuote: {} } } as unknown as ReturnType<typeof useTradeQuote>)
 
     expect(renderHook(() => useIsSolanaSponsoredTrade()).result.current).toBe(false)
   })

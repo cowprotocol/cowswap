@@ -18,6 +18,7 @@ import { getTradeTokensFilters } from '../lib/tradeTokensFilters'
 import { getTradingPauseMessage } from '../lib/tradingPause'
 import { TRADE_WIDGET_ID } from '../model/useSelectTradeToken'
 import { useTradeSelection } from '../model/useTradeSelection'
+import { useWidgetOrderAnalytics } from '../model/useWidgetOrderAnalytics'
 import { useWidgetTradeTokenSync } from '../model/useWidgetTradeTokenSync'
 
 import { assetQueryAtomFamily, type RwaAsset, type RwaMarketData, type RwaToken } from '@/entities/asset'
@@ -39,7 +40,12 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
   const { isConnected } = useConnection()
   const isDark = useIsDarkTheme()
   const selection = useTradeSelection(asset)
-  const listeners = useWidgetTradeTokenSync(asset, selection)
+  const tradeTokenSyncListeners = useWidgetTradeTokenSync(asset, selection)
+  const orderAnalyticsListeners = useWidgetOrderAnalytics(asset)
+  const listeners = useMemo(
+    () => [...tradeTokenSyncListeners, ...orderAnalyticsListeners],
+    [tradeTokenSyncListeners, orderAnalyticsListeners],
+  )
   const assetToken = selection?.assetToken
   const { tradingPause, market } = useAtomValue(assetQueryAtomFamily(asset.ticker)).data ?? {}
   const tradingPauseMessage =
@@ -81,15 +87,17 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
     <section ref={widgetRef} id={TRADE_WIDGET_ID} className={styles.widget}>
       <TradeTokenSelector asset={asset} selection={selection} />
       {tradingPauseMessage && <p className={styles.notice}>{tradingPauseMessage}</p>}
-      <div className={styles.frame} data-loading={isWidgetLoading || undefined}>
-        <CowSwapWidget
-          params={params}
-          provider={provider}
-          listeners={listeners}
-          onReady={onWidgetSettled}
-          onLoadingError={onWidgetSettled}
-        />
-        {isWidgetLoading && <TradeWidgetSkeleton overlay />}
+      <div className={styles.frameContainer}>
+        <div className={styles.frame} data-loading={isWidgetLoading || undefined}>
+          <CowSwapWidget
+            params={params}
+            provider={provider}
+            listeners={listeners}
+            onReady={onWidgetSettled}
+            onLoadingError={onWidgetSettled}
+          />
+          {isWidgetLoading && <TradeWidgetSkeleton overlay />}
+        </div>
       </div>
       <p className={styles.disclaimer}>
         Tokens are issued by independent third parties and may not confer ownership of the underlying shares. Check

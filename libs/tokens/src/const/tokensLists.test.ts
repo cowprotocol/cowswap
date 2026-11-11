@@ -35,4 +35,12 @@ describe('DEFAULT_TOKENS_LISTS', () => {
     expect(reserveList).toEqual(expect.objectContaining({ priority: 6, source: RESERVE_BNB_TOKEN_LIST_URL }))
     expect(reserveList?.enabledByDefault).toBeUndefined()
   })
+
+  it('enables the Solana RWA list by default, and no other RWA list', () => {
+    const enabledRwaSources = Object.values(DEFAULT_TOKENS_LISTS).flatMap((lists) =>
+      (lists || []).filter((list) => list.category === 'RWA' && list.enabledByDefault).map((list) => list.source),
+    )
+
+    expect(enabledRwaSources).toEqual([SOLANA_RWA_TOKENS_LIST_SOURCE])
+  })
 })

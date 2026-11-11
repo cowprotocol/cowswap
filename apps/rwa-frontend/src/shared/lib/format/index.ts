@@ -3,6 +3,7 @@ export {
   formatCompactUsd,
   formatDate,
   formatDateTime,
+  formatDuration,
   formatPercent,
   formatRange,
   formatTokenAmount,

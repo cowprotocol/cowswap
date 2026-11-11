@@ -2,25 +2,6 @@
   display: none;
 }
 
-.trigger {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  border: none;
-  border-radius: 50%;
-  background: none;
-  color: var(--color-text-muted);
-}
-
-.trigger:hover,
-.trigger[aria-expanded='true'] {
-  background: var(--color-surface);
-  color: var(--color-text);
-}
-
 .panel {
   position: absolute;
   z-index: 100;
@@ -116,5 +97,9 @@
 @media (max-width: 1280px) {
   .root {
     display: block;
+  }
+
+  body:has(.panel) {
+    overflow: hidden;
   }
 }

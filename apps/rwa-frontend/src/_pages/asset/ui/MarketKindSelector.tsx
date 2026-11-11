@@ -13,6 +13,7 @@ import {
 } from '../model/marketKindAtom'
 
 import { RWA_MARKET_KINDS, type RwaAsset, type RwaMarketKind } from '@/entities/asset'
+import { trackEvent } from '@/shared/lib/analytics'
 
 const MARKET_KIND_LABELS: Record<RwaMarketKind, string> = { stock: 'Stock', tokenized: 'Tokenized stock' }
 
@@ -46,7 +47,14 @@ export function MarketKindSelector({ asset, className }: MarketKindSelectorProps
             aria-disabled={isDisabled}
             aria-describedby={isDisabled ? hintId : undefined}
             title={isDisabled ? unavailableHint : undefined}
-            onClick={isDisabled ? undefined : () => setMarketKind(kind)}
+            onClick={
+              isDisabled
+                ? undefined
+                : () => {
+                    setMarketKind(kind)
+                    trackEvent('market_kind_select', { ticker: asset.ticker, marketKind: kind })
+                  }
+            }
           >
             {MARKET_KIND_LABELS[kind]}
           </button>

@@ -12,8 +12,8 @@ const XSTOCKS_TOKENS_LIST_KEY = getSourceAsKey(XSTOCKS_TOKENS_LIST_SOURCE)
 
 /**
  * Address keys of the xStocks list tokens on the current chain.
- * Built from stored lists rather than `listsStatesMapAtom`: the xStocks list can be hidden from the user
- * (e.g. RWA lists excluded for US users), and the xStocks trade minimum must still apply.
+ * Built from stored lists rather than `listsStatesMapAtom`, which drops the lists a widget integrator
+ * has not selected: the xStocks trade minimum must still apply to those tokens.
  */
 export const xstockTokenAddressesAtom = atom(async (get): Promise<Set<string>> => {
   const { chainId } = get(environmentAtom)

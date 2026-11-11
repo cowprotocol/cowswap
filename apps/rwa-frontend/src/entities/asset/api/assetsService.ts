@@ -106,12 +106,16 @@ export async function getAsset(ticker: string): Promise<RwaAssetResponse | null>
 
 /** Per share like `getAssetChart` */
 export async function getAssetCandles(asset: RwaAsset, range: RwaChartRange): Promise<RwaCandleChart> {
+  const rwaCandles = await loadRwaSeries(() => marketDataProvider.getRwaCandles(asset.coingeckoId, range))
+
+  if (rwaCandles.items?.length) return { ticker: asset.ticker, range, candles: rwaCandles.items, degraded: false }
+
   const [{ items: candles, coinTokens }, { byKey, degraded }] = await Promise.all([
     loadFirstCoinWithData(asset.tokens, (coingeckoId) => marketDataProvider.getCandles(coingeckoId, range)),
     loadSharesPerToken(asset.tokens),
   ])
   const sharesPerToken = getCoinSharesPerToken(coinTokens, byKey)
-  const chart = { ticker: asset.ticker, range, degraded }
+  const chart = { ticker: asset.ticker, range, degraded: degraded || rwaCandles.failed }
 
   if (sharesPerToken === null) return { ...chart, candles }
 
@@ -127,14 +131,21 @@ export async function getAssetCandles(asset: RwaAsset, range: RwaChartRange): Pr
   }
 }
 
-/** USD per share of the underlying, or per token when the charted coin has no single known multiplier */
+/**
+ * USD per share over every issuer of the asset. Without that chart, of the first coin of the asset with prices:
+ * per share, or per token when that coin has no single known multiplier
+ */
 export async function getAssetChart(asset: RwaAsset, range: RwaChartRange): Promise<RwaChart> {
+  const rwaPoints = await loadRwaSeries(() => marketDataProvider.getRwaChart(asset.coingeckoId, range))
+
+  if (rwaPoints.items?.length) return { ticker: asset.ticker, range, points: rwaPoints.items, degraded: false }
+
   const [{ items: points, coinTokens }, { byKey, degraded }] = await Promise.all([
     loadFirstCoinWithData(asset.tokens, (coingeckoId) => marketDataProvider.getChart(coingeckoId, range)),
     loadSharesPerToken(asset.tokens),
   ])
   const sharesPerToken = getCoinSharesPerToken(coinTokens, byKey)
-  const chart = { ticker: asset.ticker, range, degraded }
+  const chart = { ticker: asset.ticker, range, degraded: degraded || rwaPoints.failed }
 
   if (sharesPerToken === null) return { ...chart, points }
 
@@ -185,16 +196,15 @@ export async function getAssetStockChart(asset: RwaAsset, range: RwaChartRange):
 }
 
 export async function getAssetTokenStats(asset: RwaAsset): Promise<RwaAssetTokenStats> {
-  const tokenMarkets = await loadTokenMarkets(asset.tokens)
   const chainIds = [...new Set(asset.tokens.map((token) => token.chainId))]
   const chains = await Promise.all(
-    chainIds.map(async (chainId) => ({ chainId, ...(await loadChainStats(asset, chainId, tokenMarkets ?? {})) })),
+    chainIds.map(async (chainId) => ({ chainId, ...(await loadChainStats(asset, chainId)) })),
   )
 
   return {
     ticker: asset.ticker,
     tokens: chains.flatMap(({ chainId, tokens }) => tokens.map((stats) => ({ ...stats, chainId }))),
-    degraded: tokenMarkets === null || chains.some(({ isLoaded }) => !isLoaded),
+    degraded: chains.some(({ isLoaded }) => !isLoaded),
   }
 }
 
@@ -293,14 +303,13 @@ function getDailySeries(market: RwaAggregateMarket | undefined): RwaChartPoint[]
 async function loadChainStats(
   asset: RwaAsset,
   chainId: number,
-  tokenMarkets: Record<string, RwaTokenMarketData>,
 ): Promise<{ tokens: RwaTokenNetworkStats[]; isLoaded: boolean }> {
   const tokens = asset.tokens.filter((token) => token.chainId === chainId)
-  const stats = await loadNetworkStats(chainId, tokens, tokenMarkets)
+  const stats = await loadNetworkStats(chainId, tokens)
 
   if (stats) return { tokens: stats, isLoaded: true }
 
-  return { tokens: tokens.map(({ address }) => ({ address, onchainCap: null, dexVolume24h: null })), isLoaded: false }
+  return { tokens: tokens.map(({ address }) => ({ address, dexVolume24h: null })), isLoaded: false }
 }
 
 /**
@@ -322,13 +331,9 @@ async function loadFirstCoinWithData<T>(
   return { items: [], coinTokens: [] }
 }
 
-async function loadNetworkStats(
-  chainId: number,
-  tokens: RwaToken[],
-  tokenMarkets: Record<string, RwaTokenMarketData>,
-): Promise<RwaTokenNetworkStats[] | null> {
+async function loadNetworkStats(chainId: number, tokens: RwaToken[]): Promise<RwaTokenNetworkStats[] | null> {
   try {
-    return await marketDataProvider.getNetworkStats(chainId, tokens, tokenMarkets)
+    return await marketDataProvider.getNetworkStats(chainId, tokens)
   } catch (err: unknown) {
     const error = normalizeError(err)
     console.error('[rwa] Failed to load network stats', error)
@@ -346,6 +351,18 @@ async function loadRwaMarkets(): Promise<RwaMarketsLoadResult> {
     console.error('[rwa] Failed to load RWA markets', error)
 
     return { byId: new Map(), degraded: true }
+  }
+}
+
+/** `failed` when the request threw, so the issuer chart that replaces it is not cached */
+async function loadRwaSeries<T>(load: () => Promise<T[] | null>): Promise<{ items: T[] | null; failed: boolean }> {
+  try {
+    return { items: await load(), failed: false }
+  } catch (err: unknown) {
+    const error = normalizeError(err)
+    console.error('[rwa] Failed to load the RWA chart', error)
+
+    return { items: null, failed: true }
   }
 }
 

@@ -4,7 +4,7 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { getTokenId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { ButtonPrimary, ExternalLink, UI, Modal } from '@cowprotocol/ui'
+import { ButtonPrimary, ExternalLink, Modal } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import { AlertTriangle } from 'react-feather'
@@ -17,29 +17,8 @@ const ExternalLinkStyled = styled(ExternalLink)`
   color: inherit;
 `
 
-const BlockedAlert = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 12px;
-  background: var(${UI.COLOR_DANGER_BG});
-  color: var(${UI.COLOR_DANGER_TEXT});
-  border-radius: 10px;
-  font-size: 13px;
-
-  > svg {
-    flex-shrink: 0;
-  }
-`
-
-export interface ImportRestriction {
-  isBlocked: boolean
-  message: string
-}
-
 export interface ImportTokenModalProps {
   tokens: TokenWithLogo[]
-  restriction?: ImportRestriction | null
 
   onBack?(): void
 
@@ -49,7 +28,7 @@ export interface ImportTokenModalProps {
 }
 
 export function ImportTokenModal(props: ImportTokenModalProps): ReactNode {
-  const { tokens, restriction, onBack, onDismiss, onImport } = props
+  const { tokens, onBack, onDismiss, onImport } = props
 
   return (
     <styledEl.Wrapper>
@@ -83,13 +62,7 @@ export function ImportTokenModal(props: ImportTokenModalProps): ReactNode {
             </styledEl.UnknownSourceWarning>
           </styledEl.TokenInfo>
         ))}
-        {restriction?.isBlocked && (
-          <BlockedAlert>
-            <AlertTriangle size={20} />
-            <span>{restriction.message}</span>
-          </BlockedAlert>
-        )}
-        <ButtonPrimary onClick={() => onImport(tokens)} disabled={restriction?.isBlocked}>
+        <ButtonPrimary onClick={() => onImport(tokens)}>
           <Trans>Import</Trans>
         </ButtonPrimary>
       </styledEl.Contents>

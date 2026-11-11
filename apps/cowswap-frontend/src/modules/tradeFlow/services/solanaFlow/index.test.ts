@@ -118,6 +118,9 @@ const RECEIVER_ADDRESS = '5k75h1UBx8gJp6kTkPcbkgAgPmrPBiLHLLXmzMfVsBEZ'
 // possibly-stale one) so tests can tell which one a given code path actually used. Must be a real,
 // parseable base58 pubkey: `solanaFlow` now passes it through `new PublicKey(...)` for limit orders.
 const RESOLVED_RECEIVER_ADDRESS = new PublicKey(new Uint8Array(32).fill(6)).toBase58()
+// A real Squads vault. jsdom's crypto shim breaks `findProgramAddressSync`, so the PDA is written out
+// rather than derived; the test asserts it really is off the curve.
+const VAULT_OWNER = new PublicKey('D9DvzXZjyqECswED5YgHi4wA1qTVjjiGP76sN6Dr8vGE')
 // The back end's rotating sponsor account, reported by the quote.
 const FUNDER_ADDRESS = new PublicKey(new Uint8Array(32).fill(8)).toBase58()
 const SOLANA_CHAIN_ID = SupportedChainId.SOLANA
@@ -182,15 +185,17 @@ function buildContext({
   orderClass = OrderClass.MARKET,
   buyAmount = outputAmount,
   quoteBuyToken = usdc.address,
+  owner = new PublicKey(SOLANA_ACCOUNT),
 }: {
   isNativeSell?: boolean
   delegationAmount?: bigint
   orderClass?: OrderClass
   buyAmount?: CurrencyAmount<Token>
   quoteBuyToken?: string
+  owner?: PublicKey
 } = {}): SolanaTradeFlowContext {
   return {
-    account: SOLANA_ACCOUNT,
+    account: owner.toBase58(),
     isNativeSell,
     solanaQuote: {
       uid: new Uint8Array(32).fill(7),
@@ -204,7 +209,7 @@ function buildContext({
     solana: {
       connection: {} as Connection,
       provider: {} as SolanaProvider,
-      owner: new PublicKey(SOLANA_ACCOUNT),
+      owner,
     },
     sellToken: wsol,
     sellAmount: SELL_AMOUNT,
@@ -551,6 +556,25 @@ describe('solanaFlow', () => {
   it('does not mark a self-paid order as sponsored', async () => {
     await solanaFlow(buildContext(), buildAnalytics())
 
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ order: expect.objectContaining({ isSponsored: false }) }),
+      expect.anything(),
+    )
+  })
+
+  // A vault's order only reaches the chain nested in `VaultTransactionExecute`, while sponsored
+  // placement needs the funder as fee payer and `CreateOrder` top-level — the order book rejects the
+  // combination as `WrongFeePayer`. Self-paid is the path such an owner can actually complete.
+  it('places self-paid for a smart contract wallet owner, even with sponsoring on', async () => {
+    mockSignSolanaFlow.mockResolvedValue({ transaction: 'base64-tx', signedAtMs: Date.now() })
+
+    expect(PublicKey.isOnCurve(VAULT_OWNER.toBytes())).toBe(false)
+
+    await solanaFlow(buildContext({ owner: VAULT_OWNER }), buildAnalytics(), { isSponsored: true })
+
+    expect(mockSignSolanaFlow).not.toHaveBeenCalled()
+    expect(mockPostSolanaSponsoredOrder).not.toHaveBeenCalled()
+    expect(mockSendSolanaFlow).toHaveBeenCalled()
     expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
       expect.objectContaining({ order: expect.objectContaining({ isSponsored: false }) }),
       expect.anything(),
@@ -983,6 +1007,7 @@ describe('solanaFlow · order not placed', () => {
       tradeAmounts: { inputAmount: context.context.inputAmount, outputAmount: context.context.outputAmount },
       errorMessage: KEYRING_ERROR,
       logs,
+      isSquadsSetupRequired: false,
     })
   })
 
@@ -1002,6 +1027,16 @@ describe('solanaFlow · order not placed', () => {
       outputAmount: context.context.outputAmount,
     })
     expect(jotaiStore.get(solanaOrderNotPlacedAtom)).toBeNull()
+  })
+
+  // The wallet refuses every order until the SquadsX key is a proposer on the Squad, and its own
+  // wording gives the user nothing to act on.
+  it('flags a SquadsX key that is not a proposer so the screen can explain the setup step', async () => {
+    mockSendSolanaFlow.mockRejectedValue(new Error('this extension is not an active proposer on the selected multisig'))
+
+    await solanaFlow(buildContext(), buildAnalytics())
+
+    expect(jotaiStore.get(solanaOrderNotPlacedAtom)).toEqual(expect.objectContaining({ isSquadsSetupRequired: true }))
   })
 
   // Cancelling is a decision, not a failure: "Transaction checks failed" would be a lie about it.

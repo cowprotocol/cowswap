@@ -34,6 +34,12 @@
       "import": "./src/cowLinks.ts",
       "require": "./src/cowLinks.ts",
       "default": "./src/cowLinks.ts"
+    },
+    "./analytics": {
+      "types": "./src/analytics.ts",
+      "import": "./src/analytics.ts",
+      "require": "./src/analytics.ts",
+      "default": "./src/analytics.ts"
     }
   },
   "publishConfig": {
@@ -64,6 +70,11 @@
         "types": "./cowLinks.d.ts",
         "import": "./cowLinks.mjs",
         "require": "./cowLinks.js"
+      },
+      "./analytics": {
+        "types": "./analytics.d.ts",
+        "import": "./analytics.mjs",
+        "require": "./analytics.js"
       }
     }
   },

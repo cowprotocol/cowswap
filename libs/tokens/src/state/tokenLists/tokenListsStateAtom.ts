@@ -2,7 +2,7 @@ import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
 import { atomWithIdbStorage, getJotaiMergerStorage } from '@cowprotocol/core'
-import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 
 import { DEFAULT_TOKENS_LISTS, LP_TOKEN_LISTS } from '../../const/tokensLists'
 import { getSourceAsKey } from '../../hooks/lists/useIsListBlocked'
@@ -16,27 +16,15 @@ export const userAddedListsSourcesAtom = atomWithStorage<ListsSourcesByNetwork>(
   getJotaiMergerStorage(),
 )
 
-function getExcludedRwaListKeys(chainId: SupportedChainId): Set<string> {
-  return new Set(
-    (DEFAULT_TOKENS_LISTS[chainId] || [])
-      .filter((list) => list.category === 'RWA')
-      .map((list) => getSourceAsKey(list.source)),
-  )
-}
-
 export const allListsSourcesAtom = atom((get) => {
-  const { chainId, isYieldEnabled, excludeRwaLists } = get(environmentAtom)
+  const { chainId, isYieldEnabled } = get(environmentAtom)
   const userAddedTokenLists = get(userAddedListsSourcesAtom)
   const userAddedTokenListsForChain = userAddedTokenLists[chainId] || []
 
   const defaultLists = DEFAULT_TOKENS_LISTS[chainId] || []
   const lpLists = isYieldEnabled ? LP_TOKEN_LISTS : []
 
-  return [
-    ...(excludeRwaLists ? defaultLists.filter((list) => list.category !== 'RWA') : defaultLists),
-    ...lpLists,
-    ...userAddedTokenListsForChain,
-  ]
+  return [...defaultLists, ...lpLists, ...userAddedTokenListsForChain]
 })
 
 // Migrating from localStorage to indexedDB
@@ -102,9 +90,8 @@ export function dropRepinnedDuplicates<T>(
 }
 
 export const listsStatesMapAtom = atom(async (get) => {
-  const { chainId, widgetAppCode, selectedLists, excludeRwaLists } = get(environmentAtom)
+  const { chainId, widgetAppCode, selectedLists } = get(environmentAtom)
   const virtualListsState = get(virtualListsStateAtom)
-  const excludedListKeys = excludeRwaLists ? getExcludedRwaListKeys(chainId) : null
 
   const allTokenListsInfo = await get(listsStatesByChainAtom)
   const listsState = allTokenListsInfo[chainId] || {}
@@ -112,7 +99,7 @@ export const listsStatesMapAtom = atom(async (get) => {
   const storedLists = Object.keys(listsState).reduce<TokenListsState>((acc, key) => {
     const val = listsState[key]
 
-    if (val !== 'deleted' && !excludedListKeys?.has(getSourceAsKey(key))) {
+    if (val !== 'deleted') {
       acc[key] = val
     }
 

@@ -16,7 +16,7 @@ import {
 
 export type AssetPriceStats = Pick<
   RwaMarketData,
-  'price' | 'change24h' | 'dayLow' | 'dayHigh' | 'marketCap' | 'volume24h'
+  'price' | 'change24h' | 'dayLow' | 'dayHigh' | 'marketCap' | 'volume24h' | 'updatedAt'
 >
 
 interface ShownPriceStats {

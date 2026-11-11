@@ -9,6 +9,25 @@
   background: var(--color-bg);
 }
 
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  color: var(--color-text-muted);
+}
+
+.iconButton:hover,
+.iconButton[aria-expanded='true'] {
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
 .logo {
   display: inline-flex;
   align-items: center;

@@ -16,6 +16,9 @@ export function CancelOrderCell({ order }: { order: OpenOrder }): ReactNode {
   const cancellation = useOrderCancellation(order.uid)
   const cancel = useCancelOrder()
 
+  // The UID cancellations don't stop a TWAP. A Safe's TWAP is cancelled in the trade widget
+  if (order.type === 'twap' && !order.cowShedTwap) return null
+
   if (cancellation?.status === 'signing') {
     return <span className={styles.secondary}>Confirm in your wallet…</span>
   }
@@ -32,24 +35,30 @@ export function CancelOrderCell({ order }: { order: OpenOrder }): ReactNode {
     )
   }
 
-  if (cancellation?.status === 'cancelled') return <span className={styles.secondary}>Cancelled</span>
-
-  const items: RowMenuItem[] = [
-    ...(order.isSoftCancellable
-      ? [
-          {
-            label: 'Cancel order',
-            description: 'Free. Signs a message, the order may still fill until it is processed',
-            onSelect: () => cancel(order, 'soft'),
-          },
-        ]
-      : []),
-    {
-      label: 'Cancel on-chain',
-      description: 'Costs gas. Sends a transaction, the order can no longer fill once it confirms',
-      onSelect: () => cancel(order, 'hard'),
-    },
-  ]
+  const items: RowMenuItem[] = order.cowShedTwap
+    ? [
+        {
+          label: 'Cancel TWAP on-chain',
+          description: 'Costs gas. Sends a transaction, no part can fill once it confirms',
+          onSelect: () => cancel(order, 'hard'),
+        },
+      ]
+    : [
+        ...(order.isSoftCancellable
+          ? [
+              {
+                label: 'Cancel order',
+                description: 'Free. Signs a message, the order may still fill until it is processed',
+                onSelect: () => cancel(order, 'soft'),
+              },
+            ]
+          : []),
+        {
+          label: 'Cancel on-chain',
+          description: 'Costs gas. Sends a transaction, the order can no longer fill once it confirms',
+          onSelect: () => cancel(order, 'hard'),
+        },
+      ]
 
   return (
     <>
