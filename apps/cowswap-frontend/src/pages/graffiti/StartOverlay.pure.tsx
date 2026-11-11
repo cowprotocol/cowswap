@@ -93,6 +93,7 @@ const CodeForm = styled.form`
   flex-direction: column;
   gap: 8px;
   margin: 0;
+  width: 100%;
 `
 
 const CodeLabel = styled.label`
@@ -126,16 +127,14 @@ export function StartOverlay({
         {view === 'claim' ? (
           <ClaimView onBack={() => setView('welcome')} />
         ) : (
-          <HeroPanel>
-            <styledEl.WideOnly>
-              <styledEl.WallHeading>GRAFFITI WALL</styledEl.WallHeading>
-              <styledEl.PanelText>
-                <Trans>
-                  A {width}×{height} pixel wall shared by everyone, painted live on Solana. Pick your frame, draw
-                  whatever you like, and burn 1 {TOKEN_SYMBOL} per pixel to put it on the wall for good.
-                </Trans>
-              </styledEl.PanelText>
-            </styledEl.WideOnly>
+          <HeroPanel fillHeight>
+            <styledEl.WallHeading>GRAFFITI WALL</styledEl.WallHeading>
+            <styledEl.PanelText>
+              <Trans>
+                A {width}×{height} pixel wall shared by everyone, painted live on Solana. Pick your frame, draw whatever
+                you like, and burn 1 {TOKEN_SYMBOL} per pixel to put it on the wall for good.
+              </Trans>
+            </styledEl.PanelText>
 
             <StartAction
               connected={connected}
@@ -186,7 +185,7 @@ function ClaimView({ onBack }: { onBack: () => void }): ReactNode {
   }
 
   return (
-    <HeroPanel>
+    <HeroPanel hideHero>
       <styledEl.WallHeading>
         <Trans>GET {TOKEN_SYMBOL}</Trans>
       </styledEl.WallHeading>

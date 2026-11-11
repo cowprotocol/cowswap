@@ -28,6 +28,19 @@ export const PIXELS_LENGTH = CANVAS.w * CANVAS.h * 4
 /** Below this width the tools collapse into a bottom sheet. */
 export const NARROW_BREAKPOINT_PX = 780
 
+/**
+ * Below this width the mural is dropped from the panels. The wall's stage loses
+ * 264px to the tools sidebar, and mural + copy column no longer fit beside it.
+ */
+export const HERO_BREAKPOINT_PX = 1024
+
+/**
+ * Height of the app's wallet bar, which `Media.upToMedium` fixes over the bottom
+ * of the viewport (`HeaderControls` in legacy/components/Header/styled.tsx). The
+ * shell clears it with page padding, which a full-bleed page like the wall drops.
+ */
+export const APP_BOTTOM_BAR_PX = 56
+
 /** Frame size used until GET /v1/info reports the configured one. */
 export const DEFAULT_PLOT_WIDTH = 256
 export const DEFAULT_PLOT_HEIGHT = 128
