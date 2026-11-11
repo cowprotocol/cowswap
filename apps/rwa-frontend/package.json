@@ -14,6 +14,7 @@
   "dependencies": {
     "@base-ui/react": "1.7.0",
     "@cowprotocol/analytics": "workspace:*",
+    "@cowprotocol/assets": "workspace:*",
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
     "@cowprotocol/cow-sdk": "9.3.3",

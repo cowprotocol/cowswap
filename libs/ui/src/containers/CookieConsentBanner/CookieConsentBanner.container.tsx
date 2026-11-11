@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 import { COOKIE_CONSENT_COPY, CookieConsentCopy, useCookieConsentBanner } from '@cowprotocol/analytics'
+import svgCowCookieSrc from '@cowprotocol/assets/images/cow-cookie.svg'
 import { COWSWAP_COOKIE_POLICY_LINK } from '@cowprotocol/common-const'
 
 import * as styledEl from './CookieConsentBanner.styled'
@@ -9,16 +10,16 @@ export interface CookieConsentBannerContainerProps {
   copy?: CookieConsentCopy
   title?: string
   illustration?: ReactNode
-  variant?: 'default' | 'cowCookie'
+  variant?: 'white' | 'cyan'
   /** Pixels. Height of a bar the app fixes to the bottom of the screen up to `Media.upToMedium`. Default 0 */
   bottomBarHeight?: number
 }
 
 export function CookieConsentBannerContainer({
   copy = COOKIE_CONSENT_COPY,
-  title,
-  illustration,
-  variant = 'default',
+  title = copy.title,
+  illustration = <img src={svgCowCookieSrc} alt="" />,
+  variant = 'white',
   bottomBarHeight = 0,
 }: CookieConsentBannerContainerProps): ReactNode {
   const banner = useCookieConsentBanner()
@@ -27,7 +28,7 @@ export function CookieConsentBannerContainer({
 
   return (
     <styledEl.Wrapper $bottomBarHeight={bottomBarHeight}>
-      <styledEl.Card {...banner.dialogProps} aria-label={copy.ariaLabel} $isCowCookie={variant === 'cowCookie'}>
+      <styledEl.Card {...banner.dialogProps} aria-label={copy.ariaLabel} $isCyan={variant === 'cyan'}>
         {banner.isReopened && (
           <styledEl.Header>
             <styledEl.CloseButton type="button" onClick={banner.close}>

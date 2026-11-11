@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
 import { Color } from '../../colors'
 import { Media, OVERLAY_Z_INDEX } from '../../consts'
@@ -36,7 +36,7 @@ export const Header = styled.div`
 
 export const CloseButton = styled(LinkStyledButton)`
   ${font('FONT_SMALL_PLUS', 'medium')}
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  color: ${Color.cowfi_darkBlue};
   text-decoration: underline;
 `
 
@@ -83,11 +83,18 @@ export const Illustration = styled.div`
 export const Message = styled.p`
   margin: 0;
   ${font('FONT_NORMAL')}
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  color: ${Color.cowfi_darkBlue};
 
-  > a {
-    color: var(${UI.COLOR_TEXT});
+  > a,
+  > a:link,
+  > a:visited,
+  > a:hover,
+  > a:focus,
+  > a:active {
+    color: ${Color.cowfi_darkBlue};
     text-decoration: underline;
+    text-underline-offset: 3px;
+    white-space: nowrap;
   }
 `
 
@@ -102,97 +109,52 @@ export const Actions = styled.div`
 
 export const ChoiceButton = styled(ButtonPrimary)`
   flex: 1 1 0;
-  min-height: 44px;
-  padding: 10px 16px;
+  min-height: 48px;
+  padding: 12px 16px;
   border-radius: 12px;
-  ${font('FONT_MEDIUM', 'semibold')}
+  background: ${Color.cowfi_darkBlue};
+  ${font('FONT_NORMAL', 'semibold')}
+
+  &:hover,
+  &:focus,
+  &:active {
+    background: ${Color.cowfi_darkBlue2};
+  }
 `
 
-export const Card = styled.section<{ $isCowCookie: boolean }>`
+export const Card = styled.section<{ $isCyan: boolean }>`
   display: flex;
   flex-flow: column nowrap;
   gap: 16px;
   width: 100%;
-  max-width: 400px;
-  padding: 20px;
-  border: 1px solid var(${UI.COLOR_BORDER});
+  max-width: 440px;
+  padding: 24px;
+  border: 0;
   border-radius: 16px;
-  background: var(${UI.COLOR_PAPER});
+  background: ${({ $isCyan }) => ($isCyan ? Color.blue300Primary : Color.white)};
   box-shadow: var(${UI.BOX_SHADOW});
-  color: var(${UI.COLOR_TEXT});
+  color: ${Color.cowfi_darkBlue};
+  font-family: var(${UI.FONT_FAMILY_PRIMARY});
   pointer-events: auto;
 
   &:focus {
     outline: none;
   }
 
-  &:focus-visible {
-    outline: 2px solid var(${UI.COLOR_PRIMARY});
-    outline-offset: 2px;
+  &:focus-visible,
+  ${ChoiceButton}:focus-visible, ${CloseButton}:focus-visible, ${Message} > a:focus-visible {
+    outline: 2px solid ${Color.cowfi_darkBlue};
+    outline-offset: 3px;
   }
 
-  ${Media.upToMedium()} {
-    max-width: 640px;
+  ${ChoiceButton},
+  ${ChoiceButton}:hover,
+  ${ChoiceButton}:focus,
+  ${ChoiceButton}:active {
+    color: ${({ $isCyan }) => ($isCyan ? Color.blue300Primary : Color.white)};
   }
 
   ${Media.upToExtraSmall()} {
     padding: 16px;
   }
-
-  ${({ $isCowCookie }) =>
-    $isCowCookie &&
-    css`
-      max-width: 440px;
-      padding: 24px;
-      border: 0;
-      background: ${Color.blue300Primary};
-      color: ${Color.cowfi_darkBlue};
-
-      &:focus-visible {
-        outline-color: ${Color.cowfi_darkBlue};
-      }
-
-      ${CloseButton},
-      ${Message},
-      ${Message} > a {
-        color: ${Color.cowfi_darkBlue};
-      }
-
-      ${Message} > a {
-        display: block;
-        width: fit-content;
-        margin-top: 8px;
-        text-underline-offset: 3px;
-      }
-
-      ${ChoiceButton} {
-        min-height: 48px;
-        padding: 12px 16px;
-        background: ${Color.cowfi_darkBlue};
-        color: ${Color.blue300Primary};
-        ${font('FONT_NORMAL', 'semibold')}
-
-        &:hover,
-        &:focus,
-        &:active {
-          background: ${Color.cowfi_darkBlue2};
-          color: ${Color.blue300Primary};
-        }
-      }
-
-      ${ChoiceButton}:focus-visible,
-      ${CloseButton}:focus-visible,
-      ${Message} > a:focus-visible {
-        outline: 2px solid ${Color.cowfi_darkBlue};
-        outline-offset: 3px;
-      }
-
-      ${Media.upToMedium()} {
-        max-width: 440px;
-      }
-
-      ${Media.upToExtraSmall()} {
-        padding: 16px;
-      }
-    `}
 `

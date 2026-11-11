@@ -95,21 +95,22 @@ describe('CookieConsentBannerContainer', () => {
     expect(screen.getByRole('button', { name: 'Alle akzeptieren' })).toBeTruthy()
   })
 
-  it('keeps the default notice when no presentation is requested', () => {
+  it('uses the shared title and decorative cow by default', () => {
     mockBanner()
     render(<CookieConsentBannerContainer />)
 
-    expect(screen.queryByRole('heading')).toBeNull()
+    expect(screen.getByRole('heading', { name: COOKIE_CONSENT_COPY.title })).toBeTruthy()
+    expect(document.querySelector('img')?.parentElement?.getAttribute('aria-hidden')).toBe('true')
     expect(screen.getByRole('dialog').textContent).toContain(COOKIE_CONSENT_COPY.message)
   })
 
-  it('supports the cow-cookie presentation while preserving the consent controls', () => {
+  it('supports the cyan presentation while preserving the consent controls', () => {
     const banner = mockBanner({ isReopened: true })
     render(
       <CookieConsentBannerContainer
         title="A Coincidence of Wants"
         illustration={<img src="cow-cookie.svg" alt="" />}
-        variant="cowCookie"
+        variant="cyan"
       />,
     )
 

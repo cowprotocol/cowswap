@@ -1230,6 +1230,9 @@ importers:
       '@cowprotocol/analytics':
         specifier: workspace:*
         version: link:../../libs/analytics
+      '@cowprotocol/assets':
+        specifier: workspace:*
+        version: link:../../libs/assets
       '@cowprotocol/common-const':
         specifier: workspace:*
         version: link:../../libs/common-const

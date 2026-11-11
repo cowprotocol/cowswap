@@ -35,7 +35,7 @@ Run `window.dataLayer` in the browser console to see the pushed events, or use G
 
 ## Cookie consent
 
-Nothing reaches GTM before the visitor clicks **Accept All Cookies** in the cookie banner (`_app/layout/CookieConsentBanner.tsx`):
+Nothing reaches GTM before the visitor clicks **Accept All** in the cookie banner (`_app/layout/CookieConsentBanner.tsx`):
 `trackEvent` drops events until then, because GTM would replay queued `dataLayer` entries once it loads. On acceptance,
 `loadGtm()` pushes a Google Consent Mode `default` with everything granted, then loads the container, and `Analytics.tsx`
 sends a `page_view` for the current page and `wallet_connected` for an already connected wallet.

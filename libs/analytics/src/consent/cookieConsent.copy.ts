@@ -1,4 +1,5 @@
 export interface CookieConsentCopy {
+  title: string
   ariaLabel: string
   message: string
   policyLinkLabel: string
@@ -8,11 +9,11 @@ export interface CookieConsentCopy {
 }
 
 export const COOKIE_CONSENT_COPY: CookieConsentCopy = {
+  title: 'Cookies? Your moove.',
   ariaLabel: 'Cookie consent',
-  message:
-    'By clicking “Accept All Cookies”, you agree to the storing of cookies on your device to enhance site navigation, analyze site usage, and assist in our marketing efforts.',
+  message: 'You want privacy. We want to know if our ads work. Nothing tracks you until you pick.',
   policyLinkLabel: 'Cookie policy',
   rejectLabel: 'Reject All',
-  acceptLabel: 'Accept All Cookies',
+  acceptLabel: 'Accept All',
   closeLabel: 'Close',
 }
