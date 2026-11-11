@@ -246,7 +246,7 @@ export const HeroGrid = styled.div`
   grid-template-columns: minmax(0, 788fr) minmax(0, 600fr);
   gap: 92px;
   align-items: center;
-  padding: 46px ${PANEL_PADDING_X}px 94px;
+  padding: 76px ${PANEL_PADDING_X}px 112px;
 
   ${Media.upToLarge()} {
     gap: 48px;
@@ -262,7 +262,11 @@ export const HeroCopy = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 32px;
+  gap: 48px;
+
+  ${Media.upToMedium()} {
+    gap: 32px;
+  }
 
   ${Media.upToSmall()} {
     gap: 24px;
@@ -270,6 +274,11 @@ export const HeroCopy = styled.div`
 
   ${ButtonRow} {
     gap: 32px;
+    margin-top: 32px;
+
+    ${Media.upToMedium()} {
+      margin-top: 0;
+    }
 
     ${Media.upToSmall()} {
       gap: 8px;
