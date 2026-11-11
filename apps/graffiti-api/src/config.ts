@@ -132,7 +132,11 @@ function loadLimits(): Pick<
   | 'claimConfirmTimeoutMs'
 > {
   return {
-    txMaxAgeSec: num('TX_MAX_AGE_SEC', 300),
+    // Replay is already blocked by the persistent signature/memo tables, so this
+    // only bounds how long a burn stays spendable if those are ever lost. Keep
+    // it wide enough that a client recovering an unconfirmed burn — reload,
+    // flaky RPC, a wallet left on the prompt — still gets its pixels.
+    txMaxAgeSec: num('TX_MAX_AGE_SEC', 3600),
     // Past blockhash expiry (~150 blocks), so a transfer still unlanded here cannot land later.
     claimConfirmTimeoutMs: num('CLAIM_CONFIRM_TIMEOUT_MS', 75_000),
     maxCellsPerDraw: num('MAX_CELLS_PER_DRAW', 20000),

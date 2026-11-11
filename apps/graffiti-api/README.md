@@ -109,7 +109,7 @@ above rather than typing it inline.
 | `ADMIN_TOKEN`          | —                                | Bearer token for `/v1/admin/*`; **unset disables those routes**     |
 | `COMMIT_HASH`          | — (`unknown` in the image)       | Commit the image was built from; CI sets it, served as `commit` on `/v1/info` |
 | `CORS_ORIGINS`         | `*` (required in production)     | Comma-separated allowed origins, also enforced on the WebSocket     |
-| `TX_MAX_AGE_SEC`       | `300`                            | Max age of an accepted draw tx and of its memo timestamp            |
+| `TX_MAX_AGE_SEC`       | `3600`                           | Max age of an accepted draw tx and of its memo timestamp            |
 | `VERIFY_COMMITMENT`    | `finalized`                      | Commitment used to read the burn back (`confirmed` is weaker)       |
 | `CLAIM_CONFIRM_TIMEOUT_MS` | `75000`                      | How long a claim polls for its transfer before parking the code     |
 | `MAX_CELLS_PER_DRAW`   | `20000`                          | Draw size limit                                                     |
