@@ -25,10 +25,6 @@ source_of_truth_scope: lightweight quality/freshness signal for autonomous contr
 | cow-fi app | B | Lint/type strictness still partially downgraded in eslint config. |
 | explorer app | B | Stable baseline; keep additive AGENTS/docs aligned with root harness. |
 
-## Consent verification
-
-- Consent coverage includes delayed UTM cleanup after navigation, configurator consent controls, and framed CoW Swap with marketing tracking disabled. Shared-domain staging consent and Odran/Legal approval remain release checks.
-
 ## Known Cross-Cutting Gaps
 
 - Some architectural boundaries are still documented more strongly than they are lint-enforced.
