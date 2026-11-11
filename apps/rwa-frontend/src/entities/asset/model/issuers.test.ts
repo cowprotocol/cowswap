@@ -2,6 +2,7 @@ import {
   getDividendModel,
   getDividendNote,
   getDividendNotes,
+  getIssuerLegalDocsUrl,
   hasUiMultiplier,
   isVaultToken,
   isWrappedXStock,
@@ -92,5 +93,18 @@ describe('hasUiMultiplier', () => {
   it('matches Robinhood tokens only', () => {
     expect(hasUiMultiplier({ issuer: 'Robinhood' })).toBe(true)
     expect(hasUiMultiplier(ONDO)).toBe(false)
+  })
+})
+
+describe('getIssuerLegalDocsUrl', () => {
+  it('links a known issuer, including one without a dividend model', () => {
+    expect(getIssuerLegalDocsUrl('Dinari')).toBe('https://dinari.com/terms')
+    expect(getIssuerLegalDocsUrl('Stove Finance')).toBe(
+      'https://docs.proto.stove.finance/documentation/legal/terms.html',
+    )
+  })
+
+  it('is null for an unknown issuer', () => {
+    expect(getIssuerLegalDocsUrl('Securitize')).toBeNull()
   })
 })

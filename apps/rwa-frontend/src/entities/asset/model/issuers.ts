@@ -22,6 +22,7 @@ export const RWA_ISSUERS = [
   'Robinhood',
   'Anchored',
   'ST0x',
+  'Stove Finance',
 ] as const
 
 export interface RwaDividendNote {
@@ -35,11 +36,17 @@ export interface RwaDividendNote {
 
 export type RwaIssuer = (typeof RWA_ISSUERS)[number]
 
-export const RWA_ISSUER_LEGAL_DOCS_URLS: Partial<Record<RwaIssuer, string>> = {
+export const RWA_ISSUER_LEGAL_DOCS_URLS: Record<RwaIssuer, string> = {
   Ondo: 'https://app.ondo.finance/legal-documentation',
   xStocks: 'https://assets.backed.fi/legal-documentation',
   Coinbase: 'https://www.coinbase.com/tokenize',
   bStocks: 'https://www.binance.com/en/about-legal/bstocks-digital-securities-documentation',
+  Reality: 'https://realityfinance.xyz/info/docs/legal',
+  Dinari: 'https://dinari.com/terms',
+  Robinhood: 'https://docs.robinhood.com/chain/stock-tokens/',
+  Anchored: 'https://anchored.finance/terms',
+  ST0x: 'https://st0x.io/docs/legal',
+  'Stove Finance': 'https://docs.proto.stove.finance/documentation/legal/terms.html',
 }
 
 type DividendToken = Pick<RwaToken, 'issuer' | 'coingeckoId'>
@@ -106,7 +113,7 @@ export function getDividendNotes(tokens: Iterable<DividendToken>): RwaDividendNo
 }
 
 export function getIssuerLegalDocsUrl(issuer: string): string | null {
-  return isRwaIssuer(issuer) ? (RWA_ISSUER_LEGAL_DOCS_URLS[issuer] ?? null) : null
+  return isRwaIssuer(issuer) ? RWA_ISSUER_LEGAL_DOCS_URLS[issuer] : null
 }
 
 /** Its shares per token is its ERC-8056 `uiMultiplier()`, and `balanceOf()` is not scaled by it */
