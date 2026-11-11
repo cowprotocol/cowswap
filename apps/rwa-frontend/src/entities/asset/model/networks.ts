@@ -1,10 +1,8 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import type { RwaAsset } from './types'
-
 /**
  * Networks the app trades on and the wallet modal offers, Ethereum first as the default. Tokens on other networks
- * are listed, but can't be traded.
+ * are left out of the listings, see `getAssets()`.
  */
 export const RWA_CHAIN_IDS: readonly SupportedChainId[] = [
   SupportedChainId.MAINNET,
@@ -20,11 +18,11 @@ export const RWA_CHAIN_IDS: readonly SupportedChainId[] = [
 
 const RWA_CHAIN_ID_SET = new Set<number>(RWA_CHAIN_IDS)
 
-/** `asset` with only its tokens on `RWA_CHAIN_IDS` networks */
-export function getTradeAsset(asset: RwaAsset): RwaAsset {
-  return { ...asset, tokens: asset.tokens.filter((token) => isRwaTradeChain(token.chainId)) }
+/** `true` when the asset has a token on an `RWA_CHAIN_IDS` network, so it's listed and has a page */
+export function isListedAsset(asset: { tokens: { chainId: number }[] }): boolean {
+  return asset.tokens.some((token) => isRwaChain(token.chainId))
 }
 
-export function isRwaTradeChain(chainId: number): boolean {
+export function isRwaChain(chainId: number): boolean {
   return RWA_CHAIN_ID_SET.has(chainId)
 }

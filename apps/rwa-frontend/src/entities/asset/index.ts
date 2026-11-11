@@ -68,7 +68,7 @@ export {
   type RwaTradingPause,
   type RwaTradingTime,
 } from './model/types'
-export { getTradeAsset, isRwaTradeChain, RWA_CHAIN_IDS } from './model/networks'
+export { isListedAsset, isRwaChain, RWA_CHAIN_IDS } from './model/networks'
 export { RWA_REGISTRY_EDIT_URL } from './model/registryEditUrl'
 export { AssetStats } from './ui/AssetStats'
 export { DividendNotes } from './ui/DividendNotes'

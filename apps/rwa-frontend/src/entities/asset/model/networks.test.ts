@@ -4,33 +4,35 @@
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { getTradeAsset } from './networks'
-import { getAssetByTicker } from './registry'
+import { isListedAsset, RWA_CHAIN_IDS } from './networks'
+import { getAllAssets, getAllAssetSummaries, getAssetByTicker, getAssets, getAssetSummaries } from './registry'
 
-import type { RwaAsset, RwaToken } from './types'
+const chainIdsOf = (assets: { tokens: { chainId: number }[] }[]): number[] =>
+  [...new Set(assets.flatMap((asset) => asset.tokens.map((token) => token.chainId)))].sort()
 
-const MAINNET_TOKEN: RwaToken = {
-  chainId: SupportedChainId.MAINNET,
-  address: '0x9d275685dC284C8eB1C79f6ABA7a63Dc75ec890a',
-  symbol: 'AAPLx',
-  name: 'Apple xStock',
-  decimals: 18,
-  issuer: 'xStocks',
-}
-const ROBINHOOD_TOKEN: RwaToken = { ...MAINNET_TOKEN, chainId: SupportedChainId.ROBINHOOD }
-const SEPOLIA_TOKEN: RwaToken = { ...MAINNET_TOKEN, chainId: SupportedChainId.SEPOLIA }
+describe('isListedAsset', () => {
+  it.each([
+    { chainIds: [SupportedChainId.ROBINHOOD, SupportedChainId.MAINNET], expected: true },
+    { chainIds: [SupportedChainId.ROBINHOOD], expected: false },
+    { chainIds: [SupportedChainId.SEPOLIA], expected: false },
+  ])('is $expected for tokens on $chainIds', ({ chainIds, expected }) => {
+    expect(isListedAsset({ tokens: chainIds.map((chainId) => ({ chainId })) })).toBe(expected)
+  })
+})
 
-describe('getTradeAsset', () => {
-  it('keeps only the tokens on RWA networks', () => {
-    const asset = { ticker: 'AAPL', tokens: [ROBINHOOD_TOKEN, MAINNET_TOKEN, SEPOLIA_TOKEN] } as RwaAsset
-
-    expect(getTradeAsset(asset).tokens).toEqual([MAINNET_TOKEN])
+describe('registry views', () => {
+  it('lists tokens on every RWA network, and on no other', () => {
+    expect(chainIdsOf(getAssets())).toEqual([...RWA_CHAIN_IDS].sort())
+    expect(chainIdsOf(getAssetSummaries())).toEqual([...RWA_CHAIN_IDS].sort())
   })
 
-  it('leaves the registry asset of a Robinhood-only ticker without trade tokens', () => {
-    const asset = getAssetByTicker('RUN')
+  it('leaves out an asset with tokens only on other networks, but keeps it for holdings', () => {
+    expect(getAssetByTicker('RUN')).toBeUndefined()
+    expect(getAllAssets().find((asset) => asset.ticker === 'RUN')?.tokens.length).toBeGreaterThan(0)
+    expect(getAllAssetSummaries().some((asset) => asset.ticker === 'RUN')).toBe(true)
+  })
 
-    expect(asset?.tokens.length).toBeGreaterThan(0)
-    expect(asset && getTradeAsset(asset).tokens).toEqual([])
+  it('keeps the tokens on other networks for holdings', () => {
+    expect(chainIdsOf(getAllAssets())).toContain(SupportedChainId.ROBINHOOD)
   })
 })

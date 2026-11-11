@@ -5,7 +5,7 @@ import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { unstable_cache } from 'next/cache'
 
 import { fillHourlySeries } from '../model/marketOverview'
-import { getAssets } from '../model/registry'
+import { getAllAssets } from '../model/registry'
 
 import type {
   RwaAggregateMarket,
@@ -236,14 +236,14 @@ export function toChartPoints(prices: [number, number][]): RwaChartPoint[] {
 
 /** Every token address on `chainId`, the batches `getNetworkStats` requests are cut from */
 function getRegistryAddresses(chainId: number): string[] {
-  return getAssets().flatMap((asset) =>
+  return getAllAssets().flatMap((asset) =>
     asset.tokens.filter((token) => token.chainId === chainId).map((token) => token.address),
   )
 }
 
 /** Every token coin, the batches `getTokenMarkets` requests are cut from */
 function getRegistryCoingeckoIds(): string[] {
-  return getTokenCoingeckoIds(getAssets().flatMap((asset) => asset.tokens))
+  return getTokenCoingeckoIds(getAllAssets().flatMap((asset) => asset.tokens))
 }
 
 function getTokenCoingeckoIds(tokens: RwaToken[]): string[] {

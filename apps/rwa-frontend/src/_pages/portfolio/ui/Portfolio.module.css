@@ -247,7 +247,7 @@
   text-decoration: none;
 }
 
-.holdingTitle:hover {
+a.holdingTitle:hover {
   text-decoration: underline;
 }
 

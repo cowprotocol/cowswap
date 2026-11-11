@@ -1,6 +1,6 @@
 'use client'
 
-import { type ReactNode, useMemo, useRef } from 'react'
+import { type ReactNode, useRef } from 'react'
 
 import Link from 'next/link'
 
@@ -16,7 +16,7 @@ import { useAssetMarket } from '../model/useAssetMarket'
 import { useAssetPriceStats } from '../model/useAssetPriceStats'
 import { useFitStickyTop } from '../model/useFitStickyTop'
 
-import { AssetStats, getTradeAsset, type RwaAsset } from '@/entities/asset'
+import { AssetStats, type RwaAsset } from '@/entities/asset'
 import { StatusMessage } from '@/shared/ui/status-message'
 import { TokenLogo } from '@/shared/ui/token-logo'
 
@@ -27,7 +27,6 @@ export function AssetView({ asset }: { asset: RwaAsset }): ReactNode {
   const { marketKind, stats, provider } = useAssetPriceStats(asset.ticker)
   const sideRef = useRef<HTMLElement>(null)
   const tradingPauseMessage = getTradingPauseMessage(data?.tradingPause, new Date())
-  const tradeAsset = useMemo(() => getTradeAsset(asset), [asset])
 
   useFitStickyTop(sideRef, SIDE_STICKY_GAP)
 
@@ -47,11 +46,7 @@ export function AssetView({ asset }: { asset: RwaAsset }): ReactNode {
         <AssetPriceChart ticker={asset.ticker} />
       </div>
       <aside ref={sideRef} className={styles.side} aria-label={`Trade ${asset.ticker}`}>
-        {tradeAsset.tokens.length ? (
-          <TradeWidget asset={tradeAsset} />
-        ) : (
-          <StatusMessage>{asset.ticker} tokens are on networks CoW Swap doesn't trade on yet</StatusMessage>
-        )}
+        <TradeWidget asset={asset} />
       </aside>
       <div className={styles.details}>
         <AssetAccount asset={asset} />

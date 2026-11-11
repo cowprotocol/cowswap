@@ -18,8 +18,6 @@ import {
   DividendNotes,
   getIssuerLegalDocsUrl,
   getTokenKey,
-  getTradeAsset,
-  isRwaTradeChain,
   type RwaAsset,
   type RwaQuoteSide,
   type RwaToken,
@@ -53,8 +51,7 @@ interface StockTokenRowProps {
   sharesPerToken: number | null
   stockPrice: number | null | undefined
   isSelected: boolean
-  /** `undefined` hides the Buy and Sell buttons */
-  onTrade: ((side: RwaQuoteSide) => void) | undefined
+  onTrade(side: RwaQuoteSide): void
 }
 
 interface VsStockProps {
@@ -65,8 +62,7 @@ interface VsStockProps {
 
 export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
   const market = useAtomValue(assetQueryAtomFamily(asset.ticker)).data?.market
-  const tradeAsset = useMemo(() => getTradeAsset(asset), [asset])
-  const selectedToken = useTradeSelection(tradeAsset)?.assetToken
+  const selectedToken = useTradeSelection(asset)?.assetToken
   const selectTradeToken = useSelectTradeToken(asset.ticker)
   const [issuer, setIssuer] = useState<string | null>(null)
   const [network, setNetwork] = useState<number | null>(null)
@@ -152,7 +148,7 @@ export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
                   sharesPerToken={priceSharesPerToken[getTokenKey(token)] ?? null}
                   stockPrice={market?.price}
                   isSelected={token === selectedToken}
-                  onTrade={isRwaTradeChain(token.chainId) ? (side) => selectTradeToken(token, side) : undefined}
+                  onTrade={(side) => selectTradeToken(token, side)}
                 />
               ))}
             </tbody>
@@ -262,26 +258,24 @@ function StockTokenRow({
       <td className={tableStyles.numeric}>{formatTokenStat(stats?.dexVolume24h)}</td>
       <td className={tableStyles.numeric}>{formatTokenStat(market?.marketCap)}</td>
       <td>
-        {onTrade && (
-          <div className={styles.actions}>
-            <button
-              type="button"
-              className={styles.buy}
-              aria-label={`Buy ${token.symbol} on ${network}`}
-              onClick={() => onTrade('buy')}
-            >
-              Buy
-            </button>
-            <button
-              type="button"
-              className={styles.sell}
-              aria-label={`Sell ${token.symbol} on ${network}`}
-              onClick={() => onTrade('sell')}
-            >
-              Sell
-            </button>
-          </div>
-        )}
+        <div className={styles.actions}>
+          <button
+            type="button"
+            className={styles.buy}
+            aria-label={`Buy ${token.symbol} on ${network}`}
+            onClick={() => onTrade('buy')}
+          >
+            Buy
+          </button>
+          <button
+            type="button"
+            className={styles.sell}
+            aria-label={`Sell ${token.symbol} on ${network}`}
+            onClick={() => onTrade('sell')}
+          >
+            Sell
+          </button>
+        </div>
       </td>
     </tr>
   )
