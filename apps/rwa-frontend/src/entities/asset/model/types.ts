@@ -83,7 +83,7 @@ export interface RwaAssetsFilter {
   minMarketCap?: number
   /** USD */
   minVolume24h?: number
-  /** Matches ticker, title or token symbol */
+  /** Matches ticker, title, token symbol or profile description, tolerating small typos */
   query?: string
   tickers?: string[]
 }
