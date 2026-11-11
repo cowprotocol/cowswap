@@ -6110,6 +6110,10 @@ msgstr "Your multisig rejected this order, so it was not placed."
 #~ msgid "View on {explorerTitle}"
 #~ msgstr "View on {explorerTitle}"
 
+#: apps/cowswap-frontend/src/common/containers/CookieConsentBanner/CookieConsentBanner.container.tsx
+msgid "Cookies? Your moove."
+msgstr "Cookies? Your moove."
+
 #: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/index.tsx
 msgid "Bridge failed on"
 msgstr "Bridge failed on"
@@ -10481,8 +10485,8 @@ msgid "Invalid content type: Expected JSON but received {errorContentType}. Make
 msgstr "Invalid content type: Expected JSON but received {errorContentType}. Make sure the URL points to a valid manifest file."
 
 #: apps/cowswap-frontend/src/common/containers/CookieConsentBanner/CookieConsentBanner.container.tsx
-msgid "A Coincidence of Wants"
-msgstr "A Coincidence of Wants"
+#~ msgid "A Coincidence of Wants"
+#~ msgstr "A Coincidence of Wants"
 
 #: apps/cowswap-frontend/src/common/hooks/useOnSelectNetwork.tsx
 msgid "Failed to switch networks from the CoW Swap Interface. In order to use CoW Swap on {chainInfoLabel}, you must change the network in your wallet."

@@ -22,7 +22,7 @@ export function CookieConsentBanner(): ReactNode {
   return (
     <CookieConsentBannerContainer
       copy={copy}
-      title={t`A Coincidence of Wants`}
+      title={t`Cookies? Your moove.`}
       illustration={<img src={svgCowCookieSrc} alt="" />}
       variant="cowCookie"
       bottomBarHeight={MOBILE_HEADER_CONTROLS_HEIGHT_PX}
