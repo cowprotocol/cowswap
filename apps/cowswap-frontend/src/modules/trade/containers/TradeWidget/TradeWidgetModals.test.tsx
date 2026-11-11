@@ -189,6 +189,7 @@ describe('TradeWidgetModals · Solana order not placed', () => {
         tradeAmounts: EXPIRED_TRADE,
         errorMessage: WALLET_ERROR,
         logs: null,
+        isSquadsSetupRequired: false,
       })
     })
   }
@@ -228,6 +229,7 @@ describe('TradeWidgetModals · Solana order not placed', () => {
         tradeAmounts: EXPIRED_TRADE,
         errorMessage: WINDOW_CLOSED_MESSAGE,
         logs: null,
+        isSquadsSetupRequired: false,
       })
     })
 

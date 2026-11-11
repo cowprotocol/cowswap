@@ -27,27 +27,21 @@ function createListState(source: string, address: string): ListState {
   }
 }
 
-async function getXstockAddresses(
-  chainState: TokenListsByChainState[SupportedChainId],
-  excludeRwaLists = false,
-): Promise<Set<string>> {
+async function getXstockAddresses(chainState: TokenListsByChainState[SupportedChainId]): Promise<Set<string>> {
   const store = createStore()
 
-  store.set(environmentAtom, { chainId: CHAIN_ID, excludeRwaLists })
+  store.set(environmentAtom, { chainId: CHAIN_ID })
   store.set(listsStatesByChainAtom, { ...mapSupportedNetworks({}), [CHAIN_ID]: chainState })
 
   return store.get(xstockTokenAddressesAtom)
 }
 
 describe('xstockTokenAddressesAtom', () => {
-  it('collects xStocks token address keys while RWA lists are excluded', async () => {
-    const addresses = await getXstockAddresses(
-      {
-        [XSTOCKS_TOKENS_LIST_SOURCE]: createListState(XSTOCKS_TOKENS_LIST_SOURCE, XSTOCK_ADDRESS),
-        [OTHER_LIST_SOURCE]: createListState(OTHER_LIST_SOURCE, OTHER_ADDRESS),
-      },
-      true,
-    )
+  it('collects xStocks token address keys, and only those', async () => {
+    const addresses = await getXstockAddresses({
+      [XSTOCKS_TOKENS_LIST_SOURCE]: createListState(XSTOCKS_TOKENS_LIST_SOURCE, XSTOCK_ADDRESS),
+      [OTHER_LIST_SOURCE]: createListState(OTHER_LIST_SOURCE, OTHER_ADDRESS),
+    })
 
     expect([...addresses]).toEqual([getAddressKey(XSTOCK_ADDRESS)])
   })

@@ -12,7 +12,6 @@ export type {
 } from './containers/SelectTokenWidget/types'
 export { customFlowsRegistryAtom } from './containers/SelectTokenWidget/state'
 
-export { BlockedListSourcesUpdater } from './updaters/BlockedListSourcesUpdater'
 export { RecentTokensStorageUpdater } from './updaters/RecentTokensStorageUpdater'
 
 export { ImportTokenModal } from './pure/ImportTokenModal'

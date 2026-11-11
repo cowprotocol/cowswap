@@ -40,7 +40,6 @@ interface TokensListsUpdaterProps {
   chainId: SupportedChainId
   enableLpTokensByDefault: boolean
   isYieldEnabled: boolean
-  excludeRwaLists: boolean
   bridgeNetworkInfo: ChainInfo[] | undefined
 }
 
@@ -49,7 +48,6 @@ export function TokensListsUpdater({
   chainId: currentChainId,
   enableLpTokensByDefault,
   isYieldEnabled,
-  excludeRwaLists,
   bridgeNetworkInfo,
 }: TokensListsUpdaterProps): ReactNode {
   const { chainId } = useAtomValue(environmentAtom)
@@ -66,10 +64,9 @@ export function TokensListsUpdater({
       chainId: currentChainId,
       enableLpTokensByDefault,
       isYieldEnabled,
-      excludeRwaLists,
       bridgeNetworkInfo,
     })
-  }, [setEnvironment, currentChainId, enableLpTokensByDefault, isYieldEnabled, excludeRwaLists, bridgeNetworkInfo])
+  }, [setEnvironment, currentChainId, enableLpTokensByDefault, isYieldEnabled, bridgeNetworkInfo])
 
   useEffect(() => {
     updateLastUpdateTime({ [chainId]: 0 })

@@ -1007,6 +1007,7 @@ describe('solanaFlow · order not placed', () => {
       tradeAmounts: { inputAmount: context.context.inputAmount, outputAmount: context.context.outputAmount },
       errorMessage: KEYRING_ERROR,
       logs,
+      isSquadsSetupRequired: false,
     })
   })
 
@@ -1026,6 +1027,16 @@ describe('solanaFlow · order not placed', () => {
       outputAmount: context.context.outputAmount,
     })
     expect(jotaiStore.get(solanaOrderNotPlacedAtom)).toBeNull()
+  })
+
+  // The wallet refuses every order until the SquadsX key is a proposer on the Squad, and its own
+  // wording gives the user nothing to act on.
+  it('flags a SquadsX key that is not a proposer so the screen can explain the setup step', async () => {
+    mockSendSolanaFlow.mockRejectedValue(new Error('this extension is not an active proposer on the selected multisig'))
+
+    await solanaFlow(buildContext(), buildAnalytics())
+
+    expect(jotaiStore.get(solanaOrderNotPlacedAtom)).toEqual(expect.objectContaining({ isSquadsSetupRequired: true }))
   })
 
   // Cancelling is a decision, not a failure: "Transaction checks failed" would be a lie about it.
