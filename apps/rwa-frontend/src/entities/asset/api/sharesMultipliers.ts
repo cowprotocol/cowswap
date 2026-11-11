@@ -6,7 +6,7 @@ import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { unstable_cache } from 'next/cache'
 
 import { getTokenKey } from '../lib/tokenKey'
-import { getDividendModel, isCommodityIssuer, isWrappedXStock } from '../model/issuers'
+import { getDividendModel, isWrappedXStock } from '../model/issuers'
 import { getAssets } from '../model/registry'
 
 import type { RwaAsset, RwaToken, RwaTradingPause } from '../model/types'
@@ -93,7 +93,19 @@ function getSharesMultiplier(
 
   const model = getDividendModel(token)
 
-  return model === 'rebase' || model === 'cash-payout' || isCommodityIssuer(token.issuer) ? 1 : undefined
+  return model === 'rebase' || model === 'cash-payout' || isCommodityToken(token) ? 1 : undefined
+}
+
+let commodityTokenKeys: Set<string> | undefined
+
+function isCommodityToken(token: RwaToken): boolean {
+  commodityTokenKeys ??= new Set(
+    getAssets()
+      .filter((asset) => asset.type === 'commodity')
+      .flatMap((asset) => asset.tokens.map(getTokenKey)),
+  )
+
+  return commodityTokenKeys.has(getTokenKey(token))
 }
 
 function isOndoToken(token: RwaToken): boolean {

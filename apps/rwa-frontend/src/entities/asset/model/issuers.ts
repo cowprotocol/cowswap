@@ -8,8 +8,8 @@ import type { RwaToken } from './types'
  */
 export type RwaDividendModel = 'price-accrual' | 'rebase' | 'cash-payout'
 
-/** Must match `ALLOWED_ISSUERS` in `scripts/updateRegistry.mjs`, which skips the tokens of other issuers */
-export const RWA_ISSUERS = ['Ondo', 'xStocks', 'Coinbase', 'bStocks', 'Reality', 'Paxos', 'Tether'] as const
+/** Issuers with a known dividend model or legal docs. The registry has tokens of any issuer CoinGecko lists */
+export const RWA_ISSUERS = ['Ondo', 'xStocks', 'Coinbase', 'bStocks', 'Reality'] as const
 
 export interface RwaDividendNote {
   /** Who applies the scheme, e.g. `Ondo` or `Wrapped xStocks` */
@@ -31,7 +31,6 @@ export const RWA_ISSUER_LEGAL_DOCS_URLS: Partial<Record<RwaIssuer, string>> = {
 
 type DividendToken = Pick<RwaToken, 'issuer' | 'coingeckoId'>
 
-/** Issuers of commodities, which pay no dividends, are missing */
 const ISSUER_DIVIDEND_MODELS: Partial<Record<RwaIssuer, RwaDividendModel>> = {
   Ondo: 'price-accrual',
   xStocks: 'rebase',
@@ -91,11 +90,6 @@ export function getDividendNotes(tokens: Iterable<DividendToken>): RwaDividendNo
 
 export function getIssuerLegalDocsUrl(issuer: string): string | null {
   return isRwaIssuer(issuer) ? (RWA_ISSUER_LEGAL_DOCS_URLS[issuer] ?? null) : null
-}
-
-/** A known issuer without dividends: its tokens are commodities */
-export function isCommodityIssuer(issuer: string): boolean {
-  return isRwaIssuer(issuer) && !ISSUER_DIVIDEND_MODELS[issuer]
 }
 
 /** An ERC-4626 wrapper of a rebasing xStocks token: its balance stays fixed and its price accrues the rebases */

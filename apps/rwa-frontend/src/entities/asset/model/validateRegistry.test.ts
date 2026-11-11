@@ -136,13 +136,10 @@ describe('validateRegistry', () => {
     ])
   })
 
-  it('accepts tokens of allowed issuers only', () => {
+  it('accepts tokens of any issuer', () => {
     const [token] = VALID_ASSET.tokens
 
-    expect(validateRegistry(registryWith([{ ...VALID_ASSET, tokens: [{ ...token, issuer: 'Coinbase' }] }]))).toEqual([])
-    expect(validateRegistry(registryWith([{ ...VALID_ASSET, tokens: [{ ...token, issuer: 'Dinari' }] }]))).toEqual([
-      'assets[0].tokens[0].issuer: "Dinari" is not an allowed issuer (Ondo, xStocks, Coinbase, bStocks, Reality, Paxos, Tether)',
-    ])
+    expect(validateRegistry(registryWith([{ ...VALID_ASSET, tokens: [{ ...token, issuer: 'Dinari' }] }]))).toEqual([])
   })
 
   it('rejects an asset without tokens', () => {

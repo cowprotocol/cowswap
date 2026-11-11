@@ -21,7 +21,10 @@ jest.mock('@/shared/api/index.server', () => ({
 }))
 
 jest.mock('../model/registry', () => ({
-  getAssets: () => [{ tokens: mockRegistryTokens }],
+  getAssets: () => [
+    { type: 'stock', tokens: mockRegistryTokens },
+    { type: 'commodity', tokens: mockCommodityTokens },
+  ],
 }))
 
 function token(symbol: string, chainId: number, address: string, issuer: string, coingeckoId?: string): RwaToken {
@@ -35,7 +38,11 @@ const WNVDAX = token('WNVDAX', 1, '0x0000000000000000000000000000000000000004', 
 const WNVDAX_ARBITRUM = { ...WNVDAX, chainId: 42161 }
 const WSPYX = token('WSPYX', 42161, '0x0000000000000000000000000000000000000005', 'xStocks', 'wrapped-sp500-xstock')
 
+const PAXG = token('PAXG', 1, '0x0000000000000000000000000000000000000009', 'Paxos')
+const XAUT = token('XAUT', 1, '0x000000000000000000000000000000000000000a', 'Tether')
+
 const mockRegistryTokens = [NVDAON, NFLXON, NVDAX, WNVDAX, WNVDAX_ARBITRUM, WSPYX]
+const mockCommodityTokens = [PAXG, XAUT]
 
 const fetchOndoMock = fetchOndoSharesMultipliers as jest.Mock
 const fetchActivationMock = fetchXStocksActivation as jest.Mock
@@ -94,14 +101,17 @@ describe('loadSharesPerToken', () => {
     })
   })
 
-  it('takes one unit per commodity token', async () => {
-    const paxg = token('PAXG', 1, '0x0000000000000000000000000000000000000009', 'Paxos')
-    const xaut = token('XAUT', 1, '0x000000000000000000000000000000000000000a', 'Tether')
-
-    expect(await loadSharesPerToken([paxg, xaut])).toEqual({
-      byKey: { [getTokenKey(paxg)]: 1, [getTokenKey(xaut)]: 1 },
+  it('takes one unit per commodity token, whatever its issuer', async () => {
+    expect(await loadSharesPerToken([PAXG, XAUT])).toEqual({
+      byKey: { [getTokenKey(PAXG)]: 1, [getTokenKey(XAUT)]: 1 },
       degraded: false,
     })
+  })
+
+  it('leaves a stock token of an issuer with an unknown dividend model out', async () => {
+    const nvdad = token('NVDA.D', 1, '0x000000000000000000000000000000000000000b', 'Dinari')
+
+    expect(await loadSharesPerToken([nvdad])).toEqual({ byKey: {}, degraded: false })
   })
 
   it('leaves Ondo tokens out without degrading when no API key is set', async () => {
