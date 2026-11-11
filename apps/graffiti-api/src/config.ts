@@ -23,6 +23,8 @@ export interface Config {
   maxCellsPerPage: number
   /** Commitment used to read the burn transaction back. */
   verifyCommitment: 'confirmed' | 'finalized'
+  /** How long a claim waits for its transfer to confirm before parking the code. */
+  claimConfirmTimeoutMs: number
   /** Requests per minute, per IP, for the public write endpoints. */
   rateLimitPerMinute: number
   /** Max simultaneous websocket clients. */
@@ -118,10 +120,18 @@ function isProductionEnv(network: string): boolean {
 
 function loadLimits(): Pick<
   Config,
-  'txMaxAgeSec' | 'maxCellsPerDraw' | 'maxCellsPerPage' | 'rateLimitPerMinute' | 'wsMaxClients' | 'wsHeartbeatMs'
+  | 'txMaxAgeSec'
+  | 'maxCellsPerDraw'
+  | 'maxCellsPerPage'
+  | 'rateLimitPerMinute'
+  | 'wsMaxClients'
+  | 'wsHeartbeatMs'
+  | 'claimConfirmTimeoutMs'
 > {
   return {
     txMaxAgeSec: num('TX_MAX_AGE_SEC', 300),
+    // Past blockhash expiry (~150 blocks), so a transfer still unlanded here cannot land later.
+    claimConfirmTimeoutMs: num('CLAIM_CONFIRM_TIMEOUT_MS', 75_000),
     maxCellsPerDraw: num('MAX_CELLS_PER_DRAW', 20000),
     maxCellsPerPage: num('MAX_CELLS_PER_PAGE', 50000),
     rateLimitPerMinute: num('RATE_LIMIT_PER_MINUTE', 60),

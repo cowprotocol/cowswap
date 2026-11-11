@@ -19,8 +19,12 @@ const TREASURY = Keypair.generate()
 
 type Behaviour = {
   send?: () => Promise<string>
-  confirm?: () => Promise<{ value: { err: unknown } }>
+  status?: () => Promise<{ value: SignatureStatusValue[] }>
 }
+
+type SignatureStatusValue = { err: unknown; confirmationStatus?: string } | null
+
+const CONFIRMED: SignatureStatusValue = { err: null, confirmationStatus: 'confirmed' }
 
 function mintAccount(): unknown {
   const data = Buffer.alloc(MINT_SIZE)
@@ -52,6 +56,7 @@ function setup(
     treasurySecretKey: bs58.encode(TREASURY.secretKey),
     treasuryKeypairPath: null,
     rpcUrl: 'http://unused',
+    claimConfirmTimeoutMs: 5_000,
     ...overrides,
   } as Config
   const rpc = {
@@ -61,7 +66,7 @@ function setup(
       sent.push(Date.now())
       return (behaviour.send ?? (async () => 'sig-ok'))()
     },
-    confirmTransaction: behaviour.confirm ?? (async () => ({ value: { err: null } })),
+    getSignatureStatuses: behaviour.status ?? (async () => ({ value: [CONFIRMED] })),
   } as unknown as Connection
   return { service: new ClaimService(config, store, rpc), store, sent }
 }
@@ -114,11 +119,7 @@ describe('ClaimService.claim', () => {
   })
 
   test('an unconfirmed transfer is parked as failed, never released', async () => {
-    const { service, store } = setup({
-      confirm: async () => {
-        throw new Error('timed out waiting for confirmation')
-      },
-    })
+    const { service, store } = setup({ status: async () => ({ value: [null] }) }, { claimConfirmTimeoutMs: 0 })
     store.insertClaim('c5', 1000)
 
     const res = await service.claim('c5', WALLET)
@@ -130,13 +131,62 @@ describe('ClaimService.claim', () => {
   })
 
   test('a transfer that landed and failed on-chain releases the code', async () => {
-    const { service, store } = setup({ confirm: async () => ({ value: { err: { InstructionError: [1, 'Custom'] } } }) })
+    const { service, store } = setup({
+      status: async () => ({ value: [{ err: { InstructionError: [1, 'Custom'] }, confirmationStatus: 'confirmed' }] }),
+    })
     store.insertClaim('c6', 1000)
 
     const res = await service.claim('c6', WALLET)
 
     assert.equal(res.ok, false)
     assert.equal(store.getClaim('c6')?.state, 'unused')
+  })
+
+  test('a transfer that only reaches processed is not treated as confirmed', async () => {
+    const { service, store } = setup(
+      { status: async () => ({ value: [{ err: null, confirmationStatus: 'processed' }] }) },
+      { claimConfirmTimeoutMs: 0 },
+    )
+    store.insertClaim('c10', 1000)
+
+    const res = await service.claim('c10', WALLET)
+
+    assert.equal(res.ok, false)
+    assert.equal(store.getClaim('c10')?.state, 'failed')
+  })
+
+  test('confirmation polls until the status shows up', async () => {
+    let polls = 0
+    const { service, store } = setup({
+      status: async () => {
+        polls++
+        return { value: [polls < 2 ? null : CONFIRMED] }
+      },
+    })
+    store.insertClaim('c11', 1000)
+
+    const res = await service.claim('c11', WALLET)
+
+    assert.equal(res.ok, true)
+    assert.ok(polls >= 2, 'a transfer not yet visible must be polled again, not failed')
+    assert.equal(store.getClaim('c11')?.state, 'used')
+  })
+
+  test('a transient RPC error does not fail a transfer that then confirms', async () => {
+    let polls = 0
+    const { service, store } = setup({
+      status: async () => {
+        polls++
+        if (polls < 2) throw new Error('502 Bad Gateway')
+        return { value: [CONFIRMED] }
+      },
+    })
+    store.insertClaim('c12', 1000)
+
+    const res = await service.claim('c12', WALLET)
+
+    assert.equal(res.ok, true)
+    assert.equal(store.getClaim('c12')?.state, 'used')
   })
 
   test('an unknown code is a 404', async () => {
