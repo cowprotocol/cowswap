@@ -77,8 +77,9 @@ jobs:
           cache-from: type=gha,scope=graffiti-api
           cache-to: type=gha,mode=max,scope=graffiti-api
 
-      # Rolls barn, which tracks the mutable branch tag. Point at develop once graffiti merges.
-      - uses: cowprotocol/autodeploy-action@73f1163f19a584cdc34e29aa84d630d7e6a45432 # v3
+      - name: Roll the barn deployment
+        uses: cowprotocol/autodeploy-action@73f1163f19a584cdc34e29aa84d630d7e6a45432 # v3
+        # Point at develop once graffiti merges and graffity-base goes away.
         if: ${{ github.ref == 'refs/heads/graffity-base' }}
         with:
           images: ghcr.io/${{ github.repository }}/graffiti-api:graffity-base
