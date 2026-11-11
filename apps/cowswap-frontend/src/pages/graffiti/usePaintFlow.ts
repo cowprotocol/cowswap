@@ -24,6 +24,13 @@ const SPL_MEMO_PROGRAM_ID = new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDL
 /** Minimum lamports needed to pay for the burn transaction. */
 const MIN_FEE_LAMPORTS = 5000
 
+/**
+ * Stop waiting on our own RPC after this long and let the wall verify instead:
+ * the backend only accepts a burn for a few minutes, so a confirmation that
+ * never arrives must not eat that budget.
+ */
+const CONFIRM_TIMEOUT_MS = 30_000
+
 export interface PaintFlow {
   phase: PaintPhase
   phaseError: string | null
@@ -41,11 +48,22 @@ export interface UsePaintFlowParams {
   onApplied: (seq: number) => void
 }
 
+type BurnStart = { ok: true; burn: PendingBurn; strategy: ConfirmStrategy } | { ok: false; reason: string }
+
+/** What `confirmTransaction` needs to know when a burn expires. */
+interface ConfirmStrategy {
+  signature: string
+  blockhash: string
+  lastValidBlockHeight: number
+}
+
 type Connection = NonNullable<ReturnType<typeof useAppKitConnection>['connection']>
 
 interface ParsedAta {
   parsed?: { info?: { tokenAmount?: { uiAmount?: number | null } } }
 }
+
+type SolanaProvider = NonNullable<ReturnType<typeof useSolanaWalletProvider>>
 
 export function usePaintFlow({ draft, solanaAccount, info, onApplied }: UsePaintFlowParams): PaintFlow {
   const provider = useSolanaWalletProvider()
@@ -54,30 +72,37 @@ export function usePaintFlow({ draft, solanaAccount, info, onApplied }: UsePaint
   const [phase, setPhase] = useState<PaintPhase>('idle')
   const [phaseError, setPhaseError] = useState<string | null>(null)
 
+  // The backend consumes a signature exactly once, so two deliveries of the
+  // same burn race and the loser is told it was 'already used'.
+  const deliveringRef = useRef<string | null>(null)
+
   /** Hand a burn to the wall, retrying transient failures. */
   const deliverBurn = useCallback(
     async (burn: PendingBurn): Promise<void> => {
+      if (deliveringRef.current === burn.txSignature) return
+
+      deliveringRef.current = burn.txSignature
       setPhase('painting')
       setPhaseError(null)
 
-      const outcome = await submitDraw(burn, (attempt, max) => {
-        if (attempt > 1) setPhaseError(`Confirming your burn with the wall (attempt ${attempt}/${max})…`)
-      })
+      try {
+        const outcome = await submitDraw(burn, (attempt, max) => {
+          if (attempt > 1) setPhaseError(`Confirming your burn with the wall (attempt ${attempt}/${max})…`)
+        })
 
-      if (outcome.ok) {
-        setPhaseError(null)
-        setPhase('done')
-        onApplied(outcome.seq)
+        if (outcome.ok) {
+          setPhaseError(null)
+          setPhase('done')
+          onApplied(outcome.seq)
 
-        return
+          return
+        }
+
+        setPhase('error')
+        setPhaseError(outcome.recoverable ? burnedAndSafe(outcome.reason) : outcome.reason)
+      } finally {
+        deliveringRef.current = null
       }
-
-      setPhase('error')
-      setPhaseError(
-        outcome.recoverable
-          ? `${outcome.reason}. Your tokens are burned and safe — reload this page to finish painting.`
-          : outcome.reason,
-      )
     },
     [onApplied],
   )
@@ -89,62 +114,31 @@ export function usePaintFlow({ draft, solanaAccount, info, onApplied }: UsePaint
   const paint = useCallback(async (): Promise<void> => {
     if (draft.size === 0 || !solanaAccount || !provider || !connection) return
 
-    const cellsPayload: Array<Cell> = Array.from(draft.entries()).map(([idx, color]) => ({
-      x: idx % CANVAS.w,
-      y: Math.floor(idx / CANVAS.w),
-      color,
-    }))
-    const amount = cellsPayload.length
+    const owed = loadPendingBurn()
+
+    // Already paid for: burning a second time would charge twice.
+    if (owed && owed.walletPubkey === solanaAccount) return deliverBurn(owed)
+
+    const cells = draftToCells(draft)
 
     try {
-      setPhase('quoting')
       setPhaseError(null)
 
-      const owner = new PublicKey(solanaAccount)
-      const checked = await runPreflight(connection, owner, amount, info)
+      const started = await startBurn({ cells, connection, info, onPhase: setPhase, owner: solanaAccount, provider })
 
-      if (!checked.ok) {
+      if (!started.ok) {
         setPhase('error')
-        setPhaseError(checked.reason)
+        setPhaseError(started.reason)
 
         return
       }
 
-      setPhase('awaiting wallet')
-
-      const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash()
-      const transaction = buildBurnTransaction({
-        mint: checked.mint,
-        owner,
-        amount,
-        blockhash,
-        lastValidBlockHeight,
-      })
-      const signature = await provider.sendTransaction(transaction, connection)
-
-      // The tokens are gone from here on. Record the burn before anything else
-      // can fail, so a reload or a backend hiccup cannot destroy it.
-      const burn: PendingBurn = {
-        txSignature: signature,
-        walletPubkey: solanaAccount,
-        cells: cellsPayload,
-        createdAt: Date.now(),
-      }
-
-      savePendingBurn(burn)
       setPhase('confirming')
-      await connection.confirmTransaction({ signature, blockhash, lastValidBlockHeight }, 'confirmed')
-      await deliverBurn(burn)
+      await confirmQuietly(connection, started.strategy)
+      await deliverBurn(started.burn)
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : String(err)
-
-      void postClientError({
-        message,
-        wallet: solanaAccount ?? undefined,
-        detail: JSON.stringify({ amount, cells: cellsPayload.length, mint: info?.mint }),
-      })
       setPhase('error')
-      setPhaseError(message)
+      setPhaseError(handleBurnFailure(err, solanaAccount, { cells: cells.length, mint: info?.mint }))
     }
   }, [connection, deliverBurn, draft, info, provider, solanaAccount])
 
@@ -173,6 +167,47 @@ function buildBurnTransaction(params: {
       data: Buffer.from(memo, 'utf-8'),
     }),
   )
+}
+
+function burnedAndSafe(reason: string): string {
+  return `${reason}. Your ${TOKEN_SYMBOL} are burned and safe — reload this page to finish painting.`
+}
+
+/**
+ * A blockhash expiring means this RPC stopped watching, not that the burn
+ * failed. The wall re-reads the chain itself, so a sent burn is never
+ * abandoned over a confirmation that did not arrive here.
+ */
+async function confirmQuietly(connection: Connection, strategy: ConfirmStrategy): Promise<void> {
+  try {
+    await Promise.race([connection.confirmTransaction(strategy, 'confirmed'), delay(CONFIRM_TIMEOUT_MS)])
+  } catch {
+    /* the wall is the authority on whether the burn landed */
+  }
+}
+
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+function draftToCells(draft: Map<number, number>): Array<Cell> {
+  return Array.from(draft.entries()).map(([idx, color]) => ({
+    x: idx % CANVAS.w,
+    y: Math.floor(idx / CANVAS.w),
+    color,
+  }))
+}
+
+/** Report the failure, and say whether the tokens behind it can still land. */
+function handleBurnFailure(err: unknown, owner: string, detail: Record<string, unknown>): string {
+  const message = err instanceof Error ? err.message : String(err)
+  // A record under this wallet can only be the burn just started: any
+  // pre-existing one was resumed before the attempt.
+  const recorded = loadPendingBurn()?.walletPubkey === owner
+
+  void postClientError({ message, wallet: owner, detail: JSON.stringify({ ...detail, recorded }) })
+
+  return recorded ? burnedAndSafe(message) : message
 }
 
 function isMainnet(network: string): boolean {
@@ -228,6 +263,46 @@ async function runPreflight(
   }
 
   return { ok: true, mint }
+}
+
+/**
+ * Preflight, prompt the wallet, and record the burn the instant a signature
+ * exists — after that point the tokens are gone and only the record can get
+ * them back onto the wall.
+ */
+async function startBurn(params: {
+  cells: Array<Cell>
+  connection: Connection
+  info: CanvasInfo | null
+  onPhase: (phase: PaintPhase) => void
+  owner: string
+  provider: SolanaProvider
+}): Promise<BurnStart> {
+  const { cells, connection, info, onPhase, owner, provider } = params
+  const ownerKey = new PublicKey(owner)
+
+  onPhase('quoting')
+
+  const checked = await runPreflight(connection, ownerKey, cells.length, info)
+
+  if (!checked.ok) return checked
+
+  onPhase('awaiting wallet')
+
+  const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash()
+  const transaction = buildBurnTransaction({
+    mint: checked.mint,
+    owner: ownerKey,
+    amount: cells.length,
+    blockhash,
+    lastValidBlockHeight,
+  })
+  const signature = await provider.sendTransaction(transaction, connection)
+  const burn: PendingBurn = { txSignature: signature, walletPubkey: owner, cells, createdAt: Date.now() }
+
+  savePendingBurn(burn)
+
+  return { ok: true, burn, strategy: { signature, blockhash, lastValidBlockHeight } }
 }
 
 /** Drop the success banner back to idle without leaking the timer. */
