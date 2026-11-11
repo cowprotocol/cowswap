@@ -1,9 +1,10 @@
 import { WALL_PAINT_MIX_BLEND_MODE } from '@cowprotocol/common-const'
+import { Media } from '@cowprotocol/ui'
 
 import { Link } from 'react-router'
 import styled, { css, keyframes } from 'styled-components/macro'
 
-import { NARROW_BREAKPOINT_PX } from './wall.constants'
+import { APP_BOTTOM_BAR_PX, HERO_BREAKPOINT_PX, NARROW_BREAKPOINT_PX } from './wall.constants'
 
 /**
  * The wall has its own fixed dark palette rather than the app's theme tokens.
@@ -32,6 +33,23 @@ export const neonShadow = `0 0 12px rgba(0,255,163,0.55)`
 /** Phones: the tools become a bottom sheet and the wall takes the screen. */
 export const onNarrow = (inner: ReturnType<typeof css>): ReturnType<typeof css> => css`
   @media (max-width: ${NARROW_BREAKPOINT_PX}px) {
+    ${inner}
+  }
+`
+
+/** Widths where the mural stacks above the copy instead of sitting beside it. */
+export const onStacked = (inner: ReturnType<typeof css>): ReturnType<typeof css> => css`
+  @media (max-width: ${HERO_BREAKPOINT_PX}px) {
+    ${inner}
+  }
+`
+
+/**
+ * Widths where the app's wallet bar is fixed over the bottom of the viewport.
+ * It covers this width's whole band, so it must come after `onNarrow` to win.
+ */
+export const onAppBottomBar = (inner: ReturnType<typeof css>): ReturnType<typeof css> => css`
+  ${Media.upToMedium()} {
     ${inner}
   }
 `
@@ -65,6 +83,10 @@ export const Page = styled.div<{ $auto?: boolean }>`
    * blend mode from that background.
    */
   background: transparent;
+
+  ${onAppBottomBar(css`
+    padding-bottom: ${APP_BOTTOM_BAR_PX}px;
+  `)}
 `
 
 export const Header = styled.header`
@@ -305,10 +327,6 @@ export const PanelActions = styled.div`
   > * {
     flex: 1;
   }
-
-  ${onNarrow(css`
-    width: auto;
-  `)}
 `
 
 /** Accent border + glow for the currently selected tool. */
@@ -445,6 +463,11 @@ export const Footer = styled.footer`
     background: ${wallColors.backdrop};
     pointer-events: none;
   `)}
+
+  /* Absolute against the page's padding box, so the page's own clearance misses it. */
+  ${onAppBottomBar(css`
+    bottom: ${APP_BOTTOM_BAR_PX}px;
+  `)}
 `
 
 export const Hints = styled.div`
@@ -468,8 +491,7 @@ export const OverlayLayer = styled.div`
   pointer-events: none;
 
   ${onNarrow(css`
-    align-items: flex-end;
-    justify-content: stretch;
+    align-items: stretch;
     padding: 8px;
     background: none;
     backdrop-filter: none;
@@ -483,27 +505,26 @@ export const StartPanel = styled(Panel)`
   gap: 10px;
   align-items: center;
   min-width: 280px;
+  max-height: 100%;
+  overflow-y: auto;
   text-align: center;
 
-  ${onNarrow(css`
-    position: absolute;
-    bottom: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: auto;
-    min-width: 0;
-    padding: 6px 8px;
-    gap: 6px;
-    background: rgba(16, 16, 28, 0.92);
+  /* One column once the mural is on top of the copy, so the lines stay readable. */
+  ${onStacked(css`
+    max-width: 380px;
   `)}
-`
 
-/** The headline and blurb are noise on a phone, where the wall matters most. */
-export const WideOnly = styled.div`
-  display: contents;
-
+  /* Phones: a full-screen sheet, laid out by the overlay rather than positioned. */
   ${onNarrow(css`
-    display: none;
+    flex: 1;
+    min-width: 0;
+    max-width: none;
+    justify-content: center;
+    /* Centring a scroll container puts overflow out of reach; safe falls back to the start. */
+    justify-content: safe center;
+    padding: 16px 12px;
+    /* Opaque: a full-screen sheet otherwise ghosts the canvas controls underneath it. */
+    background: ${wallColors.surfaceDeep};
   `)}
 `
 
