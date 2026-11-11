@@ -29,6 +29,8 @@ const ISSUER_NAMES = {
   'ondo-tokenized-assets': 'Ondo',
   'bstocks-ecosystem': 'bStocks',
   'paxos-ecosystem': 'Paxos',
+  'robinhood-chain-stocks-ecosystem': 'Robinhood',
+  'anchored-ecosystem': 'Anchored',
 }
 const DEFAULT_PRIORITY = 0
 const DEFAULT_TRADING_TIME = { title: 'US market open', start: '13:30 UTC', end: '20:00 UTC' }
@@ -69,9 +71,7 @@ async function main() {
 
   const coinIds = [
     ...new Set(
-      details.flatMap((rwa) =>
-        (rwa.tokens ?? []).filter((token) => getIssuerName(token)).map((token) => token.id),
-      ),
+      details.flatMap((rwa) => (rwa.tokens ?? []).filter((token) => getIssuerName(token)).map((token) => token.id)),
     ),
   ]
   const tokenMarketCaps = await fetchCoinMarketCaps(coinIds)

@@ -19,8 +19,8 @@ describe('getDividendModel', () => {
     expect(getDividendModel({ issuer: 'bStocks' })).toBe('rebase')
     expect(getDividendModel({ issuer: 'Reality' })).toBe('cash-payout')
     expect(getDividendModel({ issuer: 'Dinari' })).toBe('cash-payout')
-    expect(getDividendModel({ issuer: 'Robinhood Assets (Jersey) Limited' })).toBe('price-accrual')
-    expect(getDividendModel({ issuer: 'Anchored Capital Ltd (BVI)' })).toBe('cash-payout')
+    expect(getDividendModel({ issuer: 'Robinhood' })).toBe('price-accrual')
+    expect(getDividendModel({ issuer: 'Anchored' })).toBe('cash-payout')
     expect(getDividendModel({ issuer: 'ST0x' })).toBe('price-accrual')
   })
 
@@ -90,7 +90,7 @@ describe('isVaultToken', () => {
 
 describe('hasUiMultiplier', () => {
   it('matches Robinhood tokens only', () => {
-    expect(hasUiMultiplier({ issuer: 'Robinhood Assets (Jersey) Limited' })).toBe(true)
+    expect(hasUiMultiplier({ issuer: 'Robinhood' })).toBe(true)
     expect(hasUiMultiplier(ONDO)).toBe(false)
   })
 })

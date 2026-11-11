@@ -110,7 +110,7 @@ every dividend.
 
 ## Robinhood: price accrual
 
-Robinhood stock tokens (issuer Robinhood Assets (Jersey) Limited, on Robinhood Chain, 4663) reinvest dividends
+Robinhood stock tokens (issued by Robinhood Assets (Jersey) Limited, on Robinhood Chain, 4663) reinvest dividends
 through a **multiplier** instead of paying cash: "your token dynamically represents more than one share".
 Stock splits go into the same multiplier.
 
@@ -156,7 +156,7 @@ dShares. The registry has none of them, so the app has no rule for them.
 
 ## Anchored: cash payout
 
-Anchored Capital Ltd (BVI) aStocks pay cash dividends in **USDC**, net of taxes, fees and operational costs,
+Anchored aStocks (issued by Anchored Capital Ltd (BVI)) pay cash dividends in **USDC**, net of taxes, fees and operational costs,
 automatically to the wallet linked to the holder's Anchored account. No claim is needed.
 
 - **Balance:** constant. Splits "may be reflected through token adjustments, balance adjustments, contract

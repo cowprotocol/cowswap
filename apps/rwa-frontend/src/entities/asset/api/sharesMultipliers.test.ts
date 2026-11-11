@@ -44,12 +44,7 @@ const WNVDAX = token('WNVDAX', 1, '0x0000000000000000000000000000000000000004', 
 const WNVDAX_ARBITRUM = { ...WNVDAX, chainId: 42161 }
 const WSPYX = token('WSPYX', 42161, '0x0000000000000000000000000000000000000005', 'xStocks', 'wrapped-sp500-xstock')
 const WTNKE = token('WTNKE', 8453, '0x000000000000000000000000000000000000000c', 'ST0x', 'nike-st0x-tokenized-stock')
-const NVDA_ROBINHOOD = token(
-  'NVDA',
-  4663,
-  '0x000000000000000000000000000000000000000d',
-  'Robinhood Assets (Jersey) Limited',
-)
+const NVDA_ROBINHOOD = token('NVDA', 4663, '0x000000000000000000000000000000000000000d', 'Robinhood')
 
 const PAXG = token('PAXG', 1, '0x0000000000000000000000000000000000000009', 'Paxos')
 const XAUT = token('XAUT', 1, '0x000000000000000000000000000000000000000a', 'Tether')
@@ -124,7 +119,7 @@ describe('loadSharesPerToken', () => {
     const rnvda = token('RNVDA', 42161, '0x0000000000000000000000000000000000000007', 'Reality')
     const nvdac = token('NVDAC', 8453, '0x0000000000000000000000000000000000000008', 'Coinbase')
     const dinari = token('NVDA', 1, '0x000000000000000000000000000000000000000e', 'Dinari')
-    const anchored = token('ANVDA', 1, '0x000000000000000000000000000000000000000f', 'Anchored Capital Ltd (BVI)')
+    const anchored = token('ANVDA', 1, '0x000000000000000000000000000000000000000f', 'Anchored')
 
     expect(await loadSharesPerToken([nvdab, rnvda, nvdac, dinari, anchored])).toEqual({
       byKey: { [getTokenKey(nvdab)]: 1, [getTokenKey(rnvda)]: 1, [getTokenKey(dinari)]: 1, [getTokenKey(anchored)]: 1 },

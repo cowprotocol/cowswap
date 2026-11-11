@@ -9,8 +9,8 @@ import type { RwaToken } from './types'
 export type RwaDividendModel = 'price-accrual' | 'rebase' | 'cash-payout'
 
 /**
- * Issuers with a known dividend model or legal docs, by their CoinGecko name. The registry has tokens of any issuer
- * CoinGecko lists
+ * Issuers with a known dividend model or legal docs, by their registry name (`ISSUER_NAMES` in
+ * `scripts/updateRegistry.mjs`, else the CoinGecko name). The registry has tokens of any issuer CoinGecko lists
  */
 export const RWA_ISSUERS = [
   'Ondo',
@@ -19,8 +19,8 @@ export const RWA_ISSUERS = [
   'bStocks',
   'Reality',
   'Dinari',
-  'Robinhood Assets (Jersey) Limited',
-  'Anchored Capital Ltd (BVI)',
+  'Robinhood',
+  'Anchored',
   'ST0x',
 ] as const
 
@@ -51,8 +51,8 @@ const ISSUER_DIVIDEND_MODELS: Partial<Record<RwaIssuer, RwaDividendModel>> = {
   bStocks: 'rebase',
   Reality: 'cash-payout',
   Dinari: 'cash-payout',
-  'Robinhood Assets (Jersey) Limited': 'price-accrual',
-  'Anchored Capital Ltd (BVI)': 'cash-payout',
+  Robinhood: 'price-accrual',
+  Anchored: 'cash-payout',
   ST0x: 'price-accrual',
 }
 
@@ -111,7 +111,7 @@ export function getIssuerLegalDocsUrl(issuer: string): string | null {
 
 /** Its shares per token is its ERC-8056 `uiMultiplier()`, and `balanceOf()` is not scaled by it */
 export function hasUiMultiplier({ issuer }: DividendToken): boolean {
-  return issuer === 'Robinhood Assets (Jersey) Limited'
+  return issuer === 'Robinhood'
 }
 
 /** Its shares per token is what it redeems for in ERC-4626 `convertToAssets`: a wrapped xStocks or an ST0x token */
