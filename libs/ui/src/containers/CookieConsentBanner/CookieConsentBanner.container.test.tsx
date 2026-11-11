@@ -94,4 +94,38 @@ describe('CookieConsentBannerContainer', () => {
 
     expect(screen.getByRole('button', { name: 'Alle akzeptieren' })).toBeTruthy()
   })
+
+  it('keeps the default notice when no presentation is requested', () => {
+    mockBanner()
+    render(<CookieConsentBannerContainer />)
+
+    expect(screen.queryByRole('heading')).toBeNull()
+    expect(screen.getByRole('dialog').textContent).toContain(COOKIE_CONSENT_COPY.message)
+  })
+
+  it('supports the cow-cookie presentation while preserving the consent controls', () => {
+    const banner = mockBanner({ isReopened: true })
+    render(
+      <CookieConsentBannerContainer
+        title="A Coincidence of Wants"
+        illustration={<img src="cow-cookie.svg" alt="" />}
+        variant="cowCookie"
+      />,
+    )
+
+    const reject = screen.getByRole('button', { name: COOKIE_CONSENT_COPY.rejectLabel })
+    const accept = screen.getByRole('button', { name: COOKIE_CONSENT_COPY.acceptLabel })
+
+    expect(screen.getByRole('heading', { name: 'A Coincidence of Wants' })).toBeTruthy()
+    expect(document.querySelector('img')?.parentElement?.getAttribute('aria-hidden')).toBe('true')
+    expect(reject.className).toBe(accept.className)
+
+    fireEvent.click(reject)
+    fireEvent.click(accept)
+    fireEvent.click(screen.getByRole('button', { name: COOKIE_CONSENT_COPY.closeLabel }))
+
+    expect(banner.reject).toHaveBeenCalledTimes(1)
+    expect(banner.accept).toHaveBeenCalledTimes(1)
+    expect(banner.close).toHaveBeenCalledTimes(1)
+  })
 })

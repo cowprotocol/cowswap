@@ -7,12 +7,18 @@ import * as styledEl from './CookieConsentBanner.styled'
 
 export interface CookieConsentBannerContainerProps {
   copy?: CookieConsentCopy
+  title?: string
+  illustration?: ReactNode
+  variant?: 'default' | 'cowCookie'
   /** Pixels. Height of a bar the app fixes to the bottom of the screen up to `Media.upToMedium`. Default 0 */
   bottomBarHeight?: number
 }
 
 export function CookieConsentBannerContainer({
   copy = COOKIE_CONSENT_COPY,
+  title,
+  illustration,
+  variant = 'default',
   bottomBarHeight = 0,
 }: CookieConsentBannerContainerProps): ReactNode {
   const banner = useCookieConsentBanner()
@@ -21,13 +27,19 @@ export function CookieConsentBannerContainer({
 
   return (
     <styledEl.Wrapper $bottomBarHeight={bottomBarHeight}>
-      <styledEl.Card {...banner.dialogProps} aria-label={copy.ariaLabel}>
+      <styledEl.Card {...banner.dialogProps} aria-label={copy.ariaLabel} $isCowCookie={variant === 'cowCookie'}>
         {banner.isReopened && (
           <styledEl.Header>
             <styledEl.CloseButton type="button" onClick={banner.close}>
               {copy.closeLabel}
             </styledEl.CloseButton>
           </styledEl.Header>
+        )}
+        {(title || illustration) && (
+          <styledEl.TitleRow>
+            {title && <styledEl.Title>{title}</styledEl.Title>}
+            {illustration && <styledEl.Illustration aria-hidden="true">{illustration}</styledEl.Illustration>}
+          </styledEl.TitleRow>
         )}
         <styledEl.Message id={banner.messageId}>
           {copy.message}{' '}
