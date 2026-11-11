@@ -76,3 +76,12 @@ jobs:
           platforms: linux/amd64
           cache-from: type=gha,scope=graffiti-api
           cache-to: type=gha,mode=max,scope=graffiti-api
+
+      # Rolls barn, which tracks the mutable branch tag. Point at develop once graffiti merges.
+      - uses: cowprotocol/autodeploy-action@73f1163f19a584cdc34e29aa84d630d7e6a45432 # v3
+        if: ${{ github.ref == 'refs/heads/graffity-base' }}
+        with:
+          images: ghcr.io/${{ github.repository }}/graffiti-api:graffity-base
+          url: ${{ secrets.AUTODEPLOY_URL }}
+          token: ${{ secrets.AUTODEPLOY_TOKEN }}
+          timeout: 600000
