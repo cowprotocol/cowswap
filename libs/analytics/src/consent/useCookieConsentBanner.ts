@@ -41,6 +41,8 @@ export function useCookieConsentBanner(): CookieConsentBannerControls {
   useEffect(() => {
     if (!isReopened) return
 
+    const openedFrom = document.activeElement
+
     dialogRef.current?.focus()
 
     const closeOnEscape = (event: KeyboardEvent): void => {
@@ -49,7 +51,11 @@ export function useCookieConsentBanner(): CookieConsentBannerControls {
 
     document.addEventListener('keydown', closeOnEscape)
 
-    return () => document.removeEventListener('keydown', closeOnEscape)
+    return () => {
+      document.removeEventListener('keydown', closeOnEscape)
+
+      if (openedFrom instanceof HTMLElement && openedFrom.isConnected) openedFrom.focus()
+    }
   }, [isReopened])
 
   return {

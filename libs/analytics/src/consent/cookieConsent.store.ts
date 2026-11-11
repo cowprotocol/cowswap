@@ -63,7 +63,8 @@ function adoptChoiceFromAnotherTab(): void {
   const stored = readConsentCookie(Date.now())
   const current = getCookieConsentState()
 
-  if (!stored || stored.decidedAt === current.consent?.decidedAt) return
+  if (!stored) return
+  if (stored.decidedAt === current.consent?.decidedAt && stored.choice === current.consent.choice) return
 
   applyChoice(current, stored)
 }

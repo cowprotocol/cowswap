@@ -54,7 +54,7 @@ export class ConsentGatedCowAnalytics implements CowAnalytics {
     if (this.analytics) {
       this.analytics.outboundLink(params)
     } else {
-      window.setTimeout(params.hitCallback, 0)
+      setTimeout(params.hitCallback, 0)
     }
   }
 
@@ -68,7 +68,9 @@ export class ConsentGatedCowAnalytics implements CowAnalytics {
 
   // Context goes first, so the replayed account and page view carry it as their dimensions
   private activate(): void {
-    const analytics = this.loadAnalytics()
+    const analytics = this.tryLoadAnalytics()
+
+    if (!analytics) return
 
     this.analytics = analytics
     this.pendingContext.forEach((value, key) => analytics.setContext(key, value))
@@ -84,5 +86,14 @@ export class ConsentGatedCowAnalytics implements CowAnalytics {
     this.pendingContext.clear()
     this.pendingAccount = null
     this.pendingPageView = null
+  }
+
+  // Runs inside the consent store's notification, so a throwing loader would cut off the store's other subscribers
+  private tryLoadAnalytics(): CowAnalytics | null {
+    try {
+      return this.loadAnalytics()
+    } catch {
+      return null
+    }
   }
 }

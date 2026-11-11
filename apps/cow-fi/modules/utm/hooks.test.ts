@@ -5,7 +5,9 @@ import { act, renderHook } from '@testing-library/react'
 import { useInitializeUtm } from './hooks'
 
 jest.mock('@cowprotocol/analytics', () => ({ waitForAnalytics: jest.fn() }))
-jest.mock('jotai', () => ({ useSetAtom: () => jest.fn() }))
+const mockSetUtm = jest.fn()
+
+jest.mock('jotai', () => ({ useSetAtom: () => mockSetUtm }))
 jest.mock('./state', () => ({ utmAtom: {} }))
 
 jest.mock('@cowprotocol/common-utils', () => jest.requireActual('../../../../libs/common-utils/src/utmParameters'))
@@ -25,6 +27,7 @@ let finishWaiting: () => void
 beforeEach(() => {
   jest.useFakeTimers()
   mockReplace.mockClear()
+  mockSetUtm.mockClear()
   mockPathname = '/'
   mockSearchParams = new URLSearchParams('utm_source=ad')
   window.history.replaceState(null, '', '/?utm_source=ad')
@@ -69,6 +72,16 @@ describe('useInitializeUtm delayed cleanup', () => {
     await decide()
 
     expect(mockReplace).not.toHaveBeenCalled()
+  })
+
+  it('stores UTM values that arrive while consent is pending', async () => {
+    const { rerender } = renderHook(useInitializeUtm)
+    mockSearchParams = new URLSearchParams('utm_source=ad&utm_medium=email')
+    rerender()
+
+    await decide()
+
+    expect(mockSetUtm).toHaveBeenLastCalledWith({ utmSource: 'ad', utmMedium: 'email' })
   })
 
   it('does not navigate after unmounting while consent is pending', async () => {

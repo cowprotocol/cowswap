@@ -15,8 +15,11 @@ export function useInitializeUtm(): void {
   const location = useLocation()
   const { search, pathname, hash } = location
   const currentLocation = useRef(location)
-  currentLocation.current = location
   const setUtm = useSetAtom(utmAtom)
+
+  useLayoutEffect(() => {
+    currentLocation.current = location
+  }, [location])
 
   useLayoutEffect(() => {
     logUtmDebug('useInitializeUtm effect running:', {
@@ -181,6 +184,10 @@ function handleUrlNavigation(
   navigate({ pathname, search: newSearch, hash }, { replace: true })
 }
 
+function hasUtmKeys(search: string): boolean {
+  return Array.from(new URLSearchParams(search).keys()).some((key) => key.startsWith('utm_'))
+}
+
 /**
  * Debug logging for UTM processing
  */
@@ -218,11 +225,15 @@ function processUtmParams(
     if (cancelled) return
 
     const { search, pathname, hash } = getCurrentLocation()
-    const hasQueryParamsOutOfHashbang = Boolean(window.location.search)
+    const latest = extractUtmParams(search)
+
+    if (latest.hasUtmParams) setUtm({ ...utm, ...latest.utm })
+
+    const { hasQueryParamsOutOfHashbang } = latest
     const sourceToClean = hasQueryParamsOutOfHashbang ? window.location.search : search
     const newSearchParams = cleanUpUtmParams(new URLSearchParams(sourceToClean || ''))
     const newSearch = newSearchParams.toString()
-    if (newSearch === new URLSearchParams(sourceToClean).toString() && !search.includes('utm_')) return
+    if (newSearch === new URLSearchParams(sourceToClean).toString() && !hasUtmKeys(search)) return
 
     logUtmDebug('Cleaned search params:', {
       hasQueryParamsOutOfHashbang,

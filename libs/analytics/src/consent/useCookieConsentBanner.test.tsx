@@ -67,4 +67,25 @@ describe('useCookieConsentBanner', () => {
 
     expect(screen.queryByRole('dialog')).toBeNull()
   })
+
+  it('returns focus to the control that reopened it', () => {
+    acceptCookies()
+    render(
+      <>
+        <button onClick={openCookieSettings}>Cookie settings</button>
+        <Banner />
+      </>,
+    )
+
+    const settingsButton = screen.getByRole('button', { name: 'Cookie settings' })
+
+    settingsButton.focus()
+    fireEvent.click(settingsButton)
+
+    expect(document.activeElement).toBe(screen.getByRole('dialog'))
+
+    fireEvent.keyDown(document, { key: 'Escape' })
+
+    expect(document.activeElement).toBe(settingsButton)
+  })
 })

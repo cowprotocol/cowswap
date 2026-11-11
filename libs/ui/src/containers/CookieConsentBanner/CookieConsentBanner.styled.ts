@@ -9,11 +9,13 @@ import { font } from '../../utils/font'
 
 export const Wrapper = styled.div<{ $bottomBarHeight: number }>`
   position: fixed;
+  top: 16px;
   right: 16px;
   bottom: 16px;
   left: 16px;
   z-index: ${OVERLAY_Z_INDEX.overlay - 1};
   display: flex;
+  align-items: flex-end;
   justify-content: flex-end;
   pointer-events: none;
 
@@ -23,6 +25,7 @@ export const Wrapper = styled.div<{ $bottomBarHeight: number }>`
   }
 
   ${Media.upToExtraSmall()} {
+    top: 8px;
     right: 8px;
     bottom: ${({ $bottomBarHeight }) => $bottomBarHeight + 8}px;
     left: 8px;
@@ -152,7 +155,9 @@ export const Card = styled.section<{ $variant: 'white' | 'paleBlue' | 'trading' 
   gap: 16px;
   width: 100%;
   max-width: 440px;
+  max-height: 100%;
   padding: 24px;
+  overflow-y: auto;
   border: 0;
   border-radius: 16px;
   background: var(--cookie-banner-background);

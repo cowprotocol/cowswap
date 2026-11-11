@@ -198,6 +198,19 @@ describe('cookieConsent.store', () => {
       expect(reloadPage).not.toHaveBeenCalled()
     })
 
+    it('adopts an opposite choice made in the same millisecond', () => {
+      const now = Date.now()
+      const dateNow = jest.spyOn(Date, 'now').mockReturnValue(now)
+
+      acceptCookies()
+      writeConsentCookie(createConsentRecord('rejected', now), now)
+      document.dispatchEvent(new Event('visibilitychange'))
+      dateNow.mockRestore()
+
+      expect(hasAcceptedCookies()).toBe(false)
+      expect(reloadPage).toHaveBeenCalledTimes(1)
+    })
+
     it('keeps the current choice when the cookie is gone', () => {
       acceptCookies()
       clearConsentCookie()

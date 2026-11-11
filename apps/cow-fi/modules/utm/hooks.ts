@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 
 import { waitForAnalytics } from '@cowprotocol/analytics'
 import { getUtmParams, hasUtmCodes, UtmParams } from '@cowprotocol/common-utils'
@@ -14,10 +14,13 @@ export function useInitializeUtm(): void {
   const router = useRouter()
   const searchParams = useSearchParams()
   const currentLocation = useRef({ pathname, searchParams })
-  currentLocation.current = { pathname, searchParams }
 
   // get atom setter
   const setUtm = useSetAtom(utmAtom)
+
+  useLayoutEffect(() => {
+    currentLocation.current = { pathname, searchParams }
+  }, [pathname, searchParams])
 
   useEffect(() => {
     let cancelled = false
@@ -36,7 +39,12 @@ export function useInitializeUtm(): void {
 
         timeoutId = setTimeout(() => {
           const { pathname, searchParams } = currentLocation.current
-          cleanUpParams(router, pathname, new URLSearchParams(searchParams?.toString()))
+          const latestQuery = new URLSearchParams(searchParams?.toString())
+          const latestUtm = getUtmParams(latestQuery)
+
+          if (hasUtmCodes(latestUtm)) setUtm({ ...utm, ...latestUtm })
+
+          cleanUpParams(router, pathname, latestQuery)
         }, 250) // Additional 250ms delay for analytics capture
       })
     } else {

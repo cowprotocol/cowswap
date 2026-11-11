@@ -2,7 +2,12 @@ import { ConsentGatedCowAnalytics } from './ConsentGatedCowAnalytics'
 
 import { createConsentRecord, writeConsentCookie } from '../consent/consentCookie.utils'
 import { COOKIE_CONSENT_NAME } from '../consent/cookieConsent.constants'
-import { __resetCookieConsentStore, acceptCookies, rejectCookies } from '../consent/cookieConsent.store'
+import {
+  __resetCookieConsentStore,
+  acceptCookies,
+  rejectCookies,
+  subscribeToCookieConsent,
+} from '../consent/cookieConsent.store'
 import { AnalyticsContext, CowAnalytics } from '../CowAnalytics'
 
 jest.mock('../consent/trackerStorage.utils', () => ({
@@ -111,6 +116,19 @@ describe('ConsentGatedCowAnalytics', () => {
     new ConsentGatedCowAnalytics(loadAnalytics)
 
     expect(loadAnalytics).toHaveBeenCalledTimes(1)
+  })
+
+  it('keeps the consent store notifying its other subscribers when loading fails', () => {
+    const subscriber = jest.fn()
+    const analytics = new ConsentGatedCowAnalytics(() => {
+      throw new Error('GTM failed')
+    })
+
+    subscribeToCookieConsent(subscriber)
+
+    expect(acceptCookies).not.toThrow()
+    expect(subscriber).toHaveBeenCalledTimes(1)
+    expect(() => analytics.sendEvent({ category: 'Trade', action: 'Swap' })).not.toThrow()
   })
 
   it('still runs outbound link callbacks before the visitor accepts', () => {

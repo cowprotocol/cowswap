@@ -5,11 +5,13 @@ import { act, renderHook } from '@testing-library/react'
 import { useInitializeUtm } from './hooks'
 
 jest.mock('@cowprotocol/analytics', () => ({ waitForAnalytics: jest.fn(), __resetGtmInstance: jest.fn() }))
-jest.mock('jotai', () => ({ useSetAtom: () => jest.fn() }))
+const mockSetUtm = jest.fn()
+
+jest.mock('jotai', () => ({ useSetAtom: () => mockSetUtm }))
 jest.mock('./state', () => ({ utmAtom: {} }))
 
 jest.mock('@cowprotocol/common-utils', () => ({
-  ...jest.requireActual('../../../../../libs/common-utils/src/utmParameters'),
+  ...jest.requireActual('@cowprotocol/common-utils'),
   isInjectedWidget: () => false,
 }))
 
@@ -24,6 +26,7 @@ let finishWaiting: () => void
 beforeEach(() => {
   jest.useFakeTimers()
   mockNavigate.mockClear()
+  mockSetUtm.mockClear()
   mockLocation = { pathname: '/1/swap/WETH/COW', search: '?utm_source=ad', hash: '' }
   window.history.replaceState(null, '', '/#/1/swap/WETH/COW?utm_source=ad')
   jest.mocked(waitForAnalytics).mockImplementation(
@@ -84,6 +87,27 @@ describe('useInitializeUtm delayed cleanup', () => {
     )
     expect(window.location.search).toBe('')
     expect(window.location.hash).toBe('#/1/limit/USDC/WETH?limitPrice=789&ref=keep')
+  })
+
+  it('stores UTM values that arrive while consent is pending', async () => {
+    const { rerender } = renderHook(useInitializeUtm)
+    mockLocation = { pathname: '/1/swap/WETH/COW', search: '?utm_source=ad&utm_medium=email', hash: '' }
+    window.history.replaceState(null, '', '/#/1/swap/WETH/COW?utm_source=ad&utm_medium=email')
+    rerender()
+
+    await decide()
+
+    expect(mockSetUtm).toHaveBeenLastCalledWith({ utmSource: 'ad', utmMedium: 'email' })
+  })
+
+  it('removes a UTM parameter whose key is percent-encoded in the route query', async () => {
+    window.history.replaceState(null, '', '/?ref=keep#/1/swap/WETH/COW?ut%6d_source=ad')
+    mockLocation = { pathname: '/1/swap/WETH/COW', search: '?ut%6d_source=ad', hash: '' }
+    renderHook(useInitializeUtm)
+
+    await decide()
+
+    expect(window.location.hash).toBe('#/1/swap/WETH/COW?ref=keep')
   })
 
   it('does not navigate after unmounting while consent is pending', async () => {

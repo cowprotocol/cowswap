@@ -1,10 +1,12 @@
 .wrapper {
   position: fixed;
   z-index: 250;
+  top: 16px;
   right: 16px;
   bottom: 16px;
   left: 16px;
   display: flex;
+  align-items: flex-end;
   justify-content: flex-end;
   pointer-events: none;
 }
@@ -22,7 +24,9 @@
   box-sizing: border-box;
   width: 100%;
   max-width: 440px;
+  max-height: 100%;
   padding: 24px;
+  overflow-y: auto;
   border: 0;
   border-radius: 16px;
   background: var(--cookie-banner-background);
@@ -156,6 +160,7 @@
 
 @media (max-width: 500px) {
   .wrapper {
+    top: 8px;
     right: 8px;
     bottom: calc(var(--wallet-bar-height) + 8px);
     left: 8px;
