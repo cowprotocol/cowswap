@@ -952,4 +952,14 @@ describe('validateTradeForm - native sell in limit orders', () => {
 
     expect(result || []).not.toContain(TradeFormValidation.SellNativeToken)
   })
+
+  test('reports the geoblock before a custom token error', () => {
+    const result = validateTradeForm({
+      ...baseContext,
+      isRestrictedForCountry: true,
+      customTokenError: 'AAPLx not tradable until Sunday 23:59 UTC',
+    } as unknown as TradeFormValidationContext)
+
+    expect(result?.[0]).toBe(TradeFormValidation.RestrictedForCountry)
+  })
 })

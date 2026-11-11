@@ -283,21 +283,10 @@ describe('listsStatesByChainAtom - token lists state', () => {
         },
       }
 
-      it('hides stored RWA lists, including re-pinned ones, when RWA lists are excluded', async () => {
+      it('keeps stored RWA lists, including re-pinned ones, whatever the country', async () => {
         const store = createStore()
 
-        store.set(environmentAtom, { chainId: MOCK_CHAIN_ID, excludeRwaLists: true })
-        store.set(listsStatesByChainAtom, stateWithRwaLists)
-
-        const listsStatesMap = await store.get(listsStatesMapAtom)
-
-        expect(Object.keys(listsStatesMap)).toEqual([MOCK_LIST_STATE.source])
-      })
-
-      it('keeps stored RWA lists when RWA lists are not excluded', async () => {
-        const store = createStore()
-
-        store.set(environmentAtom, { chainId: MOCK_CHAIN_ID, excludeRwaLists: false })
+        store.set(environmentAtom, { chainId: MOCK_CHAIN_ID })
         store.set(listsStatesByChainAtom, stateWithRwaLists)
 
         const listsStatesMap = await store.get(listsStatesMapAtom)
@@ -310,31 +299,16 @@ describe('listsStatesByChainAtom - token lists state', () => {
   })
 
   describe('allListsSourcesAtom', () => {
-    it('drops default RWA lists when RWA lists are excluded', () => {
+    it('includes every default list, RWA ones among them', () => {
       const store = createStore()
 
-      store.set(environmentAtom, { chainId: MOCK_CHAIN_ID, excludeRwaLists: true })
-
-      const sources = store.get(allListsSourcesAtom).map((list) => list.source)
-
-      expect(sources).not.toContain(ONDO_TOKENS_LIST_SOURCE)
-      expect(sources).not.toContain(XSTOCKS_TOKENS_LIST_SOURCE)
-      expect(sources).toEqual(
-        (DEFAULT_TOKENS_LISTS[MOCK_CHAIN_ID] || [])
-          .filter((list) => list.category !== 'RWA')
-          .map((list) => list.source),
-      )
-    })
-
-    it('includes default RWA lists when RWA lists are not excluded', () => {
-      const store = createStore()
-
-      store.set(environmentAtom, { chainId: MOCK_CHAIN_ID, excludeRwaLists: false })
+      store.set(environmentAtom, { chainId: MOCK_CHAIN_ID })
 
       const sources = store.get(allListsSourcesAtom).map((list) => list.source)
 
       expect(sources).toContain(ONDO_TOKENS_LIST_SOURCE)
       expect(sources).toContain(XSTOCKS_TOKENS_LIST_SOURCE)
+      expect(sources).toEqual((DEFAULT_TOKENS_LISTS[MOCK_CHAIN_ID] || []).map((list) => list.source))
     })
   })
 

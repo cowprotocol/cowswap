@@ -4,7 +4,6 @@ import { useCowAnalytics } from '@cowprotocol/analytics'
 import {
   ListSearchResponse,
   ListState,
-  useFilterBlockedLists,
   useIsListBlocked,
   useListsEnabledState,
   useRemoveList,
@@ -40,10 +39,6 @@ export function ManageLists(props: ManageListsProps): ReactNode {
   const { lists, listSearchResponse, isListUrlValid } = props
 
   const country = useGeoCountry()
-
-  // only filter by country (blocked), NOT by consent requirement
-  // lists requiring consent should be visible so users can give consent
-  const filteredLists = useFilterBlockedLists(lists, country)
 
   const activeTokenListsIds = useListsEnabledState()
   const addListImport = useAddListImport()
@@ -93,7 +88,7 @@ export function ManageLists(props: ManageListsProps): ReactNode {
         </styledEl.ImportListsContainer>
       )}
       <styledEl.ListsContainer id="tokens-lists-table">
-        {filteredLists
+        {[...lists]
           .sort((a, b) => (a.priority || 0) - (b.priority || 0))
           .map((list) => (
             <ListItem
