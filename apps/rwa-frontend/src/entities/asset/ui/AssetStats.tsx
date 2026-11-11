@@ -64,7 +64,7 @@ function MarketStatus({ tradingTime }: { tradingTime: RwaTradingTime }): ReactNo
   return (
     <Tooltip
       className={styles.status}
-      content={`US regular session · ${tradingTime.start} – ${tradingTime.end} ${getTimeZoneCity(tradingTime.timeZone)} time · Mon – Fri`}
+      content={`US regular session · ${tradingTime.start} – ${tradingTime.end} ${getTimeZoneCity(tradingTime.timeZone)} time · Mon – Fri, except US market holidays`}
     >
       <span className={open ? styles.statusOpen : styles.statusClosed}>US market {open ? 'open' : 'closed'}</span>
       {minutesToChange !== null && (

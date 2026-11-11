@@ -15,6 +15,9 @@ describe('isUsMarketOpen', () => {
     ['2026-11-03T14:30:00Z', true],
     ['2026-11-03T20:30:00Z', true],
     ['2026-11-03T21:00:00Z', false],
+    ['2026-11-26T15:00:00Z', false],
+    ['2026-11-27T17:59:00Z', true],
+    ['2026-11-27T18:00:00Z', false],
   ])('%s → %s', (now, expected) => {
     expect(isUsMarketOpen(US_HOURS, new Date(now))).toBe(expected)
   })
@@ -39,6 +42,9 @@ describe('getMinutesToUsMarketChange', () => {
     ['until the open in standard time', '2026-11-03T13:40:00Z', 50],
     ['over a weekend when daylight saving time ends', '2026-10-30T20:00:00Z', 2 * 1440 + 1050 + 60],
     ['over a weekend when daylight saving time starts', '2026-03-06T21:00:00Z', 2 * 1440 + 1050 - 60],
+    ['over Thanksgiving', '2026-11-25T21:00:00Z', 1440 + 1050],
+    ['until an early close', '2026-11-27T15:00:00Z', 180],
+    ['over a Good Friday weekend', '2026-04-02T20:00:00Z', 3 * 1440 + 1050],
   ])('counts %s', (_case, now, expected) => {
     expect(getMinutesToUsMarketChange(US_HOURS, new Date(now))).toBe(expected)
   })

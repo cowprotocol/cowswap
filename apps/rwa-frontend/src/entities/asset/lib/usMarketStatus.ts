@@ -1,17 +1,18 @@
+import { type CalendarDate, getUsMarketDay, shiftDays } from './usMarketCalendar'
+
 import type { RwaTradingTime } from '../model/types'
 
 const MS_PER_MINUTE = 60_000
 const MINUTES_PER_HOUR = 60
-const MAX_DAYS_TO_NEXT_OPEN = 7
-const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-const SUNDAY = 0
-const SATURDAY = 6
+const EARLY_CLOSE_MINUTES = 13 * MINUTES_PER_HOUR
+const MAX_DAYS_TO_NEXT_OPEN = 14
 
-interface ZonedDate {
-  year: number
-  month: number
-  day: number
-  weekday: number
+interface DaySession {
+  start: number
+  end: number
+}
+
+interface ZonedDate extends CalendarDate {
   minutes: number
 }
 
@@ -21,27 +22,34 @@ export function getMinutesToUsMarketChange(tradingTime: RwaTradingTime, now: Dat
 
   if (!session) return null
 
-  const { start, end, timeZone } = session
+  const { timeZone } = session
   const local = toZonedDate(now, timeZone)
+  const today = getDaySession(local, session)
 
-  if (isOpenAt(local, start, end)) return minutesBetween(now, zonedTimeToDate(local, end, timeZone))
+  if (today && isWithin(local.minutes, today)) return minutesBetween(now, zonedTimeToDate(local, today.end, timeZone))
 
-  for (let daysAhead = local.minutes < start ? 0 : 1; daysAhead <= MAX_DAYS_TO_NEXT_OPEN; daysAhead++) {
-    const day = toZonedDate(new Date(Date.UTC(local.year, local.month - 1, local.day + daysAhead)), 'UTC')
+  for (let daysAhead = 0; daysAhead <= MAX_DAYS_TO_NEXT_OPEN; daysAhead++) {
+    const day = shiftDays(local, daysAhead)
+    const daySession = getDaySession(day, session)
 
-    if (!isWeekend(day.weekday)) return minutesBetween(now, zonedTimeToDate(day, start, timeZone))
+    if (daySession && (daysAhead > 0 || local.minutes < daySession.start)) {
+      return minutesBetween(now, zonedTimeToDate(day, daySession.start, timeZone))
+    }
   }
 
   return null
 }
 
-/** Weekdays within `tradingTime` in its time zone, market holidays are not taken into account */
+/** Within `tradingTime` in its time zone on US market trading days, closing at 1 pm on early-close days */
 export function isUsMarketOpen(tradingTime: RwaTradingTime, now: Date): boolean {
   const session = parseSession(tradingTime)
 
   if (!session) return false
 
-  return isOpenAt(toZonedDate(now, session.timeZone), session.start, session.end)
+  const local = toZonedDate(now, session.timeZone)
+  const daySession = getDaySession(local, session)
+
+  return !!daySession && isWithin(local.minutes, daySession)
 }
 
 export function isValidTimeZone(timeZone: string): boolean {
@@ -54,6 +62,14 @@ export function isValidTimeZone(timeZone: string): boolean {
   }
 }
 
+function getDaySession(date: CalendarDate, { start, end }: DaySession): DaySession | null {
+  const marketDay = getUsMarketDay(date)
+
+  if (marketDay === 'closed') return null
+
+  return { start, end: marketDay === 'earlyClose' ? Math.min(end, EARLY_CLOSE_MINUTES) : end }
+}
+
 /** `timeZone` minus UTC at `date` */
 function getOffsetMs(date: Date, timeZone: string): number {
   const local = toZonedDate(date, timeZone)
@@ -62,12 +78,8 @@ function getOffsetMs(date: Date, timeZone: string): number {
   return localAsUtc - Math.floor(date.getTime() / MS_PER_MINUTE) * MS_PER_MINUTE
 }
 
-function isOpenAt(local: ZonedDate, start: number, end: number): boolean {
-  return !isWeekend(local.weekday) && local.minutes >= start && local.minutes < end
-}
-
-function isWeekend(day: number): boolean {
-  return day === SUNDAY || day === SATURDAY
+function isWithin(minutes: number, { start, end }: DaySession): boolean {
+  return minutes >= start && minutes < end
 }
 
 function minutesBetween(from: Date, to: Date): number {
@@ -99,7 +111,6 @@ function toZonedDate(date: Date, timeZone: string): ZonedDate {
     year: 'numeric',
     month: 'numeric',
     day: 'numeric',
-    weekday: 'short',
     hour: 'numeric',
     minute: 'numeric',
   }).formatToParts(date)
@@ -109,13 +120,12 @@ function toZonedDate(date: Date, timeZone: string): ZonedDate {
     year: Number(part('year')),
     month: Number(part('month')),
     day: Number(part('day')),
-    weekday: WEEKDAYS.indexOf(part('weekday')),
     minutes: Number(part('hour')) * MINUTES_PER_HOUR + Number(part('minute')),
   }
 }
 
 /** Wall-clock `minutes` on the `local` date in `timeZone` as an instant */
-function zonedTimeToDate(local: ZonedDate, minutes: number, timeZone: string): Date {
+function zonedTimeToDate(local: CalendarDate, minutes: number, timeZone: string): Date {
   const wallClockAsUtc = Date.UTC(local.year, local.month - 1, local.day, 0, minutes)
   // The offset at the guess can differ from the offset at the result when a DST change falls between them
   const guess = wallClockAsUtc - getOffsetMs(new Date(wallClockAsUtc), timeZone)
