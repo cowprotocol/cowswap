@@ -22,7 +22,12 @@ import { getClaimInfo, getInfo, postClaim, type CanvasInfo } from './graffiti.se
 import { useTokenBalance } from './useTokenBalance'
 import * as styledEl from './wall.styled'
 
+type ClaimOutcome = 'settled' | 'processing' | 'unknown'
+
 type Screen = 'checking' | 'invalid-code' | 'missing-code' | 'ready' | 'claiming' | 'success' | 'error'
+
+const PROCESSING_MESSAGE =
+  'Your claim is still being confirmed on-chain. Check your wallet in a minute — do not claim again, the code is already spent.'
 
 const ClaimTitle = styled.h1`
   font-size: 24px;
@@ -117,13 +122,15 @@ export default function GraffitiClaimPage(): ReactNode {
     } catch (err: unknown) {
       // The transfer can land after the request gives up, and a code is single-use: if it is
       // spent, this claim is what spent it, so report the tokens rather than a failure.
-      if (await isCodeSpent(code)) {
+      const outcome = await claimOutcome(code)
+
+      if (outcome === 'settled') {
         setTxSignature(null)
         setScreen('success')
         return
       }
 
-      setError(err instanceof Error ? err.message : String(err))
+      setError(claimErrorMessage(outcome, err))
       setScreen('error')
     }
   }, [code, solanaAccount])
@@ -168,11 +175,22 @@ export default function GraffitiClaimPage(): ReactNode {
   )
 }
 
-/** A spent code means the treasury transfer landed, whatever the request that started it reported. */
-async function isCodeSpent(code: string): Promise<boolean> {
+/** A transfer still in flight must not be reported with the failure of the request that gave up on it. */
+function claimErrorMessage(outcome: ClaimOutcome, err: unknown): string {
+  if (outcome === 'processing') return PROCESSING_MESSAGE
+
+  return err instanceof Error ? err.message : String(err)
+}
+
+/** A spent code with nothing in flight was spent by this claim, so the treasury transfer landed. */
+async function claimOutcome(code: string): Promise<ClaimOutcome> {
   try {
-    return !(await getClaimInfo(code)).valid
+    const info = await getClaimInfo(code)
+
+    if (info.processing) return 'processing'
+
+    return info.valid ? 'unknown' : 'settled'
   } catch {
-    return false
+    return 'unknown'
   }
 }

@@ -16,6 +16,7 @@ import { errorMessage, parsePublicKey } from './util.js'
 
 import type { Config } from './config.js'
 import type { ClaimRow, Store } from './store.js'
+import type { SignatureStatus } from '@solana/web3.js'
 
 export { generateClaimCode }
 
@@ -25,11 +26,18 @@ export type ClaimResult =
 
 type ClaimFailure = Extract<ClaimResult, { ok: false }>
 
+type ConfirmationOutcome =
+  | { status: 'confirmed' }
+  | { status: 'reverted'; err: unknown }
+  | { status: 'unknown'; reason: string }
+
 interface SubmittedTransfer {
   signature: string
   blockhash: string
   lastValidBlockHeight: number
 }
+
+const CONFIRM_POLL_INTERVAL_MS = 1000
 
 /** Codes are single-use; the treasury keypair pays for and signs the transfer. */
 export class ClaimService {
@@ -73,10 +81,14 @@ export class ClaimService {
   }
 
   /** Deliberately does not distinguish unknown from already-used. */
-  check(code: string): { valid: boolean; amount: number } {
+  check(code: string): { valid: boolean; amount: number; processing?: boolean } {
     const row = this.store.getClaim(code)
-    if (!row || row.state !== 'unused') return { valid: false, amount: 0 }
-    return { valid: true, amount: row.amount }
+    if (!row) return { valid: false, amount: 0 }
+    if (row.state === 'unused') return { valid: true, amount: row.amount }
+    // In-flight and parked transfers must stay distinguishable from settled ones,
+    // or a client that lost the response claims tokens it has no evidence arrived.
+    if (row.state === 'used') return { valid: false, amount: 0 }
+    return { valid: false, amount: 0, processing: true }
   }
 
   generate(n: number, amount: number = DEFAULT_CLAIM_AMOUNT): string[] {
@@ -188,22 +200,46 @@ export class ClaimService {
   }
 
   private async confirmTransfer(code: string, amount: number, submitted: SubmittedTransfer): Promise<ClaimResult> {
-    try {
-      const confirmation = await this.conn().confirmTransaction(submitted, 'confirmed')
-      if (confirmation.value.err) {
-        // The transaction landed and failed: nothing was transferred, so the
-        // code is safe to hand back.
-        this.store.releaseClaim(code)
-        return failure(502, `claim transfer failed: ${JSON.stringify(confirmation.value.err)}`)
-      }
+    const outcome = await this.awaitConfirmation(submitted.signature)
 
+    if (outcome.status === 'confirmed') {
       this.store.settleClaim(code, submitted.signature)
       return { ok: true, txSignature: submitted.signature, amount }
-    } catch (err: unknown) {
-      // Submitted but unconfirmed: the transfer may still land. Park the code
-      // for an operator instead of releasing it and paying twice.
-      this.store.failClaim(code, `unconfirmed ${submitted.signature}: ${errorMessage(err)}`)
-      return failure(502, 'claim submitted but not confirmed; it is being reviewed — do not retry')
+    }
+
+    if (outcome.status === 'reverted') {
+      // The transaction landed and failed: nothing was transferred, so the
+      // code is safe to hand back.
+      this.store.releaseClaim(code)
+      return failure(502, `claim transfer failed: ${JSON.stringify(outcome.err)}`)
+    }
+
+    // Submitted but unconfirmed: the transfer may still land. Park the code
+    // for an operator instead of releasing it and paying twice.
+    this.store.failClaim(code, `unconfirmed ${submitted.signature}: ${outcome.reason}`)
+    return failure(502, 'claim submitted but not confirmed; it is being reviewed — do not retry')
+  }
+
+  /**
+   * Polled over HTTP rather than via confirmTransaction: that resolves through a
+   * signatureSubscribe WebSocket, so behind an RPC proxy without WebSocket upgrades
+   * nothing ever confirms and every claim fails at blockhash expiry.
+   */
+  private async awaitConfirmation(signature: string): Promise<ConfirmationOutcome> {
+    const timeoutMs = this.config.claimConfirmTimeoutMs
+    const deadline = Date.now() + timeoutMs
+    let reason = `not confirmed within ${Math.round(timeoutMs / 1000)}s`
+
+    for (;;) {
+      try {
+        const outcome = confirmationFrom((await this.conn().getSignatureStatuses([signature])).value[0])
+        if (outcome) return outcome
+      } catch (err: unknown) {
+        reason = errorMessage(err)
+      }
+
+      if (Date.now() >= deadline) return { status: 'unknown', reason }
+      await sleep(CONFIRM_POLL_INTERVAL_MS)
     }
   }
 }
@@ -246,6 +282,20 @@ function buildTransferTransaction(params: {
   )
 }
 
+/** Null while the transaction is still in flight: not yet seen, or only `processed`. */
+function confirmationFrom(status: SignatureStatus | null | undefined): ConfirmationOutcome | null {
+  if (!status) return null
+  if (status.err) return { status: 'reverted', err: status.err }
+  if (status.confirmationStatus === 'confirmed' || status.confirmationStatus === 'finalized') {
+    return { status: 'confirmed' }
+  }
+  return null
+}
+
 function failure(status: number, reason: string): ClaimFailure {
   return { ok: false, status, reason }
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }

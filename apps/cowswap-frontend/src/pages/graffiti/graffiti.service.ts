@@ -34,6 +34,8 @@ export interface CellsResponse {
 export interface ClaimInfoResponse {
   valid: boolean
   amount: number
+  /** The transfer is still in flight, or parked for review: the outcome is not known yet. */
+  processing?: boolean
 }
 
 export interface ClaimResponse {

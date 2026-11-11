@@ -110,6 +110,7 @@ above rather than typing it inline.
 | `CORS_ORIGINS`         | `*` (required in production)     | Comma-separated allowed origins, also enforced on the WebSocket     |
 | `TX_MAX_AGE_SEC`       | `300`                            | Max age of an accepted draw tx and of its memo timestamp            |
 | `VERIFY_COMMITMENT`    | `finalized`                      | Commitment used to read the burn back (`confirmed` is weaker)       |
+| `CLAIM_CONFIRM_TIMEOUT_MS` | `75000`                      | How long a claim polls for its transfer before parking the code     |
 | `MAX_CELLS_PER_DRAW`   | `20000`                          | Draw size limit                                                     |
 | `MAX_CELLS_PER_PAGE`   | `50000`                          | Page size for `GET /v1/cells`                                       |
 | `RATE_LIMIT_PER_MINUTE`| `60`                             | Per-IP budget for write endpoints (reads get 10×)                   |
