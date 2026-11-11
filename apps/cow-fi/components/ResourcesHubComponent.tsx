@@ -64,6 +64,13 @@ const PageDescription = styled.div`
   }
 `
 
+/** Shrinkable label so long unbroken words wrap inside the card instead of overflowing the row. */
+const CampaignLabel = styled.div`
+  flex: 1 1 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+`
+
 const CampaignCount = styled.div`
   flex: 0 0 auto;
   margin-left: auto;
@@ -73,11 +80,13 @@ const CampaignCount = styled.div`
   white-space: nowrap;
 `
 
+/** Props for {@link ResourcesHubComponent}. */
 interface ResourcesHubComponentProps {
   campaigns: CampaignSummary[]
   allCategories: { name: string; slug: string }[]
 }
 
+/** Resources hub page: category links, search, and a list of campaigns with page counts. */
 export function ResourcesHubComponent({ campaigns, allCategories }: ResourcesHubComponentProps): ReactNode {
   return (
     <Wrapper>
@@ -110,7 +119,7 @@ export function ResourcesHubComponent({ campaigns, allCategories }: ResourcesHub
                 <LinkColumn>
                   {campaigns.map(({ campaign, count }) => (
                     <LinkItem key={campaign} href={`/resources/${campaign}`}>
-                      {getCampaignLabel(campaign)}
+                      <CampaignLabel>{getCampaignLabel(campaign)}</CampaignLabel>
                       <CampaignCount>
                         {count} {count === 1 ? 'page' : 'pages'}
                       </CampaignCount>

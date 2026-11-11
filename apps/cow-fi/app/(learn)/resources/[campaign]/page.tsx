@@ -17,6 +17,7 @@ type Props = {
   params: Promise<{ campaign: string }>
 }
 
+/** Page metadata for a single Resources campaign. */
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const campaign = (await params).campaign
   const label = getCampaignLabel(campaign)
@@ -27,11 +28,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   })
 }
 
+/** Pre-renders one page per published campaign. */
 export async function generateStaticParams(): Promise<{ campaign: string }[]> {
   const campaigns = await getCampaignSummaries()
   return campaigns.map(({ campaign }) => ({ campaign }))
 }
 
+/** Resources campaign page: lists all resources in a campaign. */
 export default async function ResourcesCampaignPage({ params }: Props): Promise<ReactNode> {
   const campaign = (await params).campaign
   const [resources, allCategories] = await Promise.all([

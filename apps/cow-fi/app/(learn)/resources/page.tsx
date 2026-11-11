@@ -10,6 +10,7 @@ import { loadAllCategories } from '@/util/loadAllCategories'
 
 export const revalidate = 43200
 
+/** Page metadata for the Resources hub. */
 export async function generateMetadata(): Promise<Metadata> {
   return getPageMetadata({
     title: 'Resources',
@@ -17,6 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
   })
 }
 
+/** Resources hub: lists campaigns and category links. */
 export default async function ResourcesPage(): Promise<ReactNode> {
   const [campaigns, allCategories] = await Promise.all([getCampaignSummaries(), loadAllCategories()])
 

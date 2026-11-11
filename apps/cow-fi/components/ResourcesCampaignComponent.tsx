@@ -88,12 +88,14 @@ const ResourceDescription = styled.div`
   white-space: normal;
 `
 
+/** Props for {@link ResourcesCampaignComponent}. */
 interface ResourcesCampaignComponentProps {
   campaign: string
   resources: Resource[]
   allCategories: { name: string; slug: string }[]
 }
 
+/** Campaign page body: category links, search, resource count, and the resource list. */
 export function ResourcesCampaignComponent({
   campaign,
   resources,
