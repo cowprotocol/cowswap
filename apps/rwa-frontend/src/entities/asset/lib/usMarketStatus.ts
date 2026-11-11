@@ -53,6 +53,9 @@ export function isUsMarketOpen(tradingTime: RwaTradingTime, now: Date): boolean 
 }
 
 export function isValidTimeZone(timeZone: string): boolean {
+  // Intl falls back to the runtime time zone when `timeZone` is undefined
+  if (typeof timeZone !== 'string') return false
+
   try {
     new Intl.DateTimeFormat('en-US', { timeZone })
 

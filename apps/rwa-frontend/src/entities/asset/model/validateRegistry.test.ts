@@ -5,7 +5,7 @@
 import { getRegistry } from './registry'
 import { validateRegistry } from './validateRegistry'
 
-import type { RwaAsset, RwaRegistry } from './types'
+import type { RwaAsset, RwaRegistry, RwaTradingTime } from './types'
 
 const VALID_ASSET: RwaAsset = {
   ticker: 'NVDA',
@@ -109,6 +109,14 @@ describe('validateRegistry', () => {
 
   it('rejects a trading time in an unknown time zone', () => {
     const allowedTradingTime = { title: 'US market open', start: '09:30', end: '16:00', timeZone: 'Eastern' }
+
+    expect(validateRegistry(registryWith([{ ...VALID_ASSET, allowedTradingTime }]))).toEqual([
+      'assets[0].allowedTradingTime: start/end must be "HH:mm" in a valid timeZone',
+    ])
+  })
+
+  it('rejects a trading time without a time zone', () => {
+    const allowedTradingTime = { title: 'US market open', start: '09:30', end: '16:00' } as RwaTradingTime
 
     expect(validateRegistry(registryWith([{ ...VALID_ASSET, allowedTradingTime }]))).toEqual([
       'assets[0].allowedTradingTime: start/end must be "HH:mm" in a valid timeZone',
