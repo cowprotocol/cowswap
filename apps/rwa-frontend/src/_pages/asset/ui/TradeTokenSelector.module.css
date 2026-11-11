@@ -138,6 +138,24 @@
   line-height: 18px;
 }
 
+.switchNetwork {
+  height: 32px;
+  padding: 0 14px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.switchNetwork:hover {
+  opacity: 0.9;
+}
+
 .tokens {
   display: flex;
   flex-direction: column;

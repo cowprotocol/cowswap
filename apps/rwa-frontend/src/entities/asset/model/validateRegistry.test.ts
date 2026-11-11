@@ -2,6 +2,7 @@
  * @jest-environment node
  */
 
+import { RWA_CHAIN_IDS } from './networks'
 import { getRegistry } from './registry'
 import { validateRegistry } from './validateRegistry'
 
@@ -33,6 +34,12 @@ function registryWith(assets: RwaAsset[]): RwaRegistry {
 describe('validateRegistry', () => {
   it('accepts data/RWAs.json', () => {
     expect(validateRegistry(getRegistry())).toEqual([])
+  })
+
+  it('has tokens on every enabled network, and on no other', () => {
+    const chainIds = new Set(getRegistry().assets.flatMap((asset) => asset.tokens.map((token) => token.chainId)))
+
+    expect([...chainIds].sort()).toEqual([...RWA_CHAIN_IDS].sort())
   })
 
   it('accepts a valid asset', () => {
