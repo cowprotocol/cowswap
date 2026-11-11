@@ -1,0 +1,36 @@
+diff --git a/dist/esm/src/providers/SolanaWalletConnectProvider.js b/dist/esm/src/providers/SolanaWalletConnectProvider.js
+index 0c84226663c5465126079c7c175ece93163705bd..7273cbbe8213002a817a7a1914e3360979c44fd3 100644
+--- a/dist/esm/src/providers/SolanaWalletConnectProvider.js
++++ b/dist/esm/src/providers/SolanaWalletConnectProvider.js
+@@ -80,16 +80,23 @@ export class SolanaWalletConnectProvider extends WalletConnectConnector {
+             pubkey: this.getAccount(true).address,
+             ...this.getRawRPCParams(transaction)
+         });
+-        if ('signature' in result) {
+-            const decoded = base58.decode(result.signature);
+-            transaction.addSignature(new PublicKey(this.getAccount(true).publicKey), Buffer.from(decoded));
+-            return transaction;
++        // Wallets may sign a modified message — Ledger Wallet refreshes the blockhash after the
++        // device review (LedgerHQ/ledger-live#23295) — so the transaction they return is
++        // authoritative. Stapling their signature onto ours leaves the stale blockhash and fails
++        // verification. Backport of reown-com/appkit#5818.
++        if ('transaction' in result && result.transaction) {
++            const decodedTransaction = Buffer.from(result.transaction, 'base64');
++            if (isVersionedTransaction(transaction)) {
++                return VersionedTransaction.deserialize(new Uint8Array(decodedTransaction));
++            }
++            return Transaction.from(decodedTransaction);
+         }
+-        const decodedTransaction = Buffer.from(result.transaction, 'base64');
+-        if (isVersionedTransaction(transaction)) {
+-            return VersionedTransaction.deserialize(new Uint8Array(decodedTransaction));
++        if (!result.signature) {
++            throw new Error('Invalid solana_signTransaction response: missing signature and transaction');
+         }
+-        return Transaction.from(decodedTransaction);
++        const decoded = base58.decode(result.signature);
++        transaction.addSignature(new PublicKey(this.getAccount(true).publicKey), Buffer.from(decoded));
++        return transaction;
+     }
+     async signAndSendTransaction(transaction, sendOptions) {
+         this.checkIfMethodIsSupported('solana_signAndSendTransaction');

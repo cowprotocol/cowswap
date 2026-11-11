@@ -1,7 +1,8 @@
 import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { deriveAta } from '@cowprotocol/sdk-trading-solana'
 
-import { getAssociatedTokenAddressSync, TOKEN_PROGRAM_ID } from '@solana/spl-token'
+import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { PublicKey } from '@solana/web3.js'
 
 /**
@@ -14,5 +15,5 @@ export const WSOL_MINT = new PublicKey(WRAPPED_NATIVE_CURRENCIES[SupportedChainI
 
 /** Where `owner`'s wrapped SOL lives: the address every wrap, unwrap and native-sell trade derives. */
 export function getWsolAssociatedTokenAccount(owner: PublicKey): PublicKey {
-  return getAssociatedTokenAddressSync(WSOL_MINT, owner, false, TOKEN_PROGRAM_ID)
+  return deriveAta(WSOL_MINT, owner, TOKEN_PROGRAM_ID)
 }

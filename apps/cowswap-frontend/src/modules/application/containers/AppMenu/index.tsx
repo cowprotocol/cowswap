@@ -2,8 +2,9 @@ import { useAtom } from 'jotai'
 import { PropsWithChildren, ReactNode, useMemo } from 'react'
 
 import { SUPPORTED_LOCALES } from '@cowprotocol/common-const'
-import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
+import { useFeatureFlags, useIsSolanaPublicLaunched, useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { Command } from '@cowprotocol/types'
 import { Color, MenuBar, type CowSwapTheme } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -49,13 +50,17 @@ interface AppMenuProps {
   customTheme?: CowSwapTheme
 }
 
+interface SettingsNavItem {
+  label: string
+  onClick: Command
+}
+
 export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMenuProps): ReactNode {
   const { chainId } = useWalletInfo()
   const isInjectedWidgetMode = isInjectedWidget()
   const menuItems = useMenuItems()
-  const { isSolversEnabled, isAlphaNetworksOptionVisible, isRwaEnabled } = useFeatureFlags()
+  const { isSolversEnabled, isRwaEnabled } = useFeatureFlags()
   const [darkMode, toggleDarkMode] = useDarkModeManager()
-  const [areAlphaNetworksEnabled, setAlphaNetworksEnabled] = useAtom(alphaNetworksEnabledAtom)
   const { setLocale } = useUserLocaleManager()
   const isMobile = useMediaQuery(isMobileQuery(false))
   const resolvedCustomTheme = useCustomTheme()
@@ -65,23 +70,7 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
   const isInternationalizationEnabled = useIsInternationalizationEnabled()
   const isGraffitiWallEnabled = useIsGraffitiWallEnabled()
 
-  const settingsNavItems = useMemo(
-    () => [
-      {
-        label: darkMode ? t`Light Mode` : t`Dark Mode`,
-        onClick: toggleDarkMode,
-      },
-      ...(isAlphaNetworksOptionVisible
-        ? [
-            {
-              label: areAlphaNetworksEnabled ? t`Disable Alpha Networks` : t`Enable Alpha Networks`,
-              onClick: () => setAlphaNetworksEnabled(!areAlphaNetworksEnabled),
-            },
-          ]
-        : []),
-    ],
-    [darkMode, toggleDarkMode, isAlphaNetworksOptionVisible, areAlphaNetworksEnabled, setAlphaNetworksEnabled, t],
-  )
+  const settingsNavItems = useSettingsNavItems(darkMode, toggleDarkMode)
 
   const languageNavItems = {
     label: t`Languages`,
@@ -147,5 +136,38 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
       isInternationalizationEnabled={isInternationalizationEnabled}
       isRwaEnabled={!!isRwaEnabled}
     />
+  )
+}
+
+function useSettingsNavItems(darkMode: boolean, toggleDarkMode: Command): SettingsNavItem[] {
+  const { isAlphaNetworksOptionVisible } = useFeatureFlags()
+  const isSolanaPublicLaunched = useIsSolanaPublicLaunched()
+  const [areAlphaNetworksEnabled, setAlphaNetworksEnabled] = useAtom(alphaNetworksEnabledAtom)
+  const { t } = useLingui()
+
+  return useMemo(
+    () => [
+      {
+        label: darkMode ? t`Light Mode` : t`Dark Mode`,
+        onClick: toggleDarkMode,
+      },
+      ...(isAlphaNetworksOptionVisible && !isSolanaPublicLaunched
+        ? [
+            {
+              label: areAlphaNetworksEnabled ? t`Disable Alpha Networks` : t`Enable Alpha Networks`,
+              onClick: () => setAlphaNetworksEnabled(!areAlphaNetworksEnabled),
+            },
+          ]
+        : []),
+    ],
+    [
+      darkMode,
+      toggleDarkMode,
+      isAlphaNetworksOptionVisible,
+      isSolanaPublicLaunched,
+      areAlphaNetworksEnabled,
+      setAlphaNetworksEnabled,
+      t,
+    ],
   )
 }

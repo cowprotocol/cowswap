@@ -1,5 +1,27 @@
 # Changelog
 
+## [3.13.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.13.0...permit-utils-v3.13.1) (2026-11-11)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/hook-dapp-lib@2.5.3
+
+## [3.13.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.12.1...permit-utils-v3.13.0) (2026-11-10)
+
+### Minor Changes
+
+- feat(networks): networks update (#8456)
+
+- feat(solana): pass appData to quote (#8509)
+
+### Patch Changes
+
+- fix(solana): use SDK for quote costs breakdown (#8522)
+
+- Updated dependencies []:
+  - @cowprotocol/hook-dapp-lib@2.5.2
+
 ## [3.12.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.12.0...permit-utils-v3.12.1) (2026-11-05)
 
 ### Patch Changes

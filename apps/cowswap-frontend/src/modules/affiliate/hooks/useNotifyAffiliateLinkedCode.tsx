@@ -7,9 +7,9 @@ import { useAddSnackbar } from '@cowprotocol/snackbars'
 import type { Order } from 'legacy/state/orders/actions'
 
 import { useAffiliateTraderInfo } from './useAffiliateTraderInfo'
+import { useIsAffiliateSupportedTradingNetwork } from './useIsAffiliateSupportedTradingNetwork'
 
 import { PROGRAM_DEFAULTS } from '../config/affiliateProgram.const'
-import { isSupportedTradingNetwork } from '../lib/affiliateProgramUtils'
 import { AffiliateLinkedCodeNotification } from '../pure/AffiliateLinkedCodeNotification'
 import { AffiliateNotificationIcon } from '../pure/AffiliateNotificationIcon'
 import { affiliateTraderSavedCodeAtom, setAffiliateTraderSavedCodeAtom } from '../state/affiliateTraderSavedCodeAtom'
@@ -26,9 +26,10 @@ export function useNotifyAffiliateLinkedCode({ order, chainId }: NotifyAffiliate
 
   const { data: codeInfo } = useAffiliateTraderInfo(refCode)
   const timeCapDays = codeInfo?.timeCapDays ?? PROGRAM_DEFAULTS.AFFILIATE_TIME_CAP_DAYS
+  const isSupportedNetwork = useIsAffiliateSupportedTradingNetwork(chainId)
 
   useEffect(() => {
-    if (!order || !refCode || isLinked || !isSupportedTradingNetwork(chainId)) return
+    if (!order || !refCode || isLinked || !isSupportedNetwork) return
 
     setSavedCode({ savedCode: refCode, isLinked: true })
     addSnackbar({
@@ -38,5 +39,5 @@ export function useNotifyAffiliateLinkedCode({ order, chainId }: NotifyAffiliate
       duration: 0,
       content: <AffiliateLinkedCodeNotification code={refCode} timeCapDays={timeCapDays} />,
     })
-  }, [addSnackbar, chainId, isLinked, order, refCode, setSavedCode, timeCapDays])
+  }, [addSnackbar, isLinked, isSupportedNetwork, order, refCode, setSavedCode, timeCapDays])
 }

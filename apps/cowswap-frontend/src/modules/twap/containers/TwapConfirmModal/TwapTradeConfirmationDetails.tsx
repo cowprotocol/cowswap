@@ -93,17 +93,24 @@ export function TwapTradeConfirmationDetails({
         account={account}
         labelsAndTooltips={{
           ...confirmModalConfig,
-          networkCostsSuffix: !allowsOffchainSigning ? <NetworkCostsSuffix /> : null,
-          networkCostsTooltipSuffix: !allowsOffchainSigning ? (
+          networkCostsSuffix: <NetworkCostsSuffix />,
+          networkCostsTooltipSuffix: (
             <>
               <br />
               <br />
-              <Trans>
-                Because you are using a smart contract wallet, you will pay a separate gas cost for signing the order
-                placement on-chain.
-              </Trans>
+              {allowsOffchainSigning ? (
+                <Trans>
+                  TWAP orders are placed on-chain, so you will pay a separate gas cost for the order placement
+                  transaction.
+                </Trans>
+              ) : (
+                <Trans>
+                  Because you are using a smart contract wallet, you will pay a separate gas cost for signing the order
+                  placement on-chain.
+                </Trans>
+              )}
             </>
-          ) : null,
+          ),
         }}
       />
       {isRewardsRowEnabled && <AffiliateTraderRewardsRow />}
