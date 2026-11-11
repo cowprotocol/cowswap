@@ -16,8 +16,9 @@ export interface SolanaTokenAccountOwnerParams {
   orderOwner: AddressKey | undefined
   buyMint: AddressKey | undefined
   /**
-   * The wallet the book says the account belongs to, when placement named one. The only answer for a
-   * custom receiver whose account is still unallocated: derivation only finds the order owner's own.
+   * The wallet the book says the account belongs to, when placement named one. Taken on the book's
+   * word for an account that is still unallocated: placement refuses a receiver that does not own
+   * `buyTokenAccount`, so the pairing was checked before the order existed.
    */
   receiverWallet?: AddressKey
 }

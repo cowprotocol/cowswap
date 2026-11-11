@@ -527,7 +527,7 @@ async function postSponsoredBundle(
     await postSolanaSponsoredOrder(
       {
         partiallySignedTx: transaction,
-        ...(receiver && { receiver: receiver.toBase58() }),
+        receiver: receiver?.toBase58(),
         // The endpoint answers `id: null` when it could not store the quote, which the type does not admit.
         quoteId: quoteResults.quoteResponse.id ?? undefined,
       },

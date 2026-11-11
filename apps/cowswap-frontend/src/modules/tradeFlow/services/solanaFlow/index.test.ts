@@ -1178,11 +1178,13 @@ describe('solanaFlow · sponsored', () => {
     )
   })
 
-  // Naming the owner means the same to placement as naming nobody, so the field stays off the wire.
+  // Naming the owner means the same to placement as naming nobody. Undefined keeps it off the wire:
+  // the order book serializes the body with JSON.stringify, which drops them.
   it('names no receiver when the payout goes to the owner', async () => {
     await solanaFlow(buildContext({ quoteReceiver: SOLANA_ACCOUNT }), buildAnalytics(), { isSponsored: true })
 
-    expect(mockPostSolanaSponsoredOrder.mock.calls[0]?.[0]).not.toHaveProperty('receiver')
+    expect(mockPostSolanaSponsoredOrder).toHaveBeenCalledTimes(1)
+    expect(mockPostSolanaSponsoredOrder.mock.calls[0]?.[0].receiver).toBeUndefined()
   })
 
   // The real blockhash usually outlives the shown window (the estimate is capped), so the chain-level

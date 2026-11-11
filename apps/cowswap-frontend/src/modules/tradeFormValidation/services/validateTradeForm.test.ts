@@ -1,7 +1,6 @@
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { OrderKind, PriceQuality, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
-import { isSolanaSmartContractWallet } from '@cowprotocol/sdk-trading-solana'
 
 import { TradeQuoteState } from 'modules/tradeQuote'
 
@@ -11,21 +10,6 @@ import { validateTradeForm } from './validateTradeForm'
 
 import { ApproveRequiredReason } from '../../erc20Approve'
 import { TradeFormValidation, TradeFormValidationContext } from '../types'
-
-// PublicKey.isOnCurve misreports every point as on-curve under jsdom, so the real check can never
-// report a PDA here. The SDK covers it under the node environment.
-jest.mock('@cowprotocol/sdk-trading-solana', () => ({
-  ...jest.requireActual('@cowprotocol/sdk-trading-solana'),
-  isSolanaSmartContractWallet: jest.fn(() => false),
-}))
-
-const mockIsSolanaSmartContractWallet = isSolanaSmartContractWallet as jest.MockedFunction<
-  typeof isSolanaSmartContractWallet
->
-
-beforeEach(() => {
-  mockIsSolanaSmartContractWallet.mockReturnValue(false)
-})
 
 const mockCurrencyAmount = (value: string): CurrencyAmount<Currency> =>
   ({
@@ -735,6 +719,8 @@ describe('validateTradeForm - price impact loading', () => {
 
 describe('validateTradeForm - Solana swap recipient', () => {
   const SOLANA_RECIPIENT = '4wtw5VHUq8DriYRh92LGDDeN4AemUrGKYFSaZcDx8z7s'
+  /** A real associated token account: program-derived, so off the ed25519 curve. */
+  const SOLANA_PDA_RECIPIENT = 'HGTu6fBshWXJQe59C31RgyGcfhEusg1Y65Upcmd9zvCM'
   const EVM_RECIPIENT = '0x1234567890123456789012345678901234567890'
 
   const baseContext: Partial<TradeFormValidationContext> = {
@@ -812,15 +798,13 @@ describe('validateTradeForm - Solana swap recipient', () => {
 
   describe('program-derived recipient', () => {
     test('blocks the trade until the trader confirms it', () => {
-      mockIsSolanaSmartContractWallet.mockReturnValue(true)
-
-      expect(validateTradeForm(withRecipient(SOLANA_RECIPIENT))).toContain(TradeFormValidation.RecipientNotConfirmed)
+      expect(validateTradeForm(withRecipient(SOLANA_PDA_RECIPIENT))).toContain(
+        TradeFormValidation.RecipientNotConfirmed,
+      )
     })
 
     test('lets it through once confirmed', () => {
-      mockIsSolanaSmartContractWallet.mockReturnValue(true)
-
-      const result = validateTradeForm({ ...withRecipient(SOLANA_RECIPIENT), isNonEvmReceiverConfirmed: true })
+      const result = validateTradeForm({ ...withRecipient(SOLANA_PDA_RECIPIENT), isNonEvmReceiverConfirmed: true })
 
       expect(result || []).not.toContain(TradeFormValidation.RecipientNotConfirmed)
     })
@@ -833,8 +817,6 @@ describe('validateTradeForm - Solana swap recipient', () => {
 
     // Nothing is sent anywhere until the address itself parses, so the confirmation would be noise.
     test('asks nothing while the recipient is invalid', () => {
-      mockIsSolanaSmartContractWallet.mockReturnValue(true)
-
       const result = validateTradeForm(withRecipient(EVM_RECIPIENT)) || []
 
       expect(result).toContain(TradeFormValidation.RecipientInvalid)
