@@ -6,6 +6,7 @@ import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { unstable_cache } from 'next/cache'
 
 import { getTokenKey } from '../lib/tokenKey'
+import { getCommodityTroyOuncesPerToken } from '../model/commodityUnits'
 import { getDividendModel, hasUiMultiplier, isVaultToken, isWrappedXStock } from '../model/issuers'
 import { getAssets } from '../model/registry'
 
@@ -43,7 +44,7 @@ const EMPTY_SOURCE: SourceResult = { values: {}, degraded: false }
 /**
  * Shares of the underlying one token stands for. Ondo publishes a shares multiplier; a rebasing token is one share,
  * because `balanceOf()` already applies the multiplier; a cash-payout token is one share, because dividends leave it;
- * a commodity token is one unit, because it has no dividends; a vault token (wrapped xStocks, ST0x) is what it redeems
+ * a commodity token is the troy ounces it holds, because it has no dividends; a vault token (wrapped xStocks, ST0x) is what it redeems
  * for; a Robinhood token is its onchain `uiMultiplier()`
  */
 export async function loadSharesPerToken(tokens: RwaToken[]): Promise<SharesPerTokenLoadResult> {
@@ -102,19 +103,7 @@ function getSharesMultiplier(
 
   const model = getDividendModel(token)
 
-  return model === 'rebase' || model === 'cash-payout' || isCommodityToken(token) ? 1 : undefined
-}
-
-let commodityTokenKeys: Set<string> | undefined
-
-function isCommodityToken(token: RwaToken): boolean {
-  commodityTokenKeys ??= new Set(
-    getAssets()
-      .filter((asset) => asset.type === 'commodity')
-      .flatMap((asset) => asset.tokens.map(getTokenKey)),
-  )
-
-  return commodityTokenKeys.has(getTokenKey(token))
+  return model === 'rebase' || model === 'cash-payout' ? 1 : getCommodityTroyOuncesPerToken(token)
 }
 
 function isOndoToken(token: RwaToken): boolean {

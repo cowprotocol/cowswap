@@ -27,10 +27,7 @@ jest.mock('@/shared/api/index.server', () => ({
 }))
 
 jest.mock('../model/registry', () => ({
-  getAssets: () => [
-    { type: 'stock', tokens: mockRegistryTokens },
-    { type: 'commodity', tokens: mockCommodityTokens },
-  ],
+  getAssets: () => [{ tokens: mockRegistryTokens }],
 }))
 
 function token(symbol: string, chainId: number, address: string, issuer: string, coingeckoId?: string): RwaToken {
@@ -46,11 +43,12 @@ const WSPYX = token('WSPYX', 42161, '0x0000000000000000000000000000000000000005'
 const WTNKE = token('WTNKE', 8453, '0x000000000000000000000000000000000000000c', 'ST0x', 'nike-st0x-tokenized-stock')
 const NVDA_ROBINHOOD = token('NVDA', 4663, '0x000000000000000000000000000000000000000d', 'Robinhood')
 
-const PAXG = token('PAXG', 1, '0x0000000000000000000000000000000000000009', 'Paxos')
-const XAUT = token('XAUT', 1, '0x000000000000000000000000000000000000000a', 'Tether')
+const PAXG = token('PAXG', 1, '0x0000000000000000000000000000000000000009', 'Paxos', 'pax-gold')
+const XAUT = token('XAUT', 1, '0x000000000000000000000000000000000000000a', 'Tether', 'tether-gold')
+const KAU = token('KAU', 1, '0x0000000000000000000000000000000000000010', 'Kinesis Money', 'kinesis-gold')
+const KAG = token('KAG', 1, '0x0000000000000000000000000000000000000011', 'Kinesis Money', 'kinesis-silver')
 
 const mockRegistryTokens = [NVDAON, NFLXON, NVDAX, WNVDAX, WNVDAX_ARBITRUM, WSPYX, WTNKE, NVDA_ROBINHOOD]
-const mockCommodityTokens = [PAXG, XAUT]
 
 const fetchOndoMock = fetchOndoSharesMultipliers as jest.Mock
 const fetchActivationMock = fetchXStocksActivation as jest.Mock
@@ -127,11 +125,21 @@ describe('loadSharesPerToken', () => {
     })
   })
 
-  it('takes one unit per commodity token, whatever its issuer', async () => {
-    expect(await loadSharesPerToken([PAXG, XAUT])).toEqual({
-      byKey: { [getTokenKey(PAXG)]: 1, [getTokenKey(XAUT)]: 1 },
-      degraded: false,
+  it('takes the troy ounces a commodity token holds, per token rather than per issuer', async () => {
+    const result = await loadSharesPerToken([PAXG, XAUT, KAU, KAG])
+
+    expect(result.byKey).toEqual({
+      [getTokenKey(PAXG)]: 1,
+      [getTokenKey(XAUT)]: 1,
+      [getTokenKey(KAU)]: expect.closeTo(1 / 31.1034768, 10),
+      [getTokenKey(KAG)]: 1,
     })
+  })
+
+  it('leaves a commodity token of unknown size out', async () => {
+    const ggbr = token('GGBR', 1, '0x0000000000000000000000000000000000000012', 'Goldfish', 'goldfish-gold')
+
+    expect(await loadSharesPerToken([ggbr])).toEqual({ byKey: {}, degraded: false })
   })
 
   it('leaves a stock token of an issuer with an unknown dividend model out', async () => {
