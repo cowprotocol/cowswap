@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.21.1](https://github.com/cowprotocol/cowswap/compare/wallet-v3.21.0...wallet-v3.21.1) (2026-11-11)
+
+### Patch Changes
+
+- fix(wallet): patch reown solana adapter to use Ledger (#8442)
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.20.0
+  - @cowprotocol/common-const@3.20.0
+  - @cowprotocol/types@4.15.1
+  - @cowprotocol/ui@3.21.1
+  - @cowprotocol/common-utils@3.22.1
+  - @cowprotocol/core@3.15.1
+  - @cowprotocol/ens@3.12.1
+  - @cowprotocol/iframe-transport@2.3.15
+
 ## [3.21.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.20.0...wallet-v3.21.0) (2026-11-10)
 
 ### Minor Changes

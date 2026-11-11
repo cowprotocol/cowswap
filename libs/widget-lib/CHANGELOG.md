@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.15.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.14.0...widget-lib-v4.15.0) (2026-11-11)
+
+### Minor Changes
+
+- feat: take profit (#8460)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.18.1
+  - @cowprotocol/iframe-transport@2.3.15
+
 ## [4.14.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.13.0...widget-lib-v4.14.0) (2026-11-10)
 
 ### Minor Changes

@@ -1,5 +1,19 @@
 # Changelog
 
+## [4.19.1](https://github.com/cowprotocol/cowswap/compare/explorer-v4.19.0...explorer-v4.19.1) (2026-11-11)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.20.0
+  - @cowprotocol/analytics@3.18.0
+  - @cowprotocol/common-const@3.20.0
+  - @cowprotocol/types@4.15.1
+  - @cowprotocol/ui@3.21.1
+  - @cowprotocol/common-utils@3.22.1
+  - @cowprotocol/core@3.15.1
+  - @cowprotocol/hook-dapp-lib@2.5.3
+
 ## [4.19.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.18.0...explorer-v4.19.0) (2026-11-10)
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # Changelog
 
+## [4.15.1](https://github.com/cowprotocol/cowswap/compare/types-v4.15.0...types-v4.15.1) (2026-11-11)
+
+### Patch Changes
+
+- fix(tokens): use Solana volume ranks in the selector (#8523)
+
 ## [4.15.0](https://github.com/cowprotocol/cowswap/compare/types-v4.14.2...types-v4.15.0) (2026-11-10)
 
 ### Minor Changes
