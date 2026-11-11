@@ -11,7 +11,7 @@
     "@cowprotocol/rwa-frontend": 5.6,
     "@cowprotocol/sdk-tools": 10.1,
     "@cowprotocol/storybook": 3.6,
-    "@cowprotocol/widget-configurator": 11.2,
+    "@cowprotocol/widget-configurator": 11.3,
   },
   "packages": {
     "@cowprotocol/currency": 0,
