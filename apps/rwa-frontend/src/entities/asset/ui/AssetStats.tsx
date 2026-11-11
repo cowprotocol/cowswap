@@ -52,6 +52,9 @@ function getPriceHint({ title }: RwaAsset, marketKind: RwaMarketKind, provider: 
 
   return `The price and chart show the ${title} share on its exchange${source}, including extended-hours sessions. Token prices may differ from the stock price. ${disclaimer}`
 }
+function getTimeZoneCity(timeZone: string): string {
+  return (timeZone.split('/').pop() ?? timeZone).replace(/_/g, ' ')
+}
 
 function MarketStatus({ tradingTime }: { tradingTime: RwaTradingTime }): ReactNode {
   const now = new Date()
@@ -61,7 +64,7 @@ function MarketStatus({ tradingTime }: { tradingTime: RwaTradingTime }): ReactNo
   return (
     <Tooltip
       className={styles.status}
-      content={`US regular session · ${tradingTime.start.replace(' UTC', '')} – ${tradingTime.end} · Mon – Fri`}
+      content={`US regular session · ${tradingTime.start} – ${tradingTime.end} ${getTimeZoneCity(tradingTime.timeZone)} time · Mon – Fri`}
     >
       <span className={open ? styles.statusOpen : styles.statusClosed}>US market {open ? 'open' : 'closed'}</span>
       {minutesToChange !== null && (

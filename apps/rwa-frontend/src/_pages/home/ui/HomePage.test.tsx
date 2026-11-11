@@ -34,7 +34,7 @@ const OVERVIEW: RwaMarketOverview = {
   gainers: [NVDA],
   losers: [],
   updatedAt: '2026-10-01T14:00:00.000Z',
-  tradingTime: { title: 'US market open', start: '13:30 UTC', end: '20:00 UTC' },
+  tradingTime: { title: 'US market open', start: '09:30', end: '16:00', timeZone: 'America/New_York' },
   degraded: false,
 }
 
