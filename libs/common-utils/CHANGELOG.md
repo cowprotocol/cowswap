@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.22.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.22.0...common-utils-v3.22.1) (2026-11-11)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.20.0
+  - @cowprotocol/types@4.15.1
+
 ## [3.22.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.21.2...common-utils-v3.22.0) (2026-11-10)
 
 ### Minor Changes
