@@ -1,5 +1,20 @@
 # Changelog
 
+## [3.18.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.17.0...analytics-v3.18.0) (2026-11-11)
+
+### Minor Changes
+
+- feat(rwa): google analytics (#8542)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.20.0
+  - @cowprotocol/common-const@3.20.0
+  - @cowprotocol/types@4.15.1
+  - @cowprotocol/common-utils@3.22.1
+  - @cowprotocol/events@4.18.1
+
 ## [3.17.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.16.4...analytics-v3.17.0) (2026-11-10)
 
 ### Minor Changes

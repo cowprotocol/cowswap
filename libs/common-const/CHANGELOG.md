@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.20.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.19.0...common-const-v3.20.0) (2026-11-11)
+
+### Minor Changes
+
+- feat(rwa): google analytics (#8542)
+
+### Patch Changes
+
+- fix(tokens): use Solana volume ranks in the selector (#8523)
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.15.1
+
 ## [3.19.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.18.0...common-const-v3.19.0) (2026-11-10)
 
 ### Minor Changes
