@@ -53,6 +53,7 @@ describe('validateTradeForm - xStock logic', () => {
     isProxySetupValid: true,
     customTokenError: undefined,
     isRestrictedForCountry: false,
+    isSolanaPublicLaunched: false,
     isBalancesLoading: false,
     isBundlingSupported: true,
     isInputCurrencyXstock: false,
@@ -245,6 +246,7 @@ describe('validateTradeForm - Solana Alpha trade limit', () => {
     isProxySetupValid: true,
     customTokenError: undefined,
     isRestrictedForCountry: false,
+    isSolanaPublicLaunched: false,
     isBalancesLoading: false,
     isBundlingSupported: true,
     isInputCurrencyXstock: false,
@@ -294,6 +296,34 @@ describe('validateTradeForm - Solana Alpha trade limit', () => {
 
     const result = validateTradeForm(context)
     expect(result || []).not.toContain(TradeFormValidation.SolanaAlphaMaxTradeSize)
+  })
+
+  test('drops the trade limit once Solana is publicly launched', () => {
+    const context = {
+      ...baseContext,
+      isSolanaPublicLaunched: true,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        inputCurrencyFiatAmount: mockCurrencyAmount('25000'),
+        outputCurrencyFiatAmount: mockCurrencyAmount('24990'),
+      },
+    } as unknown as TradeFormValidationContext
+
+    expect(validateTradeForm(context) || []).not.toContain(TradeFormValidation.SolanaAlphaMaxTradeSize)
+  })
+
+  test('allows a trade with no USD estimate once Solana is publicly launched', () => {
+    const context = {
+      ...baseContext,
+      isSolanaPublicLaunched: true,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        inputCurrencyFiatAmount: null,
+        outputCurrencyFiatAmount: null,
+      },
+    } as unknown as TradeFormValidationContext
+
+    expect(validateTradeForm(context) || []).not.toContain(TradeFormValidation.SolanaAlphaUnknownUsdValue)
   })
 
   test('does not apply the limit on EVM chains', () => {
