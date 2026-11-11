@@ -22,6 +22,7 @@ import { useInitializeUtm } from 'modules/utm'
 import { BANNER_IDS } from 'common/constants/banners'
 import { CoWAmmBanner } from 'common/containers/CoWAmmBanner'
 import { InvalidLocalTimeWarning } from 'common/containers/InvalidLocalTimeWarning'
+import { useIsGraffitiWallEnabled } from 'common/hooks/featureFlags/useIsGraffitiWallEnabled'
 import { useCustomTheme } from 'common/hooks/useCustomTheme'
 import { useGetMarketDimension } from 'common/hooks/useGetMarketDimension'
 
@@ -56,7 +57,7 @@ type CustomThemeKey = ReturnType<typeof useCustomTheme>
 interface FooterSectionProps {
   show: boolean
   showCowSpeechBubble: boolean
-  isGraffitiWallBubbleDismissed: boolean
+  showGraffitiWallBubble: boolean
   currentNotification: NotificationModel | null
   onDismissNotification: () => void
   pageScene: ReactNode | null
@@ -112,6 +113,8 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
   })
   const { currentNotification, dismiss } = useSpeechBubbleNotification()
   const closedBanners = useAtomValue(closableBannersStateAtom)
+  const isGraffitiWallEnabled = useIsGraffitiWallEnabled()
+  const showGraffitiWallBubble = isGraffitiWallEnabled && !closedBanners[BANNER_IDS.GRAFFITI_WALL_SPEECH_BUBBLE]
   const hasActiveSpeechBubbleNotification = shouldRenderCowSpeechBubble && Boolean(currentNotification)
   const showSnowfall = !isInjectedWidgetMode && isChristmasTheme
 
@@ -144,7 +147,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
         <FooterSection
           show={!isInjectedWidgetMode && !isFullBleed}
           showCowSpeechBubble={shouldRenderCowSpeechBubble}
-          isGraffitiWallBubbleDismissed={Boolean(closedBanners[BANNER_IDS.GRAFFITI_WALL_SPEECH_BUBBLE])}
+          showGraffitiWallBubble={showGraffitiWallBubble}
           currentNotification={currentNotification}
           onDismissNotification={dismiss}
           pageScene={pageScene}
@@ -162,7 +165,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
 function FooterSection({
   show,
   showCowSpeechBubble,
-  isGraffitiWallBubbleDismissed,
+  showGraffitiWallBubble,
   currentNotification,
   onDismissNotification,
   pageScene,
@@ -175,10 +178,10 @@ function FooterSection({
   const bubbleElement: ReactNode = showCowSpeechBubble ? (
     currentNotification ? (
       <CowSpeechBubbleNotificationBanner currentNotification={currentNotification} onClose={onDismissNotification} />
-    ) : isGraffitiWallBubbleDismissed ? (
-      <CowSpeechBubbleHiringBanner />
-    ) : (
+    ) : showGraffitiWallBubble ? (
       <CowSpeechBubbleGraffitiWallBanner />
+    ) : (
+      <CowSpeechBubbleHiringBanner />
     )
   ) : null
 
