@@ -37,8 +37,11 @@ export function QuoteObserverUpdater(): null {
 
   useSafeEffect(() => {
     if (!percentageSelection || isLoading || !state?.inputCurrencyAmount) return
+
     const rate = getPercentageRate(price, percentageSelection.value, percentageSelection.isInverted)
+
     if (!rate || activeRate?.equalTo(rate)) return
+
     updateRate({
       activeRate: rate,
       percentageSelection,
@@ -69,11 +72,15 @@ function useSpotPrice(
   const inputUsdPrice = useUsdPrice(inputCurrency)
   const outputUsdPrice = useUsdPrice(outputCurrency)
 
-  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   return useMemo(() => {
-    const isLoading = !!inputUsdPrice?.isLoading || !!outputUsdPrice?.isLoading
+    // useUsdPrice is null until the token is in the price atom, so we treat as still loading, not "unavailable".
+    if (!inputUsdPrice || !outputUsdPrice) {
+      return { price: null, isLoading: true }
+    }
 
-    if (!inputUsdPrice?.price || !outputUsdPrice?.price) {
+    const isLoading = inputUsdPrice.isLoading || outputUsdPrice.isLoading
+
+    if (!inputUsdPrice.price || !outputUsdPrice.price) {
       return { price: null, isLoading }
     }
     const inputFraction = FractionUtils.fromPrice(inputUsdPrice.price)
@@ -82,5 +89,5 @@ function useSpotPrice(
     const price = inputFraction.divide(outputFraction)
 
     return { price, isLoading }
-  }, [inputUsdPrice?.price, inputUsdPrice?.isLoading, outputUsdPrice?.price, outputUsdPrice?.isLoading])
+  }, [inputUsdPrice, outputUsdPrice])
 }
