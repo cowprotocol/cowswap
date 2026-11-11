@@ -168,6 +168,11 @@ describe('searchAssets', () => {
       expect(tickers(searchAssets(all, 'aaplox'))).toEqual(['AAPL'])
     })
 
+    it('matches a swap of adjacent chars', () => {
+      expect(tickers(searchAssets(all, 'nivdia'))).toEqual(['NVDA'])
+      expect(tickers(searchAssets(all, 'mtea'))).toEqual(['META'])
+    })
+
     it('needs at least 4 chars', () => {
       expect(searchAssets(all, 'mta')).toEqual([])
     })
@@ -209,6 +214,18 @@ describe('filterAssets', () => {
     expect(tickers(filterAssets(all, { issuers: ['Ondo', 'xStocks'] }))).toEqual(['AAPL', 'MSFT', 'SPY', 'QQQ'])
     expect(tickers(filterAssets(all, { issuers: ['xStocks'], chainIds: [1, 56] }))).toEqual(['SPY', 'QQQ'])
     expect(tickers(filterAssets(all, { issuers: [], chainIds: [] }))).toEqual(['AAPL', 'MSFT', 'SPY', 'QQQ'])
+  })
+
+  it('drops description and typo matches when a ticker, title or symbol matches', () => {
+    const META = asset('META', 'Meta Platforms', 6, null, ['METAx'])
+    const SLV = asset('SLV', 'iShares Silver Trust', 5, null, [], {
+      profile: { description: 'Tracks the price of silver, a precious metal.', sector: 'ETF · Commodities' },
+    })
+
+    expect(tickers(filterAssets([SLV, META], { query: 'meta' }))).toEqual(['META'])
+    expect(tickers(filterAssets([SLV, META], { query: 'silver' }))).toEqual(['SLV'])
+    expect(tickers(filterAssets([SLV, META], { query: 'precious' }))).toEqual(['SLV'])
+    expect(tickers(filterAssets([SLV, META], { query: 'mtea' }))).toEqual(['META'])
   })
 
   it('filters by query and tickers', () => {

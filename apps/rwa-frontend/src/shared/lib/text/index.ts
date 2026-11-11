@@ -1,1 +1,1 @@
-export { getLevenshteinDistance } from './levenshtein'
+export { getEditDistance } from './editDistance'

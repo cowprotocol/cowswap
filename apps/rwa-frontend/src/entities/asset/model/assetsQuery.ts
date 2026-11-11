@@ -7,13 +7,15 @@ import type {
   RwaSortOrder,
 } from './types'
 
-import { getLevenshteinDistance } from '@/shared/lib/text'
+import { getEditDistance } from '@/shared/lib/text'
 
 const TEXT_SORT_FIELDS: readonly RwaSortField[] = ['ticker', 'title']
 
 const MIN_DESCRIPTION_QUERY_LENGTH = 3
 const MIN_FUZZY_QUERY_LENGTH = 4
 const LONG_FUZZY_QUERY_LENGTH = 8
+/** Lowest score of a ticker, title or token symbol match (`getFieldScore`) */
+const MIN_FIELD_SCORE = 3
 
 type SortValueGetter = (asset: RwaAssetListItem) => number | string | null
 
@@ -29,14 +31,20 @@ const SORT_VALUE_GETTERS: Record<RwaSortField, SortValueGetter> = {
 
 export function filterAssets<T extends RwaAsset>(assets: T[], filter: RwaAssetsFilter): T[] {
   const needle = filter.query?.trim().toLowerCase()
-
-  return assets.filter(
+  const filtered = assets.filter(
     (asset) =>
       (!filter.type || asset.type === filter.type) &&
       (!filter.tickers || filter.tickers.includes(asset.ticker)) &&
-      hasMatchingToken(asset, filter) &&
-      (!needle || getSearchScore(asset, needle) > 0),
+      hasMatchingToken(asset, filter),
   )
+
+  if (!needle) return filtered
+
+  const scored = filtered.map((asset) => ({ asset, score: getSearchScore(asset, needle) }))
+  // The table is sorted by its column, not by score: description and typo matches only when nothing else matches
+  const minScore = scored.some(({ score }) => score >= MIN_FIELD_SCORE) ? MIN_FIELD_SCORE : 1
+
+  return scored.filter(({ score }) => score >= minScore).map(({ asset }) => asset)
 }
 
 /** An asset without market data matches no minimum */
@@ -144,8 +152,7 @@ function isFuzzyMatch(candidates: string[], needle: string): boolean {
 
   return candidates.some(
     (candidate) =>
-      Math.abs(candidate.length - needle.length) <= maxDistance &&
-      getLevenshteinDistance(candidate, needle) <= maxDistance,
+      Math.abs(candidate.length - needle.length) <= maxDistance && getEditDistance(candidate, needle) <= maxDistance,
   )
 }
 
