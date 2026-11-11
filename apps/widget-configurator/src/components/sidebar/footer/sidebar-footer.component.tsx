@@ -1,5 +1,7 @@
 import { ReactNode } from 'react'
 
+import { openCookieSettings } from '@cowprotocol/analytics'
+
 import Box from '@mui/material/Box'
 import Link from '@mui/material/Link'
 import { ChevronLeft, ChevronRight, Code, Eye, Moon, Sun, RefreshCw } from 'react-feather'
@@ -167,6 +169,9 @@ export function SidebarFooter({
             variant="inherit"
           >
             Developer docs
+          </Link>
+          <Link component="button" type="button" onClick={openCookieSettings} sx={externalLinkSx} variant="inherit">
+            Cookie settings
           </Link>
           <Link
             component="button"

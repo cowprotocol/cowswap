@@ -53,6 +53,7 @@ jest.mock('@cowprotocol/analytics', () => {
     })),
     onCookiesAccepted: jest.fn(),
     openCookieSettings: jest.fn(),
+    isNoopCowAnalyticsActive: jest.fn(() => false),
     useHasAcceptedCookies: jest.fn().mockReturnValue(false),
     initPixelAnalytics: jest.fn().mockImplementation(() => ({
       sendEvent: jest.fn(),

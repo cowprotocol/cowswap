@@ -5,11 +5,12 @@ jest.mock('react-appzi', () => ({
   default: { initialize: jest.fn() },
 }))
 
-function loadAppziModule(isProdLike = false, isInjectedWidget = false): typeof import('./appzi') {
+function loadAppziModule(isProdLike = false, isInjectedWidget = false, isIframe = false): typeof import('./appzi') {
   jest.doMock('@cowprotocol/common-utils', () => ({
     isCoinbaseWalletBrowser: false,
     isImTokenBrowser: false,
     isInjectedWidget: () => isInjectedWidget,
+    isIframe: () => isIframe,
     isProdLike,
     majorBrowserVersion: 120,
     userAgent: { browser: { name: 'Chrome' }, os: { name: 'Linux' } },
@@ -92,6 +93,16 @@ describe('triggerAppziSurvey', () => {
 
     triggerAppziSurvey({ orderType: UiOrderType.TWAP, created: true }, getSurveyType(UiOrderType.TWAP))
 
+    expect(window.appziSettings).toBe(previousSettings)
+  })
+  it('keeps Appzi disabled inside Safe and other framed CoW Swap pages', () => {
+    const { isAppziEnabled, triggerAppziSurvey } = loadAppziModule(false, false, true)
+    const previousSettings = { userId: 'existing-user', data: {} }
+    window.appziSettings = previousSettings
+
+    triggerAppziSurvey({ orderType: UiOrderType.SWAP, traded: true })
+
+    expect(isAppziEnabled).toBe(false)
     expect(window.appziSettings).toBe(previousSettings)
   })
 })

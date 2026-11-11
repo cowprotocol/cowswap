@@ -7,7 +7,7 @@ import { Messages } from '@lingui/core'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 import { CowAnalyticsProvider, createNoopCowAnalytics, initGtm } from '@cowprotocol/analytics'
-import { isInjectedWidget, nodeRemoveChildFix } from '@cowprotocol/common-utils'
+import { nodeRemoveChildFix } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { SnackbarsWidget } from '@cowprotocol/snackbars'
 import { WalletProvider, Web3Provider } from '@cowprotocol/wallet'
@@ -38,13 +38,14 @@ import {
 import { installRestrictedAddressesGuard } from 'modules/restrictedAddresses'
 
 import { hashHistory } from 'common/constants/routes'
+import { isMarketingTrackingDisabled } from 'common/utils/marketingTracking.utils'
 import { loadActiveLocaleMessages } from 'lib/localeMessages'
 
 import { APP_HEADER_ELEMENT_ID } from '../common/constants/common'
 import { CookieConsentBanner } from '../common/containers/CookieConsentBanner'
 import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsupportedNetworkBanner'
 
-const isAnalyticsDisabled = isInjectedWidget() || window.__COWSWAP_E2E__
+const isAnalyticsDisabled = isMarketingTrackingDisabled()
 const cowAnalytics = isAnalyticsDisabled ? createNoopCowAnalytics() : initGtm()
 const helmetContext = {}
 

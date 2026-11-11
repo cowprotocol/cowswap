@@ -29,7 +29,7 @@ export function addUtmToUrl(href: string, utm: UtmParams): string {
   return baseUrl + finalHash
 }
 
-export function cleanUpParams(router: AppRouterInstance, pathname: string | null, query: URLSearchParams) {
+export function cleanUpParams(router: AppRouterInstance, pathname: string | null, query: URLSearchParams): void {
   let cleanedParams = false
 
   // Remove all utm_* parameters
@@ -44,6 +44,6 @@ export function cleanUpParams(router: AppRouterInstance, pathname: string | null
   paramsToDelete.forEach((param) => query.delete(param))
 
   if (cleanedParams) {
-    router.replace((pathname || '/') + '?' + query.toString())
+    router.replace((pathname || '/') + '?' + query.toString() + window.location.hash)
   }
 }

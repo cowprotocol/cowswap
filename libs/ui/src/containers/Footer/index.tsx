@@ -1,6 +1,6 @@
 import { ReactNode, useRef, useState } from 'react'
 
-import { Category, openCookieSettings, toGtmEvent } from '@cowprotocol/analytics'
+import { Category, isNoopCowAnalyticsActive, openCookieSettings, toGtmEvent } from '@cowprotocol/analytics'
 import svgArrowRightCircularSrc from '@cowprotocol/assets/images/arrow-right-circular.svg'
 import { useTheme } from '@cowprotocol/common-hooks'
 
@@ -101,9 +101,11 @@ function FooterCopyright(): ReactNode {
   return (
     <BottomText>
       &copy; CoW DAO - {new Date().getFullYear()}
-      <CookieSettingsButton type="button" onClick={openCookieSettings}>
-        Cookie settings
-      </CookieSettingsButton>
+      {!isNoopCowAnalyticsActive() && (
+        <CookieSettingsButton type="button" onClick={openCookieSettings}>
+          Cookie settings
+        </CookieSettingsButton>
+      )}
     </BottomText>
   )
 }

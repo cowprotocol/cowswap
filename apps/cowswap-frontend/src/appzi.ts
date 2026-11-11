@@ -2,7 +2,6 @@ import { onCookiesAccepted, useHasAcceptedCookies } from '@cowprotocol/analytics
 import {
   isCoinbaseWalletBrowser,
   isImTokenBrowser,
-  isInjectedWidget,
   isProdLike,
   majorBrowserVersion,
   userAgent,
@@ -11,6 +10,8 @@ import { UiOrderType } from '@cowprotocol/types'
 
 import ms from 'ms.macro'
 import ReactAppzi from 'react-appzi'
+
+import { isMarketingTrackingDisabled } from 'common/utils/marketingTracking.utils'
 
 // Metamask IOS app uses a version from July 2019 which causes problems in appZi
 const OLD_CHROME_FROM_METAMASK_IOS_APP = 76
@@ -21,7 +22,7 @@ const isFeedbackEnabled = process.env.REACT_APP_FEEDBACK_ENABLED_DEV === 'true' 
 const isImTokenIosBrowser = isImTokenBrowser && userAgent.os.name === 'iOS'
 const isCoinbaseWalletIos = isCoinbaseWalletBrowser && userAgent.os.name === 'iOS'
 export const isAppziEnabled =
-  !isOldChrome && !isImTokenIosBrowser && !isCoinbaseWalletIos && isFeedbackEnabled && !isInjectedWidget()
+  !isOldChrome && !isImTokenIosBrowser && !isCoinbaseWalletIos && isFeedbackEnabled && !isMarketingTrackingDisabled()
 
 const PROD_FEEDBACK_KEY = 'f7591eca-72f7-4888-b15f-e7ff5fcd60cd'
 const TEST_FEEDBACK_KEY = '6da8bf10-4904-4952-9a34-12db70e9194e'
@@ -151,7 +152,7 @@ export function triggerAppziSurvey(
   data?: Omit<AppziCustomSettings, 'userTradedOrWaitedForLong' | 'isTestNps'>,
   surveyType: SurveyType = 'nps',
 ): void {
-  if (isInjectedWidget()) return
+  if (isMarketingTrackingDisabled()) return
 
   const surveyData = surveyType === 'limit' ? LIMIT_SURVEY_DATA : NPS_DATA
 

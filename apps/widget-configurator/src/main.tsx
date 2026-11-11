@@ -12,6 +12,7 @@ import 'inter-ui'
 import { createRoot } from 'react-dom/client'
 
 import { Configurator } from './components/configurator/configurator.component'
+import { CookieConsentBanner } from './components/CookieConsentBanner/CookieConsentBanner'
 import { commonComponents } from './theme/commonComponents.constants'
 import { commonTypography } from './theme/commonTypography.constants'
 import { ColorModeProvider } from './theme/context/ColorModeProvider'
@@ -54,6 +55,7 @@ function ConfiguratorApp(): ReactNode {
         <WithLDProvider>
           <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
             <Configurator />
+            <CookieConsentBanner />
           </CowAnalyticsProvider>
         </WithLDProvider>
       </Box>
