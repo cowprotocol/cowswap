@@ -41,7 +41,7 @@ describe('getPremiumNote', () => {
     expect(getPremiumNote(reality, 1, 0.02)).toBe(note)
   })
 
-  it('has only the base hint for an unknown issuer', () => {
-    expect(getPremiumNote({ symbol: 'NVDAd', issuer: 'Dinari' }, null, 0.02)).toBe(BASE)
+  it('has only the base hint for an issuer of an unknown dividend model', () => {
+    expect(getPremiumNote({ symbol: 'NVDAS', issuer: 'Stove Finance' }, null, 0.02)).toBe(BASE)
   })
 })

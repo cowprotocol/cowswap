@@ -7,7 +7,12 @@ import { getTokenKey } from '../lib/tokenKey'
 
 import type { RwaAsset, RwaToken } from '../model/types'
 
-import { fetchOndoSharesMultipliers, fetchXStocksActivation, readVaultAssetsPerShare } from '@/shared/api/index.server'
+import {
+  fetchOndoSharesMultipliers,
+  fetchXStocksActivation,
+  readUiMultipliers,
+  readVaultAssetsPerShare,
+} from '@/shared/api/index.server'
 
 jest.mock('next/cache', () => ({
   unstable_cache: <T extends unknown[], R>(load: (...args: T) => Promise<R>) => load,
@@ -16,6 +21,7 @@ jest.mock('next/cache', () => ({
 jest.mock('@/shared/api/index.server', () => ({
   fetchOndoSharesMultipliers: jest.fn(),
   fetchXStocksActivation: jest.fn(),
+  readUiMultipliers: jest.fn(),
   readVaultAssetsPerShare: jest.fn(),
   withRetryBackoff: <T>(_key: string, load: () => Promise<T>) => load(),
 }))
@@ -37,24 +43,37 @@ const NVDAX = token('NVDAX', 57073, '0x0000000000000000000000000000000000000003'
 const WNVDAX = token('WNVDAX', 1, '0x0000000000000000000000000000000000000004', 'xStocks', 'wrapped-nvidia-xstock')
 const WNVDAX_ARBITRUM = { ...WNVDAX, chainId: 42161 }
 const WSPYX = token('WSPYX', 42161, '0x0000000000000000000000000000000000000005', 'xStocks', 'wrapped-sp500-xstock')
+const WTNKE = token('WTNKE', 8453, '0x000000000000000000000000000000000000000c', 'ST0x', 'nike-st0x-tokenized-stock')
+const NVDA_ROBINHOOD = token(
+  'NVDA',
+  4663,
+  '0x000000000000000000000000000000000000000d',
+  'Robinhood Assets (Jersey) Limited',
+)
 
 const PAXG = token('PAXG', 1, '0x0000000000000000000000000000000000000009', 'Paxos')
 const XAUT = token('XAUT', 1, '0x000000000000000000000000000000000000000a', 'Tether')
 
-const mockRegistryTokens = [NVDAON, NFLXON, NVDAX, WNVDAX, WNVDAX_ARBITRUM, WSPYX]
+const mockRegistryTokens = [NVDAON, NFLXON, NVDAX, WNVDAX, WNVDAX_ARBITRUM, WSPYX, WTNKE, NVDA_ROBINHOOD]
 const mockCommodityTokens = [PAXG, XAUT]
 
 const fetchOndoMock = fetchOndoSharesMultipliers as jest.Mock
 const fetchActivationMock = fetchXStocksActivation as jest.Mock
 const readVaultRatesMock = readVaultAssetsPerShare as jest.Mock
+const readUiMultipliersMock = readUiMultipliers as jest.Mock
 
 beforeEach(() => {
   jest.resetAllMocks()
   jest.spyOn(console, 'error').mockImplementation(() => undefined)
   fetchOndoMock.mockResolvedValue({ NVDAON: 1.0017, NFLXON: 10 })
   readVaultRatesMock.mockImplementation(async (chainId: number) =>
-    chainId === 1 ? { [WNVDAX.address]: 0.9917 } : { [WNVDAX.address]: 1, [WSPYX.address]: 1.0057 },
+    chainId === 1
+      ? { [WNVDAX.address]: 0.9917 }
+      : chainId === 8453
+        ? { [WTNKE.address]: 1.004 }
+        : { [WNVDAX.address]: 1, [WSPYX.address]: 1.0057 },
   )
+  readUiMultipliersMock.mockResolvedValue({ [NVDA_ROBINHOOD.address]: 1.0008 })
 })
 
 afterEach(() => {
@@ -84,19 +103,31 @@ describe('loadSharesPerToken', () => {
     expect(readVaultRatesMock).toHaveBeenCalledWith(42161, [WNVDAX_ARBITRUM, WSPYX])
   })
 
+  it('reads ST0x tokens as vaults and Robinhood tokens by their UI multiplier', async () => {
+    expect(await loadSharesPerToken([WTNKE, NVDA_ROBINHOOD])).toEqual({
+      byKey: { [getTokenKey(WTNKE)]: 1.004, [getTokenKey(NVDA_ROBINHOOD)]: 1.0008 },
+      degraded: false,
+    })
+    expect(readVaultRatesMock).toHaveBeenCalledWith(8453, [WTNKE])
+    expect(readUiMultipliersMock).toHaveBeenCalledWith(4663, [NVDA_ROBINHOOD])
+  })
+
   it('requests nothing for tokens that need no upstream data', async () => {
     expect(await loadSharesPerToken([NVDAX])).toEqual({ byKey: { [getTokenKey(NVDAX)]: 1 }, degraded: false })
     expect(fetchOndoMock).not.toHaveBeenCalled()
     expect(readVaultRatesMock).not.toHaveBeenCalled()
+    expect(readUiMultipliersMock).not.toHaveBeenCalled()
   })
 
   it('takes one share per rebasing or cash-payout token and leaves Coinbase tokens out', async () => {
     const nvdab = token('NVDAB', 56, '0x0000000000000000000000000000000000000006', 'bStocks')
     const rnvda = token('RNVDA', 42161, '0x0000000000000000000000000000000000000007', 'Reality')
     const nvdac = token('NVDAC', 8453, '0x0000000000000000000000000000000000000008', 'Coinbase')
+    const dinari = token('NVDA', 1, '0x000000000000000000000000000000000000000e', 'Dinari')
+    const anchored = token('ANVDA', 1, '0x000000000000000000000000000000000000000f', 'Anchored Capital Ltd (BVI)')
 
-    expect(await loadSharesPerToken([nvdab, rnvda, nvdac])).toEqual({
-      byKey: { [getTokenKey(nvdab)]: 1, [getTokenKey(rnvda)]: 1 },
+    expect(await loadSharesPerToken([nvdab, rnvda, nvdac, dinari, anchored])).toEqual({
+      byKey: { [getTokenKey(nvdab)]: 1, [getTokenKey(rnvda)]: 1, [getTokenKey(dinari)]: 1, [getTokenKey(anchored)]: 1 },
       degraded: false,
     })
   })
@@ -109,9 +140,9 @@ describe('loadSharesPerToken', () => {
   })
 
   it('leaves a stock token of an issuer with an unknown dividend model out', async () => {
-    const nvdad = token('NVDA.D', 1, '0x000000000000000000000000000000000000000b', 'Dinari')
+    const nvdas = token('NVDAS', 56, '0x000000000000000000000000000000000000000b', 'Stove Finance')
 
-    expect(await loadSharesPerToken([nvdad])).toEqual({ byKey: {}, degraded: false })
+    expect(await loadSharesPerToken([nvdas])).toEqual({ byKey: {}, degraded: false })
   })
 
   it('leaves Ondo tokens out without degrading when no API key is set', async () => {
@@ -123,8 +154,9 @@ describe('loadSharesPerToken', () => {
   it('leaves out the tokens of a failed source and degrades', async () => {
     fetchOndoMock.mockRejectedValue(new Error('Ondo responded with 500'))
     readVaultRatesMock.mockRejectedValue(new Error('RPC timeout'))
+    readUiMultipliersMock.mockRejectedValue(new Error('RPC timeout'))
 
-    expect(await loadSharesPerToken([NVDAON, NVDAX, WNVDAX])).toEqual({
+    expect(await loadSharesPerToken([NVDAON, NVDAX, WNVDAX, NVDA_ROBINHOOD])).toEqual({
       byKey: { [getTokenKey(NVDAX)]: 1 },
       degraded: true,
     })

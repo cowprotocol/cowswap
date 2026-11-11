@@ -23,8 +23,8 @@ describe('DividendNotes', () => {
     ])
   })
 
-  it('renders nothing without a known issuer', () => {
-    const { container } = render(<DividendNotes tokens={[{ issuer: 'Dinari' }]} />)
+  it('renders nothing without an issuer of a known dividend model', () => {
+    const { container } = render(<DividendNotes tokens={[{ issuer: 'Stove Finance' }]} />)
 
     expect(container.firstChild).toBeNull()
   })

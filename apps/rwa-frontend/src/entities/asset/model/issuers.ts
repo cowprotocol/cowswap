@@ -8,8 +8,21 @@ import type { RwaToken } from './types'
  */
 export type RwaDividendModel = 'price-accrual' | 'rebase' | 'cash-payout'
 
-/** Issuers with a known dividend model or legal docs. The registry has tokens of any issuer CoinGecko lists */
-export const RWA_ISSUERS = ['Ondo', 'xStocks', 'Coinbase', 'bStocks', 'Reality'] as const
+/**
+ * Issuers with a known dividend model or legal docs, by their CoinGecko name. The registry has tokens of any issuer
+ * CoinGecko lists
+ */
+export const RWA_ISSUERS = [
+  'Ondo',
+  'xStocks',
+  'Coinbase',
+  'bStocks',
+  'Reality',
+  'Dinari',
+  'Robinhood Assets (Jersey) Limited',
+  'Anchored Capital Ltd (BVI)',
+  'ST0x',
+] as const
 
 export interface RwaDividendNote {
   /** Who applies the scheme, e.g. `Ondo` or `Wrapped xStocks` */
@@ -37,6 +50,10 @@ const ISSUER_DIVIDEND_MODELS: Partial<Record<RwaIssuer, RwaDividendModel>> = {
   Coinbase: 'price-accrual',
   bStocks: 'rebase',
   Reality: 'cash-payout',
+  Dinari: 'cash-payout',
+  'Robinhood Assets (Jersey) Limited': 'price-accrual',
+  'Anchored Capital Ltd (BVI)': 'cash-payout',
+  ST0x: 'price-accrual',
 }
 
 const DIVIDEND_NOTES: Record<RwaDividendModel, Omit<RwaDividendNote, 'label'>> = {
@@ -90,6 +107,16 @@ export function getDividendNotes(tokens: Iterable<DividendToken>): RwaDividendNo
 
 export function getIssuerLegalDocsUrl(issuer: string): string | null {
   return isRwaIssuer(issuer) ? (RWA_ISSUER_LEGAL_DOCS_URLS[issuer] ?? null) : null
+}
+
+/** Its shares per token is its ERC-8056 `uiMultiplier()`, and `balanceOf()` is not scaled by it */
+export function hasUiMultiplier({ issuer }: DividendToken): boolean {
+  return issuer === 'Robinhood Assets (Jersey) Limited'
+}
+
+/** Its shares per token is what it redeems for in ERC-4626 `convertToAssets`: a wrapped xStocks or an ST0x token */
+export function isVaultToken(token: DividendToken): boolean {
+  return isWrappedXStock(token) || token.issuer === 'ST0x'
 }
 
 /** An ERC-4626 wrapper of a rebasing xStocks token: its balance stays fixed and its price accrues the rebases */
