@@ -189,13 +189,18 @@ function NetworkSelect({ asset, chainId }: { asset: RwaAsset; chainId: number })
 
 function SwitchNetworkPrompt({ chainId }: { chainId: number }): ReactNode {
   const isWalletOffTradeNetwork = useIsWalletOffTradeNetwork(chainId)
-  const { mutate: switchChain } = useSwitchChain()
+  const { mutate: switchChain, isPending } = useSwitchChain()
 
   if (!isWalletOffTradeNetwork) return null
 
   return (
     <div className={styles.connectPrompt}>
-      <button type="button" className={styles.switchNetwork} onClick={() => switchChain({ chainId })}>
+      <button
+        type="button"
+        className={styles.switchNetwork}
+        disabled={isPending}
+        onClick={() => switchChain({ chainId })}
+      >
         Switch to {getChainLabel(chainId)}
       </button>
       <span> to trade these tokens. Your wallet is on another network.</span>

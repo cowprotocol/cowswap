@@ -156,6 +156,11 @@
   opacity: 0.9;
 }
 
+.switchNetwork:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
 .tokens {
   display: flex;
   flex-direction: column;
