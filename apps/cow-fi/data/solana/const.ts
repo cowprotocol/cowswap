@@ -156,7 +156,7 @@ export const DEVELOPERS = {
     {
       title: 'Advanced capabilities',
       description: 'Build anything you can imagine with programmatic orders, atomic bundles, and CoW Hooks.',
-      image: { src: '/images/solana/keyboard.webp', alt: 'A cow-print macro keypad with a heart key and a pink cable' },
+      image: { src: '/images/solana/keypad.webp', alt: 'A cow-print macro keypad with a heart key and a pink cable' },
     },
     {
       title: 'Trusted contracts',

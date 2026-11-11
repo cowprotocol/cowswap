@@ -42,6 +42,15 @@ const SIZE_BODY = fluid(16, 24)
 const SIZE_BUTTON = fluid(18, 27)
 
 const SCRIPT_SIZES = { hero: SIZE_SCRIPT_HERO, section: SIZE_SCRIPT, small: SIZE_SCRIPT_SMALL }
+
+// Figma's outside stroke in the text colour equals a centred CSS stroke twice as wide, kept in em so it scales with the type
+const outsideStrokeEm = (strokePx: number, fontPx: number): string => `${((strokePx * 2) / fontPx).toFixed(4)}em`
+
+const SCRIPT_STROKES = {
+  hero: outsideStrokeEm(1, 120),
+  section: outsideStrokeEm(0.8, 110),
+  small: outsideStrokeEm(0.6, 80),
+}
 const CAPS_SIZES = { hero: SIZE_CAPS_HERO, section: SIZE_CAPS, small: SIZE_CAPS_SMALL }
 
 export type HeadlineSize = keyof typeof SCRIPT_SIZES
@@ -169,6 +178,7 @@ export const ScriptLine = styled.span<{ $size?: HeadlineSize }>`
   font-family: ${FONT_SCRIPT};
   font-size: ${({ $size }) => SCRIPT_SIZES[$size ?? 'section']};
   font-weight: ${Font.weight.regular};
+  -webkit-text-stroke: ${({ $size }) => SCRIPT_STROKES[$size ?? 'section']} currentColor;
   line-height: 0.84;
   text-wrap: balance;
 `
