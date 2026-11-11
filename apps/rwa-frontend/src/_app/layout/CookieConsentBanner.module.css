@@ -10,6 +10,12 @@
 }
 
 .card {
+  --cookie-banner-background: #052b65;
+  --cookie-banner-text: #ccf8ff;
+  --cookie-banner-button: #65d9ff;
+  --cookie-banner-button-text: #052b65;
+  --cookie-banner-button-hover: #99ecff;
+
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -19,11 +25,19 @@
   padding: 24px;
   border: 0;
   border-radius: 16px;
-  background: #fff;
+  background: var(--cookie-banner-background);
   box-shadow: var(--shadow-widget);
-  color: #052b65;
+  color: var(--cookie-banner-text);
   font-family: var(--font-family);
   pointer-events: auto;
+}
+
+:global(:root[data-theme='dark']) .card {
+  --cookie-banner-background: #65d9ff;
+  --cookie-banner-text: #052b65;
+  --cookie-banner-button: #052b65;
+  --cookie-banner-button-text: #65d9ff;
+  --cookie-banner-button-hover: #0d3673;
 }
 
 .card:focus {
@@ -34,7 +48,7 @@
 .choice:focus-visible,
 .close:focus-visible,
 .message > a:focus-visible {
-  outline: 2px solid #052b65;
+  outline: 2px solid var(--cookie-banner-text);
   outline-offset: 3px;
 }
 
@@ -47,7 +61,7 @@
   padding: 0;
   border: none;
   background: none;
-  color: #052b65;
+  color: var(--cookie-banner-text);
   font: inherit;
   font-size: 13px;
   font-weight: 500;
@@ -90,7 +104,7 @@
 
 .message {
   margin: 0;
-  color: #052b65;
+  color: var(--cookie-banner-text);
   font-size: 14px;
   line-height: 20px;
 }
@@ -101,7 +115,7 @@
 .message > a:hover,
 .message > a:focus,
 .message > a:active {
-  color: #052b65;
+  color: var(--cookie-banner-text);
   text-decoration: underline;
   text-underline-offset: 3px;
   white-space: nowrap;
@@ -118,8 +132,8 @@
   padding: 12px 16px;
   border: none;
   border-radius: 12px;
-  background: #052b65;
-  color: #fff;
+  background: var(--cookie-banner-button);
+  color: var(--cookie-banner-button-text);
   font: inherit;
   font-size: 14px;
   font-weight: 600;
@@ -130,7 +144,7 @@
 .choice:hover,
 .choice:focus,
 .choice:active {
-  background: #0d3673;
+  background: var(--cookie-banner-button-hover);
 }
 
 @media (max-width: 960px) {

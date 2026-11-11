@@ -29,7 +29,7 @@ export function Providers({ children }: { children: React.ReactNode }): React.Re
                 <ThemeProvider>
                   <GlobalStyles />
                   <CowAnalyticsProvider cowAnalytics={cowAnalytics}>{children}</CowAnalyticsProvider>
-                  <CookieConsentBannerContainer />
+                  <CookieConsentBannerContainer variant="paleBlue" />
                 </ThemeProvider>
               </WithLDProvider>
             </ApolloProvider>

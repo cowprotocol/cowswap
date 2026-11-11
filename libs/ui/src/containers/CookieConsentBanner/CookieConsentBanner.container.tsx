@@ -10,7 +10,7 @@ export interface CookieConsentBannerContainerProps {
   copy?: CookieConsentCopy
   title?: string
   illustration?: ReactNode
-  variant?: 'white' | 'cyan'
+  variant?: 'white' | 'paleBlue' | 'trading'
   /** Pixels. Height of a bar the app fixes to the bottom of the screen up to `Media.upToMedium`. Default 0 */
   bottomBarHeight?: number
 }
@@ -28,7 +28,7 @@ export function CookieConsentBannerContainer({
 
   return (
     <styledEl.Wrapper $bottomBarHeight={bottomBarHeight}>
-      <styledEl.Card {...banner.dialogProps} aria-label={copy.ariaLabel} $isCyan={variant === 'cyan'}>
+      <styledEl.Card {...banner.dialogProps} aria-label={copy.ariaLabel} $variant={variant}>
         {banner.isReopened && (
           <styledEl.Header>
             <styledEl.CloseButton type="button" onClick={banner.close}>

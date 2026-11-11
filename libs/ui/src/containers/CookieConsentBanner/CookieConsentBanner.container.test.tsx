@@ -104,13 +104,13 @@ describe('CookieConsentBannerContainer', () => {
     expect(screen.getByRole('dialog').textContent).toContain(COOKIE_CONSENT_COPY.message)
   })
 
-  it('supports the cyan presentation while preserving the consent controls', () => {
+  it('supports the trading presentation while preserving the consent controls', () => {
     const banner = mockBanner({ isReopened: true })
     render(
       <CookieConsentBannerContainer
         title="A Coincidence of Wants"
         illustration={<img src="cow-cookie.svg" alt="" />}
-        variant="cyan"
+        variant="trading"
       />,
     )
 

@@ -18,5 +18,7 @@ export function CookieConsentBanner(): ReactNode {
     closeLabel: t`Close`,
   }
 
-  return <CookieConsentBannerContainer copy={copy} variant="cyan" bottomBarHeight={MOBILE_HEADER_CONTROLS_HEIGHT_PX} />
+  return (
+    <CookieConsentBannerContainer copy={copy} variant="trading" bottomBarHeight={MOBILE_HEADER_CONTROLS_HEIGHT_PX} />
+  )
 }

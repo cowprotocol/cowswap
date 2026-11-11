@@ -1,4 +1,4 @@
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 
 import { Color } from '../../colors'
 import { Media, OVERLAY_Z_INDEX } from '../../consts'
@@ -36,7 +36,7 @@ export const Header = styled.div`
 
 export const CloseButton = styled(LinkStyledButton)`
   ${font('FONT_SMALL_PLUS', 'medium')}
-  color: ${Color.cowfi_darkBlue};
+  color: var(--cookie-banner-text);
   text-decoration: underline;
 `
 
@@ -83,7 +83,7 @@ export const Illustration = styled.div`
 export const Message = styled.p`
   margin: 0;
   ${font('FONT_NORMAL')}
-  color: ${Color.cowfi_darkBlue};
+  color: var(--cookie-banner-text);
 
   > a,
   > a:link,
@@ -91,7 +91,7 @@ export const Message = styled.p`
   > a:hover,
   > a:focus,
   > a:active {
-    color: ${Color.cowfi_darkBlue};
+    color: var(--cookie-banner-text);
     text-decoration: underline;
     text-underline-offset: 3px;
     white-space: nowrap;
@@ -112,17 +112,41 @@ export const ChoiceButton = styled(ButtonPrimary)`
   min-height: 48px;
   padding: 12px 16px;
   border-radius: 12px;
-  background: ${Color.cowfi_darkBlue};
+  background: var(--cookie-banner-button);
   ${font('FONT_NORMAL', 'semibold')}
 
   &:hover,
   &:focus,
   &:active {
-    background: ${Color.cowfi_darkBlue2};
+    background: var(--cookie-banner-button-hover);
   }
 `
 
-export const Card = styled.section<{ $isCyan: boolean }>`
+export const Card = styled.section<{ $variant: 'white' | 'paleBlue' | 'trading' }>`
+  ${({ $variant, theme }) => {
+    const darkCard = $variant === 'trading' && !theme.darkMode
+    const background =
+      $variant === 'trading'
+        ? theme.darkMode
+          ? Color.blue300Primary
+          : Color.cowfi_darkBlue
+        : $variant === 'paleBlue'
+          ? Color.blue100Primary
+          : Color.white
+
+    return css`
+      --cookie-banner-background: ${background};
+      --cookie-banner-text: ${darkCard ? Color.blue100Primary : Color.cowfi_darkBlue};
+      --cookie-banner-button: ${darkCard ? Color.blue300Primary : Color.cowfi_darkBlue};
+      --cookie-banner-button-text: ${darkCard
+        ? Color.cowfi_darkBlue
+        : $variant === 'trading'
+          ? Color.blue300Primary
+          : Color.white};
+      --cookie-banner-button-hover: ${darkCard ? Color.blue200Primary : Color.cowfi_darkBlue2};
+    `
+  }}
+
   display: flex;
   flex-flow: column nowrap;
   gap: 16px;
@@ -131,9 +155,9 @@ export const Card = styled.section<{ $isCyan: boolean }>`
   padding: 24px;
   border: 0;
   border-radius: 16px;
-  background: ${({ $isCyan }) => ($isCyan ? Color.blue300Primary : Color.white)};
+  background: var(--cookie-banner-background);
   box-shadow: var(${UI.BOX_SHADOW});
-  color: ${Color.cowfi_darkBlue};
+  color: var(--cookie-banner-text);
   font-family: var(${UI.FONT_FAMILY_PRIMARY});
   pointer-events: auto;
 
@@ -143,7 +167,7 @@ export const Card = styled.section<{ $isCyan: boolean }>`
 
   &:focus-visible,
   ${ChoiceButton}:focus-visible, ${CloseButton}:focus-visible, ${Message} > a:focus-visible {
-    outline: 2px solid ${Color.cowfi_darkBlue};
+    outline: 2px solid var(--cookie-banner-text);
     outline-offset: 3px;
   }
 
@@ -151,7 +175,7 @@ export const Card = styled.section<{ $isCyan: boolean }>`
   ${ChoiceButton}:hover,
   ${ChoiceButton}:focus,
   ${ChoiceButton}:active {
-    color: ${({ $isCyan }) => ($isCyan ? Color.blue300Primary : Color.white)};
+    color: var(--cookie-banner-button-text);
   }
 
   ${Media.upToExtraSmall()} {
