@@ -115,6 +115,14 @@ export default function GraffitiClaimPage(): ReactNode {
       setAmount(res.amount)
       setScreen('success')
     } catch (err: unknown) {
+      // The transfer can land after the request gives up, and a code is single-use: if it is
+      // spent, this claim is what spent it, so report the tokens rather than a failure.
+      if (await isCodeSpent(code)) {
+        setTxSignature(null)
+        setScreen('success')
+        return
+      }
+
       setError(err instanceof Error ? err.message : String(err))
       setScreen('error')
     }
@@ -158,4 +166,13 @@ export default function GraffitiClaimPage(): ReactNode {
       </ClaimLayout>
     </styledEl.Page>
   )
+}
+
+/** A spent code means the treasury transfer landed, whatever the request that started it reported. */
+async function isCodeSpent(code: string): Promise<boolean> {
+  try {
+    return !(await getClaimInfo(code)).valid
+  } catch {
+    return false
+  }
 }

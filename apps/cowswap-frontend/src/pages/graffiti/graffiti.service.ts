@@ -10,6 +10,8 @@ export const API_BASE = GRAFFITI_API_BASE
 
 /** Abort a request that has not responded in this long. */
 const REQUEST_TIMEOUT_MS = 20_000
+/** A claim waits on the treasury's transfer being confirmed on mainnet, which 20s does not cover. */
+const CLAIM_TIMEOUT_MS = 90_000
 
 export interface CanvasInfo {
   width: number
@@ -134,10 +136,11 @@ export function getInfo(): Promise<CanvasInfo> {
 }
 
 export function postClaim(payload: { code: string; walletPubkey: string }): Promise<ClaimResponse> {
-  return jsonFetch<ClaimResponse>(`${API_BASE}/claim`, {
-    method: 'POST',
-    body: JSON.stringify(payload),
-  })
+  return jsonFetch<ClaimResponse>(
+    `${API_BASE}/claim`,
+    { method: 'POST', body: JSON.stringify(payload) },
+    CLAIM_TIMEOUT_MS,
+  )
 }
 
 /** Never rejects: reporting must not break the paint flow. */
@@ -180,9 +183,26 @@ export function wsUrl(): string {
   return `${proto}://${window.location.host}${API_BASE}/ws`
 }
 
-async function jsonFetch<T>(url: string, init?: RequestInit): Promise<T> {
+async function errorFromResponse(res: Response): Promise<ApiError> {
+  let reason = `HTTP ${res.status}`
+  let retryable = res.status >= 500 || res.status === 409 || res.status === 429
+
+  try {
+    const body = (await res.json()) as { reason?: string; error?: string; retryable?: boolean }
+
+    reason = body.reason || body.error || reason
+
+    if (typeof body.retryable === 'boolean') retryable = body.retryable
+  } catch {
+    /* keep HTTP status as the reason */
+  }
+
+  return new ApiError(reason, res.status, retryable)
+}
+
+async function jsonFetch<T>(url: string, init?: RequestInit, timeoutMs = REQUEST_TIMEOUT_MS): Promise<T> {
   const controller = new AbortController()
-  const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS)
+  const timer = setTimeout(() => controller.abort(), timeoutMs)
 
   try {
     const res = await fetch(url, {
@@ -191,24 +211,14 @@ async function jsonFetch<T>(url: string, init?: RequestInit): Promise<T> {
       ...init,
     })
 
-    if (!res.ok) {
-      let reason = `HTTP ${res.status}`
-      let retryable = res.status >= 500 || res.status === 409 || res.status === 429
-
-      try {
-        const body = (await res.json()) as { reason?: string; error?: string; retryable?: boolean }
-
-        reason = body.reason || body.error || reason
-
-        if (typeof body.retryable === 'boolean') retryable = body.retryable
-      } catch {
-        /* keep HTTP status as the reason */
-      }
-
-      throw new ApiError(reason, res.status, retryable)
-    }
+    if (!res.ok) throw await errorFromResponse(res)
 
     return (await res.json()) as T
+  } catch (err: unknown) {
+    // An abort surfaces as "signal is aborted without reason", which says nothing about what
+    // happened to the request. 408 so callers treat it as retryable.
+    if (controller.signal.aborted) throw new ApiError(`timed out after ${timeoutMs / 1000}s`, 408, true)
+    throw err
   } finally {
     clearTimeout(timer)
   }
