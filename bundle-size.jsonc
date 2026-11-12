@@ -7,7 +7,7 @@
   "apps": {
     "@cowprotocol/cow-fi": 5.1,
     "@cowprotocol/cowswap": 11.8,
-    "@cowprotocol/explorer": 11.8,
+    "@cowprotocol/explorer": 11.9,
     "@cowprotocol/rwa-frontend": 5.6,
     "@cowprotocol/sdk-tools": 10.1,
     "@cowprotocol/storybook": 3.6,
