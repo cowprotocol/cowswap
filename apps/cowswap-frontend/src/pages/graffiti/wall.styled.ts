@@ -562,6 +562,7 @@ export const OverlayLayer = styled.div`
 `
 
 export const StartPanel = styled(Panel)`
+  position: relative;
   pointer-events: auto;
   display: flex;
   flex-direction: column;
@@ -589,6 +590,23 @@ export const StartPanel = styled(Panel)`
     /* Opaque: a full-screen sheet otherwise ghosts the canvas controls underneath it. */
     background: ${wallColors.surfaceDeep};
   `)}
+`
+
+/** A reading, not an action: the panel's corner, away from its buttons. */
+export const PanelBadge = styled.div`
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  z-index: 1;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(10, 10, 16, 0.72);
+  color: ${wallColors.neon};
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  pointer-events: none;
 `
 
 export const PlotOverlayRoot = styled.div`

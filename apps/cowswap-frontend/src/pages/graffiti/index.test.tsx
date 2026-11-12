@@ -280,7 +280,7 @@ describe('drawing session', () => {
 
     await renderLoadedWall(ACCOUNT)
 
-    expect(screen.getByText('1234 GRASS in your wallet')).toBeTruthy()
+    expect(screen.getByText('GRASS balance: 1234')).toBeTruthy()
   })
 })
 

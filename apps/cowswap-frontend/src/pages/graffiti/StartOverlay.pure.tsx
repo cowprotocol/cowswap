@@ -40,7 +40,6 @@ export interface StartOverlayProps {
 
 interface PaintedViewProps {
   paintedCount: number
-  balance: number | null
   onShowResult: () => void
   onDismiss: () => void
 }
@@ -121,12 +120,6 @@ const TwitterLink = styled(styledEl.PanelLink)`
   font-weight: 700;
 `
 
-/** The balance chip that follows the frame, sized for a panel instead. */
-const WalletBalance = styled(styledEl.BalanceChip)`
-  font-size: 13px;
-  padding: 6px 14px;
-`
-
 /** The landing panel: start drawing, export the wall, or view it fullscreen. */
 export function StartOverlay({
   phase,
@@ -159,12 +152,8 @@ export function StartOverlay({
     return (
       <styledEl.OverlayLayer>
         <styledEl.StartPanel>
-          <PaintedView
-            paintedCount={paintedCount}
-            balance={balance}
-            onShowResult={onShowResult}
-            onDismiss={onDismiss}
-          />
+          <BalanceBadge balance={balance} />
+          <PaintedView paintedCount={paintedCount} onShowResult={onShowResult} onDismiss={onDismiss} />
         </styledEl.StartPanel>
       </styledEl.OverlayLayer>
     )
@@ -173,6 +162,7 @@ export function StartOverlay({
   return (
     <styledEl.OverlayLayer>
       <styledEl.StartPanel>
+        {connected && <BalanceBadge balance={balance} />}
         <HeroPanel fillHeight>
           <styledEl.WallHeading>GRAFFITI WALL</styledEl.WallHeading>
           <styledEl.PanelText>
@@ -181,14 +171,6 @@ export function StartOverlay({
               you like, and burn 1 {TOKEN_SYMBOL} per pixel to put it on the wall for good.
             </Trans>
           </styledEl.PanelText>
-
-          {connected && balance !== null && balance > 0 && (
-            <WalletBalance>
-              <Trans>
-                {balance} {TOKEN_SYMBOL} in your wallet
-              </Trans>
-            </WalletBalance>
-          )}
 
           <StartAction
             connected={connected}
@@ -217,6 +199,19 @@ export function StartOverlay({
         </HeroPanel>
       </styledEl.StartPanel>
     </styledEl.OverlayLayer>
+  )
+}
+
+/** What the wallet holds, read out of the way of the panel's actions. */
+function BalanceBadge({ balance }: { balance: number | null }): ReactNode {
+  if (balance === null) return null
+
+  return (
+    <styledEl.PanelBadge>
+      <Trans>
+        {TOKEN_SYMBOL} balance: {balance}
+      </Trans>
+    </styledEl.PanelBadge>
   )
 }
 
@@ -289,7 +284,7 @@ function ClaimView({ onBack }: { onBack: () => void }): ReactNode {
 }
 
 /** Where a commit lands: what went up, what is left, and a way to go look at it. */
-function PaintedView({ paintedCount, balance, onShowResult, onDismiss }: PaintedViewProps): ReactNode {
+function PaintedView({ paintedCount, onShowResult, onDismiss }: PaintedViewProps): ReactNode {
   return (
     <HeroPanel fillHeight>
       <styledEl.WallHeading>
@@ -307,14 +302,6 @@ function PaintedView({ paintedCount, balance, onShowResult, onDismiss }: Painted
           them.
         </Trans>
       </styledEl.PanelText>
-
-      {balance !== null && (
-        <WalletBalance>
-          <Trans>
-            {balance} {TOKEN_SYMBOL} left in your wallet
-          </Trans>
-        </WalletBalance>
-      )}
 
       <styledEl.PrimaryButton onClick={onShowResult}>
         <Trans>⛶ SEE YOUR MASTERPIECE</Trans>

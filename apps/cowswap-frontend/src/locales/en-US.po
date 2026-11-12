@@ -3185,6 +3185,10 @@ msgstr "TWAP order split in <0>{partsCount, plural, one {# equal part} few {# eq
 msgid "Swap at most {inputAmountValue} {inputSymbol} for {outputAmountValue} {outputSymbol} to {toAddress}"
 msgstr "Swap at most {inputAmountValue} {inputSymbol} for {outputAmountValue} {outputSymbol} to {toAddress}"
 
+#: apps/cowswap-frontend/src/pages/graffiti/StartOverlay.pure.tsx
+msgid "{TOKEN_SYMBOL} balance: {balance}"
+msgstr "{TOKEN_SYMBOL} balance: {balance}"
+
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
 #~ msgid "You are solely responsible for complying with your local laws."
 #~ msgstr "You are solely responsible for complying with your local laws."
@@ -7372,8 +7376,8 @@ msgid "Price impact <0>unknown</0> - trade carefully"
 msgstr "Price impact <0>unknown</0> - trade carefully"
 
 #: apps/cowswap-frontend/src/pages/graffiti/StartOverlay.pure.tsx
-msgid "{balance} {TOKEN_SYMBOL} left in your wallet"
-msgstr "{balance} {TOKEN_SYMBOL} left in your wallet"
+#~ msgid "{balance} {TOKEN_SYMBOL} left in your wallet"
+#~ msgstr "{balance} {TOKEN_SYMBOL} left in your wallet"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderOnboard.tsx
 msgid "Earn while you trade"
@@ -9097,8 +9101,8 @@ msgid "Simulation successful"
 msgstr "Simulation successful"
 
 #: apps/cowswap-frontend/src/pages/graffiti/StartOverlay.pure.tsx
-msgid "{balance} {TOKEN_SYMBOL} in your wallet"
-msgstr "{balance} {TOKEN_SYMBOL} in your wallet"
+#~ msgid "{balance} {TOKEN_SYMBOL} in your wallet"
+#~ msgstr "{balance} {TOKEN_SYMBOL} in your wallet"
 
 #: apps/cowswap-frontend/src/modules/solanaAlpha/pure/SolanaAlphaRiskModal/index.tsx
 #~ msgid "Maximum trade size: ${maxTradeSize} per swap."
