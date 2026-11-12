@@ -641,6 +641,14 @@ export const ShowTools = styled(GlowButton)`
   padding: 8px 16px;
 `
 
+export const ExitFullscreen = styled(GlowButton)`
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 8;
+  padding: 8px 16px;
+`
+
 export const LoadError = styled.div`
   position: absolute;
   inset: 0;

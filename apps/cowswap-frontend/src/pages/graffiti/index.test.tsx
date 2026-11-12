@@ -324,6 +324,50 @@ describe('tools', () => {
   })
 })
 
+describe('fullscreen', () => {
+  function stubFullscreen(): void {
+    let element: Element | null = null
+
+    Object.defineProperty(document, 'fullscreenElement', { configurable: true, get: () => element })
+    Object.defineProperty(Element.prototype, 'requestFullscreen', {
+      configurable: true,
+      value: function requestFullscreen(this: Element): Promise<void> {
+        element = this
+        document.dispatchEvent(new Event('fullscreenchange'))
+
+        return Promise.resolve()
+      },
+    })
+    Object.defineProperty(document, 'exitFullscreen', {
+      configurable: true,
+      value: (): Promise<void> => {
+        element = null
+        document.dispatchEvent(new Event('fullscreenchange'))
+
+        return Promise.resolve()
+      },
+    })
+  }
+
+  it('offers a way back to the landing panel, which a touch screen has no ESC for', async () => {
+    stubFullscreen()
+    await renderLoadedWall(ACCOUNT)
+
+    fireEvent.click(screen.getByText('⛶ view wall'))
+    expect(screen.queryByText(/START DRAWING/)).toBeNull()
+
+    fireEvent.click(screen.getByText('← menu'))
+    expect(screen.getByText(/START DRAWING/)).toBeTruthy()
+  })
+
+  it('keeps the exit out of the clean wall view until it is fullscreen', async () => {
+    stubFullscreen()
+    await renderLoadedWall(ACCOUNT)
+
+    expect(screen.queryByText('← menu')).toBeNull()
+  })
+})
+
 describe('canvas input', () => {
   it('has a canvas that reacts to pointer events without throwing', async () => {
     await renderLoadedWall(ACCOUNT)

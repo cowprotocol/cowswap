@@ -31,6 +31,10 @@ const TOOLS: ToolOption[] = [
   { id: 'erase', label: <Trans>🧽 erase</Trans>, accent: styledEl.wallColors.danger, tint: true },
 ]
 
+export interface ExitFullscreenButtonProps {
+  onClick: () => void
+}
+
 export interface LoadErrorOverlayProps {
   error: string
   apiBase: string
@@ -72,6 +76,15 @@ export function CanvasControls({
         </styledEl.ToolButton>
       ))}
     </styledEl.ControlBar>
+  )
+}
+
+/** The only way out of fullscreen besides ESC, which a touch screen has not got. */
+export function ExitFullscreenButton({ onClick }: ExitFullscreenButtonProps): ReactNode {
+  return (
+    <styledEl.ExitFullscreen onClick={onClick}>
+      <Trans>← menu</Trans>
+    </styledEl.ExitFullscreen>
   )
 }
 

@@ -5326,6 +5326,10 @@ msgstr "Error"
 msgid "Something went wrong and your order couldn't be executed with this batch. But don't worry! CoW Swap is already holding another competition for your order."
 msgstr "Something went wrong and your order couldn't be executed with this batch. But don't worry! CoW Swap is already holding another competition for your order."
 
+#: apps/cowswap-frontend/src/pages/graffiti/CanvasControls.pure.tsx
+msgid "← menu"
+msgstr "← menu"
+
 #: apps/cowswap-frontend/src/modules/erc20Approve/hooks/usePendingApprovalModal.tsx
 msgid "Approving token"
 msgstr "Approving token"
