@@ -74,6 +74,7 @@ export const COW_FOOTER_NAV_GROUPS: CowLinkGroup[] = [
       { label: 'CoW Explorer', href: 'https://explorer.cow.fi', utmContent: 'footer-products-cow-explorer' },
       { label: 'CoW Widget', href: 'https://cow.fi/widget', utmContent: 'footer-products-cow-widget' },
       { label: 'CoW RWA', href: COW_RWA_URL, utmContent: 'footer-products-cow-rwa' },
+      { label: 'Solana', href: 'https://cow.fi/solana', utmContent: 'footer-products-solana' },
     ],
   },
   {

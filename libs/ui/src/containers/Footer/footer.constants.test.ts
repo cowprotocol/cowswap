@@ -21,7 +21,7 @@ describe('footer constants', () => {
   it('lists CoW RWA under Products as an external link when RWA is enabled', () => {
     const products = getGlobalFooterNavItems(true).find(({ label }) => label === 'Products')
 
-    expect(products?.children?.at(-1)).toEqual({
+    expect(products?.children?.find(({ label }) => label === 'CoW RWA')).toEqual({
       label: 'CoW RWA',
       href: 'https://swap.cow.fi/rwa',
       external: true,
