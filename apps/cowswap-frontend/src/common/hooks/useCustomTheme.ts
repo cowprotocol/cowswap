@@ -16,6 +16,11 @@ import { useIsGraffitiWallEnabled } from './featureFlags/useIsGraffitiWallEnable
 
 import { useDarkModeManager } from '../../legacy/state/user/hooks'
 
+/** The wall page and the claim screen it sends people to are one experience, and share its theme. */
+export function isWallPagePath(pathname: string): boolean {
+  return pathname.startsWith(Routes.GRAFFITI)
+}
+
 export function resolveCowSwapTheme(
   darkMode: boolean,
   featureFlags?: FeatureFlags,
@@ -45,7 +50,7 @@ export function useCustomTheme(): CowSwapTheme | undefined {
   const { pathname } = useLocation()
   const isWidget = isInjectedWidget()
   const onSolanaChain = isSolanaChain(chainId)
-  const onWallPage = pathname.startsWith(Routes.GRAFFITI)
+  const onWallPage = isWallPagePath(pathname)
   const graffitiWallEnabled = useIsGraffitiWallEnabled()
 
   const resolvedTheme = useMemo(
