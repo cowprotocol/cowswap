@@ -21,7 +21,7 @@ export function ReceiverPdaConfirmationRow({
       <ConfirmationLabel htmlFor={CHECKBOX_ID} $confirmed={confirmed}>
         <Trans>
           Recipient is a program address, not a wallet. Confirm the program that owns it can transfer the tokens it
-          receives — otherwise they cannot be recovered.
+          receives - otherwise they cannot be recovered.
         </Trans>
       </ConfirmationLabel>
     </ConfirmationRow>
