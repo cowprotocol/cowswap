@@ -1,5 +1,33 @@
 # Changelog
 
+## [4.15.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.14.0...widget-lib-v4.15.0) (2026-11-11)
+
+### Minor Changes
+
+- feat: take profit (#8460)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.18.1
+  - @cowprotocol/iframe-transport@2.3.15
+
+## [4.14.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.13.0...widget-lib-v4.14.0) (2026-11-10)
+
+### Minor Changes
+
+- feat(rwa): filter widget token selectors to the asset tokens (#8491)
+
+- feat(solana): pass appData to quote (#8509)
+
+### Patch Changes
+
+- fix(solana): use SDK for quote costs breakdown (#8522)
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.18.0
+  - @cowprotocol/iframe-transport@2.3.14
+
 ## [4.13.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.12.0...widget-lib-v4.13.0) (2026-11-05)
 
 ### Minor Changes

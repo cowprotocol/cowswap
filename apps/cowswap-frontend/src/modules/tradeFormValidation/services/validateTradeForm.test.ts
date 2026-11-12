@@ -53,6 +53,7 @@ describe('validateTradeForm - xStock logic', () => {
     isProxySetupValid: true,
     customTokenError: undefined,
     isRestrictedForCountry: false,
+    isSolanaPublicLaunched: false,
     isBalancesLoading: false,
     isBundlingSupported: true,
     isInputCurrencyXstock: false,
@@ -245,6 +246,7 @@ describe('validateTradeForm - Solana Alpha trade limit', () => {
     isProxySetupValid: true,
     customTokenError: undefined,
     isRestrictedForCountry: false,
+    isSolanaPublicLaunched: false,
     isBalancesLoading: false,
     isBundlingSupported: true,
     isInputCurrencyXstock: false,
@@ -294,6 +296,34 @@ describe('validateTradeForm - Solana Alpha trade limit', () => {
 
     const result = validateTradeForm(context)
     expect(result || []).not.toContain(TradeFormValidation.SolanaAlphaMaxTradeSize)
+  })
+
+  test('drops the trade limit once Solana is publicly launched', () => {
+    const context = {
+      ...baseContext,
+      isSolanaPublicLaunched: true,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        inputCurrencyFiatAmount: mockCurrencyAmount('25000'),
+        outputCurrencyFiatAmount: mockCurrencyAmount('24990'),
+      },
+    } as unknown as TradeFormValidationContext
+
+    expect(validateTradeForm(context) || []).not.toContain(TradeFormValidation.SolanaAlphaMaxTradeSize)
+  })
+
+  test('allows a trade with no USD estimate once Solana is publicly launched', () => {
+    const context = {
+      ...baseContext,
+      isSolanaPublicLaunched: true,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        inputCurrencyFiatAmount: null,
+        outputCurrencyFiatAmount: null,
+      },
+    } as unknown as TradeFormValidationContext
+
+    expect(validateTradeForm(context) || []).not.toContain(TradeFormValidation.SolanaAlphaUnknownUsdValue)
   })
 
   test('does not apply the limit on EVM chains', () => {
@@ -600,6 +630,40 @@ describe('validateTradeForm - balance vs slippage', () => {
     const result = validateTradeForm(context) || []
     expect(result).toContain(TradeFormValidation.WrapUnwrapFlow)
     expect(result.indexOf(TradeFormValidation.SolanaInsufficientNativeBalance)).toBeLessThan(
+      result.indexOf(TradeFormValidation.WrapUnwrapFlow),
+    )
+  })
+
+  // Wrap/unwrap is never quoted, but the previous pair's quote stays in the store (quotes are keyed by the
+  // sell token), so `swapMaximumSellAmount` can still carry the sell amount of that stale quote.
+  // balance (120) covers the wrap amount (100) but not the stale swap quote's maximum sell amount (150)
+  test('does not show BalanceInsufficient in wrap/unwrap mode when only a stale swapMaximumSellAmount exceeds the balance', () => {
+    const context = {
+      ...baseContext,
+      isWrapUnwrap: true,
+      swapMaximumSellAmount: mockCurrencyAmount('150'),
+    } as unknown as TradeFormValidationContext
+
+    const result = validateTradeForm(context) || []
+    expect(result).toContain(TradeFormValidation.WrapUnwrapFlow)
+    expect(result).not.toContain(TradeFormValidation.BalanceInsufficient)
+  })
+
+  // balance (120) covers the stale swap quote's maximum sell amount (50) but not the wrap amount (130)
+  test('shows BalanceInsufficient in wrap/unwrap mode when the input amount exceeds the balance, regardless of a stale swapMaximumSellAmount', () => {
+    const context = {
+      ...baseContext,
+      isWrapUnwrap: true,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        inputCurrencyAmount: mockCurrencyAmount('130'),
+      },
+      swapMaximumSellAmount: mockCurrencyAmount('50'),
+    } as unknown as TradeFormValidationContext
+
+    const result = validateTradeForm(context) || []
+    expect(result).toContain(TradeFormValidation.BalanceInsufficient)
+    expect(result.indexOf(TradeFormValidation.BalanceInsufficient)).toBeLessThan(
       result.indexOf(TradeFormValidation.WrapUnwrapFlow),
     )
   })
@@ -947,5 +1011,15 @@ describe('validateTradeForm - native sell in limit orders', () => {
     } as unknown as TradeFormValidationContext)
 
     expect(result || []).not.toContain(TradeFormValidation.SellNativeToken)
+  })
+
+  test('reports the geoblock before a custom token error', () => {
+    const result = validateTradeForm({
+      ...baseContext,
+      isRestrictedForCountry: true,
+      customTokenError: 'AAPLx not tradable until Sunday 23:59 UTC',
+    } as unknown as TradeFormValidationContext)
+
+    expect(result?.[0]).toBe(TradeFormValidation.RestrictedForCountry)
   })
 })

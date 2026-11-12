@@ -48,8 +48,8 @@ export function useConsentAwareToggleList(): (list: ListState, enabled: boolean)
         return
       }
 
-      // trying to enable - check if consent is required
-      // only require consent when country is unknown (blocked countries are handled by hiding the list)
+      // A known country is decided by the trade-time check in `useRwaTokenStatus`, so consent is only
+      // worth asking for while the country is unknown.
       if (!geoStatus.country && restrictedLists.isLoaded) {
         const sourceKey = getSourceAsKey(list.source)
         const consentHash = restrictedLists.consentHashPerList[sourceKey]
