@@ -69,6 +69,13 @@ const WALL_SURFACE_LAYER =
 const WALL_VEIL_ALPHA = 0.28
 const WALL_VEIL_DARKER_ALPHA = 0.4
 
+/**
+ * The footer under this theme. It sits past the wall's bottom edge, so what reads through is the
+ * page backdrop rather than paint — enough to stop it being a hard black slab against the rest of
+ * the chrome. Its own text is mid-grey, which still clears 4.5:1 over the backdrop at this alpha.
+ */
+export const WALL_FOOTER_BACKGROUND = 'rgb(0 0 0 / 60%)'
+
 export const AppWrapper = styled.div<Partial<CSS.Properties> & { $fullBleed?: boolean }>`
   display: flex;
   flex-flow: column;
@@ -103,13 +110,26 @@ export const SceneContainer = styled.div`
   transform: translateY(16px);
 `
 
-export const FooterSlot = styled.div`
+export const FooterSlot = styled.div<{ $overWall?: boolean }>`
   position: relative;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: stretch;
   gap: 0;
+
+  /*
+   * Overridden from here rather than through a prop on the shared Footer: the colour is this
+   * theme's business, not the component's, and its own background token doubles as the social
+   * icons' glyph colour, which has to stay opaque.
+   */
+  ${({ $overWall }) =>
+    $overWall &&
+    css`
+      > footer {
+        background: ${WALL_FOOTER_BACKGROUND};
+      }
+    `}
 `
 
 export const BodyWrapper = styled.div<{

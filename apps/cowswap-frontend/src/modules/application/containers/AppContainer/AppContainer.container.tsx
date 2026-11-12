@@ -35,7 +35,7 @@ import { SnowfallOverlay } from './SnowfallOverlay.pure'
 import { PageBackgroundContext, PageBackgroundVariant, PageLayoutVariant } from '../../contexts/PageBackgroundContext'
 import { ADDITIONAL_FOOTER_CONTENT, PRODUCT_VARIANT } from '../App/menuConsts'
 import * as styledEl from '../App/styled'
-import { isChristmasTheme as isChristmasThemeHelper } from '../App/styled'
+import { isChristmasTheme as isChristmasThemeHelper, isSolanaTheme } from '../App/styled'
 import { AppMenu } from '../AppMenu'
 import { NetworkAndAccountControls } from '../NetworkAndAccountControls/NetworkAndAccountControls.container'
 
@@ -171,6 +171,8 @@ function FooterSection({
   pageScene,
   isRwaEnabled,
 }: FooterSectionProps): ReactNode {
+  const customTheme = useCustomTheme()
+
   if (!show) {
     return null
   }
@@ -186,7 +188,7 @@ function FooterSection({
   ) : null
 
   return (
-    <styledEl.FooterSlot>
+    <styledEl.FooterSlot $overWall={isSolanaTheme(customTheme)}>
       {bubbleElement}
       {pageScene && <styledEl.SceneContainer>{pageScene}</styledEl.SceneContainer>}
       <Footer
