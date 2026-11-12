@@ -51,11 +51,12 @@ const WALL_ASPECT = 1.7778
 const WALL_LAYER = `url(${GRAFFITI_CANVAS_PNG_URL}) no-repeat center top / 100% auto`
 
 /**
- * Keeps the box at least as tall as the wall it carries, plus the slice the footer takes back with
- * its negative margin, so the wall's last rows land just above the footer instead of being clipped
- * off by a box the content alone would have left too short.
+ * The wall's own rendered height, from the layer being drawn at the full width of the page. Doubles
+ * as the page's minimum height, so the page is exactly one wall tall when the content is shorter:
+ * the whole canvas is then on the page with its last rows at the very bottom, under the footer
+ * rather than above it.
  */
-const WALL_MIN_HEIGHT = `calc(100vw / ${WALL_ASPECT} + var(--marginBottomOffset))`
+const WALL_HEIGHT = `calc(100vw / ${WALL_ASPECT})`
 
 /** Rendered plaster, laid over the paint so the graffiti picks up the surface instead of floating on it. */
 const WALL_SURFACE_LAYER =
@@ -76,11 +77,28 @@ const WALL_VEIL_DARKER_ALPHA = 0.4
  */
 export const WALL_FOOTER_BACKGROUND = 'rgb(0 0 0 / 60%)'
 
-export const AppWrapper = styled.div<Partial<CSS.Properties> & { $fullBleed?: boolean }>`
+export const AppWrapper = styled.div<Partial<CSS.Properties> & { $fullBleed?: boolean; customTheme?: CowSwapTheme }>`
   display: flex;
   flex-flow: column;
   align-items: flex-start;
   min-height: ${({ theme }) => (theme.isWidget ? 'auto' : '100vh')};
+
+  /*
+   * The wall lives here, not on BodyWrapper: a background paints only inside its own box, and
+   * BodyWrapper stops short of the footer, which is its sibling. Anything drawn near the foot of
+   * the canvas landed ~150px above the bottom of the page as a result. This box spans the footer,
+   * so the last rows reach the bottom and read through its 60% black.
+   */
+  ${({ theme, customTheme }) =>
+    !theme.isWidget &&
+    isSolanaTheme(customTheme) &&
+    css`
+      min-height: max(100vh, ${WALL_HEIGHT});
+      background:
+        ${WALL_SURFACE_LAYER},
+        ${WALL_LAYER} ${theme.darkMode ? '#0E0F2D' : `var(${UI.COLOR_BLUE_300_PRIMARY})`};
+      background-blend-mode: normal, ${wallCssBlendMode(theme.darkMode)};
+    `}
   height: ${({ theme }) => (theme.isWidget ? 'initial' : '100%')};
   position: relative;
 
@@ -152,7 +170,7 @@ export const BodyWrapper = styled.div<{
   margin: ${({ theme }) => (theme.isWidget ? '0' : '-76px auto calc(var(--marginBottomOffset) * -1)')};
   border-bottom-left-radius: ${({ theme }) => (theme.isWidget ? '0' : 'var(--marginBottomOffset)')};
   border-bottom-right-radius: ${({ theme }) => (theme.isWidget ? '0' : 'var(--marginBottomOffset)')};
-  min-height: ${({ customTheme }) => (isSolanaTheme(customTheme) ? WALL_MIN_HEIGHT : 'initial')};
+  min-height: initial;
   background: ${({ theme, customTheme, backgroundVariant }) => {
     if (theme.isWidget) {
       return 'transparent'
@@ -178,16 +196,15 @@ export const BodyWrapper = styled.div<{
 
       const cowsLayer = `${backgroundImage} no-repeat bottom -1px center / contain`
 
-      // The background shorthand only accepts a colour on its last layer.
+      // Transparent over AppWrapper's wall, which this box no longer carries itself.
       if (isSolanaTheme(customTheme)) {
-        return `${cowsLayer}, ${WALL_SURFACE_LAYER}, ${WALL_LAYER} ${backgroundColor}`
+        return cowsLayer
       }
 
       return `${backgroundColor} ${cowsLayer}`
     }
   }};
-  background-blend-mode: ${({ theme, customTheme }) =>
-    isSolanaTheme(customTheme) ? `normal, normal, ${wallCssBlendMode(theme.darkMode)}` : 'normal'};
+  background-blend-mode: normal;
 
   /*
    * The wall is this page's backdrop, so the surfaces laid over it — the trade
@@ -208,7 +225,7 @@ export const BodyWrapper = styled.div<{
     flex: none;
     min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 200px)')};
     background-size: ${({ customTheme }) => {
-      if (isSolanaTheme(customTheme)) return 'contain, auto, cover'
+      if (isSolanaTheme(customTheme)) return 'contain'
 
       return customTheme === 'darkHalloween' || isChristmasTheme(customTheme) ? 'contain' : 'auto'
     }};
@@ -235,7 +252,7 @@ export const BodyWrapper = styled.div<{
       theme.isWidget ? '0 0 16px' : $hasActiveSpeechBubbleNotification ? '90px 16px 400px' : '90px 16px 200px'};
     min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 100px)')};
     background-size: ${({ customTheme }) => {
-      if (isSolanaTheme(customTheme)) return 'contain, auto, cover'
+      if (isSolanaTheme(customTheme)) return 'contain'
 
       return customTheme === 'darkHalloween' || isChristmasTheme(customTheme) ? 'contain' : 'auto'
     }};
