@@ -4,29 +4,23 @@
  */
 import { buildComputeBudgetInstructions, resolveSolanaComputeBudget } from '@cowprotocol/sdk-trading-solana'
 
-import {
-  ComputeBudgetProgram,
-  Connection,
-  Keypair,
-  PublicKey,
-  Transaction,
-  TransactionInstruction,
-} from '@solana/web3.js'
+import { Connection, Keypair, PublicKey, Transaction, TransactionInstruction } from '@solana/web3.js'
 
 import { signSolanaFlow, SignSolanaFlowContext } from './signSolanaFlow'
 import { SolanaFlowStep } from './types'
 
 import type { Provider as SolanaProvider } from '@reown/appkit-adapter-solana/react'
 
+// Only the resolver is mocked: it is the half that talks to the network. The real
+// `buildComputeBudgetInstructions` stays, so a change to what it emits fails here.
 jest.mock('@cowprotocol/sdk-trading-solana', () => ({
+  ...jest.requireActual('@cowprotocol/sdk-trading-solana'),
   resolveSolanaComputeBudget: jest.fn(),
-  buildComputeBudgetInstructions: jest.fn(),
 }))
 
 const COMPUTE_BUDGET = { unitLimit: 110_000, unitPriceMicroLamports: 10_000 }
 
 const mockResolveSolanaComputeBudget = jest.mocked(resolveSolanaComputeBudget)
-const mockBuildComputeBudgetInstructions = jest.mocked(buildComputeBudgetInstructions)
 
 const OWNER = Keypair.generate()
 const SPONSOR = new PublicKey('So11111111111111111111111111111111111111112')
@@ -73,10 +67,6 @@ describe('signSolanaFlow', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockResolveSolanaComputeBudget.mockResolvedValue(COMPUTE_BUDGET)
-    mockBuildComputeBudgetInstructions.mockReturnValue([
-      ComputeBudgetProgram.setComputeUnitLimit({ units: COMPUTE_BUDGET.unitLimit }),
-      ComputeBudgetProgram.setComputeUnitPrice({ microLamports: COMPUTE_BUDGET.unitPriceMicroLamports }),
-    ])
   })
 
   it('throws when given no steps', async () => {
@@ -130,11 +120,7 @@ describe('signSolanaFlow', () => {
     const decoded = Transaction.from(Buffer.from(transaction, 'base64'))
 
     expect(decoded.instructions).toHaveLength(3)
-    expect(decoded.instructions.slice(0, 2).map(({ programId }) => programId.toBase58())).toEqual([
-      ComputeBudgetProgram.programId.toBase58(),
-      ComputeBudgetProgram.programId.toBase58(),
-    ])
-    expect(mockBuildComputeBudgetInstructions).toHaveBeenCalledWith(COMPUTE_BUDGET)
+    expect(decoded.instructions.slice(0, 2)).toEqual(buildComputeBudgetInstructions(COMPUTE_BUDGET))
   })
 
   it('prices the bundle it is about to sign, naming the sponsor as the payer', async () => {
