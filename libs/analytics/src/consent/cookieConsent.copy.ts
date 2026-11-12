@@ -9,7 +9,7 @@ export interface CookieConsentCopy {
 }
 
 export const COOKIE_CONSENT_COPY: CookieConsentCopy = {
-  title: 'Cookies? Your moove.',
+  title: 'Cookies? Your mooove.',
   ariaLabel: 'Cookie consent',
   message: 'You want privacy. We want to know if our ads work. Nothing tracks you until you pick.',
   policyLinkLabel: 'Cookie policy',

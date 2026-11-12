@@ -2002,6 +2002,10 @@ msgstr "Create Order"
 msgid "Want to try out limit orders?"
 msgstr "Want to try out limit orders?"
 
+#: apps/cowswap-frontend/src/common/containers/CookieConsentBanner/CookieConsentBanner.container.tsx
+msgid "Cookies? Your mooove."
+msgstr "Cookies? Your mooove."
+
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappDetails/index.tsx
 msgid "smart contracts (e.g. Safe)"
 msgstr "smart contracts (e.g. Safe)"
@@ -6109,10 +6113,6 @@ msgstr "Your multisig rejected this order, so it was not placed."
 #: libs/common-utils/src/legacyAddressUtils.ts
 #~ msgid "View on {explorerTitle}"
 #~ msgstr "View on {explorerTitle}"
-
-#: apps/cowswap-frontend/src/common/containers/CookieConsentBanner/CookieConsentBanner.container.tsx
-msgid "Cookies? Your moove."
-msgstr "Cookies? Your moove."
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/index.tsx
 msgid "Bridge failed on"
