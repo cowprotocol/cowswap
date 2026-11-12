@@ -29,6 +29,10 @@ import { isTwapSupportedChain } from 'common/utils/isTwapSupportedChain'
 import { HideMobile, isMobileQuery } from './styled'
 
 import { NAV_ITEMS, PRODUCT_VARIANT } from '../App/menuConsts'
+import { isSolanaTheme } from '../App/styled'
+
+/** The wall is the backdrop under this theme, and the default 16px smears it into a haze. */
+const WALL_MENU_BLUR = '3px'
 
 const LinkComponent = ({ href, children }: PropsWithChildren<{ href: string }>): ReactNode => {
   const external = href.startsWith('http')
@@ -122,6 +126,7 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
       bgColorDark={'rgb(222 227 230 / 7%)'}
       bgDropdownColorDark={Color.neutral0}
       bgDropdownColorLight={Color.neutral100}
+      blur={isSolanaTheme(customTheme) ? WALL_MENU_BLUR : undefined}
       colorDark={'#DEE3E6'}
       customTheme={customTheme}
       defaultFillDark="rgba(222, 227, 230, 0.4)"

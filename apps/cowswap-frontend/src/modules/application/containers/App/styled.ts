@@ -13,6 +13,7 @@ import svgBackgroundCowswapLightmodeSrc from '@cowprotocol/assets/images/backgro
 import { GRAFFITI_CANVAS_PNG_URL, wallCssBlendMode } from '@cowprotocol/common-const'
 import { CowSwapTheme, Media, UI } from '@cowprotocol/ui'
 
+import { darken, transparentize } from 'color2k'
 import * as CSS from 'csstype'
 import styled, { css } from 'styled-components/macro'
 
@@ -30,18 +31,133 @@ export function isSolanaTheme(theme?: CowSwapTheme): boolean {
   return theme === 'darkSolana'
 }
 
-/** The live graffiti wall, laid over the regular CoW Swap backdrop. */
+/** The cow scene that sits at the foot of the page, as a background layer. */
+function sceneLayer(darkMode: boolean, customTheme?: CowSwapTheme, backgroundVariant?: PageBackgroundVariant): string {
+  let src
+
+  if (backgroundVariant === 'nocows') {
+    src = darkMode ? svgBackgroundCowswapDarkmodeNocowsSrc : svgBackgroundCowswapLightmodeNocowsSrc
+  } else if (customTheme === 'darkHalloween') {
+    src = svgBackgroundCowswapHalloweenDarkSrc
+  } else if (isChristmasTheme(customTheme)) {
+    src = darkMode ? svgBackgroundCowswapChristmasDarkSrc : svgBackgroundCowswapChristmasLightSrc
+  } else {
+    src = darkMode ? svgBackgroundCowswapDarkmodeSrc : svgBackgroundCowswapLightmodeSrc
+  }
+
+  return `url(${src}) no-repeat bottom -1px center / contain`
+}
+
+/**
+ * The live graffiti wall, laid over the regular CoW Swap backdrop.
+ *
+ * Cover against the *viewport*, never against the page box. Covering the box refits the paint to a
+ * height that grows ~100px as the widget, its quote and the banners settle, zooming it ~10% and
+ * sliding it sideways on every load; sizing it by the box's width held still, but then the wall
+ * ended wherever `width / 16:9` fell and left the rest of a narrow page bare. The viewport is both
+ * stable through that growth and filled at every window shape, so the paint keeps one size per
+ * window and a narrow one simply shows less of the wall (see SAFE_AREA_INSET in freeSpot.utils).
+ */
 const WALL_LAYER = `url(${GRAFFITI_CANVAS_PNG_URL}) no-repeat center / cover`
 
 /** Rendered plaster, laid over the paint so the graffiti picks up the surface instead of floating on it. */
 const WALL_SURFACE_LAYER =
   'repeating-linear-gradient(135deg, rgba(14, 15, 45, 0.55) 0 3px, rgba(120, 150, 255, 0.06) 3px 9px)'
 
-export const AppWrapper = styled.div<Partial<CSS.Properties> & { $fullBleed?: boolean }>`
+/**
+ * How much of the wall the panels over it give up, as `transparentize` amounts.
+ * The inner surfaces sit on the outer one, so their alphas multiply: the pair is
+ * tuned together to keep body text above the 4.5:1 contrast of the opaque theme.
+ */
+const WALL_VEIL_ALPHA = 0.28
+const WALL_VEIL_DARKER_ALPHA = 0.4
+
+/**
+ * Closed, the footer paints nothing of its own: the scene behind it already supplies the dark mass
+ * the opaque themes get from the footer's own colour, and a tint laid on top of that reads as a
+ * rectangle ruled across the page.
+ */
+const WALL_FOOTER_BACKGROUND = 'transparent'
+
+/**
+ * Open, it carries columns of links that the wall runs straight through, so it needs a backdrop.
+ * Faded in rather than switched on, because a flat start is that same rectangle: by the time the
+ * first row of links arrives it is near solid, while the top edge still dissolves into the page.
+ */
+const WALL_FOOTER_BACKGROUND_EXPANDED = 'linear-gradient(to bottom, rgb(14 15 45 / 0%) 0, rgb(14 15 45 / 88%) 140px)'
+
+/**
+ * The footer's ink under this theme. Its own warm greys (#827474 text, #685B5B logos) read as dirt
+ * against the blues of the scene they now sit on; this is drawn from the scene's own palette.
+ */
+const WALL_FOOTER_INK = '#8690D9'
+
+/**
+ * How solid the cow scene stays over the wall. Its silhouettes are opaque, and the hill alone hides
+ * a tenth of the canvas, so paint that lands under it is simply gone. At this much the scene still
+ * reads as a scene while the paint behind it comes through.
+ */
+const WALL_SCENE_OPACITY = 0.6
+
+export const AppWrapper = styled.div<
+  Partial<CSS.Properties> & {
+    $fullBleed?: boolean
+    customTheme?: CowSwapTheme
+    backgroundVariant?: PageBackgroundVariant
+  }
+>`
   display: flex;
   flex-flow: column;
   align-items: flex-start;
   min-height: ${({ theme }) => (theme.isWidget ? 'auto' : '100vh')};
+
+  /*
+   * The wall lives here, not on BodyWrapper: BodyWrapper stops short of the footer, which is its
+   * sibling, so anything drawn near the foot of the canvas landed ~150px above the bottom of the
+   * page. This box spans the footer, and the layer below is fixed to the viewport, so the wall
+   * reaches the bottom of the window whatever the page is doing above it.
+   */
+  ${({ theme, customTheme, backgroundVariant }) =>
+    !theme.isWidget &&
+    isSolanaTheme(customTheme) &&
+    css`
+      isolation: isolate;
+      background-color: ${theme.darkMode ? '#0E0F2D' : `var(${UI.COLOR_BLUE_300_PRIMARY})`};
+
+      /*
+       * Fixed rather than a background on this box: a background covers the box, whose height both
+       * grows as the page settles and runs far past the window on a narrow one, where the paint
+       * then stopped mid-page. Pinned to the viewport it is immune to both.
+       */
+      &::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        z-index: -2;
+        pointer-events: none;
+        background:
+          ${WALL_SURFACE_LAYER},
+          ${WALL_LAYER} ${theme.darkMode ? '#0E0F2D' : `var(${UI.COLOR_BLUE_300_PRIMARY})`};
+        background-blend-mode: normal, ${wallCssBlendMode(theme.darkMode)};
+      }
+
+      /*
+       * The scene rides here too, not on BodyWrapper, whose bottom edge falls 65px inside the
+       * footer: its own dark ground stopped there and the footer's background picked up from a
+       * different shade, drawing two stacked rectangles across the page. Anchored to the foot of
+       * this box it lands where the opaque themes put it, with the footer over it and no seam.
+       * A background layer cannot carry an alpha, hence the pseudo-element.
+       */
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        opacity: ${WALL_SCENE_OPACITY};
+        background: ${sceneLayer(theme.darkMode, customTheme, backgroundVariant)};
+      }
+    `}
   height: ${({ theme }) => (theme.isWidget ? 'initial' : '100%')};
   position: relative;
 
@@ -71,13 +187,31 @@ export const SceneContainer = styled.div`
   transform: translateY(16px);
 `
 
-export const FooterSlot = styled.div`
+export const FooterSlot = styled.div<{ $overWall?: boolean }>`
   position: relative;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: stretch;
   gap: 0;
+
+  /*
+   * Overridden from here rather than through a prop on the shared Footer: the colour is this
+   * theme's business, not the component's, and its own background token doubles as the social
+   * icons' glyph colour, which has to stay opaque.
+   */
+  ${({ $overWall }) =>
+    $overWall &&
+    css`
+      > footer {
+        --color: ${WALL_FOOTER_INK};
+        --colorTitle: ${WALL_FOOTER_INK};
+        /* Read by the shared Footer's product logos, which have no token of their own. */
+        --footerLogoColor: ${WALL_FOOTER_INK};
+        --bgCollapsed: ${WALL_FOOTER_BACKGROUND};
+        --bgExpanded: ${WALL_FOOTER_BACKGROUND_EXPANDED};
+      }
+    `}
 `
 
 export const BodyWrapper = styled.div<{
@@ -105,48 +239,38 @@ export const BodyWrapper = styled.div<{
     if (theme.isWidget) {
       return 'transparent'
     } else {
-      const backgroundColor = theme.darkMode ? '#0E0F2D' : `var(${UI.COLOR_BLUE_300_PRIMARY})`
-      let backgroundImage
-
-      if (backgroundVariant === 'nocows') {
-        backgroundImage = theme.darkMode
-          ? `url(${svgBackgroundCowswapDarkmodeNocowsSrc})`
-          : `url(${svgBackgroundCowswapLightmodeNocowsSrc})`
-      } else if (customTheme === 'darkHalloween') {
-        backgroundImage = `url(${svgBackgroundCowswapHalloweenDarkSrc})`
-      } else if (isChristmasTheme(customTheme)) {
-        backgroundImage = theme.darkMode
-          ? `url(${svgBackgroundCowswapChristmasDarkSrc})`
-          : `url(${svgBackgroundCowswapChristmasLightSrc})`
-      } else {
-        backgroundImage = theme.darkMode
-          ? `url(${svgBackgroundCowswapDarkmodeSrc})`
-          : `url(${svgBackgroundCowswapLightmodeSrc})`
-      }
-
-      const cowsLayer = `${backgroundImage} no-repeat bottom -1px center / contain`
-
-      // The background shorthand only accepts a colour on its last layer.
+      // Transparent over AppWrapper, which carries both the wall and the scene under this theme.
       if (isSolanaTheme(customTheme)) {
-        return `${cowsLayer}, ${WALL_SURFACE_LAYER}, ${WALL_LAYER} ${backgroundColor}`
+        return 'transparent'
       }
 
-      return `${backgroundColor} ${cowsLayer}`
+      const backgroundColor = theme.darkMode ? '#0E0F2D' : `var(${UI.COLOR_BLUE_300_PRIMARY})`
+
+      return `${backgroundColor} ${sceneLayer(theme.darkMode, customTheme, backgroundVariant)}`
     }
   }};
-  background-blend-mode: ${({ theme, customTheme }) =>
-    isSolanaTheme(customTheme) ? `normal, normal, ${wallCssBlendMode(theme.darkMode)}` : 'normal'};
+  background-blend-mode: normal;
+
+  /*
+   * The wall is this page's backdrop, so the surfaces laid over it — the trade
+   * widget above all — let a little of it through. Redeclaring the tokens here
+   * rather than in the theme keeps it to this subtree: modals and dropdowns
+   * portal to the body, and stay opaque over whatever they cover.
+   */
+  ${({ theme, customTheme }) =>
+    isSolanaTheme(customTheme) &&
+    css`
+      ${UI.COLOR_PAPER}: ${transparentize(theme.paper, WALL_VEIL_ALPHA)};
+      ${UI.COLOR_PAPER_DARKER}: ${transparentize(darken(theme.paper, 0.07), WALL_VEIL_DARKER_ALPHA)};
+    `}
 
   ${Media.upToMedium()} {
     padding: ${({ theme, $hasActiveSpeechBubbleNotification }) =>
       theme.isWidget ? '0 0 16px' : $hasActiveSpeechBubbleNotification ? '150px 16px 330px' : '150px 16px 150px'};
     flex: none;
     min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 200px)')};
-    background-size: ${({ customTheme }) => {
-      if (isSolanaTheme(customTheme)) return 'contain, auto, cover'
-
-      return customTheme === 'darkHalloween' || isChristmasTheme(customTheme) ? 'contain' : 'auto'
-    }};
+    background-size: ${({ customTheme }) =>
+      customTheme === 'darkHalloween' || isChristmasTheme(customTheme) ? 'contain' : 'auto'};
 
     ${({ customTheme, backgroundVariant, theme }) =>
       backgroundVariant !== 'nocows' &&
@@ -169,11 +293,8 @@ export const BodyWrapper = styled.div<{
     padding: ${({ theme, $hasActiveSpeechBubbleNotification }) =>
       theme.isWidget ? '0 0 16px' : $hasActiveSpeechBubbleNotification ? '90px 16px 400px' : '90px 16px 200px'};
     min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 100px)')};
-    background-size: ${({ customTheme }) => {
-      if (isSolanaTheme(customTheme)) return 'contain, auto, cover'
-
-      return customTheme === 'darkHalloween' || isChristmasTheme(customTheme) ? 'contain' : 'auto'
-    }};
+    background-size: ${({ customTheme }) =>
+      customTheme === 'darkHalloween' || isChristmasTheme(customTheme) ? 'contain' : 'auto'};
 
     ${({ customTheme, backgroundVariant, theme }) =>
       backgroundVariant !== 'nocows' &&
