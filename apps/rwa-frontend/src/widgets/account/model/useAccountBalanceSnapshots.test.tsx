@@ -8,16 +8,16 @@ import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { act, renderHook, waitFor } from '@testing-library/react'
 import { queryClientAtom } from 'jotai-tanstack-query'
 
-import { loadChainBalances } from './loadChainBalances'
+import { loadChainBalanceSnapshot } from './loadChainBalances'
 import { useAccountBalanceSnapshots } from './useAccountBalanceSnapshots'
 
 import { AAPLX_MAINNET, OWNER } from '../lib/fixtures'
 
 import type { RwaTokenList } from '@/entities/asset'
 
-jest.mock('./loadChainBalances', () => ({ loadChainBalances: jest.fn() }))
+jest.mock('./loadChainBalances', () => ({ loadChainBalanceSnapshot: jest.fn() }))
 
-const loadChainBalancesMock = loadChainBalances as jest.Mock
+const loadChainBalanceSnapshotMock = loadChainBalanceSnapshot as jest.Mock
 const TOKENS = [AAPLX_MAINNET]
 const TOKEN_LIST: RwaTokenList = {
   name: 'RWA',
@@ -40,7 +40,7 @@ function response(ok: boolean, body: unknown): object {
 
 describe('useAccountBalanceSnapshots', () => {
   beforeEach(() => {
-    loadChainBalancesMock.mockReset().mockResolvedValue({ [getAddressKey(AAPLX_MAINNET.address)]: '5' })
+    loadChainBalanceSnapshotMock.mockReset().mockResolvedValue({ [getAddressKey(AAPLX_MAINNET.address)]: '5' })
   })
 
   it('reports loading while the token list is pending', async () => {
@@ -49,7 +49,7 @@ describe('useAccountBalanceSnapshots', () => {
     const { result } = renderSnapshots()
 
     await waitFor(() => expect(result.current.isFetching).toBe(true))
-    expect(loadChainBalancesMock).not.toHaveBeenCalled()
+    expect(loadChainBalanceSnapshotMock).not.toHaveBeenCalled()
   })
 
   it('opens one watcher session per chain once the token list loads', async () => {
@@ -58,7 +58,7 @@ describe('useAccountBalanceSnapshots', () => {
     const { result } = renderSnapshots()
 
     await waitFor(() => expect(result.current.positions).toEqual([{ token: AAPLX_MAINNET, balance: '5' }]))
-    expect(loadChainBalancesMock).toHaveBeenCalledTimes(1)
+    expect(loadChainBalanceSnapshotMock).toHaveBeenCalledTimes(1)
   })
 
   it('refetches a failed token list on refresh, then loads the balances', async () => {
