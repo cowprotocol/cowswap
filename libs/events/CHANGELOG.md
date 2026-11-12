@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.18.1](https://github.com/cowprotocol/cowswap/compare/events-v4.18.0...events-v4.18.1) (2026-11-11)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.15.1
+
 ## [4.18.0](https://github.com/cowprotocol/cowswap/compare/events-v4.17.2...events-v4.18.0) (2026-11-10)
 
 ### Minor Changes

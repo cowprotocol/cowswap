@@ -5841,8 +5841,8 @@ msgstr "With hooks you can add specific actions <0>before</0> and <1>after</1> y
 #: apps/cowswap-frontend/src/modules/rwa/hooks/useImportTokenConsentFlow.tsx
 #: apps/cowswap-frontend/src/modules/tokensList/hooks/useRestrictedTokenImportStatus.ts
 #: apps/cowswap-frontend/src/modules/tokensList/hooks/useRestrictedTokensImportStatus.ts
-msgid "This token is not available in your region."
-msgstr "This token is not available in your region."
+#~ msgid "This token is not available in your region."
+#~ msgstr "This token is not available in your region."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateLinkedCodeNotification.tsx
 msgid "Rewards activated"
@@ -10288,6 +10288,10 @@ msgstr "Page not found!"
 #: apps/cowswap-frontend/src/modules/volumeFee/hooks/useVolumeFeeTooltip.ts
 msgid "Safe App License Fee"
 msgstr "Safe App License Fee"
+
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
+msgid "TWAP orders are placed on-chain, so you will pay a separate gas cost for the order placement transaction."
+msgstr "TWAP orders are placed on-chain, so you will pay a separate gas cost for the order placement transaction."
 
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ErrorWithStackTrace.tsx
 msgid "CowSwap Error"
