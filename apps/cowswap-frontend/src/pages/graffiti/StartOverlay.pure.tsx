@@ -27,6 +27,8 @@ export interface StartOverlayProps {
   balance: number | null
   onStart: () => void
   onConnect: () => void
+  /** Whether the browser can show the wall fullscreen; iOS Safari cannot. */
+  canFullscreen: boolean
   onFullscreen: () => void
 }
 
@@ -114,6 +116,7 @@ export function StartOverlay({
   balance,
   onStart,
   onConnect,
+  canFullscreen,
   onFullscreen,
 }: StartOverlayProps): ReactNode {
   const [view, setView] = useState<StartView>('welcome')
@@ -152,9 +155,11 @@ export function StartOverlay({
               <styledEl.Button onClick={() => void downloadWallImage()}>
                 <Trans>⬇ download wall</Trans>
               </styledEl.Button>
-              <styledEl.Button onClick={onFullscreen}>
-                <Trans>⛶ view wall</Trans>
-              </styledEl.Button>
+              {canFullscreen && (
+                <styledEl.Button onClick={onFullscreen}>
+                  <Trans>⛶ view wall</Trans>
+                </styledEl.Button>
+              )}
             </styledEl.PanelActions>
 
             {settled && (

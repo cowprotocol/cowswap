@@ -19,6 +19,8 @@ export interface Viewport {
   /** Centre on the drawing frame, large enough to grab. */
   zoomToPlot: () => void
   isFullscreen: boolean
+  /** Whether this browser can fullscreen an element at all. */
+  canFullscreen: boolean
   toggleFullscreen: () => void
 }
 
@@ -100,7 +102,7 @@ export function useViewport(
   // Entering or leaving fullscreen is a deliberate reframe, and fullscreen is
   // the view-the-whole-wall mode: fit the new stage rather than fill it, which
   // would crop the axis the wall overflows on.
-  const { isFullscreen, toggleFullscreen } = useFullscreen(refs, resetView)
+  const { isFullscreen, canFullscreen, toggleFullscreen } = useFullscreen(refs, resetView)
 
-  return { zoomBy, resetView, zoomToPlot, isFullscreen, toggleFullscreen }
+  return { zoomBy, resetView, zoomToPlot, isFullscreen, canFullscreen, toggleFullscreen }
 }
