@@ -118,6 +118,8 @@ const TwapDetailsPage = React.lazy(() =>
   import('../modules/twap/pure/TwapDetails.container').then(({ TwapDetailsPage: Page }) => ({ default: Page })),
 )
 
+const SolverLogoToolPage = React.lazy(() => import('./pages/SolverLogoTool'))
+
 /**
  * Update the global state
  */
@@ -148,6 +150,7 @@ const AppContent = (): React.ReactNode => {
     <GenericLayout header={<Header />}>
       <React.Suspense fallback={null}>
         <Routes>
+          <Route path="/solver-logo-tool" element={<SolverLogoToolPage />} />
           <Route path={pathPrefix + '/'} element={<Home />} />
           <Route path={pathPrefix + '/address/'} element={<Navigate to={pathPrefix + '/search/'} />} />
           <Route path={pathPrefix + '/orders/'} element={<Navigate to={pathPrefix + '/search/'} />} />
