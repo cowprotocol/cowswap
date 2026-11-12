@@ -18,6 +18,8 @@ export const COW_DAO_DESCRIPTION =
 
 export const COW_DAO_LINK: CowLink = { label: 'CoW DAO', href: 'https://cow.fi/' }
 
+export const COWSWAP_COOKIE_POLICY_LINK = 'https://cow.fi/legal/cowswap-cookie-policy'
+
 export const COW_RWA_URL = 'https://swap.cow.fi/rwa'
 
 /**
