@@ -24,7 +24,8 @@ export function getTradeTokensFilters(
       // The buy network can be changed in the widget (bridging), so the tokens of every network are allowed
       buyTokensFilter: {
         tokens: assetTokens,
-        notice: `Only tokenized ${asset.ticker} on this network is listed. Pick another network above the widget for more tokens.`,
+        selectableChainIds: [...new Set(asset.tokens.map((token) => token.chainId))],
+        notice: `Only tokenized ${asset.ticker} is listed. To buy it on a network it can't be bridged to, pick that network above the widget.`,
       },
     }
   }

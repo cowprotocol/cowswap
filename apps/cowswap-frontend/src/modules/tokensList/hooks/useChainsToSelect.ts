@@ -7,6 +7,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { isNetworkSwitchUnsupportedAtom, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useBridgeSupportedNetworks, useRoutesAvailability } from 'entities/bridgeProvider'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import { Field } from 'legacy/state/types'
 
@@ -18,6 +19,7 @@ import { useSupportedTargetChains } from './useSupportedTargetChains'
 
 import { ChainsToSelectState } from '../types'
 import { createOutputChainsState } from '../utils/chainsState'
+import { filterChainsForSelector, getTokenSelectorFilter } from '../utils/filterTokensForSelector'
 import { mapChainInfo } from '../utils/mapChainInfo'
 import { sortChainsByDisplayOrder } from '../utils/sortChainsByDisplayOrder'
 
@@ -38,6 +40,7 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
   const isBridgingEnabled = useIsBridgingEnabled() // Reads from Jotai atom
   const isAdvancedTradeType = tradeType === TradeType.LIMIT_ORDER || tradeType === TradeType.ADVANCED_ORDERS
   const shouldHideNetworkSelector = useAtomValue(isNetworkSwitchUnsupportedAtom)
+  const allowedChainIds = getTokenSelectorFilter(field, useInjectedWidgetParams())?.selectableChainIds
 
   const supportedChains = useSupportedChains()
   const supportedTargetChains = useSupportedTargetChains()
@@ -64,7 +67,9 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
     if (field === Field.INPUT) {
       return {
         defaultChainId: selectedTargetChainId,
-        chains: shouldHideNetworkSelector ? [] : sortChainsByDisplayOrder(supportedChains),
+        chains: shouldHideNetworkSelector
+          ? []
+          : sortChainsByDisplayOrder(filterChainsForSelector(supportedChains, allowedChainIds)),
         isLoading: false,
       }
     }
@@ -78,6 +83,7 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
       supportedChains: supportedTargetChains,
       isLoading,
       routesAvailability,
+      allowedChainIds,
     })
   }, [
     field,
@@ -92,5 +98,6 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
     isAdvancedTradeType,
     routesAvailability,
     shouldHideNetworkSelector,
+    allowedChainIds,
   ])
 }

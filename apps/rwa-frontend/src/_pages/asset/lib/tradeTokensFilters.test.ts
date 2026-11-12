@@ -31,6 +31,7 @@ describe('getTradeTokensFilters', () => {
       notice: expect.stringContaining('positive balance in your wallet'),
     })
     expect(buyTokensFilter?.tokens).toEqual(ASSET_TOKENS)
+    expect(buyTokensFilter?.selectableChainIds).toEqual([AAPLX_MAINNET.chainId, AAPLX_ARBITRUM.chainId])
     expect(buyTokensFilter?.onlyWithBalance).toBeUndefined()
     expect(buyTokensFilter?.notice).toContain('AAPL')
   })
