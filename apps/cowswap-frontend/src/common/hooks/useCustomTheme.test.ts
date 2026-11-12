@@ -17,6 +17,7 @@ describe('resolveCowSwapTheme', () => {
     darkMode: boolean
     featureFlags?: FeatureFlags
     onSolanaChain?: boolean
+    graffitiWallEnabled?: boolean
     expected: CowSwapTheme | undefined
   }> = [
     {
@@ -78,6 +79,7 @@ describe('resolveCowSwapTheme', () => {
       darkMode: true,
       featureFlags: buildFlags({ isSolanaThemeEnabled: true }),
       onSolanaChain: true,
+      graffitiWallEnabled: true,
       expected: 'darkSolana',
     },
     {
@@ -85,6 +87,7 @@ describe('resolveCowSwapTheme', () => {
       darkMode: false,
       featureFlags: buildFlags({ isSolanaThemeEnabled: true }),
       onSolanaChain: true,
+      graffitiWallEnabled: true,
       expected: 'darkSolana',
     },
     {
@@ -92,6 +95,7 @@ describe('resolveCowSwapTheme', () => {
       darkMode: true,
       featureFlags: buildFlags({ isSolanaThemeEnabled: true }),
       onSolanaChain: false,
+      graffitiWallEnabled: true,
       expected: undefined,
     },
     {
@@ -99,6 +103,15 @@ describe('resolveCowSwapTheme', () => {
       darkMode: true,
       featureFlags: buildFlags(),
       onSolanaChain: true,
+      graffitiWallEnabled: true,
+      expected: undefined,
+    },
+    {
+      name: 'skips the Solana theme when the graffiti wall is off',
+      darkMode: true,
+      featureFlags: buildFlags({ isSolanaThemeEnabled: true }),
+      onSolanaChain: true,
+      graffitiWallEnabled: false,
       expected: undefined,
     },
     {
@@ -106,11 +119,12 @@ describe('resolveCowSwapTheme', () => {
       darkMode: true,
       featureFlags: buildFlags({ isSolanaThemeEnabled: true, isHalloweenEnabled: true }),
       onSolanaChain: true,
+      graffitiWallEnabled: true,
       expected: 'darkSolana',
     },
   ]
 
-  test.each(cases)('$name', ({ darkMode, featureFlags, onSolanaChain, expected }) => {
-    expect(resolveCowSwapTheme(darkMode, featureFlags, onSolanaChain)).toBe(expected)
+  test.each(cases)('$name', ({ darkMode, featureFlags, onSolanaChain, graffitiWallEnabled, expected }) => {
+    expect(resolveCowSwapTheme(darkMode, featureFlags, onSolanaChain, graffitiWallEnabled)).toBe(expected)
   })
 })

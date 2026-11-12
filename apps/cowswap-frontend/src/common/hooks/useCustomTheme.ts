@@ -8,14 +8,21 @@ import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import type { CowSwapTheme } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { useIsGraffitiWallEnabled } from './featureFlags/useIsGraffitiWallEnabled'
+
 import { useDarkModeManager } from '../../legacy/state/user/hooks'
 
 export function resolveCowSwapTheme(
   darkMode: boolean,
   featureFlags?: FeatureFlags,
   onSolanaChain = false,
+  graffitiWallEnabled = false,
 ): CowSwapTheme | undefined {
-  const activeTheme = resolveCustomThemeForContext(featureFlags, { darkModeEnabled: darkMode, onSolanaChain })
+  const activeTheme = resolveCustomThemeForContext(featureFlags, {
+    darkModeEnabled: darkMode,
+    onSolanaChain,
+    graffitiWallEnabled,
+  })
 
   if (activeTheme === CustomTheme.SOLANA) {
     return 'darkSolana'
@@ -38,10 +45,11 @@ export function useCustomTheme(): CowSwapTheme | undefined {
   const { chainId } = useWalletInfo()
   const isWidget = isInjectedWidget()
   const onSolanaChain = isSolanaChain(chainId)
+  const graffitiWallEnabled = useIsGraffitiWallEnabled()
 
   const resolvedTheme = useMemo(
-    () => resolveCowSwapTheme(darkMode, featureFlags, onSolanaChain),
-    [darkMode, featureFlags, onSolanaChain],
+    () => resolveCowSwapTheme(darkMode, featureFlags, onSolanaChain, graffitiWallEnabled),
+    [darkMode, featureFlags, onSolanaChain, graffitiWallEnabled],
   )
 
   // We don't want to set any custom theme for the widget
