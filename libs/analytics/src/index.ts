@@ -1,5 +1,5 @@
 // Core analytics initialization
-export { initGtm } from './gtm/initGtm'
+export { initGtm, initGtmWithConsent } from './gtm/initGtm'
 export { createNoopCowAnalytics } from './noop/createNoopCowAnalytics'
 export { initPixelAnalytics } from './pixels/initPixelAnalytics'
 export { WebVitalsAnalytics } from './webVitals/WebVitalsAnalytics'
@@ -29,3 +29,4 @@ export { getCowAnalytics } from './utils'
 
 export * from './CowAnalytics'
 export * from './widget/orderLifecycleAnalytics'
+export * from './consent'

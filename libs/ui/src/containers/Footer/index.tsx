@@ -1,6 +1,6 @@
 import { ReactNode, useRef, useState } from 'react'
 
-import { Category, toGtmEvent } from '@cowprotocol/analytics'
+import { Category, isCookieConsentRequired, openCookieSettings, toGtmEvent } from '@cowprotocol/analytics'
 import svgArrowRightCircularSrc from '@cowprotocol/assets/images/arrow-right-circular.svg'
 import { useTheme } from '@cowprotocol/common-hooks'
 
@@ -16,6 +16,7 @@ import { FooterAnimation } from './footerAnimation'
 import {
   BottomRight,
   BottomText,
+  CookieSettingsButton,
   Description,
   FooterBottom,
   FooterBottomLogos,
@@ -93,6 +94,19 @@ const FooterLink = ({ href, external, label, utmSource: _utmSource, utmContent, 
     >
       {label}
     </Link>
+  )
+}
+
+function FooterCopyright(): ReactNode {
+  return (
+    <BottomText>
+      &copy; CoW DAO - {new Date().getFullYear()}
+      {isCookieConsentRequired() && (
+        <CookieSettingsButton type="button" onClick={openCookieSettings}>
+          Cookie settings
+        </CookieSettingsButton>
+      )}
+    </BottomText>
   )
 }
 
@@ -179,7 +193,7 @@ export const Footer = ({
         </>
       )}
       <FooterBottom maxWidth={maxWidth}>
-        <BottomText>&copy; CoW DAO - {new Date().getFullYear()}</BottomText>
+        <FooterCopyright />
         <FooterBottomLogos>
           {productLogoLinks.map((product, index) => (
             <ProductLogo
