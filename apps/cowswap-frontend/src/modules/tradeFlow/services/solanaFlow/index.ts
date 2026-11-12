@@ -21,6 +21,7 @@ import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { uploadAppDataDocOrderbookApi } from 'modules/appData'
 import { emitPostedOrderEvent } from 'modules/orders'
 import {
+  assertIntentCreditsReceiver,
   estimateSolanaSigningDeadline,
   getIsBuyAtaCreationSkipped,
   getSigningWindowClosedError,
@@ -130,6 +131,10 @@ export async function solanaFlow(
     const buySymbol = outputAmount.currency.symbol ?? 'token'
     const { owner, connection, provider } = solana
 
+    // Whose wallet the created intent's `buyTokenAccount` is the associated token account of: a limit
+    // order rebuilds the intent against the form's receiver, a swap keeps the one the quote derived it
+    // from. It must stay in step with `createdIntent` below — the associated token program rejects a
+    // create whose address is not the named wallet's.
     const buyAtaReceiver = new PublicKey(
       orderClass === OrderClass.LIMIT ? receiver : (tradeQuote.quoteResults.tradeParameters.receiver ?? receiver),
     )
@@ -155,6 +160,7 @@ export async function solanaFlow(
       sellAmount: signedSellAmount,
       buyAmount: signedBuyAmount,
       feePayer,
+      intent: createdIntent,
     } = orderClass === OrderClass.LIMIT
       ? await planCreateLimitOrderStep({
           ownerAddress: account,
@@ -202,6 +208,15 @@ export async function solanaFlow(
       phase = 'plan'
     }
 
+    // The account the order actually credits, not the quoted one: a limit order rebuilds the intent
+    // against its own receiver. `buyTokenProgramId` still comes from the quote — it is a property of the
+    // buy mint, which no rebuild changes.
+    const buyAtaQuote = { intent: createdIntent, buyTokenProgramId: solanaQuote.buyTokenProgramId }
+
+    // Still `phase = 'plan'`: a mismatch here means the order would pay out somewhere the user was never
+    // shown, so it must fail before the wallet is opened rather than be signed and discovered on chain.
+    assertIntentCreditsReceiver(buyAtaQuote, buyAtaReceiver)
+
     // Wrap only applies to a native SOL sell and delegate only when the existing delegation is short —
     // both plan functions return null otherwise, so the transaction carries the minimum instructions.
     // `isNativeSell` reflects the user's actual selection, not `inputAmount.currency` — the Solana quote
@@ -213,10 +228,10 @@ export async function solanaFlow(
       planCreateBuyAtaStep({
         payer: buyAtaRentPayer,
         receiver: buyAtaReceiver,
-        quote: solanaQuote,
+        quote: buyAtaQuote,
         buySymbol,
         isCreationSkipped: getIsBuyAtaCreationSkipped({
-          quote: solanaQuote,
+          quote: buyAtaQuote,
           owner,
           receiver: namedReceiver,
           isAtaCreationDisabled,

@@ -108,6 +108,14 @@ describe('planCreateLimitOrderStep', () => {
     expect(buyAmount).toBe(SIGNED_BUY_AMOUNT)
   })
 
+  // The caller plans the buy account from this intent, not from the quote: a limit order rebuilds the
+  // intent against the user's own receiver, so the account it credits is not the quoted one.
+  it('returns the intent it signed', async () => {
+    const { intent } = await planCreateLimitOrderStep(buildParams())
+
+    expect(intent).toBe(builtOrder.intent)
+  })
+
   it('does not send sellSymbol/buySymbol through to the SDK call — they are UI-only', async () => {
     await planCreateLimitOrderStep(buildParams())
 
