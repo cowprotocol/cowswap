@@ -15,7 +15,8 @@ export interface UpdateRateCallback {
 type RateUpdateParams = Pick<
   LimitRateState,
   'isInitialPriceSet' | 'activeRate' | 'isTypedValue' | 'isRateFromUrl' | 'isAlternativeOrderRate'
->
+> &
+  Partial<Pick<LimitRateState, 'percentageSelection'>>
 
 export function useUpdateActiveRate(): UpdateRateCallback {
   const { inputCurrencyAmount, outputCurrencyAmount, orderKind } = useLimitOrdersDerivedState()
@@ -39,7 +40,7 @@ export function useUpdateActiveRate(): UpdateRateCallback {
       const currentIsRateFromUrl = shouldSkipPriceUpdate ? _currentIsRateFromUrl : false
 
       if (!shouldSkipPriceUpdate) {
-        updateRateState(update)
+        updateRateState({ percentageSelection: null, ...update })
       }
 
       const isSell = isSellOrder(orderKind)

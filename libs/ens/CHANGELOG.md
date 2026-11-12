@@ -1,5 +1,30 @@
 # Changelog
 
+## [3.12.1](https://github.com/cowprotocol/cowswap/compare/ens-v3.12.0...ens-v3.12.1) (2026-11-11)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.20.0
+  - @cowprotocol/common-utils@3.22.1
+
+## [3.12.0](https://github.com/cowprotocol/cowswap/compare/ens-v3.11.4...ens-v3.12.0) (2026-11-10)
+
+### Minor Changes
+
+- feat(networks): networks update (#8456)
+
+- feat(solana): pass appData to quote (#8509)
+
+### Patch Changes
+
+- fix(solana): use SDK for quote costs breakdown (#8522)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.22.0
+  - @cowprotocol/common-const@3.19.0
+  - @cowprotocol/wallet-provider@2.3.0
+
 ## [3.11.4](https://github.com/cowprotocol/cowswap/compare/ens-v3.11.3...ens-v3.11.4) (2026-11-05)
 
 ### Patch Changes

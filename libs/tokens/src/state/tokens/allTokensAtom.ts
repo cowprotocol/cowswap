@@ -4,12 +4,10 @@ import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
 import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenInfo } from '@cowprotocol/types'
 
-import { blockedListSourcesAtom } from './blockedListSourcesAtom'
 import { favoriteTokensAtom } from './favoriteTokensAtom'
 import { userAddedTokensAtom } from './userAddedTokensAtom'
 
 import { GLOBAL_TOKENS_OVERRIDES } from '../../const/tokensOverrides'
-import { getSourceAsKey } from '../../hooks/lists/useIsListBlocked'
 import { TokensBySymbolState, TokensMap } from '../../types'
 import { normalizeTokensMapKeys } from '../../utils/normalizeTokensMapKeys'
 import { parseTokenInfo } from '../../utils/parseTokenInfo'
@@ -34,7 +32,6 @@ const tokensStateAtom = atom(async (get) => {
   const { chainId, selectedLists } = get(environmentAtom)
   const listsStatesList = await get(listsStatesListAtom)
   const listsEnabledState = await get(listsEnabledStateAtom)
-  const blockedListSources = get(blockedListSourcesAtom)
 
   return {
     listsCount: listsStatesList.length,
@@ -45,12 +42,6 @@ const tokensStateAtom = atom(async (get) => {
       .sort((a, b) => (a.priority ?? Number.MAX_SAFE_INTEGER) - (b.priority ?? Number.MAX_SAFE_INTEGER))
       .reduce<TokensState>(
         (acc, list) => {
-          // Skip processing tokens from blocked lists (geo-blocked or consent required)
-          const sourceKey = getSourceAsKey(list.source)
-          if (blockedListSources.has(sourceKey)) {
-            return acc
-          }
-
           const isListEnabled = listsEnabledState[list.source] || selectedLists?.includes(list.source)
           const lpTokenProvider = list.lpTokenProvider
 

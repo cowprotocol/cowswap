@@ -1,5 +1,41 @@
 # Changelog
 
+## [3.21.1](https://github.com/cowprotocol/cowswap/compare/ui-v3.21.0...ui-v3.21.1) (2026-11-11)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.20.0
+  - @cowprotocol/analytics@3.18.0
+  - @cowprotocol/common-const@3.20.0
+  - @cowprotocol/types@4.15.1
+  - @cowprotocol/common-utils@3.22.1
+  - @cowprotocol/core@3.15.1
+
+## [3.21.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.20.0...ui-v3.21.0) (2026-11-10)
+
+### Minor Changes
+
+- feat(networks): networks update (#8456)
+
+- feat(rwa): standardize header and footer with CoW product links (#8516)
+
+- feat(solana): pass appData to quote (#8509)
+
+### Patch Changes
+
+- fix(solana): use SDK for quote costs breakdown (#8522)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.22.0
+  - @cowprotocol/core@3.15.0
+  - @cowprotocol/analytics@3.17.0
+  - @cowprotocol/common-const@3.19.0
+  - @cowprotocol/common-hooks@3.19.0
+  - @cowprotocol/currency@1.10.0
+  - @cowprotocol/types@4.15.0
+  - @cowprotocol/assets@2.9.0
+
 ## [3.20.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.19.2...ui-v3.20.0) (2026-11-05)
 
 ### Minor Changes

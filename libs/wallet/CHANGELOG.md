@@ -1,5 +1,49 @@
 # Changelog
 
+## [3.21.1](https://github.com/cowprotocol/cowswap/compare/wallet-v3.21.0...wallet-v3.21.1) (2026-11-11)
+
+### Patch Changes
+
+- fix(wallet): patch reown solana adapter to use Ledger (#8442)
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.20.0
+  - @cowprotocol/common-const@3.20.0
+  - @cowprotocol/types@4.15.1
+  - @cowprotocol/ui@3.21.1
+  - @cowprotocol/common-utils@3.22.1
+  - @cowprotocol/core@3.15.1
+  - @cowprotocol/ens@3.12.1
+  - @cowprotocol/iframe-transport@2.3.15
+
+## [3.21.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.20.0...wallet-v3.21.0) (2026-11-10)
+
+### Minor Changes
+
+- feat(networks): networks update (#8456)
+
+- feat(solana): pass appData to quote (#8509)
+
+### Patch Changes
+
+- fix(trade): place self-paid solana orders for wallets that reject a foreign fee payer
+
+- fix(solana): use SDK for quote costs breakdown (#8522)
+
+- fix(wallet): display custom message for rpc internal error (#8515)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.22.0
+  - @cowprotocol/core@3.15.0
+  - @cowprotocol/common-const@3.19.0
+  - @cowprotocol/common-hooks@3.19.0
+  - @cowprotocol/currency@1.10.0
+  - @cowprotocol/ens@3.12.0
+  - @cowprotocol/types@4.15.0
+  - @cowprotocol/ui@3.21.0
+  - @cowprotocol/assets@2.9.0
+  - @cowprotocol/iframe-transport@2.3.14
+
 ## [3.20.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.19.2...wallet-v3.20.0) (2026-11-05)
 
 ### Minor Changes

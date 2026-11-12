@@ -256,6 +256,7 @@
     {
       "priority": 2,
       "category": "RWA",
+      "enabledByDefault": true,
       "source": "https://files.cow.fi/token-lists/Rwa.1000000001.json"
     }
   ]

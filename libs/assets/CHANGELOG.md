@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.9.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.8.0...assets-v2.9.0) (2026-11-10)
+
+### Minor Changes
+
+- feat(rwa): standardize header and footer with CoW product links (#8516)
+
 ## [2.8.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.7.0...assets-v2.8.0) (2026-11-05)
 
 ### Minor Changes
