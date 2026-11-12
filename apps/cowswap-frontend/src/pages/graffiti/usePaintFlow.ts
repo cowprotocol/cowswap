@@ -21,6 +21,8 @@ export type PaintPhase = 'idle' | 'quoting' | 'awaiting wallet' | 'confirming' |
 
 const SPL_MEMO_PROGRAM_ID = new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr')
 
+const WALLET_UNAVAILABLE = 'Your Solana wallet is no longer connected to this page. Reconnect it and try again.'
+
 /** Minimum lamports needed to pay for the burn transaction. */
 const MIN_FEE_LAMPORTS = 5000
 
@@ -112,7 +114,16 @@ export function usePaintFlow({ draft, solanaAccount, info, onApplied }: UsePaint
   useAutoIdle(phase, setPhase)
 
   const paint = useCallback(async (): Promise<void> => {
-    if (draft.size === 0 || !solanaAccount || !provider || !connection) return
+    if (draft.size === 0) return
+
+    // The page gates painting on the account, but only the provider can sign: when they
+    // disagree the click has to say so instead of doing nothing.
+    if (!solanaAccount || !provider || !connection) {
+      setPhase('error')
+      setPhaseError(WALLET_UNAVAILABLE)
+
+      return
+    }
 
     const owed = loadPendingBurn()
 

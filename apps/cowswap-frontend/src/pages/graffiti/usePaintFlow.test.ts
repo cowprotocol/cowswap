@@ -165,6 +165,20 @@ describe('usePaintFlow', () => {
     expect(result.current.phaseError).toContain('burned and safe')
   })
 
+  it('says so when the wall shows a connected wallet but no provider can sign', async () => {
+    useSolanaWalletProviderMock.mockReturnValue(undefined)
+
+    const { result } = renderPaint()
+
+    await act(async () => {
+      await result.current.paint()
+    })
+
+    expect(sendTransaction).not.toHaveBeenCalled()
+    expect(result.current.phase).toBe('error')
+    expect(result.current.phaseError).toContain('no longer connected')
+  })
+
   it('reports a preflight rejection without burning anything', async () => {
     mockConnection.getParsedAccountInfo.mockResolvedValue({
       value: { data: { parsed: { info: { tokenAmount: { uiAmount: 1 } } } } },
