@@ -1,5 +1,7 @@
 import type { Address, Hex } from 'viem'
 
+import { registerRpcEntryResolver, resolveRpcEntry, type RpcEntryResolver } from './rpcEntryRegistry'
+
 import type { BrowserContext, Route } from '@playwright/test'
 
 export interface JsonRpcEntry {
@@ -35,6 +37,19 @@ export function mockRpcNodeRequest(
   const methods = new Set(Array.isArray(rpcMethods) ? rpcMethods : [rpcMethods as string])
   const isOwnMethod = (entry: JsonRpcEntry): boolean => methods.has(entry?.method)
 
+  // Lets a *different* mock's route — the one Playwright's LIFO dispatch happens to hand a batch
+  // this mock's entry rode along in — answer that entry with this mock's own result instead of
+  // relaying it to a real, rate-limited upstream. See `rpcEntryRegistry.ts`.
+  const ownResolver: RpcEntryResolver = (entry) => (isOwnMethod(entry) && matches(entry) ? resolve(entry) : undefined)
+  registerRpcEntryResolver(context, ownResolver)
+
+  /** This mock's own answer for an entry it owns, or whatever sibling mock recognizes it — no upstream either way. */
+  const resolveLocally = (entry: JsonRpcEntry): unknown => {
+    const own = isOwnMethod(entry) ? resolve(entry) : undefined
+
+    return typeof own !== 'undefined' ? own : resolveRpcEntry(context, entry, ownResolver)
+  }
+
   void context.route(urlPattern, async (route: Route) => {
     const request = route.request()
     if (request.method() !== 'POST') return route.fallback()
@@ -55,21 +70,19 @@ export function mockRpcNodeRequest(
     // request entirely, even though it was never relevant to this mock in the first place.
     if (!entries.some((entry) => isOwnMethod(entry) && matches(entry))) return route.fallback()
 
-    if (entries.every(isOwnMethod)) {
-      const results = entries.map((entry) => resolve(entry))
+    const localResults = entries.map(resolveLocally)
 
-      if (results.every((res) => typeof res !== 'undefined')) {
-        const payload = entries.map((entry, i) => ({ jsonrpc: '2.0', id: entry.id, result: results[i] }))
+    if (localResults.every((res) => typeof res !== 'undefined')) {
+      const payload = entries.map((entry, i) => ({ jsonrpc: '2.0', id: entry.id, result: localResults[i] }))
 
-        return route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify(Array.isArray(body) ? payload : payload[0]),
-        })
-      }
+      return route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(Array.isArray(body) ? payload : payload[0]),
+      })
     }
 
-    return fulfillFromUpstream(route, entries, Array.isArray(body), isOwnMethod, resolve)
+    return fulfillFromUpstream(route, entries, Array.isArray(body), isOwnMethod, resolve, localResults)
   })
 }
 
@@ -79,6 +92,8 @@ async function fulfillFromUpstream(
   isRequestBatched: boolean,
   isOwnMethod: (entry: JsonRpcEntry) => boolean,
   resolve: (entry: JsonRpcEntry, upstreamResult?: unknown) => unknown,
+  /** Per-entry answers already found without the network, from this mock or a sibling one. */
+  localResults: unknown[],
 ): Promise<void> {
   try {
     const upstream = await route.fetch()
@@ -103,7 +118,16 @@ async function fulfillFromUpstream(
     const payload = entries.map((entry, i) => {
       const upstreamEntry = upstreamById.get(entry.id) ?? (upstreamEntries[i] as JsonRpcResult | undefined)
 
-      if (!isOwnMethod(entry)) return upstreamEntry ?? entry
+      if (!isOwnMethod(entry)) {
+        // A sibling mock's own answer beats a real upstream one for an entry this mock never owned:
+        // that sibling's route would have answered it had the batch not been dispatched here first,
+        // and upstream may carry no `result` for it at all (Infura's bare `-32005` array), which
+        // relays as `undefined` and blows viem up — see [CS-310] and `rpcEntryRegistry.ts`.
+        const sibling = localResults[i]
+        if (typeof sibling !== 'undefined') return { jsonrpc: '2.0', id: entry.id, result: sibling }
+
+        return upstreamEntry ?? entry
+      }
 
       // `null` (never `undefined`) signals "upstream was attempted for this entry" to `resolve()` —
       // `mockContractViewCall`'s own multicall merge relies on that distinction to tell "haven't

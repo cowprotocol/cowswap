@@ -183,6 +183,19 @@ never a logic bug in the test — check infrastructure contention first.
   make this observable; it's disabled by default because logging every request has its own cost.
   (`mockSocketVerifier` used to be in this list too — it no longer makes any real-RPC fallback at
   all, see the "connected wallet's own provider" note below; a *different* root cause than this one.)
+- **An entry riding along in another mock's JSON-RPC batch used to be relayed upstream, mock or no
+  mock.** Playwright dispatches `context.route` handlers LIFO and the winner fulfills the *whole*
+  batch, so when viem batched `eth_getTransactionCount` together with `mockApproveTransaction`'s
+  receipt poll, the receipt route answered its own entry and fetched the nonce from real Infura —
+  `installEthGetTransactionCount`'s hardcoded `0x0` never ran. Rate-limited, Infura answers such a
+  batch `200` with a bare `[{code: -32005}, ...]` array carrying no per-entry `result`, which relayed
+  as `undefined`, threw `BigInt(undefined)` inside `useTransactionAdder`'s `getTransactionCount`,
+  and dropped the approval from the store — surfacing as `[CS-87]` timing out on a snackbar that
+  never appeared, with the approve itself visibly gone through. Fixed with `rpcEntryRegistry.ts`:
+  every `mockRpcNodeRequest` caller registers its resolver there, and any mock holding a batch asks
+  the registry for entries it doesn't own before touching the network — the top-level counterpart of
+  `nestedRpcCallRegistry`. **A mock existing for a method doesn't mean it ever sees that method:
+  check which route actually wins the batch.**
 - **Closing a real-RPC-fallback gap directly beats retrying around it.** `mocks/unmocked-rpc-requests.log`
   entries are a to-do list, not just a diagnosis — each distinct `(method, selector, to)` still
   hitting a real host is a mock this suite is missing, and adding it removes a 429 source instead

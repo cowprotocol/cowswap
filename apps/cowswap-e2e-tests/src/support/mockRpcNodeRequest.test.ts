@@ -251,3 +251,54 @@ test('an upstream fetch failure falls back untouched instead of throwing', async
   assert.equal(route.fellBack, true)
   assert.equal(route.fulfilled, undefined)
 })
+
+/**
+ * Both tests below register two independent mocks against the same context, the way a real spec
+ * does (`installEthGetTransactionCount` from the fixtures, `mockApproveTransaction`'s receipt route
+ * from the test body). `createStubContext` keeps only the last-registered handler, mirroring
+ * Playwright's LIFO dispatch: the receipt mock is the one that sees the batch, and the nonce mock's
+ * own route never runs at all.
+ */
+test("an entry a sibling mock owns is answered from that mock's own resolver, with no upstream fetch", async () => {
+  const stub = createStubContext()
+  mockRpcNodeRequest(stub.context, 'eth_getTransactionCount', () => '0x0', alwaysMatches)
+  mockRpcNodeRequest(stub.context, 'eth_getTransactionReceipt', () => null, alwaysMatches)
+  const entries: JsonRpcEntry[] = [
+    { id: 13, method: 'eth_getTransactionCount', params: [] },
+    { id: 14, method: 'eth_getTransactionReceipt', params: [] },
+  ]
+  // No upstreamJson passed -> the stub's fetch() throws if this ever reaches the network.
+  const route = createStubRoute('POST', entries)
+
+  await stub.getHandler()(route.route)
+
+  assert.equal(route.fetchCalled, false)
+  assert.deepEqual(parsedBody(route.fulfilled), [
+    { jsonrpc: '2.0', id: 13, result: '0x0' },
+    { jsonrpc: '2.0', id: 14, result: null },
+  ])
+})
+
+test("a sibling mock's answer survives a rate-limited upstream that carries no result for it at all", async () => {
+  const stub = createStubContext()
+  mockRpcNodeRequest(stub.context, 'eth_getTransactionCount', () => '0x0', alwaysMatches)
+  mockRpcNodeRequest(stub.context, 'eth_getTransactionReceipt', () => null, alwaysMatches)
+  const entries: JsonRpcEntry[] = [
+    { id: 13, method: 'eth_getTransactionCount', params: [] },
+    { id: 14, method: 'eth_getTransactionReceipt', params: [] },
+    // Nothing mocks this one, so the batch still has to go upstream for it.
+    { id: 15, method: 'eth_blockNumber', params: [] },
+  ]
+  const rateLimited = { code: -32005, message: 'Too Many Requests', data: { see: 'https://infura.io/dashboard' } }
+  const route = createStubRoute('POST', entries, [rateLimited, rateLimited, rateLimited])
+
+  await stub.getHandler()(route.route)
+
+  assert.equal(route.fetchCalled, true)
+  const body = parsedBody(route.fulfilled) as Array<Record<string, unknown>>
+  // Before [CS-310]'s follow-up, id 13 relayed the bare rate-limit object: no `result` field at
+  // all, which viem reads as `undefined` and `BigInt(undefined)` throws on.
+  assert.deepEqual(body[0], { jsonrpc: '2.0', id: 13, result: '0x0' })
+  assert.deepEqual(body[1], { jsonrpc: '2.0', id: 14, result: null })
+  assert.deepEqual(body[2], rateLimited)
+})
