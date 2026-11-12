@@ -19,7 +19,6 @@ import {
   ctaColors,
   CtaLink,
   DarkPanel,
-  Disclaimer,
   FaqIcon,
   FaqItem,
   FaqList,
@@ -56,7 +55,6 @@ import {
 import LazySVG from '@/components/LazySVG'
 import {
   ACTIVE_HEADLINES,
-  ALPHA_DISCLAIMER,
   DEVELOPERS,
   FINAL_CTA,
   HeadlineLine,
@@ -139,14 +137,6 @@ export function DevelopersSection(): ReactNode {
         </ButtonRow>
       </CenteredBlock>
     </Section>
-  )
-}
-
-export function DisclaimerSection(): ReactNode {
-  return (
-    <Disclaimer>
-      <b>* Solana Alpha · Unaudited:</b> {ALPHA_DISCLAIMER}
-    </Disclaimer>
   )
 }
 

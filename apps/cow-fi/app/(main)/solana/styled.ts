@@ -826,24 +826,3 @@ export const FaqIcon = styled.span`
     content: '–';
   }
 `
-
-export const Disclaimer = styled.p`
-  max-width: 1050px;
-  margin: 0 auto;
-  padding: 0 0 64px;
-  font-family: ${FONT_MONO};
-  font-size: 16px;
-  font-weight: ${Font.weight.medium};
-  line-height: 1.4;
-  text-align: center;
-  text-wrap: pretty;
-
-  b {
-    font-weight: ${Font.weight.semibold};
-  }
-
-  ${Media.upToMedium()} {
-    padding-bottom: 40px;
-    font-size: 14px;
-  }
-`

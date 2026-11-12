@@ -9,7 +9,6 @@ import { CowFiCategory } from 'src/common/analytics/types'
 
 import {
   DevelopersSection,
-  DisclaimerSection,
   FaqSection,
   FinalCtaSection,
   HeroSection,
@@ -40,7 +39,6 @@ export default function Page(): ReactNode {
       <PartnersSection />
       <FinalCtaSection />
       <FaqSection />
-      <DisclaimerSection />
     </SolanaPageWrapper>
   )
 }

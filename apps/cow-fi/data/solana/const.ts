@@ -241,8 +241,7 @@ export const SOLANA_FAQ = [
   },
   {
     question: 'Is it audited?',
-    answer:
-      'Not yet. CoW Swap on Solana is in Alpha and hasn’t been independently audited, so each order is capped at $10,000. The Solana programs are open source and rolling out in stages.',
+    answer: 'Yes. Neodyme audited CoW Protocol on Solana, and the Solana programs are open source.',
   },
   {
     question: 'What about my users on other chains?',
@@ -262,6 +261,3 @@ export const FINAL_CTA = {
     alt: 'A bouquet of pink roses wrapped in cow print, with a CoW-logo gift tag',
   },
 }
-
-export const ALPHA_DISCLAIMER =
-  'CoW Swap on Solana is in Alpha. This deployment has not yet been independently audited and may contain bugs, vulnerabilities or unexpected behaviour that could result in failed transactions or partial or total loss of assets. Maximum trade size is $10,000 per order'
