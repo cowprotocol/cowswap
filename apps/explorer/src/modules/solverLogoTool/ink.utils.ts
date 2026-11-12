@@ -18,8 +18,8 @@ export function analyseInk(image: HTMLImageElement): Pick<LogoAsset, 'inkPoints'
     minY = 1,
     maxX = 0,
     maxY = 0
-  for (let y = 0; y < canvas.height; y += 2)
-    for (let x = 0; x < canvas.width; x += 2) {
+  for (let y = 0; y < canvas.height; y++)
+    for (let x = 0; x < canvas.width; x++) {
       const index = (y * canvas.width + x) * 4
       if (!isForeground(pixels.data, index, background)) continue
       const px = (x + 0.5) / canvas.width,
@@ -33,7 +33,12 @@ export function analyseInk(image: HTMLImageElement): Pick<LogoAsset, 'inkPoints'
   if (!points.length) return { inkPoints: [], bounds: { x: 0, y: 0, width: 1, height: 1 } }
   return {
     inkPoints: points,
-    bounds: { x: minX, y: minY, width: maxX - minX + 2 / canvas.width, height: maxY - minY + 2 / canvas.height },
+    bounds: {
+      x: minX - 0.5 / canvas.width,
+      y: minY - 0.5 / canvas.height,
+      width: maxX - minX + 1 / canvas.width,
+      height: maxY - minY + 1 / canvas.height,
+    },
   }
 }
 

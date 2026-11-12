@@ -8,6 +8,12 @@ describe('solver ZIP output', () => {
     await expect(createZip([{ name: '../logo.png', data: 'x' }])).rejects.toThrow('Invalid export path')
     await expect(createZip([{ name: '/logo.png', data: 'x' }])).rejects.toThrow('Invalid export path')
   })
+  it.each(['..\\logo.png', 'folder\\..\\logo.png', 'C:\\logo.png'])(
+    'rejects Windows path separators: %s',
+    async (name) => {
+      await expect(createZip([{ name, data: 'x' }])).rejects.toThrow('Invalid export path')
+    },
+  )
   it('keeps binary source data and UTF-8 filenames', async () => {
     const binary = Uint8Array.of(0, 255, 42, 10, 13)
     const blob = await createZip([{ name: 'solver/é.png', data: binary }])

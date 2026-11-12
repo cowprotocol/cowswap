@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 
 import { normalizeError } from '@cowprotocol/common-utils'
 
@@ -28,14 +28,15 @@ interface Source {
 
 export function useLogoPackExport(source: Source, transform: LogoTransform): PackController {
   const [state, setState] = useState<ExportState>({ source: null, kind: null, message: '' })
-  const lifecycle = useRef({ mounted: false, busy: false })
-  useEffect(() => {
+  const lifecycle = useRef({ mounted: false, busy: false, asset: source.asset })
+  useLayoutEffect(() => {
     const session = lifecycle.current
     session.mounted = true
+    session.asset = source.asset
     return (): void => {
       session.mounted = false
     }
-  }, [])
+  }, [source.asset])
   const exportPack = async (kind: PackKind): Promise<void> => {
     const session = lifecycle.current
     if (!source.asset || session.busy || source.loading) return
@@ -46,24 +47,29 @@ export function useLogoPackExport(source: Source, transform: LogoTransform): Pac
       artwork: createCanvas(),
     }
     drawArtwork(snapshot.artwork, snapshot.asset, snapshot.state)
+    const current = (): boolean => session.mounted && session.asset === snapshot.asset
     session.busy = true
     source.setError('')
     setState({ source: snapshot.asset, kind, message: '' })
     try {
       const pack = await (kind === 'ai' ? createAiPack(snapshot) : createLogoPack(snapshot))
+      if (!current()) return
       downloadPack(pack)
-      const message =
-        'Downloaded ' + pack.filename + (kind === 'ai' ? '. Attach it to your chat, then paste the prompt.' : '')
-      if (session.mounted) setState({ source: snapshot.asset, kind: null, message })
+      const message = downloadMessage(pack.filename, kind)
+      setState({ source: snapshot.asset, kind: null, message })
     } catch (err: unknown) {
       const error = normalizeError(err)
-      if (session.mounted) {
+      if (current()) {
         source.setError('Could not create the pack. ' + error.message + ' Your logo and adjustments are still here.')
-        setState({ source: snapshot.asset, kind: null, message: '' })
       }
     } finally {
       session.busy = false
+      if (session.mounted) setState((previous) => ({ ...previous, kind: null }))
     }
   }
   return { exporting: state.kind, status: state.source === source.asset ? state.message : '', exportPack }
+}
+
+function downloadMessage(filename: string, kind: PackKind): string {
+  return 'Downloaded ' + filename + (kind === 'ai' ? '. Attach it to your chat, then paste the prompt.' : '')
 }

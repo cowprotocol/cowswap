@@ -21,8 +21,7 @@ export async function createZip(entries: ZipEntry[], date = new Date()): Promise
   const dosTime = (date.getHours() << 11) | (date.getMinutes() << 5) | Math.floor(date.getSeconds() / 2)
   const dosDate = ((Math.max(1980, date.getFullYear()) - 1980) << 9) | ((date.getMonth() + 1) << 5) | date.getDate()
   for (const entry of entries) {
-    if (!entry.name || entry.name.startsWith('/') || entry.name.split('/').includes('..'))
-      throw new Error('Invalid export path.')
+    validateEntryPath(entry.name)
     const name = encoder.encode(entry.name)
     const data =
       entry.data instanceof Uint8Array
@@ -72,4 +71,9 @@ export async function createZip(entries: ZipEntry[], date = new Date()): Promise
 function header(length: number): { bytes: Uint8Array<ArrayBuffer>; view: DataView } {
   const bytes = new Uint8Array(length)
   return { bytes, view: new DataView(bytes.buffer) }
+}
+
+function validateEntryPath(name: string): void {
+  if (!name || name.startsWith('/') || name.includes('\\') || name.split('/').includes('..'))
+    throw new Error('Invalid export path.')
 }

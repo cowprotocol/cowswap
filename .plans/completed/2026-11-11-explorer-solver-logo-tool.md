@@ -4,7 +4,7 @@ Status: complete
 Owner: Codex
 Created: 2026-11-11
 Completed: 2026-11-12 (Europe/Lisbon)
-Target PR: not requested
+Target PR: https://github.com/cowprotocol/cowswap/pull/8607
 
 ## Goal
 
@@ -44,3 +44,12 @@ Port the approved browser-local solver logo prototype into CoW Explorer at /solv
 ## Follow-ups
 
 - Publishing or CMS integration requires a separate request.
+
+## PR review fixes (2026-11-12)
+
+- Addressed all seven CodeRabbit inline findings and the additional Windows ZIP path finding from the review summary.
+- Bounded both AI example fetches, including response-body reads, with the existing shared timeout utility.
+- Forced exported SVG root CSS geometry to match the positioning attributes; scanned every pixel in the bounded ink-analysis canvas and corrected pixel-edge bounds.
+- Rejected escaped/comment-obfuscated CSS and `xml:base`, and rejected backslashes in ZIP entry paths.
+- Discarded completed exports and errors after a source replacement or unmount while releasing the export controls.
+- Validation: 53 tests across 11 suites, scoped lint, Explorer typecheck and production build passed. A real-browser SVG/PNG comparison produced zero differing pixels with conflicting inline and stylesheet geometry at 70%, X 10%, Y −5%, white background.

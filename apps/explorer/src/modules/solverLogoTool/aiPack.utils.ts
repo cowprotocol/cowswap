@@ -1,6 +1,7 @@
 import { AI_GUIDELINES, aiPrompt, originalFilename } from './aiHelp.utils'
 import { loadArtwork, drawArtwork, pngBlob } from './artwork.utils'
 import { createCanvas, getCanvasContext } from './canvas.utils'
+import { loadExampleAsset } from './exampleAssets.utils'
 import { solverSlug } from './geometry.utils'
 import { previewSheet } from './previews.utils'
 import { CONTEXT_REFERENCE_URL, SAMPLES } from './solverLogoTool.constants'
@@ -12,7 +13,7 @@ export async function createAiPack({ name, asset, state, artwork }: LogoSnapshot
   const slug = solverSlug(name),
     prefix = slug + '-ai-help/'
   const [contextReference, spacing, current, preview] = await Promise.all([
-    localFile(CONTEXT_REFERENCE_URL),
+    loadExampleAsset(CONTEXT_REFERENCE_URL),
     positioningGuide(),
     pngBlob(artwork),
     pngBlob(previewSheet(artwork, name)),
@@ -57,14 +58,8 @@ export async function createAiPack({ name, asset, state, artwork }: LogoSnapshot
   }
 }
 
-async function localFile(path: string): Promise<Blob> {
-  const response = await fetch(path)
-  if (!response.ok) throw new Error('A visual example could not be loaded. Try again.')
-  return response.blob()
-}
-
 async function positioningGuide(): Promise<Blob> {
-  const file = new File([await localFile(SAMPLES.fibrous.url)], 'fibrous.png', { type: 'image/png' })
+  const file = new File([await loadExampleAsset(SAMPLES.fibrous.url)], 'fibrous.png', { type: 'image/png' })
   const example = await loadArtwork(file)
   try {
     const canvas = createCanvas(1024, 1024)

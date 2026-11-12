@@ -49,6 +49,8 @@ function validateAttribute(attribute: Attr): void {
   const name = attribute.localName.toLowerCase(),
     value = attribute.value.trim()
   if (name.startsWith('on')) throw new Error('Use a static SVG without event handlers.')
+  if (attribute.namespaceURI === 'http://www.w3.org/XML/1998/namespace' && name === 'base')
+    throw new Error('Remove xml:base from the SVG before uploading.')
   if (['href', 'src'].includes(name) && value && !value.startsWith('#'))
     throw new Error(
       'This SVG links to an image or external resource. Upload a self-contained vector SVG or a PNG instead.',

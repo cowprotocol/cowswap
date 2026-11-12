@@ -65,10 +65,10 @@ export function preparedSvg(asset: LogoAsset, state: LogoTransform): string | nu
   if (!asset.svg) return null
   const root = new DOMParser().parseFromString(asset.svg, 'image/svg+xml').documentElement
   const rect = imageRect(asset, state)
-  root.setAttribute('x', String(rect.x))
-  root.setAttribute('y', String(rect.y))
-  root.setAttribute('width', String(rect.width))
-  root.setAttribute('height', String(rect.height))
+  for (const [property, value] of Object.entries(rect)) {
+    root.setAttribute(property, String(value))
+    root.style.setProperty(property, `${value}px`, 'important')
+  }
   root.setAttribute('preserveAspectRatio', 'xMidYMid meet')
   const background =
     state.background === 'transparent' ? '' : '<rect width="1024" height="1024" fill="' + state.background + '"/>'

@@ -33,4 +33,22 @@ describe('self-contained SVG validation', () => {
       height: 80,
     })
   })
+  it.each([
+    '<style>@im\\70ort "https://example.com/logo.css";</style>',
+    '<style>path{fill:u\\72l(https://example.com/paint.svg#mark)}</style>',
+    '<style>@\\000069mport "https://example.com/logo.css";</style>',
+    '<path style="fill:u\\72l(https://example.com/paint.svg#mark)"/>',
+    '<path fill="u\\72l(https://example.com/paint.svg#mark)"/>',
+    '<style>path{fill:u/**/rl(https://example.com/paint.svg#mark)}</style>',
+  ])('rejects CSS syntax that could disguise external resources: %s', (content) => {
+    expect(() =>
+      readSvg('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">' + content + '</svg>'),
+    ).toThrow('simpler self-contained SVG')
+  })
+  it.each([
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" xml:base="https://example.com/external.svg"><use href="#mark"/></svg>',
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><g xml:base="https://example.com/external.svg"><use href="#mark"/></g></svg>',
+  ])('rejects a rebased fragment reference: %s', (source) => {
+    expect(() => readSvg(source)).toThrow('xml:base')
+  })
 })
