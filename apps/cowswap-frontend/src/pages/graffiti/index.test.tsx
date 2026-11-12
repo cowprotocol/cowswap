@@ -11,14 +11,17 @@ import { LinguiWrapper } from '../../../LinguiJestProvider'
 
 import GraffitiPage from './index'
 
-const mockSwitchNetwork = jest.fn().mockResolvedValue(undefined)
+const mockOnSelectNetwork = jest.fn().mockResolvedValue(undefined)
 
 jest.mock('@cowprotocol/wallet', () => ({
   useOpenWalletConnectionModal: () => jest.fn(),
   useSolanaAccount: jest.fn(),
   useSolanaWalletProvider: () => undefined,
-  useSwitchNetwork: () => mockSwitchNetwork,
   useWalletInfo: jest.fn(),
+}))
+
+jest.mock('common/hooks/useOnSelectNetwork', () => ({
+  useOnSelectNetwork: () => mockOnSelectNetwork,
 }))
 
 jest.mock('@reown/appkit-adapter-solana/react', () => ({
@@ -113,7 +116,7 @@ beforeEach(() => {
   fetchCanvasPngMock.mockResolvedValue(new Uint8ClampedArray(WIDTH * HEIGHT * 4))
   subscribeDiffsMock.mockClear()
   subscribeDiffsMock.mockReturnValue(jest.fn())
-  mockSwitchNetwork.mockClear()
+  mockOnSelectNetwork.mockClear()
 })
 
 describe('network gate', () => {
@@ -125,13 +128,15 @@ describe('network gate', () => {
     expect(screen.queryByText(/START DRAWING/)).toBeNull()
   })
 
+  // An EVM-only session cannot switch to Solana in place, so the gate goes through the same
+  // network-select flow as the header, which disconnects and asks for a Solana wallet.
   it('switches network when asked', () => {
     onChain(SupportedChainId.MAINNET)
     render(<GraffitiPage />)
 
     fireEvent.click(screen.getByText(/Switch to Solana/))
 
-    expect(mockSwitchNetwork).toHaveBeenCalledWith(SupportedChainId.SOLANA)
+    expect(mockOnSelectNetwork).toHaveBeenCalledWith(SupportedChainId.SOLANA)
   })
 })
 

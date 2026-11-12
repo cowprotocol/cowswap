@@ -1,7 +1,9 @@
 import { useCallback, useState } from 'react'
 
 import { isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useOpenWalletConnectionModal, useSolanaAccount, useSwitchNetwork, useWalletInfo } from '@cowprotocol/wallet'
+import { useOpenWalletConnectionModal, useSolanaAccount, useWalletInfo } from '@cowprotocol/wallet'
+
+import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 
 export interface SolanaGate {
   solanaAccount: ReturnType<typeof useSolanaAccount>
@@ -19,7 +21,9 @@ export function useSolanaGate(): SolanaGate {
   const solanaAccount = useSolanaAccount()
   const openWalletModal = useOpenWalletConnectionModal()
   const { chainId } = useWalletInfo()
-  const switchNetwork = useSwitchNetwork()
+  // Reown cannot move an EVM-only session to Solana: the same flow as the header network
+  // selector confirms the swap, disconnects the EVM wallet and opens the Solana wallet list.
+  const onSelectNetwork = useOnSelectNetwork()
   const [switching, setSwitching] = useState(false)
 
   // Without the namespace the modal opens on the EVM wallet list.
@@ -30,13 +34,11 @@ export function useSolanaGate(): SolanaGate {
   const switchToSolana = useCallback(async (): Promise<void> => {
     setSwitching(true)
     try {
-      await switchNetwork(SupportedChainId.SOLANA)
-    } catch (err: unknown) {
-      console.error('network switch failed', err)
+      await onSelectNetwork(SupportedChainId.SOLANA)
     } finally {
       setSwitching(false)
     }
-  }, [switchNetwork])
+  }, [onSelectNetwork])
 
   return {
     solanaAccount,
