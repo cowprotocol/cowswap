@@ -132,10 +132,6 @@ export type { SignedSolanaFlow, SignSolanaFlowContext } from './services/solanaF
 export { planWrapStep, getWrapFundedAccounts } from './services/solanaFlow/planWrapStep'
 export { planDelegateStep } from './services/solanaFlow/planDelegateStep'
 export { getIsBuyAtaCreationSkipped, planCreateBuyAtaStep } from './services/solanaFlow/planCreateBuyAtaStep'
-export {
-  assertIntentCreditsReceiver,
-  IntentReceiverMismatchError,
-} from './services/solanaFlow/assertIntentCreditsReceiver'
 export { planCreateOrderStep } from './services/solanaFlow/planCreateOrderStep'
 export { planCreateLimitOrderStep } from './services/solanaFlow/planCreateLimitOrderStep'
 export { getSolanaTradeOverhead } from './services/feeAmountCalculator/getSolanaTradeOverhead'

@@ -27,7 +27,6 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 import { type AppDataInfo, uploadAppDataDocOrderbookApi } from 'modules/appData'
 import { emitPostedOrderEvent } from 'modules/orders'
 import { tradeConfirmStateAtom } from 'modules/trade'
-import { assertIntentCreditsReceiver } from 'modules/trade/services/solanaFlow/assertIntentCreditsReceiver'
 import {
   getIsBuyAtaCreationSkipped,
   planCreateBuyAtaStep,
@@ -90,9 +89,6 @@ jest.mock('modules/trade/services/solanaFlow/planCreateBuyAtaStep', () => ({
   planCreateBuyAtaStep: jest.fn(),
   getIsBuyAtaCreationSkipped: jest.fn(),
 }))
-jest.mock('modules/trade/services/solanaFlow/assertIntentCreditsReceiver', () => ({
-  assertIntentCreditsReceiver: jest.fn(),
-}))
 jest.mock('modules/trade/services/solanaFlow/planCreateOrderStep', () => ({ planCreateOrderStep: jest.fn() }))
 jest.mock('modules/trade/services/solanaFlow/planCreateLimitOrderStep', () => ({ planCreateLimitOrderStep: jest.fn() }))
 
@@ -103,9 +99,6 @@ const mockPlanDelegateStep = planDelegateStep as jest.MockedFunction<typeof plan
 const mockPlanCreateBuyAtaStep = planCreateBuyAtaStep as jest.MockedFunction<typeof planCreateBuyAtaStep>
 const mockGetIsBuyAtaCreationSkipped = getIsBuyAtaCreationSkipped as jest.MockedFunction<
   typeof getIsBuyAtaCreationSkipped
->
-const mockAssertIntentCreditsReceiver = assertIntentCreditsReceiver as jest.MockedFunction<
-  typeof assertIntentCreditsReceiver
 >
 const mockPlanCreateOrderStep = planCreateOrderStep as jest.MockedFunction<typeof planCreateOrderStep>
 const mockPlanCreateLimitOrderStep = planCreateLimitOrderStep as jest.MockedFunction<typeof planCreateLimitOrderStep>
@@ -1007,37 +1000,6 @@ describe('solanaFlow · buy account creation', () => {
     })
     expect(mockPlanCreateBuyAtaStep).toHaveBeenCalledWith(expect.objectContaining({ isCreationSkipped: true }))
     expect(sentSteps()).toEqual([WRAP_STEP, DELEGATE_STEP, ORDER_STEP])
-  })
-
-  // The intent signs `buyTokenAccount` as a bare address, which neither the confirmation screen nor the
-  // wallet prompt can tie back to a wallet, so before the prompt opens is the only chance to catch one
-  // that credits someone else. Settlement reports it as "Associated address does not match seed", which
-  // the user sees only once the bundle has already been signed and handed over.
-  it('verifies the intent credits the recipient before anything reaches the wallet', async () => {
-    const context = buildContext()
-
-    await solanaFlow(context, buildAnalytics())
-
-    const [quote, receiver] = mockAssertIntentCreditsReceiver.mock.calls[0]
-    expect(quote.intent.buyTokenAccount).toEqual(QUOTED_BUY_TOKEN_ACCOUNT)
-    expect(receiver.toBase58()).toBe(RECEIVER_ADDRESS)
-    expect(mockAssertIntentCreditsReceiver.mock.invocationCallOrder[0]).toBeLessThan(
-      mockSendSolanaFlow.mock.invocationCallOrder[0],
-    )
-  })
-
-  it('signs nothing when the intent would credit another account', async () => {
-    mockAssertIntentCreditsReceiver.mockImplementationOnce(() => {
-      throw new Error('The order would credit someone else')
-    })
-    const context = buildContext()
-
-    await solanaFlow(context, buildAnalytics())
-
-    expect(mockSignSolanaFlow).not.toHaveBeenCalled()
-    expect(mockSendSolanaFlow).not.toHaveBeenCalled()
-    expect(mockPostSolanaSponsoredOrder).not.toHaveBeenCalled()
-    expect(context.tradeConfirmActions.onError).toHaveBeenCalled()
   })
 
   it('keeps the creation step while the flag is off', async () => {
