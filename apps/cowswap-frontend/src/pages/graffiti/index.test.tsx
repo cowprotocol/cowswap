@@ -31,6 +31,14 @@ jest.mock('modules/application', () => ({
   useFullBleedPage: () => undefined,
 }))
 
+// jsdom reports no fullscreen support, and `useFullscreen` reads that once at
+// module load, so the flag has to be set before the module is first required.
+jest.mock('./useFullscreen', () => {
+  Object.defineProperty(globalThis.document, 'fullscreenEnabled', { configurable: true, value: true })
+
+  return jest.requireActual('./useFullscreen')
+})
+
 jest.mock('./useTokenBalance', () => ({
   useTokenBalance: jest.fn(),
 }))
