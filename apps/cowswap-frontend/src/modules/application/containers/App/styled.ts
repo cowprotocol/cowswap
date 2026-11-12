@@ -147,6 +147,14 @@ export const BodyWrapper = styled.div<{
     isSolanaTheme(customTheme) ? `normal, normal, ${wallCssBlendMode(theme.darkMode)}` : 'normal'};
 
   /*
+   * The wall layer alone resolves against the viewport. Cover otherwise refits it to this element's
+   * own box, which grows ~100px as the widget, its quote and the banners settle — zooming the paint
+   * ~10% and sliding it sideways on every load. It also makes the crop follow the viewport's aspect
+   * ratio, which is what findFreeSpot's safe area is computed against.
+   */
+  background-attachment: ${({ customTheme }) => (isSolanaTheme(customTheme) ? 'scroll, scroll, fixed' : 'scroll')};
+
+  /*
    * The wall is this page's backdrop, so the surfaces laid over it — the trade
    * widget above all — let a little of it through. Redeclaring the tokens here
    * rather than in the theme keeps it to this subtree: modals and dropdowns
@@ -164,6 +172,8 @@ export const BodyWrapper = styled.div<{
       theme.isWidget ? '0 0 16px' : $hasActiveSpeechBubbleNotification ? '150px 16px 330px' : '150px 16px 150px'};
     flex: none;
     min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 200px)')};
+    /* iOS resolves a fixed background against the whole document, scaling it wildly — scroll with the page here. */
+    background-attachment: scroll;
     background-size: ${({ customTheme }) => {
       if (isSolanaTheme(customTheme)) return 'contain, auto, cover'
 
