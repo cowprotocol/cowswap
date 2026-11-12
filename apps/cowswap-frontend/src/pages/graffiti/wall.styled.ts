@@ -384,6 +384,27 @@ export const GlowButton = styled.button`
     inset 0 0 8px rgba(0, 255, 163, 0.15);
 `
 
+/** `GlowButton` with a leading mark, centred on the label rather than on a baseline. */
+export const IconGlowButton = styled(GlowButton)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+`
+
+/**
+ * Drawn rather than typed: the `⌄` the monospace stack falls back to for this
+ * glyph sits well below the label beside it.
+ */
+export const ChevronDown = styled.span`
+  flex: none;
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid currentColor;
+`
+
 export const DangerButton = styled(Button)`
   border-color: ${wallColors.danger}55;
   color: ${wallColors.danger};

@@ -2104,8 +2104,8 @@ msgid "Quote refresh in"
 msgstr "Quote refresh in"
 
 #: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
-msgid "⌄ hide tools"
-msgstr "⌄ hide tools"
+#~ msgid "⌄ hide tools"
+#~ msgstr "⌄ hide tools"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Price impact unknown"
@@ -6794,6 +6794,10 @@ msgstr "📍 frame locked — undo everything to move it"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx
 msgid "Transaction"
 msgstr "Transaction"
+
+#: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
+msgid "hide tools"
+msgstr "hide tools"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/SafeTxFields.tsx
 msgid "Safe contracts have a so-called \"nonce.\" This is to ensure that each transaction can be executed only once so no replay attacks are possible."

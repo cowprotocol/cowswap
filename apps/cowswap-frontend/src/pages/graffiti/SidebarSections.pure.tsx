@@ -160,9 +160,10 @@ export function DraftActions({ show, canUndo, onUndo, onClear }: DraftActionsPro
 
 export function HideToolsButton({ onHide }: { onHide: () => void }): ReactNode {
   return (
-    <styledEl.GlowButton onClick={onHide}>
-      <Trans>⌄ hide tools</Trans>
-    </styledEl.GlowButton>
+    <styledEl.IconGlowButton onClick={onHide}>
+      <styledEl.ChevronDown />
+      <Trans>hide tools</Trans>
+    </styledEl.IconGlowButton>
   )
 }
 
