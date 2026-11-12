@@ -29,6 +29,15 @@ export function FullAmountQuoteUpdater() {
   const quoteParams = useQuoteParams(fullQuoteAmount)?.quoteParams
   const updateQuoteState = useSetAtom(fullAmountQuoteAtom)
   const latestQuoteParamsRef = useRef(quoteParams)
+  const isMountedRef = useRef(false)
+
+  useEffect(() => {
+    isMountedRef.current = true
+
+    return () => {
+      isMountedRef.current = false
+    }
+  }, [])
 
   // The stored quote belongs to the previous amount/tokens, so drop it until the new one arrives
   useEffect(() => {
@@ -43,7 +52,7 @@ export function FullAmountQuoteUpdater() {
       .then((response) => {
         const { cancelled, data } = response
 
-        if (cancelled || quoteParams !== latestQuoteParamsRef.current) {
+        if (cancelled || !isMountedRef.current || quoteParams !== latestQuoteParamsRef.current) {
           return
         }
 

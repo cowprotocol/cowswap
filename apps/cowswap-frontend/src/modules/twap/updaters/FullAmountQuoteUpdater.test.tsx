@@ -140,4 +140,20 @@ describe('FullAmountQuoteUpdater', () => {
 
     expect(storedFullQuoteBuyAmount()).toBeUndefined()
   })
+
+  it('ignores a full-amount quote that resolves after the updater has unmounted', async () => {
+    setFormState(PARAMS_1_WETH, '750000000')
+    const request = pending()
+    getQuoteMock.mockReturnValueOnce(request.promise)
+
+    const view = render(<FullAmountQuoteUpdater />, { wrapper })
+    await act(async () => undefined)
+
+    view.unmount()
+    await act(async () => {
+      request.resolve(fullQuoteResponse('1500000000'))
+    })
+
+    expect(storedFullQuoteBuyAmount()).toBeUndefined()
+  })
 })
