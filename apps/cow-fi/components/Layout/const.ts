@@ -68,6 +68,10 @@ function getProductsNavItem(isSolversEnabled: boolean): MenuItem {
         href: '/cow-protocol',
       },
       {
+        label: 'Solana',
+        href: '/solana',
+      },
+      {
         label: 'More',
         children: [
           {
