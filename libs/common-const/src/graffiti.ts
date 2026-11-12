@@ -40,23 +40,19 @@ const PAINT_MIX_BLEND_MODE: Record<WallComposite, string> = {
 }
 
 /**
- * The wall layer's CSS `background-blend-mode`, per colour scheme.
+ * The wall layer's CSS `background-blend-mode`.
  *
  * `canvas.png` carries no alpha channel — an unpainted cell is opaque black — so `normal`
  * would paint the whole backdrop black instead of letting it through. `lighten` keeps the
  * paint on top while black defers to the backdrop, supplying the alpha the image lacks.
- * Each mode needs its opposite operator per scheme: the lightening ones vanish on a light
- * backdrop, the darkening ones on a dark one.
+ * Both are lightening operators because the backdrop under the paint is always the theme's
+ * dark base, like the chrome above: their darkening counterparts leave nothing but black.
  */
-const CSS_BLEND_MODE: Record<WallComposite, { dark: string; light: string }> = {
-  over: { dark: 'lighten', light: 'darken' },
-  blend: { dark: 'screen', light: 'multiply' },
+const CSS_BLEND_MODE: Record<WallComposite, string> = {
+  over: 'lighten',
+  blend: 'screen',
 }
 
 export const WALL_PAINT_MIX_BLEND_MODE = PAINT_MIX_BLEND_MODE[WALL_COMPOSITE]
 
-export function wallCssBlendMode(darkMode: boolean): string {
-  const modes = CSS_BLEND_MODE[WALL_COMPOSITE]
-
-  return darkMode ? modes.dark : modes.light
-}
+export const WALL_CSS_BLEND_MODE = CSS_BLEND_MODE[WALL_COMPOSITE]

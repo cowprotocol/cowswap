@@ -1,7 +1,26 @@
 import { render } from '@testing-library/react'
-import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
+import { renderToStaticMarkup } from 'react-dom/server'
+import { ServerStyleSheet, ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
 
 import { AppWrapper, BodyWrapper, Marginer } from './styled'
+
+function solanaWallCss(darkMode: boolean): string {
+  const sheet = new ServerStyleSheet()
+
+  try {
+    renderToStaticMarkup(
+      sheet.collectStyles(
+        <StyledComponentsThemeProvider theme={{ isWidget: false, darkMode } as never}>
+          <AppWrapper customTheme="darkSolana" />
+        </StyledComponentsThemeProvider>,
+      ),
+    )
+
+    return sheet.getStyleTags().replace(/\s+/g, '')
+  } finally {
+    sheet.seal()
+  }
+}
 
 describe('AppWrapper', () => {
   it('does not enforce a minimum viewport height in widget mode', () => {
@@ -81,5 +100,19 @@ describe('Marginer', () => {
     )
 
     expect(window.getComputedStyle(getByTestId('marginer')).marginTop).toBe('5rem')
+  })
+})
+
+describe('AppWrapper under the Solana theme', () => {
+  it('paints the wall the same way whichever colour scheme the app is in', () => {
+    expect(solanaWallCss(false)).toBe(solanaWallCss(true))
+  })
+
+  it('keeps the wall on its dark base, under a lightening blend', () => {
+    const css = solanaWallCss(false)
+
+    expect(css).toContain('background-color:#0E0F2D')
+    expect(css).not.toContain('--cow-color-blue-300-primary')
+    expect(css).not.toContain('multiply')
   })
 })

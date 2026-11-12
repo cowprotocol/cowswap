@@ -1,7 +1,7 @@
 import type { FeatureFlags } from '@cowprotocol/common-const'
 import type { CowSwapTheme } from '@cowprotocol/ui'
 
-import { resolveCowSwapTheme } from './useCustomTheme'
+import { isWallPagePath, resolveCowSwapTheme } from './useCustomTheme'
 
 function buildFlags(overrides: FeatureFlags = {}): FeatureFlags {
   return {
@@ -156,5 +156,16 @@ describe('resolveCowSwapTheme', () => {
     expect(resolveCowSwapTheme(darkMode, featureFlags, { onSolanaChain, graffitiWallEnabled, onWallPage })).toBe(
       expected,
     )
+  })
+})
+
+describe('isWallPagePath', () => {
+  test.each([
+    ['/graffiti', true],
+    ['/graffiti/claim', true],
+    ['/swap', false],
+    ['/', false],
+  ])('%s -> %s', (pathname, expected) => {
+    expect(isWallPagePath(pathname)).toBe(expected)
   })
 })

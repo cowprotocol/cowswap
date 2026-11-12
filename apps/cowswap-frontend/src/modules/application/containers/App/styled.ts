@@ -10,7 +10,7 @@ import svgBackgroundCowswapHalloweenDarkMediumSrc from '@cowprotocol/assets/imag
 import svgBackgroundCowswapHalloweenDarkSrc from '@cowprotocol/assets/images/background-cowswap-halloween-dark.svg'
 import svgBackgroundCowswapLightmodeNocowsSrc from '@cowprotocol/assets/images/background-cowswap-lightmode-nocows.svg'
 import svgBackgroundCowswapLightmodeSrc from '@cowprotocol/assets/images/background-cowswap-lightmode.svg'
-import { GRAFFITI_CANVAS_PNG_URL, wallCssBlendMode } from '@cowprotocol/common-const'
+import { GRAFFITI_CANVAS_PNG_URL, WALL_CSS_BLEND_MODE } from '@cowprotocol/common-const'
 import { CowSwapTheme, Media, UI } from '@cowprotocol/ui'
 
 import { darken, transparentize } from 'color2k'
@@ -65,27 +65,30 @@ const WALL_SURFACE_LAYER =
   'repeating-linear-gradient(135deg, rgba(14, 15, 45, 0.55) 0 3px, rgba(120, 150, 255, 0.06) 3px 9px)'
 
 /**
+ * Everything the wall is made of is the dark treatment, whatever colour scheme the rest of the app
+ * is in: `darkSolana` is the theme's only variant (see useCustomTheme), and the paint over this
+ * base is composited with a lightening blend, which leaves a light base near-black and the tags
+ * with it. A dark base is also what the page can show before the remote canvas arrives.
+ */
+const WALL_BASE_COLOR = '#0E0F2D'
+const WALL_DARK_SCHEME = true
+
+/**
  * The paint drops out on a full-bleed page, which owns the viewport and draws its own wall: the
  * wall page renders the same canvas live, over a deliberately transparent root so its paint blends
  * with whatever the shell puts behind it, and a second static copy back there doubles every tag.
  * The plaster and the base colour stay, so the page keeps its surface rather than going flat.
  */
-function wallBackdrop(darkMode: boolean, fullBleed?: boolean): string {
-  const base = wallBaseColor(darkMode)
+function wallBackdrop(fullBleed?: boolean): string {
+  if (fullBleed) return `${WALL_SURFACE_LAYER} ${WALL_BASE_COLOR}`
 
-  if (fullBleed) return `${WALL_SURFACE_LAYER} ${base}`
-
-  return `${WALL_SURFACE_LAYER}, ${WALL_LAYER} ${base}`
+  return `${WALL_SURFACE_LAYER}, ${WALL_LAYER} ${WALL_BASE_COLOR}`
 }
 
-function wallBackdropBlendMode(darkMode: boolean, fullBleed?: boolean): string {
+function wallBackdropBlendMode(fullBleed?: boolean): string {
   if (fullBleed) return 'normal'
 
-  return `normal, ${wallCssBlendMode(darkMode)}`
-}
-
-function wallBaseColor(darkMode: boolean): string {
-  return darkMode ? '#0E0F2D' : `var(${UI.COLOR_BLUE_300_PRIMARY})`
+  return `normal, ${WALL_CSS_BLEND_MODE}`
 }
 
 /**
@@ -146,7 +149,7 @@ export const AppWrapper = styled.div<
     isSolanaTheme(customTheme) &&
     css`
       isolation: isolate;
-      background-color: ${wallBaseColor(theme.darkMode)};
+      background-color: ${WALL_BASE_COLOR};
 
       /*
        * Fixed rather than a background on this box: a background covers the box, whose height both
@@ -159,8 +162,8 @@ export const AppWrapper = styled.div<
         inset: 0;
         z-index: -2;
         pointer-events: none;
-        background: ${wallBackdrop(theme.darkMode, $fullBleed)};
-        background-blend-mode: ${wallBackdropBlendMode(theme.darkMode, $fullBleed)};
+        background: ${wallBackdrop($fullBleed)};
+        background-blend-mode: ${wallBackdropBlendMode($fullBleed)};
       }
 
       /*
@@ -177,7 +180,7 @@ export const AppWrapper = styled.div<
         z-index: -1;
         pointer-events: none;
         opacity: ${WALL_SCENE_OPACITY};
-        background: ${sceneLayer(theme.darkMode, customTheme, backgroundVariant)};
+        background: ${sceneLayer(WALL_DARK_SCHEME, customTheme, backgroundVariant)};
       }
     `}
   height: ${({ theme }) => (theme.isWidget ? 'initial' : '100%')};
