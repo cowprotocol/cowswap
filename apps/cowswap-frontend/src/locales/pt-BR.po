@@ -8,7 +8,7 @@ msgstr ""
 "Language: pt\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-11-11 14:28\n"
+"PO-Revision-Date: 2026-11-12 10:59\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -90,6 +90,10 @@ msgstr "Sua atividade de recompensas vai aparecer aqui."
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/BridgingProgressContent/ReceivedBridgingContent/index.tsx
 msgid "Bridge transaction"
 msgstr "Transação de ponte"
+
+#: apps/cowswap-frontend/src/modules/limitOrders/pure/OrderExpiryWarning/OrderExpiryWarning.pure.tsx
+msgid "Until it expires, this order can fill whenever enough {token} is in your wallet, including funds added later."
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
 msgid "Because you are using a smart contract wallet, you will pay a separate gas cost for signing the order placement on-chain."
@@ -244,6 +248,10 @@ msgstr "Falha na ponte"
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/FAQContent.pure.tsx
 msgid "What is {accountProxyLabel}?"
 msgstr "O que é {accountProxyLabel}?"
+
+#: apps/cowswap-frontend/src/modules/limitOrders/pure/OrderExpiryWarning/OrderExpiryWarning.pure.tsx
+msgid "I understand this order can fill whenever funds return to my wallet"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/index.tsx
 msgid "Your activity will appear here..."
@@ -857,6 +865,10 @@ msgstr "Operações vindas do fluxo de integradores são excluídas das recompen
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/OrderTypeField.tsx
 msgid "Limit sell order"
 msgstr "Ordem limite de venda"
+
+#: apps/cowswap-frontend/src/modules/limitOrders/pure/OrderExpiryWarning/OrderExpiryWarning.pure.tsx
+msgid "Running out of {token} doesn't cancel this order. If {token} returns to your wallet before it expires, the order can fill, possibly at a price you no longer want."
+msgstr ""
 
 #: apps/cowswap-frontend/src/common/pure/CoWAmmBannerContent/GlobalContent/index.tsx
 msgid "One-click convert, <0>boost yield</0>"
@@ -3368,6 +3380,10 @@ msgstr "A aprovação parcial pode bloquear <0>{affectedOrdersLength}</0> {affec
 msgid "The amount you saved compared to your limit price."
 msgstr ""
 
+#: apps/cowswap-frontend/src/modules/limitOrders/pure/OrderExpiryWarning/OrderExpiryWarning.pure.tsx
+#~ msgid "Until it expires, this order can be executed whenever enough {token} is in your wallet — including funds that arrive after you place it. Cancel the order if you no longer want it to fill."
+#~ msgstr "Until it expires, this order can be executed whenever enough {token} is in your wallet — including funds that arrive after you place it. Cancel the order if you no longer want it to fill."
+
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/AccountIcon.tsx
 msgid "Warning sign. Wallet not supported"
 msgstr "Sinal de aviso. Carteira não suportada"
@@ -5436,6 +5452,10 @@ msgstr "Valor de venda esperado"
 msgid "Limit Order"
 msgstr "Ordem Limite"
 
+#: apps/cowswap-frontend/src/modules/limitOrders/pure/OrderExpiryWarning/OrderExpiryWarning.pure.tsx
+#~ msgid "The order is not cancelled when your {token} balance runs out. Whenever enough {token} reappears in your wallet before the order expires — even months from now — it becomes executable again and may fill at a price you no longer want. Cancel the order if you no longer want it to fill."
+#~ msgstr "The order is not cancelled when your {token} balance runs out. Whenever enough {token} reappears in your wallet before the order expires — even months from now — it becomes executable again and may fill at a price you no longer want. Cancel the order if you no longer want it to fill."
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure.tsx
 msgid "Insufficient allowance"
 msgstr "Permissão insuficiente"
@@ -6356,6 +6376,10 @@ msgstr "Os <0>solvers do CoW Swap</0> estão buscando fontes de liquidez em todo
 #~ msgid "The fee is {protocolFeeAsPercent}%, applied only if the trade is executed, in order to incentivize a strong solver competition that provides ecosystem leading prices"
 #~ msgstr "The fee is {protocolFeeAsPercent}%, applied only if the trade is executed, in order to incentivize a strong solver competition that provides ecosystem leading prices"
 
+#: apps/cowswap-frontend/src/modules/limitOrders/pure/OrderExpiryWarning/OrderExpiryWarning.pure.tsx
+msgid "This order stays active for more than a week"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeLinkingStatusSection.tsx
 msgid "Your wallet is eligible for rewards. After your first trade, the referral code will bind and stay active for {timeCapDays, plural, one {# day} few {# days} many {# days} other {# days}}."
 msgstr "Sua carteira é elegível para recompensas. Após sua primeira negociação, o código de afiliado será vinculado e permanecerá ativo por {timeCapDays, plural, one {# dia} few {# dias} many {# dias} other {# dias}}."
@@ -7023,6 +7047,10 @@ msgstr "A venda de {symbol} não é suportada"
 msgid "View transaction"
 msgstr "Ver transação"
 
+#: apps/cowswap-frontend/src/modules/limitOrders/pure/OrderExpiryWarning/OrderExpiryWarning.pure.tsx
+#~ msgid "This order stays active for more than a month"
+#~ msgstr "This order stays active for more than a month"
+
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 #~ msgid "Sign the permit in your wallet. Each part is pulled right before it trades."
 #~ msgstr "Sign the permit in your wallet. Each part is pulled right before it trades."
@@ -7064,6 +7092,10 @@ msgstr "Versão"
 #: apps/cowswap-frontend/src/pages/Account/Tokens/TokensOverview.tsx
 msgid "All tokens"
 msgstr "Todos os tokens"
+
+#: apps/cowswap-frontend/src/modules/limitOrders/pure/OrderExpiryWarning/OrderExpiryWarning.pure.tsx
+#~ msgid "The order is not cancelled when your {token} balance runs out. Whenever enough {token} reappears in your wallet before the order expires — even weeks or months from now — it becomes executable again and may fill at a price you no longer want. Cancel the order if you no longer want it to fill."
+#~ msgstr "The order is not cancelled when your {token} balance runs out. Whenever enough {token} reappears in your wallet before the order expires — even weeks or months from now — it becomes executable again and may fill at a price you no longer want. Cancel the order if you no longer want it to fill."
 
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 msgid "When selling {aNativeCurrency}, the minimum slippage tolerance is set to {minimumETHFlowSlippage}% or higher{amountRange} to ensure a high likelihood of order matching, even in volatile market conditions."
@@ -9423,6 +9455,10 @@ msgstr "Seu código de afiliado"
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/TraderReferralCodeModalContent.tsx
 #~ msgid "The code <0>{rejectionCode}</0> from your link wasn’t applied."
 #~ msgstr "The code <0>{rejectionCode}</0> from your link wasn’t applied."
+
+#: apps/cowswap-frontend/src/modules/limitOrders/pure/OrderExpiryWarning/OrderExpiryWarning.pure.tsx
+#~ msgid "I understand this order can be executed whenever funds reappear in my wallet until it expires"
+#~ msgstr "I understand this order can be executed whenever funds reappear in my wallet until it expires"
 
 #: apps/cowswap-frontend/src/common/pure/CancelButton/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ContextMenu/OrderContextMenu.pure.tsx
