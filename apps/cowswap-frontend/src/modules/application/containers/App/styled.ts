@@ -31,6 +31,23 @@ export function isSolanaTheme(theme?: CowSwapTheme): boolean {
   return theme === 'darkSolana'
 }
 
+/** The cow scene that sits at the foot of the page, as a background layer. */
+function sceneLayer(darkMode: boolean, customTheme?: CowSwapTheme, backgroundVariant?: PageBackgroundVariant): string {
+  let src
+
+  if (backgroundVariant === 'nocows') {
+    src = darkMode ? svgBackgroundCowswapDarkmodeNocowsSrc : svgBackgroundCowswapLightmodeNocowsSrc
+  } else if (customTheme === 'darkHalloween') {
+    src = svgBackgroundCowswapHalloweenDarkSrc
+  } else if (isChristmasTheme(customTheme)) {
+    src = darkMode ? svgBackgroundCowswapChristmasDarkSrc : svgBackgroundCowswapChristmasLightSrc
+  } else {
+    src = darkMode ? svgBackgroundCowswapDarkmodeSrc : svgBackgroundCowswapLightmodeSrc
+  }
+
+  return `url(${src}) no-repeat bottom -1px center / contain`
+}
+
 /**
  * The canvas is 16:9 as served. Over-stating it is the safe direction: it only feeds the box's
  * min-height below, so a taller real canvas would be given less room than it needs and lose its
@@ -76,6 +93,13 @@ const WALL_VEIL_DARKER_ALPHA = 0.4
  * the chrome. Its own text is mid-grey, which still clears 4.5:1 over the backdrop at this alpha.
  */
 export const WALL_FOOTER_BACKGROUND = 'rgb(0 0 0 / 60%)'
+
+/**
+ * How solid the cow scene stays over the wall. Its silhouettes are opaque, and the hill alone hides
+ * a tenth of the canvas, so paint that lands under it is simply gone. At this much the scene still
+ * reads as a scene while the paint behind it comes through.
+ */
+const WALL_SCENE_OPACITY = 0.6
 
 export const AppWrapper = styled.div<Partial<CSS.Properties> & { $fullBleed?: boolean; customTheme?: CowSwapTheme }>`
   display: flex;
@@ -176,35 +200,39 @@ export const BodyWrapper = styled.div<{
       return 'transparent'
     } else {
       const backgroundColor = theme.darkMode ? '#0E0F2D' : `var(${UI.COLOR_BLUE_300_PRIMARY})`
-      let backgroundImage
+      const cowsLayer = sceneLayer(theme.darkMode, customTheme, backgroundVariant)
 
-      if (backgroundVariant === 'nocows') {
-        backgroundImage = theme.darkMode
-          ? `url(${svgBackgroundCowswapDarkmodeNocowsSrc})`
-          : `url(${svgBackgroundCowswapLightmodeNocowsSrc})`
-      } else if (customTheme === 'darkHalloween') {
-        backgroundImage = `url(${svgBackgroundCowswapHalloweenDarkSrc})`
-      } else if (isChristmasTheme(customTheme)) {
-        backgroundImage = theme.darkMode
-          ? `url(${svgBackgroundCowswapChristmasDarkSrc})`
-          : `url(${svgBackgroundCowswapChristmasLightSrc})`
-      } else {
-        backgroundImage = theme.darkMode
-          ? `url(${svgBackgroundCowswapDarkmodeSrc})`
-          : `url(${svgBackgroundCowswapLightmodeSrc})`
-      }
-
-      const cowsLayer = `${backgroundImage} no-repeat bottom -1px center / contain`
-
-      // Transparent over AppWrapper's wall, which this box no longer carries itself.
+      // The scene moves to ::after under this theme, so it can be given an alpha; this box itself
+      // stays transparent over AppWrapper's wall.
       if (isSolanaTheme(customTheme)) {
-        return cowsLayer
+        return 'transparent'
       }
 
       return `${backgroundColor} ${cowsLayer}`
     }
   }};
   background-blend-mode: normal;
+
+  /*
+   * A background layer cannot carry its own alpha, so under this theme the scene is drawn here
+   * instead, over AppWrapper's wall and behind everything this box holds.
+   */
+  ${({ theme, customTheme, backgroundVariant }) =>
+    !theme.isWidget &&
+    isSolanaTheme(customTheme) &&
+    css`
+      position: relative;
+
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        opacity: ${WALL_SCENE_OPACITY};
+        background: ${sceneLayer(theme.darkMode, customTheme, backgroundVariant)};
+      }
+    `}
 
   /*
    * The wall is this page's backdrop, so the surfaces laid over it — the trade
