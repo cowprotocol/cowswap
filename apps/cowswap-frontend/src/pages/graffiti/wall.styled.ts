@@ -447,10 +447,17 @@ export const Panel = styled.div`
   padding: 28px;
 `
 
-/** A panel standing alone on a page: it hugs its content rather than stretching. */
+/**
+ * A panel standing alone on a page: it hugs its content rather than stretching.
+ * Once `HeroPanel` stacks it dissolves into this panel, so the column gap its
+ * children are spaced by has to come from here.
+ */
 export const ModalPanel = styled(Panel)`
   width: fit-content;
   max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 `
 
 /** A page whose only content is one centred panel. */
