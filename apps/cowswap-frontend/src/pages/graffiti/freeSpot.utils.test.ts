@@ -3,8 +3,8 @@ import { findFreeSpot } from './freeSpot.utils'
 const WALL = { w: 600, h: 400 }
 const BOX = { w: 256, h: 128 }
 
-/** `SAFE_AREA_INSET` (0.125) applied to `WALL` — where a claim on an empty wall now lands. */
-const SAFE_ORIGIN = { x: 75, y: 50 }
+/** `SAFE_AREA_INSET_X` (0.125) and `SAFE_AREA_INSET_Y` (0.16) applied to `WALL`. */
+const SAFE_ORIGIN = { x: 75, y: 64 }
 
 function blankWall(wall = WALL): Uint8ClampedArray {
   return new Uint8ClampedArray(wall.w * wall.h * 4)
@@ -65,6 +65,21 @@ describe('findFreeSpot', () => {
     const spot = findFreeSpot(blankWall(), WALL, { w: 128, h: 256 })
 
     expect(spot).toEqual(SAFE_ORIGIN)
+  })
+
+  it('insets the top further than the sides, for the band the app header covers', () => {
+    const wall = { w: 1000, h: 1000 }
+    const spot = findFreeSpot(blankWall(wall), wall, BOX)
+
+    expect(spot).toEqual({ x: 125, y: 160 })
+    expect(spot.y).toBeGreaterThan(spot.x)
+  })
+
+  it('scales the top inset with the wall height', () => {
+    const wall = { w: 1600, h: 900 }
+    const spot = findFreeSpot(blankWall(wall), wall, BOX)
+
+    expect(spot.y).toBe(Math.round(wall.h * 0.16))
   })
 
   it('never returns a frame that overflows the wall', () => {

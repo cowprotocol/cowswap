@@ -31,6 +31,12 @@ export const OVERLAY_Z_INDEX = {
 
 export const INPUT_MIN_HEIGHT_PX = 45
 
+export const MENU_BAR_HEIGHT_PX = 56
+export const MENU_BAR_WRAPPER_PADDING_PX = 10
+
+/** Viewport band the sticky menu bar covers: the bar plus the wrapper's padding above and below it. */
+export const MENU_BAR_BAND_PX = MENU_BAR_HEIGHT_PX + MENU_BAR_WRAPPER_PADDING_PX * 2
+
 export const Media = {
   upToTiny: (useMediaPrefix = true) => getMediaQuery(`(max-width: ${MEDIA_WIDTHS.upToTiny}px)`, useMediaPrefix),
   upToExtraSmall: (useMediaPrefix = true) =>

@@ -11,7 +11,7 @@ import svgBackgroundCowswapHalloweenDarkSrc from '@cowprotocol/assets/images/bac
 import svgBackgroundCowswapLightmodeNocowsSrc from '@cowprotocol/assets/images/background-cowswap-lightmode-nocows.svg'
 import svgBackgroundCowswapLightmodeSrc from '@cowprotocol/assets/images/background-cowswap-lightmode.svg'
 import { GRAFFITI_CANVAS_PNG_URL, wallCssBlendMode } from '@cowprotocol/common-const'
-import { CowSwapTheme, Media, UI } from '@cowprotocol/ui'
+import { CowSwapTheme, Media, MENU_BAR_BAND_PX, UI } from '@cowprotocol/ui'
 
 import { darken, transparentize } from 'color2k'
 import * as CSS from 'csstype'
@@ -56,7 +56,9 @@ function sceneLayer(darkMode: boolean, customTheme?: CowSwapTheme, backgroundVar
  * sliding it sideways on every load; sizing it by the box's width held still, but then the wall
  * ended wherever `width / 16:9` fell and left the rest of a narrow page bare. The viewport is both
  * stable through that growth and filled at every window shape, so the paint keeps one size per
- * window and a narrow one simply shows less of the wall (see SAFE_AREA_INSET in freeSpot.utils).
+ * window and a narrow one simply shows less of the wall. The area it covers is the viewport less
+ * the menu bar's band, so what it shows is what a visitor can see (see SAFE_AREA_INSET_X/Y in
+ * freeSpot.utils, which keeps fresh claims inside that same crop).
  */
 const WALL_LAYER = `url(${GRAFFITI_CANVAS_PNG_URL}) no-repeat center / cover`
 
@@ -82,6 +84,27 @@ function wallBackdropBlendMode(darkMode: boolean, fullBleed?: boolean): string {
   if (fullBleed) return 'normal'
 
   return `normal, ${wallCssBlendMode(darkMode)}`
+}
+
+/**
+ * Per-layer background boxes, in `wallBackdrop`'s layer order.
+ *
+ * `cover` resolves against the positioning area that `background-origin` picks, so giving the paint
+ * the content box — the viewport less the band the sticky menu bar covers — refits the whole wall
+ * *below* the bar rather than cropping its top edge behind it. Clipping it there too keeps `cover`'s
+ * overflow, which is centred on that same box, from bleeding back up under the bar. The plaster
+ * keeps the full viewport so the band reads as the same surface and not as a ruled-off rectangle.
+ */
+function wallBackdropClip(fullBleed?: boolean): string {
+  if (fullBleed) return 'border-box'
+
+  return 'border-box, content-box'
+}
+
+function wallBackdropOrigin(fullBleed?: boolean): string {
+  if (fullBleed) return 'padding-box'
+
+  return 'padding-box, content-box'
 }
 
 function wallBaseColor(darkMode: boolean): string {
@@ -152,14 +175,22 @@ export const AppWrapper = styled.div<
        * Fixed rather than a background on this box: a background covers the box, whose height both
        * grows as the page settles and runs far past the window on a narrow one, where the paint
        * then stopped mid-page. Pinned to the viewport it is immune to both.
+       *
+       * The padding is the menu bar's band, which wallBackdropOrigin hands to the paint as its
+       * positioning area. The background colour follows the *last* layer's clip, so it stops at that
+       * same box; the band is filled by this element's own background-color, which a negative
+       * z-index pseudo-element paints over.
        */
       &::before {
         content: '';
         position: fixed;
         inset: 0;
+        padding-top: ${MENU_BAR_BAND_PX}px;
         z-index: -2;
         pointer-events: none;
         background: ${wallBackdrop(theme.darkMode, $fullBleed)};
+        background-origin: ${wallBackdropOrigin($fullBleed)};
+        background-clip: ${wallBackdropClip($fullBleed)};
         background-blend-mode: ${wallBackdropBlendMode(theme.darkMode, $fullBleed)};
       }
 

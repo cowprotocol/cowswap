@@ -7,13 +7,17 @@ const SCAN_MARGIN = 8
  * actually show it.
  *
  * That page draws the wall as a `cover`-scaled backdrop, which crops whatever doesn't fit its own
- * aspect ratio: a viewport wider than the wall's 16:9 loses `(1 - 16/9 / viewportRatio) / 2` of the
- * height off each of the top and bottom, a taller one loses the same of the width off each side
- * with the ratios swapped. 0.125 is the worst of the two across the range this targets — 11.8% at
- * 21:9, 12.5% at 4:3. A phone-shaped viewport crops far more (34% per side at 9:16) and is
- * deliberately not covered: insetting that far would cost two thirds of the wall.
+ * aspect ratio: an area wider than the wall's 16:9 loses `(1 - 16/9 / areaRatio) / 2` of the height
+ * off each of the top and bottom, a taller one loses the same of the width off each side with the
+ * ratios swapped. The area is the viewport less the menu bar's band (see AppWrapper in
+ * application/containers/App/styled), which makes it wider than the window and so moves the two
+ * axes apart: the horizontal worst stays 12.5%, at a large 4:3, while the vertical worst grows to
+ * 15.1% at 2560x1080, the shortest 21:9 in the range this targets. A phone-shaped viewport crops
+ * far more (36% per side at 9:16) and is deliberately not covered: insetting that far would cost
+ * two thirds of the wall.
  */
-const SAFE_AREA_INSET = 0.125
+const SAFE_AREA_INSET_X = 0.125
+const SAFE_AREA_INSET_Y = 0.16
 
 export interface Size {
   w: number
@@ -39,8 +43,8 @@ interface Area {
  * directly, so it never depends on render timing.
  */
 export function findFreeSpot(pixels: Uint8ClampedArray, wall: Size, box: Size): Spot {
-  const insetX = Math.round(wall.w * SAFE_AREA_INSET)
-  const insetY = Math.round(wall.h * SAFE_AREA_INSET)
+  const insetX = Math.round(wall.w * SAFE_AREA_INSET_X)
+  const insetY = Math.round(wall.h * SAFE_AREA_INSET_Y)
 
   const safeArea: Area = { minX: insetX, minY: insetY, maxX: wall.w - insetX, maxY: wall.h - insetY }
   const wholeWall: Area = { minX: SCAN_MARGIN, minY: SCAN_MARGIN, maxX: wall.w, maxY: wall.h }

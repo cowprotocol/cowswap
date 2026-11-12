@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components/macro'
 
-import { Media } from '../../consts'
+import { Media, MENU_BAR_HEIGHT_PX, MENU_BAR_WRAPPER_PADDING_PX } from '../../consts'
 import { UI } from '../../enum'
 import { CowSwapTheme } from '../../types'
 import { ProductLogoWrapper } from '../ProductLogo'
@@ -26,7 +26,7 @@ export const MenuBarWrapper = styled.div<{
   /** Backdrop blur behind the bar. Dial it down where what is behind is worth seeing. */
   blur?: string
 }>`
-  --height: 56px;
+  --height: ${MENU_BAR_HEIGHT_PX}px;
   --width: 100%;
   --bgColor: ${({ theme, bgColorLight, bgColorDark }) =>
     theme.darkMode ? bgColorDark || `var(${UI.COLOR_NEUTRAL_10})` : bgColorLight || 'rgb(255 248 247 / 40%)'};
@@ -57,7 +57,7 @@ export const MenuBarWrapper = styled.div<{
 
   display: flex;
   width: 100%;
-  padding: ${({ padding }) => padding || '10px'};
+  padding: ${({ padding }) => padding || `${MENU_BAR_WRAPPER_PADDING_PX}px`};
   z-index: 9;
   position: sticky;
   top: 0;
@@ -68,7 +68,7 @@ export const MenuBarWrapper = styled.div<{
   ${({ mobileMode }) =>
     mobileMode &&
     css`
-      padding: 10px;
+      padding: ${MENU_BAR_WRAPPER_PADDING_PX}px;
     `}
 `
 
