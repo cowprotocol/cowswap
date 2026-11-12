@@ -88,11 +88,24 @@ const WALL_VEIL_ALPHA = 0.28
 const WALL_VEIL_DARKER_ALPHA = 0.4
 
 /**
- * The footer under this theme paints nothing of its own: the scene behind it already supplies the
- * dark mass the opaque themes get from the footer's own colour, and any tint laid on top of that
- * reads as a rectangle ruled across the page, which is exactly what this theme is trying to avoid.
+ * Closed, the footer paints nothing of its own: the scene behind it already supplies the dark mass
+ * the opaque themes get from the footer's own colour, and a tint laid on top of that reads as a
+ * rectangle ruled across the page.
  */
-export const WALL_FOOTER_BACKGROUND = 'transparent'
+const WALL_FOOTER_BACKGROUND = 'transparent'
+
+/**
+ * Open, it carries columns of links that the wall runs straight through, so it needs a backdrop.
+ * Faded in rather than switched on, because a flat start is that same rectangle: by the time the
+ * first row of links arrives it is near solid, while the top edge still dissolves into the page.
+ */
+const WALL_FOOTER_BACKGROUND_EXPANDED = 'linear-gradient(to bottom, rgb(14 15 45 / 0%) 0, rgb(14 15 45 / 88%) 140px)'
+
+/**
+ * The footer's ink under this theme. Its own warm greys (#827474 text, #685B5B logos) read as dirt
+ * against the blues of the scene they now sit on; this is drawn from the scene's own palette.
+ */
+const WALL_FOOTER_INK = '#8690D9'
 
 /**
  * How solid the cow scene stays over the wall. Its silhouettes are opaque, and the hill alone hides
@@ -193,7 +206,12 @@ export const FooterSlot = styled.div<{ $overWall?: boolean }>`
     $overWall &&
     css`
       > footer {
-        background: ${WALL_FOOTER_BACKGROUND};
+        --color: ${WALL_FOOTER_INK};
+        --colorTitle: ${WALL_FOOTER_INK};
+        /* Read by the shared Footer's product logos, which have no token of their own. */
+        --footerLogoColor: ${WALL_FOOTER_INK};
+        --bgCollapsed: ${WALL_FOOTER_BACKGROUND};
+        --bgExpanded: ${WALL_FOOTER_BACKGROUND_EXPANDED};
       }
     `}
 `
