@@ -31,10 +31,12 @@ export function OrderExpiryWarning({
     return (
       <div data-testid="order-expiry-warning-subtle">
         <InlineBanner bannerType={StatusColorVariant.Info} iconSize={24}>
-          <Trans>
-            Until it expires, this order can fill whenever enough {token} is in your wallet, including funds added
-            later.
-          </Trans>
+          <p>
+            <Trans>
+              Until it expires, this order can fill whenever enough {token} is in your wallet, including funds added
+              later.
+            </Trans>
+          </p>
         </InlineBanner>
       </div>
     )
