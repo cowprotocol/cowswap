@@ -5,8 +5,6 @@
 
 import { ReactNode, useCallback, useEffect, useState } from 'react'
 
-import { useOpenWalletConnectionModal, useSolanaAccount } from '@cowprotocol/wallet'
-
 import { useSearchParams } from 'react-router'
 import styled from 'styled-components/macro'
 
@@ -19,6 +17,7 @@ import {
   SuccessScreen,
 } from './ClaimScreens.pure'
 import { getClaimInfo, getInfo, postClaim, type CanvasInfo } from './graffiti.service'
+import { useSolanaGate } from './useSolanaGate'
 import { useTokenBalance } from './useTokenBalance'
 import * as styledEl from './wall.styled'
 
@@ -44,8 +43,7 @@ export default function GraffitiClaimPage(): ReactNode {
   const [searchParams] = useSearchParams()
   const code = searchParams.get('code')?.trim() || ''
 
-  const solanaAccount = useSolanaAccount()
-  const openWalletModal = useOpenWalletConnectionModal()
+  const { solanaAccount, connected, openSolanaWalletModal } = useSolanaGate()
 
   const [screen, setScreen] = useState<Screen>(code ? 'checking' : 'missing-code')
   const [amount, setAmount] = useState<number | null>(null)
@@ -125,7 +123,6 @@ export default function GraffitiClaimPage(): ReactNode {
     }
   }, [code, solanaAccount])
 
-  const connected = Boolean(solanaAccount)
   const network = info?.network ?? 'devnet'
 
   return (
@@ -144,7 +141,7 @@ export default function GraffitiClaimPage(): ReactNode {
             claiming={screen === 'claiming'}
             address={solanaAccount ?? ''}
             network={network}
-            onConnect={openWalletModal}
+            onConnect={openSolanaWalletModal}
             onClaim={claim}
           />
         )}
