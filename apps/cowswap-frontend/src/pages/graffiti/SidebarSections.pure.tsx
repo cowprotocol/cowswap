@@ -9,6 +9,12 @@ import * as styledEl from './wall.styled'
 import type { DraftBox } from './draftBox.utils'
 import type { PaintPhase } from './usePaintFlow'
 
+export interface BalanceWarningProps {
+  /** Tokens the draft needs beyond what the wallet holds. */
+  missing: number
+  needed: number
+}
+
 export interface BrushSectionProps {
   brushSize: number
   onBrushSize: (size: number) => void
@@ -50,12 +56,25 @@ export interface PaintButtonProps {
 export interface PhaseStatusProps {
   phase: PaintPhase
   error: string | null
+  /** Offered only while dropping the attempt cannot orphan a burn. */
+  onReset?: () => void
 }
 
 export interface TextLabelSectionProps {
   label: string
   brushSize: number
   onLabel: (label: string) => void
+}
+
+export function BalanceWarning({ missing, needed }: BalanceWarningProps): ReactNode {
+  return (
+    <styledEl.CostBox $variant="danger">
+      <Trans>
+        this draft burns {needed} {TOKEN_SYMBOL} — {missing} more than your wallet holds. Claim more, or undo until it
+        fits.
+      </Trans>
+    </styledEl.CostBox>
+  )
 }
 
 export function BrushSection({ brushSize, onBrushSize }: BrushSectionProps): ReactNode {
@@ -202,11 +221,21 @@ export function PaintButton({ connected, disabled, draftCost, cost, onConnect, o
   )
 }
 
-export function PhaseStatus({ phase, error }: PhaseStatusProps): ReactNode {
+export function PhaseStatus({ phase, error, onReset }: PhaseStatusProps): ReactNode {
   return (
     <styledEl.CostBox $variant={phase === 'error' ? 'danger' : 'success'}>
       <strong>{PHASE_LABEL[phase]}</strong>
       {error && <styledEl.ErrorNote>{error}</styledEl.ErrorNote>}
+      {onReset && (
+        <styledEl.StatusAction>
+          <styledEl.Muted>
+            <Trans>Nothing to approve? Nothing has been burned yet — reset and sign again, your drawing is kept.</Trans>
+          </styledEl.Muted>
+          <styledEl.DangerButton onClick={onReset}>
+            <Trans>↺ reset and re-sign</Trans>
+          </styledEl.DangerButton>
+        </styledEl.StatusAction>
+      )}
     </styledEl.CostBox>
   )
 }

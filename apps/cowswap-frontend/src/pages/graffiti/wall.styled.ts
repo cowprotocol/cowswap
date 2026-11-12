@@ -482,6 +482,14 @@ export const CostBox = styled.div<{ $variant?: 'default' | 'danger' | 'success' 
     $variant === 'danger' ? wallColors.dangerSoft : $variant === 'success' ? wallColors.neon : 'inherit'};
 `
 
+/** A hint and its button below a status line, inside the same box. */
+export const StatusAction = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+`
+
 export const CostValue = styled.div`
   font-size: 26px;
   font-weight: 700;
