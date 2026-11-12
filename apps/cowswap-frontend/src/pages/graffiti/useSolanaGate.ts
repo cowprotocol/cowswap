@@ -22,10 +22,9 @@ export function useSolanaGate(): SolanaGate {
   const switchNetwork = useSwitchNetwork()
   const [switching, setSwitching] = useState(false)
 
-  // Reown's react open() omits 'namespace' in its typing, but the base client
-  // honors it — without this the modal opens on the EVM wallet list.
+  // Without the namespace the modal opens on the EVM wallet list.
   const openSolanaWalletModal = useCallback(() => {
-    ;(openWalletModal as (opts?: { namespace?: string }) => void)({ namespace: 'solana' })
+    openWalletModal({ namespace: 'solana' })
   }, [openWalletModal])
 
   const switchToSolana = useCallback(async (): Promise<void> => {
