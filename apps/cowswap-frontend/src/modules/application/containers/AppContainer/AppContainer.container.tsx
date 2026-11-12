@@ -120,7 +120,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
 
   return (
     <PageBackgroundContext.Provider value={pageBackgroundValue}>
-      <styledEl.AppWrapper $fullBleed={isFullBleed} customTheme={customTheme}>
+      <styledEl.AppWrapper $fullBleed={isFullBleed} customTheme={customTheme} backgroundVariant={pageBackgroundVariant}>
         <URLWarning />
         <RecoveryBanner />
         <InvalidLocalTimeWarning />

@@ -88,11 +88,11 @@ const WALL_VEIL_ALPHA = 0.28
 const WALL_VEIL_DARKER_ALPHA = 0.4
 
 /**
- * The footer under this theme. It sits past the wall's bottom edge, so what reads through is the
- * page backdrop rather than paint — enough to stop it being a hard black slab against the rest of
- * the chrome. Its own text is mid-grey, which still clears 4.5:1 over the backdrop at this alpha.
+ * The footer under this theme paints nothing of its own: the scene behind it already supplies the
+ * dark mass the opaque themes get from the footer's own colour, and any tint laid on top of that
+ * reads as a rectangle ruled across the page, which is exactly what this theme is trying to avoid.
  */
-export const WALL_FOOTER_BACKGROUND = 'rgb(0 0 0 / 60%)'
+export const WALL_FOOTER_BACKGROUND = 'transparent'
 
 /**
  * How solid the cow scene stays over the wall. Its silhouettes are opaque, and the hill alone hides
@@ -101,7 +101,13 @@ export const WALL_FOOTER_BACKGROUND = 'rgb(0 0 0 / 60%)'
  */
 const WALL_SCENE_OPACITY = 0.6
 
-export const AppWrapper = styled.div<Partial<CSS.Properties> & { $fullBleed?: boolean; customTheme?: CowSwapTheme }>`
+export const AppWrapper = styled.div<
+  Partial<CSS.Properties> & {
+    $fullBleed?: boolean
+    customTheme?: CowSwapTheme
+    backgroundVariant?: PageBackgroundVariant
+  }
+>`
   display: flex;
   flex-flow: column;
   align-items: flex-start;
@@ -113,15 +119,33 @@ export const AppWrapper = styled.div<Partial<CSS.Properties> & { $fullBleed?: bo
    * the canvas landed ~150px above the bottom of the page as a result. This box spans the footer,
    * so the last rows reach the bottom and read through its 60% black.
    */
-  ${({ theme, customTheme }) =>
+  ${({ theme, customTheme, backgroundVariant }) =>
     !theme.isWidget &&
     isSolanaTheme(customTheme) &&
     css`
+      isolation: isolate;
       min-height: max(100vh, ${WALL_HEIGHT});
       background:
         ${WALL_SURFACE_LAYER},
         ${WALL_LAYER} ${theme.darkMode ? '#0E0F2D' : `var(${UI.COLOR_BLUE_300_PRIMARY})`};
       background-blend-mode: normal, ${wallCssBlendMode(theme.darkMode)};
+
+      /*
+       * The scene rides here too, not on BodyWrapper, whose bottom edge falls 65px inside the
+       * footer: its own dark ground stopped there and the footer's background picked up from a
+       * different shade, drawing two stacked rectangles across the page. Anchored to the foot of
+       * this box it lands where the opaque themes put it, with the footer over it and no seam.
+       * A background layer cannot carry an alpha, hence the pseudo-element.
+       */
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        opacity: ${WALL_SCENE_OPACITY};
+        background: ${sceneLayer(theme.darkMode, customTheme, backgroundVariant)};
+      }
     `}
   height: ${({ theme }) => (theme.isWidget ? 'initial' : '100%')};
   position: relative;
@@ -202,8 +226,7 @@ export const BodyWrapper = styled.div<{
       const backgroundColor = theme.darkMode ? '#0E0F2D' : `var(${UI.COLOR_BLUE_300_PRIMARY})`
       const cowsLayer = sceneLayer(theme.darkMode, customTheme, backgroundVariant)
 
-      // The scene moves to ::after under this theme, so it can be given an alpha; this box itself
-      // stays transparent over AppWrapper's wall.
+      // Transparent over AppWrapper, which carries both the wall and the scene under this theme.
       if (isSolanaTheme(customTheme)) {
         return 'transparent'
       }
@@ -212,27 +235,6 @@ export const BodyWrapper = styled.div<{
     }
   }};
   background-blend-mode: normal;
-
-  /*
-   * A background layer cannot carry its own alpha, so under this theme the scene is drawn here
-   * instead, over AppWrapper's wall and behind everything this box holds.
-   */
-  ${({ theme, customTheme, backgroundVariant }) =>
-    !theme.isWidget &&
-    isSolanaTheme(customTheme) &&
-    css`
-      position: relative;
-
-      &::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        z-index: -1;
-        pointer-events: none;
-        opacity: ${WALL_SCENE_OPACITY};
-        background: ${sceneLayer(theme.darkMode, customTheme, backgroundVariant)};
-      }
-    `}
 
   /*
    * The wall is this page's backdrop, so the surfaces laid over it — the trade
