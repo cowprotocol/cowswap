@@ -49,31 +49,16 @@ function sceneLayer(darkMode: boolean, customTheme?: CowSwapTheme, backgroundVar
 }
 
 /**
- * The canvas is 16:9 as served. Over-stating it is the safe direction: it only feeds the box's
- * min-height below, so a taller real canvas would be given less room than it needs and lose its
- * last rows, while a shorter one just leaves a little slack under the paint.
- */
-const WALL_ASPECT = 1.7778
-
-/**
  * The live graffiti wall, laid over the regular CoW Swap backdrop.
  *
- * Sized by the width of its box, never cover and never against the viewport height. Cover refits
- * the paint to the box's *height*, which grows ~100px as the widget, its quote and the banners
- * settle, zooming it ~10% and sliding it sideways on every load. Fitting it to the viewport instead
- * held still, but shrank the whole wall on a short window rather than simply showing less of it.
- * Width is both stable through that growth and independent of how tall the window is, so the paint
- * keeps one size and the box grows to hold it (see WALL_MIN_HEIGHT).
+ * Cover against the *viewport*, never against the page box. Covering the box refits the paint to a
+ * height that grows ~100px as the widget, its quote and the banners settle, zooming it ~10% and
+ * sliding it sideways on every load; sizing it by the box's width held still, but then the wall
+ * ended wherever `width / 16:9` fell and left the rest of a narrow page bare. The viewport is both
+ * stable through that growth and filled at every window shape, so the paint keeps one size per
+ * window and a narrow one simply shows less of the wall (see SAFE_AREA_INSET in freeSpot.utils).
  */
-const WALL_LAYER = `url(${GRAFFITI_CANVAS_PNG_URL}) no-repeat center top / 100% auto`
-
-/**
- * The wall's own rendered height, from the layer being drawn at the full width of the page. Doubles
- * as the page's minimum height, so the page is exactly one wall tall when the content is shorter:
- * the whole canvas is then on the page with its last rows at the very bottom, under the footer
- * rather than above it.
- */
-const WALL_HEIGHT = `calc(100vw / ${WALL_ASPECT})`
+const WALL_LAYER = `url(${GRAFFITI_CANVAS_PNG_URL}) no-repeat center / cover`
 
 /** Rendered plaster, laid over the paint so the graffiti picks up the surface instead of floating on it. */
 const WALL_SURFACE_LAYER =
@@ -127,21 +112,34 @@ export const AppWrapper = styled.div<
   min-height: ${({ theme }) => (theme.isWidget ? 'auto' : '100vh')};
 
   /*
-   * The wall lives here, not on BodyWrapper: a background paints only inside its own box, and
-   * BodyWrapper stops short of the footer, which is its sibling. Anything drawn near the foot of
-   * the canvas landed ~150px above the bottom of the page as a result. This box spans the footer,
-   * so the last rows reach the bottom and read through its 60% black.
+   * The wall lives here, not on BodyWrapper: BodyWrapper stops short of the footer, which is its
+   * sibling, so anything drawn near the foot of the canvas landed ~150px above the bottom of the
+   * page. This box spans the footer, and the layer below is fixed to the viewport, so the wall
+   * reaches the bottom of the window whatever the page is doing above it.
    */
   ${({ theme, customTheme, backgroundVariant }) =>
     !theme.isWidget &&
     isSolanaTheme(customTheme) &&
     css`
       isolation: isolate;
-      min-height: max(100vh, ${WALL_HEIGHT});
-      background:
-        ${WALL_SURFACE_LAYER},
-        ${WALL_LAYER} ${theme.darkMode ? '#0E0F2D' : `var(${UI.COLOR_BLUE_300_PRIMARY})`};
-      background-blend-mode: normal, ${wallCssBlendMode(theme.darkMode)};
+      background-color: ${theme.darkMode ? '#0E0F2D' : `var(${UI.COLOR_BLUE_300_PRIMARY})`};
+
+      /*
+       * Fixed rather than a background on this box: a background covers the box, whose height both
+       * grows as the page settles and runs far past the window on a narrow one, where the paint
+       * then stopped mid-page. Pinned to the viewport it is immune to both.
+       */
+      &::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        z-index: -2;
+        pointer-events: none;
+        background:
+          ${WALL_SURFACE_LAYER},
+          ${WALL_LAYER} ${theme.darkMode ? '#0E0F2D' : `var(${UI.COLOR_BLUE_300_PRIMARY})`};
+        background-blend-mode: normal, ${wallCssBlendMode(theme.darkMode)};
+      }
 
       /*
        * The scene rides here too, not on BodyWrapper, whose bottom edge falls 65px inside the
@@ -241,15 +239,14 @@ export const BodyWrapper = styled.div<{
     if (theme.isWidget) {
       return 'transparent'
     } else {
-      const backgroundColor = theme.darkMode ? '#0E0F2D' : `var(${UI.COLOR_BLUE_300_PRIMARY})`
-      const cowsLayer = sceneLayer(theme.darkMode, customTheme, backgroundVariant)
-
       // Transparent over AppWrapper, which carries both the wall and the scene under this theme.
       if (isSolanaTheme(customTheme)) {
         return 'transparent'
       }
 
-      return `${backgroundColor} ${cowsLayer}`
+      const backgroundColor = theme.darkMode ? '#0E0F2D' : `var(${UI.COLOR_BLUE_300_PRIMARY})`
+
+      return `${backgroundColor} ${sceneLayer(theme.darkMode, customTheme, backgroundVariant)}`
     }
   }};
   background-blend-mode: normal;
@@ -272,11 +269,8 @@ export const BodyWrapper = styled.div<{
       theme.isWidget ? '0 0 16px' : $hasActiveSpeechBubbleNotification ? '150px 16px 330px' : '150px 16px 150px'};
     flex: none;
     min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 200px)')};
-    background-size: ${({ customTheme }) => {
-      if (isSolanaTheme(customTheme)) return 'contain'
-
-      return customTheme === 'darkHalloween' || isChristmasTheme(customTheme) ? 'contain' : 'auto'
-    }};
+    background-size: ${({ customTheme }) =>
+      customTheme === 'darkHalloween' || isChristmasTheme(customTheme) ? 'contain' : 'auto'};
 
     ${({ customTheme, backgroundVariant, theme }) =>
       backgroundVariant !== 'nocows' &&
@@ -299,11 +293,8 @@ export const BodyWrapper = styled.div<{
     padding: ${({ theme, $hasActiveSpeechBubbleNotification }) =>
       theme.isWidget ? '0 0 16px' : $hasActiveSpeechBubbleNotification ? '90px 16px 400px' : '90px 16px 200px'};
     min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 100px)')};
-    background-size: ${({ customTheme }) => {
-      if (isSolanaTheme(customTheme)) return 'contain'
-
-      return customTheme === 'darkHalloween' || isChristmasTheme(customTheme) ? 'contain' : 'auto'
-    }};
+    background-size: ${({ customTheme }) =>
+      customTheme === 'darkHalloween' || isChristmasTheme(customTheme) ? 'contain' : 'auto'};
 
     ${({ customTheme, backgroundVariant, theme }) =>
       backgroundVariant !== 'nocows' &&
