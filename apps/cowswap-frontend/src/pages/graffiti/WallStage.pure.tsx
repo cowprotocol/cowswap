@@ -36,6 +36,7 @@ export function WallStage({ wall }: WallStageProps): ReactNode {
           balance={balance}
           onStart={actions.startDrawing}
           onConnect={gate.openSolanaWalletModal}
+          canFullscreen={viewport.canFullscreen}
           onFullscreen={viewport.toggleFullscreen}
         />
       )}

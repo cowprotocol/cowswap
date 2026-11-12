@@ -2,7 +2,7 @@ import { i18n, MessageDescriptor } from '@lingui/core'
 
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { BadgeType, MenuItem, ProductVariant } from '@cowprotocol/ui'
+import { BadgeType, BadgeTypes, MenuItem, ProductVariant } from '@cowprotocol/ui'
 
 import { msg } from '@lingui/core/macro'
 
@@ -120,6 +120,7 @@ const MORE_ITEM = ({ isSolversEnabled, isGraffitiWallEnabled }: NavItemsFlags): 
             href: Routes.GRAFFITI,
             label: msg`Graffiti Wall`,
             badge: msg`NEW`,
+            badgeType: BadgeTypes.ALERT,
           },
         ]
       : []),

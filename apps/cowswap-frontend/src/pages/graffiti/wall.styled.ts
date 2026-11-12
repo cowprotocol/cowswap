@@ -116,18 +116,45 @@ export const Logo = styled.span`
   white-space: nowrap;
   color: ${wallColors.neon};
   text-shadow: 0 0 14px rgba(0, 255, 163, 0.8);
+
+  /* The only part of the row that gives up width on a phone, by ellipsis rather than overflow. */
+  ${onNarrow(css`
+    font-size: 14px;
+    letter-spacing: 1px;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  `)}
 `
 
-export const Tag = styled.span`
+const tagBase = css`
   font-size: 11px;
   letter-spacing: 1px;
   color: ${wallColors.textMuted};
 `
 
-export const LiveTag = styled(Tag)`
+/** The header's wall facts. Dropped on phones, where the row fits only the logo and the live state. */
+export const Tag = styled.span`
+  ${tagBase};
+
+  ${onNarrow(css`
+    display: none;
+  `)}
+`
+
+export const LiveTag = styled.span`
+  ${tagBase};
   display: flex;
   align-items: center;
   gap: 6px;
+  flex-shrink: 0;
+`
+
+/** The live tag's sequence number, dropped on phones so the status itself fits. */
+export const SeqTag = styled.span`
+  ${onNarrow(css`
+    display: none;
+  `)}
 `
 
 export const Spacer = styled.span`
@@ -357,6 +384,27 @@ export const GlowButton = styled.button`
     inset 0 0 8px rgba(0, 255, 163, 0.15);
 `
 
+/** `GlowButton` with a leading mark, centred on the label rather than on a baseline. */
+export const IconGlowButton = styled(GlowButton)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+`
+
+/**
+ * Drawn rather than typed: the `⌄` the monospace stack falls back to for this
+ * glyph sits well below the label beside it.
+ */
+export const ChevronDown = styled.span`
+  flex: none;
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid currentColor;
+`
+
 export const DangerButton = styled(Button)`
   border-color: ${wallColors.danger}55;
   color: ${wallColors.danger};
@@ -399,10 +447,17 @@ export const Panel = styled.div`
   padding: 28px;
 `
 
-/** A panel standing alone on a page: it hugs its content rather than stretching. */
+/**
+ * A panel standing alone on a page: it hugs its content rather than stretching.
+ * Once `HeroPanel` stacks it dissolves into this panel, so the column gap its
+ * children are spaced by has to come from here.
+ */
 export const ModalPanel = styled(Panel)`
   width: fit-content;
   max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 `
 
 /** A page whose only content is one centred panel. */

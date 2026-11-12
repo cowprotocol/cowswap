@@ -280,11 +280,11 @@ describe('tools', () => {
   it('hides and restores the sidebar', async () => {
     await renderLoadedWall()
 
-    fireEvent.click(screen.getByText('⌄ hide tools'))
-    expect(screen.queryByText('⌄ hide tools')).toBeNull()
+    fireEvent.click(screen.getByText('hide tools'))
+    expect(screen.queryByText('hide tools')).toBeNull()
 
     fireEvent.click(screen.getByText(/tools$/))
-    expect(screen.getByText('⌄ hide tools')).toBeTruthy()
+    expect(screen.getByText('hide tools')).toBeTruthy()
   })
 
   it('shows the label field only for the text tool', async () => {

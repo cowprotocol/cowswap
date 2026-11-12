@@ -31,7 +31,10 @@ export function WallHeader({ info, wsStatus, paintersOnline, seq }: WallHeaderPr
       <styledEl.Spacer />
       <styledEl.LiveTag>
         <styledEl.Dot $live={live} />
-        {live ? <Trans>live · {painters} painting</Trans> : <Trans>reconnecting…</Trans>} <Trans>· seq {seq}</Trans>
+        {live ? <Trans>live · {painters} painting</Trans> : <Trans>reconnecting…</Trans>}
+        <styledEl.SeqTag>
+          <Trans>· seq {seq}</Trans>
+        </styledEl.SeqTag>
       </styledEl.LiveTag>
     </styledEl.Header>
   )
