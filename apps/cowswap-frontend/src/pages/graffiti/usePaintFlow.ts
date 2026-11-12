@@ -368,7 +368,11 @@ async function startBurn(params: {
 
   onPhase('awaiting wallet')
 
-  const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash()
+  // Finalized rather than the connection's `confirmed`: reads and the send are
+  // load-balanced over two RPCs (libs/wallet/src/reown/createSolanaRpcFetch.ts),
+  // and a confirmed blockhash the sending node has not caught up to yet fails
+  // preflight with `Blockhash not found`.
+  const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('finalized')
   const transaction = buildBurnTransaction({
     mint: checked.mint,
     owner: ownerKey,

@@ -201,6 +201,16 @@ describe('usePaintFlow', () => {
     expect(loadPendingBurn()).toBeNull()
   })
 
+  it('builds the burn on a finalized blockhash', async () => {
+    const { result } = renderPaint()
+
+    await act(async () => {
+      await result.current.paint()
+    })
+
+    expect(mockConnection.getLatestBlockhash).toHaveBeenCalledWith('finalized')
+  })
+
   it('reports what landed and keeps the success state until it is dismissed', async () => {
     jest.useFakeTimers()
 
