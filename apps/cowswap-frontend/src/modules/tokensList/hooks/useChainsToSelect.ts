@@ -18,10 +18,9 @@ import { useSupportedChains } from './useSupportedChains'
 import { useSupportedTargetChains } from './useSupportedTargetChains'
 
 import { ChainsToSelectState } from '../types'
-import { createOutputChainsState } from '../utils/chainsState'
-import { filterChainsForSelector, getTokenSelectorFilter } from '../utils/filterTokensForSelector'
+import { createInputChainsState, createOutputChainsState } from '../utils/chainsState'
+import { getTokenSelectorFilter } from '../utils/filterTokensForSelector'
 import { mapChainInfo } from '../utils/mapChainInfo'
-import { sortChainsByDisplayOrder } from '../utils/sortChainsByDisplayOrder'
 
 // Re-export for tests and external usage
 export { createInputChainsState, createOutputChainsState } from '../utils/chainsState'
@@ -65,13 +64,9 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
     if (!chainInfo) return undefined
 
     if (field === Field.INPUT) {
-      return {
-        defaultChainId: selectedTargetChainId,
-        chains: shouldHideNetworkSelector
-          ? []
-          : sortChainsByDisplayOrder(filterChainsForSelector(supportedChains, allowedChainIds)),
-        isLoading: false,
-      }
+      if (shouldHideNetworkSelector) return { defaultChainId: selectedTargetChainId, chains: [], isLoading: false }
+
+      return createInputChainsState(selectedTargetChainId, supportedChains, allowedChainIds)
     }
 
     // BUY token selection - include disabled chains info

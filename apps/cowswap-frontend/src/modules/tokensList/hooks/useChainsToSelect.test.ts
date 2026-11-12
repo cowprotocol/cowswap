@@ -349,6 +349,33 @@ describe('useChainsToSelect state builders', () => {
     expect(state.chains?.length).toBe(3)
   })
 
+  it('lists only the allowed sell chains and falls back to an allowed one', () => {
+    const supportedChains = [
+      createChainInfoForTests(SupportedChainId.MAINNET),
+      createChainInfoForTests(SupportedChainId.BASE),
+      createChainInfoForTests(SupportedChainId.BNB),
+    ]
+
+    const state = createInputChainsState(SupportedChainId.BASE, supportedChains, [SupportedChainId.BNB])
+
+    expect(state.chains?.map((c) => c.id)).toEqual([SupportedChainId.BNB])
+    expect(state.defaultChainId).toBe(SupportedChainId.BNB)
+  })
+
+  it('keeps the selected sell chain when it is allowed', () => {
+    const supportedChains = [
+      createChainInfoForTests(SupportedChainId.MAINNET),
+      createChainInfoForTests(SupportedChainId.BASE),
+    ]
+
+    const state = createInputChainsState(SupportedChainId.BASE, supportedChains, [
+      SupportedChainId.MAINNET,
+      SupportedChainId.BASE,
+    ])
+
+    expect(state.defaultChainId).toBe(SupportedChainId.BASE)
+  })
+
   it('lists only the allowed chains and falls back to an allowed one', () => {
     const supportedChains = [
       createChainInfoForTests(SupportedChainId.MAINNET),

@@ -47,10 +47,14 @@ export function computeDisabledChainIds(
 export function createInputChainsState(
   selectedTargetChainId: SupportedChainId | number,
   supportedChains: ChainInfo[],
+  allowedChainIds?: number[],
 ): ChainsToSelectState {
+  const chains = sortChainsByDisplayOrder(filterChainsForSelector(supportedChains, allowedChainIds))
+  const isSelectedChainListed = !allowedChainIds || chains.some((chain) => chain.id === selectedTargetChainId)
+
   return {
-    defaultChainId: selectedTargetChainId,
-    chains: sortChainsByDisplayOrder(supportedChains),
+    defaultChainId: isSelectedChainListed ? selectedTargetChainId : (chains[0]?.id ?? selectedTargetChainId),
+    chains,
     isLoading: false,
   }
 }
