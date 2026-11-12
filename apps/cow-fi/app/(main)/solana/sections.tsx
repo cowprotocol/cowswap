@@ -250,11 +250,7 @@ export function HowItWorksSection(): ReactNode {
 
       <CenteredBlock>
         <Headline lines={[{ text: HOW_IT_WORKS.closing.title }]} size="small" />
-        <Lead>
-          {HOW_IT_WORKS.closing.lines[0]}
-          <br />
-          {HOW_IT_WORKS.closing.lines[1]}
-        </Lead>
+        <LeadLines lines={HOW_IT_WORKS.closing.lines} />
       </CenteredBlock>
     </Section>
   )
@@ -344,11 +340,7 @@ export function TrustedSection(): ReactNode {
           <StatusLabel>{TRUSTED.closing.status}</StatusLabel>{' '}
           <ScriptLine $size="small">{TRUSTED.closing.value}</ScriptLine>
         </StatusTitle>
-        <Lead>
-          {TRUSTED.closing.lines[0]}
-          <br />
-          {TRUSTED.closing.lines[1]}
-        </Lead>
+        <LeadLines lines={TRUSTED.closing.lines} />
       </CenteredBlock>
     </DarkPanel>
   )
@@ -476,5 +468,15 @@ function Headline({ lines, as = 'h2', align = 'center', size = 'section' }: Head
         ),
       )}
     </HeadlineRoot>
+  )
+}
+
+function LeadLines({ lines }: { lines: readonly string[] }): ReactNode {
+  return (
+    <div>
+      {lines.map((line) => (
+        <Lead key={line}>{line}</Lead>
+      ))}
+    </div>
   )
 }

@@ -148,9 +148,12 @@ export const SolanaPageWrapper = styled.div`
     padding: 0 16px;
   }
 
-  ::selection {
-    background: ${PINK};
-    color: ${ON_PINK};
+  --selection-bg: ${PINK};
+  --selection-fg: ${ON_PINK};
+
+  & *::selection {
+    background: var(--selection-bg);
+    color: var(--selection-fg);
   }
 
   a:focus-visible,
@@ -221,6 +224,12 @@ export const CtaLink = styled(Link)<{ $bg?: string; $fg: string; $ghost?: boolea
     min-height: 64px;
     padding: 0 24px;
     border-radius: 66px;
+    ${({ $bg, $fg }) =>
+      $bg &&
+      css`
+        --selection-bg: ${$fg};
+        --selection-fg: ${$bg};
+      `}
     background: ${({ $bg }) => $bg ?? 'transparent'};
     color: ${({ $fg }) => $fg};
     font-family: ${FONT_MONO};
@@ -644,6 +653,8 @@ export const StatusLabel = styled.span`
 
 export const ToneCard = styled.div<{ $tone: CardTone }>`
   --ring: ${({ $tone }) => TONES[$tone].fg};
+  --selection-bg: ${({ $tone }) => TONES[$tone].buttonBg};
+  --selection-fg: ${({ $tone }) => TONES[$tone].buttonFg};
   display: flex;
   flex-direction: column;
   justify-content: space-between;
