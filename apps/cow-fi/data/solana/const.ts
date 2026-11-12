@@ -93,8 +93,8 @@ export const HOW_IT_WORKS = {
       title: 'Say what you want',
       description: 'Your user signs an intent: sell this, get at least that. No routes, no small talk.',
       image: {
-        src: '/images/solana/envelope.webp',
-        alt: 'A cow-print envelope spilling metal hearts, with a letter reading “Dear Market, I’m not desperate. Call me when you meet my price. XOXO”',
+        src: '/images/solana/envelope-letter.webp',
+        alt: 'A cow-print envelope spilling metal hearts, with a letter reading “Dear Market, I’d like to sell 4000 USDC for at least 2 ETH. XOXO”',
       },
     },
     {
