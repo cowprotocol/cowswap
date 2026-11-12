@@ -13,6 +13,7 @@ import svgBackgroundCowswapLightmodeSrc from '@cowprotocol/assets/images/backgro
 import { GRAFFITI_CANVAS_PNG_URL, wallCssBlendMode } from '@cowprotocol/common-const'
 import { CowSwapTheme, Media, UI } from '@cowprotocol/ui'
 
+import { darken, transparentize } from 'color2k'
 import * as CSS from 'csstype'
 import styled, { css } from 'styled-components/macro'
 
@@ -36,6 +37,14 @@ const WALL_LAYER = `url(${GRAFFITI_CANVAS_PNG_URL}) no-repeat center / cover`
 /** Rendered plaster, laid over the paint so the graffiti picks up the surface instead of floating on it. */
 const WALL_SURFACE_LAYER =
   'repeating-linear-gradient(135deg, rgba(14, 15, 45, 0.55) 0 3px, rgba(120, 150, 255, 0.06) 3px 9px)'
+
+/**
+ * How much of the wall the panels over it give up, as `transparentize` amounts.
+ * The inner surfaces sit on the outer one, so their alphas multiply: the pair is
+ * tuned together to keep body text above the 4.5:1 contrast of the opaque theme.
+ */
+const WALL_VEIL_ALPHA = 0.28
+const WALL_VEIL_DARKER_ALPHA = 0.4
 
 export const AppWrapper = styled.div<Partial<CSS.Properties> & { $fullBleed?: boolean }>`
   display: flex;
@@ -136,6 +145,19 @@ export const BodyWrapper = styled.div<{
   }};
   background-blend-mode: ${({ theme, customTheme }) =>
     isSolanaTheme(customTheme) ? `normal, normal, ${wallCssBlendMode(theme.darkMode)}` : 'normal'};
+
+  /*
+   * The wall is this page's backdrop, so the surfaces laid over it — the trade
+   * widget above all — let a little of it through. Redeclaring the tokens here
+   * rather than in the theme keeps it to this subtree: modals and dropdowns
+   * portal to the body, and stay opaque over whatever they cover.
+   */
+  ${({ theme, customTheme }) =>
+    isSolanaTheme(customTheme) &&
+    css`
+      ${UI.COLOR_PAPER}: ${transparentize(theme.paper, WALL_VEIL_ALPHA)};
+      ${UI.COLOR_PAPER_DARKER}: ${transparentize(darken(theme.paper, 0.07), WALL_VEIL_DARKER_ALPHA)};
+    `}
 
   ${Media.upToMedium()} {
     padding: ${({ theme, $hasActiveSpeechBubbleNotification }) =>
