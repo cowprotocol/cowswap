@@ -43,6 +43,8 @@ export interface CustomThemeContext {
   onSolanaChain?: boolean
   /** Whether the graffiti wall feature is on. */
   graffitiWallEnabled?: boolean
+  /** Whether the graffiti wall page is the one on screen. */
+  onWallPage?: boolean
 }
 
 export function isCustomThemeEnabled(theme: CustomTheme, featureFlags?: FeatureFlags): boolean {
@@ -60,16 +62,20 @@ export function isCustomThemeEnabled(theme: CustomTheme, featureFlags?: FeatureF
 
 /**
  * Resolve the active custom theme for a given UI context. Solana is chain-scoped rather than
- * seasonal, so it wins on its own network; it paints the live graffiti wall behind the app, so it
- * also needs the wall itself to be on. Among the seasonal themes Halloween has global
- * priority but requires dark mode; if it is enabled by flags yet dark mode is off, no seasonal
- * theme is applied.
+ * seasonal, so it wins on its own network, and the wall page carries it on any network: that page
+ * is the wall, and its own chrome is drawn to sit in this theme, so following the wallet's chain
+ * there would leave it in the plain one until you switched networks. Either way it paints the live
+ * graffiti wall, so it also needs the wall itself to be on. Among the seasonal themes Halloween has
+ * global priority but requires dark mode; if it is enabled by flags yet dark mode is off, no
+ * seasonal theme is applied.
  */
 export function resolveCustomThemeForContext(
   featureFlags: FeatureFlags | undefined,
   context: CustomThemeContext,
 ): CustomTheme | undefined {
-  if (context.onSolanaChain && context.graffitiWallEnabled && isCustomThemeEnabled(CustomTheme.SOLANA, featureFlags)) {
+  const solanaScoped = context.onSolanaChain || context.onWallPage
+
+  if (solanaScoped && context.graffitiWallEnabled && isCustomThemeEnabled(CustomTheme.SOLANA, featureFlags)) {
     return CustomTheme.SOLANA
   }
 

@@ -65,6 +65,30 @@ const WALL_SURFACE_LAYER =
   'repeating-linear-gradient(135deg, rgba(14, 15, 45, 0.55) 0 3px, rgba(120, 150, 255, 0.06) 3px 9px)'
 
 /**
+ * The paint drops out on a full-bleed page, which owns the viewport and draws its own wall: the
+ * wall page renders the same canvas live, over a deliberately transparent root so its paint blends
+ * with whatever the shell puts behind it, and a second static copy back there doubles every tag.
+ * The plaster and the base colour stay, so the page keeps its surface rather than going flat.
+ */
+function wallBackdrop(darkMode: boolean, fullBleed?: boolean): string {
+  const base = wallBaseColor(darkMode)
+
+  if (fullBleed) return `${WALL_SURFACE_LAYER} ${base}`
+
+  return `${WALL_SURFACE_LAYER}, ${WALL_LAYER} ${base}`
+}
+
+function wallBackdropBlendMode(darkMode: boolean, fullBleed?: boolean): string {
+  if (fullBleed) return 'normal'
+
+  return `normal, ${wallCssBlendMode(darkMode)}`
+}
+
+function wallBaseColor(darkMode: boolean): string {
+  return darkMode ? '#0E0F2D' : `var(${UI.COLOR_BLUE_300_PRIMARY})`
+}
+
+/**
  * How much of the wall the panels over it give up, as `transparentize` amounts.
  * The inner surfaces sit on the outer one, so their alphas multiply: the pair is
  * tuned together to keep body text above the 4.5:1 contrast of the opaque theme.
@@ -117,12 +141,12 @@ export const AppWrapper = styled.div<
    * page. This box spans the footer, and the layer below is fixed to the viewport, so the wall
    * reaches the bottom of the window whatever the page is doing above it.
    */
-  ${({ theme, customTheme, backgroundVariant }) =>
+  ${({ theme, customTheme, backgroundVariant, $fullBleed }) =>
     !theme.isWidget &&
     isSolanaTheme(customTheme) &&
     css`
       isolation: isolate;
-      background-color: ${theme.darkMode ? '#0E0F2D' : `var(${UI.COLOR_BLUE_300_PRIMARY})`};
+      background-color: ${wallBaseColor(theme.darkMode)};
 
       /*
        * Fixed rather than a background on this box: a background covers the box, whose height both
@@ -135,10 +159,8 @@ export const AppWrapper = styled.div<
         inset: 0;
         z-index: -2;
         pointer-events: none;
-        background:
-          ${WALL_SURFACE_LAYER},
-          ${WALL_LAYER} ${theme.darkMode ? '#0E0F2D' : `var(${UI.COLOR_BLUE_300_PRIMARY})`};
-        background-blend-mode: normal, ${wallCssBlendMode(theme.darkMode)};
+        background: ${wallBackdrop(theme.darkMode, $fullBleed)};
+        background-blend-mode: ${wallBackdropBlendMode(theme.darkMode, $fullBleed)};
       }
 
       /*
@@ -255,10 +277,13 @@ export const BodyWrapper = styled.div<{
    * The wall is this page's backdrop, so the surfaces laid over it — the trade
    * widget above all — let a little of it through. Redeclaring the tokens here
    * rather than in the theme keeps it to this subtree: modals and dropdowns
-   * portal to the body, and stay opaque over whatever they cover.
+   * portal to the body, and stay opaque over whatever they cover. A full-bleed
+   * page has no wall behind it (see AppWrapper), so there is nothing to let
+   * through and its panels stay solid.
    */
-  ${({ theme, customTheme }) =>
+  ${({ theme, customTheme, $fullBleed }) =>
     isSolanaTheme(customTheme) &&
+    !$fullBleed &&
     css`
       ${UI.COLOR_PAPER}: ${transparentize(theme.paper, WALL_VEIL_ALPHA)};
       ${UI.COLOR_PAPER_DARKER}: ${transparentize(darken(theme.paper, 0.07), WALL_VEIL_DARKER_ALPHA)};

@@ -18,6 +18,7 @@ describe('resolveCowSwapTheme', () => {
     featureFlags?: FeatureFlags
     onSolanaChain?: boolean
     graffitiWallEnabled?: boolean
+    onWallPage?: boolean
     expected: CowSwapTheme | undefined
   }> = [
     {
@@ -122,9 +123,38 @@ describe('resolveCowSwapTheme', () => {
       graffitiWallEnabled: true,
       expected: 'darkSolana',
     },
+    {
+      name: 'activates the Solana theme on the wall page off the Solana chain',
+      darkMode: true,
+      featureFlags: buildFlags({ isSolanaThemeEnabled: true }),
+      onSolanaChain: false,
+      graffitiWallEnabled: true,
+      onWallPage: true,
+      expected: 'darkSolana',
+    },
+    {
+      name: 'prefers Solana over a seasonal theme on the wall page',
+      darkMode: true,
+      featureFlags: buildFlags({ isSolanaThemeEnabled: true, isHalloweenEnabled: true }),
+      onSolanaChain: false,
+      graffitiWallEnabled: true,
+      onWallPage: true,
+      expected: 'darkSolana',
+    },
+    {
+      name: 'skips the Solana theme on the wall page when the graffiti wall is off',
+      darkMode: true,
+      featureFlags: buildFlags({ isSolanaThemeEnabled: true }),
+      onSolanaChain: false,
+      graffitiWallEnabled: false,
+      onWallPage: true,
+      expected: undefined,
+    },
   ]
 
-  test.each(cases)('$name', ({ darkMode, featureFlags, onSolanaChain, graffitiWallEnabled, expected }) => {
-    expect(resolveCowSwapTheme(darkMode, featureFlags, onSolanaChain, graffitiWallEnabled)).toBe(expected)
+  test.each(cases)('$name', ({ darkMode, featureFlags, onSolanaChain, graffitiWallEnabled, onWallPage, expected }) => {
+    expect(resolveCowSwapTheme(darkMode, featureFlags, { onSolanaChain, graffitiWallEnabled, onWallPage })).toBe(
+      expected,
+    )
   })
 })
