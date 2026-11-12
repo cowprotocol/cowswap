@@ -116,18 +116,45 @@ export const Logo = styled.span`
   white-space: nowrap;
   color: ${wallColors.neon};
   text-shadow: 0 0 14px rgba(0, 255, 163, 0.8);
+
+  /* The only part of the row that gives up width on a phone, by ellipsis rather than overflow. */
+  ${onNarrow(css`
+    font-size: 14px;
+    letter-spacing: 1px;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  `)}
 `
 
-export const Tag = styled.span`
+const tagBase = css`
   font-size: 11px;
   letter-spacing: 1px;
   color: ${wallColors.textMuted};
 `
 
-export const LiveTag = styled(Tag)`
+/** The header's wall facts. Dropped on phones, where the row fits only the logo and the live state. */
+export const Tag = styled.span`
+  ${tagBase};
+
+  ${onNarrow(css`
+    display: none;
+  `)}
+`
+
+export const LiveTag = styled.span`
+  ${tagBase};
   display: flex;
   align-items: center;
   gap: 6px;
+  flex-shrink: 0;
+`
+
+/** The live tag's sequence number, dropped on phones so the status itself fits. */
+export const SeqTag = styled.span`
+  ${onNarrow(css`
+    display: none;
+  `)}
 `
 
 export const Spacer = styled.span`
