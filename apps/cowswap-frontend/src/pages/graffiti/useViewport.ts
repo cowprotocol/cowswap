@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef } from 'react'
 
 import { useFullscreen } from './useFullscreen'
 import { clampScale, computeMinScale, coverView, fitView, frameView, zoomAround } from './viewport.utils'
@@ -18,6 +18,8 @@ export interface Viewport {
   resetView: () => void
   /** Centre on the drawing frame, large enough to grab. */
   zoomToPlot: () => void
+  /** Go fullscreen centred on the drawing frame rather than on the whole wall. */
+  openPlotFullscreen: () => void
   isFullscreen: boolean
   /** Whether this browser can fullscreen an element at all. */
   canFullscreen: boolean
@@ -99,10 +101,25 @@ export function useViewport(
     return () => observer.disconnect()
   }, [applyAutoView, canvasEl])
 
-  // Entering or leaving fullscreen is a deliberate reframe, and fullscreen is
-  // the view-the-whole-wall mode: fit the new stage rather than fill it, which
-  // would crop the axis the wall overflows on.
-  const { isFullscreen, canFullscreen, toggleFullscreen } = useFullscreen(refs, resetView)
+  // Entering fullscreen is a deliberate reframe, and fullscreen is the
+  // view-the-whole-wall mode: fit the new stage rather than fill it, which would
+  // crop the axis the wall overflows on. Opened to show one plot, it frames that
+  // instead.
+  const enterFramed = useRef(false)
+  const applyFullscreenView = useCallback((): void => {
+    if (enterFramed.current) zoomToPlot()
+    else resetView()
 
-  return { zoomBy, resetView, zoomToPlot, isFullscreen, canFullscreen, toggleFullscreen }
+    enterFramed.current = false
+  }, [resetView, zoomToPlot])
+
+  const { isFullscreen, canFullscreen, toggleFullscreen } = useFullscreen(refs, applyFullscreenView)
+
+  const openPlotFullscreen = useCallback((): void => {
+    if (!isFullscreen) enterFramed.current = true
+
+    toggleFullscreen()
+  }, [isFullscreen, toggleFullscreen])
+
+  return { zoomBy, resetView, zoomToPlot, openPlotFullscreen, isFullscreen, canFullscreen, toggleFullscreen }
 }

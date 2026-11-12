@@ -58,6 +58,25 @@ const sendTransaction = jest.fn()
 // resume effect and mask what these tests assert.
 const onApplied = jest.fn()
 
+interface Deferred<T> {
+  promise: Promise<T>
+  resolve: (value: T) => void
+}
+
+function deferred<T>(): Deferred<T> {
+  let resolve: (value: T) => void = () => undefined
+  const promise = new Promise<T>((settle) => {
+    resolve = settle
+  })
+
+  return { promise, resolve }
+}
+
+/** Let every already-resolved mock in the flow chain settle, timers aside. */
+async function flushMicrotasks(): Promise<void> {
+  for (let tick = 0; tick < 25; tick++) await Promise.resolve()
+}
+
 function renderPaint(): ReturnType<typeof renderHook<ReturnType<typeof usePaintFlow>, unknown>> {
   return renderHook(() =>
     usePaintFlow({
@@ -180,5 +199,142 @@ describe('usePaintFlow', () => {
     expect(result.current.phase).toBe('error')
     expect(result.current.phaseError).toContain('but the draft needs 2')
     expect(loadPendingBurn()).toBeNull()
+  })
+
+  it('builds the burn on a finalized blockhash', async () => {
+    const { result } = renderPaint()
+
+    await act(async () => {
+      await result.current.paint()
+    })
+
+    expect(mockConnection.getLatestBlockhash).toHaveBeenCalledWith('finalized')
+  })
+
+  it('reports what landed and keeps the success state until it is dismissed', async () => {
+    jest.useFakeTimers()
+
+    try {
+      const { result } = renderPaint()
+
+      await act(async () => {
+        await result.current.paint()
+      })
+
+      expect(result.current.phase).toBe('done')
+      expect(result.current.paintedCount).toBe(2)
+
+      act(() => {
+        jest.advanceTimersByTime(30_000)
+      })
+
+      expect(result.current.phase).toBe('done')
+    } finally {
+      jest.useRealTimers()
+    }
+  })
+
+  it('flags a wallet prompt that has gone unanswered for too long', async () => {
+    jest.useFakeTimers()
+
+    try {
+      sendTransaction.mockReturnValue(deferred<string>().promise)
+
+      const { result } = renderPaint()
+
+      await act(async () => {
+        void result.current.paint()
+        await flushMicrotasks()
+      })
+
+      expect(result.current.phase).toBe('awaiting wallet')
+      expect(result.current.stalled).toBe(false)
+
+      act(() => {
+        jest.advanceTimersByTime(30_000)
+      })
+
+      expect(result.current.stalled).toBe(true)
+    } finally {
+      jest.useRealTimers()
+    }
+  })
+
+  it('lets the user out of an unanswered wallet prompt without burning anything', async () => {
+    sendTransaction.mockReturnValue(deferred<string>().promise)
+
+    const { result } = renderPaint()
+
+    act(() => {
+      void result.current.paint()
+    })
+    await waitFor(() => expect(result.current.phase).toBe('awaiting wallet'))
+
+    act(() => result.current.abandonPaint())
+
+    expect(result.current.phase).toBe('idle')
+    expect(result.current.phaseError).toBeNull()
+    expect(loadPendingBurn()).toBeNull()
+  })
+
+  it('refuses to reset once the burn has been signed', async () => {
+    mockConnection.confirmTransaction.mockReturnValue(deferred<unknown>().promise)
+
+    const { result } = renderPaint()
+
+    act(() => {
+      void result.current.paint()
+    })
+    await waitFor(() => expect(result.current.phase).toBe('confirming'))
+
+    act(() => result.current.abandonPaint())
+
+    expect(result.current.phase).toBe('confirming')
+    expect(loadPendingBurn()).toMatchObject({ txSignature: SIGNATURE })
+  })
+
+  it('will not start a second burn while the abandoned prompt can still answer', async () => {
+    const prompt = deferred<string>()
+
+    sendTransaction.mockReturnValue(prompt.promise)
+
+    const { result } = renderPaint()
+
+    act(() => {
+      void result.current.paint()
+    })
+    await waitFor(() => expect(result.current.phase).toBe('awaiting wallet'))
+    act(() => result.current.abandonPaint())
+
+    await act(async () => {
+      await result.current.paint()
+    })
+
+    expect(sendTransaction).toHaveBeenCalledTimes(1)
+    expect(result.current.phase).toBe('error')
+    expect(result.current.phaseError).toContain('has not answered yet')
+  })
+
+  it('still delivers an abandoned prompt that answers late', async () => {
+    const prompt = deferred<string>()
+
+    sendTransaction.mockReturnValue(prompt.promise)
+
+    const { result } = renderPaint()
+
+    act(() => {
+      void result.current.paint()
+    })
+    await waitFor(() => expect(result.current.phase).toBe('awaiting wallet'))
+    act(() => result.current.abandonPaint())
+
+    await act(async () => {
+      prompt.resolve(SIGNATURE)
+      await flushMicrotasks()
+    })
+
+    await waitFor(() => expect(result.current.phase).toBe('done'))
+    expect(submitDrawMock).toHaveBeenCalledTimes(1)
+    expect(submitDrawMock.mock.calls[0][0]).toMatchObject({ txSignature: SIGNATURE })
   })
 })

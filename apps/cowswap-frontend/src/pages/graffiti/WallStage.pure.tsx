@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-import { CanvasControls, LoadErrorOverlay, ShowToolsButton } from './CanvasControls.pure'
+import { CanvasControls, ExitFullscreenButton, LoadErrorOverlay, ShowToolsButton } from './CanvasControls.pure'
 import { API_BASE } from './graffiti.service'
 import { PlotOverlay } from './PlotOverlay.pure'
 import { StartOverlay } from './StartOverlay.pure'
@@ -32,12 +32,15 @@ export function WallStage({ wall }: WallStageProps): ReactNode {
         <StartOverlay
           phase={paint.phase}
           phaseError={paint.phaseError}
+          paintedCount={paint.paintedCount}
           connected={gate.connected}
           balance={balance}
           onStart={actions.startDrawing}
           onConnect={gate.openSolanaWalletModal}
           canFullscreen={viewport.canFullscreen}
           onFullscreen={viewport.toggleFullscreen}
+          onShowResult={viewport.openPlotFullscreen}
+          onDismiss={paint.resetPhase}
         />
       )}
       <PlotOverlay
@@ -50,6 +53,14 @@ export function WallStage({ wall }: WallStageProps): ReactNode {
       />
       {!viewport.isFullscreen && !layout.toolsVisible && (
         <ShowToolsButton onClick={() => layout.setToolsVisible(true)} />
+      )}
+      {viewport.isFullscreen && (
+        <ExitFullscreenButton
+          onClick={() => {
+            paint.resetPhase()
+            viewport.toggleFullscreen()
+          }}
+        />
       )}
       <styledEl.PaintCanvas ref={paintCanvas} />
       <styledEl.Canvas

@@ -15,7 +15,7 @@ export interface WallScreenProps {
 }
 
 export function WallScreen({ wall }: WallScreenProps): ReactNode {
-  const { gate, layout, sync, brush, draft, plot, session, paint, actions, pointer } = wall
+  const { gate, layout, sync, brush, draft, plot, session, paint, actions, pointer, balance } = wall
   const draftCost = draft.draft.size
   const cost = draftCost > 0 ? draftCost : pointer.liveCost
   const settled = paint.phase === 'done' || paint.phase === 'error'
@@ -30,6 +30,7 @@ export function WallScreen({ wall }: WallScreenProps): ReactNode {
           <ToolsSidebar
             brush={brush}
             connected={gate.connected}
+            balance={balance}
             network={sync.info?.network ?? 'devnet'}
             session={session.session}
             plotLocked={session.plotLocked}
@@ -49,6 +50,7 @@ export function WallScreen({ wall }: WallScreenProps): ReactNode {
             onPaint={paint.paint}
             onConnect={gate.openSolanaWalletModal}
             onHide={() => layout.setToolsVisible(false)}
+            onResetPaint={paint.stalled ? paint.abandonPaint : undefined}
           />
         )}
       </styledEl.Main>

@@ -31,10 +31,22 @@ const MIN_FEE_LAMPORTS = 5000
  */
 const CONFIRM_TIMEOUT_MS = 30_000
 
+/** After this long with no answer from the wallet, offer a way out of the prompt. */
+const WALLET_PROMPT_TIMEOUT_MS = 25_000
+
+const PROMPT_STILL_OPEN =
+  'The wallet prompt from the previous attempt has not answered yet. Approve or reject it in your wallet, then commit again.'
+
 export interface PaintFlow {
   phase: PaintPhase
   phaseError: string | null
+  /** Cells of the last draw the wall accepted. */
+  paintedCount: number
+  /** The wallet prompt has outlived its timeout with nothing signed yet. */
+  stalled: boolean
   paint: () => Promise<void>
+  /** Drop a wallet prompt that never answered, keeping the draft. No-op once a signature exists. */
+  abandonPaint: () => void
   setPhase: (phase: PaintPhase) => void
   setPhaseError: (error: string | null) => void
 }
@@ -71,10 +83,19 @@ export function usePaintFlow({ draft, solanaAccount, info, onApplied }: UsePaint
 
   const [phase, setPhase] = useState<PaintPhase>('idle')
   const [phaseError, setPhaseError] = useState<string | null>(null)
+  const [paintedCount, setPaintedCount] = useState(0)
 
   // The backend consumes a signature exactly once, so two deliveries of the
   // same burn race and the loser is told it was 'already used'.
   const deliveringRef = useRef<string | null>(null)
+
+  // True from the first line of `paint` until the attempt settles. The user can
+  // reset the screen out from under a wallet prompt that never answered, so this
+  // — not the disabled button — is what keeps a second burn from being sent.
+  const attemptRef = useRef(false)
+
+  // Set the instant a signature exists: past that point the tokens are gone.
+  const signedRef = useRef(false)
 
   /** Hand a burn to the wall, retrying transient failures. */
   const deliverBurn = useCallback(
@@ -92,6 +113,7 @@ export function usePaintFlow({ draft, solanaAccount, info, onApplied }: UsePaint
 
         if (outcome.ok) {
           setPhaseError(null)
+          setPaintedCount(burn.cells.length)
           setPhase('done')
           onApplied(outcome.seq)
 
@@ -109,7 +131,7 @@ export function usePaintFlow({ draft, solanaAccount, info, onApplied }: UsePaint
 
   useResumePendingBurn(solanaAccount, deliverBurn)
 
-  useAutoIdle(phase, setPhase)
+  const stalled = useStalledWalletPrompt(phase)
 
   const paint = useCallback(async (): Promise<void> => {
     if (draft.size === 0 || !solanaAccount || !provider || !connection) return
@@ -119,30 +141,51 @@ export function usePaintFlow({ draft, solanaAccount, info, onApplied }: UsePaint
     // Already paid for: burning a second time would charge twice.
     if (owed && owed.walletPubkey === solanaAccount) return deliverBurn(owed)
 
-    const cells = draftToCells(draft)
+    // An attempt whose prompt is still open could still produce a signature, so
+    // starting a second one is the one way this flow could charge twice.
+    if (attemptRef.current) {
+      setPhase('error')
+      setPhaseError(PROMPT_STILL_OPEN)
+
+      return
+    }
+
+    attemptRef.current = true
+    signedRef.current = false
 
     try {
-      setPhaseError(null)
-
-      const started = await startBurn({ cells, connection, info, onPhase: setPhase, owner: solanaAccount, provider })
-
-      if (!started.ok) {
-        setPhase('error')
-        setPhaseError(started.reason)
-
-        return
-      }
-
-      setPhase('confirming')
-      await confirmQuietly(connection, started.strategy)
-      await deliverBurn(started.burn)
-    } catch (err: unknown) {
-      setPhase('error')
-      setPhaseError(handleBurnFailure(err, solanaAccount, { cells: cells.length, mint: info?.mint }))
+      await runAttempt({
+        cells: draftToCells(draft),
+        connection,
+        deliverBurn,
+        info,
+        onPhase: setPhase,
+        onPhaseError: setPhaseError,
+        onSigned: () => {
+          signedRef.current = true
+        },
+        owner: solanaAccount,
+        provider,
+      })
+    } finally {
+      attemptRef.current = false
     }
   }, [connection, deliverBurn, draft, info, provider, solanaAccount])
 
-  return { phase, phaseError, paint, setPhase, setPhaseError }
+  const abandonPaint = useCallback((): void => {
+    // Past a signature the tokens are burned and only delivery can put them on
+    // the wall, so the flow keeps the screen whether the user likes it or not.
+    if (signedRef.current) return
+
+    const owed = loadPendingBurn()
+
+    if (owed && owed.walletPubkey === solanaAccount) return
+
+    setPhase('idle')
+    setPhaseError(null)
+  }, [solanaAccount])
+
+  return { phase, phaseError, paintedCount, stalled, paint, abandonPaint, setPhase, setPhaseError }
 }
 
 /** BurnChecked(amount) + the memo the backend matches the draw against. */
@@ -225,6 +268,41 @@ async function readAtaBalance(connection: Connection, mint: PublicKey, owner: Pu
   return data.parsed.info?.tokenAmount?.uiAmount ?? 0
 }
 
+/** One quote → burn → deliver attempt, with every outcome turned into a phase. */
+async function runAttempt(params: {
+  cells: Array<Cell>
+  connection: Connection
+  deliverBurn: (burn: PendingBurn) => Promise<void>
+  info: CanvasInfo | null
+  onPhase: (phase: PaintPhase) => void
+  onPhaseError: (error: string | null) => void
+  onSigned: () => void
+  owner: string
+  provider: SolanaProvider
+}): Promise<void> {
+  const { cells, connection, deliverBurn, info, onPhase, onPhaseError, onSigned, owner, provider } = params
+
+  try {
+    onPhaseError(null)
+
+    const started = await startBurn({ cells, connection, info, onPhase, onSigned, owner, provider })
+
+    if (!started.ok) {
+      onPhase('error')
+      onPhaseError(started.reason)
+
+      return
+    }
+
+    onPhase('confirming')
+    await confirmQuietly(connection, started.strategy)
+    await deliverBurn(started.burn)
+  } catch (err: unknown) {
+    onPhase('error')
+    onPhaseError(handleBurnFailure(err, owner, { cells: cells.length, mint: info?.mint }))
+  }
+}
+
 /**
  * Confirm the wallet can actually pay before prompting it: a burn from an
  * unfunded account fails with an opaque simulation error.
@@ -275,10 +353,11 @@ async function startBurn(params: {
   connection: Connection
   info: CanvasInfo | null
   onPhase: (phase: PaintPhase) => void
+  onSigned: () => void
   owner: string
   provider: SolanaProvider
 }): Promise<BurnStart> {
-  const { cells, connection, info, onPhase, owner, provider } = params
+  const { cells, connection, info, onPhase, onSigned, owner, provider } = params
   const ownerKey = new PublicKey(owner)
 
   onPhase('quoting')
@@ -289,7 +368,11 @@ async function startBurn(params: {
 
   onPhase('awaiting wallet')
 
-  const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash()
+  // Finalized rather than the connection's `confirmed`: reads and the send are
+  // load-balanced over two RPCs (libs/wallet/src/reown/createSolanaRpcFetch.ts),
+  // and a confirmed blockhash the sending node has not caught up to yet fails
+  // preflight with `Blockhash not found`.
+  const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('finalized')
   const transaction = buildBurnTransaction({
     mint: checked.mint,
     owner: ownerKey,
@@ -298,22 +381,14 @@ async function startBurn(params: {
     lastValidBlockHeight,
   })
   const signature = await provider.sendTransaction(transaction, connection)
+
+  onSigned()
+
   const burn: PendingBurn = { txSignature: signature, walletPubkey: owner, cells, createdAt: Date.now() }
 
   savePendingBurn(burn)
 
   return { ok: true, burn, strategy: { signature, blockhash, lastValidBlockHeight } }
-}
-
-/** Drop the success banner back to idle without leaking the timer. */
-function useAutoIdle(phase: PaintPhase, setPhase: (phase: PaintPhase) => void): void {
-  useEffect(() => {
-    if (phase !== 'done') return
-
-    const timer = setTimeout(() => setPhase('idle'), 2500)
-
-    return () => clearTimeout(timer)
-  }, [phase, setPhase])
 }
 
 /**
@@ -336,4 +411,26 @@ function useResumePendingBurn(
     resumedRef.current = true
     void deliverBurn(pending)
   }, [deliverBurn, solanaAccount])
+}
+
+/**
+ * A wallet prompt is the one step of the flow with no deadline of its own: a
+ * popup that never opened leaves `sendTransaction` pending for good.
+ */
+function useStalledWalletPrompt(phase: PaintPhase): boolean {
+  const [stalled, setStalled] = useState(false)
+
+  useEffect(() => {
+    if (phase !== 'awaiting wallet') {
+      setStalled(false)
+
+      return
+    }
+
+    const timer = setTimeout(() => setStalled(true), WALLET_PROMPT_TIMEOUT_MS)
+
+    return () => clearTimeout(timer)
+  }, [phase])
+
+  return stalled
 }

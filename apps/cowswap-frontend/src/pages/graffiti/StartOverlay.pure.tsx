@@ -22,6 +22,8 @@ const TWITTER_HANDLE = '@CoWSwap'
 export interface StartOverlayProps {
   phase: PaintPhase
   phaseError: string | null
+  /** Cells of the last draw the wall accepted. */
+  paintedCount: number
   connected: boolean
   /** Wall-token balance of the connected wallet, null while it is unknown. */
   balance: number | null
@@ -30,6 +32,16 @@ export interface StartOverlayProps {
   /** Whether the browser can show the wall fullscreen; iOS Safari cannot. */
   canFullscreen: boolean
   onFullscreen: () => void
+  /** Fullscreen, centred on what was just painted. */
+  onShowResult: () => void
+  /** Leave the post-commit panel. */
+  onDismiss: () => void
+}
+
+interface PaintedViewProps {
+  paintedCount: number
+  onShowResult: () => void
+  onDismiss: () => void
 }
 
 interface StartActionProps {
@@ -61,10 +73,10 @@ const HintAction = styled.button`
   }
 `
 
-const Result = styled.p<{ $failed: boolean }>`
+const Result = styled.p`
   margin: 0;
   font-size: 12px;
-  color: ${({ $failed }) => ($failed ? styledEl.wallColors.danger : styledEl.wallColors.neon)};
+  color: ${styledEl.wallColors.danger};
 `
 
 const ClaimButton = styled(styledEl.Button)`
@@ -112,65 +124,94 @@ const TwitterLink = styled(styledEl.PanelLink)`
 export function StartOverlay({
   phase,
   phaseError,
+  paintedCount,
   connected,
   balance,
   onStart,
   onConnect,
   canFullscreen,
   onFullscreen,
+  onShowResult,
+  onDismiss,
 }: StartOverlayProps): ReactNode {
   const [view, setView] = useState<StartView>('welcome')
-  const settled = phase === 'done' || phase === 'error'
   const width = CANVAS.w
   const height = CANVAS.h
+
+  if (view === 'claim') {
+    return (
+      <styledEl.OverlayLayer>
+        <styledEl.StartPanel>
+          <ClaimView onBack={() => setView('welcome')} />
+        </styledEl.StartPanel>
+      </styledEl.OverlayLayer>
+    )
+  }
+
+  if (phase === 'done') {
+    return (
+      <styledEl.OverlayLayer>
+        <styledEl.StartPanel>
+          <BalanceBadge balance={balance} />
+          <PaintedView paintedCount={paintedCount} onShowResult={onShowResult} onDismiss={onDismiss} />
+        </styledEl.StartPanel>
+      </styledEl.OverlayLayer>
+    )
+  }
 
   return (
     <styledEl.OverlayLayer>
       <styledEl.StartPanel>
-        {view === 'claim' ? (
-          <ClaimView onBack={() => setView('welcome')} />
-        ) : (
-          <HeroPanel fillHeight>
-            <styledEl.WallHeading>GRAFFITI WALL</styledEl.WallHeading>
-            <styledEl.PanelText>
-              <Trans>
-                A {width}×{height} pixel wall shared by everyone, painted live on Solana. Pick your frame, draw whatever
-                you like, and burn 1 {TOKEN_SYMBOL} per pixel to put it on the wall for good.
-              </Trans>
-            </styledEl.PanelText>
+        {connected && <BalanceBadge balance={balance} />}
+        <HeroPanel fillHeight>
+          <styledEl.WallHeading>GRAFFITI WALL</styledEl.WallHeading>
+          <styledEl.PanelText>
+            <Trans>
+              A {width}×{height} pixel wall shared by everyone, painted live on Solana. Pick your frame, draw whatever
+              you like, and burn 1 {TOKEN_SYMBOL} per pixel to put it on the wall for good.
+            </Trans>
+          </styledEl.PanelText>
 
-            <StartAction
-              connected={connected}
-              balance={balance}
-              onStart={onStart}
-              onConnect={onConnect}
-              onGetTokens={() => setView('claim')}
-            />
+          <StartAction
+            connected={connected}
+            balance={balance}
+            onStart={onStart}
+            onConnect={onConnect}
+            onGetTokens={() => setView('claim')}
+          />
 
-            <ClaimButton onClick={() => setView('claim')}>
-              <Trans>🎁 Claim {TOKEN_SYMBOL} tokens</Trans>
-            </ClaimButton>
+          <ClaimButton onClick={() => setView('claim')}>
+            <Trans>🎁 Claim {TOKEN_SYMBOL} tokens</Trans>
+          </ClaimButton>
 
-            <styledEl.PanelActions>
-              <styledEl.Button onClick={() => void downloadWallImage()}>
-                <Trans>⬇ download wall</Trans>
+          <styledEl.PanelActions>
+            <styledEl.Button onClick={() => void downloadWallImage()}>
+              <Trans>⬇ download wall</Trans>
+            </styledEl.Button>
+            {canFullscreen && (
+              <styledEl.Button onClick={onFullscreen}>
+                <Trans>⛶ view wall</Trans>
               </styledEl.Button>
-              {canFullscreen && (
-                <styledEl.Button onClick={onFullscreen}>
-                  <Trans>⛶ view wall</Trans>
-                </styledEl.Button>
-              )}
-            </styledEl.PanelActions>
-
-            {settled && (
-              <Result $failed={phase === 'error'}>
-                {phase === 'done' ? <Trans>✓ your pixels are on the wall</Trans> : phaseError}
-              </Result>
             )}
-          </HeroPanel>
-        )}
+          </styledEl.PanelActions>
+
+          {phase === 'error' && <Result>{phaseError}</Result>}
+        </HeroPanel>
       </styledEl.StartPanel>
     </styledEl.OverlayLayer>
+  )
+}
+
+/** What the wallet holds, read out of the way of the panel's actions. */
+function BalanceBadge({ balance }: { balance: number | null }): ReactNode {
+  if (balance === null) return null
+
+  return (
+    <styledEl.PanelBadge>
+      <Trans>
+        {TOKEN_SYMBOL} balance: {balance}
+      </Trans>
+    </styledEl.PanelBadge>
   )
 }
 
@@ -236,6 +277,42 @@ function ClaimView({ onBack }: { onBack: () => void }): ReactNode {
       <styledEl.PanelActions>
         <styledEl.Button onClick={onBack}>
           <Trans>← back</Trans>
+        </styledEl.Button>
+      </styledEl.PanelActions>
+    </HeroPanel>
+  )
+}
+
+/** Where a commit lands: what went up, what is left, and a way to go look at it. */
+function PaintedView({ paintedCount, onShowResult, onDismiss }: PaintedViewProps): ReactNode {
+  return (
+    <HeroPanel fillHeight>
+      <styledEl.WallHeading>
+        <Trans>ON THE WALL 🎉</Trans>
+      </styledEl.WallHeading>
+      <styledEl.CostValue>
+        {paintedCount}{' '}
+        <styledEl.UnitLabel>
+          <Trans>pixels</Trans>
+        </styledEl.UnitLabel>
+      </styledEl.CostValue>
+      <styledEl.PanelText>
+        <Trans>
+          painted, and {paintedCount} {TOKEN_SYMBOL} burned for good. Everyone looking at the wall right now can see
+          them.
+        </Trans>
+      </styledEl.PanelText>
+
+      <styledEl.PrimaryButton onClick={onShowResult}>
+        <Trans>⛶ SEE YOUR MASTERPIECE</Trans>
+      </styledEl.PrimaryButton>
+
+      <styledEl.PanelActions>
+        <styledEl.Button onClick={onDismiss}>
+          <Trans>✏ paint more</Trans>
+        </styledEl.Button>
+        <styledEl.Button onClick={() => void downloadWallImage()}>
+          <Trans>⬇ download wall</Trans>
         </styledEl.Button>
       </styledEl.PanelActions>
     </HeroPanel>

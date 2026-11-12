@@ -31,6 +31,14 @@ jest.mock('modules/application', () => ({
   useFullBleedPage: () => undefined,
 }))
 
+// jsdom reports no fullscreen support, and `useFullscreen` reads that once at
+// module load, so the flag has to be set before the module is first required.
+jest.mock('./useFullscreen', () => {
+  Object.defineProperty(globalThis.document, 'fullscreenEnabled', { configurable: true, value: true })
+
+  return jest.requireActual('./useFullscreen')
+})
+
 jest.mock('./useTokenBalance', () => ({
   useTokenBalance: jest.fn(),
 }))
@@ -274,6 +282,14 @@ describe('drawing session', () => {
 
     expect(await screen.findByText(/GRASS left/)).toBeTruthy()
   })
+
+  it('shows what the wallet holds on the landing panel, outside any session', async () => {
+    useTokenBalanceMock.mockReturnValue(1234)
+
+    await renderLoadedWall(ACCOUNT)
+
+    expect(screen.getByText('GRASS balance: 1234')).toBeTruthy()
+  })
 })
 
 describe('tools', () => {
@@ -313,6 +329,50 @@ describe('tools', () => {
     fireEvent.change(screen.getByRole('slider'), { target: { value: '12' } })
 
     expect(screen.getByText('Brush · 12px')).toBeTruthy()
+  })
+})
+
+describe('fullscreen', () => {
+  function stubFullscreen(): void {
+    let element: Element | null = null
+
+    Object.defineProperty(document, 'fullscreenElement', { configurable: true, get: () => element })
+    Object.defineProperty(Element.prototype, 'requestFullscreen', {
+      configurable: true,
+      value: function requestFullscreen(this: Element): Promise<void> {
+        element = this
+        document.dispatchEvent(new Event('fullscreenchange'))
+
+        return Promise.resolve()
+      },
+    })
+    Object.defineProperty(document, 'exitFullscreen', {
+      configurable: true,
+      value: (): Promise<void> => {
+        element = null
+        document.dispatchEvent(new Event('fullscreenchange'))
+
+        return Promise.resolve()
+      },
+    })
+  }
+
+  it('offers a way back to the landing panel, which a touch screen has no ESC for', async () => {
+    stubFullscreen()
+    await renderLoadedWall(ACCOUNT)
+
+    fireEvent.click(screen.getByText('⛶ view wall'))
+    expect(screen.queryByText(/START DRAWING/)).toBeNull()
+
+    fireEvent.click(screen.getByText('← menu'))
+    expect(screen.getByText(/START DRAWING/)).toBeTruthy()
+  })
+
+  it('keeps the exit out of the clean wall view until it is fullscreen', async () => {
+    stubFullscreen()
+    await renderLoadedWall(ACCOUNT)
+
+    expect(screen.queryByText('← menu')).toBeNull()
   })
 })
 

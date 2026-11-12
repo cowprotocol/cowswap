@@ -482,6 +482,14 @@ export const CostBox = styled.div<{ $variant?: 'default' | 'danger' | 'success' 
     $variant === 'danger' ? wallColors.dangerSoft : $variant === 'success' ? wallColors.neon : 'inherit'};
 `
 
+/** A hint and its button below a status line, inside the same box. */
+export const StatusAction = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+`
+
 export const CostValue = styled.div`
   font-size: 26px;
   font-weight: 700;
@@ -554,6 +562,7 @@ export const OverlayLayer = styled.div`
 `
 
 export const StartPanel = styled(Panel)`
+  position: relative;
   pointer-events: auto;
   display: flex;
   flex-direction: column;
@@ -581,6 +590,23 @@ export const StartPanel = styled(Panel)`
     /* Opaque: a full-screen sheet otherwise ghosts the canvas controls underneath it. */
     background: ${wallColors.surfaceDeep};
   `)}
+`
+
+/** A reading, not an action: the panel's corner, away from its buttons. */
+export const PanelBadge = styled.div`
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  z-index: 1;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(10, 10, 16, 0.72);
+  color: ${wallColors.neon};
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  pointer-events: none;
 `
 
 export const PlotOverlayRoot = styled.div`
@@ -630,6 +656,14 @@ export const ShowTools = styled(GlowButton)`
   top: 8px;
   right: 8px;
   z-index: 5;
+  padding: 8px 16px;
+`
+
+export const ExitFullscreen = styled(GlowButton)`
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 8;
   padding: 8px 16px;
 `
 
