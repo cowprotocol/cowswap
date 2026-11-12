@@ -49,7 +49,6 @@ export default function GraffitiPage(): ReactNode {
   const { wallColorAt, applyCells } = useWallPixels(refs)
   const sync = useWallSync(refs, applyCells)
   const mint = sync.info?.mint
-  const balance = useTokenBalance(gate.solanaAccount, mint, mint, BALANCE_POLL_MS)
 
   const plot = usePlot(refs, sync.info, sync.loaded)
   const draft = useDraft(refs, plot.maxBoxWidth, plot.maxBoxHeight)
@@ -62,6 +61,10 @@ export default function GraffitiPage(): ReactNode {
     session,
     markSeq: sync.markSeq,
   })
+
+  // Re-read on a finished commit rather than waiting out the poll: the panel
+  // that lands there quotes what is left.
+  const balance = useTokenBalance(gate.solanaAccount, mint, paint.phase === 'done', BALANCE_POLL_MS)
 
   const viewport = useViewport(refs, {
     canvasEl: dom.canvasEl,

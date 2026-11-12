@@ -274,6 +274,14 @@ describe('drawing session', () => {
 
     expect(await screen.findByText(/GRASS left/)).toBeTruthy()
   })
+
+  it('shows what the wallet holds on the landing panel, outside any session', async () => {
+    useTokenBalanceMock.mockReturnValue(1234)
+
+    await renderLoadedWall(ACCOUNT)
+
+    expect(screen.getByText('1234 GRASS in your wallet')).toBeTruthy()
+  })
 })
 
 describe('tools', () => {
