@@ -4,7 +4,7 @@ import { CONFIG } from '@/const/meta'
 
 // Using a generic router interface since AppRouterInstance is not exported
 interface AppRouterInstance {
-  replace: (url: string) => void
+  replace: (url: string, options?: { scroll?: boolean }) => void
 }
 
 export function addUtmToUrl(href: string, utm: UtmParams): string {
@@ -29,7 +29,7 @@ export function addUtmToUrl(href: string, utm: UtmParams): string {
   return baseUrl + finalHash
 }
 
-export function cleanUpParams(router: AppRouterInstance, pathname: string | null, query: URLSearchParams) {
+export function cleanUpParams(router: AppRouterInstance, pathname: string | null, query: URLSearchParams): void {
   let cleanedParams = false
 
   // Remove all utm_* parameters
@@ -44,6 +44,6 @@ export function cleanUpParams(router: AppRouterInstance, pathname: string | null
   paramsToDelete.forEach((param) => query.delete(param))
 
   if (cleanedParams) {
-    router.replace((pathname || '/') + '?' + query.toString())
+    router.replace((pathname || '/') + '?' + query.toString() + window.location.hash, { scroll: false })
   }
 }
