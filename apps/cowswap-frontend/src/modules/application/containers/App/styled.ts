@@ -31,8 +31,31 @@ export function isSolanaTheme(theme?: CowSwapTheme): boolean {
   return theme === 'darkSolana'
 }
 
-/** The live graffiti wall, laid over the regular CoW Swap backdrop. */
-const WALL_LAYER = `url(${GRAFFITI_CANVAS_PNG_URL}) no-repeat center / cover`
+/**
+ * The canvas is 16:9 as served. Over-stating it is the safe direction: it only feeds the box's
+ * min-height below, so a taller real canvas would be given less room than it needs and lose its
+ * last rows, while a shorter one just leaves a little slack under the paint.
+ */
+const WALL_ASPECT = 1.7778
+
+/**
+ * The live graffiti wall, laid over the regular CoW Swap backdrop.
+ *
+ * Sized by the width of its box, never cover and never against the viewport height. Cover refits
+ * the paint to the box's *height*, which grows ~100px as the widget, its quote and the banners
+ * settle, zooming it ~10% and sliding it sideways on every load. Fitting it to the viewport instead
+ * held still, but shrank the whole wall on a short window rather than simply showing less of it.
+ * Width is both stable through that growth and independent of how tall the window is, so the paint
+ * keeps one size and the box grows to hold it (see WALL_MIN_HEIGHT).
+ */
+const WALL_LAYER = `url(${GRAFFITI_CANVAS_PNG_URL}) no-repeat center top / 100% auto`
+
+/**
+ * Keeps the box at least as tall as the wall it carries, plus the slice the footer takes back with
+ * its negative margin, so the wall's last rows land just above the footer instead of being clipped
+ * off by a box the content alone would have left too short.
+ */
+const WALL_MIN_HEIGHT = `calc(100vw / ${WALL_ASPECT} + var(--marginBottomOffset))`
 
 /** Rendered plaster, laid over the paint so the graffiti picks up the surface instead of floating on it. */
 const WALL_SURFACE_LAYER =
@@ -109,7 +132,7 @@ export const BodyWrapper = styled.div<{
   margin: ${({ theme }) => (theme.isWidget ? '0' : '-76px auto calc(var(--marginBottomOffset) * -1)')};
   border-bottom-left-radius: ${({ theme }) => (theme.isWidget ? '0' : 'var(--marginBottomOffset)')};
   border-bottom-right-radius: ${({ theme }) => (theme.isWidget ? '0' : 'var(--marginBottomOffset)')};
-  min-height: initial;
+  min-height: ${({ customTheme }) => (isSolanaTheme(customTheme) ? WALL_MIN_HEIGHT : 'initial')};
   background: ${({ theme, customTheme, backgroundVariant }) => {
     if (theme.isWidget) {
       return 'transparent'
@@ -147,14 +170,6 @@ export const BodyWrapper = styled.div<{
     isSolanaTheme(customTheme) ? `normal, normal, ${wallCssBlendMode(theme.darkMode)}` : 'normal'};
 
   /*
-   * The wall layer alone resolves against the viewport. Cover otherwise refits it to this element's
-   * own box, which grows ~100px as the widget, its quote and the banners settle — zooming the paint
-   * ~10% and sliding it sideways on every load. It also makes the crop follow the viewport's aspect
-   * ratio, which is what findFreeSpot's safe area is computed against.
-   */
-  background-attachment: ${({ customTheme }) => (isSolanaTheme(customTheme) ? 'scroll, scroll, fixed' : 'scroll')};
-
-  /*
    * The wall is this page's backdrop, so the surfaces laid over it — the trade
    * widget above all — let a little of it through. Redeclaring the tokens here
    * rather than in the theme keeps it to this subtree: modals and dropdowns
@@ -172,8 +187,6 @@ export const BodyWrapper = styled.div<{
       theme.isWidget ? '0 0 16px' : $hasActiveSpeechBubbleNotification ? '150px 16px 330px' : '150px 16px 150px'};
     flex: none;
     min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 200px)')};
-    /* iOS resolves a fixed background against the whole document, scaling it wildly — scroll with the page here. */
-    background-attachment: scroll;
     background-size: ${({ customTheme }) => {
       if (isSolanaTheme(customTheme)) return 'contain, auto, cover'
 
