@@ -13,6 +13,7 @@ import { ClaimResultView } from './ClaimScreens.pure'
 import { downloadWallImage } from './graffiti.service'
 import { HeroPanel } from './HeroPanel.pure'
 import { CANVAS } from './raster.utils'
+import { TokenLogo } from './TokenLogo.pure'
 import { TOKEN_SYMBOL } from './wall.constants'
 import * as styledEl from './wall.styled'
 
@@ -240,6 +241,7 @@ function BalanceBadge({ balance }: { balance: number | null }): ReactNode {
 
   return (
     <styledEl.PanelBadge>
+      <TokenLogo size={24} />
       <Trans>
         {TOKEN_SYMBOL} balance: {balance}
       </Trans>

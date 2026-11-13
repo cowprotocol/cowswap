@@ -14,6 +14,7 @@
     "dev": "tsx watch src/server.ts",
     "test": "node --import tsx --test \"src/**/*.test.ts\"",
     "mint:create": "tsx scripts/create-mint.ts",
+    "token:metadata": "tsx scripts/set-token-metadata.ts",
     "claims:gen": "tsx scripts/gen-claims.ts",
     "claims:pdf": "tsx scripts/make-claim-pdf.ts",
     "claims:import": "tsx scripts/import-claims.ts"

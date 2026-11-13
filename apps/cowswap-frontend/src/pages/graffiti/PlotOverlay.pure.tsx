@@ -2,6 +2,7 @@ import type { ReactNode, RefCallback } from 'react'
 
 import { Trans } from '@lingui/react/macro'
 
+import { TokenLogo } from './TokenLogo.pure'
 import { TOKEN_SYMBOL } from './wall.constants'
 import * as styledEl from './wall.styled'
 
@@ -31,6 +32,7 @@ export function PlotOverlay({
     <styledEl.PlotOverlayRoot ref={bindOverlay}>
       {showBalance && (
         <styledEl.BalanceChip>
+          <TokenLogo size={28} />
           <Trans>
             {TOKEN_SYMBOL} left {left}
           </Trans>

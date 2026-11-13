@@ -92,6 +92,23 @@ Prefer the env var over a shell argument: arguments land in shell history and ar
 visible to every process via `ps`. Read it from a file or a secret manager as
 above rather than typing it inline.
 
+### Naming the token in wallets
+
+A bare SPL mint has no name, so wallets show it as UNKNOWN. `set-token-metadata.ts`
+attaches a Metaplex Token Metadata account to the mint — name, symbol and a link to
+the off-chain JSON that carries the logo:
+
+```bash
+MINT=<mint-pubkey> TREASURY_KEYPAIR=$PWD/.keys/treasury.json pnpm token:metadata
+```
+
+Re-runnable: it creates the account the first time and updates it afterwards.
+`TOKEN_NAME` / `TOKEN_SYMBOL` / `TOKEN_URI` override the defaults (`GRASS`,
+`GRASS`, `https://swap.cow.fi/token/grass.json`). The JSON and the PNG it points
+at live in `apps/cowswap-frontend/public/token/`; deploying under another domain
+means editing the absolute URLs in `grass.json` and passing a matching
+`TOKEN_URI`. See `docs/graffiti/OPERATIONS.md` section 6.
+
 ## Configuration (env)
 
 | Var                    | Default                          | Description                                                        |

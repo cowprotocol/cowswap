@@ -17,12 +17,14 @@ import {
   mintTo,
   TOKEN_PROGRAM_ID,
 } from '@solana/spl-token'
-import { clusterApiUrl, Connection, Keypair, LAMPORTS_PER_SOL, type PublicKey } from '@solana/web3.js'
+import { Connection, Keypair, LAMPORTS_PER_SOL, type PublicKey } from '@solana/web3.js'
 
 import fs from 'node:fs'
 import path from 'node:path'
 
-import { INITIAL_SUPPLY, PKG_ROOT } from '../src/config.js'
+import { KEYS_DIR, resolveRpcUrl, resolveTreasuryFromEnv, TREASURY_KEY_FILE } from './cli.js'
+
+import { INITIAL_SUPPLY } from '../src/config.js'
 import { parseSecretKey, readSecretKeyFile } from '../src/keypair.js'
 import { errorMessage } from '../src/util.js'
 
@@ -43,7 +45,6 @@ interface TreasuryKey extends ResolvedKey {
   envHint: string
 }
 
-const KEYS_DIR = path.resolve(PKG_ROOT, '.keys')
 const AIRDROP_LAMPORTS = 2 * LAMPORTS_PER_SOL
 const SIGNATURE_FEE_LAMPORTS = 5_000
 /** Slack for the handful of signatures setup spends. */
@@ -199,36 +200,15 @@ function resolveMint(): ResolvedKey {
   return { keypair, persist: false }
 }
 
-function resolveRpcUrl(args: string[]): string {
-  const idx = args.indexOf('--rpc')
-  const fromFlag = idx === -1 ? undefined : args[idx + 1]
-  return fromFlag || process.env.RPC_URL || clusterApiUrl('devnet')
-}
-
-/**
- * TREASURY_SECRET_KEY beats the TREASURY_KEYPAIR file, which beats .keys/treasury.json.
- * An unreadable key is fatal, never a silent fallback to a fresh unfunded treasury.
- */
+/** A key from the environment is used as-is; otherwise `.keys/treasury.json` is reused or created. */
 function resolveTreasury(): TreasuryKey {
-  const inline = process.env.TREASURY_SECRET_KEY
-  if (inline) {
-    const keypair = parseSecretKey(inline)
-    if (!keypair) throw new Error('TREASURY_SECRET_KEY is set but is neither a JSON byte array nor base58')
-
-    console.log(`[mint] using TREASURY_SECRET_KEY: ${keypair.publicKey.toBase58()}`)
-    return { keypair, persist: false, envHint: 'TREASURY_SECRET_KEY=<as passed to this script>' }
+  const configured = resolveTreasuryFromEnv()
+  if (configured) {
+    console.log(`[mint] using ${configured.envHint.split('=')[0]}: ${configured.keypair.publicKey.toBase58()}`)
+    return { ...configured, persist: false }
   }
 
-  const envPath = process.env.TREASURY_KEYPAIR
-  if (envPath) {
-    const keypair = readSecretKeyFile(envPath)
-    if (!keypair) throw new Error(`TREASURY_KEYPAIR=${envPath} could not be read as a keypair`)
-
-    console.log(`[mint] using TREASURY_KEYPAIR: ${keypair.publicKey.toBase58()}`)
-    return { keypair, persist: false, envHint: `TREASURY_KEYPAIR=${envPath}` }
-  }
-
-  return { ...loadOrGenerate('treasury.json'), envHint: `TREASURY_KEYPAIR=${path.join(KEYS_DIR, 'treasury.json')}` }
+  return { ...loadOrGenerate('treasury.json'), envHint: `TREASURY_KEYPAIR=${TREASURY_KEY_FILE}` }
 }
 
 /** Secret keys are written owner-read/write only: they are money. */
