@@ -46,6 +46,9 @@ const GRID_STEP = 8
 /** The eraser's colour. Erased cells fall back to the page background, not to black. */
 const ERASED = 0
 
+/** Veil over everything outside the plot. Alpha leaves the surrounding wall art readable. */
+const OUTSIDE_VEIL = 'rgba(10,11,14,0.68)'
+
 /**
  * Capped at 2: every frame redraws a 4096x2048 offscreen, and a 3x backing store
  * on a large display costs more fill than the extra sharpness is worth.
@@ -141,7 +144,11 @@ function backdropPattern(ctx: CanvasRenderingContext2D): CanvasPattern | null {
   return ctx.createPattern(tile, 'repeat')
 }
 
-/** Dim everything outside the plot so the painter's area reads clearly. */
+/**
+ * Dim everything outside the plot so the painter's area reads clearly. A neutral
+ * grey rather than black: the page background is already near-black, so a black
+ * veil only drains its blue channel and leaves the luminance unchanged.
+ */
 function dimOutsidePlot(
   ctx: CanvasRenderingContext2D,
   box: { sx: number; sy: number; sw: number; sh: number },
@@ -151,15 +158,11 @@ function dimOutsidePlot(
   const { sx, sy, sw, sh } = box
 
   ctx.save()
-
-  for (const fill of ['rgba(0,0,0,0.55)', 'rgba(255,255,255,0.05)']) {
-    ctx.fillStyle = fill
-    ctx.fillRect(0, 0, canvasW, sy)
-    ctx.fillRect(0, sy + sh, canvasW, canvasH - sy - sh)
-    ctx.fillRect(0, sy, sx, sh)
-    ctx.fillRect(sx + sw, sy, canvasW - sx - sw, sh)
-  }
-
+  ctx.fillStyle = OUTSIDE_VEIL
+  ctx.fillRect(0, 0, canvasW, sy)
+  ctx.fillRect(0, sy + sh, canvasW, canvasH - sy - sh)
+  ctx.fillRect(0, sy, sx, sh)
+  ctx.fillRect(sx + sw, sy, canvasW - sx - sw, sh)
   ctx.restore()
 }
 
