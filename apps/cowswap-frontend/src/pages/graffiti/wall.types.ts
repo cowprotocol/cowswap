@@ -53,6 +53,7 @@ export interface WallRefs {
   paintCanvasElRef: MutableRefObject<HTMLCanvasElement | null>
   wrapElRef: MutableRefObject<HTMLDivElement | null>
   plotOverlayRef: MutableRefObject<HTMLDivElement | null>
+  plotConfirmRef: MutableRefObject<HTMLDivElement | null>
 
   // Viewport.
   viewRef: MutableRefObject<View>

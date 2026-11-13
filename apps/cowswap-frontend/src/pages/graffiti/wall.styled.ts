@@ -628,8 +628,36 @@ export const BalanceChip = styled.div`
     inset 0 0 8px rgba(0, 255, 163, 0.15);
 `
 
-export const OverlayButton = styled(GlowButton)`
+const confirmPulse = keyframes`
+  50% {
+    transform: scale(1.06);
+    box-shadow:
+      0 0 34px rgba(0, 255, 163, 0.85),
+      inset 0 0 12px rgba(0, 255, 163, 0.3);
+  }
+`
+
+/** Centred on the drawing frame by the render loop, so the confirm step is unmissable. */
+export const PlotConfirmRoot = styled.div`
+  position: absolute;
+  z-index: 7;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+`
+
+export const ConfirmButton = styled(GlowButton)`
   pointer-events: auto;
+  padding: 12px 24px;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  box-shadow:
+    0 0 24px rgba(0, 255, 163, 0.65),
+    inset 0 0 10px rgba(0, 255, 163, 0.2);
+  animation: ${confirmPulse} 1.8s ease-in-out infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
 `
 
 export const PlainOverlayButton = styled(Button)`

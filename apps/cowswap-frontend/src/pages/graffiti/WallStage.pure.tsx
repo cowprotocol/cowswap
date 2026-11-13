@@ -21,7 +21,7 @@ export interface WallStageProps {
 /** The canvas and everything laid over it. */
 export function WallStage({ wall }: WallStageProps): ReactNode {
   const { gate, layout, sync, brush, session, paint, viewport, actions, pointer, balance, claim } = wall
-  const { wrap, canvas, paintCanvas, overlay } = wall.dom
+  const { wrap, canvas, paintCanvas, overlay, confirm } = wall.dom
   const inSession = session.session !== 'start' && !viewport.isFullscreen
   const spent = wall.draft.draft.size + pointer.liveCost
   const balanceLeft = balance === null ? null : Math.max(0, Math.floor(balance - spent))
@@ -48,6 +48,7 @@ export function WallStage({ wall }: WallStageProps): ReactNode {
       )}
       <PlotOverlay
         bindOverlay={overlay}
+        bindConfirm={confirm}
         showBalance={gate.connected && inSession}
         balanceLeft={balanceLeft}
         showControls={!session.plotLocked && inSession}

@@ -27,6 +27,7 @@ export type WallRenderRefs = Pick<
   | 'drawingRef'
   | 'strokePointsRef'
   | 'plotOverlayRef'
+  | 'plotConfirmRef'
   | 'patternRef'
 >
 
@@ -39,12 +40,32 @@ function isPlotFrameVisible(snapshot: WallSnapshot): boolean {
   return snapshot.plot !== null && snapshot.tool !== 'pan' && snapshot.session !== 'start' && !snapshot.fullscreen
 }
 
+/** Half the centred confirm button, so clamping it to the canvas keeps it whole. */
+const CONFIRM_MARGIN_X = 90
+const CONFIRM_MARGIN_Y = 28
+
 /** Grid lines appear only once cells are big enough to see between them. */
 const GRID_MIN_SCALE = 6
 const GRID_STEP = 8
 
 /** The eraser's colour. Erased cells fall back to the page background, not to black. */
 const ERASED = 0
+
+/**
+ * Where the confirm button sits: the centre of the frame, pulled back inside the
+ * canvas by half the button's footprint so it stays whole and clickable when the
+ * frame is dragged past an edge or is larger than the viewport.
+ */
+export function confirmAnchor(
+  box: { sx: number; sy: number; sw: number; sh: number },
+  canvasW: number,
+  canvasH: number,
+): { x: number; y: number } {
+  return {
+    x: clamp(box.sx + box.sw / 2, CONFIRM_MARGIN_X, Math.max(CONFIRM_MARGIN_X, canvasW - CONFIRM_MARGIN_X)),
+    y: clamp(box.sy + box.sh / 2, CONFIRM_MARGIN_Y, Math.max(CONFIRM_MARGIN_Y, canvasH - CONFIRM_MARGIN_Y)),
+  }
+}
 
 /**
  * Capped at 2: every frame redraws a 4096x2048 offscreen, and a 3x backing store
@@ -139,6 +160,10 @@ function backdropPattern(ctx: CanvasRenderingContext2D): CanvasPattern | null {
   tctx.stroke()
 
   return ctx.createPattern(tile, 'repeat')
+}
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(Math.max(value, min), max)
 }
 
 /** Dim everything outside the plot so the painter's area reads clearly. */
@@ -266,12 +291,21 @@ function drawPlotFrame(ctx: CanvasRenderingContext2D, refs: WallRenderRefs): voi
   ctx.strokeRect(box.sx, box.sy, box.sw, box.sh)
   ctx.restore()
 
-  // Keep the balance chip + confirm button pinned just above the frame.
+  // Keep the balance chip + rotate button pinned just above the frame.
   const overlay = refs.plotOverlayRef.current
 
   if (overlay) {
     overlay.style.left = `${Math.max(6, Math.min(canvasW - 240, box.sx))}px`
     overlay.style.top = `${Math.max(6, box.sy - 44)}px`
+  }
+
+  const confirm = refs.plotConfirmRef.current
+
+  if (confirm) {
+    const anchor = confirmAnchor(box, canvasW, canvasH)
+
+    confirm.style.left = `${anchor.x}px`
+    confirm.style.top = `${anchor.y}px`
   }
 
   if (!locked) {
