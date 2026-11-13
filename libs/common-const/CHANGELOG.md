@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.22.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.21.0...common-const-v3.22.0) (2026-11-13)
+
+### Minor Changes
+
+- feat(graffiti): collaborative graffiti wall (consolidated) (#8560)
+
 ## [3.21.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.20.0...common-const-v3.21.0) (2026-11-13)
 
 ### Minor Changes
