@@ -19,12 +19,16 @@ jest.mock('@cowprotocol/core', () => ({
   },
 }))
 
-const OLD_KEY = 'allTokenListsInfoAtom:v7'
-const NEW_KEY = 'allTokenListsInfoAtom:v8'
+const V7_KEY = 'allTokenListsInfoAtom:v7'
+const V8_KEY = 'allTokenListsInfoAtom:v8'
+const LATEST_KEY = 'allTokenListsInfoAtom:v9'
 
 const RETIRED_SOURCE = 'https://files.cow.fi/token-lists/NearSolana.json'
 const RENAMED_SOURCE = 'https://files.cow.fi/token-lists/SolanaDefault.json'
 const LIVE_SOURCE = 'https://files.cow.fi/token-lists/CowSwap.1000000001.json'
+const RETIRED_RWA_SOURCE = 'https://files.cow.fi/token-lists/Rwa.1000000001.json'
+const RETIRED_PINNED_RWA_SOURCE = `https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/${'c'.repeat(40)}/tokenlist.json`
+const LIVE_RWA_SOURCE = 'https://files.cow.fi/token-lists/CoinGeckoRwa.1000000001.json'
 
 function listState(source: string): ListState {
   return {
@@ -41,7 +45,7 @@ function listState(source: string): ListState {
 }
 
 function readMigrated(): Record<string, Record<string, ListState | 'deleted'>> {
-  return JSON.parse(mockStorage.get(NEW_KEY) as string)
+  return JSON.parse(mockStorage.get(LATEST_KEY) as string)
 }
 
 describe('migrateRetiredTokenLists', () => {
@@ -51,7 +55,7 @@ describe('migrateRetiredTokenLists', () => {
 
   it('drops retired and renamed sources while keeping the rest', async () => {
     mockStorage.set(
-      OLD_KEY,
+      V7_KEY,
       JSON.stringify({
         [SupportedChainId.SOLANA]: {
           [RETIRED_SOURCE]: listState(RETIRED_SOURCE),
@@ -64,14 +68,53 @@ describe('migrateRetiredTokenLists', () => {
     await migrateRetiredTokenLists()
 
     expect(Object.keys(readMigrated()[SupportedChainId.SOLANA])).toEqual([LIVE_SOURCE])
-    expect(mockStorage.has(OLD_KEY)).toBe(false)
+    expect(mockStorage.has(V7_KEY)).toBe(false)
+    expect(mockStorage.has(V8_KEY)).toBe(false)
+  })
+
+  it('drops the retired RWA lists, whatever commit they are pinned to', async () => {
+    mockStorage.set(
+      V8_KEY,
+      JSON.stringify({
+        [SupportedChainId.SOLANA]: {
+          [RETIRED_RWA_SOURCE]: listState(RETIRED_RWA_SOURCE),
+          [LIVE_RWA_SOURCE]: listState(LIVE_RWA_SOURCE),
+        },
+        [SupportedChainId.MAINNET]: {
+          [RETIRED_PINNED_RWA_SOURCE]: listState(RETIRED_PINNED_RWA_SOURCE),
+        },
+      }),
+    )
+
+    await migrateRetiredTokenLists()
+
+    expect(Object.keys(readMigrated()[SupportedChainId.SOLANA])).toEqual([LIVE_RWA_SOURCE])
+    expect(readMigrated()[SupportedChainId.MAINNET]).toEqual({})
+    expect(mockStorage.has(V8_KEY)).toBe(false)
+  })
+
+  it('carries v7 state through every step', async () => {
+    mockStorage.set(
+      V7_KEY,
+      JSON.stringify({
+        [SupportedChainId.SOLANA]: {
+          [RETIRED_SOURCE]: listState(RETIRED_SOURCE),
+          [RETIRED_RWA_SOURCE]: listState(RETIRED_RWA_SOURCE),
+          [LIVE_SOURCE]: listState(LIVE_SOURCE),
+        },
+      }),
+    )
+
+    await migrateRetiredTokenLists()
+
+    expect(Object.keys(readMigrated()[SupportedChainId.SOLANA])).toEqual([LIVE_SOURCE])
   })
 
   // Sources are stored verbatim while `getSourceAsKey` lower-cases, so matching has to go through it
   it('matches a retired source regardless of casing', async () => {
     const upperCased = RETIRED_SOURCE.toUpperCase()
 
-    mockStorage.set(OLD_KEY, JSON.stringify({ [SupportedChainId.SOLANA]: { [upperCased]: listState(upperCased) } }))
+    mockStorage.set(V7_KEY, JSON.stringify({ [SupportedChainId.SOLANA]: { [upperCased]: listState(upperCased) } }))
 
     await migrateRetiredTokenLists()
 
@@ -79,43 +122,48 @@ describe('migrateRetiredTokenLists', () => {
   })
 
   it('keeps entries marked as deleted, so a list the user removed does not come back', async () => {
-    mockStorage.set(OLD_KEY, JSON.stringify({ [SupportedChainId.MAINNET]: { [LIVE_SOURCE]: 'deleted' } }))
+    mockStorage.set(V7_KEY, JSON.stringify({ [SupportedChainId.MAINNET]: { [LIVE_SOURCE]: 'deleted' } }))
 
     await migrateRetiredTokenLists()
 
     expect(readMigrated()[SupportedChainId.MAINNET]).toEqual({ [LIVE_SOURCE]: 'deleted' })
   })
 
-  // An older build, or a tab still running one, writes v7 again after the migration already ran.
+  // An older build, or a tab still running one, writes an old key again after the migration already ran.
   // Migrating it a second time would put that stale state over everything changed since.
-  it('leaves v8 untouched when an older build has recreated v7', async () => {
-    const alreadyMigrated = { [SupportedChainId.SOLANA]: { [LIVE_SOURCE]: listState(LIVE_SOURCE) } }
+  it.each([V7_KEY, V8_KEY])(
+    'leaves the latest state untouched when an older build has recreated %s',
+    async (oldKey) => {
+      const alreadyMigrated = { [SupportedChainId.SOLANA]: { [LIVE_SOURCE]: listState(LIVE_SOURCE) } }
 
-    mockStorage.set(NEW_KEY, JSON.stringify(alreadyMigrated))
-    mockStorage.set(
-      OLD_KEY,
-      JSON.stringify({ [SupportedChainId.SOLANA]: { [RETIRED_SOURCE]: listState(RETIRED_SOURCE) } }),
-    )
+      mockStorage.set(LATEST_KEY, JSON.stringify(alreadyMigrated))
+      mockStorage.set(
+        oldKey,
+        JSON.stringify({ [SupportedChainId.SOLANA]: { [RETIRED_SOURCE]: listState(RETIRED_SOURCE) } }),
+      )
 
+      await migrateRetiredTokenLists()
+
+      expect(readMigrated()).toEqual(alreadyMigrated)
+      expect(mockStorage.has(oldKey)).toBe(true)
+      expect(mockStorage.has(oldKey === V7_KEY ? V8_KEY : V7_KEY)).toBe(false)
+    },
+  )
+
+  it('does nothing when there is no old state to migrate', async () => {
     await migrateRetiredTokenLists()
 
-    expect(readMigrated()).toEqual(alreadyMigrated)
-    expect(mockStorage.has(OLD_KEY)).toBe(true)
-  })
-
-  it('does nothing when there is no v7 state to migrate', async () => {
-    await migrateRetiredTokenLists()
-
-    expect(mockStorage.has(NEW_KEY)).toBe(false)
+    expect(mockStorage.size).toBe(0)
   })
 
   // A half-written or hand-edited value must not take the whole lists state down with it
   it('leaves v7 in place when it cannot be parsed', async () => {
-    mockStorage.set(OLD_KEY, 'not json')
+    mockStorage.set(V7_KEY, 'not json')
 
     await migrateRetiredTokenLists()
 
-    expect(mockStorage.has(NEW_KEY)).toBe(false)
-    expect(mockStorage.get(OLD_KEY)).toBe('not json')
+    expect(mockStorage.has(V8_KEY)).toBe(false)
+    expect(mockStorage.has(LATEST_KEY)).toBe(false)
+    expect(mockStorage.get(V7_KEY)).toBe('not json')
   })
 })

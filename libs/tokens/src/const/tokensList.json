@@ -17,17 +17,8 @@
     {
       "priority": 4,
       "category": "RWA",
-      "source": "https://raw.githubusercontent.com/ondoprotocol/cowswap-global-markets-token-list/a857ae3573576d0b9992a2867132941de9c651b4/tokenlist.json"
-    },
-    {
-      "priority": 5,
-      "category": "RWA",
-      "source": "https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/ca393f14a21111d32b0092f9800f91135a590fff/tokenlist.json"
-    },
-    {
-      "priority": 6,
-      "category": "RWA",
-      "source": "https://raw.githubusercontent.com/InverterNetwork/brix-token-list/3c9cd63729d690ccba467acd774e2043e33041f1/tokenlist.json"
+      "enabledByDefault": true,
+      "source": "https://files.cow.fi/token-lists/CoinGeckoRwa.1.json"
     }
   ],
   "100": [
@@ -54,6 +45,12 @@
     {
       "priority": 5,
       "source": "https://curvefi.github.io/curve-assets/gnosis.json"
+    },
+    {
+      "priority": 6,
+      "category": "RWA",
+      "enabledByDefault": true,
+      "source": "https://files.cow.fi/token-lists/CoinGeckoRwa.100.json"
     }
   ],
   "42161": [
@@ -83,7 +80,8 @@
     {
       "priority": 6,
       "category": "RWA",
-      "source": "https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/ca393f14a21111d32b0092f9800f91135a590fff/tokenlist.json"
+      "enabledByDefault": true,
+      "source": "https://files.cow.fi/token-lists/CoinGeckoRwa.42161.json"
     }
   ],
   "11155111": [
@@ -120,12 +118,8 @@
     {
       "priority": 6,
       "category": "RWA",
-      "source": "https://raw.githubusercontent.com/afahdenCB/coinbase-tokenized-stocks/e02f8a02bc76dd756f4e9388c21c8302be1a6509/CowSwap.json"
-    },
-    {
-      "priority": 7,
-      "category": "RWA",
-      "source": "https://raw.githubusercontent.com/ST0x-Technology/st0x.registry/986e3c8cb85f854b15a4aa5ad24b47606d8ba339/token-lists/base.json"
+      "enabledByDefault": true,
+      "source": "https://files.cow.fi/token-lists/CoinGeckoRwa.8453.json"
     }
   ],
   "137": [
@@ -143,6 +137,12 @@
       "priority": 3,
       "enabledByDefault": true,
       "source": "https://files.cow.fi/token-lists/Uniswap.137.json"
+    },
+    {
+      "priority": 4,
+      "category": "RWA",
+      "enabledByDefault": true,
+      "source": "https://files.cow.fi/token-lists/CoinGeckoRwa.137.json"
     }
   ],
   "43114": [
@@ -160,6 +160,12 @@
       "priority": 3,
       "enabledByDefault": true,
       "source": "https://files.cow.fi/token-lists/Uniswap.43114.json"
+    },
+    {
+      "priority": 4,
+      "category": "RWA",
+      "enabledByDefault": true,
+      "source": "https://files.cow.fi/token-lists/CoinGeckoRwa.43114.json"
     }
   ],
   "56": [
@@ -181,17 +187,8 @@
     {
       "priority": 4,
       "category": "RWA",
-      "source": "https://raw.githubusercontent.com/ondoprotocol/cowswap-global-markets-token-list/a857ae3573576d0b9992a2867132941de9c651b4/tokenlist.json"
-    },
-    {
-      "priority": 5,
-      "category": "RWA",
-      "source": "https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/ca393f14a21111d32b0092f9800f91135a590fff/tokenlist.json"
-    },
-    {
-      "priority": 6,
-      "category": "RWA",
-      "source": "https://raw.githubusercontent.com/reserve-protocol/dtf-interface/1dbc095c95210f3342278acb8b865763a4d7d443/packages/dtf-catalog/tokenlists/index-dtf/restricted/bnb.tokenlist.json"
+      "enabledByDefault": true,
+      "source": "https://files.cow.fi/token-lists/CoinGeckoRwa.56.json"
     }
   ],
   "59144": [
@@ -216,6 +213,12 @@
       "priority": 2,
       "source": "https://files.cow.fi/token-lists/CoinGecko.9745.json",
       "enabledByDefault": true
+    },
+    {
+      "priority": 3,
+      "category": "RWA",
+      "enabledByDefault": true,
+      "source": "https://files.cow.fi/token-lists/CoinGeckoRwa.9745.json"
     }
   ],
   "57073": [
@@ -232,7 +235,8 @@
     {
       "priority": 3,
       "category": "RWA",
-      "source": "https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/ca393f14a21111d32b0092f9800f91135a590fff/tokenlist.json"
+      "enabledByDefault": true,
+      "source": "https://files.cow.fi/token-lists/CoinGeckoRwa.57073.json"
     }
   ],
   "4663": [
@@ -245,6 +249,12 @@
       "priority": 2,
       "source": "https://files.cow.fi/token-lists/CoinGecko.4663.json",
       "enabledByDefault": true
+    },
+    {
+      "priority": 3,
+      "category": "RWA",
+      "enabledByDefault": true,
+      "source": "https://files.cow.fi/token-lists/CoinGeckoRwa.4663.json"
     }
   ],
   "1000000001": [
@@ -257,7 +267,7 @@
       "priority": 2,
       "category": "RWA",
       "enabledByDefault": true,
-      "source": "https://files.cow.fi/token-lists/Rwa.1000000001.json"
+      "source": "https://files.cow.fi/token-lists/CoinGeckoRwa.1000000001.json"
     }
   ]
 }

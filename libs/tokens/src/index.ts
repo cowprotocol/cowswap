@@ -11,8 +11,6 @@ export { TokensListsUpdater } from './updaters/TokensListsUpdater'
 export { TokensListsTagsUpdater } from './updaters/TokensListsTagsUpdater'
 export { UnsupportedTokensUpdater } from './updaters/UnsupportedTokensUpdater'
 export { WidgetTokensListsUpdater } from './updaters/WidgetTokensListsUpdater'
-export { RestrictedTokensListUpdater } from './updaters/RestrictedTokensListUpdater'
-export type { RestrictedTokensListUpdaterProps } from './updaters/RestrictedTokensListUpdater'
 
 // Pure components
 export { TokenLogo, TokenLogoWrapper } from './pure/TokenLogo'
@@ -23,9 +21,7 @@ export * from './types'
 export type { TokensByAddress, TokensBySymbol } from './state/tokens/allTokensAtom'
 export type { ListSearchResponse } from './hooks/lists/useSearchList'
 export type { TokenSearchResponse } from './hooks/tokens/useSearchToken'
-export type { RestrictedTokenListState } from './state/restrictedTokens/restrictedTokensAtom'
 export type { TokenId } from '@cowprotocol/cow-sdk'
-export type { RestrictedTokenInfo } from './hooks/tokens/useRestrictedToken'
 
 // Hooks
 export { useAllListsList } from './hooks/lists/useAllListsList'
@@ -64,10 +60,8 @@ export { useFetchTokenFromBlockchain } from './hooks/tokens/useFetchTokenFromBlo
 export type { FetchTokenFromBlockchain } from './hooks/tokens/useFetchTokenFromBlockchain'
 export { useAllLpTokens } from './hooks/tokens/useAllLpTokens'
 export { useAreTokenListsLoading } from './hooks/tokens/useAreTokenListsLoading'
-export { useRestrictedToken, useAnyRestrictedToken, findRestrictedToken } from './hooks/tokens/useRestrictedToken'
 
 // State
-export { restrictedTokensAtom, restrictedListsAtom } from './state/restrictedTokens/restrictedTokensAtom'
 export { environmentAtom } from './state/environmentAtom'
 export { allActiveTokensAtom, tokensByAddressAtom } from './state/tokens/allTokensAtom'
 export { favoriteTokensListAtom } from './state/tokens/favoriteTokensAtom'
@@ -86,11 +80,7 @@ export { getChainCurrencySymbols } from './utils/getChainCurrencySymbols'
 export { fetchTokenList } from './services/fetchTokenList'
 
 // Consts
-export { DEFAULT_TOKENS_LISTS } from './const/tokensLists'
-export { RWA_CONSENT_HASH } from './updaters/RestrictedTokensListUpdater'
+export { DEFAULT_TOKENS_LISTS, isRwaTokenListSource } from './const/tokensLists'
 export { useIsAnyOfTokensRWA } from './hooks/lists/useIsAnyOfTokensRWA'
-export { useIsListBlocked, getSourceAsKey, getCountryAsKey } from './hooks/lists/useIsListBlocked'
-export { useRestrictedListInfo } from './hooks/lists/useRestrictedListInfo'
-
-// Types
-export type { RestrictedListInfo } from './hooks/lists/useRestrictedListInfo'
+export { useIsRwaToken } from './hooks/lists/useIsRwaToken'
+export { getSourceAsKey } from './utils/getSourceAsKey'

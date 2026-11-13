@@ -5,8 +5,8 @@ import { atomWithIdbStorage, getJotaiMergerStorage } from '@cowprotocol/core'
 import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 
 import { DEFAULT_TOKENS_LISTS, LP_TOKEN_LISTS } from '../../const/tokensLists'
-import { getSourceAsKey } from '../../hooks/lists/useIsListBlocked'
 import { ListsSourcesByNetwork, ListState, TokenListsByChainState, TokenListsState } from '../../types'
+import { getSourceAsKey } from '../../utils/getSourceAsKey'
 import { environmentAtom } from '../environmentAtom'
 import { tokenListsMigrated } from '../migrations/tokenListsMigrations'
 
@@ -33,12 +33,12 @@ localStorage.removeItem('allTokenListsInfoAtom:v5')
 /**
  * Lists states (user preferences)
  * Note: v6 -> v7 migration is handled by migrateTokenListsFromGithubCdn()
- * Note: v7 -> v8 migration is handled by migrateRetiredTokenLists()
+ * Note: v7 -> v8 -> v9 migrations are handled by migrateRetiredTokenLists()
  *
  * @warning any migration or changes to this atom should be accompanied by a reset in tokens:lastUpdateTimeAtom:v6
  */
 export const listsStatesByChainAtom = atomWithIdbStorage<TokenListsByChainState>(
-  'allTokenListsInfoAtom:v8',
+  'allTokenListsInfoAtom:v9',
   mapSupportedNetworks({}),
   tokenListsMigrated,
 )

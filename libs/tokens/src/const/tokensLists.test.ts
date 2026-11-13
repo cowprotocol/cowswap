@@ -1,17 +1,13 @@
 import { SOLANA_RWA_TOKEN_LIST_URL, SOLANA_TOKEN_LIST_URL } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { DEFAULT_TOKENS_LISTS, SOLANA_RWA_TOKENS_LIST_SOURCE } from './tokensLists'
+import { DEFAULT_TOKENS_LISTS, isRwaTokenListSource, SOLANA_RWA_TOKENS_LIST_SOURCE } from './tokensLists'
 
-import { getSourceAsKey } from '../hooks/lists/useIsListBlocked'
-
-const RESERVE_BNB_TOKEN_LIST_URL =
-  'https://raw.githubusercontent.com/reserve-protocol/dtf-interface/1dbc095c95210f3342278acb8b865763a4d7d443/packages/dtf-catalog/tokenlists/index-dtf/restricted/bnb.tokenlist.json'
+import { getSourceAsKey } from '../utils/getSourceAsKey'
 
 /**
- * Geoblocking matches a list by its URL, so the copy shipped in `tokensList.json` and the one the rest of
- * the app imports have to resolve to the same key. If they drift, nothing throws — the list just stops
- * being restricted.
+ * The copy shipped in `tokensList.json` and the one the rest of the app imports have to resolve to the
+ * same key, or the explorer and the swap app read different lists.
  */
 describe('Solana list sources', () => {
   it('ships the same URLs the app imports', () => {
@@ -27,20 +23,28 @@ describe('Solana list sources', () => {
 })
 
 describe('DEFAULT_TOKENS_LISTS', () => {
-  it('includes the Reserve Protocol BNB token list disabled by default', () => {
-    const reserveList = DEFAULT_TOKENS_LISTS[SupportedChainId.BNB]?.find(
-      (list) => list.source === RESERVE_BNB_TOKEN_LIST_URL,
+  it('enables every RWA list by default', () => {
+    const rwaLists = Object.values(DEFAULT_TOKENS_LISTS).flatMap((lists) =>
+      (lists || []).filter((list) => list.category === 'RWA'),
     )
 
-    expect(reserveList).toEqual(expect.objectContaining({ priority: 6, source: RESERVE_BNB_TOKEN_LIST_URL }))
-    expect(reserveList?.enabledByDefault).toBeUndefined()
+    expect(rwaLists.length).toBeGreaterThan(0)
+    rwaLists.forEach((list) => expect(list.enabledByDefault).toBe(true))
+  })
+})
+
+describe('isRwaTokenListSource', () => {
+  it('recognizes every RWA list shipped in the config, whatever the casing', () => {
+    const rwaSources = Object.values(DEFAULT_TOKENS_LISTS).flatMap((lists) =>
+      (lists || []).filter((list) => list.category === 'RWA').map((list) => list.source),
+    )
+
+    expect(rwaSources.length).toBeGreaterThan(0)
+    rwaSources.forEach((source) => expect(isRwaTokenListSource(source.toUpperCase())).toBe(true))
   })
 
-  it('enables the Solana RWA list by default, and no other RWA list', () => {
-    const enabledRwaSources = Object.values(DEFAULT_TOKENS_LISTS).flatMap((lists) =>
-      (lists || []).filter((list) => list.category === 'RWA' && list.enabledByDefault).map((list) => list.source),
-    )
-
-    expect(enabledRwaSources).toEqual([SOLANA_RWA_TOKENS_LIST_SOURCE])
+  it('does not treat other lists as RWA', () => {
+    expect(isRwaTokenListSource('https://files.cow.fi/token-lists/CoinGecko.1.json')).toBe(false)
+    expect(isRwaTokenListSource(SOLANA_TOKEN_LIST_URL)).toBe(false)
   })
 })
