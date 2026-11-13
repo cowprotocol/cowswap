@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import type { CustomThemeContext, FeatureFlags } from '@cowprotocol/common-const'
@@ -11,6 +12,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { useLocation } from 'react-router'
 
 import { Routes } from 'common/constants/routes'
+import { graffitiThemeEnabledAtom } from 'common/state/graffitiTheme'
 
 import { useIsGraffitiWallEnabled } from './featureFlags/useIsGraffitiWallEnabled'
 
@@ -52,10 +54,17 @@ export function useCustomTheme(): CowSwapTheme | undefined {
   const onSolanaChain = isSolanaChain(chainId)
   const onWallPage = isWallPagePath(pathname)
   const graffitiWallEnabled = useIsGraffitiWallEnabled()
+  const graffitiThemeOptOut = !useAtomValue(graffitiThemeEnabledAtom)
 
   const resolvedTheme = useMemo(
-    () => resolveCowSwapTheme(darkMode, featureFlags, { onSolanaChain, graffitiWallEnabled, onWallPage }),
-    [darkMode, featureFlags, onSolanaChain, graffitiWallEnabled, onWallPage],
+    () =>
+      resolveCowSwapTheme(darkMode, featureFlags, {
+        onSolanaChain,
+        graffitiWallEnabled,
+        onWallPage,
+        graffitiThemeOptOut,
+      }),
+    [darkMode, featureFlags, onSolanaChain, graffitiWallEnabled, onWallPage, graffitiThemeOptOut],
   )
 
   // We don't want to set any custom theme for the widget
