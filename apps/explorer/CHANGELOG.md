@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.19.4](https://github.com/cowprotocol/cowswap/compare/explorer-v4.19.3...explorer-v4.19.4) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.23.1
+
 ## [4.19.3](https://github.com/cowprotocol/cowswap/compare/explorer-v4.19.2...explorer-v4.19.3) (2026-11-13)
 
 ### Patch Changes

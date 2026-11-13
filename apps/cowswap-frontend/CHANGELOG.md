@@ -1,5 +1,25 @@
 # Changelog
 
+## [3.38.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.37.0...cowswap-v3.38.0) (2026-11-13)
+
+### Minor Changes
+
+- feat(graffiti): treat staging.swap.cow.fi as a production host (#8637)
+
+### Patch Changes
+
+- fix(graffiti): bind a burn to the cells it paid for
+
+- fix(header): keep the selected network when clicking the logo (#8638)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.23.1
+  - @cowprotocol/snackbars@2.3.19
+  - @cowprotocol/tokens@3.19.3
+  - @cowprotocol/wallet@3.22.1
+  - @cowprotocol/balances-and-allowances@3.19.4
+  - @cowprotocol/multicall@3.12.4
+
 ## [3.37.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.36.1...cowswap-v3.37.0) (2026-11-13)
 
 ### Minor Changes
