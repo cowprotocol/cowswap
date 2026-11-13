@@ -6166,8 +6166,8 @@ msgid "Couldn't load balances"
 msgstr "Couldn't load balances"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ImportTokenListItem/index.tsx
-msgid "Not available in your region"
-msgstr "Not available in your region"
+#~ msgid "Not available in your region"
+#~ msgstr "Not available in your region"
 
 #: apps/cowswap-frontend/src/pages/Account/Delegate.tsx
 msgid "Delegate"
