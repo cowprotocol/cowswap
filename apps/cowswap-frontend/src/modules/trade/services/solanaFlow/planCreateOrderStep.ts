@@ -1,7 +1,12 @@
 import { bytesToHex } from 'viem'
 
 import type { SwapAdvancedSettings } from '@cowprotocol/cow-sdk'
-import { buildSolanaSwapOrder, SolanaSwapOrder, SolanaSwapOrderQuote } from '@cowprotocol/sdk-trading-solana'
+import {
+  buildSolanaSwapOrder,
+  SolanaOrderIntent,
+  SolanaSwapOrder,
+  SolanaSwapOrderQuote,
+} from '@cowprotocol/sdk-trading-solana'
 
 import { t } from '@lingui/core/macro'
 import { PublicKey, PublicKeyInitData } from '@solana/web3.js'
@@ -37,6 +42,9 @@ export interface PlannedCreateOrderStep {
   buyAmount: bigint
   /** Who the transaction carrying the step must name as fee payer. */
   feePayer: PublicKey
+  /** The intent this step actually signs. Its `buyTokenAccount` is the account the order credits, which
+   * is not the quoted one when a limit order rebuilt the intent against a different receiver. */
+  intent: SolanaOrderIntent
 }
 
 // The PDA carries no address: overriding `validTo` re-derives the uid it is seeded from, so the order
@@ -91,5 +99,6 @@ export async function planCreateOrderStep({
     fullAppData: appDataInfo.fullAppData,
     sellAmount: intent.sellAmount,
     buyAmount: intent.buyAmount,
+    intent,
   }
 }
