@@ -1,5 +1,22 @@
 # Changelog
 
+## [3.22.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.21.2...wallet-v3.22.0) (2026-11-13)
+
+### Minor Changes
+
+- feat(graffiti): collaborative graffiti wall (consolidated) (#8560)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/assets@2.11.0
+  - @cowprotocol/common-const@3.22.0
+  - @cowprotocol/common-hooks@3.21.0
+  - @cowprotocol/ui@3.23.0
+  - @cowprotocol/common-utils@3.22.3
+  - @cowprotocol/core@3.15.3
+  - @cowprotocol/ens@3.12.3
+
 ## [3.21.2](https://github.com/cowprotocol/cowswap/compare/wallet-v3.21.1...wallet-v3.21.2) (2026-11-13)
 
 ### Patch Changes
