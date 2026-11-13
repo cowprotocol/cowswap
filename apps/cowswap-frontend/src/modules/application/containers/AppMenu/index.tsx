@@ -22,13 +22,13 @@ import {
   useIsGraffitiThemeOffered,
   useIsGraffitiWallEnabled,
 } from 'modules/graffitiWall'
-import { useGetTradeUrlParams } from 'modules/trade'
+import { useGetTradeUrlParams, useTradeRouteContext } from 'modules/trade'
 
 import { APP_HEADER_ELEMENT_ID } from 'common/constants/common'
 import { Routes } from 'common/constants/routes'
 import { useIsInternationalizationEnabled } from 'common/hooks/featureFlags/useIsInternationalizationEnabled'
 import { useMenuItems } from 'common/hooks/useMenuItems'
-import { parameterizeTradeRoute } from 'common/modules/tradeNavigation'
+import { addChainIdToRoute, parameterizeTradeRoute } from 'common/modules/tradeNavigation'
 import { isTwapSupportedChain } from 'common/utils/isTwapSupportedChain'
 
 import { HideMobile, isMobileQuery } from './styled'
@@ -91,6 +91,9 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
     [menuItems, chainId],
   )
 
+  const { chainId: tradeChainId } = useTradeRouteContext()
+  const logoHref = useMemo(() => addChainIdToRoute(Routes.SWAP, tradeChainId), [tradeChainId])
+
   const navItems = useMemo(() => {
     return [
       {
@@ -135,6 +138,7 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
       hoverBackgroundDark={'#18193B'}
       id={APP_HEADER_ELEMENT_ID}
       languageNavItems={languageNavItems}
+      logoHref={logoHref}
       navItems={navItems}
       persistentAdditionalContent={isMobile ? null : <HideMobile>{children}</HideMobile>} // This will stay at its original location
       productVariant={PRODUCT_VARIANT}
