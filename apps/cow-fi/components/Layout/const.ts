@@ -27,6 +27,28 @@ const LEARN_NAV_ITEM: MenuItem = {
   ],
 }
 
+export function getNavAdditionalButtons(pathname: string | null): MenuItem[] {
+  const isSolanaPage = pathname === '/solana' || !!pathname?.startsWith('/solana/')
+
+  return [
+    {
+      label: COW_SWAP_CTA.text,
+      href: isSolanaPage ? COW_SWAP_CTA.solanaDeeplinkHref : COW_SWAP_CTA.deeplinkHref,
+      utmContent: 'menubar-nav-button-trade-on-cow-swap',
+      onClick: () =>
+        analytics.sendEvent({
+          category: CowFiCategory.NAVIGATION,
+          action: 'Click Trade on CoW Swap',
+          label: 'menubar-nav-button',
+        }),
+      external: true,
+      isButton: true,
+      bgColor: `var(${UI.COLOR_BLUE_300_PRIMARY})`,
+      color: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
+    },
+  ]
+}
+
 export function getNavItems(isSolversEnabled: boolean): MenuItem[] {
   return [getAboutNavItem(), getProductsNavItem(isSolversEnabled), LEARN_NAV_ITEM]
 }
@@ -99,21 +121,3 @@ function getProductsNavItem(isSolversEnabled: boolean): MenuItem {
     ],
   }
 }
-
-export const NAV_ADDITIONAL_BUTTONS = [
-  {
-    label: COW_SWAP_CTA.text,
-    href: COW_SWAP_CTA.deeplinkHref,
-    utmContent: 'menubar-nav-button-trade-on-cow-swap',
-    onClick: () =>
-      analytics.sendEvent({
-        category: CowFiCategory.NAVIGATION,
-        action: 'Click Trade on CoW Swap',
-        label: 'menubar-nav-button',
-      }),
-    external: true,
-    isButton: true,
-    bgColor: `var(${UI.COLOR_BLUE_300_PRIMARY})`,
-    color: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
-  },
-]
