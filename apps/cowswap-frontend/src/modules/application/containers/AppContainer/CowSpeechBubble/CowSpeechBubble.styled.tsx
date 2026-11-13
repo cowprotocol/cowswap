@@ -1,5 +1,6 @@
-import { fontFamilyBrand, Media, UI } from '@cowprotocol/ui'
+import { font, fontFamilyBrand, Media, UI } from '@cowprotocol/ui'
 
+import { Link } from 'react-router'
 import styled, { css, keyframes } from 'styled-components/macro'
 
 import type { CowSpeechBubbleVariant } from './CowSpeechBubble.types'
@@ -131,7 +132,7 @@ export const BubbleContent = styled.div<{ $variant: CowSpeechBubbleVariant }>`
   font-size: 16px;
   font-weight: 600;
   ${({ $variant }) =>
-    $variant === 'hiring'
+    $variant !== 'notification'
       ? css`
           padding: 10px;
         `
@@ -170,7 +171,7 @@ export const Cursor = styled.span<{ $visible: boolean }>`
   }
 `
 
-export const JobsLink = styled.a<{ $visible: boolean }>`
+const revealedLink = css<{ $visible: boolean }>`
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -187,6 +188,22 @@ export const JobsLink = styled.a<{ $visible: boolean }>`
   &:hover {
     text-decoration: underline;
   }
+`
+
+export const JobsLink = styled.a<{ $visible: boolean }>`
+  ${revealedLink}
+`
+
+export const WallLink = styled(Link)<{ $visible: boolean }>`
+  ${revealedLink}
+`
+
+export const Subtitle = styled.span<{ $visible: boolean }>`
+  ${font('FONT_SMALL')}
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  text-wrap: balance;
+  opacity: ${({ $visible }) => ($visible ? 1 : 0)};
+  transition: opacity 0.3s ease;
 `
 
 export const Arrow = styled.span`
