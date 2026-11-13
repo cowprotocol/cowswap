@@ -19,11 +19,11 @@ import {
   TraderWalletStatus,
   getAffiliatePartnerPageState,
   isSupportedPayoutsNetwork,
-  isSupportedTradingNetwork,
   useAffiliateChainId,
   useAffiliatePartnerInfo,
   useAffiliateStateViewAnalytics,
   useAffiliateTraderWallet,
+  useIsAffiliateSupportedTradingNetwork,
 } from 'modules/affiliate'
 import { PageTitle } from 'modules/application'
 
@@ -36,7 +36,7 @@ export default function AffiliatePartner(): ReactNode {
   const isConnectionRestoring = useIsRestoringConnection()
   const hasAccount = Boolean(account)
   const isSupportedPayoutNetwork = isSupportedPayoutsNetwork(chainId)
-  const isSupportedTradingNetworkValue = isSupportedTradingNetwork(chainId)
+  const isSupportedTradingNetworkValue = useIsAffiliateSupportedTradingNetwork(chainId)
   const hasExistingCode = Boolean(partnerInfo?.code)
   const showLoadingSkeleton = isConnectionRestoring || infoLoading || walletStatus === TraderWalletStatus.PENDING
   const pageState = getAffiliatePartnerPageState({

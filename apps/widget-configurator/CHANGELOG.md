@@ -1,5 +1,24 @@
 # Changelog
 
+## [3.21.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.20.0...widget-configurator-v3.21.0) (2026-11-11)
+
+### Minor Changes
+
+- feat: take profit (#8460)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.20.0
+  - @cowprotocol/analytics@3.18.0
+  - @cowprotocol/common-const@3.20.0
+  - @cowprotocol/types@4.15.1
+  - @cowprotocol/widget-lib@4.15.0
+  - @cowprotocol/ui@3.21.1
+  - @cowprotocol/common-utils@3.22.1
+  - @cowprotocol/events@4.18.1
+  - @cowprotocol/widget-react@3.3.5
+
 ## [3.20.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.19.0...widget-configurator-v3.20.0) (2026-11-10)
 
 ### Minor Changes

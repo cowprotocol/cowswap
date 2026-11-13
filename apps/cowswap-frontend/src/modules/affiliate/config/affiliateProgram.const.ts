@@ -1,4 +1,3 @@
-import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { isProdLike } from '@cowprotocol/common-utils'
 import { CowEnv, SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -24,10 +23,6 @@ export const PAST_ORDERS_SCAN_LIMIT = 10 // per chain and env
 
 export const AFFILIATE_TRADER_SAVED_CODES_STORAGE_KEY = 'cowswap:affiliateTraderSavedCodes:v0'
 export const AFFILIATE_TRADER_PAYOUT_CONFIRMATIONS_STORAGE_KEY = 'cowswap:affiliateTraderPayoutConfirmations:v0'
-
-export const AFFILIATE_SUPPORTED_NETWORK_NAMES = AFFILIATE_SUPPORTED_CHAIN_IDS.map(
-  (chainId) => CHAIN_INFO[chainId].label,
-)
 
 export const AFFILIATE_HOW_IT_WORKS_URL = 'https://cow.fi/affiliate-program'
 export const AFFILIATE_TERMS_URL = 'https://cow.fi/legal/affiliate-program-terms'

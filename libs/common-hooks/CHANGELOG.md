@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.20.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.19.0...common-hooks-v3.20.0) (2026-11-11)
+
+### Minor Changes
+
+- feat(solana): add an isSolanaPublicLaunched flag that lifts the alpha restrictions (#8556)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.20.0
+  - @cowprotocol/types@4.15.1
+  - @cowprotocol/common-utils@3.22.1
+
 ## [3.19.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.18.0...common-hooks-v3.19.0) (2026-11-10)
 
 ### Minor Changes
