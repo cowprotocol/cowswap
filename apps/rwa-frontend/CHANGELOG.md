@@ -1,5 +1,14 @@
 # @cowprotocol/rwa-frontend
 
+## 0.1.8
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.19.0
+  - @cowprotocol/common-const@3.21.0
+  - @cowprotocol/common-utils@3.22.2
+
 ## 0.1.7
 
 ### Patch Changes

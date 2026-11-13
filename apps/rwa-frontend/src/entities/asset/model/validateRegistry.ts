@@ -13,7 +13,9 @@ import {
   type RwaTradingTime,
 } from './types'
 
-const TRADING_TIME_REGEX = /^([01]\d|2[0-3]):[0-5]\d UTC$/
+import { isValidTimeZone } from '../lib/usMarketStatus'
+
+const TRADING_TIME_REGEX = /^([01]\d|2[0-3]):[0-5]\d$/
 
 const ASSET_TYPES: readonly string[] = RWA_ASSET_TYPES
 const SECTORS: readonly string[] = RWA_SECTORS
@@ -53,7 +55,12 @@ function isValidSector(sector: string): boolean {
 }
 
 function isValidTradingTime(tradingTime: RwaTradingTime | undefined): boolean {
-  return !tradingTime || (TRADING_TIME_REGEX.test(tradingTime.start) && TRADING_TIME_REGEX.test(tradingTime.end))
+  return (
+    !tradingTime ||
+    (TRADING_TIME_REGEX.test(tradingTime.start) &&
+      TRADING_TIME_REGEX.test(tradingTime.end) &&
+      isValidTimeZone(tradingTime.timeZone))
+  )
 }
 
 function validateAsset(asset: RwaAsset, path: string): string[] {
@@ -69,7 +76,7 @@ function validateAsset(asset: RwaAsset, path: string): string[] {
   }
 
   if (!isValidTradingTime(asset.allowedTradingTime)) {
-    errors.push(`${path}.allowedTradingTime: start/end must be "HH:mm UTC"`)
+    errors.push(`${path}.allowedTradingTime: start/end must be "HH:mm" in a valid timeZone`)
   }
 
   if (!asset.tokens.length) errors.push(`${path}.tokens: at least one token is required`)

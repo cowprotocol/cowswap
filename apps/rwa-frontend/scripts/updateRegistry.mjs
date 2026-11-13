@@ -33,7 +33,7 @@ const ISSUER_NAMES = {
   'anchored-ecosystem': 'Anchored',
 }
 const DEFAULT_PRIORITY = 0
-const DEFAULT_TRADING_TIME = { title: 'US market open', start: '13:30 UTC', end: '20:00 UTC' }
+const DEFAULT_TRADING_TIME = { title: 'US market open', start: '09:30', end: '16:00', timeZone: 'America/New_York' }
 
 const CONCURRENCY = 8
 const MAX_RETRIES = 5
