@@ -7,13 +7,13 @@ import type { RwaQuoteSide, RwaToken } from '@/entities/asset'
 export function findWidgetTradeToken(
   { sellToken, buyToken }: Pick<OnTradeParamsPayload, 'sellToken' | 'buyToken'>,
   side: RwaQuoteSide,
-  chainTokens: RwaToken[],
+  assetTokens: RwaToken[],
 ): RwaToken | undefined {
   const widgetToken = side === 'buy' ? buyToken : sellToken
 
   if (!widgetToken) return undefined
 
-  return chainTokens.find(
+  return assetTokens.find(
     (token) => token.chainId === widgetToken.chainId && areAddressesEqual(token.address, widgetToken.address),
   )
 }

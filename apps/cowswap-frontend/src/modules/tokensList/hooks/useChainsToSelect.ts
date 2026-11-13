@@ -7,6 +7,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { isNetworkSwitchUnsupportedAtom, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useBridgeSupportedNetworks, useRoutesAvailability } from 'entities/bridgeProvider'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import { Field } from 'legacy/state/types'
 
@@ -17,9 +18,9 @@ import { useSupportedChains } from './useSupportedChains'
 import { useSupportedTargetChains } from './useSupportedTargetChains'
 
 import { ChainsToSelectState } from '../types'
-import { createOutputChainsState } from '../utils/chainsState'
+import { createInputChainsState, createOutputChainsState } from '../utils/chainsState'
+import { getTokenSelectorFilter } from '../utils/filterTokensForSelector'
 import { mapChainInfo } from '../utils/mapChainInfo'
-import { sortChainsByDisplayOrder } from '../utils/sortChainsByDisplayOrder'
 
 // Re-export for tests and external usage
 export { createInputChainsState, createOutputChainsState } from '../utils/chainsState'
@@ -38,6 +39,7 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
   const isBridgingEnabled = useIsBridgingEnabled() // Reads from Jotai atom
   const isAdvancedTradeType = tradeType === TradeType.LIMIT_ORDER || tradeType === TradeType.ADVANCED_ORDERS
   const shouldHideNetworkSelector = useAtomValue(isNetworkSwitchUnsupportedAtom)
+  const allowedChainIds = getTokenSelectorFilter(field, useInjectedWidgetParams())?.selectableChainIds
 
   const supportedChains = useSupportedChains()
   const supportedTargetChains = useSupportedTargetChains()
@@ -62,11 +64,9 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
     if (!chainInfo) return undefined
 
     if (field === Field.INPUT) {
-      return {
-        defaultChainId: selectedTargetChainId,
-        chains: shouldHideNetworkSelector ? [] : sortChainsByDisplayOrder(supportedChains),
-        isLoading: false,
-      }
+      if (shouldHideNetworkSelector) return { defaultChainId: selectedTargetChainId, chains: [], isLoading: false }
+
+      return createInputChainsState(selectedTargetChainId, supportedChains, allowedChainIds)
     }
 
     // BUY token selection - include disabled chains info
@@ -78,6 +78,7 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
       supportedChains: supportedTargetChains,
       isLoading,
       routesAvailability,
+      allowedChainIds,
     })
   }, [
     field,
@@ -92,5 +93,6 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
     isAdvancedTradeType,
     routesAvailability,
     shouldHideNetworkSelector,
+    allowedChainIds,
   ])
 }
