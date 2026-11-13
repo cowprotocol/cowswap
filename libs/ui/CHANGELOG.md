@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.23.1](https://github.com/cowprotocol/cowswap/compare/ui-v3.23.0...ui-v3.23.1) (2026-11-13)
+
+### Patch Changes
+
+- fix(header): keep the selected network when clicking the logo (#8638)
+
 ## [3.23.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.22.0...ui-v3.23.0) (2026-11-13)
 
 ### Minor Changes
