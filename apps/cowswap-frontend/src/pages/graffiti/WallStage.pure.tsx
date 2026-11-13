@@ -20,7 +20,7 @@ export interface WallStageProps {
 
 /** The canvas and everything laid over it. */
 export function WallStage({ wall }: WallStageProps): ReactNode {
-  const { gate, layout, sync, brush, session, paint, viewport, actions, pointer, balance } = wall
+  const { gate, layout, sync, brush, session, paint, viewport, actions, pointer, balance, claim } = wall
   const { wrap, canvas, paintCanvas, overlay } = wall.dom
   const inSession = session.session !== 'start' && !viewport.isFullscreen
   const spent = wall.draft.draft.size + pointer.liveCost
@@ -41,6 +41,9 @@ export function WallStage({ wall }: WallStageProps): ReactNode {
           onFullscreen={viewport.toggleFullscreen}
           onShowResult={viewport.openPlotFullscreen}
           onDismiss={paint.resetPhase}
+          claim={claim}
+          account={gate.solanaAccount}
+          network={sync.info?.network ?? 'devnet'}
         />
       )}
       <PlotOverlay

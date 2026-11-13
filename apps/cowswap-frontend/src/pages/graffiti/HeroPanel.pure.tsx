@@ -8,8 +8,6 @@ import * as styledEl from './wall.styled'
 
 export interface HeroPanelProps {
   children: ReactNode
-  /** Centre the column's text. The wall's own panels read better ragged right. */
-  centered?: boolean
   /** Drop the mural where it would stack: for panels with too much copy to share the height. */
   hideHero?: boolean
   /** Let the mural absorb the height the copy leaves over. Only for a panel stretched to its container. */
@@ -86,13 +84,13 @@ const Hero = styled.img<{ $fill: boolean }>`
     `)}
 `
 
-const Column = styled.div<{ $centered: boolean }>`
+const Column = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
   flex: 0 1 320px;
   min-width: 0;
-  text-align: ${({ $centered }) => ($centered ? 'center' : 'left')};
+  text-align: left;
 
   ${styledEl.onStacked(css`
     display: contents;
@@ -101,18 +99,13 @@ const Column = styled.div<{ $centered: boolean }>`
 `
 
 /** The wall's panel shape, shared by the landing overlay and the network gate. */
-export function HeroPanel({
-  children,
-  centered = false,
-  hideHero = false,
-  fillHeight = false,
-}: HeroPanelProps): ReactNode {
+export function HeroPanel({ children, hideHero = false, fillHeight = false }: HeroPanelProps): ReactNode {
   return (
     <Split>
       <HeroSide $hidden={hideHero} $fill={fillHeight}>
         <Hero src={graffitiCowsImage} alt="" $fill={fillHeight} />
       </HeroSide>
-      <Column $centered={centered}>{children}</Column>
+      <Column>{children}</Column>
     </Split>
   )
 }

@@ -38,7 +38,6 @@ const NotFound = lazy(() => import(/* webpackChunkName: "not_found" */ 'pages/er
 const CowRunner = lazy(() => import(/* webpackChunkName: "cow_runner" */ 'pages/games/CowRunner'))
 const MevSlicer = lazy(() => import(/* webpackChunkName: "mev_slicer" */ 'pages/games/MevSlicer'))
 const Graffiti = lazy(() => import(/* webpackChunkName: "graffiti" */ 'pages/graffiti'))
-const GraffitiClaim = lazy(() => import(/* webpackChunkName: "graffiti_claim" */ 'pages/graffiti/Claim'))
 
 // External routes
 const LegalExternal = <ExternalRedirect url={COWDAO_LEGAL_LINK} />
@@ -85,7 +84,7 @@ const lazyRoutes: LazyRouteProps[] = [
 
 const graffitiRoutes: LazyRouteProps[] = [
   { route: RoutesEnum.GRAFFITI, element: <Graffiti /> },
-  { route: RoutesEnum.GRAFFITI_CLAIM, element: <GraffitiClaim /> },
+  { route: RoutesEnum.GRAFFITI_CLAIM, element: <Graffiti /> },
 ]
 
 export function RoutesApp(): ReactNode {

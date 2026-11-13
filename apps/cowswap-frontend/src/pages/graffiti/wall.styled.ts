@@ -1,7 +1,6 @@
 import { WALL_PAINT_MIX_BLEND_MODE } from '@cowprotocol/common-const'
 import { Media } from '@cowprotocol/ui'
 
-import { Link } from 'react-router'
 import styled, { css, keyframes } from 'styled-components/macro'
 
 import { APP_BOTTOM_BAR_PX, HERO_BREAKPOINT_PX, NARROW_BREAKPOINT_PX } from './wall.constants'
@@ -306,16 +305,6 @@ const buttonBase = css`
 
 export const Button = styled.button`
   ${buttonBase};
-`
-
-/** `Button` for a destination rather than an action, so both read the same. */
-export const ButtonLink = styled(Link)`
-  ${buttonBase};
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  text-decoration: none;
 `
 
 /** Body copy inside a panel. `muted` is the default for secondary status lines. */

@@ -1,5 +1,5 @@
-// Presentational screens for the claim page. Kept free of data fetching and
-// wallet state so the page component stays small enough to read.
+// The claim a scanned link opened, as one more view of the wall's start panel.
+// Kept free of data fetching and wallet state: the flow lives in useClaimFlow.
 
 import type { ReactNode } from 'react'
 
@@ -8,8 +8,6 @@ import { Confetti } from '@cowprotocol/ui'
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
-import { Routes } from 'common/constants/routes'
-
 import { explorerAddressUrl, explorerTxUrl } from './graffiti.service'
 import { HeroPanel } from './HeroPanel.pure'
 import { useClaimMoo } from './useClaimMoo'
@@ -17,194 +15,160 @@ import { useConfettiBurst } from './useConfettiBurst'
 import { TOKEN_SYMBOL } from './wall.constants'
 import * as styledEl from './wall.styled'
 
-const Amount = styled.p`
-  margin: 0;
-  font-size: 44px;
-  font-weight: 700;
-  color: ${styledEl.wallColors.neon};
-  text-shadow: ${styledEl.neonShadow};
-`
-
-const Unit = styled.span`
-  font-size: 16px;
-  color: ${styledEl.wallColors.textMuted};
-`
+import type { ClaimFlow } from './useClaimFlow'
 
 const SmallLink = styled(styledEl.PanelLink)`
   font-size: 12px;
   line-height: 1.5;
+  word-break: break-all;
 `
 
-export interface ErrorScreenProps {
-  error: string | null
-  onRetry: () => void
-}
-
-export interface ReadyScreenProps {
-  amount: number | null
+export interface ClaimResultViewProps {
+  claim: ClaimFlow
   connected: boolean
-  claiming: boolean
-  address: string
+  /** Connected Solana account, where the tokens are sent. */
+  account: string | undefined
   network: string
   onConnect: () => void
-  onClaim: () => void
+  onBack: () => void
 }
 
-export interface SuccessScreenProps {
-  amount: number | null
-  balance: number | null
-  txSignature: string | null
-  network: string
-}
+type ClaimContentProps = Omit<ClaimResultViewProps, 'onBack'>
 
-export function CheckingScreen(): ReactNode {
+export function ClaimResultView({ onBack, ...props }: ClaimResultViewProps): ReactNode {
   return (
-    <ClaimCard>
-      <styledEl.BigEmoji $size={54}>⏳</styledEl.BigEmoji>
-      <styledEl.PanelText $tone="muted">
-        <Trans>Checking claim code…</Trans>
-      </styledEl.PanelText>
-    </ClaimCard>
+    <HeroPanel fillHeight>
+      <styledEl.WallHeading>
+        <Trans>GET {TOKEN_SYMBOL}</Trans>
+      </styledEl.WallHeading>
+
+      <ClaimContent {...props} />
+
+      <styledEl.PanelActions>
+        <styledEl.Button onClick={onBack}>
+          <Trans>← back to the wall</Trans>
+        </styledEl.Button>
+      </styledEl.PanelActions>
+    </HeroPanel>
   )
 }
 
-export function ErrorScreen({ error, onRetry }: ErrorScreenProps): ReactNode {
+function ClaimAmount({ amount }: { amount: number | null }): ReactNode {
   return (
-    <ClaimCard>
-      <styledEl.BigEmoji $size={54}>💥</styledEl.BigEmoji>
-      <styledEl.PanelText $tone="danger">
-        <Trans>Claim failed</Trans>
-      </styledEl.PanelText>
-      <styledEl.PanelText $tone="muted">{error}</styledEl.PanelText>
-      <styledEl.Button onClick={onRetry}>
-        <Trans>try again</Trans>
-      </styledEl.Button>
-    </ClaimCard>
+    <styledEl.CostValue>
+      {amount ?? '…'} <styledEl.UnitLabel>{TOKEN_SYMBOL}</styledEl.UnitLabel>
+    </styledEl.CostValue>
   )
 }
 
-export function InvalidCodeScreen(): ReactNode {
-  return (
-    <ClaimCard>
-      <styledEl.BigEmoji $size={54}>🚫</styledEl.BigEmoji>
-      <styledEl.PanelText $tone="danger">
-        <Trans>This claim code is invalid or has already been used.</Trans>
-      </styledEl.PanelText>
-    </ClaimCard>
-  )
-}
-
-export function MissingCodeScreen(): ReactNode {
-  return (
-    <ClaimCard>
-      <styledEl.BigEmoji $size={54}>❓</styledEl.BigEmoji>
-      <styledEl.PanelText $tone="muted">
-        <Trans>
-          No claim code found.
-          <br />
-          Scan a graffiti QR code or open a link like <code>/graffiti/claim?code=…</code>
-        </Trans>
-      </styledEl.PanelText>
-    </ClaimCard>
-  )
-}
-
-export function ReadyScreen({
-  amount,
-  connected,
-  claiming,
-  address,
-  network,
-  onConnect,
-  onClaim,
-}: ReadyScreenProps): ReactNode {
-  return (
-    <ClaimCard>
-      <styledEl.PanelText $tone="muted">
-        <Trans>This code is worth</Trans>
-      </styledEl.PanelText>
-      <ClaimAmount amount={amount} />
-
-      {connected ? (
-        <styledEl.PrimaryButton disabled={claiming} onClick={onClaim}>
-          {claiming ? <Trans>CLAIMING…</Trans> : <Trans>CLAIM {TOKEN_SYMBOL}</Trans>}
-        </styledEl.PrimaryButton>
-      ) : (
-        <styledEl.PrimaryButton onClick={onConnect}>
-          <Trans>CONNECT SOLANA WALLET</Trans>
-        </styledEl.PrimaryButton>
-      )}
-
-      {connected ? (
+function ClaimContent({ claim, connected, account: address, network, onConnect }: ClaimContentProps): ReactNode {
+  switch (claim.screen) {
+    case 'missing-code':
+      return (
         <styledEl.PanelText $tone="muted">
           <Trans>
-            to{' '}
-            <SmallLink href={explorerAddressUrl(address, network)} target="_blank" rel="noopener noreferrer">
-              {address}
-            </SmallLink>
+            No claim code found.
+            <br />
+            Scan a graffiti QR code or open a link like <code>/graffiti/claim?code=…</code>
           </Trans>
         </styledEl.PanelText>
-      ) : (
+      )
+
+    case 'checking':
+      return (
         <styledEl.PanelText $tone="muted">
-          <Trans>tokens are sent straight to your wallet</Trans>
+          <Trans>Checking claim code…</Trans>
         </styledEl.PanelText>
-      )}
-    </ClaimCard>
-  )
+      )
+
+    case 'invalid-code':
+      return (
+        <styledEl.PanelText $tone="danger">
+          <Trans>This claim code is invalid or has already been used.</Trans>
+        </styledEl.PanelText>
+      )
+
+    case 'error':
+      return (
+        <>
+          <styledEl.PanelText $tone="danger">
+            <Trans>Claim failed</Trans>
+          </styledEl.PanelText>
+          <styledEl.PanelText $tone="muted">{claim.error}</styledEl.PanelText>
+          <styledEl.Button onClick={claim.retry}>
+            <Trans>try again</Trans>
+          </styledEl.Button>
+        </>
+      )
+
+    case 'success':
+      return <ClaimSuccess amount={claim.amount} txSignature={claim.txSignature} network={network} />
+
+    case 'ready':
+    case 'claiming':
+      return (
+        <>
+          <styledEl.PanelText>
+            <Trans>This code is worth</Trans>
+          </styledEl.PanelText>
+          <ClaimAmount amount={claim.amount} />
+
+          {connected ? (
+            <styledEl.PrimaryButton disabled={claim.screen === 'claiming'} onClick={() => void claim.claim()}>
+              {claim.screen === 'claiming' ? <Trans>CLAIMING…</Trans> : <Trans>CLAIM {TOKEN_SYMBOL}</Trans>}
+            </styledEl.PrimaryButton>
+          ) : (
+            <styledEl.PrimaryButton onClick={onConnect}>
+              <Trans>CONNECT SOLANA WALLET</Trans>
+            </styledEl.PrimaryButton>
+          )}
+
+          {connected && address ? (
+            <styledEl.PanelText $tone="muted">
+              <Trans>
+                to{' '}
+                <SmallLink href={explorerAddressUrl(address, network)} target="_blank" rel="noopener noreferrer">
+                  {address}
+                </SmallLink>
+              </Trans>
+            </styledEl.PanelText>
+          ) : (
+            <styledEl.PanelText $tone="muted">
+              <Trans>tokens are sent straight to your wallet</Trans>
+            </styledEl.PanelText>
+          )}
+        </>
+      )
+  }
 }
 
-export function SuccessScreen({ amount, balance, txSignature, network }: SuccessScreenProps): ReactNode {
-  // This screen is only mounted once a claim has settled, so mounting is the event.
+function ClaimSuccess({
+  amount,
+  txSignature,
+  network,
+}: {
+  amount: number | null
+  txSignature: string | null
+  network: string
+}): ReactNode {
+  // Only mounted once a claim has settled, so mounting is the event.
   const bursting = useConfettiBurst()
 
   useClaimMoo()
 
   return (
-    <ClaimCard>
+    <>
       <Confetti start={bursting} />
-      <styledEl.BigEmoji $size={54}>🎨</styledEl.BigEmoji>
       <styledEl.PanelText $tone="success">
         <Trans>CLAIMED!</Trans>
       </styledEl.PanelText>
       <ClaimAmount amount={amount} />
-
-      {balance !== null && (
-        <styledEl.PanelText $tone="muted">
-          <Trans>
-            wallet balance: {balance} {TOKEN_SYMBOL}
-          </Trans>
-        </styledEl.PanelText>
-      )}
 
       {txSignature && (
         <SmallLink href={explorerTxUrl(txSignature, network)} target="_blank" rel="noopener noreferrer">
           <Trans>view transaction ↗</Trans>
         </SmallLink>
       )}
-    </ClaimCard>
-  )
-}
-
-function ClaimAmount({ amount }: { amount: number | null }): ReactNode {
-  return (
-    <Amount>
-      {amount ?? '…'} <Unit>{TOKEN_SYMBOL}</Unit>
-    </Amount>
-  )
-}
-
-/** The wall's panel shape, so the claim page matches the wall's own modals. */
-function ClaimCard({ children }: { children: ReactNode }): ReactNode {
-  return (
-    <styledEl.ModalPanel>
-      <HeroPanel centered>
-        {children}
-        <styledEl.PanelActions>
-          <styledEl.ButtonLink to={Routes.GRAFFITI}>
-            <Trans>← back to the wall</Trans>
-          </styledEl.ButtonLink>
-        </styledEl.PanelActions>
-      </HeroPanel>
-    </styledEl.ModalPanel>
+    </>
   )
 }

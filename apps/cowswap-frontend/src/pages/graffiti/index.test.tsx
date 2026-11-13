@@ -1,9 +1,14 @@
+import type { ReactNode } from 'react'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useSolanaAccount, useWalletInfo } from '@cowprotocol/wallet'
 
 import { fireEvent, render as baseRender, screen, waitFor } from '@testing-library/react'
+import { MemoryRouter } from 'react-router'
 
-import { fetchCanvasPng, getInfo, subscribeDiffs } from './graffiti.service'
+import { Routes } from 'common/constants/routes'
+
+import { fetchCanvasPng, getClaimInfo, getInfo, postClaim, subscribeDiffs } from './graffiti.service'
 import { setCanvasSize } from './raster.utils'
 import { useTokenBalance } from './useTokenBalance'
 
@@ -46,18 +51,36 @@ jest.mock('./useTokenBalance', () => ({
   useTokenBalance: jest.fn(),
 }))
 
+jest.mock('./useClaimMoo', () => ({
+  useClaimMoo: () => undefined,
+}))
+
+// react-confetti draws on a 2D context, which jsdom does not implement.
+jest.mock('@cowprotocol/ui', () => ({
+  ...jest.requireActual('@cowprotocol/ui'),
+  Confetti: () => null,
+}))
+
 jest.mock('./graffiti.service', () => ({
   ...jest.requireActual('./graffiti.service'),
   getInfo: jest.fn(),
+  getClaimInfo: jest.fn(),
+  postClaim: jest.fn(),
   fetchCanvasPng: jest.fn(),
   getAllCellsSince: jest.fn().mockResolvedValue({ seq: 0, cells: [] }),
   postClientError: jest.fn(),
   subscribeDiffs: jest.fn(),
 }))
 
-/** The page is translated, so every render needs the i18n provider. */
-const render = (ui: Parameters<typeof baseRender>[0]): ReturnType<typeof baseRender> =>
-  baseRender(ui, { wrapper: LinguiWrapper })
+/** The page is translated and reads its route, so every render needs both providers. */
+const render = (ui: Parameters<typeof baseRender>[0], path: string = Routes.GRAFFITI): ReturnType<typeof baseRender> =>
+  baseRender(ui, {
+    wrapper: ({ children }: { children: ReactNode }) => (
+      <MemoryRouter initialEntries={[path]}>
+        <LinguiWrapper>{children}</LinguiWrapper>
+      </MemoryRouter>
+    ),
+  })
 
 const WIDTH = 640
 const HEIGHT = 320
@@ -76,6 +99,8 @@ const INFO = {
 const useSolanaAccountMock = jest.mocked(useSolanaAccount)
 const useWalletInfoMock = jest.mocked(useWalletInfo)
 const getInfoMock = jest.mocked(getInfo)
+const getClaimInfoMock = jest.mocked(getClaimInfo)
+const postClaimMock = jest.mocked(postClaim)
 const fetchCanvasPngMock = jest.mocked(fetchCanvasPng)
 const subscribeDiffsMock = jest.mocked(subscribeDiffs)
 const useTokenBalanceMock = jest.mocked(useTokenBalance)
@@ -117,6 +142,8 @@ beforeEach(() => {
   subscribeDiffsMock.mockClear()
   subscribeDiffsMock.mockReturnValue(jest.fn())
   mockOnSelectNetwork.mockClear()
+  getClaimInfoMock.mockReset()
+  postClaimMock.mockReset()
 })
 
 describe('network gate', () => {
@@ -140,12 +167,59 @@ describe('network gate', () => {
   })
 })
 
+describe('claim link', () => {
+  const claimPath = (code: string): string => `${Routes.GRAFFITI_CLAIM}?code=${code}`
+
+  it('shows a spent code over the wall, in the start panel', async () => {
+    getClaimInfoMock.mockResolvedValue({ valid: false, amount: 0 })
+    useTokenBalanceMock.mockReturnValue(7)
+    onChain(SupportedChainId.SOLANA, ACCOUNT)
+    render(<GraffitiPage />, claimPath('spent'))
+
+    expect(await screen.findByText(/invalid or has already been used/)).toBeTruthy()
+    expect(screen.getByText('GET GRASS')).toBeTruthy()
+    expect(screen.getByText('GRASS balance: 7')).toBeTruthy()
+    expect(screen.getByText(`${WIDTH}×${HEIGHT} · 1 GRASS per pixel · devnet`)).toBeTruthy()
+  })
+
+  it('asks for a code when the link carries none', async () => {
+    onChain(SupportedChainId.SOLANA, ACCOUNT)
+    render(<GraffitiPage />, Routes.GRAFFITI_CLAIM)
+
+    expect(await screen.findByText(/No claim code found/)).toBeTruthy()
+    expect(getClaimInfoMock).not.toHaveBeenCalled()
+  })
+
+  it('claims a valid code to the connected wallet', async () => {
+    getClaimInfoMock.mockResolvedValue({ valid: true, amount: 25 })
+    postClaimMock.mockResolvedValue({ ok: true, txSignature: 'sig', amount: 25 })
+    onChain(SupportedChainId.SOLANA, ACCOUNT)
+    render(<GraffitiPage />, claimPath('fresh'))
+
+    fireEvent.click(await screen.findByText('CLAIM GRASS'))
+
+    expect(await screen.findByText('CLAIMED!')).toBeTruthy()
+    expect(postClaimMock).toHaveBeenCalledWith({ code: 'fresh', walletPubkey: ACCOUNT })
+  })
+
+  it('goes back to the landing panel', async () => {
+    getClaimInfoMock.mockResolvedValue({ valid: false, amount: 0 })
+    onChain(SupportedChainId.SOLANA, ACCOUNT)
+    render(<GraffitiPage />, claimPath('spent'))
+
+    fireEvent.click(await screen.findByText('← back to the wall'))
+
+    expect(await screen.findByText(/START DRAWING/)).toBeTruthy()
+    expect(screen.queryByText('GET GRASS')).toBeNull()
+  })
+})
+
 describe('wall screen', () => {
   it('loads the wall and shows the landing panel', async () => {
     await renderLoadedWall()
 
     expect(screen.getByText('GRAFFITI WALL')).toBeTruthy()
-    expect(screen.getByText(`${WIDTH}×${HEIGHT} · 1 GRASS per pixel · devnet`)).toBeTruthy()
+    expect(await screen.findByText(`${WIDTH}×${HEIGHT} · 1 GRASS per pixel · devnet`)).toBeTruthy()
   })
 
   it('subscribes to live diffs and unsubscribes on unmount', async () => {

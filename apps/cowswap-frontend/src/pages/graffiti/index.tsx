@@ -15,6 +15,7 @@ import { useFullBleedPage } from 'modules/application'
 import { NetworkGate } from './NetworkGate.pure'
 import { useBrush } from './useBrush'
 import { useCanvasGestures } from './useCanvasGestures'
+import { useClaimFlow } from './useClaimFlow'
 import { useDraft } from './useDraft'
 import { useNarrowLayout } from './useNarrowLayout'
 import { usePlot } from './usePlot'
@@ -62,9 +63,16 @@ export default function GraffitiPage(): ReactNode {
     markSeq: sync.markSeq,
   })
 
-  // Re-read on a finished commit rather than waiting out the poll: the panel
-  // that lands there quotes what is left.
-  const balance = useTokenBalance(gate.solanaAccount, mint, paint.phase === 'done', BALANCE_POLL_MS)
+  const claim = useClaimFlow(gate.solanaAccount)
+
+  // Re-read on a finished commit or claim rather than waiting out the poll: the
+  // panel that lands there quotes what is left.
+  const balance = useTokenBalance(
+    gate.solanaAccount,
+    mint,
+    paint.phase === 'done' || claim?.screen === 'success',
+    BALANCE_POLL_MS,
+  )
 
   const viewport = useViewport(refs, {
     canvasEl: dom.canvasEl,
@@ -135,7 +143,7 @@ export default function GraffitiPage(): ReactNode {
 
   return (
     <WallScreen
-      wall={{ dom, gate, layout, sync, brush, draft, plot, session, paint, viewport, actions, pointer, balance }}
+      wall={{ dom, gate, layout, sync, brush, draft, plot, session, paint, viewport, actions, pointer, balance, claim }}
     />
   )
 }
