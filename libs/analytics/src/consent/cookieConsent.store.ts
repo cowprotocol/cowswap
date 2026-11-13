@@ -8,6 +8,7 @@ const store = {
   state: null as CookieConsentState | null,
   listeners: new Set<Listener>(),
   isWatchingOtherTabs: false,
+  isRequired: false,
 }
 
 /** @internal Testing only */
@@ -15,6 +16,7 @@ export function __resetCookieConsentStore(): void {
   if (process.env.NODE_ENV === 'test') {
     store.state = null
     store.listeners.clear()
+    store.isRequired = false
   }
 }
 
@@ -34,6 +36,10 @@ export function hasAcceptedCookies(): boolean {
   return getCookieConsentState().consent?.choice === 'accepted'
 }
 
+export function isCookieConsentRequired(): boolean {
+  return store.isRequired
+}
+
 /** Runs the callback once: right away if cookies are accepted, otherwise when the visitor accepts them */
 export function onCookiesAccepted(callback: () => void): void {
   onFirst(() => hasAcceptedCookies() || undefined, callback)
@@ -45,6 +51,10 @@ export function openCookieSettings(): void {
 
 export function rejectCookies(): void {
   saveChoice('rejected')
+}
+
+export function requireCookieConsent(): void {
+  store.isRequired = true
 }
 
 export function subscribeToCookieConsent(listener: Listener): () => void {

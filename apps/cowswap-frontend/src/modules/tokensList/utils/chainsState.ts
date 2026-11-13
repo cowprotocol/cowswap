@@ -3,6 +3,7 @@ import { AdditionalTargetChainId, ChainInfo, SupportedChainId } from '@cowprotoc
 
 import { isBridgeSourceChainSupported } from 'entities/bridgeProvider'
 
+import { filterChainsForSelector } from './filterTokensForSelector'
 import { sortChainsByDisplayOrder } from './sortChainsByDisplayOrder'
 
 import { ChainsToSelectState } from '../types'
@@ -20,6 +21,7 @@ export interface CreateOutputChainsOptions {
     isLoading: boolean
   }
   additionalChainIds?: Set<number>
+  allowedChainIds?: number[]
 }
 
 export function computeDisabledChainIds(
@@ -45,10 +47,14 @@ export function computeDisabledChainIds(
 export function createInputChainsState(
   selectedTargetChainId: SupportedChainId | number,
   supportedChains: ChainInfo[],
+  allowedChainIds?: number[],
 ): ChainsToSelectState {
+  const chains = sortChainsByDisplayOrder(filterChainsForSelector(supportedChains, allowedChainIds))
+  const isSelectedChainListed = !allowedChainIds || chains.some((chain) => chain.id === selectedTargetChainId)
+
   return {
-    defaultChainId: selectedTargetChainId,
-    chains: sortChainsByDisplayOrder(supportedChains),
+    defaultChainId: isSelectedChainListed ? selectedTargetChainId : (chains[0]?.id ?? selectedTargetChainId),
+    chains,
     isLoading: false,
   }
 }
@@ -61,10 +67,11 @@ export function createOutputChainsState({
   supportedChains,
   isLoading,
   routesAvailability,
+  allowedChainIds,
 }: CreateOutputChainsOptions): ChainsToSelectState {
   const chainSet = new Set(supportedChains.map((c) => c.id))
   const chainsWithCurrent = chainSet.has(chainId) ? supportedChains : [...supportedChains, currentChainInfo]
-  const orderedChains = sortChainsByDisplayOrder(chainsWithCurrent)
+  const orderedChains = sortChainsByDisplayOrder(filterChainsForSelector(chainsWithCurrent, allowedChainIds))
 
   const destinationIds = new Set(filterDestinationChains(bridgeSupportedNetworks)?.map((c) => c.id) ?? [])
   const sourceSupported = isBridgeSourceChainSupported(chainId, filterDestinationChains(bridgeSupportedNetworks))

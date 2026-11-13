@@ -1,5 +1,6 @@
 import { getCurrencyAddress, getIsNativeToken, isFractionFalsy, isSellOrder } from '@cowprotocol/common-utils'
-import { areAddressesEqual, isEvmChain } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, isEvmChain, isSolanaChain } from '@cowprotocol/cow-sdk'
+import { isSolanaSmartContractWallet } from '@cowprotocol/sdk-trading-solana'
 
 import { getIsNativeSellUnsupported } from 'modules/trade'
 import { getAreAllQuotesReceived, getIsFastQuote, isQuoteExpired } from 'modules/tradeQuote'
@@ -83,12 +84,14 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     validations.push(TradeFormValidation.BrowserOffline)
   }
 
-  if (customTokenError) {
-    validations.push(TradeFormValidation.CustomTokenError)
-  }
-
+  // Outranks customTokenError: its weekend notice tells the user to come back on Monday, which a
+  // geoblocked user never can.
   if (isRestrictedForCountry) {
     validations.push(TradeFormValidation.RestrictedForCountry)
+  }
+
+  if (customTokenError) {
+    validations.push(TradeFormValidation.CustomTokenError)
   }
 
   // Return early as these take precedence
@@ -232,6 +235,20 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     }
 
     if (isNonEvmBridging && recipient && isRecipientValid && !isNonEvmReceiverConfirmed) {
+      validations.push(TradeFormValidation.RecipientNotConfirmed)
+    }
+
+    // A program-derived recipient has no key pair, so the payout is only ever recoverable through the
+    // program that owns it — which nothing here can establish. Confirmed by hand, like the bridging one.
+    const isSolanaPdaRecipient =
+      !isBridging &&
+      !!inputCurrency &&
+      isSolanaChain(inputCurrency.chainId) &&
+      !!recipient &&
+      isRecipientValid &&
+      isSolanaSmartContractWallet(recipient)
+
+    if (isSolanaPdaRecipient && !isNonEvmReceiverConfirmed) {
       validations.push(TradeFormValidation.RecipientNotConfirmed)
     }
 

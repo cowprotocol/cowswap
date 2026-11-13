@@ -1,6 +1,6 @@
 import { ReactNode, useRef, useState } from 'react'
 
-import { Category, isNoopCowAnalyticsActive, openCookieSettings, toGtmEvent } from '@cowprotocol/analytics'
+import { Category, isCookieConsentRequired, openCookieSettings, toGtmEvent } from '@cowprotocol/analytics'
 import svgArrowRightCircularSrc from '@cowprotocol/assets/images/arrow-right-circular.svg'
 import { useTheme } from '@cowprotocol/common-hooks'
 
@@ -101,7 +101,7 @@ function FooterCopyright(): ReactNode {
   return (
     <BottomText>
       &copy; CoW DAO - {new Date().getFullYear()}
-      {!isNoopCowAnalyticsActive() && (
+      {isCookieConsentRequired() && (
         <CookieSettingsButton type="button" onClick={openCookieSettings}>
           Cookie settings
         </CookieSettingsButton>
@@ -200,7 +200,7 @@ export const Footer = ({
               key={index}
               variant={product.productVariant}
               logoIconOnly={false}
-              overrideColor={!theme.darkMode ? `var(${UI.COLOR_NEUTRAL_40})` : `var(${UI.COLOR_NEUTRAL_40})`}
+              overrideColor={`var(--footerLogoColor, var(${UI.COLOR_NEUTRAL_40}))`}
               overrideHoverColor={`var(${UI.COLOR_NEUTRAL_98})`}
               height={24}
               href={product.href}

@@ -1,5 +1,45 @@
 # Changelog
 
+## [3.19.2](https://github.com/cowprotocol/cowswap/compare/tokens-v3.19.1...tokens-v3.19.2) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.22.0
+  - @cowprotocol/common-hooks@3.21.0
+  - @cowprotocol/ui@3.23.0
+  - @cowprotocol/common-utils@3.22.3
+  - @cowprotocol/core@3.15.3
+
+## [3.19.1](https://github.com/cowprotocol/cowswap/compare/tokens-v3.19.0...tokens-v3.19.1) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.21.0
+  - @cowprotocol/ui@3.22.0
+  - @cowprotocol/common-hooks@3.20.1
+  - @cowprotocol/common-utils@3.22.2
+  - @cowprotocol/core@3.15.2
+
+## [3.19.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.18.0...tokens-v3.19.0) (2026-11-11)
+
+### Minor Changes
+
+- feat(tokens): list RWA tokens in restricted regions and block only the trade (#8574)
+
+### Patch Changes
+
+- fix(tokens): use Solana volume ranks in the selector (#8523)
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.20.0
+  - @cowprotocol/common-const@3.20.0
+  - @cowprotocol/types@4.15.1
+  - @cowprotocol/ui@3.21.1
+  - @cowprotocol/common-utils@3.22.1
+  - @cowprotocol/core@3.15.1
+
 ## [3.18.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.17.3...tokens-v3.18.0) (2026-11-10)
 
 ### Minor Changes

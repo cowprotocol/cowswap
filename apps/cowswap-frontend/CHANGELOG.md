@@ -1,5 +1,97 @@
 # Changelog
 
+## [3.37.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.36.1...cowswap-v3.37.0) (2026-11-13)
+
+### Minor Changes
+
+- feat(graffiti): collaborative graffiti wall (consolidated) (#8560)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/assets@2.11.0
+  - @cowprotocol/common-const@3.22.0
+  - @cowprotocol/common-hooks@3.21.0
+  - @cowprotocol/ui@3.23.0
+  - @cowprotocol/wallet@3.22.0
+  - @cowprotocol/analytics@3.19.1
+  - @cowprotocol/balances-and-allowances@3.19.3
+  - @cowprotocol/common-utils@3.22.3
+  - @cowprotocol/core@3.15.3
+  - @cowprotocol/ens@3.12.3
+  - @cowprotocol/multicall@3.12.3
+  - @cowprotocol/tokens@3.19.2
+  - @cowprotocol/snackbars@2.3.18
+
+## [3.36.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.36.0...cowswap-v3.36.1) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.19.0
+  - @cowprotocol/assets@2.10.0
+  - @cowprotocol/common-const@3.21.0
+  - @cowprotocol/ui@3.22.0
+  - @cowprotocol/wallet@3.21.2
+  - @cowprotocol/balances-and-allowances@3.19.2
+  - @cowprotocol/common-hooks@3.20.1
+  - @cowprotocol/common-utils@3.22.2
+  - @cowprotocol/core@3.15.2
+  - @cowprotocol/ens@3.12.2
+  - @cowprotocol/multicall@3.12.2
+  - @cowprotocol/tokens@3.19.1
+  - @cowprotocol/snackbars@2.3.17
+
+## [3.36.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.35.0...cowswap-v3.36.0) (2026-11-11)
+
+### Minor Changes
+
+- feat(solana): add an isSolanaPublicLaunched flag that lifts the alpha restrictions (#8556)
+
+- feat(tokens): list RWA tokens in restricted regions and block only the trade (#8574)
+
+- feat(solana): explain an unconfigured SquadsX wallet on the order-not-placed screen (#8577)
+
+- feat: take profit (#8460)
+
+### Patch Changes
+
+- fix(swap): check the wrap/unwrap balance against the input amount, not a stale swap quote (#8559)
+
+- fix(solana): support trading from multisig vaults (#8449)
+
+- fix(limit-orders): reset chart price picker when the chart is not open (#8545)
+
+- fix(tokens): allow token imports regardless of location restrictions (#8585)
+
+- fix(wallet): patch reown solana adapter to use Ledger (#8442)
+
+- fix(trade): do not round protocol fee amount to zero (#8531)
+
+- fix(widget): keep widget tokens when only the chain changes (#8530)
+
+- fix(tokens): use Solana volume ranks in the selector (#8523)
+
+- Updated dependencies []:
+  - @cowprotocol/balances-and-allowances@3.19.1
+  - @cowprotocol/common-hooks@3.20.0
+  - @cowprotocol/wallet@3.21.1
+  - @cowprotocol/tokens@3.19.0
+  - @cowprotocol/analytics@3.18.0
+  - @cowprotocol/common-const@3.20.0
+  - @cowprotocol/types@4.15.1
+  - @cowprotocol/widget-lib@4.15.0
+  - @cowprotocol/snackbars@2.3.16
+  - @cowprotocol/ui@3.21.1
+  - @cowprotocol/multicall@3.12.1
+  - @cowprotocol/common-utils@3.22.1
+  - @cowprotocol/core@3.15.1
+  - @cowprotocol/ens@3.12.1
+  - @cowprotocol/events@4.18.1
+  - @cowprotocol/iframe-transport@2.3.15
+  - @cowprotocol/hook-dapp-lib@2.5.3
+  - @cowprotocol/permit-utils@3.13.1
+
 ## [3.35.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.34.0...cowswap-v3.35.0) (2026-11-10)
 
 ### Minor Changes

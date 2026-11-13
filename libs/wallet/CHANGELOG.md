@@ -1,5 +1,51 @@
 # Changelog
 
+## [3.22.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.21.2...wallet-v3.22.0) (2026-11-13)
+
+### Minor Changes
+
+- feat(graffiti): collaborative graffiti wall (consolidated) (#8560)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/assets@2.11.0
+  - @cowprotocol/common-const@3.22.0
+  - @cowprotocol/common-hooks@3.21.0
+  - @cowprotocol/ui@3.23.0
+  - @cowprotocol/common-utils@3.22.3
+  - @cowprotocol/core@3.15.3
+  - @cowprotocol/ens@3.12.3
+
+## [3.21.2](https://github.com/cowprotocol/cowswap/compare/wallet-v3.21.1...wallet-v3.21.2) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/assets@2.10.0
+  - @cowprotocol/common-const@3.21.0
+  - @cowprotocol/ui@3.22.0
+  - @cowprotocol/common-hooks@3.20.1
+  - @cowprotocol/common-utils@3.22.2
+  - @cowprotocol/core@3.15.2
+  - @cowprotocol/ens@3.12.2
+
+## [3.21.1](https://github.com/cowprotocol/cowswap/compare/wallet-v3.21.0...wallet-v3.21.1) (2026-11-11)
+
+### Patch Changes
+
+- fix(wallet): patch reown solana adapter to use Ledger (#8442)
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.20.0
+  - @cowprotocol/common-const@3.20.0
+  - @cowprotocol/types@4.15.1
+  - @cowprotocol/ui@3.21.1
+  - @cowprotocol/common-utils@3.22.1
+  - @cowprotocol/core@3.15.1
+  - @cowprotocol/ens@3.12.1
+  - @cowprotocol/iframe-transport@2.3.15
+
 ## [3.21.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.20.0...wallet-v3.21.0) (2026-11-10)
 
 ### Minor Changes

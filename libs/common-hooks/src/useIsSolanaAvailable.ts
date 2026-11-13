@@ -5,7 +5,7 @@ import { useFeatureFlags } from './useFeatureFlags'
  * which only decides whether Solana is listed, so direct Solana links keep working without it.
  */
 export function useIsSolanaAvailable(): boolean {
-  const { isSolanaEnabled, isAlphaNetworksOptionVisible } = useFeatureFlags()
+  const { isSolanaEnabled, isAlphaNetworksOptionVisible, isSolanaPublicLaunched } = useFeatureFlags()
 
-  return !!isSolanaEnabled || !!isAlphaNetworksOptionVisible
+  return !!isSolanaEnabled || !!isAlphaNetworksOptionVisible || !!isSolanaPublicLaunched
 }

@@ -6,7 +6,7 @@ import './sentry'
 import { Messages } from '@lingui/core'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
-import { CowAnalyticsProvider, createNoopCowAnalytics, initGtm } from '@cowprotocol/analytics'
+import { CowAnalyticsProvider, createNoopCowAnalytics, initGtmWithConsent } from '@cowprotocol/analytics'
 import { nodeRemoveChildFix } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { SnackbarsWidget } from '@cowprotocol/snackbars'
@@ -46,7 +46,7 @@ import { CookieConsentBanner } from '../common/containers/CookieConsentBanner'
 import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsupportedNetworkBanner'
 
 const isAnalyticsDisabled = isMarketingTrackingDisabled()
-const cowAnalytics = isAnalyticsDisabled ? createNoopCowAnalytics() : initGtm()
+const cowAnalytics = isAnalyticsDisabled ? createNoopCowAnalytics() : initGtmWithConsent()
 const helmetContext = {}
 
 const queryClient = new QueryClient({

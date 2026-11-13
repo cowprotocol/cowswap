@@ -63,6 +63,8 @@ export const CAIP_TO_SUPPORTED_CHAIN_ID: Record<CaipNetworkId, SupportedChainId>
   'eip155:59144': SupportedChainId.LINEA,
   'eip155:11155111': SupportedChainId.SEPOLIA,
   'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': SupportedChainId.SOLANA,
+  // Devnet, for REACT_APP_SOLANA_CLUSTER=devnet builds
+  'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1': SupportedChainId.SOLANA,
 }
 
 export const SAFE_APP_ORIGIN = 'https://app.safe.global'

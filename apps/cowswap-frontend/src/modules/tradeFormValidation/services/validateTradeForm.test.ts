@@ -53,6 +53,7 @@ describe('validateTradeForm - xStock logic', () => {
     isProxySetupValid: true,
     customTokenError: undefined,
     isRestrictedForCountry: false,
+    isSolanaPublicLaunched: false,
     isBalancesLoading: false,
     isBundlingSupported: true,
     isInputCurrencyXstock: false,
@@ -245,6 +246,7 @@ describe('validateTradeForm - Solana Alpha trade limit', () => {
     isProxySetupValid: true,
     customTokenError: undefined,
     isRestrictedForCountry: false,
+    isSolanaPublicLaunched: false,
     isBalancesLoading: false,
     isBundlingSupported: true,
     isInputCurrencyXstock: false,
@@ -294,6 +296,34 @@ describe('validateTradeForm - Solana Alpha trade limit', () => {
 
     const result = validateTradeForm(context)
     expect(result || []).not.toContain(TradeFormValidation.SolanaAlphaMaxTradeSize)
+  })
+
+  test('drops the trade limit once Solana is publicly launched', () => {
+    const context = {
+      ...baseContext,
+      isSolanaPublicLaunched: true,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        inputCurrencyFiatAmount: mockCurrencyAmount('25000'),
+        outputCurrencyFiatAmount: mockCurrencyAmount('24990'),
+      },
+    } as unknown as TradeFormValidationContext
+
+    expect(validateTradeForm(context) || []).not.toContain(TradeFormValidation.SolanaAlphaMaxTradeSize)
+  })
+
+  test('allows a trade with no USD estimate once Solana is publicly launched', () => {
+    const context = {
+      ...baseContext,
+      isSolanaPublicLaunched: true,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        inputCurrencyFiatAmount: null,
+        outputCurrencyFiatAmount: null,
+      },
+    } as unknown as TradeFormValidationContext
+
+    expect(validateTradeForm(context) || []).not.toContain(TradeFormValidation.SolanaAlphaUnknownUsdValue)
   })
 
   test('does not apply the limit on EVM chains', () => {
@@ -753,6 +783,8 @@ describe('validateTradeForm - price impact loading', () => {
 
 describe('validateTradeForm - Solana swap recipient', () => {
   const SOLANA_RECIPIENT = '4wtw5VHUq8DriYRh92LGDDeN4AemUrGKYFSaZcDx8z7s'
+  /** A real associated token account: program-derived, so off the ed25519 curve. */
+  const SOLANA_PDA_RECIPIENT = 'HGTu6fBshWXJQe59C31RgyGcfhEusg1Y65Upcmd9zvCM'
   const EVM_RECIPIENT = '0x1234567890123456789012345678901234567890'
 
   const baseContext: Partial<TradeFormValidationContext> = {
@@ -826,6 +858,34 @@ describe('validateTradeForm - Solana swap recipient', () => {
       recipientEnsAddress: EVM_RECIPIENT,
     })
     expect(result).toContain(TradeFormValidation.RecipientInvalid)
+  })
+
+  describe('program-derived recipient', () => {
+    test('blocks the trade until the trader confirms it', () => {
+      expect(validateTradeForm(withRecipient(SOLANA_PDA_RECIPIENT))).toContain(
+        TradeFormValidation.RecipientNotConfirmed,
+      )
+    })
+
+    test('lets it through once confirmed', () => {
+      const result = validateTradeForm({ ...withRecipient(SOLANA_PDA_RECIPIENT), isNonEvmReceiverConfirmed: true })
+
+      expect(result || []).not.toContain(TradeFormValidation.RecipientNotConfirmed)
+    })
+
+    test('asks nothing of a plain wallet recipient', () => {
+      const result = validateTradeForm(withRecipient(SOLANA_RECIPIENT))
+
+      expect(result || []).not.toContain(TradeFormValidation.RecipientNotConfirmed)
+    })
+
+    // Nothing is sent anywhere until the address itself parses, so the confirmation would be noise.
+    test('asks nothing while the recipient is invalid', () => {
+      const result = validateTradeForm(withRecipient(EVM_RECIPIENT)) || []
+
+      expect(result).toContain(TradeFormValidation.RecipientInvalid)
+      expect(result).not.toContain(TradeFormValidation.RecipientNotConfirmed)
+    })
   })
 
   describe('quote loading', () => {
@@ -951,5 +1011,15 @@ describe('validateTradeForm - native sell in limit orders', () => {
     } as unknown as TradeFormValidationContext)
 
     expect(result || []).not.toContain(TradeFormValidation.SellNativeToken)
+  })
+
+  test('reports the geoblock before a custom token error', () => {
+    const result = validateTradeForm({
+      ...baseContext,
+      isRestrictedForCountry: true,
+      customTokenError: 'AAPLx not tradable until Sunday 23:59 UTC',
+    } as unknown as TradeFormValidationContext)
+
+    expect(result?.[0]).toBe(TradeFormValidation.RestrictedForCountry)
   })
 })

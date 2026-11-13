@@ -1,5 +1,32 @@
 # Changelog
 
+## [3.22.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.21.0...common-const-v3.22.0) (2026-11-13)
+
+### Minor Changes
+
+- feat(graffiti): collaborative graffiti wall (consolidated) (#8560)
+
+## [3.21.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.20.0...common-const-v3.21.0) (2026-11-13)
+
+### Minor Changes
+
+- feat(cow-fi): gate GTM on cookie consent
+
+- feat(cow-fi): add CoW Protocol on Solana landing page (#8470)
+
+## [3.20.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.19.0...common-const-v3.20.0) (2026-11-11)
+
+### Minor Changes
+
+- feat(rwa): google analytics (#8542)
+
+### Patch Changes
+
+- fix(tokens): use Solana volume ranks in the selector (#8523)
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.15.1
+
 ## [3.19.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.18.0...common-const-v3.19.0) (2026-11-10)
 
 ### Minor Changes

@@ -1,5 +1,10 @@
 import { COOKIE_CONSENT_NAME } from './consent/cookieConsent.constants'
-import { __resetCookieConsentStore, acceptCookies, rejectCookies } from './consent/cookieConsent.store'
+import {
+  __resetCookieConsentStore,
+  acceptCookies,
+  rejectCookies,
+  requireCookieConsent,
+} from './consent/cookieConsent.store'
 import { __resetNoopCowAnalyticsInstance, createNoopCowAnalytics } from './noop/createNoopCowAnalytics'
 import { waitForAnalytics } from './readinessDetection'
 
@@ -14,53 +19,87 @@ describe('waitForAnalytics', () => {
   beforeEach(() => {
     document.cookie = `${COOKIE_CONSENT_NAME}=; Max-Age=0; Path=/`
     __resetCookieConsentStore()
-    jest.useFakeTimers()
-  })
-
-  afterEach(() => {
-    jest.useRealTimers()
     __resetNoopCowAnalyticsInstance()
-    delete (window as TestWindow).cowAnalyticsInstance
-    delete (window as TestWindow).dataLayer
-  })
-
-  it('resolves right away after a rejection', async () => {
-    rejectCookies()
-
-    await expect(waitForAnalytics()).resolves.toBeUndefined()
+    jest.useFakeTimers()
   })
 
   it('resolves right away with no-op analytics, without a cookie choice', async () => {
     createNoopCowAnalytics()
+    requireCookieConsent()
 
     await expect(waitForAnalytics()).resolves.toBeUndefined()
   })
 
-  it('stays pending until a choice is made', async () => {
-    const onResolved = jest.fn()
-
-    waitForAnalytics().then(onResolved)
-    await jest.advanceTimersByTimeAsync(15_000)
-
-    expect(onResolved).not.toHaveBeenCalled()
-
-    rejectCookies()
-    await jest.advanceTimersByTimeAsync(0)
-
-    expect(onResolved).toHaveBeenCalledTimes(1)
+  afterEach(() => {
+    jest.useRealTimers()
+    delete (window as TestWindow).cowAnalyticsInstance
+    delete (window as TestWindow).dataLayer
   })
 
-  it('waits for GTM after an acceptance', async () => {
-    const onResolved = jest.fn()
+  describe('in an app that does not require cookie consent', () => {
+    it('waits for GTM without a cookie choice', async () => {
+      const onResolved = jest.fn()
 
-    acceptCookies()
-    ;(window as TestWindow).dataLayer = []
-    waitForAnalytics().then(onResolved)
+      ;(window as TestWindow).dataLayer = []
+      waitForAnalytics().then(onResolved)
 
-    await jest.advanceTimersByTimeAsync(3_000)
-    expect(onResolved).not.toHaveBeenCalled()
+      await jest.advanceTimersByTimeAsync(3_000)
+      expect(onResolved).not.toHaveBeenCalled()
 
-    await jest.advanceTimersByTimeAsync(1_000)
-    expect(onResolved).toHaveBeenCalledTimes(1)
+      await jest.advanceTimersByTimeAsync(1_000)
+      expect(onResolved).toHaveBeenCalledTimes(1)
+    })
+
+    it('ignores a stored rejection', async () => {
+      rejectCookies()
+      __resetCookieConsentStore()
+      const onResolved = jest.fn()
+
+      waitForAnalytics().then(onResolved)
+
+      await jest.advanceTimersByTimeAsync(4_000)
+      expect(onResolved).not.toHaveBeenCalled()
+
+      await jest.advanceTimersByTimeAsync(1_100)
+      expect(onResolved).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('in an app that requires cookie consent', () => {
+    beforeEach(() => requireCookieConsent())
+
+    it('resolves right away after a rejection', async () => {
+      rejectCookies()
+
+      await expect(waitForAnalytics()).resolves.toBeUndefined()
+    })
+
+    it('stays pending until a choice is made', async () => {
+      const onResolved = jest.fn()
+
+      waitForAnalytics().then(onResolved)
+      await jest.advanceTimersByTimeAsync(15_000)
+
+      expect(onResolved).not.toHaveBeenCalled()
+
+      rejectCookies()
+      await jest.advanceTimersByTimeAsync(0)
+
+      expect(onResolved).toHaveBeenCalledTimes(1)
+    })
+
+    it('waits for GTM after an acceptance', async () => {
+      const onResolved = jest.fn()
+
+      acceptCookies()
+      ;(window as TestWindow).dataLayer = []
+      waitForAnalytics().then(onResolved)
+
+      await jest.advanceTimersByTimeAsync(3_000)
+      expect(onResolved).not.toHaveBeenCalled()
+
+      await jest.advanceTimersByTimeAsync(1_000)
+      expect(onResolved).toHaveBeenCalledTimes(1)
+    })
   })
 })

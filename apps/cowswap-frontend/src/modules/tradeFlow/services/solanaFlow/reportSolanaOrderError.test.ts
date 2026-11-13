@@ -98,6 +98,14 @@ describe('reportSolanaOrderError', () => {
     expect(lastCall()[3].reason).toBe('order-book')
   })
 
+  // Reported rather than swallowed: it is low volume and worth counting, and the reason keeps every
+  // wallet wording of it in one issue.
+  it('classifies a SquadsX extension that is not a proposer on the Squad', () => {
+    report({ error: new Error('this extension is not an active proposer on the selected multisig') })
+
+    expect(lastCall()[3].reason).toBe('squads-setup')
+  })
+
   it('classifies a failure that carries program logs', () => {
     const error = Object.assign(new Error('Transaction simulation failed'), {
       logs: ['Program log: custom program error: 0x1'],

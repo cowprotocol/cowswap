@@ -1,5 +1,55 @@
 # Changelog
 
+## [2.18.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.18.0...cow-fi-v2.18.1) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/assets@2.11.0
+  - @cowprotocol/common-const@3.22.0
+  - @cowprotocol/common-hooks@3.21.0
+  - @cowprotocol/ui@3.23.0
+  - @cowprotocol/wallet@3.22.0
+  - @cowprotocol/analytics@3.19.1
+  - @cowprotocol/common-utils@3.22.3
+  - @cowprotocol/core@3.15.3
+
+## [2.18.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.17.1...cow-fi-v2.18.0) (2026-11-13)
+
+### Minor Changes
+
+- feat(cow-fi): gate GTM on cookie consent
+
+- feat(cow-fi): add CoW Protocol on Solana landing page (#8470)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.19.0
+  - @cowprotocol/assets@2.10.0
+  - @cowprotocol/common-const@3.21.0
+  - @cowprotocol/ui@3.22.0
+  - @cowprotocol/wallet@3.21.2
+  - @cowprotocol/common-hooks@3.20.1
+  - @cowprotocol/common-utils@3.22.2
+  - @cowprotocol/core@3.15.2
+
+## [2.17.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.17.0...cow-fi-v2.17.1) (2026-11-11)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.20.0
+  - @cowprotocol/wallet@3.21.1
+  - @cowprotocol/analytics@3.18.0
+  - @cowprotocol/common-const@3.20.0
+  - @cowprotocol/types@4.15.1
+  - @cowprotocol/ui@3.21.1
+  - @cowprotocol/common-utils@3.22.1
+  - @cowprotocol/core@3.15.1
+  - @cowprotocol/events@4.18.1
+  - @cowprotocol/widget-react@3.3.5
+
 ## [2.17.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.16.6...cow-fi-v2.17.0) (2026-11-10)
 
 ### Minor Changes

@@ -26,7 +26,7 @@ describe('useFeatureFlags', () => {
     expect(result.current).toBe(LD_FLAGS)
   })
 
-  it('forces Solana and the alpha networks option off inside the widget and keeps the rest, including bridging to Solana', () => {
+  it('forces every Solana flag off inside the widget and keeps the rest, including bridging to Solana', () => {
     window.location.hash = '#/1/widget/swap'
 
     const { result } = renderHook(() => useFeatureFlags())
@@ -34,8 +34,42 @@ describe('useFeatureFlags', () => {
     expect(result.current).toEqual({
       isSolanaEnabled: false,
       isAlphaNetworksOptionVisible: false,
+      isSolanaPublicLaunched: false,
       isSolBridgeEnabled: true,
       isTwapEoaEnabled: true,
     })
+  })
+})
+
+describe('useFeatureFlags with REACT_APP_FEATURE_FLAGS', () => {
+  const originalValue = process.env.REACT_APP_FEATURE_FLAGS
+
+  beforeEach(() => {
+    mockUseFlags.mockReturnValue(LD_FLAGS)
+  })
+
+  afterEach(() => {
+    if (originalValue === undefined) delete process.env.REACT_APP_FEATURE_FLAGS
+    else process.env.REACT_APP_FEATURE_FLAGS = originalValue
+  })
+
+  it('merges env overrides over unresolved LaunchDarkly flags', () => {
+    process.env.REACT_APP_FEATURE_FLAGS = '{"isSolanaThemeEnabled":true,"isTwapEoaEnabled":false}'
+
+    const { result } = renderHook(() => useFeatureFlags())
+
+    expect(result.current).toEqual({
+      ...LD_FLAGS,
+      isSolanaThemeEnabled: true,
+      isTwapEoaEnabled: false,
+    })
+  })
+
+  it('ignores malformed JSON', () => {
+    process.env.REACT_APP_FEATURE_FLAGS = 'not json'
+
+    const { result } = renderHook(() => useFeatureFlags())
+
+    expect(result.current).toBe(LD_FLAGS)
   })
 })

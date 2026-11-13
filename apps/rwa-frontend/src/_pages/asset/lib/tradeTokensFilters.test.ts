@@ -31,16 +31,18 @@ describe('getTradeTokensFilters', () => {
       notice: expect.stringContaining('positive balance in your wallet'),
     })
     expect(buyTokensFilter?.tokens).toEqual(ASSET_TOKENS)
+    expect(buyTokensFilter?.selectableChainIds).toEqual([AAPLX_MAINNET.chainId, AAPLX_ARBITRUM.chainId])
     expect(buyTokensFilter?.onlyWithBalance).toBeUndefined()
     expect(buyTokensFilter?.notice).toContain('AAPL')
   })
 
-  it('sells the asset tokens held on the network for any other token', () => {
+  it('sells the asset tokens held on any of its networks for any other token', () => {
     const { sellTokensFilter, buyTokensFilter } = getTradeTokensFilters(AAPL, AAPLX_ARBITRUM, 'sell', true)
 
     expect(sellTokensFilter).toEqual({
-      tokens: [AAPLX_ARBITRUM.address],
+      tokens: ASSET_TOKENS,
       onlyWithBalance: true,
+      selectableChainIds: [AAPLX_MAINNET.chainId, AAPLX_ARBITRUM.chainId],
       notice: expect.stringContaining('AAPL'),
     })
     expect(buyTokensFilter).toEqual({ excludedTokens: ASSET_TOKENS })
@@ -49,7 +51,18 @@ describe('getTradeTokensFilters', () => {
   it('sells only the selected asset token without a wallet', () => {
     const { sellTokensFilter } = getTradeTokensFilters(AAPL, AAPLON_MAINNET, 'sell', false)
 
-    expect(sellTokensFilter).toEqual({ tokens: [AAPLON_MAINNET.address], notice: expect.stringContaining('AAPLon') })
+    expect(sellTokensFilter).toEqual({
+      tokens: [AAPLON_MAINNET.address],
+      selectableChainIds: [AAPLON_MAINNET.chainId],
+      notice: expect.stringContaining('AAPLon'),
+    })
+  })
+
+  it('sells the selected asset token on each of its networks without a wallet', () => {
+    const { sellTokensFilter } = getTradeTokensFilters(AAPL, AAPLX_MAINNET, 'sell', false)
+
+    expect(sellTokensFilter?.tokens).toEqual([AAPLX_MAINNET.address, AAPLX_ARBITRUM.address])
+    expect(sellTokensFilter?.selectableChainIds).toEqual([AAPLX_MAINNET.chainId, AAPLX_ARBITRUM.chainId])
   })
 
   it('does not mention the wallet when it is not connected', () => {

@@ -12,7 +12,7 @@ jest.mock('@/shared/api/coingecko/retryBackoff', () => ({
 }))
 
 jest.mock('../model/registry', () => ({
-  getAssets: () => mockRegistryAssets,
+  getAllAssets: () => mockRegistryAssets,
 }))
 
 import type { RwaAsset } from '../model/types'

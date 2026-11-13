@@ -3,6 +3,7 @@ import React, { useCallback, useEffect } from 'react'
 
 import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
@@ -24,6 +25,7 @@ import { calculatePercentageInRelationToReference } from 'utils/orderUtils/calcu
 
 import { RateImpactWarning } from '../../pure/RateImpactWarning'
 import { SmallVolumeWarningBanner } from '../../pure/SmallVolumeWarningBanner'
+import { logRateImpactAcknowledgement } from '../../utils/logRateImpactAcknowledgement.utils'
 
 const FORM_STATES_TO_SHOW_BUNDLE_BANNER = [TradeFormValidation.ApproveAndSwapInBundle]
 
@@ -57,6 +59,7 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
   const rateImpact = useRateImpact()
   const { inputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
   const tradeQuote = useTradeQuote()
+  const { account, chainId } = useWalletInfo()
 
   const isBundling = primaryFormValidation && FORM_STATES_TO_SHOW_BUNDLE_BANNER.includes(primaryFormValidation)
 
@@ -84,8 +87,9 @@ export function LimitOrdersWarnings(props: LimitOrdersWarningsProps) {
   const onAcceptRateImpact = useCallback(
     (value: boolean) => {
       updateLimitOrdersWarnings({ isRateImpactAccepted: value })
+      logRateImpactAcknowledgement({ isAccepted: value, rateImpact, chainId, account })
     },
-    [updateLimitOrdersWarnings],
+    [updateLimitOrdersWarnings, rateImpact, chainId, account],
   )
 
   return isVisible ? (

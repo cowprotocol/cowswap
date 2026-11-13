@@ -1,4 +1,12 @@
-import { getDividendModel, getDividendNote, getDividendNotes, isCommodityIssuer, isWrappedXStock } from './issuers'
+import {
+  getDividendModel,
+  getDividendNote,
+  getDividendNotes,
+  getIssuerLegalDocsUrl,
+  hasUiMultiplier,
+  isVaultToken,
+  isWrappedXStock,
+} from './issuers'
 
 const ONDO = { issuer: 'Ondo', coingeckoId: 'nvidia-ondo-tokenized-stock' }
 const XSTOCKS = { issuer: 'xStocks', coingeckoId: 'nvidia-xstock' }
@@ -11,28 +19,24 @@ describe('getDividendModel', () => {
     expect(getDividendModel({ issuer: 'Coinbase' })).toBe('price-accrual')
     expect(getDividendModel({ issuer: 'bStocks' })).toBe('rebase')
     expect(getDividendModel({ issuer: 'Reality' })).toBe('cash-payout')
+    expect(getDividendModel({ issuer: 'Dinari' })).toBe('cash-payout')
+    expect(getDividendModel({ issuer: 'Robinhood' })).toBe('price-accrual')
+    expect(getDividendModel({ issuer: 'Anchored' })).toBe('cash-payout')
+    expect(getDividendModel({ issuer: 'ST0x' })).toBe('price-accrual')
   })
 
   it('treats wrapped xStocks as price-accrual', () => {
     expect(getDividendModel(WRAPPED_XSTOCKS)).toBe('price-accrual')
   })
 
-  it('is null for an unknown issuer', () => {
-    expect(getDividendModel({ issuer: 'Dinari' })).toBeNull()
+  it('is null for an issuer with an undocumented model', () => {
+    expect(getDividendModel({ issuer: 'Stove Finance' })).toBeNull()
+    expect(getDividendModel({ issuer: 'Securitize' })).toBeNull()
   })
 
   it('is null for a commodity issuer', () => {
     expect(getDividendModel({ issuer: 'Paxos' })).toBeNull()
     expect(getDividendModel({ issuer: 'Tether' })).toBeNull()
-  })
-})
-
-describe('isCommodityIssuer', () => {
-  it('matches known issuers without dividends only', () => {
-    expect(isCommodityIssuer('Paxos')).toBe(true)
-    expect(isCommodityIssuer('Tether')).toBe(true)
-    expect(isCommodityIssuer('Ondo')).toBe(false)
-    expect(isCommodityIssuer('Dinari')).toBe(false)
   })
 })
 
@@ -51,13 +55,13 @@ describe('getDividendNote', () => {
   })
 
   it('is null for an unknown issuer', () => {
-    expect(getDividendNote({ issuer: 'Dinari' })).toBeNull()
+    expect(getDividendNote({ issuer: 'Stove Finance' })).toBeNull()
   })
 })
 
 describe('getDividendNotes', () => {
   it('returns one note per distinct label, in first-seen order', () => {
-    const notes = getDividendNotes([ONDO, XSTOCKS, ONDO, { issuer: 'Dinari' }, WRAPPED_XSTOCKS, XSTOCKS])
+    const notes = getDividendNotes([ONDO, XSTOCKS, ONDO, { issuer: 'Stove Finance' }, WRAPPED_XSTOCKS, XSTOCKS])
 
     expect(notes.map(({ label }) => label)).toEqual(['Ondo', 'xStocks', 'Wrapped xStocks'])
   })
@@ -73,5 +77,34 @@ describe('isWrappedXStock', () => {
     expect(isWrappedXStock(XSTOCKS)).toBe(false)
     expect(isWrappedXStock({ issuer: 'xStocks' })).toBe(false)
     expect(isWrappedXStock({ issuer: 'Ondo', coingeckoId: 'wrapped-nvidia-xstock' })).toBe(false)
+  })
+})
+
+describe('isVaultToken', () => {
+  it('matches wrapped xStocks and ST0x tokens', () => {
+    expect(isVaultToken(WRAPPED_XSTOCKS)).toBe(true)
+    expect(isVaultToken({ issuer: 'ST0x', coingeckoId: 'nike-st0x-tokenized-stock' })).toBe(true)
+    expect(isVaultToken(XSTOCKS)).toBe(false)
+    expect(isVaultToken(ONDO)).toBe(false)
+  })
+})
+
+describe('hasUiMultiplier', () => {
+  it('matches Robinhood tokens only', () => {
+    expect(hasUiMultiplier({ issuer: 'Robinhood' })).toBe(true)
+    expect(hasUiMultiplier(ONDO)).toBe(false)
+  })
+})
+
+describe('getIssuerLegalDocsUrl', () => {
+  it('links a known issuer, including one without a dividend model', () => {
+    expect(getIssuerLegalDocsUrl('Dinari')).toBe('https://dinari.com/terms')
+    expect(getIssuerLegalDocsUrl('Stove Finance')).toBe(
+      'https://docs.proto.stove.finance/documentation/legal/terms.html',
+    )
+  })
+
+  it('is null for an unknown issuer', () => {
+    expect(getIssuerLegalDocsUrl('Securitize')).toBeNull()
   })
 })

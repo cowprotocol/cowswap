@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { SolverBadge, SolverBadgeFallback, SolverBadgeLogo, SolverBadgeName } from './styled'
+import { SolverBadge, SolverBadgeFallback, SolverBadgeLogo, SolverBadgeName, SolverBadgeUnknownIcon } from './styled'
 
 import { OrderSolverInfo } from '../../../hooks/useOrderSolver'
 
@@ -18,7 +18,9 @@ export function SolvedByBadge({ solvedBy }: { solvedBy?: OrderSolverInfo }): Rea
       {solvedBy.image ? (
         <SolverBadgeLogo src={solvedBy.image} alt={`${displayName} logo`} />
       ) : (
-        <SolverBadgeFallback>{fallbackInitial}</SolverBadgeFallback>
+        <SolverBadgeFallback>
+          {solvedBy.isUnidentified ? <SolverBadgeUnknownIcon aria-hidden /> : fallbackInitial}
+        </SolverBadgeFallback>
       )}
       <SolverBadgeName>{displayName}</SolverBadgeName>
     </SolverBadge>
