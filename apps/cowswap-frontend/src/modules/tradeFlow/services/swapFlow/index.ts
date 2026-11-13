@@ -24,6 +24,7 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { mapUnsignedOrderToOrder, wrapErrorInOperatorError } from 'legacy/utils/trade'
 
+import { getValidFromFromAppDataDoc } from 'modules/appData'
 import { WidgetHookDeclineError } from 'modules/injectedWidget'
 import { emitPostedOrderEvent } from 'modules/orders'
 import { callDataContainsPermitSigner, handlePermit } from 'modules/permit'
@@ -32,6 +33,8 @@ import { logTradeFlow } from 'modules/trade/utils/logger'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 import { assertValidBridgeRecipient } from 'modules/tradeQuote'
 
+import { ApiErrorCodes, OperatorError } from 'api/cowProtocol/errors/OperatorError'
+import { getIsOrderBookTypedError } from 'api/cowProtocol/getIsOrderBookTypedError'
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
 import { TradeFlowContext } from '../../types/TradeFlowContext'
@@ -294,9 +297,34 @@ export async function swapFlow(
         ? BridgeInvalidEip1271SignatureError
         : getSwapErrorMessage(error, chainId)
 
-    captureError(error, ERROR_TYPES.ON_SWAP, { swapErrorMessage })
+    const waitAndSaveValidFrom = getValidFromFromAppDataDoc(orderParams.appData.doc)
+    const isDuplicatedOrder = isDuplicatedOrderError(error)
+
+    captureError(
+      error,
+      ERROR_TYPES.ON_SWAP,
+      {
+        swapErrorMessage,
+        waitAndSaveValidFrom,
+        validTo: orderParams.validTo,
+      },
+      isDuplicatedOrder ? { duplicatedOrder: 'true' } : undefined,
+      isDuplicatedOrder ? ['duplicated-order'] : undefined,
+    )
     analytics.error(error, swapErrorMessage, tradeFlowAnalyticsContext)
 
     tradeConfirmActions.onError(swapErrorMessage)
   }
+}
+
+function isDuplicatedOrderError(error: Error): boolean {
+  if (error instanceof OperatorError) {
+    return error.type === ApiErrorCodes.DuplicatedOrder
+  }
+
+  if (getIsOrderBookTypedError(error)) {
+    return error.body.errorType === ApiErrorCodes.DuplicatedOrder
+  }
+
+  return false
 }

@@ -6,8 +6,11 @@
 
 import { GTM_ID } from '@cowprotocol/common-const'
 
+import { ConsentGatedCowAnalytics } from './ConsentGatedCowAnalytics'
 import { CowAnalyticsGtm } from './CowAnalyticsGtm'
+import { grantGoogleConsent } from './grantGoogleConsent'
 
+import { requireCookieConsent } from '../consent/cookieConsent.store'
 import { CowAnalytics } from '../CowAnalytics'
 
 declare global {
@@ -24,6 +27,7 @@ const DEFAULT_GTM_ID = GTM_ID
 const analytics = {
   instance: null as CowAnalytics | null,
   gtmId: DEFAULT_GTM_ID,
+  requiresConsent: false,
 }
 
 // For testing purposes only
@@ -33,6 +37,7 @@ export function __resetGtmInstance() {
   if (process.env.NODE_ENV === 'test') {
     analytics.instance = null
     analytics.gtmId = DEFAULT_GTM_ID
+    analytics.requiresConsent = false
   }
 }
 
@@ -41,9 +46,23 @@ export function __resetGtmInstance() {
  * This function ensures GTM is initialized only once and properly cached in both server and browser environments
  * @param gtmId - Optional GTM container ID
  * @returns CowAnalytics instance backed by GTM
- * @throws Error if attempting to initialize with different GTM ID or if GTM ID format is invalid
+ * @throws Error if attempting to initialize with different GTM ID, after `initGtmWithConsent`, or if GTM ID format is invalid
  */
 export function initGtm(gtmId: string = DEFAULT_GTM_ID): CowAnalytics {
+  return getGtmInstance(gtmId, false)
+}
+
+/**
+ * Like `initGtm`, but GTM loads only once the visitor accepts cookies. Until then the instance sends nothing; on
+ * acceptance it replays the latest context, account and page view.
+ * The app must render `CookieConsentBannerContainer`, or GTM never loads.
+ * @throws Error if attempting to initialize with different GTM ID, after `initGtm`, or if GTM ID format is invalid
+ */
+export function initGtmWithConsent(gtmId: string = DEFAULT_GTM_ID): CowAnalytics {
+  return getGtmInstance(gtmId, true)
+}
+
+function getGtmInstance(gtmId: string, requiresConsent: boolean): CowAnalytics {
   // Validate GTM ID format (GTM-XXXXXXXX or longer)
   if (!/^GTM-[A-Z0-9]{7,}$/.test(gtmId)) {
     const error = new Error(
@@ -60,11 +79,24 @@ export function initGtm(gtmId: string = DEFAULT_GTM_ID): CowAnalytics {
     if (gtmId !== analytics.gtmId) {
       throw new Error('GTM already initialized with different ID')
     }
+    if (requiresConsent !== analytics.requiresConsent) {
+      throw new Error('GTM already initialized with a different cookie consent mode')
+    }
     return analytics.instance
   }
 
   // Store GTM ID before any environment-specific logic
   analytics.gtmId = gtmId
+  analytics.requiresConsent = requiresConsent
+
+  if (requiresConsent) {
+    requireCookieConsent()
+    analytics.instance = new ConsentGatedCowAnalytics(() => {
+      grantGoogleConsent()
+      return loadGtm(gtmId)
+    })
+    return analytics.instance
+  }
 
   // Handle server-side initialization
   // This check will be true when running on the server (Node.js environment)
@@ -75,7 +107,11 @@ export function initGtm(gtmId: string = DEFAULT_GTM_ID): CowAnalytics {
     return analytics.instance
   }
 
-  // Browser-specific initialization
+  analytics.instance = loadGtm(gtmId)
+  return analytics.instance
+}
+
+function loadGtm(gtmId: string): CowAnalytics {
   try {
     // Initialize dataLayer for browser environment
     window.dataLayer = window.dataLayer || []
@@ -99,9 +135,7 @@ export function initGtm(gtmId: string = DEFAULT_GTM_ID): CowAnalytics {
     noscript.appendChild(iframe)
     document.body.insertBefore(noscript, document.body.firstChild)
 
-    // Create and store singleton instance
-    analytics.instance = new CowAnalyticsGtm()
-    return analytics.instance
+    return new CowAnalyticsGtm()
   } catch (error) {
     console.error('Failed to initialize GTM:', error)
     throw error

@@ -198,7 +198,26 @@ export const FooterBottomLogos = styled.div`
 `
 
 export const BottomText = styled.p`
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  gap: 16px;
   margin: 0;
+`
+
+export const CookieSettingsButton = styled.button`
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--colorTitle);
+  }
 `
 
 export const Description = styled.p`
