@@ -4,8 +4,6 @@ import grassTokenImage from '@cowprotocol/assets/cow-swap/grass-token.png'
 
 import styled from 'styled-components/macro'
 
-import { wallColors } from './wall.styled'
-
 export interface TokenLogoProps {
   /** Rendered edge length in px. */
   size?: number
@@ -21,7 +19,5 @@ export function TokenLogo({ size = 16 }: TokenLogoProps): ReactNode {
 
 const Logo = styled.img`
   flex: 0 0 auto;
-  border-radius: 50%;
-  object-fit: cover;
-  box-shadow: 0 0 0 1px ${wallColors.neon};
+  object-fit: contain;
 `
