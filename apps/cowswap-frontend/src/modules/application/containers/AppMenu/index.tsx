@@ -1,9 +1,10 @@
 import { useAtom } from 'jotai'
 import { PropsWithChildren, ReactNode, useMemo } from 'react'
 
-import { SUPPORTED_LOCALES } from '@cowprotocol/common-const'
+import { CustomTheme, isCustomThemeEnabled, SUPPORTED_LOCALES } from '@cowprotocol/common-const'
 import { useFeatureFlags, useIsSolanaPublicLaunched, useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { Color, MenuBar, type CowSwapTheme } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -24,6 +25,7 @@ import { useIsInternationalizationEnabled } from 'common/hooks/featureFlags/useI
 import { useCustomTheme } from 'common/hooks/useCustomTheme'
 import { useMenuItems } from 'common/hooks/useMenuItems'
 import { parameterizeTradeRoute } from 'common/modules/tradeNavigation'
+import { graffitiThemeEnabledAtom } from 'common/state/graffitiTheme'
 import { isTwapSupportedChain } from 'common/utils/isTwapSupportedChain'
 
 import { HideMobile, isMobileQuery } from './styled'
@@ -144,10 +146,25 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
   )
 }
 
+/**
+ * Only where the theme can actually apply. Deliberately independent of the setting's own
+ * value, so turning the theme off does not take the entry that turns it back on with it.
+ */
+function useIsGraffitiThemeOffered(): boolean {
+  const { chainId } = useWalletInfo()
+  const featureFlags = useFeatureFlags()
+  const isGraffitiWallEnabled = useIsGraffitiWallEnabled()
+
+  return isSolanaChain(chainId) && isGraffitiWallEnabled && isCustomThemeEnabled(CustomTheme.SOLANA, featureFlags)
+}
+
 function useSettingsNavItems(darkMode: boolean, toggleDarkMode: Command): SettingsNavItem[] {
-  const { isAlphaNetworksOptionVisible } = useFeatureFlags()
+  const featureFlags = useFeatureFlags()
+  const { isAlphaNetworksOptionVisible } = featureFlags
   const isSolanaPublicLaunched = useIsSolanaPublicLaunched()
   const [areAlphaNetworksEnabled, setAlphaNetworksEnabled] = useAtom(alphaNetworksEnabledAtom)
+  const [graffitiThemeEnabled, setGraffitiThemeEnabled] = useAtom(graffitiThemeEnabledAtom)
+  const graffitiThemeOffered = useIsGraffitiThemeOffered()
   const { t } = useLingui()
 
   return useMemo(
@@ -156,6 +173,14 @@ function useSettingsNavItems(darkMode: boolean, toggleDarkMode: Command): Settin
         label: darkMode ? t`Light Mode` : t`Dark Mode`,
         onClick: toggleDarkMode,
       },
+      ...(graffitiThemeOffered
+        ? [
+            {
+              label: graffitiThemeEnabled ? t`Disable Graffiti Theme` : t`Enable Graffiti Theme`,
+              onClick: () => setGraffitiThemeEnabled(!graffitiThemeEnabled),
+            },
+          ]
+        : []),
       ...(isAlphaNetworksOptionVisible && !isSolanaPublicLaunched
         ? [
             {
@@ -168,6 +193,9 @@ function useSettingsNavItems(darkMode: boolean, toggleDarkMode: Command): Settin
     [
       darkMode,
       toggleDarkMode,
+      graffitiThemeOffered,
+      graffitiThemeEnabled,
+      setGraffitiThemeEnabled,
       isAlphaNetworksOptionVisible,
       isSolanaPublicLaunched,
       areAlphaNetworksEnabled,

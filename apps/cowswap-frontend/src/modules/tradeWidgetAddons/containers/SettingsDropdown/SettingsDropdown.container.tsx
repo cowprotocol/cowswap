@@ -16,7 +16,6 @@ import { DeadlineTransactionSettings } from 'modules/tradeWidgetAddons/container
 import { TransactionSlippageInput } from 'modules/tradeWidgetAddons/containers/TransactionSlippageInput/TransactionSlippageInput.container'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
-import { GraffitiThemeSettings } from 'common/containers/GraffitiThemeSettings/GraffitiThemeSettings.container'
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
@@ -172,8 +171,6 @@ export function SettingsDropdown({
                 ) : null}
 
                 <PriceChartSettings />
-
-                <GraffitiThemeSettings />
               </SettingsBoxGroup>
             </SettingsDropdownSection>
           </SettingsMenuFlyout>
