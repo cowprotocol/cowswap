@@ -6,10 +6,34 @@ import { getPercentageRate } from 'modules/trade'
 
 import { getQuoteCurrencyByStableCoin } from 'common/services/getQuoteCurrency'
 
-import { getPercentageLockedInversion, getSelectedPercentage, getSelectedPreset } from './pricePercentage.utils'
+import {
+  getPercentageLockedInversion,
+  getSelectedPercentage,
+  getSelectedPreset,
+  matchesPresetPercentage,
+} from './pricePercentage.utils'
 
 const WETH = WRAPPED_NATIVE_CURRENCIES[SupportedChainId.MAINNET]
 const TAKE_PROFIT_SELECTION = { value: '10', isInverted: false }
+
+describe('matchesPresetPercentage', () => {
+  it('matches exact preset values', () => {
+    expect(matchesPresetPercentage('5')).toBe(true)
+    expect(matchesPresetPercentage('10')).toBe(true)
+    expect(matchesPresetPercentage('20')).toBe(true)
+  })
+
+  it('matches preset values with trailing zeros', () => {
+    expect(matchesPresetPercentage('5.0')).toBe(true)
+    expect(matchesPresetPercentage('10.00')).toBe(true)
+  })
+
+  it('rejects non-preset values', () => {
+    expect(matchesPresetPercentage('')).toBe(false)
+    expect(matchesPresetPercentage('7')).toBe(false)
+    expect(matchesPresetPercentage('15')).toBe(false)
+  })
+})
 
 describe('getPercentageLockedInversion', () => {
   it('keeps a take-profit percentage on the original price direction', () => {
