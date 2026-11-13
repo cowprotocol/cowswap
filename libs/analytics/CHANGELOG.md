@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.19.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.18.0...analytics-v3.19.0) (2026-11-13)
+
+### Minor Changes
+
+- feat(cow-fi): gate GTM on cookie consent
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.21.0
+  - @cowprotocol/common-hooks@3.20.1
+  - @cowprotocol/common-utils@3.22.2
+
 ## [3.18.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.17.0...analytics-v3.18.0) (2026-11-11)
 
 ### Minor Changes
