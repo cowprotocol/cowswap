@@ -1,3 +1,4 @@
+import { cellsDigest } from '../cellsDigest.js'
 import { isRateLimited } from '../http.js'
 
 import type { ValidCell } from '../canvas.js'
@@ -12,7 +13,9 @@ interface DrawBody {
   cells?: unknown
 }
 
-type DrawRequest = { ok: true; cells: ValidCell[]; wallet: string } | { ok: false; reason: string }
+type DrawRequest =
+  | { ok: true; cells: ValidCell[]; received: ValidCell[]; wallet: string }
+  | { ok: false; reason: string }
 
 export function registerWriteRoutes(app: FastifyInstance, ctx: ServerContext): void {
   registerDraw(app, ctx)
@@ -31,7 +34,7 @@ function checkDrawRequest(ctx: ServerContext, body: DrawBody): DrawRequest {
   if (validated.cells.length > ctx.config.maxCellsPerDraw) {
     return { ok: false, reason: `too many cells (max ${ctx.config.maxCellsPerDraw})` }
   }
-  return { ok: true, cells: validated.cells, wallet: body.walletPubkey }
+  return { ok: true, cells: validated.cells, received: validated.received, wallet: body.walletPubkey }
 }
 
 function clip(value: unknown, max: number): string | null {
@@ -72,6 +75,9 @@ function registerDraw(app: FastifyInstance, ctx: ServerContext): void {
       txSignature: body.txSignature ?? body.signature ?? null,
       walletPubkey: checked.wallet,
       costCells: checked.cells.length,
+      // Over what the request carried, not the chargeable subset: that is what
+      // the client hashed into its memo before the wall deduped anything.
+      cellsDigest: cellsDigest(checked.received),
     })
     if (!result.ok) {
       // 409 marks "try the same burn again shortly"; 400 is terminal.
