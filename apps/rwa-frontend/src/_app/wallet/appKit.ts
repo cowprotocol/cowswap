@@ -4,7 +4,7 @@ import { WALLET_STORAGE_KEY } from '@cowprotocol/common-const/wallet'
 
 import { createAppKit } from '@reown/appkit/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { OptionsController } from '@reown/appkit-controllers'
+import { ChainController, OptionsController, RouterController } from '@reown/appkit-controllers'
 
 import { DEFAULT_NETWORK, SUPPORTED_NETWORKS } from './networks'
 
@@ -48,4 +48,9 @@ export const appKit = createAppKit({
     onramp: false,
     send: false,
   },
+})
+
+// After a switch from its network list, AppKit 1.8.19 goes back to that list, as if the switch had not applied
+ChainController.subscribeKey('activeCaipNetwork', () => {
+  if (RouterController.state.view === 'SwitchNetwork') void appKit.close()
 })

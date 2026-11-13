@@ -1,13 +1,14 @@
-import { loadChainBalances } from './loadChainBalances'
+import { loadChainBalanceSnapshot, loadChainBalances } from './loadChainBalances'
 import { FIRST_SNAPSHOT_TIMEOUT_MS } from './watchChainBalances'
 
 import type { RwaTokenList } from '@/entities/asset'
 
-import { type BalancesWatcherParams, watchBalances } from '@/shared/api'
+import { type BalancesWatcherParams, readTokenBalances, watchBalances } from '@/shared/api'
 
-jest.mock('@/shared/api', () => ({ watchBalances: jest.fn() }))
+jest.mock('@/shared/api', () => ({ watchBalances: jest.fn(), readTokenBalances: jest.fn() }))
 
 const watchBalancesMock = watchBalances as jest.Mock
+const readTokenBalancesMock = readTokenBalances as jest.Mock
 const close = jest.fn()
 
 const TOKEN_LIST: RwaTokenList = {
@@ -73,5 +74,48 @@ describe('loadChainBalances', () => {
 
     await expect(result).rejects.toThrow('aborted')
     expect(close).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('loadChainBalanceSnapshot', () => {
+  const tokenList: RwaTokenList = {
+    ...TOKEN_LIST,
+    tokens: [
+      { chainId: 4663, address: '0x01', name: 'A', symbol: 'A', decimals: 18, extensions: { ticker: 'A' } },
+      { chainId: 1, address: '0x02', name: 'B', symbol: 'B', decimals: 18, extensions: { ticker: 'B' } },
+    ],
+  }
+
+  beforeEach(() => {
+    watchBalancesMock.mockReset().mockImplementation((params: BalancesWatcherParams) => {
+      params.onError(new Error('Balances watcher session failed with 404'))
+
+      return { close }
+    })
+    readTokenBalancesMock.mockReset().mockResolvedValue({ '0x01': '5' })
+  })
+
+  it('reads the chain tokens over RPC when the watcher fails', async () => {
+    await expect(loadChainBalanceSnapshot(4663, OWNER, tokenList)).resolves.toEqual({ '0x01': '5' })
+    expect(readTokenBalancesMock).toHaveBeenCalledWith(4663, OWNER, ['0x01'])
+  })
+
+  it('does not read over RPC when the watcher sends balances', async () => {
+    watchBalancesMock.mockImplementation((params: BalancesWatcherParams) => {
+      params.onBalances({ '0x02': '1' })
+
+      return { close }
+    })
+
+    await expect(loadChainBalanceSnapshot(1, OWNER, tokenList)).resolves.toEqual({ '0x02': '1' })
+    expect(readTokenBalancesMock).not.toHaveBeenCalled()
+  })
+
+  it('does not read over RPC for an aborted request', async () => {
+    const controller = new AbortController()
+    controller.abort()
+
+    await expect(loadChainBalanceSnapshot(4663, OWNER, tokenList, controller.signal)).rejects.toThrow('aborted')
+    expect(readTokenBalancesMock).not.toHaveBeenCalled()
   })
 })

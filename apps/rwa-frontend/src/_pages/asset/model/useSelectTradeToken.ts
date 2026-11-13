@@ -17,6 +17,13 @@ export const TRADE_WIDGET_ID = 'trade-widget'
 
 const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)'
 
+/** `true` while the connected wallet is on another network than `tradeChainId`, where the widget would trade other tokens */
+export function useIsWalletOffTradeNetwork(tradeChainId: number): boolean {
+  const { isConnected, chainId } = useConnection()
+
+  return isConnected && chainId !== tradeChainId
+}
+
 /** Switches the widget to `side`, then scrolls to it and, below the chart, focuses its side toggle */
 export function useJumpToTrade(): (side: RwaQuoteSide) => void {
   const setSide = useSetAtom(tradeSideAtom)

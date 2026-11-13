@@ -8,8 +8,22 @@ import type { RwaToken } from './types'
  */
 export type RwaDividendModel = 'price-accrual' | 'rebase' | 'cash-payout'
 
-/** Must match `ALLOWED_ISSUERS` in `scripts/updateRegistry.mjs`, which skips the tokens of other issuers */
-export const RWA_ISSUERS = ['Ondo', 'xStocks', 'Coinbase', 'bStocks', 'Reality', 'Paxos', 'Tether'] as const
+/**
+ * Issuers with a known dividend model or legal docs, by their registry name (`ISSUER_NAMES` in
+ * `scripts/updateRegistry.mjs`, else the CoinGecko name). The registry has tokens of any issuer CoinGecko lists
+ */
+export const RWA_ISSUERS = [
+  'Ondo',
+  'xStocks',
+  'Coinbase',
+  'bStocks',
+  'Reality',
+  'Dinari',
+  'Robinhood',
+  'Anchored',
+  'ST0x',
+  'Stove Finance',
+] as const
 
 export interface RwaDividendNote {
   /** Who applies the scheme, e.g. `Ondo` or `Wrapped xStocks` */
@@ -22,22 +36,31 @@ export interface RwaDividendNote {
 
 export type RwaIssuer = (typeof RWA_ISSUERS)[number]
 
-export const RWA_ISSUER_LEGAL_DOCS_URLS: Partial<Record<RwaIssuer, string>> = {
+export const RWA_ISSUER_LEGAL_DOCS_URLS: Record<RwaIssuer, string> = {
   Ondo: 'https://app.ondo.finance/legal-documentation',
   xStocks: 'https://assets.backed.fi/legal-documentation',
   Coinbase: 'https://www.coinbase.com/tokenize',
   bStocks: 'https://www.binance.com/en/about-legal/bstocks-digital-securities-documentation',
+  Reality: 'https://realityfinance.xyz/info/docs/legal',
+  Dinari: 'https://dinari.com/terms',
+  Robinhood: 'https://docs.robinhood.com/chain/stock-tokens/',
+  Anchored: 'https://anchored.finance/terms',
+  ST0x: 'https://st0x.io/docs/legal',
+  'Stove Finance': 'https://docs.proto.stove.finance/documentation/legal/terms.html',
 }
 
 type DividendToken = Pick<RwaToken, 'issuer' | 'coingeckoId'>
 
-/** Issuers of commodities, which pay no dividends, are missing */
 const ISSUER_DIVIDEND_MODELS: Partial<Record<RwaIssuer, RwaDividendModel>> = {
   Ondo: 'price-accrual',
   xStocks: 'rebase',
   Coinbase: 'price-accrual',
   bStocks: 'rebase',
   Reality: 'cash-payout',
+  Dinari: 'cash-payout',
+  Robinhood: 'price-accrual',
+  Anchored: 'cash-payout',
+  ST0x: 'price-accrual',
 }
 
 const DIVIDEND_NOTES: Record<RwaDividendModel, Omit<RwaDividendNote, 'label'>> = {
@@ -90,12 +113,17 @@ export function getDividendNotes(tokens: Iterable<DividendToken>): RwaDividendNo
 }
 
 export function getIssuerLegalDocsUrl(issuer: string): string | null {
-  return isRwaIssuer(issuer) ? (RWA_ISSUER_LEGAL_DOCS_URLS[issuer] ?? null) : null
+  return isRwaIssuer(issuer) ? RWA_ISSUER_LEGAL_DOCS_URLS[issuer] : null
 }
 
-/** A known issuer without dividends: its tokens are commodities */
-export function isCommodityIssuer(issuer: string): boolean {
-  return isRwaIssuer(issuer) && !ISSUER_DIVIDEND_MODELS[issuer]
+/** Its shares per token is its ERC-8056 `uiMultiplier()`, and `balanceOf()` is not scaled by it */
+export function hasUiMultiplier({ issuer }: DividendToken): boolean {
+  return issuer === 'Robinhood'
+}
+
+/** Its shares per token is what it redeems for in ERC-4626 `convertToAssets`: a wrapped xStocks or an ST0x token */
+export function isVaultToken(token: DividendToken): boolean {
+  return isWrappedXStock(token) || token.issuer === 'ST0x'
 }
 
 /** An ERC-4626 wrapper of a rebasing xStocks token: its balance stays fixed and its price accrues the rebases */
