@@ -20,12 +20,14 @@ const MEMO_PROGRAMS = new Set([
   'Memo1UhkJRfHyvLMcVucJwxXeuD7MMEq7ddQNbvqF8Ff', // v1
 ])
 
-export type MemoResult = { memo: string } | { err: string }
+export type MemoResult = { memo: string; cellsDigest: string | null } | { err: string }
 
 export interface VerifyInput {
   txSignature: string | null
   walletPubkey: string
   costCells: number
+  /** `cellsDigest` of the cells this request carries; a v2 memo must commit to it. */
+  cellsDigest: string
 }
 
 /**
@@ -64,7 +66,7 @@ export class DrawVerifier {
   }
 
   async verify(input: VerifyInput): Promise<VerifyResult> {
-    const { txSignature, walletPubkey, costCells } = input
+    const { txSignature, walletPubkey, costCells, cellsDigest } = input
 
     const wallet = parsePublicKey(walletPubkey)
     if (!wallet) return reject('invalid walletPubkey', false)
@@ -78,7 +80,7 @@ export class DrawVerifier {
     // two concurrent requests both pass with the same burn.
     if (!this.store.claimSignature(txSignature)) return reject('signature already used', false)
 
-    const checked = await this.checkTransaction(txSignature, wallet.toBase58(), mint, costCells)
+    const checked = await this.checkTransaction(txSignature, wallet.toBase58(), mint, costCells, cellsDigest)
     if (!checked.ok) {
       // The burn was not consumed by a draw, so free the signature: a client
       // retrying after a transient RPC miss must be able to use it.
@@ -133,6 +135,7 @@ export class DrawVerifier {
     walletB58: string,
     mint: string,
     costCells: number,
+    cellsDigest: string,
   ): Promise<{ ok: true; burned: number; memo: string } | Failure> {
     const loaded = await this.loadTransaction(signature)
     if (!loaded.ok) return loaded
@@ -147,7 +150,23 @@ export class DrawVerifier {
     const memo = findMemo(loaded.tx, walletB58, this.config.txMaxAgeSec)
     if ('err' in memo) return reject(memo.err, false)
 
+    const unbound = this.checkCellsBinding(memo.cellsDigest, cellsDigest)
+    if (unbound) return unbound
+
     return { ok: true, burned, memo: memo.memo }
+  }
+
+  /**
+   * The memo is the only thing tying a burn to the cells it paid for. A
+   * signature is public as soon as the burn lands and the payer's own client
+   * waits for `confirmed` before posting, so without this anyone watching the
+   * chain can spend someone else's burn on their own drawing.
+   */
+  private checkCellsBinding(memoDigest: string | null, cellsDigest: string): Failure | null {
+    if (memoDigest === null) {
+      return this.config.acceptLegacyMemo ? null : reject('memo does not commit to the cells', false)
+    }
+    return memoDigest === cellsDigest ? null : reject('memo does not match these cells', false)
   }
 }
 
@@ -163,23 +182,27 @@ export function checkExecution(tx: ParsedTransactionWithMeta, maxAgeSec: number)
   return null
 }
 
-/** The `graffiti:v1:<wallet>:<ts>` memo, if fresh. */
+/**
+ * The burn memo, if fresh: `graffiti:v2:<wallet>:<ts>:<cells sha256>`, or the
+ * pre-digest `graffiti:v1:<wallet>:<ts>` from a client loaded before the v2
+ * rollout. `cellsDigest` is null for v1.
+ */
 export function findMemo(tx: ParsedTransactionWithMeta, walletB58: string, maxAgeSec: number): MemoResult {
-  const expected = new RegExp(`^graffiti:v1:${walletB58}:(\\d{10,13})$`)
-  let found: { memo: string; ts: number } | null = null
+  const expected = new RegExp(`^graffiti:v([12]):${walletB58}:(\\d{10,13})(?::([0-9a-f]{64}))?$`)
+  let found: { memo: string; ts: number; digest: string | null } | null = null
 
   for (const ix of allInstructions(tx)) {
     if (!MEMO_PROGRAMS.has(ix.programId.toBase58())) continue
     const text = memoText(ix)
-    const match = text ? expected.exec(text) : null
-    if (text && match) found = { memo: text, ts: Number(match[1]) }
+    const parsed = text ? parseMemo(text, expected) : null
+    if (text && parsed) found = { memo: text, ...parsed }
   }
 
-  if (!found) return { err: 'missing/invalid memo (expected graffiti:v1:<pubkey>:<ts>)' }
+  if (!found) return { err: 'missing/invalid memo (expected graffiti:v2:<pubkey>:<ts>:<cells sha256>)' }
 
   const tsMs = found.ts < 1e12 ? found.ts * 1000 : found.ts // seconds or ms
   if (Math.abs(Date.now() - tsMs) > maxAgeSec * 1000) return { err: 'memo ts outside freshness window' }
-  return { memo: found.memo }
+  return { memo: found.memo, cellsDigest: found.digest }
 }
 
 /** Burns by anyone else in the same transaction must not count toward cost. */
@@ -247,6 +270,19 @@ function memoText(ix: AnyInstruction): string | null {
   if (typeof parsed === 'string') return parsed.trim()
   const data = (parsed as { data?: unknown } | null)?.data
   return typeof data === 'string' ? data.trim() : null
+}
+
+/** The parts of a memo this wall minted, or null for any other text. */
+function parseMemo(text: string, expected: RegExp): { ts: number; digest: string | null } | null {
+  const match = expected.exec(text)
+  if (!match) return null
+
+  const digest = match[3] ?? null
+  // v2 carries a digest and v1 does not; either one wearing the other's shape
+  // is not a memo this wall minted.
+  if ((match[1] === '2') !== (digest !== null)) return null
+
+  return { ts: Number(match[2]), digest }
 }
 
 function reject(reason: string, retryable: boolean): Failure {
