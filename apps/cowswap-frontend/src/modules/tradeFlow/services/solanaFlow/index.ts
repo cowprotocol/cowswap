@@ -130,6 +130,10 @@ export async function solanaFlow(
     const buySymbol = outputAmount.currency.symbol ?? 'token'
     const { owner, connection, provider } = solana
 
+    // Whose wallet the created intent's `buyTokenAccount` is the associated token account of: a limit
+    // order rebuilds the intent against the form's receiver, a swap keeps the one the quote derived it
+    // from. It must stay in step with `createdIntent` below — the associated token program rejects a
+    // create whose address is not the named wallet's.
     const buyAtaReceiver = new PublicKey(
       orderClass === OrderClass.LIMIT ? receiver : (tradeQuote.quoteResults.tradeParameters.receiver ?? receiver),
     )
@@ -140,6 +144,12 @@ export async function solanaFlow(
     // sponsor. Both the wrap's rent and its transfer therefore stay the owner's.
     const buyAtaRentPayer = sponsor ?? owner
 
+    // The wallet the order book is told the buy token account belongs to, so the settlement creates a
+    // missing one there the way it creates the owner's own. Only a sponsored order posts anything —
+    // a self-paid order never reaches placement, so its bundle creates the account itself — and
+    // naming the owner is the same as naming nobody.
+    const namedReceiver = sponsor && !buyAtaReceiver.equals(owner) ? buyAtaReceiver : undefined
+
     const {
       step: createOrderStep,
       orderId,
@@ -149,6 +159,7 @@ export async function solanaFlow(
       sellAmount: signedSellAmount,
       buyAmount: signedBuyAmount,
       feePayer,
+      intent: createdIntent,
     } = orderClass === OrderClass.LIMIT
       ? await planCreateLimitOrderStep({
           ownerAddress: account,
@@ -196,6 +207,11 @@ export async function solanaFlow(
       phase = 'plan'
     }
 
+    // The account the order actually credits, not the quoted one: a limit order rebuilds the intent
+    // against its own receiver. `buyTokenProgramId` still comes from the quote — it is a property of the
+    // buy mint, which no rebuild changes.
+    const buyAtaQuote = { intent: createdIntent, buyTokenProgramId: solanaQuote.buyTokenProgramId }
+
     // Wrap only applies to a native SOL sell and delegate only when the existing delegation is short —
     // both plan functions return null otherwise, so the transaction carries the minimum instructions.
     // `isNativeSell` reflects the user's actual selection, not `inputAmount.currency` — the Solana quote
@@ -207,9 +223,14 @@ export async function solanaFlow(
       planCreateBuyAtaStep({
         payer: buyAtaRentPayer,
         receiver: buyAtaReceiver,
-        quote: solanaQuote,
+        quote: buyAtaQuote,
         buySymbol,
-        isCreationSkipped: getIsBuyAtaCreationSkipped({ quote: solanaQuote, owner, isAtaCreationDisabled }),
+        isCreationSkipped: getIsBuyAtaCreationSkipped({
+          quote: buyAtaQuote,
+          owner,
+          receiver: namedReceiver,
+          isAtaCreationDisabled,
+        }),
       }),
       createOrderStep,
     ].filter((step): step is SolanaFlowStep => step !== null)
@@ -222,6 +243,7 @@ export async function solanaFlow(
           { connection, provider, feePayer },
           steps,
           tradeQuote.quoteResults,
+          namedReceiver,
           () => attemptId === latestAttemptId,
           () => {
             phase = 'submit'
@@ -458,6 +480,8 @@ async function postSponsoredBundle(
   context: SignSolanaFlowContext,
   steps: SolanaFlowStep[],
   quoteResults: SolanaTradeFlowContext['tradeQuote']['quoteResults'],
+  /** The wallet the buy token account belongs to, when the order names one — see `namedReceiver`. */
+  receiver: PublicKey | undefined,
   isCurrentAttempt: () => boolean,
   /** Fired just before the bundle is handed over, after which its outcome is no longer ours to know. */
   onSubmissionStart: () => void,
@@ -517,8 +541,12 @@ async function postSponsoredBundle(
     onSubmissionStart()
 
     await postSolanaSponsoredOrder(
-      // The endpoint answers `id: null` when it could not store the quote, which the type does not admit.
-      { partiallySignedTx: transaction, quoteId: quoteResults.quoteResponse.id ?? undefined },
+      {
+        partiallySignedTx: transaction,
+        receiver: receiver?.toBase58(),
+        // The endpoint answers `id: null` when it could not store the quote, which the type does not admit.
+        quoteId: quoteResults.quoteResponse.id ?? undefined,
+      },
       { orderBookApi },
     )
   } finally {

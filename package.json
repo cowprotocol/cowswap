@@ -111,7 +111,8 @@
     "strictDepBuilds": true,
     "allowBuilds": {
       "nx": true,
-      "@swc/core": true
+      "@swc/core": true,
+      "better-sqlite3": true
     },
     "overrides": {
       "@wagmi/core": "3.4.8",

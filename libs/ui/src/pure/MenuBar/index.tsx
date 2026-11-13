@@ -784,6 +784,8 @@ interface MenuBarProps {
   bgColorLight?: string
   bgDropdownColorDark?: string
   bgDropdownColorLight?: string
+  /** Backdrop blur behind the bar; defaults to 16px. */
+  blur?: string
   colorDark?: string
   colorLight?: string
   customTheme?: CowSwapTheme
@@ -830,6 +832,7 @@ export const MenuBar = (props: MenuBarProps) => {
     bgColorLight,
     bgDropdownColorDark,
     bgDropdownColorLight,
+    blur,
     colorDark,
     colorLight,
     customTheme,
@@ -898,6 +901,7 @@ export const MenuBar = (props: MenuBarProps) => {
       bgColorDark={bgColorDark}
       bgDropdownColorLight={bgDropdownColorLight}
       bgDropdownColorDark={bgDropdownColorDark}
+      blur={blur}
       colorLight={colorLight}
       colorDark={colorDark}
       defaultFillLight={defaultFillLight}
