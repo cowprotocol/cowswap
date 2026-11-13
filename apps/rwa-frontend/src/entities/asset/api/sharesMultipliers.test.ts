@@ -27,7 +27,7 @@ jest.mock('@/shared/api/index.server', () => ({
 }))
 
 jest.mock('../model/registry', () => ({
-  getAssets: () => [{ tokens: mockRegistryTokens }],
+  getAllAssets: () => [{ tokens: mockRegistryTokens }],
 }))
 
 function token(symbol: string, chainId: number, address: string, issuer: string, coingeckoId?: string): RwaToken {

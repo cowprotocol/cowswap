@@ -21,7 +21,7 @@ import {
   splitMovers,
   toOverviewItem,
 } from '../model/marketOverview'
-import { getAssetByTicker, getAssets } from '../model/registry'
+import { getAllAssets, getAssetByTicker, getAssets } from '../model/registry'
 
 import type {
   RwaAggregateMarket,
@@ -250,9 +250,10 @@ export async function getMarketOverview(): Promise<RwaMarketOverview> {
 }
 
 export async function listAssets({ page, pageSize, sort, order, ...filter }: ListAssetsParams): Promise<RwaAssetsPage> {
-  const registry = getAssets()
-  const filtered = filterAssets(registry, filter)
   const withTokens = Boolean(filter.tickers?.length)
+  // Holdings are looked up by ticker, and include the assets and tokens left out of the listings
+  const registry = withTokens ? getAllAssets() : getAssets()
+  const filtered = filterAssets(registry, filter)
   const filteredTokens = filtered.flatMap((asset) => asset.tokens)
   const [{ byId, degraded: marketsDegraded }, tokenMarkets, sharesPerToken] = await Promise.all([
     loadRwaMarkets(),
@@ -345,7 +346,7 @@ async function loadNetworkStats(chainId: number, tokens: RwaToken[]): Promise<Rw
 // Always requested in full, so every route hits the same cached upstream requests
 async function loadRwaMarkets(): Promise<RwaMarketsLoadResult> {
   try {
-    return { byId: await marketDataProvider.getRwaMarkets(getAssets().length), degraded: false }
+    return { byId: await marketDataProvider.getRwaMarkets(getAllAssets().length), degraded: false }
   } catch (err: unknown) {
     const error = normalizeError(err)
     console.error('[rwa] Failed to load RWA markets', error)

@@ -4,7 +4,7 @@ import { PortfolioView } from './PortfolioView'
 
 import type { Metadata } from 'next'
 
-import { getAssetSummaries } from '@/entities/asset/index.server'
+import { getAllAssetSummaries } from '@/entities/asset/index.server'
 import { buildPageMetadata } from '@/shared/lib/seo/index.server'
 
 export const metadata: Metadata = {
@@ -18,5 +18,5 @@ export const metadata: Metadata = {
 }
 
 export function PortfolioPage(): ReactNode {
-  return <PortfolioView assets={getAssetSummaries()} />
+  return <PortfolioView assets={getAllAssetSummaries()} />
 }
