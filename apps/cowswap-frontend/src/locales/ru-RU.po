@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-11-13 14:35\n"
+"PO-Revision-Date: 2026-11-13 15:40\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -5480,7 +5480,7 @@ msgstr "Документация"
 
 #: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
 msgid "network: {network}"
-msgstr ""
+msgstr "сеть: {network}"
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/HookItem/index.tsx
 msgid "Simulation:"
@@ -5642,7 +5642,7 @@ msgstr "Это могло произойти из-за отсутствия ин
 
 #: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
 msgid "Brush · {brushSize}px"
-msgstr ""
+msgstr "Кисть· {brushSize}px"
 
 #: libs/common-utils/src/tooltips.ts
 msgid "Maximum tokens you'll sell."
@@ -5737,7 +5737,7 @@ msgstr "стоит"
 
 #: apps/cowswap-frontend/src/pages/graffiti/WallScreen.pure.tsx
 msgid "draw on the wall — cost updates live"
-msgstr ""
+msgstr "рисуйте прямо на стене — стоимость пересчитывается на лету"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/DefaultAccountContent/DefaultAccountContent.pure.tsx
 msgid "View account"
@@ -5782,7 +5782,7 @@ msgstr "Максимальный интервал между частями — 
 
 #: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
 msgid "pixels covered so far"
-msgstr ""
+msgstr "расходовано пикселей"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 #~ msgid "This fee helps pay for maintenance & improvements to the trade experience"
@@ -5863,7 +5863,7 @@ msgstr "Этот контракт развертывается для каждо
 
 #: apps/cowswap-frontend/src/pages/graffiti/NetworkGate.pure.tsx
 msgid "→ Switch to Solana"
-msgstr ""
+msgstr "→ Переключиться на Болону"
 
 #: apps/cowswap-frontend/src/api/cowProtocol/errors/OperatorError.ts
 #~ msgid "The order cannot be {msg}. Please, retry in a minute"
@@ -6120,11 +6120,11 @@ msgstr "Подтвердите, что это верный адрес и что 
 
 #: apps/cowswap-frontend/src/pages/graffiti/ClaimScreens.pure.tsx
 msgid "CLAIMING…"
-msgstr ""
+msgstr "КЛЕЙМИНГ…"
 
 #: apps/cowswap-frontend/src/pages/graffiti/StartOverlay.pure.tsx
 msgid "← back"
-msgstr ""
+msgstr "← назад"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ImportListModal/index.tsx
 msgid "Import at your own risk"
@@ -6239,7 +6239,7 @@ msgstr "2 остановки"
 
 #: apps/cowswap-frontend/src/modules/application/containers/AppContainer/CowSpeechBubble/CowSpeechBubbleGraffitiWallBanner.tsx
 msgid "Visit the wall"
-msgstr ""
+msgstr "Visit the wall"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/TradeApproveButton/TradeApproveButton.tsx
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/TradeSignPermitButton/TradeSignPermitButton.tsx
@@ -6249,7 +6249,7 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/pages/graffiti/WallHeader.pure.tsx
 msgid "{size} · 1 {TOKEN_SYMBOL} per pixel · {network}"
-msgstr ""
+msgstr "{size} · 1 {TOKEN_SYMBOL} за пиксель · {network}"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "Please enter the base URL of your dapp, not the direct manifest.json path"
@@ -6257,7 +6257,7 @@ msgstr "Пожалуйста, введите базовый URL вашего dap
 
 #: apps/cowswap-frontend/src/pages/graffiti/CanvasControls.pure.tsx
 msgid "⌖ frame"
-msgstr ""
+msgstr "⌖ рамка"
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 #: apps/cowswap-frontend/src/pages/Account/Menu.tsx
@@ -6312,7 +6312,7 @@ msgstr "Попробуйте изменить фильтры"
 
 #: apps/cowswap-frontend/src/pages/graffiti/NetworkGate.pure.tsx
 msgid "You're currently on <0>{chainName}</0>. Select the <1>Solana</1> network to start painting."
-msgstr ""
+msgstr "Сейчас выбрана сеть <0>{chainName}</0>. Переключитесь на <1>Solana</1>, чтобы начать рисовать."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 msgid "Still searching"
@@ -6361,7 +6361,7 @@ msgstr "Цель"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx
 msgid "Your multisig rejected this order, so it was not placed."
-msgstr ""
+msgstr "Ваш мультисиг отклонил этот ордер, поэтому он не был размещён."
 
 #: libs/common-utils/src/legacyAddressUtils.ts
 #~ msgid "View on {explorerTitle}"
@@ -6406,7 +6406,7 @@ msgstr "Размещение этого ордера в блокчейне тр�
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/containers/TakeProfitPrompt/TakeProfitPrompt.container.tsx
 msgid "Limit order to sell at a higher price. How much higher?"
-msgstr ""
+msgstr "Лимитный ордер для продажи по цене выше рыночной. Насколько выше?"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 msgid "Swap bridged via your"
@@ -6561,7 +6561,7 @@ msgstr "Влияние цены неизвестно"
 
 #: apps/cowswap-frontend/src/pages/graffiti/StartOverlay.pure.tsx
 msgid "⛶ SEE YOUR MASTERPIECE"
-msgstr ""
+msgstr "⛶ СМОТРЕТЬ СВОЙ ШЕДЕВР"
 
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/index.tsx
 msgid "Failed to cancel order"
@@ -6652,7 +6652,7 @@ msgstr "<0>Солверы CoW Swap</0> сканируют источники л�
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/OrderExpiryWarning/OrderExpiryWarning.pure.tsx
 msgid "This order stays active for more than a week"
-msgstr ""
+msgstr "Срок действия этого ордера превышает неделю"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeLinkingStatusSection.tsx
 msgid "Your wallet is eligible for rewards. After your first trade, the referral code will bind and stay active for {timeCapDays, plural, one {# day} few {# days} many {# days} other {# days}}."
@@ -6681,7 +6681,7 @@ msgstr "Сбросить лимит (allowance) <0>{symbol}</0>"
 
 #: apps/cowswap-frontend/src/pages/graffiti/CanvasControls.pure.tsx
 msgid "✏ draw"
-msgstr ""
+msgstr "✏ рисовать"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
 #~ msgid "Create your referral code"
@@ -6807,7 +6807,7 @@ msgstr "Не можете найти токен в списке? <0>Прочти
 
 #: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
 msgid "📍 frame locked — undo everything to move it"
-msgstr ""
+msgstr "📍 рамка зафиксирована — отмените все действия, чтобы переместить её"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/ProtocolFeeRow/index.tsx
 #~ msgid "The fee is {protocolFeeBps} BPS ({protocolFeeAsPercent}%), applied only if the trade is executed.<0/><1/>Solver rewards are taken from this fee amount."
@@ -6963,7 +6963,7 @@ msgstr "Обменять на"
 
 #: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
 msgid "size follows the brush ({fontSize}px) — tap the wall to stamp, tap again to re-stamp"
-msgstr ""
+msgstr "размер подстраивается под кисть ({fontSize}px) — коснитесь стены, чтобы поставить штамп, и ещё раз, чтобы переставить"
 
 #: libs/ui/src/pure/TooltipIcon/TooltipIcon.pure.tsx
 msgid "Help"
@@ -7549,7 +7549,7 @@ msgstr "еще"
 
 #: apps/cowswap-frontend/src/pages/graffiti/PlotOverlay.pure.tsx
 msgid "{TOKEN_SYMBOL} left {left}"
-msgstr ""
+msgstr "{TOKEN_SYMBOL} Остаток {left}"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderRewardsRow.tsx
 msgid "Your referral code is saved. It will link after your first eligible trade."
@@ -7569,7 +7569,7 @@ msgstr "Вы не можете использовать собственный �
 
 #: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
 msgid "📍 drag the frame to position it, then ✓ draw here (or press Enter)"
-msgstr ""
+msgstr "📍 перетащите рамку в нужное место, затем нажмите \"✓ рисовать здесь\" (или нажмите Ввод)"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderFillsAt/OrderFillsAt.pure.tsx
 msgid "The fill price of this order is close or at the market price (<0>fills at <1/></0>, {priceDiff}% from market) and is expected to {filledValue} fill soon."
@@ -8013,7 +8013,7 @@ msgstr "Минимум к получению"
 
 #: apps/cowswap-frontend/src/pages/graffiti/ClaimScreens.pure.tsx
 msgid "tokens are sent straight to your wallet"
-msgstr ""
+msgstr "токены поступают сразу на ваш кошелёк"
 
 #: apps/cowswap-frontend/src/modules/account/pure/ConnectedAccountBlocked/index.tsx
 #~ msgid "This address is blocked on the Uniswap Labs interface because it is associated with one or more"
@@ -8203,7 +8203,7 @@ msgstr "Сумма одобрения"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/TxCostRow/index.tsx
 msgid "Solana charges a deposit for the accounts your order needs. It comes out of the vault's SOL balance, on top of the amount you sell rather than out of your trade."
-msgstr ""
+msgstr "Solana взимает депозит за аккаунты, необходимые для вашего ордера. Он списывается с баланса SOL в хранилище сверх продаваемой суммы, а не из самой сделки."
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 msgid "Trade tokens"
@@ -8261,7 +8261,7 @@ msgstr "Подтверждайте только в том случае, если
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/containers/TakeProfitPrompt/TakeProfitPrompt.container.tsx
 msgid "Take profit on your <0/>"
-msgstr ""
+msgstr "Продайте <0/> с прибылью"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "This hook allows you to withdraw rewards from your Gnosis Chain validators through CoW Swap. It automates the process of interacting with the Gnosis Deposit Contract, enabling you to claim any available rewards directly to your specified withdrawal address. The hook monitors your validator's accrued rewards and triggers the claimWithdrawals function when rewards are ready for withdrawal. This simplifies the management of Gnosis validator earnings without requiring ready for withdrawal. This simplifies the management of Gnosis validator earnings without requiring manual contract interaction, providing a smoother and more efficient experience for users."
@@ -8277,7 +8277,7 @@ msgstr "иконка сэндвича"
 
 #: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
 msgid "Color"
-msgstr ""
+msgstr "Цвет"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/DeadlineTransactionSettings/DeadlineTransactionSettings.container.tsx
 #~ msgid "With Wait for CoWs, expiration starts after the next batch (~{batchWaitLabel}). Total time until expiry ≈ {totalExpiryLabel}."
@@ -8339,7 +8339,7 @@ msgstr "Центр наград — Партнерам"
 
 #: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
 msgid "DRAW SOMETHING ✏"
-msgstr ""
+msgstr " НАРИСУЙТЕ ЧЕГО-НИБУДЬ ✏"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokenSearchContent/index.tsx
 msgid "No tokens found"
@@ -8355,7 +8355,7 @@ msgstr "Неподдерживаемый"
 
 #: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
 msgid "brush size"
-msgstr ""
+msgstr "Размер кисти"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 #~ msgid "seconds"
@@ -8395,7 +8395,7 @@ msgstr "Создание"
 
 #: apps/cowswap-frontend/src/modules/application/containers/AppMenu/index.tsx
 msgid "Disable Graffiti Theme"
-msgstr ""
+msgstr "Выключить тему с граффити"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/useTwapConfirmCurrencyPreview.ts
 msgid "Minimum total if all parts fill. Parts that can't meet your price limit are skipped, so you may receive less overall and keep the unsold tokens."
@@ -8563,7 +8563,7 @@ msgstr "Загрузка допустимого проскальзывания"
 
 #: apps/cowswap-frontend/src/pages/graffiti/CanvasControls.pure.tsx
 msgid "🧽 erase"
-msgstr ""
+msgstr "🧽 стереть"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
@@ -8717,7 +8717,7 @@ msgstr "Расходы на свап составляют не менее {forma
 
 #: apps/cowswap-frontend/src/pages/graffiti/StartOverlay.pure.tsx
 msgid "NO {TOKEN_SYMBOL} IN YOUR WALLET"
-msgstr ""
+msgstr "В ВАШЕМ КОШЕЛЬКЕ НЕТ {TOKEN_SYMBOL} "
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeLinkingSubtitle.tsx
 msgid "Your friend shared a referral code with you."
@@ -8774,7 +8774,7 @@ msgstr "Пост-хуки"
 
 #: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
 msgid "Nothing to approve? Nothing has been burned yet — reset and sign again, your drawing is kept."
-msgstr ""
+msgstr "В кошельке нечего подтверждать? Ничего ещё не списано — сделайте сброс и подпишите заново, ваш рисунок не пропадёт."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDetailHeader/index.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookListItem/index.tsx
@@ -9036,7 +9036,7 @@ msgstr "Котировка еще не подтверждена симуляци
 #: apps/cowswap-frontend/src/modules/onchainTransactions/updaters/FinalizeTxUpdater/services/checkSolanaTransaction.ts
 #: apps/cowswap-frontend/src/modules/onchainTransactions/updaters/FinalizeTxUpdater/services/checkSolanaTransaction.ts
 msgid "Cancellation rejected in your multisig"
-msgstr ""
+msgstr "Отмена отклонена в вашем мультисиг-кошельке"
 
 #: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartHeader.tsx
 msgid "Chart metric"
@@ -9052,7 +9052,7 @@ msgstr "Почему {name} выиграл"
 
 #: apps/cowswap-frontend/src/pages/graffiti/ClaimScreens.pure.tsx
 msgid "No claim code found.<0/>Scan a graffiti QR code or open a link like <1>/graffiti/claim?code=…</1>"
-msgstr ""
+msgstr "Код не найден.<0/>Отсканируйте QR-код граффити или откройте ссылку <1>/graffiti/claim?code=…</1>"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetMetadata.ts
 msgid "Buy token"
@@ -9155,7 +9155,7 @@ msgstr "Адрес кошелька"
 
 #: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
 msgid "distinct pixels — one burn commits all"
-msgstr ""
+msgstr "пиксели сгорают за один коммит"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 #: apps/cowswap-frontend/src/modules/twap/utils/getPaddedDeadlineParts.utils.ts
@@ -9245,7 +9245,7 @@ msgstr "Ошибка загрузки доступной суммы"
 
 #: apps/cowswap-frontend/src/pages/graffiti/ClaimScreens.pure.tsx
 msgid "This claim code is invalid or has already been used."
-msgstr ""
+msgstr "Код активации недействителен или уже был использован."
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SmallPriceProtectionWarning.tsx
 msgid "Attention"
@@ -9282,7 +9282,7 @@ msgstr "Баннер подключения кошелька"
 
 #: apps/cowswap-frontend/src/pages/graffiti/ClaimScreens.pure.tsx
 msgid "CLAIMED!"
-msgstr ""
+msgstr "СКЛЕЙМЛЕНО!"
 
 #: apps/cowswap-frontend/src/modules/advancedOrders/pure/Settings/AdvancedOrdersSettings.tsx
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/LimitOrdersSettings.pure.tsx
@@ -9312,7 +9312,7 @@ msgstr "Если вы установите неограниченный лими
 
 #: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
 msgid "every painted pixel burns 1 {TOKEN_SYMBOL} (SPL)"
-msgstr ""
+msgstr "1 закрашенный пиксель = сжигание 1 {TOKEN_SYMBOL} (SPL)"
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/PendingView/index.tsx
 msgid "Try Again"
@@ -9445,7 +9445,7 @@ msgstr "Создание ордера"
 
 #: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
 msgid "Drawing"
-msgstr ""
+msgstr "Рисование"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/LpTokenPage/index.tsx
 msgid "Select"
@@ -9501,7 +9501,7 @@ msgstr "Пока CoW Swap на Solana работает в Альфа-верси�
 
 #: apps/cowswap-frontend/src/pages/graffiti/StartOverlay.pure.tsx
 msgid "ON THE WALL 🎉"
-msgstr ""
+msgstr "НА СТЕНЕ 🎉"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/TransactionLink/index.tsx
 msgid "View on {explorerTitle} ↗"
@@ -9537,7 +9537,7 @@ msgstr "Привязан с"
 
 #: apps/cowswap-frontend/src/pages/graffiti/CanvasControls.pure.tsx
 msgid "T text"
-msgstr ""
+msgstr "T текст"
 
 #: apps/cowswap-frontend/src/modules/application/containers/AppMenu/index.tsx
 #~ msgid "Light mode"
@@ -9608,7 +9608,7 @@ msgstr "Разрешить использование"
 
 #: apps/cowswap-frontend/src/pages/graffiti/CanvasControls.pure.tsx
 msgid "✋ pan"
-msgstr ""
+msgstr "✋ перемещение"
 
 #: apps/cowswap-frontend/src/pages/Account/Tokens/TokensOverview.tsx
 msgid "Reset favorites"
@@ -9714,7 +9714,7 @@ msgstr "Первая часть вашего TWAP-ордера активиру�
 
 #: apps/cowswap-frontend/src/pages/graffiti/StartOverlay.pure.tsx
 msgid "Connect first: painting burns {TOKEN_SYMBOL} from your wallet."
-msgstr ""
+msgstr "Сначала подключитесь: рисование сжигает ваши {TOKEN_SYMBOL}."
 
 #: apps/cowswap-frontend/src/pages/error/AnySwapAffectedUsers/index.tsx
 msgid "In order to protect your funds, you will need to remove the approval on this contract."
@@ -9872,7 +9872,7 @@ msgstr "Подтвердите свап"
 
 #: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
 msgid "color {c}"
-msgstr ""
+msgstr "цвет {c}"
 
 #: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartSettingsDropdown.tsx
 msgid "Expand the price chart to use more space."
@@ -9897,7 +9897,7 @@ msgstr "CoW Swap <0>возобновил работу</0>"
 
 #: apps/cowswap-frontend/src/pages/graffiti/StartOverlay.pure.tsx
 msgid "Every pixel burns 1 {TOKEN_SYMBOL}, and your wallet holds none. <0>Get some</0> to start drawing."
-msgstr ""
+msgstr "Каждый пиксель сжигает 1 {TOKEN_SYMBOL}, а у вас их нет. <0>Получите токены</0>, чтобы начать рисовать."
 
 #: apps/cowswap-frontend/src/api/cowProtocol/errors/OperatorError.ts
 #~ msgid "Something failed. Please try again later."
@@ -9945,7 +9945,7 @@ msgstr "Разблокировать расширенные возможност
 
 #: apps/cowswap-frontend/src/modules/application/containers/AppContainer/CowSpeechBubble/CowSpeechBubbleGraffitiWallBanner.tsx
 msgid "Mooo, check out our wall!"
-msgstr ""
+msgstr "Мууу, зацените нашу стену!"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/FAQContent.pure.tsx
 msgid "Recover!"
@@ -10082,7 +10082,7 @@ msgstr "Так как вы используете смарт-контракт к
 
 #: apps/cowswap-frontend/src/pages/graffiti/ClaimScreens.pure.tsx
 msgid "This code is worth"
-msgstr ""
+msgstr "По этому коду доступно"
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 #: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
@@ -10181,7 +10181,7 @@ msgstr "Юридическая информация"
 
 #: apps/cowswap-frontend/src/pages/graffiti/CanvasControls.pure.tsx
 msgid "tools"
-msgstr ""
+msgstr "инструменты"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 #~ msgid "and got an extra {amount}"
@@ -10295,11 +10295,11 @@ msgstr "Пользователь отклонил подписание отме�
 
 #: apps/cowswap-frontend/src/pages/graffiti/WallHeader.pure.tsx
 msgid "· seq {seq}"
-msgstr ""
+msgstr "· seq {seq}"
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "Graffiti Wall"
-msgstr ""
+msgstr "Стена с граффити"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerStats.tsx
 msgid "Total referrals"
@@ -10332,7 +10332,7 @@ msgstr "Источник"
 
 #: apps/cowswap-frontend/src/pages/graffiti/NetworkGate.pure.tsx
 msgid "Welcome! This wall is painted with <0>{TOKEN_SYMBOL}</0>, a Solana token. Every painted cell burns 1 {TOKEN_SYMBOL}."
-msgstr ""
+msgstr "Добро пожаловать! На этой стене рисуют токенами <0>{TOKEN_SYMBOL}</0> в сети Solana. Каждая закрашенная ячейка сжигает 1 {TOKEN_SYMBOL}."
 
 #: apps/cowswap-frontend/src/modules/zeroApproval/containers/ZeroApprovalModal/ZeroApprovalModal.tsx
 msgid "Reset {symbol} allowance to 0 before setting new spending cap"
@@ -10399,7 +10399,7 @@ msgstr "Симулировать"
 
 #: apps/cowswap-frontend/src/pages/graffiti/StartOverlay.pure.tsx
 msgid "🐦 Not at Breakpoint? Follow <0>{TWITTER_HANDLE}</0> and send us a love message. We will share some with you."
-msgstr ""
+msgstr "🐦 Не на Breakpoint? Подпишитесь на <0>{TWITTER_HANDLE}</0> и напишите нам пару тёплых слов. Мы тоже поделимся с вами!"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Start time"
@@ -10420,7 +10420,7 @@ msgstr "Очистить"
 
 #: apps/cowswap-frontend/src/modules/application/containers/AppMenu/index.tsx
 msgid "Enable Graffiti Theme"
-msgstr ""
+msgstr "Включить тему с граффити"
 
 #: apps/cowswap-frontend/src/pages/error/NotFound/index.tsx
 #~ msgid "CowSwap 404 not found"
@@ -10432,7 +10432,7 @@ msgstr "(также известный как CoW Shed)"
 
 #: apps/cowswap-frontend/src/pages/graffiti/ClaimScreens.pure.tsx
 msgid "try again"
-msgstr ""
+msgstr "попробовать снова"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/BridgingProgressContent/PreparingBridgingContent/index.tsx
 msgid "Loading bridge data <0/>"
@@ -10446,7 +10446,7 @@ msgstr "Продать"
 
 #: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
 msgid "↩ undo"
-msgstr ""
+msgstr "↩ отменить действие"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Content/NoOrders/OrdersTableNoOrdersContent.utils.tsx
 msgid "Use the <0/> to see {currentTabText}"
@@ -10487,7 +10487,7 @@ msgstr "Посмотреть список"
 
 #: apps/cowswap-frontend/src/pages/graffiti/WallHeader.pure.tsx
 msgid "live · {painters} painting"
-msgstr ""
+msgstr "онлайн · художников: {painters}"
 
 #: apps/cowswap-frontend/src/common/hooks/useCrossChainFamilySwitch.tsx
 #~ msgid "This requires connecting a different wallet."
@@ -10504,7 +10504,7 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/pages/graffiti/StartOverlay.pure.tsx
 msgid "painted, and {paintedCount} {TOKEN_SYMBOL} burned for good. Everyone looking at the wall right now can see them."
-msgstr ""
+msgstr "нанесено на стену, а {paintedCount} {TOKEN_SYMBOL} безвозвратно сожжены. Все, кто сейчас на стене, сразу их увидят."
 
 #: apps/cowswap-frontend/src/modules/trade/pure/SolanaOrderNotPlaced/index.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/SolanaOrderNotPlaced/index.tsx
@@ -10704,7 +10704,7 @@ msgstr "Часы"
 
 #: apps/cowswap-frontend/src/pages/graffiti/NetworkGate.pure.tsx
 msgid "Switching…"
-msgstr ""
+msgstr "Переключение..."
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/ManageTokens/index.tsx
 msgid "Clear all"
@@ -10749,7 +10749,7 @@ msgstr "Лицензионный сбор Safe App"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
 msgid "TWAP orders are placed on-chain, so you will pay a separate gas cost for the order placement transaction."
-msgstr ""
+msgstr "TWAP-ордера размещаются ончейн, поэтому вы оплатите отдельную комиссию за газ за транзакцию размещения ордера."
 
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ErrorWithStackTrace.tsx
 msgid "CowSwap Error"
@@ -10856,7 +10856,7 @@ msgstr "Mev Slicer"
 
 #: apps/cowswap-frontend/src/pages/graffiti/NetworkGate.pure.tsx
 msgid "or pick Solana from the network selector in the header"
-msgstr ""
+msgstr "или выберите Solana в меню выбора сети в верхней панели"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 #~ msgid "{seconds, plural, one {second} few {seconds} many {seconds} other {seconds}}"
