@@ -21,9 +21,9 @@ import {
   AccountProxyRecoverPage,
   AccountProxiesPage,
 } from 'modules/accountProxy'
+import { useIsGraffitiWallEnabled } from 'modules/graffitiWall'
 
 import { Routes as RoutesEnum, RoutesValues } from 'common/constants/routes'
-import { useIsGraffitiWallEnabled } from 'common/hooks/featureFlags/useIsGraffitiWallEnabled'
 import Account, { AccountOverview } from 'pages/Account'
 import { AccountProxy } from 'pages/Account/AccountProxy'
 import { AdvancedOrdersPage } from 'pages/AdvancedOrders/AdvancedOrders.page'

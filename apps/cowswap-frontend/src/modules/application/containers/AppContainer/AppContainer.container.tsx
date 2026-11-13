@@ -15,6 +15,7 @@ import { useDarkModeManager } from 'legacy/state/user/hooks'
 
 import { AccountModal } from 'modules/account'
 import { AffiliateTraderModal } from 'modules/affiliate'
+import { useIsGraffitiWallEnabled } from 'modules/graffitiWall'
 import { useInjectedWidgetMetaData } from 'modules/injectedWidget'
 import { useSpeechBubbleNotification } from 'modules/notifications'
 import { useInitializeUtm } from 'modules/utm'
@@ -22,8 +23,6 @@ import { useInitializeUtm } from 'modules/utm'
 import { BANNER_IDS } from 'common/constants/banners'
 import { CoWAmmBanner } from 'common/containers/CoWAmmBanner'
 import { InvalidLocalTimeWarning } from 'common/containers/InvalidLocalTimeWarning'
-import { useIsGraffitiWallEnabled } from 'common/hooks/featureFlags/useIsGraffitiWallEnabled'
-import { useCustomTheme } from 'common/hooks/useCustomTheme'
 import { useGetMarketDimension } from 'common/hooks/useGetMarketDimension'
 
 import { CowSpeechBubbleGraffitiWallBanner } from './CowSpeechBubble/CowSpeechBubbleGraffitiWallBanner'
@@ -33,9 +32,10 @@ import { RecoveryBanner } from './RecoveryBanner'
 import { SnowfallOverlay } from './SnowfallOverlay.pure'
 
 import { PageBackgroundContext, PageBackgroundVariant, PageLayoutVariant } from '../../contexts/PageBackgroundContext'
+import { useAppTheme } from '../../hooks/useAppTheme'
 import { ADDITIONAL_FOOTER_CONTENT, PRODUCT_VARIANT } from '../App/menuConsts'
 import * as styledEl from '../App/styled'
-import { isChristmasTheme as isChristmasThemeHelper, isSolanaTheme } from '../App/styled'
+import { isChristmasTheme as isChristmasThemeHelper } from '../App/styled'
 import { AppMenu } from '../AppMenu'
 import { NetworkAndAccountControls } from '../NetworkAndAccountControls/NetworkAndAccountControls.container'
 
@@ -52,7 +52,7 @@ interface CowSpeechBubbleVisibilityParams {
   isChristmasTheme: boolean
 }
 
-type CustomThemeKey = ReturnType<typeof useCustomTheme>
+type CustomThemeKey = ReturnType<typeof useAppTheme>
 
 interface FooterSectionProps {
   show: boolean
@@ -88,7 +88,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
 
   const isMobile = useMediaQuery(Media.upToMedium(false))
 
-  const customTheme = useCustomTheme()
+  const customTheme = useAppTheme()
   const pageBackgroundValue = useMemo(
     () => ({
       variant: pageBackgroundVariant,
@@ -171,7 +171,7 @@ function FooterSection({
   pageScene,
   isRwaEnabled,
 }: FooterSectionProps): ReactNode {
-  const customTheme = useCustomTheme()
+  const customTheme = useAppTheme()
 
   if (!show) {
     return null
@@ -188,7 +188,7 @@ function FooterSection({
   ) : null
 
   return (
-    <styledEl.FooterSlot $overWall={isSolanaTheme(customTheme)}>
+    <styledEl.FooterSlot customTheme={customTheme}>
       {bubbleElement}
       {pageScene && <styledEl.SceneContainer>{pageScene}</styledEl.SceneContainer>}
       <Footer

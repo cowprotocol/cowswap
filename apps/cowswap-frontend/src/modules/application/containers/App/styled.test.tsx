@@ -4,14 +4,14 @@ import { ServerStyleSheet, ThemeProvider as StyledComponentsThemeProvider } from
 
 import { AppWrapper, BodyWrapper, Marginer } from './styled'
 
-function solanaWallCss(darkMode: boolean): string {
+function graffitiWallCss(darkMode: boolean): string {
   const sheet = new ServerStyleSheet()
 
   try {
     renderToStaticMarkup(
       sheet.collectStyles(
         <StyledComponentsThemeProvider theme={{ isWidget: false, darkMode } as never}>
-          <AppWrapper customTheme="darkSolana" />
+          <AppWrapper customTheme="darkGraffiti" />
         </StyledComponentsThemeProvider>,
       ),
     )
@@ -103,13 +103,13 @@ describe('Marginer', () => {
   })
 })
 
-describe('AppWrapper under the Solana theme', () => {
+describe('AppWrapper under the graffiti theme', () => {
   it('paints the wall the same way whichever colour scheme the app is in', () => {
-    expect(solanaWallCss(false)).toBe(solanaWallCss(true))
+    expect(graffitiWallCss(false)).toBe(graffitiWallCss(true))
   })
 
   it('keeps the wall on its dark base, under a lightening blend', () => {
-    const css = solanaWallCss(false)
+    const css = graffitiWallCss(false)
 
     expect(css).toContain('background-color:#0E0F2D')
     expect(css).not.toContain('--cow-color-blue-300-primary')

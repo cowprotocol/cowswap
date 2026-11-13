@@ -72,6 +72,10 @@ costs an SPL token per pixel. Freehand strokes, rasterized to a pixel grid.
 - Lives in `apps/graffiti-api/` inside this repo (own package.json).
 
 ## Frontend
+- Everything the feature owns lives in `apps/cowswap-frontend/src/pages/graffiti/`,
+  `apps/cowswap-frontend/src/modules/graffitiWall/` and `apps/graffiti-api/`. The call
+  sites outside them are listed in [`REMOVAL.md`](./REMOVAL.md) and guarded by
+  `graffitiWall.containment.test.ts`.
 - Page: `apps/cowswap-frontend/src/pages/graffiti/` + route `/graffiti`
   (follow the CowRunner/MevSlicer lazy-route pattern in RoutesApp.tsx and
   Routes enum in common/constants/routes.ts).
