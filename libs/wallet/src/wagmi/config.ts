@@ -9,9 +9,10 @@ import { solana } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit/react'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { OptionsController } from '@reown/appkit-controllers'
+import { CoreHelperUtil, OptionsController } from '@reown/appkit-controllers'
 
 import { getConnectors } from './getConnectors'
+import { getCustomWallets } from './getCustomWallets'
 import { getReownDefaultNetwork } from './getReownDefaultNetwork'
 import { installWalletTransactionGuard, type WalletTransactionGuard } from './walletTransactionGuard'
 
@@ -128,6 +129,7 @@ const reownAppKit = createAppKit({
   enableInjected: false,
   enableReconnect: isSafeApp || isMobile || isWidget || hasRecentConnector,
   enableWalletGuide: false,
+  customWallets: getCustomWallets(isSafeApp, isWidget, CoreHelperUtil.isAndroid()),
   featuredWalletIds: [
     // Coinbase Wallet
     'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
