@@ -81,6 +81,7 @@ jest.mock('../model/registry', () => {
 
   return {
     getAssets: () => assets,
+    getAllAssets: () => assets,
     getAssetByTicker: (ticker: string) => assets.find((asset) => asset.ticker === ticker.toUpperCase()),
   }
 })

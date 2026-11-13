@@ -4,6 +4,8 @@ import { erc4626Abi, getAddress } from 'viem'
 
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 
+import { throwOnBatchFailure } from '../multicall/throwOnBatchFailure'
+
 import { getPublicClient } from '@/shared/lib/chain'
 
 /**
@@ -26,6 +28,8 @@ export async function readVaultAssetsPerShare(
       args: [10n ** BigInt(decimals)],
     })),
   })
+
+  throwOnBatchFailure(responses)
 
   return Object.fromEntries(
     vaults.flatMap(({ address, decimals }, index) => {
