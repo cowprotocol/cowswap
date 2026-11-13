@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.21.3](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.21.2...widget-configurator-v3.21.3) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.23.1
+
 ## [3.21.2](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.21.1...widget-configurator-v3.21.2) (2026-11-13)
 
 ### Patch Changes
