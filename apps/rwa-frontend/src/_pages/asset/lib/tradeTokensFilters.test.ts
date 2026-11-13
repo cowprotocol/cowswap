@@ -51,7 +51,18 @@ describe('getTradeTokensFilters', () => {
   it('sells only the selected asset token without a wallet', () => {
     const { sellTokensFilter } = getTradeTokensFilters(AAPL, AAPLON_MAINNET, 'sell', false)
 
-    expect(sellTokensFilter).toEqual({ tokens: [AAPLON_MAINNET.address], notice: expect.stringContaining('AAPLon') })
+    expect(sellTokensFilter).toEqual({
+      tokens: [AAPLON_MAINNET.address],
+      selectableChainIds: [AAPLON_MAINNET.chainId],
+      notice: expect.stringContaining('AAPLon'),
+    })
+  })
+
+  it('sells the selected asset token on each of its networks without a wallet', () => {
+    const { sellTokensFilter } = getTradeTokensFilters(AAPL, AAPLX_MAINNET, 'sell', false)
+
+    expect(sellTokensFilter?.tokens).toEqual([AAPLX_MAINNET.address, AAPLX_ARBITRUM.address])
+    expect(sellTokensFilter?.selectableChainIds).toEqual([AAPLX_MAINNET.chainId, AAPLX_ARBITRUM.chainId])
   })
 
   it('does not mention the wallet when it is not connected', () => {

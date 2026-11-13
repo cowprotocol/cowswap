@@ -31,6 +31,8 @@ export function getTradeTokensFilters(
     }
   }
 
+  const sameTokens = asset.tokens.filter((token) => token.symbol === assetToken.symbol)
+
   return {
     sellTokensFilter: isConnected
       ? {
@@ -40,7 +42,8 @@ export function getTradeTokensFilters(
           notice: `Only the tokenized ${asset.ticker} with a positive balance in your wallet is listed.`,
         }
       : {
-          tokens: [assetToken.address],
+          tokens: sameTokens.map((token) => token.address),
+          selectableChainIds: [...new Set(sameTokens.map((token) => token.chainId))],
           notice: `Only the ${assetToken.symbol} token selected above is listed.`,
         },
     buyTokensFilter: { excludedTokens: assetTokens },
