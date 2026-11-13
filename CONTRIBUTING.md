@@ -96,6 +96,7 @@ Start with issues labeled **Help Wanted**.
 ### React
 
 - Do not declare components inside another component's render
+- Put derived business logic in Jotai atoms (`state/`) or pure functions (`utils/`, `services/`), not in components or hooks. Call `useAtomValue` / `useSetAtom` / `useAtom` on the atom at the component. Run atom side effects with `observe` from `jotai-effect`. Wait for a deadline with `setTimeout` (`runCountdown` / `useRemainingSeconds`). See [`docs/STATE_MANAGEMENT.md`](./docs/STATE_MANAGEMENT.md)
 - Favour composition and named function components
 - Use `const` only when a type annotation is needed
 - Split large components into pure sub-components under `modules/<feature>/pure/`
@@ -174,7 +175,9 @@ Optimization rules:
 ## 9. Testing
 
 - Unit tests / integration tests required when applicable
-- Jest unit tests for logic
+- Jest unit tests for business logic: pure functions and Jotai atoms (`createStore()` in `*.test.ts`)
+- Do not unit-test React components or hooks by default. `*.test.tsx`, `render()`, and `renderHook()` need a reason in the PR (complex stateful container or browser-only hook) and should not mock a pile of domain modules
+- Keep new unit tests proportional to the logic change. Do not restate JSX; Cosmos fixtures and Playwright cover UI
 - Storybook stories/Cosmos + interaction tests for every UI component
 - Include integration tests
 - Full CI must be green before review
