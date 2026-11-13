@@ -69,11 +69,6 @@ export function createIsolatedProvider(original: EIP1193Provider): EIP1193Provid
   const proxy: EIP1193Provider = {
     request: (async (args) => {
       const method = (args as { method: string }).method
-      // FIXME: remove after testing
-      const failMethod = (window as Window & { __cowFailRpc?: RegExp }).__cowFailRpc
-      if (failMethod?.test(method)) {
-        throw { code: -32603, message: 'Internal JSON-RPC error.' }
-      }
       if (method === 'wallet_revokePermissions') {
         console.log('[providerIsolation] blocked wallet_revokePermissions')
         resetMobileInjectedProviderGuard(original)
