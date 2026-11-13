@@ -1,7 +1,15 @@
 /**
  * @jest-environment node
  */
-import { filterAssets, filterByMarket, getDefaultSortOrder, paginate, searchAssets, sortAssets } from './assetsQuery'
+import {
+  filterAssets,
+  filterByMarket,
+  filterByQuery,
+  getDefaultSortOrder,
+  paginate,
+  searchAssets,
+  sortAssets,
+} from './assetsQuery'
 
 import type { RwaAssetListItem, RwaMarketData, RwaToken } from './types'
 
@@ -222,14 +230,23 @@ describe('filterAssets', () => {
       profile: { description: 'Tracks the price of silver, a precious metal.', sector: 'ETF · Commodities' },
     })
 
-    expect(tickers(filterAssets([SLV, META], { query: 'meta' }))).toEqual(['META'])
-    expect(tickers(filterAssets([SLV, META], { query: 'silver' }))).toEqual(['SLV'])
-    expect(tickers(filterAssets([SLV, META], { query: 'precious' }))).toEqual(['SLV'])
-    expect(tickers(filterAssets([SLV, META], { query: 'mtea' }))).toEqual(['META'])
+    expect(tickers(filterByQuery([SLV, META], 'meta'))).toEqual(['META'])
+    expect(tickers(filterByQuery([SLV, META], 'silver'))).toEqual(['SLV'])
+    expect(tickers(filterByQuery([SLV, META], 'precious'))).toEqual(['SLV'])
+    expect(tickers(filterByQuery([SLV, META], 'mtea'))).toEqual(['META'])
+  })
+
+  it('keeps description matches when the field match was filtered out beforehand', () => {
+    const SLV = asset('SLV', 'iShares Silver Trust', 5, null, [], {
+      profile: { description: 'Tracks the price of silver, a precious metal.', sector: 'ETF · Commodities' },
+    })
+
+    expect(tickers(filterByQuery([SLV], 'meta'))).toEqual(['SLV'])
   })
 
   it('filters by query and tickers', () => {
-    expect(tickers(filterAssets(all, { query: 'invesco' }))).toEqual(['QQQ'])
+    expect(tickers(filterByQuery(all, 'invesco'))).toEqual(['QQQ'])
+    expect(tickers(filterByQuery(all, '  '))).toEqual(['AAPL', 'MSFT', 'SPY', 'QQQ'])
     expect(tickers(filterAssets(all, { tickers: ['MSFT', 'QQQ'] }))).toEqual(['MSFT', 'QQQ'])
     expect(filterAssets(all, { tickers: [] })).toEqual([])
   })

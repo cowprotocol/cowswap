@@ -55,14 +55,16 @@ export async function loadSharesPerToken(tokens: RwaToken[]): Promise<SharesPerT
   ])
   const onchain = { ...vaults.values, ...uiMultipliers.values }
   const byKey: Record<string, number> = {}
+  let missesOnchainRate = false
 
   for (const token of tokens) {
     const multiplier = getSharesMultiplier(token, ondo.values, onchain)
 
     if (multiplier !== undefined) byKey[getTokenKey(token)] = multiplier
+    else if (isVaultToken(token) || hasUiMultiplier(token)) missesOnchainRate = true
   }
 
-  return { byKey, degraded: ondo.degraded || vaults.degraded || uiMultipliers.degraded }
+  return { byKey, degraded: ondo.degraded || vaults.degraded || uiMultipliers.degraded || missesOnchainRate }
 }
 
 /** `null` when the asset has no rebasing xStocks token, no multiplier activation is known, or the pause is over */

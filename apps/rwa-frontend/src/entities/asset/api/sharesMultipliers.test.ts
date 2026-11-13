@@ -47,6 +47,7 @@ const PAXG = token('PAXG', 1, '0x0000000000000000000000000000000000000009', 'Pax
 const XAUT = token('XAUT', 1, '0x000000000000000000000000000000000000000a', 'Tether', 'tether-gold')
 const KAU = token('KAU', 1, '0x0000000000000000000000000000000000000010', 'Kinesis Money', 'kinesis-gold')
 const KAG = token('KAG', 1, '0x0000000000000000000000000000000000000011', 'Kinesis Money', 'kinesis-silver')
+const GGBR = token('GGBR', 1, '0x0000000000000000000000000000000000000013', 'Goldfish', 'goldfish-gold')
 
 const mockRegistryTokens = [NVDAON, NFLXON, NVDAX, WNVDAX, WNVDAX_ARBITRUM, WSPYX, WTNKE, NVDA_ROBINHOOD]
 
@@ -105,6 +106,13 @@ describe('loadSharesPerToken', () => {
     expect(readUiMultipliersMock).toHaveBeenCalledWith(4663, [NVDA_ROBINHOOD])
   })
 
+  it('degrades when a vault or UI-multiplier token gets no onchain rate', async () => {
+    readVaultRatesMock.mockResolvedValue({})
+    readUiMultipliersMock.mockResolvedValue({})
+
+    expect(await loadSharesPerToken([WTNKE, NVDA_ROBINHOOD])).toEqual({ byKey: {}, degraded: true })
+  })
+
   it('requests nothing for tokens that need no upstream data', async () => {
     expect(await loadSharesPerToken([NVDAX])).toEqual({ byKey: { [getTokenKey(NVDAX)]: 1 }, degraded: false })
     expect(fetchOndoMock).not.toHaveBeenCalled()
@@ -126,20 +134,21 @@ describe('loadSharesPerToken', () => {
   })
 
   it('takes the troy ounces a commodity token holds, per token rather than per issuer', async () => {
-    const result = await loadSharesPerToken([PAXG, XAUT, KAU, KAG])
+    const result = await loadSharesPerToken([PAXG, XAUT, KAU, KAG, GGBR])
 
     expect(result.byKey).toEqual({
       [getTokenKey(PAXG)]: 1,
       [getTokenKey(XAUT)]: 1,
       [getTokenKey(KAU)]: expect.closeTo(1 / 31.1034768, 10),
       [getTokenKey(KAG)]: 1,
+      [getTokenKey(GGBR)]: 0.001,
     })
   })
 
   it('leaves a commodity token of unknown size out', async () => {
-    const ggbr = token('GGBR', 1, '0x0000000000000000000000000000000000000012', 'Goldfish', 'goldfish-gold')
+    const unknown = token('GLDX', 1, '0x0000000000000000000000000000000000000012', 'Unknown Gold', 'unknown-gold')
 
-    expect(await loadSharesPerToken([ggbr])).toEqual({ byKey: {}, degraded: false })
+    expect(await loadSharesPerToken([unknown])).toEqual({ byKey: {}, degraded: false })
   })
 
   it('leaves a stock token of an issuer with an unknown dividend model out', async () => {

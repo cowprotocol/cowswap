@@ -2,6 +2,8 @@ import { erc20Abi, getAddress } from 'viem'
 
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 
+import { throwOnBatchFailure } from '../multicall/throwOnBatchFailure'
+
 import type { BalancesMap } from '../balances-watcher/balancesWatcherClient'
 
 import { getPublicClient } from '@/shared/lib/chain'
@@ -24,6 +26,8 @@ export async function readTokenBalances(chainId: number, owner: string, addresse
         ({ address: getAddress(address), abi: erc20Abi, functionName: 'balanceOf', args: [account] }) as const,
     ),
   })
+
+  throwOnBatchFailure(responses)
 
   return Object.fromEntries(
     addresses.flatMap((address, index) => {

@@ -11,7 +11,7 @@ import { type StockDataProvider, withStockDataFallback } from './stockData'
 
 import { sumNullable } from '../lib/sumNullable'
 import { getTokenKey } from '../lib/tokenKey'
-import { filterAssets, filterByMarket, paginate, searchAssets, sortAssets } from '../model/assetsQuery'
+import { filterAssets, filterByMarket, filterByQuery, paginate, searchAssets, sortAssets } from '../model/assetsQuery'
 import {
   buildDailySeries,
   buildMarketCapSeries,
@@ -268,7 +268,7 @@ export async function listAssets({ page, pageSize, sort, order, ...filter }: Lis
       series: null,
     }
   })
-  const sorted = sortAssets(filterByMarket(listed, filter), sort, order)
+  const sorted = sortAssets(filterByQuery(filterByMarket(listed, filter), filter.query), sort, order)
   const { items, totalPages } = paginate(sorted, page, pageSize)
 
   return {

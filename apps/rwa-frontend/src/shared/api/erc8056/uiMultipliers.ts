@@ -4,6 +4,8 @@ import { getAddress, parseAbi } from 'viem'
 
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 
+import { throwOnBatchFailure } from '../multicall/throwOnBatchFailure'
+
 import { getPublicClient } from '@/shared/lib/chain'
 
 const UI_MULTIPLIER_ABI = parseAbi(['function uiMultiplier() view returns (uint256)'])
@@ -28,6 +30,8 @@ export async function readUiMultipliers(
       functionName: 'uiMultiplier',
     })),
   })
+
+  throwOnBatchFailure(responses)
 
   return Object.fromEntries(
     tokens.flatMap(({ address }, index) => {

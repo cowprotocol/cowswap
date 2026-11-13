@@ -14,6 +14,7 @@ const TROY_OUNCES_PER_TOKEN: Record<string, number> = {
   'matrixdock-gold': 1,
   'matrixdock-silver': 1,
   'kinesis-silver': 1,
+  'goldfish-gold': 0.001,
   'kinesis-gold': ONE_GRAM,
   'vnx-gold': ONE_GRAM,
   'goldzip-gold': ONE_GRAM,

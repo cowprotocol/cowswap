@@ -155,7 +155,9 @@ describe('validateRegistry', () => {
   it('accepts tokens of any issuer', () => {
     const [token] = VALID_ASSET.tokens
 
-    expect(validateRegistry(registryWith([{ ...VALID_ASSET, tokens: [{ ...token, issuer: 'Dinari' }] }]))).toEqual([])
+    expect(validateRegistry(registryWith([{ ...VALID_ASSET, tokens: [{ ...token, issuer: 'Securitize' }] }]))).toEqual(
+      [],
+    )
   })
 
   it('rejects an asset without tokens', () => {

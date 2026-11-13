@@ -29,22 +29,14 @@ const SORT_VALUE_GETTERS: Record<RwaSortField, SortValueGetter> = {
   title: (asset) => asset.title,
 }
 
+/** Every filter but the query and the market minimums, which need market data */
 export function filterAssets<T extends RwaAsset>(assets: T[], filter: RwaAssetsFilter): T[] {
-  const needle = filter.query?.trim().toLowerCase()
-  const filtered = assets.filter(
+  return assets.filter(
     (asset) =>
       (!filter.type || asset.type === filter.type) &&
       (!filter.tickers || filter.tickers.includes(asset.ticker)) &&
       hasMatchingToken(asset, filter),
   )
-
-  if (!needle) return filtered
-
-  const scored = filtered.map((asset) => ({ asset, score: getSearchScore(asset, needle) }))
-  // The table is sorted by its column, not by score: description and typo matches only when nothing else matches
-  const minScore = scored.some(({ score }) => score >= MIN_FIELD_SCORE) ? MIN_FIELD_SCORE : 1
-
-  return scored.filter(({ score }) => score >= minScore).map(({ asset }) => asset)
 }
 
 /** An asset without market data matches no minimum */
@@ -56,6 +48,19 @@ export function filterByMarket<T extends RwaAssetWithMarket>(
     ({ market }) =>
       isAtLeast(market?.marketCap ?? null, minMarketCap) && isAtLeast(market?.volume24h ?? null, minVolume24h),
   )
+}
+
+/** Apply after every other filter: an asset filtered out must not hide the description and typo matches */
+export function filterByQuery<T extends RwaAsset>(assets: T[], query: string | undefined): T[] {
+  const needle = query?.trim().toLowerCase()
+
+  if (!needle) return assets
+
+  const scored = assets.map((asset) => ({ asset, score: getSearchScore(asset, needle) }))
+  // The table is sorted by its column, not by score: description and typo matches only when nothing else matches
+  const minScore = scored.some(({ score }) => score >= MIN_FIELD_SCORE) ? MIN_FIELD_SCORE : 1
+
+  return scored.filter(({ score }) => score >= minScore).map(({ asset }) => asset)
 }
 
 export function getDefaultSortOrder(sort: RwaSortField): RwaSortOrder {
