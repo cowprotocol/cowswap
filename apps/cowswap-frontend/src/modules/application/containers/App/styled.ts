@@ -92,13 +92,12 @@ function wallBackdropBlendMode(fullBleed?: boolean): string {
 }
 
 /**
- * How much of the wall the trade card gives up, as `transparentize` amounts. Its inner panels sit
- * on its outer surface, so their alphas multiply: the pair is tuned together to leave the card a
- * surface with the wall showing through it, not a window onto the wall, and to keep body text
- * above the 4.5:1 contrast of the opaque theme.
+ * How much of the wall the panels over it give up, as `transparentize` amounts.
+ * The inner surfaces sit on the outer one, so their alphas multiply: the pair is
+ * tuned together to keep body text above the 4.5:1 contrast of the opaque theme.
  */
-const WALL_VEIL_ALPHA = 0.12
-const WALL_VEIL_DARKER_ALPHA = 0.18
+const WALL_VEIL_ALPHA = 0.28
+const WALL_VEIL_DARKER_ALPHA = 0.4
 
 /**
  * Closed, the footer paints nothing of its own: the scene behind it already supplies the dark mass
@@ -278,32 +277,19 @@ export const BodyWrapper = styled.div<{
   background-blend-mode: normal;
 
   /*
-   * The wall is this page's backdrop, and the trade card is the one surface that lets a little of
-   * it through. Only that card: declared on this wrapper the veil reached every panel in the page,
-   * and paint running under an order table or a modal's text is unreadable at any alpha. Scoped
-   * instead to #card, the card's own element and the hook injected widgets already style by, so
-   * the redeclared tokens reach the card and its panels and stop there — the trade modals render
-   * as siblings of the card, outside it, and keep the opaque theme. A full-bleed page has no wall
-   * behind it (see AppWrapper), so there is nothing to let through and its panels stay solid.
+   * The wall is this page's backdrop, so the surfaces laid over it — the trade
+   * widget above all — let a little of it through. Redeclaring the tokens here
+   * rather than in the theme keeps it to this subtree: modals and dropdowns
+   * portal to the body, and stay opaque over whatever they cover. A full-bleed
+   * page has no wall behind it (see AppWrapper), so there is nothing to let
+   * through and its panels stay solid.
    */
   ${({ theme, customTheme, $fullBleed }) =>
     isSolanaTheme(customTheme) &&
     !$fullBleed &&
     css`
-      #card {
-        ${UI.COLOR_PAPER}: ${transparentize(theme.paper, WALL_VEIL_ALPHA)};
-        ${UI.COLOR_PAPER_DARKER}: ${transparentize(darken(theme.paper, 0.07), WALL_VEIL_DARKER_ALPHA)};
-
-        /*
-         * Menus here open inside the card (portal={false}), so they inherit its veil and show
-         * both the wall and the card's own rows through their text. Anything that opens over the
-         * card takes the opaque theme back.
-         */
-        [data-reach-menu-popover] {
-          ${UI.COLOR_PAPER}: ${theme.paper};
-          ${UI.COLOR_PAPER_DARKER}: ${darken(theme.paper, 0.07)};
-        }
-      }
+      ${UI.COLOR_PAPER}: ${transparentize(theme.paper, WALL_VEIL_ALPHA)};
+      ${UI.COLOR_PAPER_DARKER}: ${transparentize(darken(theme.paper, 0.07), WALL_VEIL_DARKER_ALPHA)};
     `}
 
   ${Media.upToMedium()} {
