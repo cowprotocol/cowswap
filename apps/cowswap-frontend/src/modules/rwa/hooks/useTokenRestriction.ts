@@ -21,7 +21,7 @@ export function useTokenRestriction(
   country: string | null,
   isEnabled: boolean,
 ): TokenRestriction | undefined {
-  const { data } = useSWR(
+  const { data, error } = useSWR(
     isEnabled && token && country
       ? ['useTokenRestriction', token.chainId, getAddressKey(token.address), country.toUpperCase()]
       : null,
@@ -29,5 +29,6 @@ export function useTokenRestriction(
     TOKEN_RESTRICTION_SWR_OPTIONS,
   )
 
-  return data
+  // SWR keeps the last `data` when a revalidation fails; a stale answer must not outlive the failure
+  return error ? undefined : data
 }

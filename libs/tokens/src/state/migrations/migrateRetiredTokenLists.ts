@@ -15,6 +15,8 @@ interface RetiredListsStep {
  * It only normalizes GitHub raw URLs, so for `files.cow.fi` an old and a new name are different keys
  * and `dropRepinnedDuplicates` cannot pair them up.
  */
+const MIGRATION_LOCK_NAME = 'migrateRetiredTokenLists'
+
 const STEPS: RetiredListsStep[] = [
   {
     // `NearSolana.json` was retired, the other two were renamed to the `<Category>.<chainId>.json` convention
@@ -57,13 +59,18 @@ const STEPS: RetiredListsStep[] = [
  * build, or a tab still running one, writes the old key again, and migrating that a second time would
  * put its stale state over everything the user has changed since. The old key is left in place for that
  * older build to keep using.
+ *
+ * Held under a cross-tab lock: two tabs opened together could otherwise both pass the existence check,
+ * and the slower one would write its snapshot over the state the faster one has already initialized.
  */
 export async function migrateRetiredTokenLists(): Promise<void> {
-  for (let index = 0; index < STEPS.length; index++) {
-    const laterKeys = STEPS.slice(index).map((step) => step.newKey)
+  await withMigrationLock(async () => {
+    for (let index = 0; index < STEPS.length; index++) {
+      const laterKeys = STEPS.slice(index).map((step) => step.newKey)
 
-    await runStep(STEPS[index], laterKeys)
-  }
+      await runStep(STEPS[index], laterKeys)
+    }
+  })
 }
 
 async function runStep({ oldKey, newKey, retiredSources }: RetiredListsStep, laterKeys: string[]): Promise<void> {
@@ -106,4 +113,15 @@ async function runStep({ oldKey, newKey, retiredSources }: RetiredListsStep, lat
   } catch (error) {
     console.error(`[Migration] Failed to drop retired token lists (${oldKey} -> ${newKey}):`, error)
   }
+}
+
+async function withMigrationLock(run: () => Promise<void>): Promise<void> {
+  const locks = typeof navigator === 'undefined' ? undefined : navigator.locks
+
+  if (!locks) {
+    await run()
+    return
+  }
+
+  await locks.request(MIGRATION_LOCK_NAME, run)
 }

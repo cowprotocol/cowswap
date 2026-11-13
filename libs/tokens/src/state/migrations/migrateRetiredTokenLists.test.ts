@@ -150,6 +150,40 @@ describe('migrateRetiredTokenLists', () => {
     },
   )
 
+  describe('with a cross-tab lock', () => {
+    let queue: Promise<unknown>
+
+    beforeEach(() => {
+      queue = Promise.resolve()
+
+      Object.defineProperty(navigator, 'locks', {
+        configurable: true,
+        value: {
+          request: jest.fn((_name: string, run: () => Promise<void>) => {
+            const result = queue.then(run)
+            queue = result
+            return result
+          }),
+        },
+      })
+    })
+
+    afterEach(() => {
+      Object.defineProperty(navigator, 'locks', { configurable: true, value: undefined })
+    })
+
+    it('lets only the first of two concurrent tabs write the migrated state', async () => {
+      mockStorage.set(V8_KEY, JSON.stringify({ [SupportedChainId.SOLANA]: { [LIVE_SOURCE]: listState(LIVE_SOURCE) } }))
+
+      const setItem = jest.requireMock('@cowprotocol/core').localForageJotai.setItem as jest.Mock
+      setItem.mockClear()
+
+      await Promise.all([migrateRetiredTokenLists(), migrateRetiredTokenLists()])
+
+      expect(setItem.mock.calls.filter(([key]) => key === LATEST_KEY)).toHaveLength(1)
+    })
+  })
+
   it('does nothing when there is no old state to migrate', async () => {
     await migrateRetiredTokenLists()
 
