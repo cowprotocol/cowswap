@@ -8,8 +8,8 @@ const ONDO_NOTE =
 
 describe('getPremiumNote', () => {
   it('gives the shares a token stands for when its price is per share', () => {
-    expect(getPremiumNote(ONDO, 1.00171524, 0.0003)).toBe(`${BASE} One NVDAon stands for 1.0017 shares.`)
-    expect(getPremiumNote(ONDO, 10, -0.001)).toBe(`${BASE} One NVDAon stands for 10 shares.`)
+    expect(getPremiumNote(ONDO, 1.00171524, 0.0003)).toBe(`One NVDAon stands for 1.0017 shares. ${BASE}`)
+    expect(getPremiumNote(ONDO, 10, -0.001)).toBe(`One NVDAon stands for 10 shares. ${BASE}`)
   })
 
   it('has only the base hint for a price-accrual token of one share', () => {
@@ -18,7 +18,7 @@ describe('getPremiumNote', () => {
 
   it('explains the premium of a price-accrual token without its multiplier', () => {
     expect(getPremiumNote(ONDO, null, 0.02)).toBe(
-      `${BASE} ${ONDO_NOTE} The premium over the stock price is accrued dividends, not mispricing.`,
+      `${ONDO_NOTE} The premium over the stock price is accrued dividends, not mispricing. ${BASE}`,
     )
   })
 
@@ -28,7 +28,7 @@ describe('getPremiumNote', () => {
   })
 
   it('explains a rebasing token at any premium', () => {
-    const note = `${BASE} xStocks: Dividends are reinvested by increasing token balances, so one token stays close to one share.`
+    const note = `xStocks: Dividends are reinvested by increasing token balances, so one token stays close to one share. ${BASE}`
 
     expect(getPremiumNote(XSTOCKS, 1, 0.02)).toBe(note)
     expect(getPremiumNote(XSTOCKS, null, -0.0007)).toBe(note)
@@ -36,7 +36,7 @@ describe('getPremiumNote', () => {
 
   it('explains a cash-payout token at any premium', () => {
     const reality = { symbol: 'RNVDA', issuer: 'Reality', coingeckoId: 'nvidia-rstock' }
-    const note = `${BASE} Reality: Dividends are paid out separately in stablecoins, so one token stays close to one share.`
+    const note = `Reality: Dividends are paid out separately in stablecoins, so one token stays close to one share. ${BASE}`
 
     expect(getPremiumNote(reality, 1, 0.02)).toBe(note)
   })
