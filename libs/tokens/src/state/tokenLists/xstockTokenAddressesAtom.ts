@@ -2,30 +2,22 @@ import { atom } from 'jotai'
 
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 
-import { listsStatesByChainAtom } from './tokenListsStateAtom'
+import { rwaTokensAtom } from './rwaTokensAtom'
 
-import { XSTOCKS_TOKENS_LIST_SOURCE } from '../../const/tokensLists'
-import { getSourceAsKey } from '../../hooks/lists/useIsListBlocked'
 import { environmentAtom } from '../environmentAtom'
 
-const XSTOCKS_TOKENS_LIST_KEY = getSourceAsKey(XSTOCKS_TOKENS_LIST_SOURCE)
+const XSTOCKS_ISSUER = 'xStocks'
 
 /**
- * Address keys of the xStocks list tokens on the current chain.
- * Built from stored lists rather than `listsStatesMapAtom`, which drops the lists a widget integrator
- * has not selected: the xStocks trade minimum must still apply to those tokens.
+ * Address keys of the xStocks tokens on the current chain, recognized by the `issuer` extension of the
+ * RWA lists.
  */
 export const xstockTokenAddressesAtom = atom(async (get): Promise<Set<string>> => {
   const { chainId } = get(environmentAtom)
-  const chainListsStates = (await get(listsStatesByChainAtom))[chainId]
   const addresses = new Set<string>()
 
-  if (!chainListsStates) return addresses
-
-  for (const [source, state] of Object.entries(chainListsStates)) {
-    if (state === 'deleted' || getSourceAsKey(source) !== XSTOCKS_TOKENS_LIST_KEY) continue
-
-    for (const token of state.list.tokens) {
+  for (const token of (await get(rwaTokensAtom)).values()) {
+    if (token.chainId === chainId && token.extensions?.['issuer'] === XSTOCKS_ISSUER) {
       addresses.add(getAddressKey(token.address))
     }
   }

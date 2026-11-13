@@ -10,6 +10,7 @@ import {
   userAddedListsSourcesAtom,
 } from './tokenListsStateAtom'
 
+import { isRwaTokenListSource } from '../../const/tokensLists'
 import { ListState } from '../../types'
 import { environmentAtom } from '../environmentAtom'
 
@@ -74,7 +75,13 @@ export const removeListAtom = atom(null, async (get, set, source: string) => {
   const networkState = stateCopy[chainId]
 
   if (networkState) {
-    networkState[source] = 'deleted'
+    const listState = networkState[source]
+
+    // RWA lists back the consent fallback in `rwaTokensAtom`, and a deleted entry keeps no tokens
+    networkState[source] =
+      isRwaTokenListSource(source) && listState && listState !== 'deleted'
+        ? { ...listState, isEnabled: false }
+        : 'deleted'
   }
 
   set(listsStatesByChainAtom, stateCopy)

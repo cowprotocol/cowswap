@@ -2,12 +2,7 @@ import { useAtomValue } from 'jotai'
 import { ReactNode } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import {
-  RestrictedTokensListUpdater,
-  TokensListsTagsUpdater,
-  TokensListsUpdater,
-  UnsupportedTokensUpdater,
-} from '@cowprotocol/tokens'
+import { TokensListsTagsUpdater, TokensListsUpdater, UnsupportedTokensUpdater } from '@cowprotocol/tokens'
 import { WalletUpdater, WidgetSafeApp, WidgetStandaloneModeUpdater } from '@cowprotocol/wallet'
 
 import { CowSdkUpdater } from 'cowSdk'
@@ -70,7 +65,7 @@ export function Updaters(): ReactNode {
   useAtomValue(eoaTwapOrdersEffectAtom)
   useAtomValue(twapAppziSurveyEffectAtom)
 
-  const { isYieldEnabled, isRwaGeoblockEnabled } = useFeatureFlags()
+  const { isYieldEnabled } = useFeatureFlags()
   const tradeTypeInfo = useTradeTypeInfo()
   const isYieldWidget = tradeTypeInfo?.tradeType === TradeType.YIELD
   const { chainId: sourceChainId } = useSourceChainId()
@@ -125,7 +120,6 @@ export function Updaters(): ReactNode {
         isYieldEnabled={isYieldEnabled}
         bridgeNetworkInfo={bridgeNetworkInfo?.data}
       />
-      <RestrictedTokensListUpdater isRwaGeoblockEnabled={!!isRwaGeoblockEnabled} />
       <RecentTokensStorageUpdater />
       <GeoDataUpdater />
       <TokensListsTagsUpdater />

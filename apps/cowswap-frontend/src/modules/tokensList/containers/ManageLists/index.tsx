@@ -1,18 +1,10 @@
 import { ReactNode, useMemo } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import {
-  ListSearchResponse,
-  ListState,
-  useIsListBlocked,
-  useListsEnabledState,
-  useRemoveList,
-} from '@cowprotocol/tokens'
+import { ListSearchResponse, ListState, useListsEnabledState, useRemoveList } from '@cowprotocol/tokens'
 import { Loader } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
-
-import { useGeoCountry } from 'modules/rwa'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
@@ -38,8 +30,6 @@ interface ListSearchState {
 export function ManageLists(props: ManageListsProps): ReactNode {
   const { lists, listSearchResponse, isListUrlValid } = props
 
-  const country = useGeoCountry()
-
   const activeTokenListsIds = useListsEnabledState()
   const addListImport = useAddListImport()
   const cowAnalytics = useCowAnalytics()
@@ -54,7 +44,6 @@ export function ManageLists(props: ManageListsProps): ReactNode {
   })
 
   const { source, listToImport, loading } = useListSearchResponse(listSearchResponse)
-  const { isBlocked } = useIsListBlocked(listToImport?.source, country)
 
   return (
     <styledEl.Wrapper>
@@ -73,7 +62,6 @@ export function ManageLists(props: ManageListsProps): ReactNode {
           <ImportTokenListItem
             source={source}
             list={listToImport}
-            isBlocked={isBlocked}
             data-click-event={toCowSwapGtmEvent({
               category: CowSwapAnalyticsCategory.LIST,
               action: 'Import List',
