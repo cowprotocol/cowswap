@@ -53,7 +53,6 @@ jest.mock('modules/rwa', () => ({
 jest.mock('modules/tokensList', () => ({
   ImportTokenModal: () => null,
   useCloseTokenSelectWidget: () => mockNoop,
-  useRestrictedTokensImportStatus: () => ({ restriction: null }),
   useSelectTokenWidgetState: () => ({ field: undefined }),
   useTokenListAddingError: () => mockTokenListAddingError,
 }))

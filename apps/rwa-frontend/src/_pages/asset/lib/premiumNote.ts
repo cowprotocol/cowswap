@@ -16,15 +16,15 @@ export function getPremiumNote(
   premium: number,
 ): string {
   if (sharesPerToken !== null && sharesPerToken !== 1) {
-    return `${BASE_NOTE} One ${token.symbol} stands for ${sharesFormatter.format(sharesPerToken)} shares.`
+    return `One ${token.symbol} stands for ${sharesFormatter.format(sharesPerToken)} shares. ${BASE_NOTE}`
   }
 
   const model = getDividendModel(token)
   const note = getDividendNote(token)
 
-  if ((model === 'rebase' || model === 'cash-payout') && note) return `${BASE_NOTE} ${note.label}: ${note.text}`
+  if ((model === 'rebase' || model === 'cash-payout') && note) return `${note.label}: ${note.text} ${BASE_NOTE}`
   if (model === 'price-accrual' && note && sharesPerToken === null && premium > 0) {
-    return `${BASE_NOTE} ${note.label}: ${note.text} ${ACCRUED_DIVIDENDS_NOTE}`
+    return `${note.label}: ${note.text} ${ACCRUED_DIVIDENDS_NOTE} ${BASE_NOTE}`
   }
 
   return BASE_NOTE
