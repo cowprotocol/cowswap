@@ -1,10 +1,17 @@
 const BOOT_FEATURE_FLAGS_KEY = 'cowSwap.bootFeatureFlags'
 
 describe('featureFlags boot flag', () => {
+  const originalEnv = process.env.REACT_APP_BOOT_FEATURE_FLAGS
+
   beforeEach(() => {
     localStorage.clear()
     delete (window as { __COWSWAP_E2E_FEATURE_FLAGS__?: unknown }).__COWSWAP_E2E_FEATURE_FLAGS__
+    delete process.env.REACT_APP_BOOT_FEATURE_FLAGS
     jest.resetModules()
+  })
+
+  afterAll(() => {
+    process.env.REACT_APP_BOOT_FEATURE_FLAGS = originalEnv
   })
 
   describe('IS_SOLANA_ENABLED', () => {
@@ -95,6 +102,71 @@ describe('featureFlags boot flag', () => {
       expect(reload).not.toHaveBeenCalled()
 
       setItemSpy.mockRestore()
+    })
+  })
+
+  describe('build-time override', () => {
+    it('prefers the env override over the persisted value', () => {
+      localStorage.setItem(BOOT_FEATURE_FLAGS_KEY, JSON.stringify({ isSolanaEnabled: false }))
+      process.env.REACT_APP_BOOT_FEATURE_FLAGS = JSON.stringify({ isSolanaEnabled: true })
+
+      const { IS_SOLANA_ENABLED } = require('./featureFlags')
+
+      expect(IS_SOLANA_ENABLED).toBe(true)
+    })
+
+    it('lets the e2e hook win over the env override', () => {
+      process.env.REACT_APP_BOOT_FEATURE_FLAGS = JSON.stringify({ isSolanaEnabled: true })
+      ;(window as { __COWSWAP_E2E_FEATURE_FLAGS__?: unknown }).__COWSWAP_E2E_FEATURE_FLAGS__ = {
+        isSolanaEnabled: false,
+      }
+
+      const { IS_SOLANA_ENABLED } = require('./featureFlags')
+
+      expect(IS_SOLANA_ENABLED).toBe(false)
+    })
+
+    it('ignores a malformed env override', () => {
+      process.env.REACT_APP_BOOT_FEATURE_FLAGS = 'not-json'
+
+      const { IS_SOLANA_ENABLED } = require('./featureFlags')
+
+      expect(IS_SOLANA_ENABLED).toBe(false)
+    })
+
+    // An override can never agree with LaunchDarkly, so reconciling against it
+    // reloads the page on every load: a boot loop.
+    it('does not reload when LaunchDarkly disagrees with the env override', () => {
+      process.env.REACT_APP_BOOT_FEATURE_FLAGS = JSON.stringify({ isSolanaEnabled: true })
+
+      const { syncBootFeatureFlags } = require('./featureFlags')
+      const reload = jest.fn()
+
+      syncBootFeatureFlags({ isSolanaEnabled: false }, reload)
+
+      expect(reload).not.toHaveBeenCalled()
+    })
+
+    it('does not reload when LaunchDarkly disagrees with the e2e override', () => {
+      ;(window as { __COWSWAP_E2E_FEATURE_FLAGS__?: unknown }).__COWSWAP_E2E_FEATURE_FLAGS__ = {
+        isSolanaEnabled: true,
+      }
+
+      const { syncBootFeatureFlags } = require('./featureFlags')
+      const reload = jest.fn()
+
+      syncBootFeatureFlags({ isSolanaEnabled: false }, reload)
+
+      expect(reload).not.toHaveBeenCalled()
+    })
+
+    it('still reloads to catch up when no override is in force', () => {
+      const { syncBootFeatureFlags } = require('./featureFlags')
+      const reload = jest.fn()
+
+      syncBootFeatureFlags({ isSolanaEnabled: true }, reload)
+
+      expect(reload).toHaveBeenCalled()
     })
   })
 })
