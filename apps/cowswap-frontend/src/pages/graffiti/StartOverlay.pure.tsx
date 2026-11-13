@@ -9,12 +9,14 @@ import { Routes } from 'common/constants/routes'
 import { useNavigate } from 'common/hooks/useNavigate'
 
 import { parseClaimCode } from './claimCode.utils'
+import { ClaimResultView } from './ClaimScreens.pure'
 import { downloadWallImage } from './graffiti.service'
 import { HeroPanel } from './HeroPanel.pure'
 import { CANVAS } from './raster.utils'
 import { TOKEN_SYMBOL } from './wall.constants'
 import * as styledEl from './wall.styled'
 
+import type { ClaimFlow } from './useClaimFlow'
 import type { PaintPhase } from './usePaintFlow'
 
 const TWITTER_HANDLE = '@CoWSwap'
@@ -36,6 +38,11 @@ export interface StartOverlayProps {
   onShowResult: () => void
   /** Leave the post-commit panel. */
   onDismiss: () => void
+  /** The claim a scanned link opened, null on the plain wall. */
+  claim: ClaimFlow | null
+  /** Connected Solana account, where a claim sends its tokens. */
+  account: string | undefined
+  network: string
 }
 
 interface PaintedViewProps {
@@ -133,10 +140,35 @@ export function StartOverlay({
   onFullscreen,
   onShowResult,
   onDismiss,
+  claim,
+  account,
+  network,
 }: StartOverlayProps): ReactNode {
+  const navigate = useNavigate()
   const [view, setView] = useState<StartView>('welcome')
   const width = CANVAS.w
   const height = CANVAS.h
+
+  if (claim) {
+    return (
+      <styledEl.OverlayLayer>
+        <styledEl.StartPanel>
+          {connected && <BalanceBadge balance={balance} />}
+          <ClaimResultView
+            claim={claim}
+            connected={connected}
+            account={account}
+            network={network}
+            onConnect={onConnect}
+            onBack={() => {
+              setView('welcome')
+              navigate(Routes.GRAFFITI)
+            }}
+          />
+        </styledEl.StartPanel>
+      </styledEl.OverlayLayer>
+    )
+  }
 
   if (view === 'claim') {
     return (

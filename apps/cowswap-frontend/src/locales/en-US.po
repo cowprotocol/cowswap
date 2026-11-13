@@ -1562,6 +1562,7 @@ msgstr "APR"
 msgid "CoW Protocol Explorer"
 msgstr "CoW Protocol Explorer"
 
+#: apps/cowswap-frontend/src/pages/graffiti/ClaimScreens.pure.tsx
 #: apps/cowswap-frontend/src/pages/graffiti/StartOverlay.pure.tsx
 msgid "GET {TOKEN_SYMBOL}"
 msgstr "GET {TOKEN_SYMBOL}"
@@ -4794,8 +4795,8 @@ msgid "Powerful tool to generate pre/post interaction for CoW Protocol"
 msgstr "Powerful tool to generate pre/post interaction for CoW Protocol"
 
 #: apps/cowswap-frontend/src/pages/graffiti/ClaimScreens.pure.tsx
-msgid "wallet balance: {balance} {TOKEN_SYMBOL}"
-msgstr "wallet balance: {balance} {TOKEN_SYMBOL}"
+#~ msgid "wallet balance: {balance} {TOKEN_SYMBOL}"
+#~ msgstr "wallet balance: {balance} {TOKEN_SYMBOL}"
 
 #: apps/cowswap-frontend/src/modules/advancedOrders/containers/AdvancedOrdersWidget/index.tsx
 msgid "Reduce your slippage by breaking big orders into smaller ones"

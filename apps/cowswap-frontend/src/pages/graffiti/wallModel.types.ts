@@ -1,4 +1,5 @@
 import type { BrushState } from './useBrush'
+import type { ClaimFlow } from './useClaimFlow'
 import type { DraftState } from './useDraft'
 import type { NarrowLayout } from './useNarrowLayout'
 import type { PlotState } from './usePlot'
@@ -27,4 +28,6 @@ export interface WallModel {
   pointer: PointerInput
   /** Wall-token balance of the connected wallet, or null while unknown. */
   balance: number | null
+  /** The claim a `/graffiti/claim` link opened, null on the plain wall. */
+  claim: ClaimFlow | null
 }
