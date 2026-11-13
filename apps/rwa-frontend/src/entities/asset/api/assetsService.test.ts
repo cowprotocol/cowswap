@@ -36,7 +36,7 @@ jest.mock('./sharesMultipliers', () => ({
 }))
 
 jest.mock('../model/registry', () => {
-  const tradingTime = { title: 'US market open', start: '13:30 UTC', end: '20:00 UTC' }
+  const tradingTime = { title: 'US market open', start: '09:30', end: '16:00', timeZone: 'America/New_York' }
   const token = (symbol: string, chainId: number, address: string, issuer: string, coingeckoId: string): object => ({
     chainId,
     address,
@@ -625,7 +625,12 @@ describe('getMarketOverview', () => {
     expect(overview.gainers[0]?.series).toEqual(NVDA_DAILY_SERIES)
     expect(tickers(overview.losers)).toEqual(['AAPL'])
     expect(overview.updatedAt).toBe('2026-10-02T13:05:00.000Z')
-    expect(overview.tradingTime).toEqual({ title: 'US market open', start: '13:30 UTC', end: '20:00 UTC' })
+    expect(overview.tradingTime).toEqual({
+      title: 'US market open',
+      start: '09:30',
+      end: '16:00',
+      timeZone: 'America/New_York',
+    })
     expect(getTokenMarketsMock).not.toHaveBeenCalled()
     expect(getNetworkStatsMock).not.toHaveBeenCalled()
   })
