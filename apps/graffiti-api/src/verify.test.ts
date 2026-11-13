@@ -56,7 +56,15 @@ function fakeTx(opts: FakeTxOptions): ParsedTransactionWithMeta {
   } as unknown as ParsedTransactionWithMeta
 }
 
-const freshMemo = (wallet = WALLET): string => `graffiti:v1:${wallet}:${Math.floor(Date.now() / 1000)}`
+/** Any 64 hex characters: findMemo only cares about the shape. */
+const DIGEST = 'a'.repeat(64)
+const OTHER_DIGEST = 'b'.repeat(64)
+
+const freshMemo = (wallet = WALLET, digest = DIGEST): string =>
+  `graffiti:v2:${wallet}:${Math.floor(Date.now() / 1000)}:${digest}`
+
+/** The pre-digest memo, which a client loaded before the v2 rollout still mints. */
+const legacyMemo = (wallet = WALLET): string => `graffiti:v1:${wallet}:${Math.floor(Date.now() / 1000)}`
 
 describe('sumBurnsBy', () => {
   test('counts burns authorised by the wallet', () => {
@@ -120,10 +128,31 @@ describe('sumBurnsBy', () => {
 })
 
 describe('findMemo', () => {
-  test('accepts a fresh memo for the wallet', () => {
+  test('reads the cells digest out of a fresh v2 memo', () => {
     const text = freshMemo()
     const res = findMemo(fakeTx({ instructions: [memoIx(text)] }), WALLET, 300)
-    assert.deepEqual(res, { memo: text })
+    assert.deepEqual(res, { memo: text, cellsDigest: DIGEST })
+  })
+
+  test('accepts a v1 memo, reporting no digest', () => {
+    const text = legacyMemo()
+    const res = findMemo(fakeTx({ instructions: [memoIx(text)] }), WALLET, 300)
+    assert.deepEqual(res, { memo: text, cellsDigest: null })
+  })
+
+  test('rejects a v2 memo carrying no digest', () => {
+    const text = `graffiti:v2:${WALLET}:${Math.floor(Date.now() / 1000)}`
+    assert.ok('err' in findMemo(fakeTx({ instructions: [memoIx(text)] }), WALLET, 300))
+  })
+
+  test('rejects a v1 memo carrying a digest', () => {
+    const text = `graffiti:v1:${WALLET}:${Math.floor(Date.now() / 1000)}:${DIGEST}`
+    assert.ok('err' in findMemo(fakeTx({ instructions: [memoIx(text)] }), WALLET, 300))
+  })
+
+  test('rejects a digest that is not 64 hex characters', () => {
+    const text = `graffiti:v2:${WALLET}:${Math.floor(Date.now() / 1000)}:${'a'.repeat(63)}`
+    assert.ok('err' in findMemo(fakeTx({ instructions: [memoIx(text)] }), WALLET, 300))
   })
 
   test("rejects a memo naming a different wallet, so one burn can't be reused by another", () => {
@@ -132,14 +161,17 @@ describe('findMemo', () => {
   })
 
   test('rejects a memo outside the freshness window', () => {
-    const stale = `graffiti:v1:${WALLET}:${Math.floor(Date.now() / 1000) - 3600}`
+    const stale = `graffiti:v2:${WALLET}:${Math.floor(Date.now() / 1000) - 3600}:${DIGEST}`
     const res = findMemo(fakeTx({ instructions: [memoIx(stale)] }), WALLET, 300)
     assert.deepEqual(res, { err: 'memo ts outside freshness window' })
   })
 
   test('accepts millisecond timestamps', () => {
-    const text = `graffiti:v1:${WALLET}:${Date.now()}`
-    assert.deepEqual(findMemo(fakeTx({ instructions: [memoIx(text)] }), WALLET, 300), { memo: text })
+    const text = `graffiti:v2:${WALLET}:${Date.now()}:${DIGEST}`
+    assert.deepEqual(findMemo(fakeTx({ instructions: [memoIx(text)] }), WALLET, 300), {
+      memo: text,
+      cellsDigest: DIGEST,
+    })
   })
 
   test('reports a missing memo', () => {
@@ -180,6 +212,7 @@ function makeVerifier(
     rpcUrl: 'http://unused',
     verifyCommitment: 'finalized',
     txMaxAgeSec: 300,
+    acceptLegacyMemo: false,
     ...overrides,
   } as Config
   const rpc = {
@@ -191,22 +224,22 @@ function makeVerifier(
   return { verifier: new DrawVerifier(config, store, rpc), store }
 }
 
-const validTx = (amount = '5'): ParsedTransactionWithMeta =>
+const validTx = (amount = '5', memo = freshMemo()): ParsedTransactionWithMeta =>
   fakeTx({
-    instructions: [burnIx({ authority: WALLET, tokenAmount: { amount } }), memoIx(freshMemo())],
+    instructions: [burnIx({ authority: WALLET, tokenAmount: { amount } }), memoIx(memo)],
   })
 
 describe('DrawVerifier.verify', () => {
   test('accepts a valid burn', async () => {
     const { verifier } = makeVerifier(validTx())
-    const res = await verifier.verify({ txSignature: 'sig-1', walletPubkey: WALLET, costCells: 5 })
+    const res = await verifier.verify({ txSignature: 'sig-1', walletPubkey: WALLET, costCells: 5, cellsDigest: DIGEST })
     assert.equal(res.ok, true)
     assert.equal(res.ok && res.burned, 5)
   })
 
   test('rejects a replayed signature', async () => {
     const { verifier } = makeVerifier(validTx())
-    const input = { txSignature: 'sig-replay', walletPubkey: WALLET, costCells: 5 }
+    const input = { txSignature: 'sig-replay', walletPubkey: WALLET, costCells: 5, cellsDigest: DIGEST }
     assert.equal((await verifier.verify(input)).ok, true)
     const second = await verifier.verify(input)
     assert.equal(second.ok, false)
@@ -217,35 +250,53 @@ describe('DrawVerifier.verify', () => {
     const memo = freshMemo()
     const tx = fakeTx({ instructions: [burnIx({ authority: WALLET, tokenAmount: { amount: '5' } }), memoIx(memo)] })
     const { verifier } = makeVerifier(tx)
-    assert.equal((await verifier.verify({ txSignature: 'a', walletPubkey: WALLET, costCells: 5 })).ok, true)
-    const second = await verifier.verify({ txSignature: 'b', walletPubkey: WALLET, costCells: 5 })
+    assert.equal(
+      (await verifier.verify({ txSignature: 'a', walletPubkey: WALLET, costCells: 5, cellsDigest: DIGEST })).ok,
+      true,
+    )
+    const second = await verifier.verify({ txSignature: 'b', walletPubkey: WALLET, costCells: 5, cellsDigest: DIGEST })
     assert.equal(!second.ok && second.reason, 'memo already used (replay)')
   })
 
   test('rejects an under-burn as terminal', async () => {
     const { verifier } = makeVerifier(validTx('2'))
-    const res = await verifier.verify({ txSignature: 'sig-low', walletPubkey: WALLET, costCells: 5 })
+    const res = await verifier.verify({
+      txSignature: 'sig-low',
+      walletPubkey: WALLET,
+      costCells: 5,
+      cellsDigest: DIGEST,
+    })
     assert.equal(res.ok, false)
     assert.equal(!res.ok && res.retryable, false)
   })
 
   test('a transaction not visible yet is retryable, and frees the signature for the retry', async () => {
     const { verifier, store } = makeVerifier(null)
-    const res = await verifier.verify({ txSignature: 'sig-pending', walletPubkey: WALLET, costCells: 5 })
+    const res = await verifier.verify({
+      txSignature: 'sig-pending',
+      walletPubkey: WALLET,
+      costCells: 5,
+      cellsDigest: DIGEST,
+    })
     assert.equal(!res.ok && res.retryable, true)
     assert.equal(store.claimSignature('sig-pending'), true, 'the signature must not stay reserved')
   })
 
   test('an RPC error is retryable', async () => {
     const { verifier } = makeVerifier(new Error('socket hang up'))
-    const res = await verifier.verify({ txSignature: 'sig-rpc', walletPubkey: WALLET, costCells: 5 })
+    const res = await verifier.verify({
+      txSignature: 'sig-rpc',
+      walletPubkey: WALLET,
+      costCells: 5,
+      cellsDigest: DIGEST,
+    })
     assert.equal(!res.ok && res.retryable, true)
     assert.match(!res.ok ? res.reason : '', /socket hang up/)
   })
 
   test('release() hands the burn back so a failed draw can be retried', async () => {
     const { verifier } = makeVerifier(validTx())
-    const input = { txSignature: 'sig-release', walletPubkey: WALLET, costCells: 5 }
+    const input = { txSignature: 'sig-release', walletPubkey: WALLET, costCells: 5, cellsDigest: DIGEST }
     const first = await verifier.verify(input)
     assert.equal(first.ok, true)
     if (first.ok) first.release()
@@ -254,19 +305,67 @@ describe('DrawVerifier.verify', () => {
 
   test('refuses to run without a configured mint', async () => {
     const { verifier } = makeVerifier(validTx(), { mint: null })
-    const res = await verifier.verify({ txSignature: 'sig-x', walletPubkey: WALLET, costCells: 5 })
+    const res = await verifier.verify({ txSignature: 'sig-x', walletPubkey: WALLET, costCells: 5, cellsDigest: DIGEST })
     assert.match(!res.ok ? res.reason : '', /MINT not set/)
   })
 
   test('rejects an invalid wallet address', async () => {
     const { verifier } = makeVerifier(validTx())
-    const res = await verifier.verify({ txSignature: 'sig-y', walletPubkey: 'nope', costCells: 5 })
+    const res = await verifier.verify({ txSignature: 'sig-y', walletPubkey: 'nope', costCells: 5, cellsDigest: DIGEST })
     assert.equal(!res.ok && res.reason, 'invalid walletPubkey')
+  })
+
+  test("rejects a burn whose memo commits to someone else's cells", async () => {
+    // The front-running case: the signature is public the moment the burn
+    // lands, so this is an attacker spending it on a drawing of their own.
+    const { verifier } = makeVerifier(validTx())
+    const res = await verifier.verify({
+      txSignature: 'sig-stolen',
+      walletPubkey: WALLET,
+      costCells: 5,
+      cellsDigest: OTHER_DIGEST,
+    })
+    assert.equal(res.ok, false)
+    assert.equal(!res.ok && res.reason, 'memo does not match these cells')
+    assert.equal(!res.ok && res.retryable, false)
+  })
+
+  test('frees the signature when the cells do not match, so the payer can still spend the burn', async () => {
+    const { verifier, store } = makeVerifier(validTx())
+    await verifier.verify({
+      txSignature: 'sig-contested',
+      walletPubkey: WALLET,
+      costCells: 5,
+      cellsDigest: OTHER_DIGEST,
+    })
+    assert.equal(store.claimSignature('sig-contested'), true)
+  })
+
+  test('accepts a v1 memo while the legacy window is open', async () => {
+    const { verifier } = makeVerifier(validTx('5', legacyMemo()), { acceptLegacyMemo: true })
+    const res = await verifier.verify({
+      txSignature: 'sig-legacy',
+      walletPubkey: WALLET,
+      costCells: 5,
+      cellsDigest: DIGEST,
+    })
+    assert.equal(res.ok, true)
+  })
+
+  test('rejects a v1 memo once the legacy window is closed', async () => {
+    const { verifier } = makeVerifier(validTx('5', legacyMemo()))
+    const res = await verifier.verify({
+      txSignature: 'sig-legacy-off',
+      walletPubkey: WALLET,
+      costCells: 5,
+      cellsDigest: DIGEST,
+    })
+    assert.equal(!res.ok && res.reason, 'memo does not commit to the cells')
   })
 
   test('dev-insecure still tracks signatures', async () => {
     const { verifier } = makeVerifier(null, { devInsecure: true })
-    const input = { txSignature: 'dev-1', walletPubkey: WALLET, costCells: 3 }
+    const input = { txSignature: 'dev-1', walletPubkey: WALLET, costCells: 3, cellsDigest: DIGEST }
     assert.equal((await verifier.verify(input)).ok, true)
     assert.equal((await verifier.verify(input)).ok, false)
   })

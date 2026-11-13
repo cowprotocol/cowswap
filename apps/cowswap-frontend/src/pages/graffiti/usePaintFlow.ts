@@ -11,6 +11,7 @@ import { PublicKey, Transaction, TransactionInstruction } from '@solana/web3.js'
 
 import { Buffer } from 'buffer'
 
+import { cellsDigest } from './cellsDigest.utils'
 import { getInfo, postClientError, type CanvasInfo } from './graffiti.service'
 import { loadPendingBurn, savePendingBurn, type PendingBurn } from './pendingBurn.utils'
 import { CANVAS, type Cell } from './raster.utils'
@@ -204,14 +205,17 @@ function buildBurnTransaction(params: {
   mint: PublicKey
   owner: PublicKey
   amount: number
+  /** `cellsDigest` of the cells this burn pays for; the wall checks the memo against it. */
+  cellsDigest: string
   blockhash: string
   lastValidBlockHeight: number
 }): Transaction {
   const { mint, owner, amount, blockhash, lastValidBlockHeight } = params
   const ata = getAssociatedTokenAddressSync(mint, owner)
   // Minted as late as possible: the backend checks this against its freshness
-  // window, and a slow wallet prompt would otherwise stale it out.
-  const memo = `graffiti:v1:${owner.toBase58()}:${Math.floor(Date.now() / 1000)}`
+  // window, and a slow wallet prompt would otherwise stale it out. The digest
+  // is what keeps the burn spendable on these cells and no others.
+  const memo = `graffiti:v2:${owner.toBase58()}:${Math.floor(Date.now() / 1000)}:${params.cellsDigest}`
 
   return new Transaction({ feePayer: owner, blockhash, lastValidBlockHeight }).add(
     createBurnCheckedInstruction(ata, mint, owner, amount, 0, []),
@@ -388,6 +392,7 @@ async function startBurn(params: {
     mint: checked.mint,
     owner: ownerKey,
     amount: cells.length,
+    cellsDigest: await cellsDigest(cells),
     blockhash,
     lastValidBlockHeight,
   })

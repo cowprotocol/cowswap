@@ -82,6 +82,14 @@ beforeEach(() => {
   __resetGtmInstance()
 })
 
+// jsdom ships `crypto.getRandomValues` but no `crypto.subtle`, which the
+// graffiti burn memo needs to hash its cells. Node's is the same algorithm.
+if (!globalThis.crypto?.subtle) {
+  const { webcrypto } = require('node:crypto')
+
+  Object.defineProperty(globalThis, 'crypto', { configurable: true, value: webcrypto })
+}
+
 import { i18n } from '@lingui/core'
 
 process.env.REACT_APP_ENVIRONMENT = 'production'

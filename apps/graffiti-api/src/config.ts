@@ -19,6 +19,12 @@ export interface Config {
   corsOrigins: string[]
   /** Max age (seconds) of an accepted draw tx, and of its memo timestamp. */
   txMaxAgeSec: number
+  /**
+   * Accept the pre-digest `graffiti:v1:` memo, which does not commit to the
+   * cells it paid for. Needed only while clients loaded before the v2 rollout
+   * are still minting burns; turn it off once they have aged out.
+   */
+  acceptLegacyMemo: boolean
   /** Max cells accepted in a single draw request. */
   maxCellsPerDraw: number
   /** Max cell rows returned by one GET /v1/cells page. */
@@ -44,6 +50,13 @@ export const PKG_ROOT = thisDir.includes(path.join('dist', 'src'))
 
 function bool(name: string): boolean {
   return process.env[name] === '1' || process.env[name]?.toLowerCase() === 'true'
+}
+
+/** As `bool`, but for a flag whose unset value is on. */
+function boolOr(name: string, def: boolean): boolean {
+  const v = process.env[name]
+  if (v === undefined || v === '') return def
+  return v === '1' || v.toLowerCase() === 'true'
 }
 
 function list(name: string): string[] {
@@ -124,6 +137,7 @@ function isProductionEnv(network: string): boolean {
 function loadLimits(): Pick<
   Config,
   | 'txMaxAgeSec'
+  | 'acceptLegacyMemo'
   | 'maxCellsPerDraw'
   | 'maxCellsPerPage'
   | 'rateLimitPerMinute'
@@ -137,6 +151,7 @@ function loadLimits(): Pick<
     // it wide enough that a client recovering an unconfirmed burn — reload,
     // flaky RPC, a wallet left on the prompt — still gets its pixels.
     txMaxAgeSec: num('TX_MAX_AGE_SEC', 3600),
+    acceptLegacyMemo: boolOr('ACCEPT_LEGACY_MEMO', true),
     // Past blockhash expiry (~150 blocks), so a transfer still unlanded here cannot land later.
     claimConfirmTimeoutMs: num('CLAIM_CONFIRM_TIMEOUT_MS', 75_000),
     maxCellsPerDraw: num('MAX_CELLS_PER_DRAW', 20000),
