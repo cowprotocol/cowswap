@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.19.1](https://github.com/cowprotocol/cowswap/compare/tokens-v3.19.0...tokens-v3.19.1) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.21.0
+  - @cowprotocol/ui@3.22.0
+  - @cowprotocol/common-hooks@3.20.1
+  - @cowprotocol/common-utils@3.22.2
+  - @cowprotocol/core@3.15.2
+
 ## [3.19.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.18.0...tokens-v3.19.0) (2026-11-11)
 
 ### Minor Changes

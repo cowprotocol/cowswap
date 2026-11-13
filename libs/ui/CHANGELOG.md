@@ -1,5 +1,23 @@
 # Changelog
 
+## [3.22.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.21.1...ui-v3.22.0) (2026-11-13)
+
+### Minor Changes
+
+- feat(cow-fi): gate GTM on cookie consent
+
+- feat(cow-fi): add CoW Protocol on Solana landing page (#8470)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.19.0
+  - @cowprotocol/assets@2.10.0
+  - @cowprotocol/common-const@3.21.0
+  - @cowprotocol/common-hooks@3.20.1
+  - @cowprotocol/common-utils@3.22.2
+  - @cowprotocol/core@3.15.2
+
 ## [3.21.1](https://github.com/cowprotocol/cowswap/compare/ui-v3.21.0...ui-v3.21.1) (2026-11-11)
 
 ### Patch Changes

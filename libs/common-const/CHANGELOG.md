@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.21.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.20.0...common-const-v3.21.0) (2026-11-13)
+
+### Minor Changes
+
+- feat(cow-fi): gate GTM on cookie consent
+
+- feat(cow-fi): add CoW Protocol on Solana landing page (#8470)
+
 ## [3.20.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.19.0...common-const-v3.20.0) (2026-11-11)
 
 ### Minor Changes
