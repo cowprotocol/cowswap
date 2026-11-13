@@ -36,12 +36,13 @@ describe('getTradeTokensFilters', () => {
     expect(buyTokensFilter?.notice).toContain('AAPL')
   })
 
-  it('sells the asset tokens held on the network for any other token', () => {
+  it('sells the asset tokens held on any of its networks for any other token', () => {
     const { sellTokensFilter, buyTokensFilter } = getTradeTokensFilters(AAPL, AAPLX_ARBITRUM, 'sell', true)
 
     expect(sellTokensFilter).toEqual({
-      tokens: [AAPLX_ARBITRUM.address],
+      tokens: ASSET_TOKENS,
       onlyWithBalance: true,
+      selectableChainIds: [AAPLX_MAINNET.chainId, AAPLX_ARBITRUM.chainId],
       notice: expect.stringContaining('AAPL'),
     })
     expect(buyTokensFilter).toEqual({ excludedTokens: ASSET_TOKENS })
