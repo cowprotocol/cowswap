@@ -19,6 +19,7 @@ interface ConnectButtonProps {
 
 export function ConnectButton({ variant = 'primary' }: ConnectButtonProps): ReactNode {
   const { open } = useAppKit()
+
   const { address, isConnected } = useConnection()
 
   if (!isConnected || !address) {
