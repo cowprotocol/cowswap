@@ -11,6 +11,7 @@ export function getTradeTokensFilters(
   isConnected: boolean,
 ): TradeTokensFilters {
   const assetTokens = asset.tokens.map((token) => token.address)
+  const assetChainIds = [...new Set(asset.tokens.map((token) => token.chainId))]
 
   if (side === 'buy') {
     return {
@@ -24,24 +25,25 @@ export function getTradeTokensFilters(
       // The buy network can be changed in the widget (bridging), so the tokens of every network are allowed
       buyTokensFilter: {
         tokens: assetTokens,
-        notice: `Only tokenized ${asset.ticker} on this network is listed. Pick another network above the widget for more tokens.`,
+        selectableChainIds: assetChainIds,
+        notice: `Only tokenized ${asset.ticker} is listed. To buy it on a network it can't be bridged to, pick that network above the widget.`,
       },
     }
   }
 
-  const networkAssetTokens = asset.tokens
-    .filter((token) => token.chainId === assetToken.chainId)
-    .map((token) => token.address)
+  const sameTokens = asset.tokens.filter((token) => token.symbol === assetToken.symbol)
 
   return {
     sellTokensFilter: isConnected
       ? {
-          tokens: networkAssetTokens,
+          tokens: assetTokens,
           onlyWithBalance: true,
-          notice: `Only the tokenized ${asset.ticker} with a positive balance in your wallet on this network is listed.`,
+          selectableChainIds: assetChainIds,
+          notice: `Only the tokenized ${asset.ticker} with a positive balance in your wallet is listed.`,
         }
       : {
-          tokens: [assetToken.address],
+          tokens: sameTokens.map((token) => token.address),
+          selectableChainIds: [...new Set(sameTokens.map((token) => token.chainId))],
           notice: `Only the ${assetToken.symbol} token selected above is listed.`,
         },
     buyTokensFilter: { excludedTokens: assetTokens },
