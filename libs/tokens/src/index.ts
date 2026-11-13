@@ -81,6 +81,6 @@ export { fetchTokenList } from './services/fetchTokenList'
 
 // Consts
 export { DEFAULT_TOKENS_LISTS, isRwaTokenListSource } from './const/tokensLists'
-export { useIsAnyOfTokensRWA } from './hooks/lists/useIsAnyOfTokensRWA'
+export { useMarketHoursRwaToken } from './hooks/lists/useMarketHoursRwaToken'
 export { useIsRwaToken } from './hooks/lists/useIsRwaToken'
 export { getSourceAsKey } from './utils/getSourceAsKey'

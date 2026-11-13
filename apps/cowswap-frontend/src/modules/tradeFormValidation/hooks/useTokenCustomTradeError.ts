@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { Currency } from '@cowprotocol/currency'
-import { useIsAnyOfTokensRWA } from '@cowprotocol/tokens'
+import { useMarketHoursRwaToken } from '@cowprotocol/tokens'
 
 import { TradeQuoteState } from 'modules/tradeQuote'
 
@@ -15,7 +15,7 @@ export function useTokenCustomTradeError(
   const isWeekendDay = isWeekend()
   const inputToken = isWeekendDay && inputCurrency?.isToken ? inputCurrency : undefined
   const outputToken = isWeekendDay && outputCurrent?.isToken ? outputCurrent : undefined
-  const rwaToken = useIsAnyOfTokensRWA(inputToken, outputToken)
+  const rwaToken = useMarketHoursRwaToken(inputToken, outputToken)
 
   return useMemo(() => {
     if (!isWeekendDay) return undefined
