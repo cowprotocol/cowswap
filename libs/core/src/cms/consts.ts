@@ -110,3 +110,10 @@ export const BRIX_FALLBACK_TOKEN_LIST: RestrictedTokenList = {
     'https://raw.githubusercontent.com/InverterNetwork/brix-token-list/3c9cd63729d690ccba467acd774e2043e33041f1/tokenlist.json',
   restrictedCountries: [...RESTRICTED_COUNTRIES],
 } as const
+
+export const STOVE_FALLBACK_TOKEN_LIST: RestrictedTokenList = {
+  name: 'Stove Tokenized Stocks List',
+  tokenListUrl:
+    'https://raw.githubusercontent.com/StoveProtocol/stove-tokens/46240330b90579bbf1560b22acd5c0fbd6ac7221/tokenlist.json',
+  restrictedCountries: [...RESTRICTED_COUNTRIES],
+} as const
