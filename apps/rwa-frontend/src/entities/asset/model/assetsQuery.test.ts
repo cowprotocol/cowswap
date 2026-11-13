@@ -128,6 +128,61 @@ describe('searchAssets', () => {
 
     expect(tickers(searchAssets([MSFT, MS], 'ms'))).toEqual(['MS', 'MSFT'])
   })
+
+  describe('profile description', () => {
+    const profile = (description: string): Partial<RwaAssetListItem> => ({
+      profile: { description, sector: 'Communication Services · Interactive Media' },
+    })
+    const GOOGL = asset('GOOGL', 'Alphabet', 9, null, [], profile('Alphabet is the holding company that owns Google.'))
+    const FB = asset('META', 'Meta Platforms', 6, null, [], profile('Meta owns Facebook, Instagram and WhatsApp.'))
+    const GOOGLE_FAN = asset('FAN', 'Google Fan Club', 0, null)
+
+    it('matches a word of the description', () => {
+      expect(tickers(searchAssets([AAPL, GOOGL, FB], 'google'))).toEqual(['GOOGL'])
+      expect(tickers(searchAssets([AAPL, GOOGL, FB], 'Facebook'))).toEqual(['META'])
+    })
+
+    it('matches a description word prefix and phrase, not a mid-word substring', () => {
+      expect(tickers(searchAssets([GOOGL, FB], 'insta'))).toEqual(['META'])
+      expect(tickers(searchAssets([GOOGL, FB], 'owns google'))).toEqual(['GOOGL'])
+      expect(searchAssets([GOOGL, FB], 'oogle')).toEqual([])
+    })
+
+    it('ignores queries shorter than 3 chars', () => {
+      expect(searchAssets([GOOGL], 'ow')).toEqual([])
+    })
+
+    it('ranks title matches above description matches', () => {
+      expect(tickers(searchAssets([GOOGL, GOOGLE_FAN], 'google'))).toEqual(['FAN', 'GOOGL'])
+    })
+  })
+
+  describe('typos', () => {
+    it('matches a title word with one typo', () => {
+      expect(tickers(searchAssets(all, 'nvidea'))).toEqual(['NVDA'])
+      expect(tickers(searchAssets(all, 'platfroms'))).toEqual(['META'])
+    })
+
+    it('matches a ticker or token symbol with one typo', () => {
+      expect(tickers(searchAssets(all, 'msfy'))).toEqual(['MSFT'])
+      expect(tickers(searchAssets(all, 'aaplox'))).toEqual(['AAPL'])
+    })
+
+    it('matches a swap of adjacent chars', () => {
+      expect(tickers(searchAssets(all, 'nivdia'))).toEqual(['NVDA'])
+      expect(tickers(searchAssets(all, 'mtea'))).toEqual(['META'])
+    })
+
+    it('needs at least 4 chars', () => {
+      expect(searchAssets(all, 'mta')).toEqual([])
+    })
+
+    it('ranks exact matches above typo matches', () => {
+      const APLE = asset('APLE', 'Apple Hospitality', 0, null)
+
+      expect(tickers(searchAssets([AAPL, APLE], 'aple'))).toEqual(['APLE', 'AAPL'])
+    })
+  })
 })
 
 describe('filterAssets', () => {
@@ -159,6 +214,18 @@ describe('filterAssets', () => {
     expect(tickers(filterAssets(all, { issuers: ['Ondo', 'xStocks'] }))).toEqual(['AAPL', 'MSFT', 'SPY', 'QQQ'])
     expect(tickers(filterAssets(all, { issuers: ['xStocks'], chainIds: [1, 56] }))).toEqual(['SPY', 'QQQ'])
     expect(tickers(filterAssets(all, { issuers: [], chainIds: [] }))).toEqual(['AAPL', 'MSFT', 'SPY', 'QQQ'])
+  })
+
+  it('drops description and typo matches when a ticker, title or symbol matches', () => {
+    const META = asset('META', 'Meta Platforms', 6, null, ['METAx'])
+    const SLV = asset('SLV', 'iShares Silver Trust', 5, null, [], {
+      profile: { description: 'Tracks the price of silver, a precious metal.', sector: 'ETF · Commodities' },
+    })
+
+    expect(tickers(filterAssets([SLV, META], { query: 'meta' }))).toEqual(['META'])
+    expect(tickers(filterAssets([SLV, META], { query: 'silver' }))).toEqual(['SLV'])
+    expect(tickers(filterAssets([SLV, META], { query: 'precious' }))).toEqual(['SLV'])
+    expect(tickers(filterAssets([SLV, META], { query: 'mtea' }))).toEqual(['META'])
   })
 
   it('filters by query and tickers', () => {

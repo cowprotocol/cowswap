@@ -8,7 +8,7 @@ import { unstable_cache } from 'next/cache'
 import { getTokenKey } from '../lib/tokenKey'
 import { getCommodityTroyOuncesPerToken } from '../model/commodityUnits'
 import { getDividendModel, hasUiMultiplier, isVaultToken, isWrappedXStock } from '../model/issuers'
-import { getAssets } from '../model/registry'
+import { getAllAssets } from '../model/registry'
 
 import type { RwaAsset, RwaToken, RwaTradingPause } from '../model/types'
 
@@ -171,7 +171,7 @@ const loadChainUiMultipliers = unstable_cache(
 )
 
 function getChainRegistryTokens(chainId: number, predicate: (token: RwaToken) => boolean): RwaToken[] {
-  return getAssets()
+  return getAllAssets()
     .flatMap((asset) => asset.tokens)
     .filter((token) => token.chainId === chainId && predicate(token))
 }

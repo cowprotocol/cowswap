@@ -8,7 +8,7 @@ const MAX_LIMIT = 50
 const MAX_QUERY_LENGTH = 64
 
 /**
- * Query: `q` (matches ticker, title or token symbol), `limit` (1..50, default 10)
+ * Query: `q` (matches ticker, title, token symbol or profile description, tolerating small typos), `limit` (1..50, default 10)
  */
 export async function searchAssetsHandler(request: NextRequest): Promise<Response> {
   const params = request.nextUrl.searchParams
