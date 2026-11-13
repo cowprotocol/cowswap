@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.15.3](https://github.com/cowprotocol/cowswap/compare/core-v3.15.2...core-v3.15.3) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.22.0
+  - @cowprotocol/common-utils@3.22.3
+
 ## [3.15.2](https://github.com/cowprotocol/cowswap/compare/core-v3.15.1...core-v3.15.2) (2026-11-13)
 
 ### Patch Changes
