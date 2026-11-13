@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.19.3](https://github.com/cowprotocol/cowswap/compare/explorer-v4.19.2...explorer-v4.19.3) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.22.0
+  - @cowprotocol/common-hooks@3.21.0
+  - @cowprotocol/ui@3.23.0
+  - @cowprotocol/analytics@3.19.1
+  - @cowprotocol/common-utils@3.22.3
+  - @cowprotocol/core@3.15.3
+
 ## [4.19.2](https://github.com/cowprotocol/cowswap/compare/explorer-v4.19.1...explorer-v4.19.2) (2026-11-13)
 
 ### Patch Changes

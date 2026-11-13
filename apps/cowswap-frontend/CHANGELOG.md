@@ -1,5 +1,28 @@
 # Changelog
 
+## [3.37.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.36.1...cowswap-v3.37.0) (2026-11-13)
+
+### Minor Changes
+
+- feat(graffiti): collaborative graffiti wall (consolidated) (#8560)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/assets@2.11.0
+  - @cowprotocol/common-const@3.22.0
+  - @cowprotocol/common-hooks@3.21.0
+  - @cowprotocol/ui@3.23.0
+  - @cowprotocol/wallet@3.22.0
+  - @cowprotocol/analytics@3.19.1
+  - @cowprotocol/balances-and-allowances@3.19.3
+  - @cowprotocol/common-utils@3.22.3
+  - @cowprotocol/core@3.15.3
+  - @cowprotocol/ens@3.12.3
+  - @cowprotocol/multicall@3.12.3
+  - @cowprotocol/tokens@3.19.2
+  - @cowprotocol/snackbars@2.3.18
+
 ## [3.36.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.36.0...cowswap-v3.36.1) (2026-11-13)
 
 ### Patch Changes
