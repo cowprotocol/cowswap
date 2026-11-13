@@ -13,7 +13,7 @@ import { useActiveLocale } from 'legacy/hooks/useActiveLocale'
 
 import { CaptchaWidget } from './CaptchaWidget.container'
 
-import { exchangeTurnstileToken } from '../api/captchaApi'
+import { CaptchaExchangeError, exchangeTurnstileToken } from '../api/captchaApi'
 
 jest.mock('@cowprotocol/common-hooks', () => {
   const actualModule = jest.requireActual('@cowprotocol/common-hooks')
@@ -25,23 +25,53 @@ jest.mock('@cowprotocol/common-hooks', () => {
   }
 })
 
-jest.mock('@marsidev/react-turnstile', () => ({
-  __esModule: true,
-  Turnstile: ({
-    onBeforeInteractive,
-    onAfterInteractive,
-    options,
-  }: {
-    onBeforeInteractive(): void
-    onAfterInteractive(): void
-    options: { language?: string }
-  }) => (
-    <div data-testid="turnstile" data-language={options.language}>
-      <button data-testid="before-interactive" onClick={onBeforeInteractive} />
-      <button data-testid="after-interactive" onClick={onAfterInteractive} />
-    </div>
-  ),
-}))
+const mockTurnstileControls = {
+  mounts: 0,
+  reset: jest.fn(),
+}
+
+jest.mock('@marsidev/react-turnstile', () => {
+  const React = jest.requireActual('react') as typeof import('react')
+
+  return {
+    __esModule: true,
+    DEFAULT_SCRIPT_ID: 'cf-turnstile-script',
+    Turnstile: React.forwardRef(function MockTurnstile(
+      props: {
+        onAfterInteractive?: () => void
+        onBeforeInteractive?: () => void
+        onError?: (errorCode: string) => void
+        onSuccess?: (token: string) => void
+        onUnsupported?: () => void
+        options?: { language?: string }
+        scriptOptions?: { onError?: () => void }
+      },
+      ref: React.ForwardedRef<unknown>,
+    ) {
+      React.useEffect(() => {
+        mockTurnstileControls.mounts += 1
+      }, [])
+
+      React.useImperativeHandle(ref, () => ({
+        execute: jest.fn(),
+        reset: () => {
+          mockTurnstileControls.reset()
+        },
+      }))
+
+      return (
+        <div data-testid="turnstile" data-language={props.options?.language}>
+          <button data-testid="before-interactive" onClick={props.onBeforeInteractive} />
+          <button data-testid="after-interactive" onClick={props.onAfterInteractive} />
+          <button data-testid="success" onClick={() => props.onSuccess?.('turnstile-token')} />
+          <button data-testid="error" onClick={() => props.onError?.('challenge-error')} />
+          <button data-testid="unsupported" onClick={() => props.onUnsupported?.()} />
+          <button data-testid="script-error" onClick={() => props.scriptOptions?.onError?.()} />
+        </div>
+      )
+    }),
+  }
+})
 
 jest.mock('legacy/hooks/useActiveLocale', () => ({
   useActiveLocale: jest.fn(),
@@ -51,9 +81,14 @@ jest.mock('cowSdk', () => ({
   setBearerToken: jest.fn(),
 }))
 
-jest.mock('../api/captchaApi', () => ({
-  exchangeTurnstileToken: jest.fn(),
-}))
+jest.mock('../api/captchaApi', () => {
+  const actual = jest.requireActual('../api/captchaApi') as typeof import('../api/captchaApi')
+
+  return {
+    ...actual,
+    exchangeTurnstileToken: jest.fn(),
+  }
+})
 
 jest.mock('../config/captcha.const', () => ({
   TURNSTILE_DEMO_INTERACTIVE_SITE_KEY: 'demo-site-key',
@@ -88,6 +123,7 @@ describe('CaptchaWidget', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     localStorage.clear()
+    mockTurnstileControls.mounts = 0
     useThemeMock.mockReturnValue({ darkMode: false } as ReturnType<typeof useTheme>)
     useFeatureFlagsMock.mockReturnValue({})
     useActiveLocaleMock.mockReturnValue('en-US')
@@ -177,4 +213,157 @@ describe('CaptchaWidget', () => {
       expect(setBearerTokenMock).toHaveBeenLastCalledWith(null)
     })
   })
+
+  it('resets immediately on timeout-or-duplicate and backs off if it repeats', async () => {
+    jest.useFakeTimers()
+    try {
+      useFeatureFlagsMock.mockReturnValue({ isCaptchaEnabled: true })
+      exchangeTurnstileTokenMock.mockRejectedValue(timeoutOrDuplicateError())
+
+      renderWithStore()
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('success'))
+      })
+
+      expect(screen.getByTestId('turnstile')).not.toBeNull()
+      expect(mockTurnstileControls.reset).toHaveBeenCalledTimes(1)
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('success'))
+      })
+
+      expect(mockTurnstileControls.reset).toHaveBeenCalledTimes(1)
+
+      act(() => {
+        jest.advanceTimersByTime(999)
+      })
+      expect(mockTurnstileControls.reset).toHaveBeenCalledTimes(1)
+
+      act(() => {
+        jest.advanceTimersByTime(1)
+      })
+      expect(mockTurnstileControls.reset).toHaveBeenCalledTimes(2)
+    } finally {
+      jest.useRealTimers()
+    }
+  })
+
+  it('allows an immediate timeout-or-duplicate reset again after a solved challenge', async () => {
+    jest.useFakeTimers()
+    try {
+      const store = createStore()
+      const jwt = createJwt()
+
+      useFeatureFlagsMock.mockReturnValue({ isCaptchaEnabled: true })
+      exchangeTurnstileTokenMock
+        .mockRejectedValueOnce(timeoutOrDuplicateError())
+        .mockResolvedValueOnce(jwt)
+        .mockRejectedValueOnce(timeoutOrDuplicateError())
+
+      renderWithStore(store)
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('success'))
+      })
+      expect(mockTurnstileControls.reset).toHaveBeenCalledTimes(1)
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('success'))
+      })
+      expect(store.get(captchaJwtAtom)?.token).toBe(jwt)
+
+      act(() => {
+        store.set(captchaJwtAtom, null)
+      })
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('success'))
+      })
+      expect(mockTurnstileControls.reset).toHaveBeenCalledTimes(2)
+    } finally {
+      jest.useRealTimers()
+    }
+  })
+
+  it('keeps the widget mounted and retries a failed JWT exchange after 1s', async () => {
+    jest.useFakeTimers()
+    try {
+      useFeatureFlagsMock.mockReturnValue({ isCaptchaEnabled: true })
+      exchangeTurnstileTokenMock.mockRejectedValue(new Error('exchange failed'))
+
+      renderWithStore()
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('success'))
+      })
+
+      expect(screen.getByTestId('turnstile')).not.toBeNull()
+      expect(mockTurnstileControls.reset).not.toHaveBeenCalled()
+
+      act(() => {
+        jest.advanceTimersByTime(1_000)
+      })
+      expect(mockTurnstileControls.reset).toHaveBeenCalledTimes(1)
+    } finally {
+      jest.useRealTimers()
+    }
+  })
+
+  it.each([
+    ['error', 'challenge error'],
+    ['unsupported', 'unsupported browser'],
+  ])('keeps the widget mounted and retries a %s after 1s', (testId) => {
+    jest.useFakeTimers()
+    try {
+      useFeatureFlagsMock.mockReturnValue({ isCaptchaEnabled: true })
+
+      renderWithStore()
+      fireEvent.click(screen.getByTestId(testId))
+
+      expect(screen.getByTestId('turnstile')).not.toBeNull()
+      expect(mockTurnstileControls.reset).not.toHaveBeenCalled()
+
+      act(() => {
+        jest.advanceTimersByTime(1_000)
+      })
+      expect(mockTurnstileControls.reset).toHaveBeenCalledTimes(1)
+    } finally {
+      jest.useRealTimers()
+    }
+  })
+
+  it('reloads a blocked Turnstile script without unmounting the widget', () => {
+    jest.useFakeTimers()
+    const script = document.createElement('script')
+    script.id = 'cf-turnstile-script'
+    document.head.appendChild(script)
+
+    try {
+      useFeatureFlagsMock.mockReturnValue({ isCaptchaEnabled: true })
+
+      renderWithStore()
+      expect(mockTurnstileControls.mounts).toBe(1)
+
+      fireEvent.click(screen.getByTestId('script-error'))
+
+      expect(screen.getByTestId('turnstile')).not.toBeNull()
+      expect(document.getElementById('cf-turnstile-script')).not.toBeNull()
+
+      act(() => {
+        jest.advanceTimersByTime(1_000)
+      })
+
+      expect(document.getElementById('cf-turnstile-script')).toBeNull()
+      expect(screen.getByTestId('turnstile')).not.toBeNull()
+      expect(mockTurnstileControls.mounts).toBe(2)
+    } finally {
+      jest.useRealTimers()
+      document.getElementById('cf-turnstile-script')?.remove()
+    }
+  })
 })
+
+function timeoutOrDuplicateError(): CaptchaExchangeError {
+  return new CaptchaExchangeError('Invalid turnstile token', 'timeout-or-duplicate')
+}
