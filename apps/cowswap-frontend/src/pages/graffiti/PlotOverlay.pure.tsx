@@ -32,7 +32,7 @@ export function PlotOverlay({
     <styledEl.PlotOverlayRoot ref={bindOverlay}>
       {showBalance && (
         <styledEl.BalanceChip>
-          <TokenLogo size={20} />
+          <TokenLogo size={28} />
           <Trans>
             {TOKEN_SYMBOL} left {left}
           </Trans>

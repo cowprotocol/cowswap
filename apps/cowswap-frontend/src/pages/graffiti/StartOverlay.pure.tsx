@@ -241,7 +241,7 @@ function BalanceBadge({ balance }: { balance: number | null }): ReactNode {
 
   return (
     <styledEl.PanelBadge>
-      <TokenLogo size={18} />
+      <TokenLogo size={24} />
       <Trans>
         {TOKEN_SYMBOL} balance: {balance}
       </Trans>
