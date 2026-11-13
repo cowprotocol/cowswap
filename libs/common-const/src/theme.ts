@@ -45,6 +45,8 @@ export interface CustomThemeContext {
   graffitiWallEnabled?: boolean
   /** Whether the graffiti wall page is the one on screen. */
   onWallPage?: boolean
+  /** Whether the user turned the graffiti theme off in settings. */
+  graffitiThemeOptOut?: boolean
 }
 
 export function isCustomThemeEnabled(theme: CustomTheme, featureFlags?: FeatureFlags): boolean {
@@ -65,17 +67,16 @@ export function isCustomThemeEnabled(theme: CustomTheme, featureFlags?: FeatureF
  * seasonal, so it wins on its own network, and the wall page carries it on any network: that page
  * is the wall, and its own chrome is drawn to sit in this theme, so following the wallet's chain
  * there would leave it in the plain one until you switched networks. Either way it paints the live
- * graffiti wall, so it also needs the wall itself to be on. Among the seasonal themes Halloween has
- * global priority but requires dark mode; if it is enabled by flags yet dark mode is off, no
- * seasonal theme is applied.
+ * graffiti wall, so it also needs the wall itself to be on. Opting out in settings drops it back to
+ * whatever the context would otherwise give, but not on the wall page, whose own chrome assumes it.
+ * Among the seasonal themes Halloween has global priority but requires dark mode; if it is enabled
+ * by flags yet dark mode is off, no seasonal theme is applied.
  */
 export function resolveCustomThemeForContext(
   featureFlags: FeatureFlags | undefined,
   context: CustomThemeContext,
 ): CustomTheme | undefined {
-  const solanaScoped = context.onSolanaChain || context.onWallPage
-
-  if (solanaScoped && context.graffitiWallEnabled && isCustomThemeEnabled(CustomTheme.SOLANA, featureFlags)) {
+  if (wantsSolanaTheme(featureFlags, context)) {
     return CustomTheme.SOLANA
   }
 
@@ -97,4 +98,14 @@ export function resolveCustomThemeForContext(
   }
 
   return undefined
+}
+
+/** The graffiti theme: chain-scoped rather than seasonal, so it is decided on its own terms. */
+function wantsSolanaTheme(featureFlags: FeatureFlags | undefined, context: CustomThemeContext): boolean {
+  if (!context.onSolanaChain && !context.onWallPage) return false
+  // The wall page's own chrome is drawn to sit in this theme, so the setting does not reach it.
+  if (context.graffitiThemeOptOut && !context.onWallPage) return false
+  if (!context.graffitiWallEnabled) return false
+
+  return isCustomThemeEnabled(CustomTheme.SOLANA, featureFlags)
 }

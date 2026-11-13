@@ -19,6 +19,7 @@ describe('resolveCowSwapTheme', () => {
     onSolanaChain?: boolean
     graffitiWallEnabled?: boolean
     onWallPage?: boolean
+    graffitiThemeOptOut?: boolean
     expected: CowSwapTheme | undefined
   }> = [
     {
@@ -150,13 +151,49 @@ describe('resolveCowSwapTheme', () => {
       onWallPage: true,
       expected: undefined,
     },
+    {
+      name: 'skips the Solana theme on the Solana chain when the user opted out',
+      darkMode: true,
+      featureFlags: buildFlags({ isSolanaThemeEnabled: true }),
+      onSolanaChain: true,
+      graffitiWallEnabled: true,
+      graffitiThemeOptOut: true,
+      expected: undefined,
+    },
+    {
+      name: 'falls back to a seasonal theme when the user opted out of Solana',
+      darkMode: true,
+      featureFlags: buildFlags({ isSolanaThemeEnabled: true, isHalloweenEnabled: true }),
+      onSolanaChain: true,
+      graffitiWallEnabled: true,
+      graffitiThemeOptOut: true,
+      expected: 'darkHalloween',
+    },
+    {
+      name: 'keeps the Solana theme on the wall page even when the user opted out',
+      darkMode: true,
+      featureFlags: buildFlags({ isSolanaThemeEnabled: true }),
+      onSolanaChain: true,
+      graffitiWallEnabled: true,
+      onWallPage: true,
+      graffitiThemeOptOut: true,
+      expected: 'darkSolana',
+    },
   ]
 
-  test.each(cases)('$name', ({ darkMode, featureFlags, onSolanaChain, graffitiWallEnabled, onWallPage, expected }) => {
-    expect(resolveCowSwapTheme(darkMode, featureFlags, { onSolanaChain, graffitiWallEnabled, onWallPage })).toBe(
-      expected,
-    )
-  })
+  test.each(cases)(
+    '$name',
+    ({ darkMode, featureFlags, onSolanaChain, graffitiWallEnabled, onWallPage, graffitiThemeOptOut, expected }) => {
+      expect(
+        resolveCowSwapTheme(darkMode, featureFlags, {
+          onSolanaChain,
+          graffitiWallEnabled,
+          onWallPage,
+          graffitiThemeOptOut,
+        }),
+      ).toBe(expected)
+    },
+  )
 })
 
 describe('isWallPagePath', () => {
