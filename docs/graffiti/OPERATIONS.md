@@ -230,18 +230,65 @@ rate-limit-free today (add per-IP limits at the proxy for launch).
 4. Decide the DB: a **fresh empty DB** = fresh canvas (usual choice);
    the old canvas lives on in the old DB/backup.
 5. Pre-printed QRs keep working — same domain, same codes, new token.
-6. Never reuse a treasury keypair across environments.
+6. Give the new mint its name and logo (section 6) — a fresh mint has none.
+7. Never reuse a treasury keypair across environments.
 
-## 6. Cleanup checklist for an upstream (cowprotocol/cowswap) PR
+## 6. Naming the token in wallets
+
+A bare SPL mint carries no name, so Phantom and friends show it as **UNKNOWN**.
+The name, the symbol and the logo come from a Metaplex Token Metadata account
+attached to the mint — one account, created once, editable afterwards.
+
+```bash
+cd apps/graffiti-api
+MINT=<mint> TREASURY_KEYPAIR=.keys/treasury.json pnpm token:metadata
+```
+
+The script is re-runnable: it creates the metadata account the first time and
+updates it in place after that. It must be signed by the **mint authority** for
+the create (the treasury, as `create-mint.ts` left it) and by the **update
+authority** (the same key) for later edits. Creating it costs the treasury the
+account's rent, ~0.0056 SOL, plus a signature.
+
+| Variable | Default | What it does |
+|---|---|---|
+| `TOKEN_NAME` | `GRASS` | Name wallets show. Max 32 bytes |
+| `TOKEN_SYMBOL` | `GRASS` | Ticker. Max 10 bytes. Keep it equal to `TOKEN_SYMBOL` in `pages/graffiti/wall.constants.ts` |
+| `TOKEN_URI` | `https://swap.cow.fi/token/grass.json` | Off-chain metadata JSON. Max 200 bytes |
+
+**The logo is not on-chain.** `TOKEN_URI` points at a JSON file whose `image`
+field is an absolute URL to the PNG. Both live in the frontend's public folder
+and ship with every deploy, so they are served from the same origin as the wall:
+
+- `apps/cowswap-frontend/public/token/grass.json`
+- `apps/cowswap-frontend/public/token/grass.png` (512×512)
+
+**Deploying anywhere other than `swap.cow.fi` means editing two URLs**: the
+`image` and `external_url` fields in `grass.json`, and `TOKEN_URI` when running
+the script. The script fetches the URI before sending the transaction and warns
+if it 404s or has no absolute `image` — a metadata account pointing at a dead
+URL is the usual reason a token has a name but no logo.
+
+Wallets cache aggressively. After the transaction lands, remove and re-add the
+token, or give it a few minutes, before concluding it did not work. Solana
+Explorer shows the truth immediately.
+
+On mainnet, a name and logo are all this buys you: the "verified" badge and the
+price line come from wallet token lists (Jupiter's, mostly), which are a
+separate, manual listing process and not something a burn-only event token
+needs.
+
+## 7. Cleanup checklist for an upstream (cowprotocol/cowswap) PR
 
 - [ ] Strip ops bits from the repo: `.keys/` (gitignored — verify), `api.log`,
       `data/*.db` (gitignored — verify), `docs/graffiti/OPERATIONS.md` stays.
 - [ ] Search for `GRAFFITI FORK` comments — each marks a fork-specific change;
       review or revert per upstream taste.
-- [ ] Token naming is centralized as `TOKEN_SYMBOL` in
-      `pages/graffiti/wall.constants.ts` — no name is baked into the mint, which
-      is a classic SPL mint with no on-chain metadata, so a rename never touches
-      a deployment. Currently `GRASS`.
+- [ ] Token naming lives in two places that must agree: `TOKEN_SYMBOL` in
+      `pages/graffiti/wall.constants.ts` (what the UI says) and the mint's
+      Metaplex metadata account (what wallets say, see section 6). Currently
+      `GRASS` in both. Renaming the UI alone never touches a deployment;
+      renaming what wallets show is a transaction.
 - [ ] Feature-flag the page (it currently rides on Solana-enabled flags);
       confirm the routing entry under "Learn" + the NEW badge are wanted.
 - [ ] Defaults for the env table above are devnet-shaped; upstream config
