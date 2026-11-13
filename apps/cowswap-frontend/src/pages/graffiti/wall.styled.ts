@@ -637,14 +637,7 @@ const confirmPulse = keyframes`
   }
 `
 
-/** Centred on the drawing frame by the render loop, so the confirm step is unmissable. */
-export const PlotConfirmRoot = styled.div`
-  position: absolute;
-  z-index: 7;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-`
-
+/** The frame's primary action: louder than the controls beside it, so it is not missed. */
 export const ConfirmButton = styled(GlowButton)`
   pointer-events: auto;
   padding: 12px 24px;

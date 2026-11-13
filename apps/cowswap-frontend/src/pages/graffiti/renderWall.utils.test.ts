@@ -1,4 +1,4 @@
-import { confirmAnchor, devicePixelRatio, needsContinuousRender, renderWall } from './renderWall.utils'
+import { devicePixelRatio, needsContinuousRender, renderWall } from './renderWall.utils'
 import { createWallRefs } from './useWallRefs'
 
 import type { WallSnapshot } from './wall.types'
@@ -127,23 +127,5 @@ describe('renderWall backing store', () => {
     Object.defineProperty(window, 'devicePixelRatio', { value: 2, configurable: true })
     renderWall(refs)
     expect(refs.canvasElRef.current?.width).toBe(1600)
-  })
-})
-
-describe('confirmAnchor', () => {
-  it('sits at the centre of the frame', () => {
-    expect(confirmAnchor({ sx: 200, sy: 200, sw: 400, sh: 200 }, 1000, 800)).toEqual({ x: 400, y: 300 })
-  })
-
-  it('stays on screen when the frame is dragged past the top left', () => {
-    expect(confirmAnchor({ sx: -300, sy: -180, sw: 200, sh: 100 }, 1000, 800)).toEqual({ x: 90, y: 28 })
-  })
-
-  it('stays on screen when the frame is dragged past the bottom right', () => {
-    expect(confirmAnchor({ sx: 1200, sy: 900, sw: 200, sh: 100 }, 1000, 800)).toEqual({ x: 910, y: 772 })
-  })
-
-  it('stays on screen on a canvas narrower than the button', () => {
-    expect(confirmAnchor({ sx: 0, sy: 0, sw: 40, sh: 20 }, 120, 40)).toEqual({ x: 90, y: 28 })
   })
 })

@@ -29,7 +29,6 @@ export interface WallDomBindings {
   canvas: RefCallback<HTMLCanvasElement>
   paintCanvas: RefCallback<HTMLCanvasElement>
   overlay: RefCallback<HTMLDivElement>
-  confirm: RefCallback<HTMLDivElement>
   /** The mounted canvas, for hooks that attach native listeners to it. */
   canvasEl: HTMLCanvasElement | null
 }
@@ -48,7 +47,6 @@ export function createWallRefs(): WallRefs {
     paintCanvasElRef: ref(null),
     wrapElRef: ref(null),
     plotOverlayRef: ref(null),
-    plotConfirmRef: ref(null),
 
     viewRef: ref({ scale: 1, offsetX: 0, offsetY: 0 }),
     minScaleRef: ref(0.06),
@@ -75,7 +73,6 @@ export function useWallDomBindings({
   canvasElRef,
   paintCanvasElRef,
   plotOverlayRef,
-  plotConfirmRef,
 }: WallRefs): WallDomBindings {
   const [canvasEl, setCanvasEl] = useState<HTMLCanvasElement | null>(null)
 
@@ -104,14 +101,8 @@ export function useWallDomBindings({
     },
     [plotOverlayRef],
   )
-  const confirm = useCallback(
-    (el: HTMLDivElement | null): void => {
-      plotConfirmRef.current = el
-    },
-    [plotConfirmRef],
-  )
 
-  return { wrap, canvas, paintCanvas, overlay, confirm, canvasEl }
+  return { wrap, canvas, paintCanvas, overlay, canvasEl }
 }
 
 /**

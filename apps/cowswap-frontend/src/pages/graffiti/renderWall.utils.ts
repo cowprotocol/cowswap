@@ -27,7 +27,6 @@ export type WallRenderRefs = Pick<
   | 'drawingRef'
   | 'strokePointsRef'
   | 'plotOverlayRef'
-  | 'plotConfirmRef'
   | 'patternRef'
 >
 
@@ -40,10 +39,6 @@ function isPlotFrameVisible(snapshot: WallSnapshot): boolean {
   return snapshot.plot !== null && snapshot.tool !== 'pan' && snapshot.session !== 'start' && !snapshot.fullscreen
 }
 
-/** Half the centred confirm button, so clamping it to the canvas keeps it whole. */
-const CONFIRM_MARGIN_X = 90
-const CONFIRM_MARGIN_Y = 28
-
 /** Grid lines appear only once cells are big enough to see between them. */
 const GRID_MIN_SCALE = 6
 const GRID_STEP = 8
@@ -51,21 +46,23 @@ const GRID_STEP = 8
 /** The eraser's colour. Erased cells fall back to the page background, not to black. */
 const ERASED = 0
 
-/**
- * Where the confirm button sits: the centre of the frame, pulled back inside the
- * canvas by half the button's footprint so it stays whole and clickable when the
- * frame is dragged past an edge or is larger than the viewport.
- */
-export function confirmAnchor(
-  box: { sx: number; sy: number; sw: number; sh: number },
-  canvasW: number,
-  canvasH: number,
-): { x: number; y: number } {
-  return {
-    x: clamp(box.sx + box.sw / 2, CONFIRM_MARGIN_X, Math.max(CONFIRM_MARGIN_X, canvasW - CONFIRM_MARGIN_X)),
-    y: clamp(box.sy + box.sh / 2, CONFIRM_MARGIN_Y, Math.max(CONFIRM_MARGIN_Y, canvasH - CONFIRM_MARGIN_Y)),
-  }
+/** The frame in screen pixels. */
+interface ScreenBox {
+  sx: number
+  sy: number
+  sw: number
+  sh: number
 }
+
+/** Tallest child of the control row, which hangs above the frame. */
+const OVERLAY_HEIGHT = 46
+
+const FRAME_HINT = '✥ drag the frame to move your drawing area · ✓ draw here when it fits'
+const HINT_HEIGHT = 26
+const HINT_GAP = 10
+/** Below this the frame is too small on screen to hold the move cross legibly. */
+const MOVE_GLYPH_MIN = 26
+const MOVE_GLYPH_MAX = 72
 
 /**
  * Capped at 2: every frame redraws a 4096x2048 offscreen, and a 3x backing store
@@ -229,6 +226,59 @@ function drawDraft(ctx: CanvasRenderingContext2D, draft: Map<number, number>, vi
   })
 }
 
+/** Centred under the frame, or above it when the frame sits against the bottom edge. */
+function drawFrameHint(ctx: CanvasRenderingContext2D, box: ScreenBox, canvasW: number, canvasH: number): void {
+  ctx.save()
+  ctx.font = 'bold 13px sans-serif'
+  ctx.textAlign = 'center'
+  ctx.textBaseline = 'middle'
+
+  const width = Math.min(canvasW - 12, ctx.measureText(FRAME_HINT).width + 28)
+  const below = box.sy + box.sh + HINT_GAP + HINT_HEIGHT / 2
+  const preferred = below < canvasH - HINT_HEIGHT / 2 ? below : box.sy - HINT_GAP - HINT_HEIGHT / 2
+  const cy = clamp(preferred, HINT_HEIGHT / 2 + 6, Math.max(HINT_HEIGHT / 2 + 6, canvasH - HINT_HEIGHT / 2 - 6))
+  const cx = clamp(box.sx + box.sw / 2, width / 2 + 6, Math.max(width / 2 + 6, canvasW - width / 2 - 6))
+
+  roundedRectPath(ctx, cx - width / 2, cy - HINT_HEIGHT / 2, width, HINT_HEIGHT, HINT_HEIGHT / 2)
+  ctx.fillStyle = 'rgba(10,10,16,0.85)'
+  ctx.fill()
+  ctx.strokeStyle = 'rgba(0,208,255,0.55)'
+  ctx.lineWidth = 1
+  ctx.stroke()
+  ctx.fillStyle = 'rgba(226,226,240,0.95)'
+  ctx.fillText(FRAME_HINT, cx, cy)
+  ctx.restore()
+}
+
+/** Corner brackets, so the dashed outline reads as an object you can pick up. */
+function drawGrabHandles(ctx: CanvasRenderingContext2D, box: ScreenBox): void {
+  const arm = Math.min(Math.min(box.sw, box.sh) * 0.28, 26)
+
+  if (arm < 3) return
+
+  const corners: Array<[number, number, number, number]> = [
+    [box.sx, box.sy, 1, 1],
+    [box.sx + box.sw, box.sy, -1, 1],
+    [box.sx, box.sy + box.sh, 1, -1],
+    [box.sx + box.sw, box.sy + box.sh, -1, -1],
+  ]
+
+  ctx.save()
+  ctx.strokeStyle = 'rgba(0,208,255,0.95)'
+  ctx.lineWidth = 3
+  ctx.lineCap = 'round'
+  ctx.beginPath()
+
+  for (const [x, y, dx, dy] of corners) {
+    ctx.moveTo(x + dx * arm, y)
+    ctx.lineTo(x, y)
+    ctx.lineTo(x, y + dy * arm)
+  }
+
+  ctx.stroke()
+  ctx.restore()
+}
+
 function drawGrid(ctx: CanvasRenderingContext2D, view: View): void {
   if (view.scale < GRID_MIN_SCALE) return
 
@@ -251,6 +301,56 @@ function drawGrid(ctx: CanvasRenderingContext2D, view: View): void {
   }
 
   ctx.stroke()
+}
+
+/** The move cross at the frame's centre. Drawn, never a DOM node, so it cannot swallow the drag. */
+function drawMoveGlyph(ctx: CanvasRenderingContext2D, box: ScreenBox): void {
+  const span = Math.min(box.sw, box.sh) * 0.32
+
+  if (span < MOVE_GLYPH_MIN) return
+
+  const r = Math.min(span, MOVE_GLYPH_MAX) / 2
+  const head = r * 0.4
+  const cx = box.sx + box.sw / 2
+  const cy = box.sy + box.sh / 2
+  // Arrow tips sit on the axis ends; each base corner steps off by the perpendicular.
+  const tips: Array<[number, number]> = [
+    [1, 0],
+    [-1, 0],
+    [0, 1],
+    [0, -1],
+  ]
+
+  ctx.save()
+  ctx.beginPath()
+  ctx.arc(cx, cy, r + head, 0, Math.PI * 2)
+  ctx.fillStyle = 'rgba(10,10,16,0.45)'
+  ctx.fill()
+
+  ctx.strokeStyle = 'rgba(0,208,255,0.95)'
+  ctx.fillStyle = 'rgba(0,208,255,0.95)'
+  ctx.lineWidth = 2
+  ctx.lineCap = 'round'
+  ctx.beginPath()
+  ctx.moveTo(cx - r, cy)
+  ctx.lineTo(cx + r, cy)
+  ctx.moveTo(cx, cy - r)
+  ctx.lineTo(cx, cy + r)
+  ctx.stroke()
+
+  for (const [dx, dy] of tips) {
+    const tx = cx + dx * r
+    const ty = cy + dy * r
+
+    ctx.beginPath()
+    ctx.moveTo(tx + dx * head, ty + dy * head)
+    ctx.lineTo(tx - dy * head * 0.6, ty + dx * head * 0.6)
+    ctx.lineTo(tx + dy * head * 0.6, ty - dx * head * 0.6)
+    ctx.closePath()
+    ctx.fill()
+  }
+
+  ctx.restore()
 }
 
 function drawPlotFrame(ctx: CanvasRenderingContext2D, refs: WallRenderRefs): void {
@@ -291,33 +391,18 @@ function drawPlotFrame(ctx: CanvasRenderingContext2D, refs: WallRenderRefs): voi
   ctx.strokeRect(box.sx, box.sy, box.sw, box.sh)
   ctx.restore()
 
-  // Keep the balance chip + rotate button pinned just above the frame.
+  // Keep the balance chip + confirm button pinned just above the frame.
   const overlay = refs.plotOverlayRef.current
 
   if (overlay) {
     overlay.style.left = `${Math.max(6, Math.min(canvasW - 240, box.sx))}px`
-    overlay.style.top = `${Math.max(6, box.sy - 44)}px`
-  }
-
-  const confirm = refs.plotConfirmRef.current
-
-  if (confirm) {
-    const anchor = confirmAnchor(box, canvasW, canvasH)
-
-    confirm.style.left = `${anchor.x}px`
-    confirm.style.top = `${anchor.y}px`
+    overlay.style.top = `${Math.max(6, box.sy - OVERLAY_HEIGHT - 6)}px`
   }
 
   if (!locked) {
-    ctx.save()
-    ctx.font = '12px sans-serif'
-    ctx.fillStyle = 'rgba(200,200,221,0.9)'
-    ctx.fillText(
-      'drag the frame to position it · ✓ to lock',
-      box.sx + 8,
-      box.sy - 6 > 12 ? box.sy - 6 : box.sy + box.sh + 14,
-    )
-    ctx.restore()
+    drawGrabHandles(ctx, box)
+    drawMoveGlyph(ctx, box)
+    drawFrameHint(ctx, box, canvasW, canvasH)
   }
 }
 
@@ -385,6 +470,19 @@ function resizeCanvas(el: HTMLCanvasElement, width: number, height: number, dpr:
 }
 
 /** Push the wall's pixel buffer into the offscreen canvas when it changed. */
+/** `ctx.roundRect` is too new for some supported browsers. */
+function roundedRectPath(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  const radius = Math.min(r, w / 2, h / 2)
+
+  ctx.beginPath()
+  ctx.moveTo(x + radius, y)
+  ctx.arcTo(x + w, y, x + w, y + h, radius)
+  ctx.arcTo(x + w, y + h, x, y + h, radius)
+  ctx.arcTo(x, y + h, x, y, radius)
+  ctx.arcTo(x, y, x + w, y, radius)
+  ctx.closePath()
+}
+
 function syncOffscreen(refs: WallRenderRefs): void {
   const offscreen = refs.offscreenRef.current
 

@@ -9,8 +9,6 @@ import * as styledEl from './wall.styled'
 export interface PlotOverlayProps {
   /** Positioned by the render loop, just above the frame. */
   bindOverlay: RefCallback<HTMLDivElement>
-  /** Positioned by the render loop, at the centre of the frame. */
-  bindConfirm: RefCallback<HTMLDivElement>
   showBalance: boolean
   /** Tokens left after the current draft, or null while the balance loads. */
   balanceLeft: number | null
@@ -19,10 +17,9 @@ export interface PlotOverlayProps {
   onConfirm: () => void
 }
 
-/** Balance chip and rotate button above the drawing frame, confirm button inside it. */
+/** Balance chip plus rotate / confirm buttons that follow the drawing frame. */
 export function PlotOverlay({
   bindOverlay,
-  bindConfirm,
   showBalance,
   balanceLeft,
   showControls,
@@ -32,29 +29,25 @@ export function PlotOverlay({
   const left = balanceLeft === null ? '…' : balanceLeft
 
   return (
-    <>
-      <styledEl.PlotOverlayRoot ref={bindOverlay}>
-        {showBalance && (
-          <styledEl.BalanceChip>
-            <TokenLogo size={28} />
-            <Trans>
-              {TOKEN_SYMBOL} left {left}
-            </Trans>
-          </styledEl.BalanceChip>
-        )}
-        {showControls && (
-          <styledEl.PlainOverlayButton onClick={onRotate}>
-            <Trans>⟳ rotate</Trans>
-          </styledEl.PlainOverlayButton>
-        )}
-      </styledEl.PlotOverlayRoot>
-      <styledEl.PlotConfirmRoot ref={bindConfirm}>
-        {showControls && (
-          <styledEl.ConfirmButton onClick={onConfirm}>
-            <Trans>✓ draw here</Trans>
-          </styledEl.ConfirmButton>
-        )}
-      </styledEl.PlotConfirmRoot>
-    </>
+    <styledEl.PlotOverlayRoot ref={bindOverlay}>
+      {showBalance && (
+        <styledEl.BalanceChip>
+          <TokenLogo size={28} />
+          <Trans>
+            {TOKEN_SYMBOL} left {left}
+          </Trans>
+        </styledEl.BalanceChip>
+      )}
+      {showControls && (
+        <styledEl.PlainOverlayButton onClick={onRotate}>
+          <Trans>⟳ rotate</Trans>
+        </styledEl.PlainOverlayButton>
+      )}
+      {showControls && (
+        <styledEl.ConfirmButton onClick={onConfirm}>
+          <Trans>✓ draw here</Trans>
+        </styledEl.ConfirmButton>
+      )}
+    </styledEl.PlotOverlayRoot>
   )
 }
