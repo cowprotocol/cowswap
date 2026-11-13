@@ -134,7 +134,7 @@ describe('Quote deadline utils', () => {
       expect(getOrderValidTo(deadline, getQuoteState(quoteDeadlineParams))).toEqual(MAX_VALID_TO_EPOCH)
     })
 
-    it('When validFrom is set, ValidTo should be validFrom + deadline', () => {
+    it('When validFrom is set, ValidTo should be validFrom + deadline + wall-clock entropy', () => {
       const deadline = 120 // 2 minutes
       const validFrom = Math.floor(NOW_TIME / 1000) + 240 // batch in 4 minutes
       const localQuoteTimestamp = Math.floor(NOW_TIME / 1000)
@@ -143,8 +143,47 @@ describe('Quote deadline utils', () => {
         quoteValidTo: localQuoteTimestamp + deadline,
         localQuoteTimestamp,
       }
+      const serverNowSec = Math.floor(NOW_TIME / 1000)
+      const waitAndSaveEntropy = serverNowSec % 30
 
-      expect(getOrderValidTo(deadline, getQuoteState(quoteDeadlineParams), validFrom)).toEqual(validFrom + deadline)
+      expect(getOrderValidTo(deadline, getQuoteState(quoteDeadlineParams), validFrom)).toEqual(
+        validFrom + deadline + waitAndSaveEntropy,
+      )
+    })
+
+    it('When validFrom is set, ValidTo differs across wall-clock seconds', () => {
+      const deadline = 120
+      const validFrom = Math.floor(NOW_TIME / 1000) + 240
+      const localQuoteTimestamp = Math.floor(NOW_TIME / 1000)
+      const quoteDeadlineParams = {
+        validFor: deadline,
+        quoteValidTo: localQuoteTimestamp + deadline,
+        localQuoteTimestamp,
+      }
+
+      const first = getOrderValidTo(deadline, getQuoteState(quoteDeadlineParams), validFrom)
+      Date.now = jest.fn(() => NOW_TIME + 1000)
+      const second = getOrderValidTo(deadline, getQuoteState(quoteDeadlineParams), validFrom)
+
+      expect(second).not.toEqual(first)
+      expect(second - first).toBe(1)
+    })
+
+    it('When validFrom is set, ValidTo entropy wraps within 30 seconds', () => {
+      const deadline = 120
+      const validFrom = Math.floor(NOW_TIME / 1000) + 240
+      const localQuoteTimestamp = Math.floor(NOW_TIME / 1000)
+      const quoteDeadlineParams = {
+        validFor: deadline,
+        quoteValidTo: localQuoteTimestamp + deadline,
+        localQuoteTimestamp,
+      }
+
+      const first = getOrderValidTo(deadline, getQuoteState(quoteDeadlineParams), validFrom)
+      Date.now = jest.fn(() => NOW_TIME + 30_000)
+      const wrapped = getOrderValidTo(deadline, getQuoteState(quoteDeadlineParams), validFrom)
+
+      expect(wrapped).toEqual(first)
     })
   })
 

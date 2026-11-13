@@ -8,10 +8,13 @@ import { TradeQuoteState } from '../state/tradeQuoteAtom'
 
 const MAX_EXPIRATION_TIME = ms`1min`
 
+/** Max seconds added to Wait & Save `validTo` for UID uniqueness after soft cancel. */
+const WAIT_AND_SAVE_VALID_TO_ENTROPY_SECONDS = 30
+
 /**
  * Calculate the validTo timestamp for the order.
  * When `validFrom` is set (Wait for CoWs), expiration runs from the batch start
- * so the order does not expire during the wait: validTo = validFrom + deadline.
+ * so the order does not expire during the wait: validTo = validFrom + deadline (+ wall-clock entropy).
  */
 export function getOrderValidTo(deadline: number, state: TradeQuoteState, validFrom?: number): number {
   const timeOffset = getQuoteTimeOffset(state)
@@ -19,8 +22,14 @@ export function getOrderValidTo(deadline: number, state: TradeQuoteState, validF
   if (timeOffset === undefined) return 0
 
   const now = Date.now() / 1000
+  const serverNowSec = Math.floor(now - timeOffset)
+  // Work around orderbook soft-cancel: identical Wait for CoWs params rebuild the same UID and
+  // post as DuplicatedOrder. Mix wall-clock seconds into validTo so cancel+resubmit is unique.
+  const waitAndSaveEntropy = serverNowSec % WAIT_AND_SAVE_VALID_TO_ENTROPY_SECONDS
   const validTo =
-    typeof validFrom === 'number' ? Math.floor(validFrom + deadline) : Math.floor(deadline + now - timeOffset)
+    typeof validFrom === 'number'
+      ? Math.floor(validFrom + deadline + waitAndSaveEntropy)
+      : Math.floor(deadline + serverNowSec)
 
   // Should not be greater than what the contract supports
   return Math.min(validTo, MAX_VALID_TO_EPOCH)
