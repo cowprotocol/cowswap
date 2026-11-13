@@ -175,6 +175,7 @@ export enum UI {
   FONT_SIZE_LARGE = '--cow-font-size-large',
   FONT_SIZE_LARGER = '--cow-font-size-larger',
   FONT_SIZE_LARGEST = '--cow-font-size-largest',
+  FONT_SIZE_TITLE = '--cow-font-size-title',
 
   // Line Heights:
   // LINE_HEIGHT_SMALL = '--cow-line-height-small',
