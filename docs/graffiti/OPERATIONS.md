@@ -263,6 +263,11 @@ and ship with every deploy, so they are served from the same origin as the wall:
 - `apps/cowswap-frontend/public/token/grass.json`
 - `apps/cowswap-frontend/public/token/grass.png` (512×512)
 
+The wall's own UI shows the same mark beside every balance, from a small copy at
+`libs/assets/src/cow-swap/grass-token.png` (64×64) — a page that renders the chip
+live should not pull the full-size logo. Re-cut both from the same artwork when
+the token's look changes, or the wallet and the wall disagree about what it is.
+
 **Deploying anywhere other than `swap.cow.fi` means editing two URLs**: the
 `image` and `external_url` fields in `grass.json`, and `TOKEN_URI` when running
 the script. The script fetches the URI before sending the transaction and warns

@@ -587,7 +587,10 @@ export const PanelBadge = styled.div`
   top: 14px;
   right: 16px;
   z-index: 1;
-  padding: 4px 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px 4px 5px;
   border-radius: 999px;
   background: rgba(10, 10, 16, 0.72);
   color: ${wallColors.neon};
@@ -608,13 +611,16 @@ export const PlotOverlayRoot = styled.div`
 `
 
 export const BalanceChip = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 7px;
   border-radius: 999px;
   border: 1px solid ${wallColors.neon};
   color: ${wallColors.neon};
   font-weight: 700;
   font-family: inherit;
   font-size: 14px;
-  padding: 7px 15px;
+  padding: 6px 15px 6px 7px;
   background: linear-gradient(135deg, rgba(0, 255, 163, 0.18), rgba(0, 208, 255, 0.18)), rgba(21, 21, 36, 0.92);
   box-shadow:
     0 0 14px rgba(0, 255, 163, 0.45),
