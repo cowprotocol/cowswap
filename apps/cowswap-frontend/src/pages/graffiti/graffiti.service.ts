@@ -1,8 +1,9 @@
 // REST base comes from REACT_APP_GRAFFITI_API, defaulting to same-origin '/v1'.
 // The WS URL is derived from it: relative → current host, absolute → its own.
 
-import { GRAFFITI_API_BASE, GRAFFITI_API_RAW_BASE, GRAFFITI_CANVAS_PNG_URL } from '@cowprotocol/common-const'
 import { normalizeError } from '@cowprotocol/common-utils'
+
+import { GRAFFITI_API_BASE, GRAFFITI_API_RAW_BASE, GRAFFITI_CANVAS_PNG_URL } from 'modules/graffitiWall'
 
 import type { Cell } from './raster.utils'
 

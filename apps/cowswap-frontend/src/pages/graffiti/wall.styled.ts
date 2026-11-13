@@ -1,7 +1,8 @@
-import { WALL_PAINT_MIX_BLEND_MODE } from '@cowprotocol/common-const'
 import { Media } from '@cowprotocol/ui'
 
 import styled, { css, keyframes } from 'styled-components/macro'
+
+import { WALL_PAINT_MIX_BLEND_MODE } from 'modules/graffitiWall'
 
 import { APP_BOTTOM_BAR_PX, HERO_BREAKPOINT_PX, NARROW_BREAKPOINT_PX } from './wall.constants'
 

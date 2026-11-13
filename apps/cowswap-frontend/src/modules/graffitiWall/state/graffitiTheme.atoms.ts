@@ -5,7 +5,7 @@ import { getJotaiIsolatedStorage } from '@cowprotocol/core'
 /**
  * Whether the graffiti theme may paint the app on Solana. On by default: the setting
  * exists to turn it off, so someone who has never opened it keeps what they had.
- * The wall page itself ignores this — see `resolveCustomThemeForContext`.
+ * The wall page itself ignores this — see `resolveGraffitiTheme`.
  */
 export const graffitiThemeEnabledAtom = atomWithStorage<boolean>(
   'graffitiThemeEnabled:v0',

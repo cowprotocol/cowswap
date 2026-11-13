@@ -14,7 +14,10 @@ export interface FeatureFlags {
   isAtaCreationDisabled?: boolean
   isSolanaAppDataEnabled?: boolean
   isWaitForCowsEnabled?: boolean
+  /** Master switch for the graffiti wall: the page, the menu entry, the banner and the theme. */
   isGraffitiWallEnabled?: boolean
+  /** The graffiti wall's theme. Named for the Solana launch it shipped with; see `modules/graffitiWall`. */
+  isSolanaThemeEnabled?: boolean
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any
