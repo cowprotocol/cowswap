@@ -1,3 +1,5 @@
+import { buildComputeBudgetInstructions, resolveSolanaComputeBudget } from '@cowprotocol/sdk-trading-solana'
+
 import { t } from '@lingui/core/macro'
 import { Connection, PublicKey } from '@solana/web3.js'
 
@@ -42,9 +44,16 @@ export async function signSolanaFlow(
     throw new Error('signSolanaFlow: no steps to sign')
   }
 
+  const instructions = steps.flatMap((step) => step.instructions)
+
+  // Resolved before the blockhash below, which starts the signing window: a wallet asked to sign a
+  // transaction carrying no compute budget sets one itself, out of the sponsor's lamports rather than
+  // the signer's, and the order book refuses the placement when that lands above its ceiling.
+  const computeBudget = await resolveSolanaComputeBudget(connection, { instructions, feePayer })
+
   const { transaction } = await buildSolanaTransaction({
     connection,
-    instructions: steps.flatMap((step) => step.instructions),
+    instructions: [...buildComputeBudgetInstructions(computeBudget), ...instructions],
     feePayer,
   })
 
