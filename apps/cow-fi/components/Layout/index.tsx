@@ -6,9 +6,10 @@ import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { Footer, Media, MenuBar, baseTheme, getGlobalFooterNavItems } from '@cowprotocol/ui'
 
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import styled, { createGlobalStyle, css, ThemeProvider } from 'styled-components/macro'
 
-import { getNavItems, NAV_ADDITIONAL_BUTTONS, PAGE_MAX_WIDTH, PRODUCT_VARIANT } from './const'
+import { getNavAdditionalButtons, getNavItems, PAGE_MAX_WIDTH, PRODUCT_VARIANT } from './const'
 
 import { useSetupPage } from '../../hooks/useSetupPage'
 import { CowSaucerScene } from '../CowSaucerScene'
@@ -45,6 +46,7 @@ interface LayoutProps {
 export function Layout({ children, bgColor, host, showCowSaucer, contentMinHeight }: Readonly<LayoutProps>): ReactNode {
   useSetupPage()
   const { isSolversEnabled, isRwaEnabled } = useFeatureFlags()
+  const pathname = usePathname()
 
   const LocalStyles = createGlobalStyle(
     () => css`
@@ -62,7 +64,7 @@ export function Layout({ children, bgColor, host, showCowSaucer, contentMinHeigh
         <MenuBar
           navItems={getNavItems(!!isSolversEnabled)}
           productVariant={PRODUCT_VARIANT}
-          additionalNavButtons={NAV_ADDITIONAL_BUTTONS}
+          additionalNavButtons={getNavAdditionalButtons(pathname)}
           padding="10px 60px"
           maxWidth={PAGE_MAX_WIDTH}
           LinkComponent={LinkComponent}

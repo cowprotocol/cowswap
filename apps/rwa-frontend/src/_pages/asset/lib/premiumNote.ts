@@ -3,6 +3,8 @@ import { getDividendModel, getDividendNote, type RwaToken } from '@/entities/ass
 const BASE_NOTE = 'Token price per share compared with the stock price.'
 const ACCRUED_DIVIDENDS_NOTE = 'The premium over the stock price is accrued dividends, not mispricing.'
 
+const PARAGRAPH_BREAK = '\n\n'
+
 const sharesFormatter = new Intl.NumberFormat('en-US', { maximumFractionDigits: 4 })
 
 /**
@@ -16,15 +18,16 @@ export function getPremiumNote(
   premium: number,
 ): string {
   if (sharesPerToken !== null && sharesPerToken !== 1) {
-    return `${BASE_NOTE} One ${token.symbol} stands for ${sharesFormatter.format(sharesPerToken)} shares.`
+    return `One ${token.symbol} stands for ${sharesFormatter.format(sharesPerToken)} shares.${PARAGRAPH_BREAK}${BASE_NOTE}`
   }
 
   const model = getDividendModel(token)
   const note = getDividendNote(token)
 
-  if ((model === 'rebase' || model === 'cash-payout') && note) return `${BASE_NOTE} ${note.label}: ${note.text}`
+  if ((model === 'rebase' || model === 'cash-payout') && note)
+    return `${note.label}: ${note.text}${PARAGRAPH_BREAK}${BASE_NOTE}`
   if (model === 'price-accrual' && note && sharesPerToken === null && premium > 0) {
-    return `${BASE_NOTE} ${note.label}: ${note.text} ${ACCRUED_DIVIDENDS_NOTE}`
+    return `${note.label}: ${note.text} ${ACCRUED_DIVIDENDS_NOTE}${PARAGRAPH_BREAK}${BASE_NOTE}`
   }
 
   return BASE_NOTE

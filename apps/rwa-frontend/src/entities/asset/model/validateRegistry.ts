@@ -3,7 +3,6 @@ import { isAddress } from 'viem'
 import { isSupportedChain } from '@cowprotocol/cow-sdk'
 
 import { findRwaDescriptionIssue } from './description'
-import { RWA_ISSUERS } from './issuers'
 import { RWA_SECTOR_SEPARATOR, RWA_SECTORS } from './sectors'
 import {
   RWA_ASSET_TYPES,
@@ -18,7 +17,6 @@ import { isValidTimeZone } from '../lib/usMarketStatus'
 
 const TRADING_TIME_REGEX = /^([01]\d|2[0-3]):[0-5]\d$/
 
-const ALLOWED_ISSUERS: readonly string[] = RWA_ISSUERS
 const ASSET_TYPES: readonly string[] = RWA_ASSET_TYPES
 const SECTORS: readonly string[] = RWA_SECTORS
 
@@ -126,11 +124,7 @@ function validateToken(token: RwaToken, path: string): string[] {
   if (!isAddress(token.address)) errors.push(`${path}.address: invalid address ${token.address}`)
   if (!token.symbol) errors.push(`${path}.symbol: required`)
   if (!token.name) errors.push(`${path}.name: required`)
-  if (!token.issuer) {
-    errors.push(`${path}.issuer: required`)
-  } else if (!ALLOWED_ISSUERS.includes(token.issuer)) {
-    errors.push(`${path}.issuer: "${token.issuer}" is not an allowed issuer (${ALLOWED_ISSUERS.join(', ')})`)
-  }
+  if (!token.issuer) errors.push(`${path}.issuer: required`)
   if (!Number.isInteger(token.decimals) || token.decimals < 0) errors.push(`${path}.decimals: invalid`)
 
   return errors

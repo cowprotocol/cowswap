@@ -7,7 +7,6 @@ import { StatefulValue } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import { Field } from 'legacy/state/types'
@@ -24,7 +23,6 @@ import {
   TradeWidgetSlots,
   ButtonsContainer,
   useGetReceiveAmountInfo,
-  useIsCustomRecipientLockedOnSolana,
   useIsEoaEthFlow,
   useIsNonEvmBridging,
   useIsWaitAndSaveAvailable,
@@ -70,7 +68,6 @@ export interface SwapWidgetProps {
 }
 
 const DEFAULT_ENABLED_RECIPIENT: StatefulValue<boolean> = [true, () => void 0]
-const DEFAULT_DISABLED_RECIPIENT: StatefulValue<boolean> = [false, () => void 0]
 
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
@@ -89,7 +86,6 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
   const widgetActions = useSwapWidgetActions(hooksEnabledState[0])
   const receiveAmountInfo = useGetReceiveAmountInfo()
   const { disableCustomRecipient } = useInjectedWidgetParams()
-  const isRecipientLockedOnSolana = useIsCustomRecipientLockedOnSolana()
   const { token: intermediateBuyToken, toBeImported } = useTryFindToken(getBridgeIntermediateTokenAddress(bridgeQuote))
   const [showNativeWrapModal, setOpenNativeWrapModal] = useState(false)
   const [showAddIntermediateTokenModal, setShowAddIntermediateTokenModal] = useState(false)
@@ -198,20 +194,13 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
       <ButtonsContainer>
         <PriceChartToggleButton />
         <SettingsTab
-          recipientToggleState={getRecipientToggleState(
-            isNonEvmBridging,
-            isRecipientLockedOnSolana,
-            recipientToggleState,
-          )}
+          recipientToggleState={getRecipientToggleState(isNonEvmBridging, recipientToggleState)}
           hooksEnabledState={hooksEnabledState}
           deadlineState={deadlineState}
           enablePartialApprovalState={enablePartialApprovalState}
           partialApprovalLocked={isInfiniteApproveDisabled}
-          isRecipientToggleDisabled={isNonEvmBridging || isRecipientLockedOnSolana}
+          isRecipientToggleDisabled={isNonEvmBridging}
           isRecipientToggleHidden={disableCustomRecipient}
-          recipientToggleDisabledNote={
-            isRecipientLockedOnSolana ? <Trans>Custom recipients are not available on Solana yet.</Trans> : undefined
-          }
           isHooksToggleDisabled={isSolanaChain(chainId)}
         />
       </ButtonsContainer>
@@ -312,15 +301,10 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
   )
 }
 
-// Non-EVM bridging locks the toggle on (the recipient is required); Solana locks it off. Both ignore
-// the stored setting so a value carried over from an EVM chain can't show as enabled.
+// Non-EVM bridging locks the toggle on (the recipient is required), ignoring the stored setting.
 function getRecipientToggleState(
   isNonEvmBridging: boolean,
-  isLockedOnSolana: boolean,
   toggleState: StatefulValue<boolean>,
 ): StatefulValue<boolean> {
-  if (isNonEvmBridging) return DEFAULT_ENABLED_RECIPIENT
-  if (isLockedOnSolana) return DEFAULT_DISABLED_RECIPIENT
-
-  return toggleState
+  return isNonEvmBridging ? DEFAULT_ENABLED_RECIPIENT : toggleState
 }
