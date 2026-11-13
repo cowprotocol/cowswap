@@ -5208,13 +5208,13 @@ msgstr "Order presigned"
 msgid "See how it works."
 msgstr "See how it works."
 
-#: apps/cowswap-frontend/src/pages/graffiti/ClaimScreens.pure.tsx
-msgid "to <0>{address}</0>"
-msgstr "to <0>{address}</0>"
-
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/internal/slots/TokenList.tsx
 msgid "None of the tokens available here can be bridged to this network yet."
 msgstr "None of the tokens available here can be bridged to this network yet."
+
+#: apps/cowswap-frontend/src/pages/graffiti/ClaimScreens.pure.tsx
+msgid "to <0>{address}</0>"
+msgstr "to <0>{address}</0>"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Add <0/> for fees and account rent"
