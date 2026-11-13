@@ -7,12 +7,12 @@ import { Analytics } from './Analytics'
 jest.mock('wagmi', () => ({ useConnection: jest.fn() }))
 jest.mock('next/navigation', () => ({ usePathname: () => '/rwa' }))
 
-const mockConsent = { accepted: true }
+const mockConsent = { accepted: true, isHydrating: false }
 
 jest.mock('@cowprotocol/analytics/consent', () => ({
-  grantGoogleConsent: jest.fn(),
+  grantGoogleConsent: () => globalThis.window.dataLayer?.push({ event: 'consent_default' }),
   hasAcceptedCookies: () => mockConsent.accepted,
-  useHasAcceptedCookies: () => mockConsent.accepted,
+  useHasAcceptedCookies: () => mockConsent.accepted && !mockConsent.isHydrating,
 }))
 
 const ADDRESS = '0x1111111111111111111111111111111111111111'
@@ -39,6 +39,27 @@ describe('Analytics wallet events', () => {
   beforeEach(() => {
     window.dataLayer = []
     mockConsent.accepted = true
+    mockConsent.isHydrating = false
+    document.head.querySelectorAll('script').forEach((script) => script.remove())
+  })
+
+  it('sends nothing before the consent default for a visitor who accepted on an earlier visit', () => {
+    mockConsent.isHydrating = true
+    mockConnection(ADDRESS)
+    const { rerender } = render(<Analytics />)
+
+    expect(window.dataLayer).toEqual([])
+
+    mockConsent.isHydrating = false
+    rerender(<Analytics />)
+
+    expect(window.dataLayer?.map((entry) => 'event' in entry && entry.event)).toEqual([
+      'consent_default',
+      'gtm.js',
+      'page_view',
+      'set_user_account',
+      'wallet_connected',
+    ])
   })
 
   it('sends nothing before cookies are accepted, then the page view and the connected wallet', () => {

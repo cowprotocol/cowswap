@@ -32,6 +32,32 @@ export function Analytics(): ReactNode {
   return null
 }
 
+function trackWalletChange(current: ConnectedWallet | null, previous: ConnectedWallet | null): void {
+  trackEvent('set_user_account', { userId: current?.address })
+
+  if (current && !previous) {
+    trackEvent('wallet_connected', {
+      eventType: 'wallet_initial_connection',
+      walletAddress: current.address,
+      walletName: current.name,
+    })
+  } else if (current && previous && !areAddressesEqual(current.address, previous.address)) {
+    trackEvent('wallet_switched', {
+      eventType: 'wallet_switch',
+      walletAddress: current.address,
+      walletName: current.name,
+      previousWalletAddress: previous.address,
+      previousWalletName: previous.name,
+    })
+  } else if (!current && previous) {
+    trackEvent('wallet_disconnected', {
+      eventType: 'wallet_disconnection',
+      previousWalletAddress: previous.address,
+      previousWalletName: previous.name,
+    })
+  }
+}
+
 function usePageViews(isAccepted: boolean): void {
   const pathname = usePathname()
 
@@ -60,29 +86,8 @@ function useWalletEvents(isAccepted: boolean): void {
     setAnalyticsDimension('userAddress', current?.address ?? 'disconnected')
     if (current) setAnalyticsDimension('walletName', current.name)
 
-    trackEvent('set_user_account', { userId: current?.address })
-
-    if (current && !previous) {
-      trackEvent('wallet_connected', {
-        eventType: 'wallet_initial_connection',
-        walletAddress: current.address,
-        walletName: current.name,
-      })
-    } else if (current && previous && !areAddressesEqual(current.address, previous.address)) {
-      trackEvent('wallet_switched', {
-        eventType: 'wallet_switch',
-        walletAddress: current.address,
-        walletName: current.name,
-        previousWalletAddress: previous.address,
-        previousWalletName: previous.name,
-      })
-    } else if (!current && previous) {
-      trackEvent('wallet_disconnected', {
-        eventType: 'wallet_disconnection',
-        previousWalletAddress: previous.address,
-        previousWalletName: previous.name,
-      })
-    }
+    // During hydration the hook still reports the server snapshot while the store already holds an earlier Accept
+    if (isAccepted) trackWalletChange(current, previous)
 
     if (!current) setAnalyticsDimension('walletName', NOT_CONNECTED_WALLET_NAME)
   }, [address, connector, status, isAccepted])

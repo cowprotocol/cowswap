@@ -3,7 +3,7 @@ import { ReactNode, StrictMode, useMemo } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 
-import { CowAnalyticsProvider, initGtmWithConsent } from '@cowprotocol/analytics'
+import { CowAnalyticsProvider, createNoopCowAnalytics } from '@cowprotocol/analytics'
 
 import { CssBaseline, GlobalStyles } from '@mui/material'
 import Box from '@mui/material/Box'
@@ -12,7 +12,6 @@ import 'inter-ui'
 import { createRoot } from 'react-dom/client'
 
 import { Configurator } from './components/configurator/configurator.component'
-import { CookieConsentBanner } from './components/CookieConsentBanner/CookieConsentBanner'
 import { commonComponents } from './theme/commonComponents.constants'
 import { commonTypography } from './theme/commonTypography.constants'
 import { ColorModeProvider } from './theme/context/ColorModeProvider'
@@ -23,7 +22,7 @@ import { darkPalette, lightPalette } from './theme/palettes.constants'
 import { wagmiConfig } from './wagmiConfig'
 import { WithLDProvider } from './WithLDProvider'
 
-const cowAnalytics = initGtmWithConsent()
+const cowAnalytics = createNoopCowAnalytics()
 
 const queryClient = new QueryClient()
 
@@ -55,7 +54,6 @@ function ConfiguratorApp(): ReactNode {
         <WithLDProvider>
           <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
             <Configurator />
-            <CookieConsentBanner />
           </CowAnalyticsProvider>
         </WithLDProvider>
       </Box>
