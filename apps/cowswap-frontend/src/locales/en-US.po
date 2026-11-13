@@ -257,8 +257,8 @@ msgid "What is {accountProxyLabel}?"
 msgstr "What is {accountProxyLabel}?"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/OrderExpiryWarning/OrderExpiryWarning.pure.tsx
-msgid "I understand this order can fill whenever funds return to my wallet"
-msgstr "I understand this order can fill whenever funds return to my wallet"
+#~ msgid "I understand this order can fill whenever funds return to my wallet"
+#~ msgstr "I understand this order can fill whenever funds return to my wallet"
 
 #: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
 msgid "Your draft"
