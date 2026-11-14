@@ -22,6 +22,8 @@ export const RETRY_BASE_DELAY_MS = 1000
 
 export const APP_HEADER_ELEMENT_ID = 'cowswap-app-header'
 
+export const MOBILE_HEADER_CONTROLS_HEIGHT_PX = 56
+
 export const PROTOCOL_FEE_SCALE = 100_000
 
 // `nonce` is required by the store shape but is an EVM concept. Nothing reads it for Solana

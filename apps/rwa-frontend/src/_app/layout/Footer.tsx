@@ -2,6 +2,7 @@
 
 import { type ReactNode, useId, useState } from 'react'
 
+import { openCookieSettings } from '@cowprotocol/analytics/consent'
 import {
   COW_DAO_DESCRIPTION,
   COW_DAO_LINK,
@@ -79,7 +80,12 @@ export function Footer(): ReactNode {
         </div>
       )}
       <div className={styles.bottom}>
-        <p className={styles.copyright}>&copy; CoW DAO - {new Date().getFullYear()}</p>
+        <p className={styles.copyright}>
+          &copy; CoW DAO - {new Date().getFullYear()}
+          <button className={styles.cookieSettings} type="button" onClick={openCookieSettings}>
+            Cookie settings
+          </button>
+        </p>
         <div className={styles.products}>
           {COW_PRODUCT_LINKS.map(({ id, label, href }) =>
             id === CURRENT_PRODUCT ? (

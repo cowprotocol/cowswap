@@ -5,6 +5,7 @@ import {
   rejectCookies,
   requireCookieConsent,
 } from './consent/cookieConsent.store'
+import { __resetNoopCowAnalyticsInstance, createNoopCowAnalytics } from './noop/createNoopCowAnalytics'
 import { waitForAnalytics } from './readinessDetection'
 
 jest.mock('./consent/trackerStorage.utils', () => ({
@@ -18,7 +19,15 @@ describe('waitForAnalytics', () => {
   beforeEach(() => {
     document.cookie = `${COOKIE_CONSENT_NAME}=; Max-Age=0; Path=/`
     __resetCookieConsentStore()
+    __resetNoopCowAnalyticsInstance()
     jest.useFakeTimers()
+  })
+
+  it('resolves right away with no-op analytics, without a cookie choice', async () => {
+    createNoopCowAnalytics()
+    requireCookieConsent()
+
+    await expect(waitForAnalytics()).resolves.toBeUndefined()
   })
 
   afterEach(() => {

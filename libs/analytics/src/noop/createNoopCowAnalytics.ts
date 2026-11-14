@@ -27,6 +27,10 @@ export function createNoopCowAnalytics(): CowAnalytics {
   return state.instance
 }
 
+export function isNoopCowAnalyticsActive(): boolean {
+  return state.instance !== null
+}
+
 class CowAnalyticsNoop implements CowAnalytics {
   private cleanup(): void {
     if (typeof window !== 'undefined') {

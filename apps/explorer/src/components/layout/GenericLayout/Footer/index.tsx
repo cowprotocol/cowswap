@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { openCookieSettings } from '@cowprotocol/analytics'
 import {
   COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
   COW_PROTOCOL_VAULT_RELAYER_ADDRESS,
@@ -112,6 +113,18 @@ const VersionsWrapper = styled.div`
     }
   }
 `
+
+const CookieSettingsButton = styled.button`
+  margin: 0 1rem 0 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+`
+
 export interface FooterType {
   readonly verifiedText?: string
   readonly isBeta?: boolean
@@ -173,6 +186,9 @@ export const Footer: React.FC<FooterType> = (props) => {
         )}
       </ContractsWrapper>
       <VersionsWrapper>
+        <CookieSettingsButton type="button" onClick={openCookieSettings}>
+          Cookie settings
+        </CookieSettingsButton>
         {url.web && VERSION && (
           <a target="_blank" rel="noopener noreferrer" href={url.web + VERSION}>
             Web: v{VERSION}{' '}
