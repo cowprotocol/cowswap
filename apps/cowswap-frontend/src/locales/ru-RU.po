@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-11-13 17:02\n"
+"PO-Revision-Date: 2026-11-14 10:04\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -1277,6 +1277,10 @@ msgstr "Нет подписываемых ордеров"
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Import intermediate token"
 msgstr "Импорт промежуточного токена"
+
+#: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
+msgid "✕ discard it"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/solanaAlpha/containers/SolanaAlphaBanner/index.tsx
 #~ msgid "Maximum trade size: <0>${maxTradeSize}</0> per swap."
@@ -5787,6 +5791,10 @@ msgstr "расходовано пикселей"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 #~ msgid "This fee helps pay for maintenance & improvements to the trade experience"
 #~ msgstr "This fee helps pay for maintenance & improvements to the trade experience"
+
+#: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
+msgid "↩ keep drawing"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/useTwapConfirmCurrencyPreview.ts
 msgid "Min."
@@ -10663,6 +10671,10 @@ msgstr "Посмотреть отмену"
 #: apps/cowswap-frontend/src/modules/wallet/pure/StatusIcon/index.tsx
 msgid "Base Account"
 msgstr "Аккаунт Base"
+
+#: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
+msgid "Cancel throws this drawing away. Nothing has been burned yet."
+msgstr ""
 
 #: apps/cowswap-frontend/src/common/pure/LoadingApp/index.tsx
 msgid "Loading"
