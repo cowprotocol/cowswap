@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
 import { CrossChainQuoteAndPost, isBridgeQuoteAndPost } from '@cowprotocol/sdk-bridging'
@@ -28,6 +28,22 @@ export function FullAmountQuoteUpdater() {
 
   const quoteParams = useQuoteParams(fullQuoteAmount)?.quoteParams
   const updateQuoteState = useSetAtom(fullAmountQuoteAtom)
+  const latestQuoteParamsRef = useRef(quoteParams)
+  const isMountedRef = useRef(false)
+
+  useEffect(() => {
+    isMountedRef.current = true
+
+    return () => {
+      isMountedRef.current = false
+    }
+  }, [])
+
+  // The stored quote belongs to the previous amount/tokens, so drop it until the new one arrives
+  useEffect(() => {
+    latestQuoteParamsRef.current = quoteParams
+    updateQuoteState(null)
+  }, [quoteParams, updateQuoteState])
 
   useEffect(() => {
     if (!canQuote || error || isLoading || !partQuoteAmount || !quoteParams) return
@@ -36,7 +52,7 @@ export function FullAmountQuoteUpdater() {
       .then((response) => {
         const { cancelled, data } = response
 
-        if (cancelled) {
+        if (cancelled || !isMountedRef.current || quoteParams !== latestQuoteParamsRef.current) {
           return
         }
 
