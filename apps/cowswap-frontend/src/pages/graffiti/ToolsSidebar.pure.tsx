@@ -78,7 +78,7 @@ export function ToolsSidebar(props: ToolsSidebarProps): ReactNode {
         onPaint={props.onPaint}
       />
       {missing > 0 && <BalanceWarning missing={missing} needed={draftCost} />}
-      {session !== 'start' && !busy && <CancelButton onCancel={actions.resetToStart} />}
+      {session !== 'start' && !busy && <CancelButton onCancel={actions.resetToStart} hasDrawing={draftCost > 0} />}
       <DraftActions show={canClear} canUndo={props.canUndo} onUndo={actions.undo} onClear={actions.clearAll} />
       {props.boxTooBig && (
         <LimitWarning box={props.draftBox} maxBoxWidth={props.maxBoxWidth} maxBoxHeight={props.maxBoxHeight} />

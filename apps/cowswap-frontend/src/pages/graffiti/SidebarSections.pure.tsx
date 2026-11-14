@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 
 import { Trans, useLingui } from '@lingui/react/macro'
 
@@ -18,6 +18,12 @@ export interface BalanceWarningProps {
 export interface BrushSectionProps {
   brushSize: number
   onBrushSize: (size: number) => void
+}
+
+export interface CancelButtonProps {
+  onCancel: () => void
+  /** Whether the draft holds cells the cancel would throw away. */
+  hasDrawing: boolean
 }
 
 export interface ColorSectionProps {
@@ -98,9 +104,30 @@ export function BrushSection({ brushSize, onBrushSize }: BrushSectionProps): Rea
   )
 }
 
-export function CancelButton({ onCancel }: { onCancel: () => void }): ReactNode {
+export function CancelButton({ onCancel, hasDrawing }: CancelButtonProps): ReactNode {
+  const [armed, setArmed] = useState(false)
+
+  if (armed) {
+    return (
+      <styledEl.CostBox $variant="danger">
+        <Trans>Cancel throws this drawing away. Nothing has been burned yet.</Trans>
+        <styledEl.StatusAction>
+          <styledEl.ButtonRow>
+            <styledEl.Button onClick={() => setArmed(false)}>
+              <Trans>↩ keep drawing</Trans>
+            </styledEl.Button>
+            <styledEl.DangerButton onClick={onCancel}>
+              <Trans>✕ discard it</Trans>
+            </styledEl.DangerButton>
+          </styledEl.ButtonRow>
+        </styledEl.StatusAction>
+      </styledEl.CostBox>
+    )
+  }
+
+  // An empty draft has nothing to lose, so asking would only be in the way.
   return (
-    <styledEl.DangerButton onClick={onCancel}>
+    <styledEl.DangerButton onClick={hasDrawing ? () => setArmed(true) : onCancel}>
       <Trans>✕ cancel</Trans>
     </styledEl.DangerButton>
   )
