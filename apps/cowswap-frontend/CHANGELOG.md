@@ -1,5 +1,27 @@
 # Changelog
 
+## [3.38.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.38.1...cowswap-v3.38.2) (2026-11-14)
+
+### Patch Changes
+
+- fix(graffiti): make the confirm button and the draggable frame obvious (#8641)
+
+- fix(graffiti): make the confirm button and the draggable frame obvious (#8641)
+
+## [3.38.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.38.0...cowswap-v3.38.1) (2026-11-14)
+
+### Patch Changes
+
+- fix(graffiti): give SEE YOUR MASTERPIECE something to do without fullscreen
+
+- fix(graffiti): make the wall's edge visible
+
+- fix(graffiti): make the area outside the plot read as dimmed
+
+- fix(graffiti): stop the claim field zooming the wall on mobile
+
+- fix(graffiti): ask before cancel throws a drawing away
+
 ## [3.38.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.37.0...cowswap-v3.38.0) (2026-11-13)
 
 ### Minor Changes
