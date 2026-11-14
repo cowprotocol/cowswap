@@ -708,6 +708,14 @@ export const TextInput = styled.input`
   user-select: text;
   -webkit-user-select: text;
   cursor: text;
+
+  /*
+   * iOS Safari zooms the page into any field it focuses below 16px and never
+   * zooms back out, leaving the wall cropped for the rest of the session.
+   */
+  @media (pointer: coarse) {
+    font-size: 16px;
+  }
 `
 
 export const ColorRow = styled.div`

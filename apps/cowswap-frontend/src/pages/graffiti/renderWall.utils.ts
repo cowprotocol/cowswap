@@ -46,6 +46,14 @@ const GRID_STEP = 8
 /** The eraser's colour. Erased cells fall back to the page background, not to black. */
 const ERASED = 0
 
+/** Mutes the page beyond the wall, which carries diagonal stripes of its own. */
+const OFF_WALL_VEIL = 'rgba(5,6,11,0.82)'
+const WALL_EDGE = 'rgba(0,255,163,0.85)'
+const WALL_EDGE_GLOW = 'rgba(0,255,163,0.45)'
+
+/** Veil over everything outside the plot. Alpha leaves the surrounding wall art readable. */
+const OUTSIDE_VEIL = 'rgba(10,11,14,0.68)'
+
 /**
  * Capped at 2: every frame redraws a 4096x2048 offscreen, and a 3x backing store
  * on a large display costs more fill than the extra sharpness is worth.
@@ -114,6 +122,7 @@ export function renderWall(refs: WallRenderRefs): void {
   drawBackdrop(chrome, refs, view)
   drawGrid(chrome, view)
   drawPlotFrame(chrome, refs)
+  drawWallEdge(chrome, view)
 }
 
 /** Diagonal hatch marking everything that is not the wall. */
@@ -141,7 +150,11 @@ function backdropPattern(ctx: CanvasRenderingContext2D): CanvasPattern | null {
   return ctx.createPattern(tile, 'repeat')
 }
 
-/** Dim everything outside the plot so the painter's area reads clearly. */
+/**
+ * Dim everything outside the plot so the painter's area reads clearly. A neutral
+ * grey rather than black: the page background is already near-black, so a black
+ * veil only drains its blue channel and leaves the luminance unchanged.
+ */
 function dimOutsidePlot(
   ctx: CanvasRenderingContext2D,
   box: { sx: number; sy: number; sw: number; sh: number },
@@ -151,15 +164,11 @@ function dimOutsidePlot(
   const { sx, sy, sw, sh } = box
 
   ctx.save()
-
-  for (const fill of ['rgba(0,0,0,0.55)', 'rgba(255,255,255,0.05)']) {
-    ctx.fillStyle = fill
-    ctx.fillRect(0, 0, canvasW, sy)
-    ctx.fillRect(0, sy + sh, canvasW, canvasH - sy - sh)
-    ctx.fillRect(0, sy, sx, sh)
-    ctx.fillRect(sx + sw, sy, canvasW - sx - sw, sh)
-  }
-
+  ctx.fillStyle = OUTSIDE_VEIL
+  ctx.fillRect(0, 0, canvasW, sy)
+  ctx.fillRect(0, sy + sh, canvasW, canvasH - sy - sh)
+  ctx.fillRect(0, sy, sx, sh)
+  ctx.fillRect(sx + sw, sy, canvasW - sx - sw, sh)
   ctx.restore()
 }
 
@@ -171,8 +180,16 @@ function drawBackdrop(ctx: CanvasRenderingContext2D, refs: WallRenderRefs, view:
 
   if (!pattern) return
 
+  const canvasW = ctx.canvas.clientWidth
+  const canvasH = ctx.canvas.clientHeight
+
+  // The page behind the canvas is itself diagonally striped, so the hatch alone does
+  // not separate wall from void. The veil flattens the page outside the wall, and
+  // `clearRect` lets it through at full strength inside; that step is the boundary.
+  ctx.fillStyle = OFF_WALL_VEIL
+  ctx.fillRect(0, 0, canvasW, canvasH)
   ctx.fillStyle = pattern
-  ctx.fillRect(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight)
+  ctx.fillRect(0, 0, canvasW, canvasH)
   ctx.clearRect(view.offsetX, view.offsetY, CANVAS.w * view.scale, CANVAS.h * view.scale)
 }
 
@@ -334,6 +351,17 @@ function drawStrokePreview(ctx: CanvasRenderingContext2D, refs: WallRenderRefs):
 
   ctx.closePath()
   ctx.fill()
+  ctx.restore()
+}
+
+/** The wall's own boundary. Drawn last so the plot veil cannot wash it out. */
+function drawWallEdge(ctx: CanvasRenderingContext2D, view: View): void {
+  ctx.save()
+  ctx.lineWidth = 2
+  ctx.strokeStyle = WALL_EDGE
+  ctx.shadowColor = WALL_EDGE_GLOW
+  ctx.shadowBlur = 12
+  ctx.strokeRect(view.offsetX, view.offsetY, CANVAS.w * view.scale, CANVAS.h * view.scale)
   ctx.restore()
 }
 

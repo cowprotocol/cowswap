@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { CanvasControls, ExitFullscreenButton, LoadErrorOverlay, ShowToolsButton } from './CanvasControls.pure'
 import { API_BASE } from './graffiti.service'
 import { PlotOverlay } from './PlotOverlay.pure'
+import { showResult } from './showResult.utils'
 import { StartOverlay } from './StartOverlay.pure'
 import * as styledEl from './wall.styled'
 
@@ -39,7 +40,14 @@ export function WallStage({ wall }: WallStageProps): ReactNode {
           onConnect={gate.openSolanaWalletModal}
           canFullscreen={viewport.canFullscreen}
           onFullscreen={viewport.toggleFullscreen}
-          onShowResult={viewport.openPlotFullscreen}
+          onShowResult={() =>
+            showResult({
+              canFullscreen: viewport.canFullscreen,
+              openPlotFullscreen: viewport.openPlotFullscreen,
+              zoomToPlot: viewport.zoomToPlot,
+              resetPhase: paint.resetPhase,
+            })
+          }
           onDismiss={paint.resetPhase}
           claim={claim}
           account={gate.solanaAccount}
