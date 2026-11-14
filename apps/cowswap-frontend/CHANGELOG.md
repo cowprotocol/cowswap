@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.38.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.38.1...cowswap-v3.38.2) (2026-11-14)
+
+### Patch Changes
+
+- fix(graffiti): make the confirm button and the draggable frame obvious (#8641)
+
+- fix(graffiti): make the confirm button and the draggable frame obvious (#8641)
+
 ## [3.38.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.38.0...cowswap-v3.38.1) (2026-11-14)
 
 ### Patch Changes
