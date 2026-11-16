@@ -173,6 +173,7 @@ export const CHAIN_INFO: ChainInfoMap = {
  */
 export const SORTED_CHAIN_IDS: SupportedChainId[] = [
   SupportedChainId.MAINNET,
+  SupportedChainId.SOLANA,
   SupportedChainId.BNB,
   SupportedChainId.BASE,
   SupportedChainId.ARBITRUM_ONE,
@@ -183,7 +184,6 @@ export const SORTED_CHAIN_IDS: SupportedChainId[] = [
   SupportedChainId.INK,
   SupportedChainId.ROBINHOOD,
   SupportedChainId.GNOSIS_CHAIN,
-  SupportedChainId.SOLANA,
   SupportedChainId.SEPOLIA,
 ]
 

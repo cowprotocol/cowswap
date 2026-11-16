@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.12.5](https://github.com/cowprotocol/cowswap/compare/multicall-v3.12.4...multicall-v3.12.5) (2026-11-16)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.23.0
+  - @cowprotocol/wallet@3.22.2
+
 ## [3.12.4](https://github.com/cowprotocol/cowswap/compare/multicall-v3.12.3...multicall-v3.12.4) (2026-11-13)
 
 ### Patch Changes

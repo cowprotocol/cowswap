@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.22.2](https://github.com/cowprotocol/cowswap/compare/wallet-v3.22.1...wallet-v3.22.2) (2026-11-16)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.23.0
+  - @cowprotocol/common-hooks@3.21.1
+  - @cowprotocol/common-utils@3.22.4
+  - @cowprotocol/core@3.15.4
+  - @cowprotocol/ens@3.12.4
+  - @cowprotocol/ui@3.23.2
+
 ## [3.22.1](https://github.com/cowprotocol/cowswap/compare/wallet-v3.22.0...wallet-v3.22.1) (2026-11-13)
 
 ### Patch Changes
