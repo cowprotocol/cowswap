@@ -90,6 +90,7 @@ describe('SolversInfoUpdater', () => {
       {
         solverId: 'naive',
         displayName: 'Naive',
+        isActive: true,
         solverNetworks: [
           {
             chainId: SupportedChainId.ARBITRUM_ONE,
