@@ -32,7 +32,16 @@ export function calculatePriceDifference({
   targetPrice,
   isInverted,
 }: CalculatePriceDifferenceParams): PriceDifference {
-  if (!targetPrice || !referencePrice || !isSameMarket(referencePrice, targetPrice)) {
+  if (!targetPrice || !referencePrice) {
+    return null
+  }
+
+  if (!isSameMarket(referencePrice, targetPrice)) {
+    console.warn('[calculatePriceDifference] Prices are not from the same market', {
+      referenceMarket: getMarketId(referencePrice),
+      targetMarket: getMarketId(targetPrice),
+    })
+
     return null
   }
 
@@ -81,6 +90,14 @@ function calculatePriceDifferenceAux({
   )
 
   return { percentage, amount: differenceInQuoteToken }
+}
+
+function getCurrencyId(currency: Currency): string {
+  return `${currency.chainId}:${currency.isToken ? currency.address : 'native'}`
+}
+
+function getMarketId(price: Price<Currency, Currency>): string {
+  return `${getCurrencyId(price.baseCurrency)}/${getCurrencyId(price.quoteCurrency)}`
 }
 
 function isSameMarket(price1: Price<Currency, Currency>, price2: Price<Currency, Currency>): boolean {
