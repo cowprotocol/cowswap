@@ -78,6 +78,7 @@ export function RateInput() {
     initialRate,
     focusCustomPercentage,
     percentageSelection,
+    isRateFromUrl,
   } = useAtomValue(limitRateAtom)
   const updateRate = useUpdateActiveRate()
   const updateLimitRateState = useSetAtom(updateLimitRateAtom)
@@ -335,9 +336,12 @@ export function RateInput() {
       : null
     const isApplied =
       !focusCustomPercentage && matchesRate(expectedRate, activeRate, percentageSelection?.isInverted ?? isInverted)
+    const isPendingTakeProfit = isRateFromUrl || focusCustomPercentage
 
     // Keep an already-applied selection during background market-rate refreshes.
     if (isApplied) return
+    // Price failure must not drop a selection the user or QuoteObserver already applied.
+    if (!isPendingTakeProfit) return
     // Pending with a settled market rate can be applied by QuoteObserver; do not clear yet.
     if (marketRate?.greaterThan(0) && !isLoadingMarketRate) return
 
@@ -361,6 +365,7 @@ export function RateInput() {
     updateLimitRateState,
     activeRate,
     isInverted,
+    isRateFromUrl,
   ])
 
   const handlePercentageRateChange = (rate: Fraction | null, percentage?: string): void => {
