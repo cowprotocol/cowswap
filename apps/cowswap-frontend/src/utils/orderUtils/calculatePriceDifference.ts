@@ -2,7 +2,6 @@ import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { FractionUtils } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount, Fraction, Percent, Price } from '@cowprotocol/currency'
 
-import invariant from 'tiny-invariant'
 import { Nullish } from 'types'
 
 const ONE = new Fraction(1)
@@ -33,12 +32,9 @@ export function calculatePriceDifference({
   targetPrice,
   isInverted,
 }: CalculatePriceDifferenceParams): PriceDifference {
-  if (!targetPrice || !referencePrice) {
+  if (!targetPrice || !referencePrice || !isSameMarket(referencePrice, targetPrice)) {
     return null
   }
-
-  // Make sure we are comparing apples with apples (prices should refer to market)
-  assertSameMarket(referencePrice, targetPrice)
 
   if (
     referencePrice.equalTo(ZERO_FRACTION) || // The reference cannot be zero (infinite relative difference)
@@ -60,16 +56,6 @@ export function calculatePriceDifference({
       targetPrice,
     })
   }
-}
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function assertSameMarket(price1: Price<Currency, Currency>, price2: Price<Currency, Currency>) {
-  // Assert I'm comparing apples with apples (prices should refer to market)
-  invariant(
-    price1.baseCurrency.equals(price2.baseCurrency) && price1.quoteCurrency.equals(price2.quoteCurrency),
-    'Prices are not from the same market',
-  )
 }
 
 function calculatePriceDifferenceAux({
@@ -95,4 +81,8 @@ function calculatePriceDifferenceAux({
   )
 
   return { percentage, amount: differenceInQuoteToken }
+}
+
+function isSameMarket(price1: Price<Currency, Currency>, price2: Price<Currency, Currency>): boolean {
+  return price1.baseCurrency.equals(price2.baseCurrency) && price1.quoteCurrency.equals(price2.quoteCurrency)
 }
