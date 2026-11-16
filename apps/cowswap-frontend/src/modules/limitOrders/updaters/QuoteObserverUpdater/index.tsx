@@ -73,21 +73,15 @@ function useSpotPrice(
   const outputUsdPrice = useUsdPrice(outputCurrency)
 
   return useMemo(() => {
-    // useUsdPrice is null until the token is in the price atom, so we treat as still loading, not "unavailable".
-    if (!inputUsdPrice || !outputUsdPrice) {
-      return { price: null, isLoading: true }
-    }
+    const isLoading = Boolean(inputUsdPrice?.isLoading || outputUsdPrice?.isLoading)
 
-    const isLoading = inputUsdPrice.isLoading || outputUsdPrice.isLoading
-
-    if (!inputUsdPrice.price || !outputUsdPrice.price) {
+    if (!inputUsdPrice?.price || !outputUsdPrice?.price) {
       return { price: null, isLoading }
     }
+
     const inputFraction = FractionUtils.fromPrice(inputUsdPrice.price)
     const outputFraction = FractionUtils.fromPrice(outputUsdPrice.price)
 
-    const price = inputFraction.divide(outputFraction)
-
-    return { price, isLoading }
+    return { price: inputFraction.divide(outputFraction), isLoading }
   }, [inputUsdPrice, outputUsdPrice])
 }
