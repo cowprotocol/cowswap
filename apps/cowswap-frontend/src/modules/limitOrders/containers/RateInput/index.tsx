@@ -329,7 +329,17 @@ export function RateInput() {
   // Clear + focus in one rAF: clearing selection re-runs this effect and would cancel a separate focus frame.
   useEffect(() => {
     if (!percentageSelection && !focusCustomPercentage) return
-    if (marketRate?.greaterThan(0)) return
+
+    const expectedRate = percentageSelection
+      ? getPercentageRate(marketRate, percentageSelection.value, percentageSelection.isInverted)
+      : null
+    const isApplied =
+      !focusCustomPercentage && matchesRate(expectedRate, activeRate, percentageSelection?.isInverted ?? isInverted)
+
+    // Keep an already-applied selection during background market-rate refreshes.
+    if (isApplied) return
+    // Pending with a settled market rate can be applied by QuoteObserver; do not clear yet.
+    if (marketRate?.greaterThan(0) && !isLoadingMarketRate) return
 
     const focusPriceField = (): void => {
       updateLimitRateState({ percentageSelection: null, focusCustomPercentage: false })
@@ -343,7 +353,15 @@ export function RateInput() {
 
     const frameId = requestAnimationFrame(focusPriceField)
     return () => cancelAnimationFrame(frameId)
-  }, [percentageSelection, focusCustomPercentage, isLoadingMarketRate, marketRate, updateLimitRateState])
+  }, [
+    percentageSelection,
+    focusCustomPercentage,
+    isLoadingMarketRate,
+    marketRate,
+    updateLimitRateState,
+    activeRate,
+    isInverted,
+  ])
 
   const handlePercentageRateChange = (rate: Fraction | null, percentage?: string): void => {
     setTypedTrailingZeros('')
