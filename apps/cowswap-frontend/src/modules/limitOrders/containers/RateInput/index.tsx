@@ -126,6 +126,10 @@ export function RateInput() {
   // Handle rate input
   const handleUserInput = useCallback(
     (typedValue: string) => {
+      if (focusCustomPercentage) {
+        updateLimitRateState({ focusCustomPercentage: false })
+      }
+
       // Always pass through empty string to allow clearing
       if (typedValue === '') {
         setTypedTrailingZeros('')
@@ -180,7 +184,15 @@ export function RateInput() {
         isAlternativeOrderRate: false,
       })
     },
-    [isUsdRateMode, isInverted, updateRate, updateLimitRateState, displayedRate, convertUsdToTokenValue],
+    [
+      focusCustomPercentage,
+      isUsdRateMode,
+      isInverted,
+      updateRate,
+      updateLimitRateState,
+      displayedRate,
+      convertUsdToTokenValue,
+    ],
   )
 
   // Handle set market price
