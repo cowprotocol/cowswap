@@ -11,6 +11,8 @@ import { getPercentageRate, useDerivedTradeState } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { useUsdPrice } from 'modules/usdAmount/hooks/useUsdPrice'
 
+import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useSafeEffect } from 'common/hooks/useSafeMemo'
 
 import { useUpdateActiveRate } from '../../hooks/useUpdateActiveRate'
@@ -71,9 +73,15 @@ function useSpotPrice(
 } {
   const inputUsdPrice = useUsdPrice(inputCurrency)
   const outputUsdPrice = useUsdPrice(outputCurrency)
+  const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
 
   return useMemo(() => {
-    const isLoading = Boolean(inputUsdPrice?.isLoading || outputUsdPrice?.isLoading)
+    const pricesUnavailable = isProviderNetworkUnsupported || isProviderNetworkDeprecated
+    // Valid token with no atom entry yet is still in-flight (queue has not marked loading).
+    const awaitingPriceState =
+      !pricesUnavailable && Boolean((inputCurrency && !inputUsdPrice) || (outputCurrency && !outputUsdPrice))
+    const isLoading = awaitingPriceState || Boolean(inputUsdPrice?.isLoading || outputUsdPrice?.isLoading)
 
     if (!inputUsdPrice?.price || !outputUsdPrice?.price) {
       return { price: null, isLoading }
@@ -83,5 +91,12 @@ function useSpotPrice(
     const outputFraction = FractionUtils.fromPrice(outputUsdPrice.price)
 
     return { price: inputFraction.divide(outputFraction), isLoading }
-  }, [inputUsdPrice, outputUsdPrice])
+  }, [
+    inputUsdPrice,
+    outputUsdPrice,
+    inputCurrency,
+    outputCurrency,
+    isProviderNetworkUnsupported,
+    isProviderNetworkDeprecated,
+  ])
 }

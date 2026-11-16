@@ -69,11 +69,7 @@ export function PricePercentageShortcuts(props: PricePercentageShortcutsProps): 
         </styledEl.Shortcut>
       ))}
       {customInput ? (
-        <styledEl.CustomPercentage
-          ref={customField}
-          $selected={!disabled && customInput.selected}
-          $invalid={customInput.invalid}
-        >
+        <styledEl.CustomPercentage ref={customField} $selected={customInput.selected} $invalid={customInput.invalid}>
           <styledEl.CustomInput
             value={customInput.value}
             onUserInput={(value) => {
