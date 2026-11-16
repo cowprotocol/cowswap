@@ -1,5 +1,23 @@
 # Changelog
 
+## [3.38.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.38.2...cowswap-v3.38.3) (2026-11-16)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.23.0
+  - @cowprotocol/analytics@3.19.2
+  - @cowprotocol/balances-and-allowances@3.19.5
+  - @cowprotocol/common-hooks@3.21.1
+  - @cowprotocol/common-utils@3.22.4
+  - @cowprotocol/core@3.15.4
+  - @cowprotocol/ens@3.12.4
+  - @cowprotocol/multicall@3.12.5
+  - @cowprotocol/tokens@3.19.4
+  - @cowprotocol/ui@3.23.2
+  - @cowprotocol/wallet@3.22.2
+  - @cowprotocol/snackbars@2.3.20
+
 ## [3.38.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.38.1...cowswap-v3.38.2) (2026-11-14)
 
 ### Patch Changes

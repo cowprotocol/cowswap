@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.21.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.21.0...common-hooks-v3.21.1) (2026-11-16)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.23.0
+  - @cowprotocol/common-utils@3.22.4
+
 ## [3.21.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.20.1...common-hooks-v3.21.0) (2026-11-13)
 
 ### Minor Changes
