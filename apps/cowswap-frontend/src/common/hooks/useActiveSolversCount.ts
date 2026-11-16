@@ -6,7 +6,7 @@ import { solversInfoAtom } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 /**
- * How many distinct solvers have an active deployment on the given chain/env.
+ * How many solvers the CMS still counts as competing on the given chain/env.
  *
  * Counts solvers and not addresses: the CMS keeps a solver's retired deployments alongside the
  * live one, so one solver can contribute several addresses for the same chain.
@@ -18,12 +18,15 @@ export function useActiveSolversCount(chainId: SupportedChainId): number {
     const envToFilter = isBarnBackendEnv ? 'staging' : 'prod'
 
     const activeSolverIds = allSolversInfo.reduce<Set<string>>((acc, info) => {
-      const hasActiveDeployment = info.solverNetworks.some(
-        ({ env, chainId: solverChainId, isActive }) =>
-          isActive !== false && env === envToFilter && solverChainId === chainId,
+      if (info.isActive === false) {
+        return acc
+      }
+
+      const isDeployedHere = info.solverNetworks.some(
+        ({ env, chainId: solverChainId, address }) => address && env === envToFilter && solverChainId === chainId,
       )
 
-      if (hasActiveDeployment) {
+      if (isDeployedHere) {
         acc.add(info.solverId)
       }
 

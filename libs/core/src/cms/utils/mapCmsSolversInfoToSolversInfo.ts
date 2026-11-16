@@ -3,13 +3,13 @@ import { CmsSolversInfo, SolverNetwork, SolversInfo } from '../types'
 export function mapCmsSolversInfoToSolversInfo(cmsSolversInfo: CmsSolversInfo): SolversInfo {
   return cmsSolversInfo.reduce<SolversInfo>((acc, info) => {
     if (info?.attributes) {
-      const { solverId, displayName, image, solver_networks, description } = info.attributes
+      const { solverId, displayName, image, solver_networks, description, active } = info.attributes
 
       // TODO: Reduce function complexity by extracting logic
       // eslint-disable-next-line complexity
       const solverNetworks = solver_networks?.data?.reduce<SolverNetwork[]>((acc, entry) => {
         if (entry.attributes) {
-          const { network, environment, address, active } = entry.attributes
+          const { network, environment, address } = entry.attributes
           const chainId = network?.data?.attributes?.chainId
           const cmsEnv = environment?.data?.attributes?.name
 
@@ -20,7 +20,6 @@ export function mapCmsSolversInfoToSolversInfo(cmsSolversInfo: CmsSolversInfo): 
               chainId,
               env,
               address: address ?? undefined,
-              isActive: active !== false,
             })
           }
         }
@@ -33,7 +32,14 @@ export function mapCmsSolversInfoToSolversInfo(cmsSolversInfo: CmsSolversInfo): 
         return acc
       }
 
-      acc.push({ solverId, displayName, description, image: image?.data?.attributes?.url, solverNetworks })
+      acc.push({
+        solverId,
+        displayName,
+        description,
+        image: image?.data?.attributes?.url,
+        solverNetworks,
+        isActive: active !== false,
+      })
     }
 
     return acc

@@ -59,18 +59,18 @@ describe('mapCmsSolversInfoToSolversInfo', () => {
         displayName: 'Grafiks',
         description: undefined,
         image: undefined,
-        solverNetworks: [{ chainId: 1000000001, env: 'prod', address: SOLANA_ADDRESS, isActive: true }],
+        isActive: false,
+        solverNetworks: [{ chainId: 1000000001, env: 'prod', address: SOLANA_ADDRESS }],
       },
     ])
   })
 
-  it('maps the per-network active flag, defaulting to active when the CMS leaves it unset', () => {
+  it('maps the solver-level active flag, defaulting to active when the CMS leaves it unset', () => {
     const result = mapCmsSolversInfoToSolversInfo([
       buildCmsSolver(1, {
         solverId: 'naive',
         displayName: 'Naive',
         networks: [
-          { active: false, address: '0x1111111111111111111111111111111111111111', chainId: 1, environment: 'prod' },
           {
             address: '0x2222222222222222222222222222222222222222',
             chainId: SupportedChainId.ARBITRUM_ONE,
@@ -80,13 +80,12 @@ describe('mapCmsSolversInfoToSolversInfo', () => {
       }),
     ])
 
+    expect(result[0].isActive).toBe(true)
     expect(result[0].solverNetworks).toEqual([
-      { chainId: 1, env: 'prod', address: '0x1111111111111111111111111111111111111111', isActive: false },
       {
         chainId: SupportedChainId.ARBITRUM_ONE,
         env: 'staging',
         address: '0x2222222222222222222222222222222222222222',
-        isActive: true,
       },
     ])
   })

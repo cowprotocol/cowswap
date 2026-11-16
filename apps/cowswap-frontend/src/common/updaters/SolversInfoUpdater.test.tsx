@@ -24,7 +24,6 @@ const PERSISTED_SOLVERS: SolversInfo = [
         chainId: SupportedChainId.ARBITRUM_ONE,
         env: 'staging',
         address: '0x2e6822f4Ab355E386d1A4fd34947ACE0F6f344a7',
-        isActive: true,
       },
     ],
   },
@@ -91,12 +90,12 @@ describe('SolversInfoUpdater', () => {
       {
         solverId: 'naive',
         displayName: 'Naive',
+        isActive: true,
         solverNetworks: [
           {
             chainId: SupportedChainId.ARBITRUM_ONE,
             env: 'staging',
             address: '0x2222222222222222222222222222222222222222',
-            isActive: true,
           },
         ],
       },

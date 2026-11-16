@@ -30,14 +30,14 @@ export type SolverInfo = {
   solverNetworks: SolverNetwork[]
   description?: string
   image?: string
+  /** Whether the CMS still counts the solver as competing. Absent in previously persisted data; read it as `!== false`. */
+  isActive?: boolean
 }
 
 export type SolverNetwork = {
   chainId: SupportedChainId
   env: CowEnv
   address?: string
-  /** Whether the deployment still competes. Absent in data persisted before this field existed; read it as `!== false`. */
-  isActive?: boolean
 }
 
 export type SolversInfo = SolverInfo[]
