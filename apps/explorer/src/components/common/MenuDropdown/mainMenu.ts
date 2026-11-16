@@ -3,7 +3,7 @@ import svgCowProtocolSrc from 'assets/img/CowProtocol-logo.svg'
 import svgDiscordSrc from 'assets/img/discord.svg'
 import svgDocSrc from 'assets/img/doc.svg'
 import svgPieSrc from 'assets/img/pie.svg'
-import { PiMathOperationsFill } from 'react-icons/pi'
+import { PiImageSquareFill, PiMathOperationsFill } from 'react-icons/pi'
 
 import { MenuItemKind, MenuLink, MenuTreeItem } from './types'
 
@@ -15,6 +15,13 @@ import {
   DUNE_DASHBOARD_LINK,
   Routes,
 } from '../../../explorer/const'
+
+const SOLVER_LOGOS_LINK: MenuLink = {
+  title: 'Solver logos',
+  url: Routes.SOLVER_LOGOS,
+  iconComponent: PiImageSquareFill,
+  noPrefix: true,
+}
 
 export function getMainMenu(isSolversEnabled = true): MenuTreeItem[] {
   const otherLinks: MenuLink[] = [
@@ -28,6 +35,7 @@ export function getMainMenu(isSolversEnabled = true): MenuTreeItem[] {
           } satisfies MenuLink,
         ]
       : []),
+    SOLVER_LOGOS_LINK,
     {
       title: 'AppData',
       url: Routes.APPDATA,
