@@ -49,7 +49,7 @@ async function fetchSolversInfo(): Promise<CmsSolversInfo | null> {
             },
             image: { fields: ['url'] },
           },
-          fields: ['displayName', 'solverId', 'description', 'active'],
+          fields: ['displayName', 'solverId', 'description'],
           pagination: { pageSize: 100 },
         },
       },

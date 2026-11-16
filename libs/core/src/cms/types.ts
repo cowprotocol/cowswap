@@ -36,6 +36,8 @@ export type SolverNetwork = {
   chainId: SupportedChainId
   env: CowEnv
   address?: string
+  /** Whether the deployment still competes. Absent in data persisted before this field existed; read it as `!== false`. */
+  isActive?: boolean
 }
 
 export type SolversInfo = SolverInfo[]
