@@ -2,7 +2,7 @@ import { createStore, Provider } from 'jotai'
 
 import { QueryClient } from '@tanstack/query-core'
 
-import { fireEvent, render, type RenderResult, screen, waitFor, within } from '@testing-library/react'
+import { act, fireEvent, render, type RenderResult, screen, waitFor, within } from '@testing-library/react'
 import { queryClientAtom } from 'jotai-tanstack-query'
 
 import { HomePage } from './HomePage'
@@ -108,9 +108,11 @@ function mockApi(overview: RwaMarketOverview | null, assetsPage: RwaAssetsPage |
   }) as unknown as typeof fetch
 }
 
-function renderHomePage(): RenderResult {
+function renderHomePage(
+  queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } }),
+): RenderResult {
   const store = createStore()
-  store.set(queryClientAtom, new QueryClient({ defaultOptions: { queries: { retry: false } } }))
+  store.set(queryClientAtom, queryClient)
 
   return render(
     <Provider store={store}>
@@ -155,6 +157,28 @@ describe('HomePage', () => {
     expect(screen.getByRole('button', { name: 'ETFs', pressed: false })).toBeTruthy()
     expect(screen.getByRole('button', { name: 'All', pressed: false })).toBeTruthy()
     await waitFor(() => expect(String((global.fetch as jest.Mock).mock.calls.at(-1)?.[0])).toContain('type=commodity'))
+  })
+
+  it('keeps the type filter through the market refresh', async () => {
+    mockApi(OVERVIEW, ASSETS_PAGE)
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
+    const fetchMock = global.fetch as jest.Mock
+    renderHomePage(queryClient)
+
+    fireEvent.click(await screen.findByRole('button', { name: 'ETFs' }))
+    await waitFor(() => expect(String(fetchMock.mock.calls.at(-1)?.[0])).toContain('type=index'))
+    const callsBeforeRefresh = fetchMock.mock.calls.length
+
+    await act(() => queryClient.refetchQueries({ type: 'active' }))
+
+    const refreshedAssetsUrls = fetchMock.mock.calls
+      .slice(callsBeforeRefresh)
+      .map(([url]) => String(url))
+      .filter((url) => url.includes('/assets?'))
+
+    expect(refreshedAssetsUrls).not.toHaveLength(0)
+    expect(refreshedAssetsUrls.every((url) => url.includes('type=index'))).toBe(true)
+    expect(screen.getByRole('button', { name: 'ETFs', pressed: true })).toBeTruthy()
   })
 
   it('toggles a type off when it is selected again', async () => {
