@@ -19,8 +19,8 @@ function renderParams(): {
 } {
   const store = createStore()
   const wrapper = ({ children }: { children: ReactNode }): ReactNode => <Provider store={store}>{children}</Provider>
-  const { result, rerender } = renderHook(
-    ({ params }: { params: CowSwapWidgetParams | null }) => useWidgetParamsTradeType(params),
+  const { result, rerender } = renderHook<CowSwapWidgetParams | null, { params: CowSwapWidgetParams | null }>(
+    ({ params }) => useWidgetParamsTradeType(params),
     { wrapper, initialProps: { params: buildParams(1) } },
   )
 
