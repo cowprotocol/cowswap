@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-11-17 19:54\n"
+"PO-Revision-Date: 2026-11-17 21:05\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -313,7 +313,7 @@ msgstr "Total gagné"
 
 #: apps/cowswap-frontend/src/common/containers/CookieConsentBanner/CookieConsentBanner.container.tsx
 msgid "Accept All"
-msgstr ""
+msgstr "Tout accepter"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 #~ msgid "For instance, your order consists of <0>{parts, plural, one {# part} few {# parts} many {# parts} other {# parts}}</0> placed every <1>{partDurationDisplay}</1>, the total time to complete the order is <2>{totalDurationDisplay}</2>. Each limit order remains open for <3>{partDurationDisplay}</3> until the next part becomes active."
@@ -1103,7 +1103,7 @@ msgstr "La tentative de connexion a échoué. Cliquez sur Réessayer, puis suive
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/SolverAuctionResult/AuctionLegend/AuctionLegend.pure.tsx
 msgid "{won} won"
-msgstr "Gagnants : {won}"
+msgstr "Gagnant : {won}"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/OrderTypeField.tsx
 msgid "Hooks sell order"
@@ -1808,7 +1808,7 @@ msgstr "vos ordres"
 
 #: apps/cowswap-frontend/src/common/containers/CookieConsentBanner/CookieConsentBanner.container.tsx
 msgid "Reject All"
-msgstr ""
+msgstr "Tout refuser"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/LpTokenPage/index.tsx
 msgid "Symbol"
@@ -2115,7 +2115,7 @@ msgstr "Envie d’essayer les ordres limite ?"
 
 #: apps/cowswap-frontend/src/common/containers/CookieConsentBanner/CookieConsentBanner.container.tsx
 msgid "Cookies? Your mooove."
-msgstr ""
+msgstr "Cookies ? C’est vous qui meuh-nez la danse."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappDetails/index.tsx
 msgid "smart contracts (e.g. Safe)"
@@ -2257,7 +2257,7 @@ msgstr "Veuillez contacter le support de CoW Swap !"
 
 #: apps/cowswap-frontend/src/modules/trade/services/solanaSend/handleSolanaSendError.ts
 msgid "You don't have enough SOL to cover the network fee and account rent. Reduce the amount or add more SOL to your wallet."
-msgstr "Vous n’avez pas assez de SOL pour couvrir les frais de réseau et la réserve du compte. Réduisez le montant ou ajoutez des SOL à votre wallet."
+msgstr "Vous n’avez pas assez de SOL pour couvrir les frais de réseau et le dépôt du compte. Réduisez le montant ou ajoutez des SOL à votre wallet."
 
 #: apps/cowswap-frontend/src/common/containers/CoWAmmBanner/index.tsx
 msgid "CoW AMM"
@@ -2361,7 +2361,7 @@ msgstr "Pour en savoir plus, consultez"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Permit token (unlimited)"
-msgstr "Autorisation du token (montant illimité)"
+msgstr "Signer le permit pour le token (montant illimité)"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Bungee"
@@ -2443,7 +2443,7 @@ msgstr "Trade éligible"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/AccountRentRow/index.tsx
 msgid "The deposit stays yours: closing the account once it is empty returns it to you as SOL."
-msgstr "Le dépôt vous appartient toujours : la fermeture du compte, une fois celui-ci vide, vous permet de le récupérer en SOL."
+msgstr "Le dépôt vous appartient toujours : il vous est restitué en SOL lorsque vous fermez le compte, une fois celui-ci vide."
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokensVirtualList/tokensVirtualListUtils.ts
 msgid "Recent"
@@ -2655,7 +2655,7 @@ msgstr "4 minutes"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/TradeTokenPair/CowParticipationFooter.pure.tsx
 msgid "Solvers included your order in a batch with other orders. There was no offer for your order alone to compare, so there’s no separate gain to show."
-msgstr "Les solvers ont regroupé votre ordre avec d’autres ordres dans un même lot. Aucune offre portant uniquement sur votre ordre n’était disponible pour effectuer la comparaison : il n’y a donc pas de gain distinct à afficher."
+msgstr "Les solvers ont regroupé votre ordre avec d’autres ordres dans un même lot. Aucune offre ne portait sur votre ordre seul pour servir de comparaison : il n’y a donc pas de gain distinct à afficher."
 
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/AccountProxyRecoverPage/AccountProxyRecoverPage.container.tsx
 msgid "Recoverable balance"
@@ -3322,7 +3322,7 @@ msgstr "Ordre annulé"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/TradeTokenPair/CowParticipationFooter.pure.tsx
 msgid "The winning solution contained only your order. There was no offer for your order alone to compare, so there’s no separate gain to show."
-msgstr "La solution gagnante ne contenait que votre ordre. Aucune offre portant uniquement sur votre ordre n’était disponible pour effectuer la comparaison : il n’y a donc pas de gain distinct à afficher."
+msgstr "La solution gagnante ne contenait que votre ordre. Aucune offre ne portait sur votre ordre seul pour servir de comparaison : il n’y a donc pas de gain distinct à afficher."
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step2.tsx
 msgid "Expired before creation"
@@ -3427,7 +3427,7 @@ msgstr "afin que nous puissions examiner le problème."
 
 #: apps/cowswap-frontend/src/common/containers/CookieConsentBanner/CookieConsentBanner.container.tsx
 msgid "Cookie policy"
-msgstr ""
+msgstr "Politique relative aux cookies"
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/index.tsx
 msgid "(via WalletConnect)"
@@ -3620,7 +3620,7 @@ msgstr "⟳ faire pivoter"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/SolverAuctionResult/AuctionLegend/AuctionLegend.pure.tsx
 msgid "{total, plural, one {# solver} few {# solvers} many {# solvers} other {# solvers}}"
-msgstr ""
+msgstr "{total, plural, one {# solver} few {# solvers} many {# solvers} other {# solvers}}"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/AuctionCountdown.pure.tsx
 msgid "Until your order enters the auction"
@@ -5229,7 +5229,7 @@ msgstr "vers <0>{address}</0>"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Add <0/> for fees and account rent"
-msgstr "Ajouter <0/> pour couvrir les frais et la réserve du compte"
+msgstr "Ajouter <0/> pour couvrir les frais et le dépôt du compte"
 
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ChunkLoadError.tsx
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ErrorWithStackTrace.tsx
@@ -5394,7 +5394,7 @@ msgstr "Sélectionner un token"
 
 #: apps/cowswap-frontend/src/common/containers/CookieConsentBanner/CookieConsentBanner.container.tsx
 msgid "Cookie consent"
-msgstr ""
+msgstr "Consentement aux cookies"
 
 #: apps/cowswap-frontend/src/legacy/components/swap/UnsupportedCurrencyFooter/index.tsx
 msgid "Read more about unsupported tokens"
@@ -8321,7 +8321,7 @@ msgstr "Wrapper {sentAmount} en {receivedAmount}"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "CoW Swap solvers search Uniswap, 1inch, Matcha, and more to find you the best price!"
-msgstr "Les solvers de CoW Swap recherchent sur Uniswap, 1inch, Matcha et d’autres plateformes afin de vous trouver le meilleur prix !"
+msgstr "Les solvers de CoW Swap explorent Uniswap, 1inch, Matcha et d’autres plateformes afin de vous trouver le meilleur prix !"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/MetricsCard.tsx
 #~ msgid "Updates every {AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS} hours"
@@ -9017,7 +9017,7 @@ msgstr "Message CoW du jour"
 
 #: apps/cowswap-frontend/src/common/containers/CookieConsentBanner/CookieConsentBanner.container.tsx
 msgid "You want privacy. We want to know if our ads work. Nothing tracks you until you pick."
-msgstr ""
+msgstr "Vous voulez préserver votre vie privée. Nous voulons savoir si nos publicités fonctionnent. Aucun suivi n’a lieu tant que vous n’avez pas fait votre choix."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 msgid "Hey, I just got an extra {surplus} on @CoWSwap! 🐮💸\n\n"
