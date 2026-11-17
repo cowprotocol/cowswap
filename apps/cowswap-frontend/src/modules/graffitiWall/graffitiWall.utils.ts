@@ -5,6 +5,8 @@ import { Routes } from 'common/constants/routes'
 export interface GraffitiThemeContext {
   /** Whether the graffiti wall feature is on. Its kill switch is this theme's too. */
   wallEnabled: boolean
+  /** The `isSolanaThemeEnabled` LaunchDarkly flag. */
+  themeFlagEnabled: boolean
   /** Whether the active network is Solana. */
   onSolanaChain: boolean
   /** Whether the graffiti wall page is the one on screen. */
@@ -36,7 +38,7 @@ export function isGraffitiWallPath(pathname: string): boolean {
  * For the same reason the opt-out does not reach that page.
  */
 export function resolveGraffitiTheme(context: GraffitiThemeContext): CowSwapTheme | undefined {
-  if (!context.wallEnabled) return undefined
+  if (!context.wallEnabled || !context.themeFlagEnabled) return undefined
   if (!context.onSolanaChain && !context.onWallPage) return undefined
   if (context.optedOut && !context.onWallPage) return undefined
 

@@ -17,8 +17,8 @@ See also [`SPEC.md`](./SPEC.md) (what it does) and [`OPERATIONS.md`](./OPERATION
 Set the LaunchDarkly flag **`isGraffitiWallEnabled`** to `false`. That is the master switch:
 it hides the route, the `More` menu entry, the cow speech bubble and the app-wide theme.
 
-There is no narrower dial: the theme has no flag of its own, so the master switch is the only
-one. A user can still opt the theme out for themselves from the settings menu.
+`isSolanaThemeEnabled` is a second, narrower dial: turning only that one off leaves the wall
+page and its menu entry in place but stops the theme repainting the app on Solana.
 
 Nothing is persisted that outlives the flag. The one piece of user state, the
 `graffitiThemeEnabled:v0` opt-out in localStorage, is read only while the feature is on.
@@ -58,7 +58,7 @@ or `darkGraffiti`:
 | `modules/application/containers/AppContainer/CowSpeechBubble/CowSpeechBubble.styled.tsx` | `WallLink`, `Subtitle`, and the `revealedLink` split |
 | `modules/application/containers/AppMenu/index.tsx` | the blur, the settings entry, the nav flag |
 | `libs/ui/src/types.ts` | `'darkGraffiti'` |
-| `libs/common-hooks/src/useFeatureFlags.ts` | `isGraffitiWallEnabled` |
+| `libs/common-hooks/src/useFeatureFlags.ts` | `isGraffitiWallEnabled`, `isSolanaThemeEnabled` |
 | `apps/cowswap-frontend/package.json` | `perfect-freehand` |
 | `package.json` | `better-sqlite3` under `allowBuilds` |
 | `bundle-size.jsonc` | drop the cowswap budget back |
