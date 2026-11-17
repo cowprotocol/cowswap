@@ -116,6 +116,7 @@ function DigitReel({ digit, maxDigit = 9 }: DigitReelProps): ReactNode {
     }
 
     applyIndex(canonicalIndex(digit), true)
+    return
   }, [digit, maxDigit, trailingMaxIndex, trailingZeroIndex])
 
   return (
