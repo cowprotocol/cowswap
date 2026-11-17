@@ -15,6 +15,8 @@ import {
 import * as Sentry from '@sentry/browser'
 import { injectedWidgetParamsAtom } from 'entities/injectedWidget'
 
+import { setWidgetLocale } from 'legacy/hooks/useActiveLocale'
+
 import { useNavigate } from 'common/hooks/useNavigate'
 import { TRADE_URL_FORCE_NAVIGATE_KEY } from 'common/modules/tradeNavigation'
 
@@ -119,15 +121,13 @@ export function InjectedWidgetUpdater(): ReactNode {
       prevData.current = data
 
       const appParams = data.appParams
-      const hooksEnabled = new URLSearchParams(data.urlParams.search).get('hooksEnabled') === 'true'
+      const urlQuery = new URLSearchParams(data.urlParams.search)
+      setWidgetLocale(urlQuery.get('lng'))
 
       const errors = validateWidgetParams(appParams)
-      setHooksEnabled(hooksEnabled)
+      setHooksEnabled(urlQuery.get('hooksEnabled') === 'true')
 
-      updateParams({
-        params: appParams,
-        errors,
-      })
+      updateParams({ params: appParams, errors })
 
       navigate(withForceTradeNavigate(data.urlParams), { replace: true })
     }

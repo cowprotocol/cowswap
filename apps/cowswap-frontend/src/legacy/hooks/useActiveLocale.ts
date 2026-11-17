@@ -1,5 +1,3 @@
-import { useMemo } from 'react'
-
 import { DEFAULT_LOCALE, SUPPORTED_LOCALES, SupportedLocale } from '@cowprotocol/common-const'
 import { useParsedQueryString, parsedQueryString } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
@@ -38,7 +36,8 @@ export function navigatorLocale(): SupportedLocale | undefined {
 export function useActiveLocale(): SupportedLocale {
   const urlLocale = useUrlLocale()
   const userLocale = useUserLocale()
-  return useMemo(() => resolveActiveLocale(urlLocale, userLocale), [urlLocale, userLocale])
+  // Not memoized by the URL locale: a widget params update can drop the integrator's locale while `lng` stays absent
+  return resolveActiveLocale(urlLocale, userLocale)
 }
 
 /**
@@ -55,10 +54,15 @@ function parseLocale(maybeSupportedLocale: unknown): SupportedLocale | undefined
 }
 
 /**
- * The integrator's locale, kept for the widget session: the widget's own links (e.g. the trade type tabs) don't carry
- * the `lng` query param
+ * The integrator's locale, kept between its params updates: the widget's own links (e.g. the trade type tabs) don't
+ * carry the `lng` query param
  */
 let widgetLocale: SupportedLocale | undefined
+
+/** Takes the locale of the integrator's params update: an update without `lng` goes back to the device locale */
+export function setWidgetLocale(lng: string | null): void {
+  widgetLocale = parseLocale(lng)
+}
 
 function resolveActiveLocale(
   urlLocale: SupportedLocale | undefined,

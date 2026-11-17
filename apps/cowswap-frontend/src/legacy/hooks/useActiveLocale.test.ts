@@ -43,6 +43,28 @@ describe('getActiveLocale', () => {
     expect(getActiveLocale()).toBe('en-US')
   })
 
+  it('takes a new locale from a params update of the integrator', () => {
+    const { getActiveLocale, setWidgetLocale } = loadActiveLocale()
+
+    window.location.hash = '#/1/widget/swap/USDC?lng=en'
+    getActiveLocale()
+    setWidgetLocale('es')
+    window.location.hash = '#/1/widget/limit/USDC?orderKind=sell'
+
+    expect(getActiveLocale()).toBe('es-ES')
+  })
+
+  it('follows the device after a params update of the integrator drops the locale', () => {
+    const { getActiveLocale, setWidgetLocale } = loadActiveLocale()
+
+    window.location.hash = '#/1/widget/swap/USDC?lng=en'
+    getActiveLocale()
+    setWidgetLocale(null)
+    window.location.hash = '#/1/widget/swap/USDC'
+
+    expect(getActiveLocale()).toBe('ru-RU')
+  })
+
   it('follows the device in a widget without a locale, ignoring the stored one', () => {
     const { getActiveLocale } = loadActiveLocale()
 
