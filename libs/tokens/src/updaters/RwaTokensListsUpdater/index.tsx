@@ -55,5 +55,14 @@ async function fetchRwaLists(missingLists: MissingRwaList[]): Promise<FetchedRwa
     missingLists.map(async ({ chainId, list }) => ({ chainId, listState: await fetchTokenList(list) })),
   )
 
-  return results.flatMap((result) => (result.status === 'fulfilled' ? [result.value] : []))
+  const fetched = results.flatMap((result) => (result.status === 'fulfilled' ? [result.value] : []))
+
+  // Throwing hands a total failure to SWR's error retry; after a partial one, upserting the fetched lists
+  // changes the SWR key, so the still-missing lists are fetched again under the new key
+  if (!fetched.length) {
+    const rejected = results.find((result): result is PromiseRejectedResult => result.status === 'rejected')
+    throw rejected?.reason
+  }
+
+  return fetched
 }
