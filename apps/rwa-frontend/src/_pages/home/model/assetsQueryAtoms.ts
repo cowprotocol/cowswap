@@ -3,28 +3,24 @@ import { atom } from 'jotai'
 import { atomWithQuery } from 'jotai-tanstack-query'
 
 import { assetsFiltersAtom, debouncedAssetsFilterQueryAtom } from './assetsFiltersAtoms'
-import { ASSETS_PAGE_SIZE, assetsPageAtom } from './assetsPageAtom'
+import { assetsPageAtom } from './assetsPageAtom'
+import { toAssetsPageQuery } from './assetsPageQuery'
 import { assetsSortAtom } from './assetsSortAtom'
 import { watchlistAtom } from './watchlistAtoms'
 
 import { assetsPageQueryOptions } from '@/entities/asset'
 
-export const assetsPageQueryAtom = atomWithQuery((get) => {
-  const { type, issuers, chainIds, minMarketCap, minVolume24h, watchlistOnly } = get(assetsFiltersAtom)
-
-  return assetsPageQueryOptions({
-    page: get(assetsPageAtom),
-    pageSize: ASSETS_PAGE_SIZE,
-    ...get(assetsSortAtom),
-    type: type ?? undefined,
-    issuers: issuers.length ? [...issuers].sort() : undefined,
-    chainIds: chainIds.length ? [...chainIds].sort((a, b) => a - b) : undefined,
-    minMarketCap: minMarketCap ?? undefined,
-    minVolume24h: minVolume24h ?? undefined,
-    query: get(debouncedAssetsFilterQueryAtom) || undefined,
-    tickers: watchlistOnly ? [...get(watchlistAtom)].sort() : undefined,
-  })
-})
+export const assetsPageQueryAtom = atomWithQuery((get) =>
+  assetsPageQueryOptions(
+    toAssetsPageQuery({
+      filters: get(assetsFiltersAtom),
+      page: get(assetsPageAtom),
+      sort: get(assetsSortAtom),
+      query: get(debouncedAssetsFilterQueryAtom),
+      watchlist: get(watchlistAtom),
+    }),
+  ),
+)
 
 export const assetsCountLabelAtom = atom((get) => {
   const { data } = get(assetsPageQueryAtom)

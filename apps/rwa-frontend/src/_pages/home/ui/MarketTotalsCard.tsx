@@ -10,6 +10,7 @@ import { MARKET_DATA_HINT, TOTAL_VOLUME_HINT } from '../lib/marketDataHint'
 
 import { isUsMarketOpen, type RwaMarketOverview, type RwaTradingTime } from '@/entities/asset'
 import { formatCompactUsd } from '@/shared/lib/format'
+import { useIsHydrated } from '@/shared/lib/hydrated'
 import { InfoIcon } from '@/shared/ui/icons'
 import { Tooltip } from '@/shared/ui/tooltip'
 
@@ -20,6 +21,7 @@ interface MarketTotalsCardProps {
 
 export function MarketTotalsCard({ overview }: MarketTotalsCardProps): ReactNode {
   const refTime = overview?.updatedAt ? formatRefTime(overview.updatedAt, 'UTC') : null
+  const isHydrated = useIsHydrated()
 
   return (
     <section className={styles.card} aria-labelledby="market-totals-title">
@@ -64,7 +66,7 @@ export function MarketTotalsCard({ overview }: MarketTotalsCardProps): ReactNode
         <span>Today</span>
       </div>
       <footer className={styles.cardFooter}>
-        {overview?.tradingTime && <MarketStatus tradingTime={overview.tradingTime} />}
+        {overview?.tradingTime && isHydrated && <MarketStatus tradingTime={overview.tradingTime} />}
         {refTime && <span>Ref. {refTime}</span>}
       </footer>
     </section>
