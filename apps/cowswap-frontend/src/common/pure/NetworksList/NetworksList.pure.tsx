@@ -14,8 +14,6 @@ import { getLogo } from './NetworksList.utils'
 
 import { useDeprecatedChains } from '../../hooks/useDeprecatedChains'
 
-const NEW_NETWORK_IDS: Set<TargetChainId> = new Set([SupportedChainId.ROBINHOOD])
-
 export interface NetworksListProps {
   currentChainId: SupportedChainId | null
   isDarkMode: boolean
@@ -39,7 +37,6 @@ export function NetworksList({
 
         const isActive = targetChainId === currentChainId
         const logoUrl = getLogo(isDarkMode, isActive, logo.dark, logo.light)
-        const isNewNetwork = NEW_NETWORK_IDS.has(targetChainId)
         const isDeprecatedNetwork = deprecatedChains.has(targetChainId)
 
         const rowContent = (
@@ -58,12 +55,6 @@ export function NetworksList({
                 style={isActive ? { marginRight: '10px' } : undefined}
               >
                 <Trans>READ-ONLY</Trans>
-              </Badge>
-            )}
-
-            {isNewNetwork && !isDeprecatedNetwork && (
-              <Badge type={BadgeTypes.ALERT2} style={isActive ? { marginRight: '10px' } : undefined}>
-                <Trans>NEW</Trans>
               </Badge>
             )}
 
