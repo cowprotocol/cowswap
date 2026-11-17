@@ -12,11 +12,25 @@ const MAX_EXPIRATION_TIME = ms`1min`
 const WAIT_AND_SAVE_VALID_TO_ENTROPY_SECONDS = 30
 
 /**
- * Calculate the validTo timestamp for the order.
- * When `validFrom` is set (Wait for CoWs), expiration runs from the batch start
- * so the order does not expire during the wait: validTo = validFrom + deadline (+ wall-clock entropy).
+ * Schedule anchors for a Wait for CoWs order.
+ * `nextBatchValidTo` is the orderbook floor (min validity + skip buffer). Until that field
+ * is on the schedule response it is derived in `mapCanonicalBatchSchedule`.
  */
-export function getOrderValidTo(deadline: number, state: TradeQuoteState, validFrom?: number): number {
+export interface WaitAndSaveValidToAnchor {
+  nextBatch: number
+  nextBatchValidTo: number
+}
+
+/**
+ * Calculate the validTo timestamp for the order.
+ * Wait for CoWs: expiration still runs from `nextBatch`, but never earlier than `nextBatchValidTo`,
+ * so missing the current batch does not expire the order before the following one.
+ */
+export function getOrderValidTo(
+  deadline: number,
+  state: TradeQuoteState,
+  waitAndSave?: WaitAndSaveValidToAnchor,
+): number {
   const timeOffset = getQuoteTimeOffset(state)
 
   if (timeOffset === undefined) return 0
@@ -26,10 +40,9 @@ export function getOrderValidTo(deadline: number, state: TradeQuoteState, validF
   // Work around orderbook soft-cancel: identical Wait for CoWs params rebuild the same UID and
   // post as DuplicatedOrder. Mix wall-clock seconds into validTo so cancel+resubmit is unique.
   const waitAndSaveEntropy = serverNowSec % WAIT_AND_SAVE_VALID_TO_ENTROPY_SECONDS
-  const validTo =
-    typeof validFrom === 'number'
-      ? Math.floor(validFrom + deadline + waitAndSaveEntropy)
-      : Math.floor(deadline + serverNowSec)
+  const validTo = waitAndSave
+    ? Math.floor(Math.max(waitAndSave.nextBatchValidTo, waitAndSave.nextBatch + deadline) + waitAndSaveEntropy)
+    : Math.floor(deadline + serverNowSec)
 
   // Should not be greater than what the contract supports
   return Math.min(validTo, MAX_VALID_TO_EPOCH)

@@ -65,6 +65,8 @@ export interface TradeFormValidationCommonContext {
   isRestoringConnection: boolean
   isCaptchaPending: boolean
   isCaptchaRequired: boolean
+  /** Swap + Wait & Save, while the canonical batch schedule has not produced `nextBatchValidTo`. */
+  isCanonicalBatchScheduleLoading: boolean
   /**
    * For Swap only: the maximum sell amount the order can pull from the wallet, including slippage.
    * Used instead of the raw input amount when checking balance sufficiency, since a swap order
@@ -110,6 +112,7 @@ export enum TradeFormValidation {
   CaptchaPending,
   CaptchaRequired,
   QuoteLoading,
+  CanonicalBatchScheduleLoading,
   ImpactLoading,
   QuoteExpired,
 

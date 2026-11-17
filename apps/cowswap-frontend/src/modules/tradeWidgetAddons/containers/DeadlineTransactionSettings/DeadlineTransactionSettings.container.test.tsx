@@ -9,11 +9,11 @@ import { useCountdown } from '@cowprotocol/common-hooks'
 
 import { render } from '@testing-library/react'
 
-import { cowBatchValidFromAtom, useIsWaitAndSaveAvailable, waitAndSaveEnabledAtom } from 'modules/trade'
+import { canonicalBatchCountdownTargetAtom, useIsWaitAndSaveAvailable, waitAndSaveEnabledAtom } from 'modules/trade'
 
 import { DeadlineTransactionSettings } from './DeadlineTransactionSettings.container'
 
-const VALID_FROM = 1_800_000_000
+const COUNTDOWN_TARGET = 1_800_000_000
 const DEADLINE = 1200
 
 let mockDeadlineError: string | false = false
@@ -30,7 +30,7 @@ jest.mock('modules/trade', () => {
   const { atom } = jest.requireActual('jotai')
 
   return {
-    cowBatchValidFromAtom: atom(undefined),
+    canonicalBatchCountdownTargetAtom: atom(undefined),
     waitAndSaveEnabledAtom: atom(false),
     useIsWaitAndSaveAvailable: jest.fn(),
   }
@@ -59,7 +59,7 @@ function renderSettings({ isWaitAndSaveAvailable, isWaitAndSaveEnabled }: Scenar
   useIsWaitAndSaveAvailableMock.mockReturnValue(isWaitAndSaveAvailable)
 
   const store = createStore()
-  store.set(cowBatchValidFromAtom, VALID_FROM)
+  store.set(canonicalBatchCountdownTargetAtom, COUNTDOWN_TARGET)
   store.set(waitAndSaveEnabledAtom, isWaitAndSaveEnabled)
 
   render(
@@ -86,7 +86,7 @@ describe('DeadlineTransactionSettings countdowns', () => {
       isWaitAndSaveEnabled: true,
     })
 
-    expect(targets).toEqual([VALID_FROM, VALID_FROM + DEADLINE])
+    expect(targets).toEqual([COUNTDOWN_TARGET, COUNTDOWN_TARGET + DEADLINE])
   })
 
   it.each<[string, Scenario]>([

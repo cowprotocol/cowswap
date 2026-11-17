@@ -12,9 +12,17 @@ export interface WaitAndSaveRowProps {
   isEnabled: boolean
   toggle: () => void
   joinsBatchInRef: RefObject<HTMLElement | null>
+  isScheduleError: boolean
+  onRetry: () => void
 }
 
-export function WaitAndSaveRow({ isEnabled, toggle, joinsBatchInRef }: WaitAndSaveRowProps): ReactNode {
+export function WaitAndSaveRow({
+  isEnabled,
+  toggle,
+  joinsBatchInRef,
+  isScheduleError,
+  onRetry,
+}: WaitAndSaveRowProps): ReactNode {
   const { t } = useLingui()
   const [starSpinKey, setStarSpinKey] = useState(0)
 
@@ -26,7 +34,7 @@ export function WaitAndSaveRow({ isEnabled, toggle, joinsBatchInRef }: WaitAndSa
   }
 
   return (
-    <styledEl.Wrapper>
+    <styledEl.Wrapper $hasError={isScheduleError}>
       <styledEl.Content>
         <styledEl.Icon key={starSpinKey} $animate={starSpinKey > 0} aria-hidden>
           <SVG src={svgStarShineSrc} />
@@ -46,24 +54,39 @@ export function WaitAndSaveRow({ isEnabled, toggle, joinsBatchInRef }: WaitAndSa
             />
           </styledEl.TitleRow>
           <styledEl.DescriptionRow>
-            <styledEl.SaveAmount>
-              <Trans>Save $2.50</Trans>
-            </styledEl.SaveAmount>
-            <styledEl.NextBatch>
-              <Trans>
-                · Joins batch in <span ref={joinsBatchInRef} />
-              </Trans>
-            </styledEl.NextBatch>
+            {isScheduleError ? (
+              <styledEl.ErrorColumn>
+                <styledEl.ScheduleError>
+                  <Trans>Couldn’t load the next batch time</Trans>
+                </styledEl.ScheduleError>
+                <styledEl.RetryButton type="button" onClick={onRetry}>
+                  <Trans>Try again</Trans>
+                </styledEl.RetryButton>
+              </styledEl.ErrorColumn>
+            ) : (
+              <>
+                <styledEl.SaveAmount>
+                  <Trans>Save $2.50</Trans>
+                </styledEl.SaveAmount>
+                <styledEl.NextBatch>
+                  <Trans>
+                    · Joins batch in <span ref={joinsBatchInRef} />
+                  </Trans>
+                </styledEl.NextBatch>
+              </>
+            )}
           </styledEl.DescriptionRow>
         </styledEl.TextColumn>
       </styledEl.Content>
-      <styledEl.WaitAndSaveToggle
-        id="wait-and-save-toggle"
-        checked={isEnabled}
-        toggle={handleToggle}
-        variant="success"
-        aria-label={t`Wait & save`}
-      />
+      {isScheduleError ? null : (
+        <styledEl.WaitAndSaveToggle
+          id="wait-and-save-toggle"
+          checked={isEnabled}
+          toggle={handleToggle}
+          variant="success"
+          aria-label={t`Wait & save`}
+        />
+      )}
     </styledEl.Wrapper>
   )
 }

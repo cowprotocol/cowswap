@@ -3,7 +3,12 @@ export * from './types'
 export * from './const/common'
 export * from './state/tradeTypeAtom'
 export { waitAndSaveEnabledAtom } from './state/waitAndSaveEnabledAtom'
-export { cowBatchValidFromAtom } from './state/cowBatchValidFromAtom'
+export {
+  canonicalBatchScheduleQueryAtom,
+  canonicalBatchNextBatchAtom,
+  canonicalBatchCountdownTargetAtom,
+  isCanonicalBatchScheduleErrorAtom,
+} from './state/canonicalBatchScheduleAtom'
 export { useIsWaitAndSaveAvailable } from './hooks/useIsWaitAndSaveAvailable'
 export * from './state/derivedTradeStateAtom'
 export * from './state/isWrapOrUnwrapAtom'
