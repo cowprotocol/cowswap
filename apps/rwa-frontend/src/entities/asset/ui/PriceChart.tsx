@@ -7,10 +7,12 @@ import { normalizeError } from '@cowprotocol/common-utils/errors'
 import styles from './PriceChart.module.css'
 
 import { alignCandles, CHART_RESOLUTIONS } from '../lib/chartBars'
+import { formatTickMark, getCustomTimezone } from '../lib/chartTime'
 
 import type { RwaCandle, RwaChartRange, RwaChartType } from '../model/types'
 import type {
   ChartingLibraryFeatureset,
+  CustomAliasedTimezone,
   IBasicDataFeed,
   IChartingLibraryWidget,
   LibrarySymbolInfo,
@@ -74,6 +76,12 @@ interface PriceChartProps {
   stale: boolean
 }
 
+interface UserTimezone {
+  /** IANA name */
+  name: string
+  custom: CustomAliasedTimezone
+}
+
 export function PriceChart({ ticker, candles, chartType, range, loading, stale }: PriceChartProps): ReactNode {
   const containerRef = useRef<HTMLDivElement>(null)
   const resolution = CHART_RESOLUTIONS[chartType][range]
@@ -115,6 +123,8 @@ export function PriceChart({ ticker, candles, chartType, range, loading, stale }
           autosize: true,
           theme: document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light',
           timezone: 'Etc/UTC',
+          custom_timezones: [getUserTimezone().custom],
+          custom_formatters: { tickMarkFormatter: formatTickMark },
           overrides,
           loading_screen: { backgroundColor: readColor(container, '--color-bg') },
           disabled_features: DISABLED_FEATURES,
@@ -130,6 +140,7 @@ export function PriceChart({ ticker, candles, chartType, range, loading, stale }
         chartWidget.onChartReady(() => {
           if (cancelled) return
 
+          applyUserTimezone(chartWidget)
           chartWidget
             .activeChart()
             .onDataLoaded()
@@ -195,6 +206,15 @@ export function PriceChart({ ticker, candles, chartType, range, loading, stale }
       )}
     </div>
   )
+}
+
+/** The custom time zone stands in for a zone TradingView doesn't list */
+function applyUserTimezone(widget: IChartingLibraryWidget): void {
+  const { name, custom } = getUserTimezone()
+  const timezoneApi = widget.activeChart().getTimezoneApi()
+  const listed = timezoneApi.availableTimezones().find(({ id }) => id === name)
+
+  timezoneApi.setTimezone(listed?.id ?? custom.id)
 }
 
 function ChartUnavailable({ onRetry }: { onRetry: () => void }): ReactNode {
@@ -289,6 +309,12 @@ function getThemeOverrides(element: HTMLElement): Overrides {
     'mainSeriesProperties.candleStyle.wickUpColor': positive,
     'mainSeriesProperties.candleStyle.wickDownColor': negative,
   }
+}
+
+function getUserTimezone(): UserTimezone {
+  const name = Intl.DateTimeFormat().resolvedOptions().timeZone
+
+  return { name, custom: getCustomTimezone(name, new Date().getTimezoneOffset()) }
 }
 
 function logChartError(err: unknown): void {
