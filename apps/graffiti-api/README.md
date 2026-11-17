@@ -127,6 +127,7 @@ means editing the absolute URLs in `grass.json` and passing a matching
 | `COMMIT_HASH`          | — (`unknown` in the image)       | Commit the image was built from; CI sets it, served as `commit` on `/v1/info` |
 | `CORS_ORIGINS`         | `*` (required in production)     | Comma-separated allowed origins, also enforced on the WebSocket     |
 | `TX_MAX_AGE_SEC`       | `3600`                           | Max age of an accepted draw tx and of its memo timestamp            |
+| `ACCEPT_LEGACY_MEMO`   | `1`                              | Accept the pre-digest `graffiti:v1:` memo; set `0` once old clients have aged out |
 | `VERIFY_COMMITMENT`    | `finalized`                      | Commitment used to read the burn back (`confirmed` is weaker)       |
 | `CLAIM_CONFIRM_TIMEOUT_MS` | `75000`                      | How long a claim polls for its transfer before parking the code     |
 | `MAX_CELLS_PER_DRAW`   | `20000`                          | Draw size limit                                                     |
@@ -171,8 +172,21 @@ For each `POST /v1/draw` the server fetches the tx by signature from the RPC
 and checks: status ok, ≤ 90 s old, contains a Burn/BurnChecked on the graffiti
 mint with amount ≥ cell count, the burner (token-account owner or burn
 authority) equals the posted wallet pubkey, and a memo
-`graffiti:v1:<pubkey>:<ts>` inside the freshness window. Signatures are stored
-forever and memos are unique per pubkey — both reject replays.
+`graffiti:v2:<pubkey>:<ts>:<cells sha256>` inside the freshness window whose
+digest matches the cells the request carries. Signatures are stored forever and
+memos are unique per pubkey — both reject replays.
+
+The digest is what binds a burn to one drawing. A signature is public as soon
+as the burn lands, and the payer's own client waits for `confirmed` before
+posting, so without it anyone watching the chain can spend someone else's burn
+on cells of their own. It is SHA-256 over the cells sorted by row, then column,
+then colour, rendered `x,y,rgb` and joined with `;` (`src/cellsDigest.ts`; the
+frontend builds the same string in `pages/graffiti/cellsDigest.utils.ts`).
+
+`ACCEPT_LEGACY_MEMO=1` (the default) also accepts the pre-digest
+`graffiti:v1:<pubkey>:<ts>`, which commits to no cells. It exists only so that
+browser tabs loaded before the v2 rollout keep working; turn it off once they
+have aged out.
 
 ## Claim codes
 

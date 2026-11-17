@@ -46,6 +46,32 @@ const GRID_STEP = 8
 /** The eraser's colour. Erased cells fall back to the page background, not to black. */
 const ERASED = 0
 
+/** The frame in screen pixels. */
+interface ScreenBox {
+  sx: number
+  sy: number
+  sw: number
+  sh: number
+}
+
+/** Mutes the page beyond the wall, which carries diagonal stripes of its own. */
+const OFF_WALL_VEIL = 'rgba(5,6,11,0.82)'
+const WALL_EDGE = 'rgba(0,255,163,0.85)'
+const WALL_EDGE_GLOW = 'rgba(0,255,163,0.45)'
+
+/** Veil over everything outside the plot. Alpha leaves the surrounding wall art readable. */
+const OUTSIDE_VEIL = 'rgba(10,11,14,0.68)'
+
+/** Tallest child of the control row, which hangs above the frame. */
+const OVERLAY_HEIGHT = 46
+
+const FRAME_HINT = '✥ drag the frame to move your drawing area · ✓ draw here when it fits'
+const HINT_HEIGHT = 26
+const HINT_GAP = 10
+/** Below this the frame is too small on screen to hold the move cross legibly. */
+const MOVE_GLYPH_MIN = 26
+const MOVE_GLYPH_MAX = 72
+
 /**
  * Capped at 2: every frame redraws a 4096x2048 offscreen, and a 3x backing store
  * on a large display costs more fill than the extra sharpness is worth.
@@ -114,6 +140,7 @@ export function renderWall(refs: WallRenderRefs): void {
   drawBackdrop(chrome, refs, view)
   drawGrid(chrome, view)
   drawPlotFrame(chrome, refs)
+  drawWallEdge(chrome, view)
 }
 
 /** Diagonal hatch marking everything that is not the wall. */
@@ -141,7 +168,15 @@ function backdropPattern(ctx: CanvasRenderingContext2D): CanvasPattern | null {
   return ctx.createPattern(tile, 'repeat')
 }
 
-/** Dim everything outside the plot so the painter's area reads clearly. */
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(Math.max(value, min), max)
+}
+
+/**
+ * Dim everything outside the plot so the painter's area reads clearly. A neutral
+ * grey rather than black: the page background is already near-black, so a black
+ * veil only drains its blue channel and leaves the luminance unchanged.
+ */
 function dimOutsidePlot(
   ctx: CanvasRenderingContext2D,
   box: { sx: number; sy: number; sw: number; sh: number },
@@ -151,15 +186,11 @@ function dimOutsidePlot(
   const { sx, sy, sw, sh } = box
 
   ctx.save()
-
-  for (const fill of ['rgba(0,0,0,0.55)', 'rgba(255,255,255,0.05)']) {
-    ctx.fillStyle = fill
-    ctx.fillRect(0, 0, canvasW, sy)
-    ctx.fillRect(0, sy + sh, canvasW, canvasH - sy - sh)
-    ctx.fillRect(0, sy, sx, sh)
-    ctx.fillRect(sx + sw, sy, canvasW - sx - sw, sh)
-  }
-
+  ctx.fillStyle = OUTSIDE_VEIL
+  ctx.fillRect(0, 0, canvasW, sy)
+  ctx.fillRect(0, sy + sh, canvasW, canvasH - sy - sh)
+  ctx.fillRect(0, sy, sx, sh)
+  ctx.fillRect(sx + sw, sy, canvasW - sx - sw, sh)
   ctx.restore()
 }
 
@@ -171,8 +202,16 @@ function drawBackdrop(ctx: CanvasRenderingContext2D, refs: WallRenderRefs, view:
 
   if (!pattern) return
 
+  const canvasW = ctx.canvas.clientWidth
+  const canvasH = ctx.canvas.clientHeight
+
+  // The page behind the canvas is itself diagonally striped, so the hatch alone does
+  // not separate wall from void. The veil flattens the page outside the wall, and
+  // `clearRect` lets it through at full strength inside; that step is the boundary.
+  ctx.fillStyle = OFF_WALL_VEIL
+  ctx.fillRect(0, 0, canvasW, canvasH)
   ctx.fillStyle = pattern
-  ctx.fillRect(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight)
+  ctx.fillRect(0, 0, canvasW, canvasH)
   ctx.clearRect(view.offsetX, view.offsetY, CANVAS.w * view.scale, CANVAS.h * view.scale)
 }
 
@@ -204,6 +243,59 @@ function drawDraft(ctx: CanvasRenderingContext2D, draft: Map<number, number>, vi
   })
 }
 
+/** Centred under the frame, or above it when the frame sits against the bottom edge. */
+function drawFrameHint(ctx: CanvasRenderingContext2D, box: ScreenBox, canvasW: number, canvasH: number): void {
+  ctx.save()
+  ctx.font = 'bold 13px sans-serif'
+  ctx.textAlign = 'center'
+  ctx.textBaseline = 'middle'
+
+  const width = Math.min(canvasW - 12, ctx.measureText(FRAME_HINT).width + 28)
+  const below = box.sy + box.sh + HINT_GAP + HINT_HEIGHT / 2
+  const preferred = below < canvasH - HINT_HEIGHT / 2 ? below : box.sy - HINT_GAP - HINT_HEIGHT / 2
+  const cy = clamp(preferred, HINT_HEIGHT / 2 + 6, Math.max(HINT_HEIGHT / 2 + 6, canvasH - HINT_HEIGHT / 2 - 6))
+  const cx = clamp(box.sx + box.sw / 2, width / 2 + 6, Math.max(width / 2 + 6, canvasW - width / 2 - 6))
+
+  roundedRectPath(ctx, cx - width / 2, cy - HINT_HEIGHT / 2, width, HINT_HEIGHT, HINT_HEIGHT / 2)
+  ctx.fillStyle = 'rgba(10,10,16,0.85)'
+  ctx.fill()
+  ctx.strokeStyle = 'rgba(0,208,255,0.55)'
+  ctx.lineWidth = 1
+  ctx.stroke()
+  ctx.fillStyle = 'rgba(226,226,240,0.95)'
+  ctx.fillText(FRAME_HINT, cx, cy)
+  ctx.restore()
+}
+
+/** Corner brackets, so the dashed outline reads as an object you can pick up. */
+function drawGrabHandles(ctx: CanvasRenderingContext2D, box: ScreenBox): void {
+  const arm = Math.min(Math.min(box.sw, box.sh) * 0.28, 26)
+
+  if (arm < 3) return
+
+  const corners: Array<[number, number, number, number]> = [
+    [box.sx, box.sy, 1, 1],
+    [box.sx + box.sw, box.sy, -1, 1],
+    [box.sx, box.sy + box.sh, 1, -1],
+    [box.sx + box.sw, box.sy + box.sh, -1, -1],
+  ]
+
+  ctx.save()
+  ctx.strokeStyle = 'rgba(0,208,255,0.95)'
+  ctx.lineWidth = 3
+  ctx.lineCap = 'round'
+  ctx.beginPath()
+
+  for (const [x, y, dx, dy] of corners) {
+    ctx.moveTo(x + dx * arm, y)
+    ctx.lineTo(x, y)
+    ctx.lineTo(x, y + dy * arm)
+  }
+
+  ctx.stroke()
+  ctx.restore()
+}
+
 function drawGrid(ctx: CanvasRenderingContext2D, view: View): void {
   if (view.scale < GRID_MIN_SCALE) return
 
@@ -226,6 +318,56 @@ function drawGrid(ctx: CanvasRenderingContext2D, view: View): void {
   }
 
   ctx.stroke()
+}
+
+/** The move cross at the frame's centre. Drawn, never a DOM node, so it cannot swallow the drag. */
+function drawMoveGlyph(ctx: CanvasRenderingContext2D, box: ScreenBox): void {
+  const span = Math.min(box.sw, box.sh) * 0.32
+
+  if (span < MOVE_GLYPH_MIN) return
+
+  const r = Math.min(span, MOVE_GLYPH_MAX) / 2
+  const head = r * 0.4
+  const cx = box.sx + box.sw / 2
+  const cy = box.sy + box.sh / 2
+  // Arrow tips sit on the axis ends; each base corner steps off by the perpendicular.
+  const tips: Array<[number, number]> = [
+    [1, 0],
+    [-1, 0],
+    [0, 1],
+    [0, -1],
+  ]
+
+  ctx.save()
+  ctx.beginPath()
+  ctx.arc(cx, cy, r + head, 0, Math.PI * 2)
+  ctx.fillStyle = 'rgba(10,10,16,0.45)'
+  ctx.fill()
+
+  ctx.strokeStyle = 'rgba(0,208,255,0.95)'
+  ctx.fillStyle = 'rgba(0,208,255,0.95)'
+  ctx.lineWidth = 2
+  ctx.lineCap = 'round'
+  ctx.beginPath()
+  ctx.moveTo(cx - r, cy)
+  ctx.lineTo(cx + r, cy)
+  ctx.moveTo(cx, cy - r)
+  ctx.lineTo(cx, cy + r)
+  ctx.stroke()
+
+  for (const [dx, dy] of tips) {
+    const tx = cx + dx * r
+    const ty = cy + dy * r
+
+    ctx.beginPath()
+    ctx.moveTo(tx + dx * head, ty + dy * head)
+    ctx.lineTo(tx - dy * head * 0.6, ty + dx * head * 0.6)
+    ctx.lineTo(tx + dy * head * 0.6, ty - dx * head * 0.6)
+    ctx.closePath()
+    ctx.fill()
+  }
+
+  ctx.restore()
 }
 
 function drawPlotFrame(ctx: CanvasRenderingContext2D, refs: WallRenderRefs): void {
@@ -271,19 +413,13 @@ function drawPlotFrame(ctx: CanvasRenderingContext2D, refs: WallRenderRefs): voi
 
   if (overlay) {
     overlay.style.left = `${Math.max(6, Math.min(canvasW - 240, box.sx))}px`
-    overlay.style.top = `${Math.max(6, box.sy - 44)}px`
+    overlay.style.top = `${Math.max(6, box.sy - OVERLAY_HEIGHT - 6)}px`
   }
 
   if (!locked) {
-    ctx.save()
-    ctx.font = '12px sans-serif'
-    ctx.fillStyle = 'rgba(200,200,221,0.9)'
-    ctx.fillText(
-      'drag the frame to position it · ✓ to lock',
-      box.sx + 8,
-      box.sy - 6 > 12 ? box.sy - 6 : box.sy + box.sh + 14,
-    )
-    ctx.restore()
+    drawGrabHandles(ctx, box)
+    drawMoveGlyph(ctx, box)
+    drawFrameHint(ctx, box, canvasW, canvasH)
   }
 }
 
@@ -337,6 +473,17 @@ function drawStrokePreview(ctx: CanvasRenderingContext2D, refs: WallRenderRefs):
   ctx.restore()
 }
 
+/** The wall's own boundary. Drawn last so the plot veil cannot wash it out. */
+function drawWallEdge(ctx: CanvasRenderingContext2D, view: View): void {
+  ctx.save()
+  ctx.lineWidth = 2
+  ctx.strokeStyle = WALL_EDGE
+  ctx.shadowColor = WALL_EDGE_GLOW
+  ctx.shadowBlur = 12
+  ctx.strokeRect(view.offsetX, view.offsetY, CANVAS.w * view.scale, CANVAS.h * view.scale)
+  ctx.restore()
+}
+
 /** Match a canvas to the wrapper, reporting whether it had to change. */
 function resizeCanvas(el: HTMLCanvasElement, width: number, height: number, dpr: number): boolean {
   const deviceWidth = Math.round(width * dpr)
@@ -351,6 +498,19 @@ function resizeCanvas(el: HTMLCanvasElement, width: number, height: number, dpr:
 }
 
 /** Push the wall's pixel buffer into the offscreen canvas when it changed. */
+/** `ctx.roundRect` is too new for some supported browsers. */
+function roundedRectPath(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  const radius = Math.min(r, w / 2, h / 2)
+
+  ctx.beginPath()
+  ctx.moveTo(x + radius, y)
+  ctx.arcTo(x + w, y, x + w, y + h, radius)
+  ctx.arcTo(x + w, y + h, x, y + h, radius)
+  ctx.arcTo(x, y + h, x, y, radius)
+  ctx.arcTo(x, y, x + w, y, radius)
+  ctx.closePath()
+}
+
 function syncOffscreen(refs: WallRenderRefs): void {
   const offscreen = refs.offscreenRef.current
 

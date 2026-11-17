@@ -22,6 +22,8 @@ export type SolverInfo = {
   solverNetworks: SolverNetwork[]
   description?: string
   image?: string
+  /** Whether the CMS still counts the solver as competing. Absent in previously persisted data; read it as `!== false`. */
+  isActive?: boolean
 }
 
 export type SolverNetwork = {

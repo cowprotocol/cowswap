@@ -44,9 +44,9 @@ export function PlotOverlay({
         </styledEl.PlainOverlayButton>
       )}
       {showControls && (
-        <styledEl.OverlayButton onClick={onConfirm}>
+        <styledEl.ConfirmButton onClick={onConfirm}>
           <Trans>✓ draw here</Trans>
-        </styledEl.OverlayButton>
+        </styledEl.ConfirmButton>
       )}
     </styledEl.PlotOverlayRoot>
   )

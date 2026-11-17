@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { CanvasControls, ExitFullscreenButton, LoadErrorOverlay, ShowToolsButton } from './CanvasControls.pure'
 import { API_BASE } from './graffiti.service'
 import { PlotOverlay } from './PlotOverlay.pure'
+import { showResult } from './showResult.utils'
 import { StartOverlay } from './StartOverlay.pure'
 import * as styledEl from './wall.styled'
 
@@ -23,6 +24,7 @@ export function WallStage({ wall }: WallStageProps): ReactNode {
   const { gate, layout, sync, brush, session, paint, viewport, actions, pointer, balance, claim } = wall
   const { wrap, canvas, paintCanvas, overlay } = wall.dom
   const inSession = session.session !== 'start' && !viewport.isFullscreen
+  const placingFrame = inSession && !session.plotLocked && brush.tool !== 'pan'
   const spent = wall.draft.draft.size + pointer.liveCost
   const balanceLeft = balance === null ? null : Math.max(0, Math.floor(balance - spent))
 
@@ -39,7 +41,14 @@ export function WallStage({ wall }: WallStageProps): ReactNode {
           onConnect={gate.openSolanaWalletModal}
           canFullscreen={viewport.canFullscreen}
           onFullscreen={viewport.toggleFullscreen}
-          onShowResult={viewport.openPlotFullscreen}
+          onShowResult={() =>
+            showResult({
+              canFullscreen: viewport.canFullscreen,
+              openPlotFullscreen: viewport.openPlotFullscreen,
+              zoomToPlot: viewport.zoomToPlot,
+              resetPhase: paint.resetPhase,
+            })
+          }
           onDismiss={paint.resetPhase}
           claim={claim}
           account={gate.solanaAccount}
@@ -68,7 +77,7 @@ export function WallStage({ wall }: WallStageProps): ReactNode {
       <styledEl.PaintCanvas ref={paintCanvas} />
       <styledEl.Canvas
         ref={canvas}
-        $cursor={CURSOR[brush.tool]}
+        $cursor={placingFrame ? 'move' : CURSOR[brush.tool]}
         onPointerDown={pointer.onPointerDown}
         onPointerMove={pointer.onPointerMove}
         onPointerUp={pointer.onPointerUp}

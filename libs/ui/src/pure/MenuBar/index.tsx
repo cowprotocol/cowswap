@@ -795,6 +795,8 @@ interface MenuBarProps {
   hoverBackgroundLight?: string
   id?: string
   languageNavItems?: MenuItem
+  /** Where the product logo links to; defaults to the site root. */
+  logoHref?: string
   maxWidth?: number
   navItems: MenuItem[]
   padding?: string
@@ -842,6 +844,7 @@ export const MenuBar = (props: MenuBarProps) => {
     hoverBackgroundLight,
     id,
     languageNavItems,
+    logoHref,
     maxWidth,
     navItems,
     padding,
@@ -930,8 +933,9 @@ export const MenuBar = (props: MenuBarProps) => {
           variant={productVariant}
           logoIconOnly={isMobile}
           height={30}
-          href="/"
+          href={logoHref ?? '/'}
           theme={customTheme}
+          LinkComponent={LinkComponent}
         />
 
         {!isMobile && (

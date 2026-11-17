@@ -36,6 +36,7 @@ One process, one SQLite file, one hot wallet. That's the whole system.
 | `MAX_BOX_HEIGHT` | 128 | Tallest a single commit's bounding box may be |
 | `MAX_CELLS_PER_DRAW` | 20000 | Hard cap on cells per commit |
 | `TX_MAX_AGE_SEC` | 3600 | A commit tx (and its memo) older than this is rejected. Bounds how long an unconfirmed burn can still be recovered |
+| `ACCEPT_LEGACY_MEMO` | 1 | Accept the pre-digest `graffiti:v1:` memo, which does not commit to the cells. Only for tabs loaded before the v2 rollout; set `0` once they have aged out |
 | `GRAFFITI_DB` | `data/graffiti.db` | SQLite path (claims + pixels + seq) |
 | `STATIC_DIR` | — | Serve a built frontend same-origin (recommended) |
 | `DEV_INSECURE` | 0 | **Never in production**: skips burn verification and fakes claims |
@@ -207,8 +208,9 @@ injected from a secret manager over a file on disk:
 
 **Draw integrity (why nobody paints for free):** pixels only land after a
 verified on-chain burn of the exact cell count, to the exact mint, from the
-claiming wallet, with a fresh timestamped memo (`graffiti:v1:<pubkey>:<ts>`,
-90s window), each signature usable once. No-op writes (repainting the same
+claiming wallet, with a fresh timestamped memo
+(`graffiti:v2:<pubkey>:<ts>:<cells sha256>`, 90s window) whose digest commits to
+the cells posted, each signature usable once. No-op writes (repainting the same
 color) are filtered server-side and cost nothing by design. Bounding-box and
 per-commit caps stop banner floods.
 

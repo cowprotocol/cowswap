@@ -1,14 +1,14 @@
-const PROD_HOST = 'swap.cow.fi'
+const PROD_HOSTS = new Set(['swap.cow.fi', 'staging.swap.cow.fi'])
 const PROD_API = 'https://graffiti.cow.fi/v1'
 const BARN_API = 'https://graffiti.barn.cow.fi/v1'
 
-// Chosen by host rather than REACT_APP_ENVIRONMENT: each API allows only its own origin in
-// CORS, so the choice has to follow the origin the browser actually sends. Anything that is
-// not production gets barn, so a preview build can never spend production's claim pool.
+// Chosen by host rather than REACT_APP_ENVIRONMENT: the API allows only the origins listed in
+// its CORS config, so the choice has to follow the origin the browser actually sends. Anything
+// that is not production gets barn, so a preview build can never spend production's claim pool.
 function defaultApiBase(): string {
   if (typeof window === 'undefined') return BARN_API
 
-  return window.location.hostname === PROD_HOST ? PROD_API : BARN_API
+  return PROD_HOSTS.has(window.location.hostname) ? PROD_API : BARN_API
 }
 
 /** Raw `REACT_APP_GRAFFITI_API` when set — absolute, `http(s)://` or `ws(s)://` — else the host's API. */

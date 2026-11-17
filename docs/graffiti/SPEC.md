@@ -28,8 +28,8 @@ costs an SPL token per pixel. Freehand strokes, rasterized to a pixel grid.
 2. User draws stroke → client computes covered cells + cost N.
 3. User clicks "Paint (N PIXEL tokens)".
 4. Client builds tx: SPL `BurnChecked` of N tokens from user's ATA of the
-   graffiti mint + memo instruction containing ` graffiti:v1:<sig-pubkey>:<ts>`.
-   User signs & sends.
+   graffiti mint + memo instruction containing
+   `graffiti:v2:<sig-pubkey>:<ts>:<cells sha256>`. User signs & sends.
 5. After confirmation, client POSTs /draw with: tx signature, the cells
    [{x, y, color}], and its wallet pubkey.
 6. Backend verifies (see below), applies, broadcasts diff to all sockets.
@@ -39,8 +39,11 @@ costs an SPL token per pixel. Freehand strokes, rasterized to a pixel grid.
   - status ok, recent (<= 90s old)
   - contains Burn/BurnChecked on THE graffiti mint, amount >= N
   - burner = claimed wallet pubkey (owner of the token account)
-  - memo matches `graffiti:v1:<pubkey>:<ts>` (replay protection: memo ts
-    unique per pubkey within window; also store seen signatures forever)
+  - memo matches `graffiti:v2:<pubkey>:<ts>:<cells sha256>` (replay protection:
+    memo ts unique per pubkey within window; also store seen signatures forever)
+  - the memo's digest matches the cells posted, so a burn can only be spent on
+    the drawing it paid for and not on one substituted by whoever saw the
+    signature land first
 - On pass: apply cells, set cost burned := amount. Broadcast.
 
 ## Claim flow

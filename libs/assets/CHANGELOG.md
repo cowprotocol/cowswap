@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.11.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.10.0...assets-v2.11.0) (2026-11-13)
+
+### Minor Changes
+
+- feat(graffiti): collaborative graffiti wall (consolidated) (#8560)
+
 ## [2.10.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.9.0...assets-v2.10.0) (2026-11-13)
 
 ### Minor Changes

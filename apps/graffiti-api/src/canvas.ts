@@ -2,7 +2,15 @@ import { CANVAS_HEIGHT, CANVAS_WIDTH, MAX_BOX_HEIGHT, MAX_BOX_WIDTH } from './co
 
 import type { CellInput, Store } from './store.js'
 
-export type ValidateResult = { ok: true; cells: ValidCell[] } | { ok: false; reason: string }
+export type ValidateResult =
+  | {
+      ok: true
+      /** Cells the draw is charged for: deduped, with no-op writes dropped. */
+      cells: ValidCell[]
+      /** Every cell the request carried, in the order it sent them. The burn memo commits to these. */
+      received: ValidCell[]
+    }
+  | { ok: false; reason: string }
 
 export interface ValidCell {
   x: number
@@ -16,6 +24,8 @@ interface Bounds {
   minY: number
   maxY: number
 }
+
+type ParseResult = { ok: true; cells: ValidCell[] } | { ok: false; reason: string }
 
 /** An RGB buffer, latest write wins. Every draw is persisted before it is applied. */
 export class CanvasState {
@@ -73,7 +83,7 @@ export class CanvasState {
     return { ok: true, cell: { x: xi, y: yi, rgb } }
   }
 
-  private parseCells(raw: unknown): ValidateResult {
+  private parseCells(raw: unknown): ParseResult {
     if (!Array.isArray(raw) || raw.length === 0) return { ok: false, reason: 'cells must be a non-empty array' }
 
     const cells: ValidCell[] = []
@@ -126,7 +136,7 @@ export class CanvasState {
     for (const c of cells) byCoord.set(c.y * this.width + c.x, c)
     const chargeable = [...byCoord.values()].filter((c) => this.getPixel(c.x, c.y) !== c.rgb)
 
-    return { ok: true, cells: chargeable }
+    return { ok: true, cells: chargeable, received: cells }
   }
 
   applyDraw(cells: CellInput[]): number {

@@ -1,5 +1,25 @@
 # Changelog
 
+## [3.21.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.21.0...common-hooks-v3.21.1) (2026-11-16)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.23.0
+  - @cowprotocol/common-utils@3.22.4
+
+## [3.21.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.20.1...common-hooks-v3.21.0) (2026-11-13)
+
+### Minor Changes
+
+- feat(graffiti): collaborative graffiti wall (consolidated) (#8560)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.22.0
+  - @cowprotocol/common-utils@3.22.3
+
 ## [3.20.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.20.0...common-hooks-v3.20.1) (2026-11-13)
 
 ### Patch Changes
