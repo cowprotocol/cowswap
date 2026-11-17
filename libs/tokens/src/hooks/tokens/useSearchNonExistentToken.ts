@@ -30,7 +30,7 @@ export function useSearchNonExistentToken(tokenId: string | null): TokenWithLogo
 
     // An address that is already active needs no import. Without this, a symbol that only exists in an
     // inactive list keeps resolving to an importable token even though the address is already tradable,
-    // and the import prompt reopens every time the user-added copy is pruned as a duplicate.
+    // and the import prompt reopens every time the user-added copy is hidden as a duplicate.
     return excludeAlreadyActiveTokens(matches, tokensByAddress)[0] || null
   }, [inputTokenToSearch, foundToken, tokensByAddress])
 }
