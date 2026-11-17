@@ -54,13 +54,21 @@ function parseLocale(maybeSupportedLocale: unknown): SupportedLocale | undefined
   )
 }
 
+/**
+ * The integrator's locale, kept for the widget session: the widget's own links (e.g. the trade type tabs) don't carry
+ * the `lng` query param
+ */
+let widgetLocale: SupportedLocale | undefined
+
 function resolveActiveLocale(
   urlLocale: SupportedLocale | undefined,
   userLocale: SupportedLocale | undefined | null,
 ): SupportedLocale {
   if (isInjectedWidget()) {
+    if (urlLocale) widgetLocale = urlLocale
+
     // Ignore persisted locale for widget mode so that the locale is determined by the widget URL alone:
-    return urlLocale ?? navigatorLocale() ?? DEFAULT_LOCALE
+    return widgetLocale ?? navigatorLocale() ?? DEFAULT_LOCALE
   }
 
   return urlLocale ?? userLocale ?? navigatorLocale() ?? DEFAULT_LOCALE

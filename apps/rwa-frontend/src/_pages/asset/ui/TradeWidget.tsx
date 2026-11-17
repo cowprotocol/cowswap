@@ -38,6 +38,8 @@ const CowSwapWidget = dynamic(() => import('@cowprotocol/widget-react').then((mo
 const QUOTE_ASSET = 'USDC'
 const QUOTE_ASSET_AMOUNT = '1000'
 const ASSET_TOKEN_AMOUNT = '1'
+// The app is in English only, so the widget must not follow the device language
+const WIDGET_LOCALE = 'en-US'
 
 export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
   const provider = useWalletProvider()
@@ -82,6 +84,7 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
       disableSwitchingTokens: true,
       standaloneMode: false,
       theme: isDark ? 'dark' : 'light',
+      locale: WIDGET_LOCALE,
     }
   }, [asset, assetToken, side, isConnected, isDark, market])
   const params = useWidgetParamsTradeType(widgetParams)
