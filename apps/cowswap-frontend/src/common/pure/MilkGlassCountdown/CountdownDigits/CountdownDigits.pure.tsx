@@ -1,8 +1,11 @@
-import { ReactNode } from 'react'
+import { ReactNode, useLayoutEffect, useRef } from 'react'
 
 import * as styledEl from './CountdownDigits.styled'
 
-const REEL_DIGITS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'] as const
+/** Leading 9 and trailing 0 let wraps animate one cell, then snap to the canonical copy. */
+const REEL_DIGITS = ['9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'] as const
+
+const canonicalIndex = (digit: number): number => digit + 1
 
 export interface CountdownDigitsProps {
   remainingSec: number
@@ -25,11 +28,70 @@ export function CountdownDigits({ remainingSec }: CountdownDigitsProps): ReactNo
 }
 
 function DigitReel({ digit }: { digit: number }): ReactNode {
+  const stripRef = useRef<HTMLDivElement>(null)
+  const prevDigitRef = useRef(digit)
+
+  useLayoutEffect(() => {
+    const strip = stripRef.current
+    if (!strip) {
+      return
+    }
+
+    const prevDigit = prevDigitRef.current
+    prevDigitRef.current = digit
+
+    const applyIndex = (index: number, animate: boolean): void => {
+      if (!animate) {
+        strip.style.transition = 'none'
+      }
+      strip.style.transform = `translateY(${-index * styledEl.DIGIT_LINE_HEIGHT_PX}px)`
+      if (!animate) {
+        void strip.offsetHeight
+        strip.style.transition = ''
+      }
+    }
+
+    if (prevDigit === digit) {
+      applyIndex(canonicalIndex(digit), false)
+      return
+    }
+
+    // Countdown wrap 0→9: step to leading 9, then snap to trailing 9.
+    if (prevDigit === 0 && digit === 9) {
+      applyIndex(0, true)
+      const onEnd = (event: TransitionEvent): void => {
+        if (event.target !== strip || event.propertyName !== 'transform') {
+          return
+        }
+        strip.removeEventListener('transitionend', onEnd)
+        applyIndex(10, false)
+      }
+      strip.addEventListener('transitionend', onEnd)
+      return () => strip.removeEventListener('transitionend', onEnd)
+    }
+
+    // Increase wrap 9→0: step to trailing 0, then snap to canonical 0.
+    if (prevDigit === 9 && digit === 0) {
+      applyIndex(11, true)
+      const onEnd = (event: TransitionEvent): void => {
+        if (event.target !== strip || event.propertyName !== 'transform') {
+          return
+        }
+        strip.removeEventListener('transitionend', onEnd)
+        applyIndex(1, false)
+      }
+      strip.addEventListener('transitionend', onEnd)
+      return () => strip.removeEventListener('transitionend', onEnd)
+    }
+
+    applyIndex(canonicalIndex(digit), true)
+  }, [digit])
+
   return (
     <styledEl.ReelClip>
-      <styledEl.ReelStrip style={{ transform: `translateY(${-digit * styledEl.DIGIT_LINE_HEIGHT_PX}px)` }}>
-        {REEL_DIGITS.map((value) => (
-          <span key={value}>{value}</span>
+      <styledEl.ReelStrip ref={stripRef}>
+        {REEL_DIGITS.map((value, index) => (
+          <span key={`${value}-${index}`}>{value}</span>
         ))}
       </styledEl.ReelStrip>
     </styledEl.ReelClip>
