@@ -1,5 +1,7 @@
 import { ReactNode, useLayoutEffect, useRef } from 'react'
 
+import { Plural, Trans } from '@lingui/react/macro'
+
 import * as styledEl from './CountdownDigits.styled'
 
 /** Leading 9 and trailing 0 let wraps animate one cell, then snap to the canonical copy. */
@@ -17,13 +19,25 @@ export function CountdownDigits({ remainingSec }: CountdownDigitsProps): ReactNo
   const seconds = totalSeconds % 60
 
   return (
-    <styledEl.DigitsRow>
-      <DigitReel digit={Math.floor(minutes / 10)} />
-      <DigitReel digit={minutes % 10} />
-      <styledEl.Colon>:</styledEl.Colon>
-      <DigitReel digit={Math.floor(seconds / 10)} />
-      <DigitReel digit={seconds % 10} />
-    </styledEl.DigitsRow>
+    <>
+      <styledEl.VisuallyHidden role="timer" aria-live="polite" aria-atomic="true">
+        {minutes > 0 ? (
+          <>
+            <Plural value={minutes} one="# minute" other="# minutes" />{' '}
+            <Plural value={seconds} one="# second" other="# seconds" /> <Trans>remaining</Trans>
+          </>
+        ) : (
+          <Plural value={seconds} one="# second remaining" other="# seconds remaining" />
+        )}
+      </styledEl.VisuallyHidden>
+      <styledEl.DigitsRow aria-hidden="true">
+        <DigitReel digit={Math.floor(minutes / 10)} />
+        <DigitReel digit={minutes % 10} />
+        <styledEl.Colon>:</styledEl.Colon>
+        <DigitReel digit={Math.floor(seconds / 10)} />
+        <DigitReel digit={seconds % 10} />
+      </styledEl.DigitsRow>
+    </>
   )
 }
 
