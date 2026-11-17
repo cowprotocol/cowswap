@@ -1,27 +1,17 @@
-import { originalFilename } from './aiHelp.utils'
 import { pngBlob, preparedSvg } from './artwork.utils'
-import { solverSlug } from './geometry.utils'
-import { previewSheet, PREVIEW_REFERENCE } from './previews.utils'
+import { createPackArchive, originalFilename, settingsJson } from './pack.utils'
+import { previewSheet } from './previews.utils'
 import { LogoSnapshot, LogoPack, ZipEntry } from './solverLogoTool.types'
-import { createZip } from './zip.utils'
 
-export async function createLogoPack({ asset, state, artwork, name }: LogoSnapshot): Promise<LogoPack> {
+export async function createLogoPack(snapshot: LogoSnapshot): Promise<LogoPack> {
   await document.fonts.ready
-  const slug = solverSlug(name)
-  const settings = {
-    version: 1,
-    solverName: name,
-    source: { name: asset.name, type: asset.type, width: asset.width, height: asset.height },
-    output: { width: 1024, height: 1024, background: state.background, squareAsset: true },
-    transform: { scalePercent: state.scale, offsetXPercent: state.x, offsetYPercent: state.y },
-    previewReference: PREVIEW_REFERENCE,
-    createdAt: new Date().toISOString(),
-  }
+  const { asset, state, artwork, name } = snapshot
+  const settings = settingsJson(snapshot, 'logo')
   const entries: ZipEntry[] = [
     { name: 'logo.png', data: await pngBlob(artwork) },
     { name: 'preview.png', data: await pngBlob(previewSheet(artwork, name)) },
     { name: 'original/' + originalFilename(asset), data: asset.bytes },
-    { name: 'settings.json', data: JSON.stringify(settings, null, 2) },
+    { name: 'settings.json', data: settings },
   ]
   const svg = preparedSvg(asset, state)
   if (svg) entries.push({ name: 'logo.svg', data: svg })
@@ -39,10 +29,7 @@ CoW Swap applies a circular crop. The UI edge ring is not baked into the exporte
 Share the pack with your CoW Protocol contact for review. This does not publish anything or update the CMS.
 `,
   })
-  return {
-    blob: await createZip(entries.map((entry) => ({ ...entry, name: slug + '/' + entry.name }))),
-    filename: slug + '-logo-pack.zip',
-  }
+  return createPackArchive(name, 'logo', entries)
 }
 
 export function downloadPack({ blob, filename }: LogoPack): void {

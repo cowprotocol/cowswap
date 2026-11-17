@@ -1,4 +1,5 @@
-import { AI_GUIDELINES, aiPrompt, originalFilename } from './aiHelp.utils'
+import { AI_GUIDELINES, aiPrompt } from './aiHelp.utils'
+import { originalFilename } from './pack.utils'
 import { LogoAsset } from './solverLogoTool.types'
 
 it('includes the original source, current settings and required deliverables without a reference URL', () => {

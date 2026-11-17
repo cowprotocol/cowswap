@@ -1,9 +1,21 @@
 import { Color } from '@cowprotocol/ui'
 
 import { ButtonBase } from 'components/common/Button'
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 
 import { Wrapper } from '../../explorer/pages/styled'
+
+const row = css`
+  display: flex;
+  align-items: center;
+`
+const button = css`
+  background: transparent;
+  border: 0;
+  border-radius: 0.4rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+`
 
 export const Page = styled(Wrapper)`
   max-width: 128rem;
@@ -90,9 +102,8 @@ export const Panel = styled.section`
   }
 `
 export const PanelHeading = styled.div`
-  display: flex;
+  ${row}
   justify-content: space-between;
-  align-items: center;
   gap: 1.2rem;
   flex-wrap: wrap;
 `
@@ -114,21 +125,16 @@ export const ToolButton = styled(ButtonBase)`
   }
 `
 export const TextButton = styled.button`
-  background: none;
-  border: 0;
-  border-radius: 0.4rem;
+  ${button}
   color: ${Color.explorer_textActive};
   padding: 0.5rem;
-  font-size: 1.2rem;
   min-height: 3.2rem;
-  cursor: pointer;
   &:hover {
     background: ${Color.explorer_bgOpaque};
   }
 `
 export const SourceBar = styled.div`
-  display: flex;
-  align-items: center;
+  ${row}
   gap: 0.8rem;
   margin: 1.6rem 0 1.2rem;
   font-size: 1.2rem;
@@ -200,17 +206,15 @@ export const Stage = styled.div<{ $guides: boolean }>`
   }
 `
 export const EditorActions = styled.div`
-  display: flex;
+  ${row}
   justify-content: space-between;
-  align-items: center;
   gap: 0.6rem;
   flex-wrap: wrap;
   padding: 1.2rem 0;
   label {
     font-size: 1.2rem;
-    display: flex;
+    ${row}
     gap: 0.6rem;
-    align-items: center;
     color: ${Color.explorer_textSecondary2};
   }
   > div {
@@ -223,9 +227,8 @@ export const Controls = styled.div`
   padding-top: 1.6rem;
   font-size: 1.2rem;
   .size-heading {
-    display: flex;
+    ${row}
     justify-content: space-between;
-    align-items: center;
     gap: 1.2rem;
   }
   input[type='range'] {
@@ -235,9 +238,8 @@ export const Controls = styled.div`
     cursor: pointer;
   }
   .position-controls {
-    display: flex;
+    ${row}
     flex-wrap: wrap;
-    align-items: center;
     gap: 1rem;
     > span {
       margin-right: auto;
@@ -245,14 +247,12 @@ export const Controls = styled.div`
   }
 `
 export const PercentField = styled.div`
-  display: flex;
+  ${row}
   gap: 0.6rem;
-  align-items: center;
   font-size: 1.2rem;
   color: ${Color.explorer_textSecondary2};
   .number-control {
-    display: flex;
-    align-items: center;
+    ${row}
     background: ${Color.explorer_bgInput};
     border: 0.1rem solid ${Color.explorer_border};
     border-radius: 0.6rem;
@@ -275,8 +275,7 @@ export const PercentField = styled.div`
     margin-left: 0.6rem;
     border-left: 0.1rem solid ${Color.explorer_border};
     button {
-      display: flex;
-      align-items: center;
+      ${row}
       justify-content: center;
       width: 2.4rem;
       height: 2.4rem;
@@ -311,14 +310,12 @@ export const BackgroundControl = styled.fieldset`
     margin-bottom: 1rem;
   }
   > div {
-    display: flex;
-    align-items: center;
+    ${row}
     flex-wrap: wrap;
     gap: 1rem;
   }
   label {
-    display: flex;
-    align-items: center;
+    ${row}
     gap: 0.6rem;
     font-size: 1.2rem;
     cursor: pointer;
@@ -364,16 +361,12 @@ export const Samples = styled.div`
     margin-top: 0.8rem;
   }
   > div button {
-    display: flex;
-    align-items: center;
+    ${row}
+    ${button}
     gap: 0.6rem;
     padding: 0.6rem 0.8rem;
-    border-radius: 0.4rem;
     border: 0.1rem solid ${Color.explorer_border};
-    background: transparent;
     color: ${Color.explorer_textSecondary1};
-    font-size: 1.2rem;
-    cursor: pointer;
   }
   > div button[aria-pressed='true'],
   > div button:hover:not(:disabled) {
@@ -416,13 +409,10 @@ export const Segmented = styled.div`
   border-radius: 0.4rem;
   padding: 0.2rem;
   button {
-    border: 0;
+    ${button}
     border-radius: 0.3rem;
-    background: transparent;
     color: ${Color.explorer_textSecondary2};
-    font-size: 1.2rem;
     padding: 0.5rem 0.8rem;
-    cursor: pointer;
   }
   button[aria-pressed='true'] {
     background: ${Color.explorer_bg2};
@@ -589,9 +579,8 @@ export const Guidelines = styled.section`
     margin: 0;
   }
   .guideline-demo {
-    display: flex;
+    ${row}
     gap: 1.6rem;
-    align-items: center;
     min-height: 12rem;
   }
   figure {
@@ -632,12 +621,11 @@ export const Guidelines = styled.section`
     border-radius: 50%;
   }
   .format-example {
+    ${row}
     font-size: 2.4rem;
     font-weight: 600;
     min-height: 12rem;
-    display: flex;
     gap: 2rem;
-    align-items: center;
     small {
       font-size: 1.2rem;
       font-weight: 400;

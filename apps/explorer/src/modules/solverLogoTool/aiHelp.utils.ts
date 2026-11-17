@@ -1,13 +1,5 @@
-import { LogoAsset, LogoSnapshot } from './solverLogoTool.types'
-
-export function originalFilename(asset: Pick<LogoAsset, 'name' | 'type'>): string {
-  return (
-    asset.name
-      .replace(/[^a-zA-Z0-9._-]/g, '-')
-      .replace(/^\.+/, '')
-      .slice(0, 100) || 'source.' + asset.type
-  )
-}
+import { originalFilename } from './pack.utils'
+import { LogoSnapshot } from './solverLogoTool.types'
 
 export const AI_GUIDELINES = `# Solver logo guidelines
 
