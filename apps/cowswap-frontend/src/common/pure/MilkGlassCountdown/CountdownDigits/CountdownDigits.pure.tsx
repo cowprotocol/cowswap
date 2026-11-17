@@ -1,16 +1,25 @@
-import { ReactNode, useLayoutEffect, useRef } from 'react'
+import { ReactNode, useLayoutEffect, useMemo, useRef } from 'react'
 
 import { Plural, Trans } from '@lingui/react/macro'
 
 import * as styledEl from './CountdownDigits.styled'
 
-/** Leading 9 and trailing 0 let wraps animate one cell, then snap to the canonical copy. */
-const REEL_DIGITS = ['9', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'] as const
+/** Leading max and trailing 0 let wraps animate one cell, then snap to the canonical copy. */
+function buildReelDigits(maxDigit: number): string[] {
+  const core = Array.from({ length: maxDigit + 1 }, (_, index) => String(index))
+  return [String(maxDigit), ...core, '0']
+}
 
 const canonicalIndex = (digit: number): number => digit + 1
 
 export interface CountdownDigitsProps {
   remainingSec: number
+}
+
+interface DigitReelProps {
+  digit: number
+  /** Inclusive upper digit on the reel. Seconds tens uses 5; others keep 0–9. */
+  maxDigit?: number
 }
 
 export function CountdownDigits({ remainingSec }: CountdownDigitsProps): ReactNode {
@@ -34,16 +43,24 @@ export function CountdownDigits({ remainingSec }: CountdownDigitsProps): ReactNo
         <DigitReel digit={Math.floor(minutes / 10)} />
         <DigitReel digit={minutes % 10} />
         <styledEl.Colon>:</styledEl.Colon>
-        <DigitReel digit={Math.floor(seconds / 10)} />
+        <DigitReel digit={Math.floor(seconds / 10)} maxDigit={5} />
         <DigitReel digit={seconds % 10} />
       </styledEl.DigitsRow>
     </>
   )
 }
 
-function DigitReel({ digit }: { digit: number }): ReactNode {
+function DigitReel({ digit, maxDigit = 9 }: DigitReelProps): ReactNode {
   const stripRef = useRef<HTMLDivElement>(null)
   const prevDigitRef = useRef(digit)
+  const { reelDigits, trailingMaxIndex, trailingZeroIndex } = useMemo(
+    () => ({
+      reelDigits: buildReelDigits(maxDigit),
+      trailingMaxIndex: maxDigit + 1,
+      trailingZeroIndex: maxDigit + 2,
+    }),
+    [maxDigit],
+  )
 
   useLayoutEffect(() => {
     const strip = stripRef.current
@@ -70,23 +87,23 @@ function DigitReel({ digit }: { digit: number }): ReactNode {
       return
     }
 
-    // Countdown wrap 0→9: step to leading 9, then snap to trailing 9.
-    if (prevDigit === 0 && digit === 9) {
+    // Countdown wrap 0→max: step to leading max, then snap to trailing max.
+    if (prevDigit === 0 && digit === maxDigit) {
       applyIndex(0, true)
       const onEnd = (event: TransitionEvent): void => {
         if (event.target !== strip || event.propertyName !== 'transform') {
           return
         }
         strip.removeEventListener('transitionend', onEnd)
-        applyIndex(10, false)
+        applyIndex(trailingMaxIndex, false)
       }
       strip.addEventListener('transitionend', onEnd)
       return () => strip.removeEventListener('transitionend', onEnd)
     }
 
-    // Increase wrap 9→0: step to trailing 0, then snap to canonical 0.
-    if (prevDigit === 9 && digit === 0) {
-      applyIndex(11, true)
+    // Increase wrap max→0: step to trailing 0, then snap to canonical 0.
+    if (prevDigit === maxDigit && digit === 0) {
+      applyIndex(trailingZeroIndex, true)
       const onEnd = (event: TransitionEvent): void => {
         if (event.target !== strip || event.propertyName !== 'transform') {
           return
@@ -99,12 +116,12 @@ function DigitReel({ digit }: { digit: number }): ReactNode {
     }
 
     applyIndex(canonicalIndex(digit), true)
-  }, [digit])
+  }, [digit, maxDigit, trailingMaxIndex, trailingZeroIndex])
 
   return (
     <styledEl.ReelClip>
       <styledEl.ReelStrip ref={stripRef}>
-        {REEL_DIGITS.map((value, index) => (
+        {reelDigits.map((value, index) => (
           <span key={`${value}-${index}`}>{value}</span>
         ))}
       </styledEl.ReelStrip>
