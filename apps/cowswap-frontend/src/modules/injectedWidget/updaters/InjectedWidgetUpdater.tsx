@@ -13,9 +13,7 @@ import {
 } from '@cowprotocol/widget-lib'
 
 import * as Sentry from '@sentry/browser'
-import { injectedWidgetParamsAtom } from 'entities/injectedWidget'
-
-import { setWidgetLocale } from 'legacy/utils/widgetLocale'
+import { injectedWidgetParamsAtom, setWidgetLocale } from 'entities/injectedWidget'
 
 import { useNavigate } from 'common/hooks/useNavigate'
 import { TRADE_URL_FORCE_NAVIGATE_KEY } from 'common/modules/tradeNavigation'
