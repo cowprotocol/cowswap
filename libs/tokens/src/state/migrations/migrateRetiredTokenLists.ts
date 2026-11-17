@@ -73,6 +73,22 @@ export async function migrateRetiredTokenLists(): Promise<void> {
   })
 }
 
+function isListsStateShape(value: unknown): value is Partial<TokenListsByChainState> {
+  if (!isPlainObject(value)) return false
+
+  return Object.values(value).every(
+    (chainState) =>
+      chainState === null ||
+      chainState === undefined ||
+      (isPlainObject(chainState) &&
+        Object.values(chainState).every((listState) => listState === 'deleted' || isPlainObject(listState))),
+  )
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
 async function runStep({ oldKey, newKey, retiredSources }: RetiredListsStep, laterKeys: string[]): Promise<void> {
   try {
     for (const key of laterKeys) {
@@ -87,8 +103,14 @@ async function runStep({ oldKey, newKey, retiredSources }: RetiredListsStep, lat
       return
     }
 
+    const stored: unknown = JSON.parse(storedRaw)
+
+    if (!isListsStateShape(stored)) {
+      console.error(`[Migration] Unexpected shape of ${oldKey}, leaving it in place`)
+      return
+    }
+
     const retiredKeys = new Set(retiredSources.map(getSourceAsKey))
-    const stored = JSON.parse(storedRaw) as Partial<TokenListsByChainState>
     const migrated: Partial<TokenListsByChainState> = {}
 
     for (const chainIdStr of Object.keys(stored)) {
