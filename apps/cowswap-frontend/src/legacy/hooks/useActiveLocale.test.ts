@@ -1,18 +1,21 @@
 import type * as ActiveLocaleModule from './useActiveLocale'
+import type * as WidgetLocaleModule from '../utils/widgetLocale'
 
 jest.mock('legacy/state', () => ({ cowSwapStore: { getState: () => ({ user: { userLocale: 'fr-FR' } }) } }))
 
 // The widget locale is kept for the page session, so each test is a fresh page
-function loadActiveLocale(): typeof ActiveLocaleModule {
+function loadActiveLocale(): typeof ActiveLocaleModule & Pick<typeof WidgetLocaleModule, 'setWidgetLocale'> {
   let activeLocaleModule: typeof ActiveLocaleModule | undefined
+  let widgetLocaleModule: typeof WidgetLocaleModule | undefined
 
   jest.isolateModules(() => {
     activeLocaleModule = require('./useActiveLocale')
+    widgetLocaleModule = require('../utils/widgetLocale')
   })
 
-  if (!activeLocaleModule) throw new Error('useActiveLocale not loaded')
+  if (!activeLocaleModule || !widgetLocaleModule) throw new Error('useActiveLocale not loaded')
 
-  return activeLocaleModule
+  return { ...activeLocaleModule, setWidgetLocale: widgetLocaleModule.setWidgetLocale }
 }
 
 describe('getActiveLocale', () => {

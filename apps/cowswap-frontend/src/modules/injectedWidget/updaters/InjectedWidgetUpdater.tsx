@@ -15,7 +15,7 @@ import {
 import * as Sentry from '@sentry/browser'
 import { injectedWidgetParamsAtom } from 'entities/injectedWidget'
 
-import { setWidgetLocale } from 'legacy/hooks/useActiveLocale'
+import { setWidgetLocale } from 'legacy/utils/widgetLocale'
 
 import { useNavigate } from 'common/hooks/useNavigate'
 import { TRADE_URL_FORCE_NAVIGATE_KEY } from 'common/modules/tradeNavigation'
