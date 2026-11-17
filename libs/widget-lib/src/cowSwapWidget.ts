@@ -36,6 +36,7 @@ const noopHandler: CowSwapWidgetHandler = {
   updateParams: () => void 0,
   updateListeners: () => void 0,
   updateProvider: () => void 0,
+  closeAllModals: () => void 0,
   destroy: () => void 0,
 }
 
@@ -47,6 +48,8 @@ export interface CowSwapWidgetHandler {
   updateParams: (params: CowSwapWidgetParams) => void
   updateListeners: (newListeners?: CowWidgetEventListeners) => void
   updateProvider: (newProvider?: EthereumProvider) => void
+  /** Closes the modals and drawers open in the widget, e.g. the orders table, so it shows the trade form */
+  closeAllModals: () => void
   destroy: () => void
 }
 
@@ -212,6 +215,16 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
 
       provider = newProvider
       iframeRpcProviderBridge = updateProvider(iframeWindow, iframeOrigin, iframeRpcProviderBridge, newProvider)
+    },
+    closeAllModals: () => {
+      if (!iframeWindow) return
+
+      widgetIframeTransport.postMessageToWindow(
+        iframeWindow,
+        WidgetMethodsListen.CLOSE_ALL_MODALS,
+        void 0,
+        iframeOrigin,
+      )
     },
 
     destroy,

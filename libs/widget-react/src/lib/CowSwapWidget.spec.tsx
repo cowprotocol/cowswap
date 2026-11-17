@@ -37,6 +37,21 @@ describe('CowSwapWidget', () => {
     expect(createCowSwapWidgetMock.mock.calls[1]?.[1].enableSafeSdkBridge).toBe(false)
   })
 
+  it('keeps the widget handler in handlerRef while the widget exists', () => {
+    const handler = createWidgetHandler()
+    const handlerRef: { current: CowSwapWidgetHandler | null } = { current: null }
+    createCowSwapWidgetMock.mockReturnValueOnce(handler)
+
+    const { unmount } = render(<CowSwapWidget params={{ appCode: 'test-app' }} handlerRef={handlerRef} />)
+
+    expect(handlerRef.current).toBe(handler)
+
+    unmount()
+
+    expect(handler.destroy).toHaveBeenCalledTimes(1)
+    expect(handlerRef.current).toBeNull()
+  })
+
   it('calls onLoadingError when the widget cannot be created', () => {
     const onLoadingError = jest.fn()
     createCowSwapWidgetMock.mockImplementation(() => {
@@ -55,6 +70,7 @@ function createWidgetHandler(): CowSwapWidgetHandler {
     updateParams: jest.fn(),
     updateListeners: jest.fn(),
     updateProvider: jest.fn(),
+    closeAllModals: jest.fn(),
     destroy: jest.fn(),
   }
 }

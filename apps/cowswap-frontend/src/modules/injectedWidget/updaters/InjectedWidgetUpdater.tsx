@@ -20,6 +20,7 @@ import { TRADE_URL_FORCE_NAVIGATE_KEY } from 'common/modules/tradeNavigation'
 
 import { IframeResizer } from './IframeResizer'
 
+import { useListenCloseAllModals } from '../hooks/useListenCloseAllModals'
 import { WidgetParamsErrorsScreen } from '../pure/WidgetParamsErrorsScreen'
 import { injectedWidgetHooksEnabledAtom } from '../state/injectedWidgetHooksEnabledAtom'
 import { injectedWidgetMetaDataAtom } from '../state/injectedWidgetMetaDataAtom'
@@ -85,6 +86,7 @@ export function InjectedWidgetUpdater(): ReactNode {
   ] = useAtom(injectedWidgetParamsAtom)
   const setHooksEnabled = useSetAtom(injectedWidgetHooksEnabledAtom)
   const updateMetaData = useSetAtom(injectedWidgetMetaDataAtom)
+  useListenCloseAllModals()
 
   const prevPartnerFee = usePrevious(partnerFee)
   const navigate = useNavigate()

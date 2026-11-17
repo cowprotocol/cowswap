@@ -4,7 +4,7 @@
 
 import { CowSwapWidgetHandler, createCowSwapWidget } from './cowSwapWidget'
 import { WIDGET_IFRAME_SANDBOX, WIDGET_IFRAME_SANDBOX_WITHOUT_POPUPS } from './cowSwapWidget.constants'
-import { CowSwapWidgetParams, TradeType, WidgetMethodsEmit } from './types'
+import { CowSwapWidgetParams, TradeType, WidgetMethodsEmit, WidgetMethodsListen } from './types'
 import { buildWidgetUrl } from './urlUtils'
 import { widgetIframeTransport } from './widgetIframeTransport'
 
@@ -376,6 +376,28 @@ describe('createCowSwapWidget', () => {
     const { updateParams } = createWidget()
 
     expect(() => updateParams({ appCode: '   ' } as CowSwapWidgetParams)).toThrow('Required param `appCode` is missing')
+  })
+})
+
+describe('createCowSwapWidget closeAllModals', () => {
+  afterEach(() => {
+    widgetHandlers.splice(0).forEach((handler) => handler.destroy())
+    document.body.innerHTML = ''
+    jest.restoreAllMocks()
+  })
+
+  it('asks the widget to close its modals', () => {
+    const { iframe, closeAllModals } = createWidget()
+    const postMessageSpy = jest.spyOn(widgetIframeTransport, 'postMessageToWindow').mockImplementation(() => void 0)
+
+    closeAllModals()
+
+    expect(postMessageSpy).toHaveBeenCalledWith(
+      iframe.contentWindow,
+      WidgetMethodsListen.CLOSE_ALL_MODALS,
+      undefined,
+      new URL(iframe.src).origin,
+    )
   })
 })
 

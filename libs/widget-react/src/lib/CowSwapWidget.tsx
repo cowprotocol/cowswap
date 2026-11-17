@@ -11,6 +11,11 @@ import {
   WIDGET_CONTAINER_ID,
 } from '@cowprotocol/widget-lib'
 
+export interface CowSwapWidgetReactProps extends CowSwapWidgetProps {
+  /** Stable ref that holds the widget handler while the widget exists, e.g. to call `closeAllModals()` */
+  handlerRef?: { current: CowSwapWidgetHandler | null }
+}
+
 interface CreateWidgetParams {
   container: HTMLDivElement
   params: CowSwapWidgetParams
@@ -41,14 +46,16 @@ export function CowSwapWidget({
   onReady,
   onLoadingError,
   enableSafeSdkBridge = true,
-}: CowSwapWidgetProps): JSX.Element {
+  handlerRef,
+}: CowSwapWidgetReactProps): JSX.Element {
   const [error, setError] = useState<WidgetErrorState>(null)
   const paramsRef = useRef<CowSwapWidgetParams | null>(null)
   const providerRef = useRef<EthereumProvider | undefined>(provider)
   const listenersRef = useRef<CowWidgetEventListeners | undefined>(listeners)
   const enableSafeSdkBridgeRef = useRef(enableSafeSdkBridge)
   const containerRef = useRef<HTMLDivElement | null>(null)
-  const widgetHandlerRef = useRef<CowSwapWidgetHandler | null>(null)
+  const internalHandlerRef = useRef<CowSwapWidgetHandler | null>(null)
+  const widgetHandlerRef = handlerRef ?? internalHandlerRef
   const onLoadingErrorRef = useRef(onLoadingError)
 
   useEffect(() => {
@@ -156,7 +163,7 @@ export function CowSwapWidget({
 
     const handler = widgetHandlerRef.current
     tryOrHandleError('Updating the listeners', () => handler.updateListeners(listeners))
-  }, [listeners, tryOrHandleError])
+  }, [listeners, tryOrHandleError, widgetHandlerRef])
 
   if (error) {
     return <WidgetError error={error} />

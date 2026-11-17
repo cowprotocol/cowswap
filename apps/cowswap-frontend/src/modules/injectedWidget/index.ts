@@ -1,6 +1,7 @@
 export { InjectedWidgetUpdater } from './updaters/InjectedWidgetUpdater'
 export { CowEventsUpdater } from './updaters/CowEventsUpdater'
 export { useIsInfiniteApproveDisabledInWidget } from './hooks/useIsInfiniteApproveDisabledInWidget'
+export { useCloseAllModalsRequest } from './hooks/useCloseAllModalsRequest'
 export { useInjectedWidgetDeadline } from './hooks/useInjectedWidgetDeadline'
 export { useInjectedWidgetMetaData } from './hooks/useInjectedWidgetMetaData'
 export { useInjectedWidgetPalette } from './hooks/useInjectedWidgetPalette'

@@ -32,6 +32,7 @@ import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 import { SolanaFlowScreen } from './SolanaFlowScreen'
 
 import { useAutoImportTokensState } from '../../hooks/useAutoImportTokensState'
+import { useCloseModalsOnWidgetRequest } from '../../hooks/useCloseModalsOnWidgetRequest'
 import { useTradeConfirmActions } from '../../hooks/useTradeConfirmActions'
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
 import { useTradeState } from '../../hooks/useTradeState'
@@ -113,6 +114,8 @@ export function TradeWidgetModals({
       setSolanaOrderNotPlaced,
     ],
   )
+
+  useCloseModalsOnWidgetRequest(resetAllScreens)
 
   // Both Solana failure screens exit the same way: nothing was placed, so the way on is another
   // attempt from review. Price confirmation is forced because the quote kept refreshing meanwhile.

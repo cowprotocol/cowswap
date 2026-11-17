@@ -17,6 +17,7 @@ import styles from './TradeWidget.module.css'
 import { getTradeTokensFilters } from '../lib/tradeTokensFilters'
 import { getTradingPauseMessage } from '../lib/tradingPause'
 import { ENABLED_TRADE_TYPES } from '../model/tradeTypeAtom'
+import { tradeWidgetHandlerRefAtom } from '../model/tradeWidgetHandlerRefAtom'
 import { TRADE_WIDGET_ID, useIsWalletOffTradeNetwork } from '../model/useSelectTradeToken'
 import { useTradeSelection } from '../model/useTradeSelection'
 import { useWidgetOrderAnalytics } from '../model/useWidgetOrderAnalytics'
@@ -57,6 +58,7 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
   const side = selection?.side
   const isWalletOffTradeNetwork = useIsWalletOffTradeNetwork(selection?.chainId ?? 0)
   const widgetRef = useRef<HTMLElement>(null)
+  const widgetHandlerRef = useAtomValue(tradeWidgetHandlerRefAtom)
   const [isWidgetLoading, setIsWidgetLoading] = useState(true)
   const onWidgetSettled = useCallback(() => setIsWidgetLoading(false), [])
 
@@ -98,6 +100,7 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
             params={params}
             provider={provider}
             listeners={listeners}
+            handlerRef={widgetHandlerRef}
             onReady={onWidgetSettled}
             onLoadingError={onWidgetSettled}
           />
