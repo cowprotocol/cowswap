@@ -9148,7 +9148,6 @@ msgstr "Learn more about <0>{orderType} orders ↗</0>"
 #~ msgstr "Only trade alerts are sent. No marketing messages. Swap and bridge orders aren't supported yet."
 
 #: apps/cowswap-frontend/src/common/pure/ChainStatusBadge/ChainStatusBadge.pure.tsx
-#: apps/cowswap-frontend/src/common/pure/NetworksList/NetworksList.pure.tsx
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "NEW"
 msgstr "NEW"
