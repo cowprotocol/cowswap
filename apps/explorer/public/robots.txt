@@ -1,7 +1,8 @@
 # Only the home page is crawlable. Every other page is an SPA route that loads the full app.
-# `Allow: /$` matches the home page only; favicons stay crawlable so search results can show them.
+# `Allow: /$` matches the home page only; /assets/ lets search engines render it, and favicons show in search results.
 User-agent: *
 Allow: /$
+Allow: /assets/
 Allow: /favicon-light-mode.png
 Allow: /favicon-dark-mode.png
 Disallow: /
