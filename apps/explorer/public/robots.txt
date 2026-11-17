@@ -1,0 +1,21 @@
+# Order, address, transaction and search pages are unbounded and each one loads the full app.
+User-agent: *
+Disallow: /orders/
+Disallow: /address/
+Disallow: /tx/
+Disallow: /twap/
+Disallow: /search/
+Disallow: /*/orders/
+Disallow: /*/address/
+Disallow: /*/tx/
+Disallow: /*/twap/
+Disallow: /*/search/
+
+# Link-preview bots only read the HTML head, so shared explorer links keep their previews.
+User-agent: Twitterbot
+User-agent: Slackbot-LinkExpanding
+User-agent: Discordbot
+User-agent: TelegramBot
+User-agent: facebookexternalhit
+User-agent: LinkedInBot
+Allow: /
