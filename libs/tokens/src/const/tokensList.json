@@ -84,6 +84,11 @@
       "priority": 6,
       "category": "RWA",
       "source": "https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/ca393f14a21111d32b0092f9800f91135a590fff/tokenlist.json"
+    },
+    {
+      "priority": 7,
+      "category": "RWA",
+      "source": "https://raw.githubusercontent.com/StoveProtocol/stove-tokens/46240330b90579bbf1560b22acd5c0fbd6ac7221/tokenlist.json"
     }
   ],
   "11155111": [
@@ -192,6 +197,11 @@
       "priority": 6,
       "category": "RWA",
       "source": "https://raw.githubusercontent.com/reserve-protocol/dtf-interface/1dbc095c95210f3342278acb8b865763a4d7d443/packages/dtf-catalog/tokenlists/index-dtf/restricted/bnb.tokenlist.json"
+    },
+    {
+      "priority": 7,
+      "category": "RWA",
+      "source": "https://raw.githubusercontent.com/StoveProtocol/stove-tokens/46240330b90579bbf1560b22acd5c0fbd6ac7221/tokenlist.json"
     }
   ],
   "59144": [
