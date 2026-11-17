@@ -1,10 +1,10 @@
-import { ReactNode, useEffect, useRef } from 'react'
+import { ReactNode, useEffect, useRef, useState } from 'react'
 
 import { runCountdown, useLatestRef, useLocalTimeOffset } from '@cowprotocol/common-hooks'
 import { getServerNowSec } from '@cowprotocol/common-utils'
 
-import { CountdownDigits, CountdownDigitsHandle } from './CountdownDigits.pure'
-import { MilkGlass, MilkGlassHandle } from './MilkGlass.pure'
+import { CountdownDigits } from './CountdownDigits/CountdownDigits.pure'
+import { MilkGlass, MilkGlassHandle } from './MilkGlass/MilkGlass.pure'
 import * as styledEl from './MilkGlassCountdown.styled'
 
 export interface MilkGlassCountdownProps {
@@ -23,29 +23,25 @@ export function MilkGlassCountdown({
   label,
   onRemainingChange,
 }: MilkGlassCountdownProps): ReactNode {
-  const digitsRef = useRef<CountdownDigitsHandle>(null)
   const milkRef = useRef<MilkGlassHandle>(null)
   const timeOffsetSec = useLocalTimeOffset() ?? 0
   const onRemainingChangeRef = useLatestRef(onRemainingChange)
   const durationMsRef = useLatestRef(durationMs)
+  const [remainingSec, setRemainingSec] = useState(() => Math.max(0, targetEpochSec - getServerNowSec(timeOffsetSec)))
 
   useEffect(() => {
     return runCountdown(
       () => (targetEpochSec - getServerNowSec(timeOffsetSec)) * 1000,
-      (remainingSec) => {
-        const digits = digitsRef.current
+      (nextRemainingSec) => {
         const milk = milkRef.current
-
-        if (!digits || !milk) {
+        if (!milk) {
           return false
         }
 
-        digits.setRemainingSec(remainingSec)
-
         const duration = durationMsRef.current
-        milk.setFraction(duration > 0 ? (remainingSec * 1000) / duration : 0)
-
-        onRemainingChangeRef.current?.(remainingSec)
+        milk.setFraction(duration > 0 ? (nextRemainingSec * 1000) / duration : 0)
+        setRemainingSec(nextRemainingSec)
+        onRemainingChangeRef.current?.(nextRemainingSec)
 
         return true
       },
@@ -55,7 +51,7 @@ export function MilkGlassCountdown({
   return (
     <styledEl.Row>
       <styledEl.TimerColumn>
-        <CountdownDigits ref={digitsRef} />
+        <CountdownDigits remainingSec={remainingSec} />
         <styledEl.TimerLabel>{label}</styledEl.TimerLabel>
       </styledEl.TimerColumn>
       <styledEl.GlassBox>

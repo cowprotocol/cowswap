@@ -32,7 +32,7 @@ Order progress and prominent status headlines:
 - `TransactionSubmittedContent.Title` — fallback transaction/order status headline (`.../TransactionSubmittedContent/styled.tsx` `Title`)
 - `TransactionStatus` — “Transaction completed!”, “Your order expired”, “Your order was cancelled” (`.../steps/styled.ts`)
 - `CountdownText` — large circular countdown number in the order-solving progress screen (`.../steps/styled.ts`)
-- `CountdownDigits` / `MilkGlassCountdown` — large MM:SS digit reels for Solana signing and Wait for CoWs auction wait (`common/pure/MilkGlassCountdown/CountdownDigits.pure.tsx`)
+- `CountdownDigits` / `MilkGlassCountdown` — large MM:SS digit reels for Solana signing and Wait for CoWs auction wait (`common/pure/MilkGlassCountdown/CountdownDigits/CountdownDigits.pure.tsx`)
 - `BridgingStatusHeader > h3` — “Bridging…”, “Bridging completed!”, “Refund completed!”, etc.
 
 Surplus and post-trade brand moments:

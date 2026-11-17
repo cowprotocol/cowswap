@@ -4,7 +4,7 @@ import { COW_BATCH_TIME_SECONDS } from '@cowprotocol/common-const'
 
 import { Trans } from '@lingui/react/macro'
 
-import { MilkGlassCountdown } from 'common/pure/MilkGlassCountdown'
+import { MilkGlassCountdown } from 'common/pure/MilkGlassCountdown/MilkGlassCountdown.pure'
 
 export interface AuctionCountdownProps {
   targetEpochSec: number

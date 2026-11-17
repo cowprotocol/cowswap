@@ -9,7 +9,8 @@ import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
 
-import { MilkGlass, MilkGlassCountdown } from 'common/pure/MilkGlassCountdown'
+import { MilkGlass } from 'common/pure/MilkGlassCountdown/MilkGlass/MilkGlass.pure'
+import { MilkGlassCountdown } from 'common/pure/MilkGlassCountdown/MilkGlassCountdown.pure'
 import { NewModal, NewModalProps } from 'common/pure/NewModal'
 
 import { SolanaTradeAmountsRow } from '../SolanaTradeAmountsRow'
