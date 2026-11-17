@@ -1,15 +1,10 @@
-# Order, address, transaction and search pages are unbounded and each one loads the full app.
+# Only the home page is crawlable. Every other page is an SPA route that loads the full app.
+# `Allow: /$` matches the home page only; favicons stay crawlable so search results can show them.
 User-agent: *
-Disallow: /orders/
-Disallow: /address/
-Disallow: /tx/
-Disallow: /twap/
-Disallow: /search/
-Disallow: /*/orders/
-Disallow: /*/address/
-Disallow: /*/tx/
-Disallow: /*/twap/
-Disallow: /*/search/
+Allow: /$
+Allow: /favicon-light-mode.png
+Allow: /favicon-dark-mode.png
+Disallow: /
 
 # Link-preview bots only read the HTML head, so shared explorer links keep their previews.
 User-agent: Twitterbot
