@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-11-17 18:25\n"
+"PO-Revision-Date: 2026-11-17 19:54\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -97,7 +97,7 @@ msgstr "Transaction de bridge"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/OrderExpiryWarning/OrderExpiryWarning.pure.tsx
 msgid "Until it expires, this order can fill whenever enough {token} is in your wallet, including funds added later."
-msgstr "Jusqu’à son expiration, cet ordre peut être exécuté à tout moment si votre wallet contient suffisamment de {token}, y compris avec des fonds ajoutés ultérieurement."
+msgstr "Jusqu’à son expiration, cet ordre peut être exécuté dès que votre wallet contient suffisamment de {token}, y compris des fonds ajoutés plus tard."
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
 msgid "Because you are using a smart contract wallet, you will pay a separate gas cost for signing the order placement on-chain."
@@ -914,7 +914,7 @@ msgstr "Ordre limite de vente"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/OrderExpiryWarning/OrderExpiryWarning.pure.tsx
 msgid "Running out of {token} doesn't cancel this order. If {token} returns to your wallet before it expires, the order can fill, possibly at a price you no longer want."
-msgstr "L’absence de {token} dans votre wallet n’annule pas cet ordre. Si votre wallet reçoit de nouveau des {token} avant son expiration, l’ordre peut être exécuté, éventuellement à un prix qui ne vous convient plus."
+msgstr "Ne plus avoir de {token} dans votre wallet n’annule pas cet ordre. Si votre wallet reçoit de nouveau des {token} avant son expiration, l’ordre peut être exécuté, éventuellement à un prix qui ne vous convient plus."
 
 #: apps/cowswap-frontend/src/common/pure/CoWAmmBannerContent/GlobalContent/index.tsx
 msgid "One-click convert, <0>boost yield</0>"
@@ -4013,7 +4013,7 @@ msgstr "Comme {accountProxyLabelString} n’est pas un smart contract évolutif,
 
 #: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartSettingsDropdown.tsx
 msgid "Total Supply for Market Cap"
-msgstr "Utiliser l’offre totale pour la capitalisation"
+msgstr "Offre totale pour la capitalisation"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
 #~ msgid "open"
@@ -4735,7 +4735,7 @@ msgstr "Commencez à gagner des récompenses lorsque vous tradez."
 
 #: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartToggleButton.tsx
 msgid "Select a token to view its price chart."
-msgstr "Sélectionnez un token pour afficher son graphique des prix."
+msgstr "Sélectionnez un token pour afficher son graphique de prix."
 
 #: apps/cowswap-frontend/src/modules/trade/pure/PricePercentageShortcuts/PricePercentageShortcuts.pure.tsx
 #~ msgid "Price relative to execution"
@@ -7018,7 +7018,7 @@ msgstr "Révoquer l’approbation"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/SolverAuctionResult/SolverAuctionResult.pure.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/SolverCompetitionExpand/SolverCompetitionExpand.pure.tsx
 msgid "{winnerName} solved your order"
-msgstr "{winnerName} a trouvé la solution pour votre ordre"
+msgstr "{winnerName} a résolu votre ordre"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/deadlines.ts
 msgid "3 Days"
@@ -9916,7 +9916,7 @@ msgstr "couleur {c}"
 
 #: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartSettingsDropdown.tsx
 msgid "Expand the price chart to use more space."
-msgstr "Agrandir le graphique des prix pour occuper davantage d’espace."
+msgstr "Agrandir le graphique des prix pour qu’il occupe davantage d’espace."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/TraderReferralCodeForm.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/TraderReferralCodeForm.tsx
