@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { forwardRef, ReactNode, useCallback, useId, useImperativeHandle, useLayoutEffect, useRef } from 'react'
 
 import styled, { keyframes } from 'styled-components/macro'
 
@@ -29,25 +29,53 @@ const MILK_MOUSTACHE_PATH =
 /** Glass ink on the expired (amber) hero, from the exported Figma assets. */
 const EXPIRED_INK = '#996815'
 
+export interface MilkGlassHandle {
+  setFraction: (fraction: number) => void
+}
+
 export interface MilkGlassProps {
-  /** Remaining share of the signing window, 0..1: 1 renders a full glass, 0 an empty one. */
-  fraction: number
+  /** Remaining share of the window, 0..1: 1 renders a full glass, 0 an empty one. Applied on mount and when the prop changes. */
+  fraction?: number
   /** Recolors the glass for the amber expired hero; reflections stay white in both. */
   isExpired?: boolean
 }
 
-export function MilkGlass({ fraction, isExpired = false }: MilkGlassProps): ReactNode {
-  const level = Math.min(1, Math.max(0, fraction))
-  const drainY = (1 - level) * DRAIN_TRAVEL_PX
-  // The design fades the moustache in over the last fifth of the window and out again just before zero.
-  const isMoustacheVisible = level > 0.03 && level <= 0.2
+export const MilkGlass = forwardRef<MilkGlassHandle, MilkGlassProps>(function MilkGlass(
+  { fraction = 0, isExpired = false },
+  ref,
+): ReactNode {
+  const clipPathId = useId()
+  const drainRef = useRef<SVGGElement>(null)
+  const moustacheRef = useRef<SVGPathElement>(null)
+
+  const applyFraction = useCallback((nextFraction: number): void => {
+    const level = Math.min(1, Math.max(0, nextFraction))
+    const drainY = (1 - level) * DRAIN_TRAVEL_PX
+    const drain = drainRef.current
+    if (drain) {
+      drain.style.transform = `translateY(${drainY}px)`
+    }
+
+    const moustache = moustacheRef.current
+    if (moustache) {
+      // The design fades the moustache in over the last fifth of the window and out again just before zero.
+      moustache.style.opacity = level > 0.03 && level <= 0.2 ? '1' : '0'
+    }
+  }, [])
+
+  useImperativeHandle(ref, () => ({ setFraction: applyFraction }), [applyFraction])
+
+  useLayoutEffect(() => {
+    applyFraction(fraction)
+  }, [fraction, applyFraction])
+
   const strokeColor = isExpired ? EXPIRED_INK : 'white'
   const markColor = isExpired ? EXPIRED_INK : '#00234E'
 
   return (
     <Vessel viewBox={`0 0 ${VESSEL_WIDTH} ${VESSEL_HEIGHT}`} role="img" aria-hidden="true" overflow="visible">
       <defs>
-        <clipPath id="solana-signing-milk-glass-clip">
+        <clipPath id={clipPathId}>
           <path d={INNER_GLASS_MASK_PATH} transform="translate(11 8)" />
         </clipPath>
       </defs>
@@ -55,8 +83,8 @@ export function MilkGlass({ fraction, isExpired = false }: MilkGlassProps): Reac
       <ellipse cx="75" cy="205.5" rx="58" ry="4.5" opacity="0.1" fill={markColor} />
       <path d={GLASS_SILHOUETTE_PATH} transform="translate(5 4)" opacity="0.12" fill="white" />
 
-      <g clipPath="url(#solana-signing-milk-glass-clip)">
-        <g style={{ transform: `translateY(${drainY}px)`, transition: 'transform 1s linear' }}>
+      <g clipPath={`url(#${clipPathId})`}>
+        <g ref={drainRef} style={{ transition: 'transform 1s linear' }}>
           <SwayingSurface>
             <path d={MILK_GENTLE_SURFACE_PATH} transform="translate(-95 22)" fill="white" />
           </SwayingSurface>
@@ -92,11 +120,12 @@ export function MilkGlass({ fraction, isExpired = false }: MilkGlassProps): Reac
         d={MILK_MOUSTACHE_PATH}
         transform="translate(66 132)"
         fill="white"
-        style={{ opacity: isMoustacheVisible ? 1 : 0, transition: 'opacity 0.5s ease-out' }}
+        ref={moustacheRef}
+        style={{ transition: 'opacity 0.5s ease-out' }}
       />
     </Vessel>
   )
-}
+})
 
 const sway = keyframes`
   0% { transform: translateX(0); }
