@@ -2,14 +2,13 @@ import { useAtom } from 'jotai'
 import { PropsWithChildren, ReactNode, useMemo } from 'react'
 
 import { SUPPORTED_LOCALES } from '@cowprotocol/common-const'
-import { useFeatureFlags, useIsSolanaPublicLaunched, useMediaQuery } from '@cowprotocol/common-hooks'
+import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { Color, MenuBar, type CowSwapTheme } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
-import { alphaNetworksEnabledAtom } from 'entities/alphaNetworks'
 import SVG from 'react-inlinesvg'
 import { NavLink } from 'react-router'
 
@@ -151,9 +150,6 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
 }
 
 function useSettingsNavItems(darkMode: boolean, toggleDarkMode: Command): SettingsNavItem[] {
-  const { isAlphaNetworksOptionVisible } = useFeatureFlags()
-  const isSolanaPublicLaunched = useIsSolanaPublicLaunched()
-  const [areAlphaNetworksEnabled, setAlphaNetworksEnabled] = useAtom(alphaNetworksEnabledAtom)
   const [graffitiThemeEnabled, setGraffitiThemeEnabled] = useAtom(graffitiThemeEnabledAtom)
   const graffitiThemeOffered = useIsGraffitiThemeOffered()
   const { t } = useLingui()
@@ -172,26 +168,7 @@ function useSettingsNavItems(darkMode: boolean, toggleDarkMode: Command): Settin
             },
           ]
         : []),
-      ...(isAlphaNetworksOptionVisible && !isSolanaPublicLaunched
-        ? [
-            {
-              label: areAlphaNetworksEnabled ? t`Disable Alpha Networks` : t`Enable Alpha Networks`,
-              onClick: () => setAlphaNetworksEnabled(!areAlphaNetworksEnabled),
-            },
-          ]
-        : []),
     ],
-    [
-      darkMode,
-      toggleDarkMode,
-      graffitiThemeOffered,
-      graffitiThemeEnabled,
-      setGraffitiThemeEnabled,
-      isAlphaNetworksOptionVisible,
-      isSolanaPublicLaunched,
-      areAlphaNetworksEnabled,
-      setAlphaNetworksEnabled,
-      t,
-    ],
+    [darkMode, toggleDarkMode, graffitiThemeOffered, graffitiThemeEnabled, setGraffitiThemeEnabled, t],
   )
 }

@@ -8,5 +8,4 @@ export const BANNER_IDS = {
   ANNOUNCEMENT: 'announcementBannerClosed',
   HIRING_SPEECH_BUBBLE: 'cowHiringSpeechBubble:v0',
   GRAFFITI_WALL_SPEECH_BUBBLE: 'cowGraffitiWallSpeechBubble:v0',
-  SOLANA_ALPHA: 'solanaAlphaBanner:v0',
 } as const

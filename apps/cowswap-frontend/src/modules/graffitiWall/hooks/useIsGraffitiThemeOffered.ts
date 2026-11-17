@@ -1,4 +1,3 @@
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -11,8 +10,7 @@ import { useIsGraffitiWallEnabled } from './useIsGraffitiWallEnabled'
  */
 export function useIsGraffitiThemeOffered(): boolean {
   const { chainId } = useWalletInfo()
-  const { isSolanaThemeEnabled } = useFeatureFlags()
   const isGraffitiWallEnabled = useIsGraffitiWallEnabled()
 
-  return isSolanaChain(chainId) && isGraffitiWallEnabled && !!isSolanaThemeEnabled
+  return isSolanaChain(chainId) && isGraffitiWallEnabled
 }

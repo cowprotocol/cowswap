@@ -4,7 +4,6 @@ import { GraffitiThemeContext, isGraffitiWallPath, resolveGraffitiTheme } from '
 
 const ON: GraffitiThemeContext = {
   wallEnabled: true,
-  themeFlagEnabled: true,
   onSolanaChain: true,
   onWallPage: false,
   optedOut: false,
@@ -15,7 +14,6 @@ describe('resolveGraffitiTheme', () => {
     { name: 'activates on the Solana chain', context: {}, expected: 'darkGraffiti' },
     { name: 'skips off the Solana chain', context: { onSolanaChain: false }, expected: undefined },
     { name: 'skips when the graffiti wall is off', context: { wallEnabled: false }, expected: undefined },
-    { name: 'skips when the theme flag is off', context: { themeFlagEnabled: false }, expected: undefined },
     { name: 'skips when the user opted out', context: { optedOut: true }, expected: undefined },
     {
       name: 'activates on the wall page off the Solana chain',
@@ -30,11 +28,6 @@ describe('resolveGraffitiTheme', () => {
     {
       name: 'skips on the wall page when the graffiti wall is off',
       context: { onWallPage: true, wallEnabled: false },
-      expected: undefined,
-    },
-    {
-      name: 'skips on the wall page when the theme flag is off',
-      context: { onWallPage: true, themeFlagEnabled: false },
       expected: undefined,
     },
   ]

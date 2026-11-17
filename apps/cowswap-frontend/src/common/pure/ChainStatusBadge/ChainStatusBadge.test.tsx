@@ -17,22 +17,14 @@ function wrap(element: ReactElement): ReactElement {
 }
 
 describe('ChainStatusBadge', () => {
-  it('marks Solana as alpha before the public launch', () => {
-    render(wrap(<ChainStatusBadge chainId={SupportedChainId.SOLANA} isPublicLaunched={false} />))
-
-    expect(screen.queryByText('ALPHA')).not.toBeNull()
-    expect(screen.queryByText('NEW')).toBeNull()
-  })
-
-  it('marks Solana as new once it is publicly launched', () => {
-    render(wrap(<ChainStatusBadge chainId={SupportedChainId.SOLANA} isPublicLaunched />))
+  it('marks Solana as new', () => {
+    render(wrap(<ChainStatusBadge chainId={SupportedChainId.SOLANA} />))
 
     expect(screen.queryByText('NEW')).not.toBeNull()
-    expect(screen.queryByText('ALPHA')).toBeNull()
   })
 
   it('renders nothing for a non-Solana chain', () => {
-    const { container } = render(wrap(<ChainStatusBadge chainId={SupportedChainId.MAINNET} isPublicLaunched />))
+    const { container } = render(wrap(<ChainStatusBadge chainId={SupportedChainId.MAINNET} />))
 
     expect(container.firstChild).toBeNull()
   })

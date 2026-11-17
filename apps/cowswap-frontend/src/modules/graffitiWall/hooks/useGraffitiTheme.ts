@@ -1,6 +1,5 @@
 import { useAtomValue } from 'jotai'
 
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import type { CowSwapTheme } from '@cowprotocol/ui'
@@ -17,7 +16,6 @@ import { graffitiThemeEnabledAtom } from '../state/graffitiTheme.atoms'
 export function useGraffitiTheme(): CowSwapTheme | undefined {
   const { chainId } = useWalletInfo()
   const { pathname } = useLocation()
-  const { isSolanaThemeEnabled } = useFeatureFlags()
   const wallEnabled = useIsGraffitiWallEnabled()
   const themeEnabled = useAtomValue(graffitiThemeEnabledAtom)
 
@@ -25,7 +23,6 @@ export function useGraffitiTheme(): CowSwapTheme | undefined {
 
   return resolveGraffitiTheme({
     wallEnabled,
-    themeFlagEnabled: !!isSolanaThemeEnabled,
     onSolanaChain: isSolanaChain(chainId),
     onWallPage: isGraffitiWallPath(pathname),
     optedOut: !themeEnabled,

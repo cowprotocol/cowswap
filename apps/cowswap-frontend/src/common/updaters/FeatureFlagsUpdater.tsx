@@ -1,9 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useLayoutEffect } from 'react'
 
-import { syncBootFeatureFlags } from '@cowprotocol/common-const'
-import { useFeatureFlags, useIsSolanaAvailable } from '@cowprotocol/common-hooks'
-import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
 import { useLDClient, useLDClientError } from 'launchdarkly-react-client-sdk'
 
@@ -15,7 +13,6 @@ export function FeatureFlagsUpdater(): null {
   const setFeatureFlags = useSetAtom(featureFlagsAtom)
   const setFeatureFlagsStatus = useSetAtom(featureFlagsStatusAtom)
   const flags = useFeatureFlags()
-  const isSolanaAvailable = useIsSolanaAvailable()
   const client = useLDClient()
   const clientError = useLDClientError()
 
@@ -24,8 +21,6 @@ export function FeatureFlagsUpdater(): null {
     if (client) {
       setFeatureFlags(flags)
       setFeatureFlagsStatus(clientError ? 'unavailable' : 'ready')
-      // Widget flags have Solana forced off, persisting them would leak into the app on the same origin
-      if (!isInjectedWidget()) syncBootFeatureFlags({ isSolanaEnabled: isSolanaAvailable })
       return
     }
 
@@ -35,7 +30,7 @@ export function FeatureFlagsUpdater(): null {
     }, FEATURE_FLAGS_TIMEOUT_MS)
 
     return () => window.clearTimeout(timeout)
-  }, [client, clientError, flags, isSolanaAvailable, setFeatureFlags, setFeatureFlagsStatus])
+  }, [client, clientError, flags, setFeatureFlags, setFeatureFlagsStatus])
 
   return null
 }

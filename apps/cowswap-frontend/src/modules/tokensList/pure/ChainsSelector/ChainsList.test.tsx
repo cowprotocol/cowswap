@@ -26,18 +26,18 @@ describe('ChainsList status badge', () => {
   it('shows the badge when picking the sell network', () => {
     renderList()
 
-    expect(screen.queryByText('ALPHA')).not.toBeNull()
+    expect(screen.queryByText('NEW')).not.toBeNull()
   })
 
   it('shows the badge for a same-chain buy', () => {
     renderList(SupportedChainId.SOLANA)
 
-    expect(screen.queryByText('ALPHA')).not.toBeNull()
+    expect(screen.queryByText('NEW')).not.toBeNull()
   })
 
   it('hides the badge for a cross-chain buy destination', () => {
     renderList(SupportedChainId.MAINNET)
 
-    expect(screen.queryByText('ALPHA')).toBeNull()
+    expect(screen.queryByText('NEW')).toBeNull()
   })
 })

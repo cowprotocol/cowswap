@@ -1,23 +1,14 @@
 import { useMemo } from 'react'
 
-import { isInjectedWidget } from '@cowprotocol/common-utils'
-
 import { useFlags } from 'launchdarkly-react-client-sdk'
 
 export interface FeatureFlags {
   isPriceChartEnabled?: boolean
   isTwapEoaEnabled?: boolean
-  isSolanaEnabled?: boolean
-  isAlphaNetworksOptionVisible?: boolean
-  isSolanaPublicLaunched?: boolean
   isSolanaSponsoredOrdersEnabled?: boolean
-  isAtaCreationDisabled?: boolean
-  isSolanaAppDataEnabled?: boolean
   isWaitForCowsEnabled?: boolean
   /** Master switch for the graffiti wall: the page, the menu entry, the banner and the theme. */
   isGraffitiWallEnabled?: boolean
-  /** The graffiti wall's theme. Named for the Solana launch it shipped with; see `modules/graffitiWall`. */
-  isSolanaThemeEnabled?: boolean
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any
@@ -31,13 +22,6 @@ declare global {
 
 // const defaults: Partial<FeatureFlags> = {
 // }
-
-// Solana is not supported in the widget yet (e.g. partner fees)
-const WIDGET_FLAG_OVERRIDES: Partial<FeatureFlags> = {
-  isSolanaEnabled: false,
-  isAlphaNetworksOptionVisible: false,
-  isSolanaPublicLaunched: false,
-}
 
 export function useFeatureFlags(): FeatureFlags {
   const flags = useFlags<FeatureFlags>()
@@ -58,20 +42,14 @@ export function useFeatureFlags(): FeatureFlags {
     return { ...flags, ...envFlags, ...e2eFlags }
   }, [flags, envFlagsRaw])
 
-  const resolvedFlags = overriddenFlags ?? flags
-
-  return useMemo(
-    () => (isInjectedWidget() ? { ...resolvedFlags, ...WIDGET_FLAG_OVERRIDES } : resolvedFlags),
-    [resolvedFlags],
-  )
+  return overriddenFlags ?? flags
   // return { ...defaults, ...flags }
 }
 
 /**
  * Build-time flag overrides for environments with no LaunchDarkly client-side ID, where the SDK
  * never attempts a flag evaluation and every flag stays `undefined` — local dev above all, e.g.
- * `REACT_APP_FEATURE_FLAGS='{"isSolanaEnabled":true}'` in `.env.local`. The counterpart
- * `REACT_APP_BOOT_FEATURE_FLAGS` only covers the few flags read before React exists.
+ * `REACT_APP_FEATURE_FLAGS='{"isWaitForCowsEnabled":true}'` in `.env.local`.
  */
 function parseEnvFlagOverrides(raw: string | undefined): FeatureFlags | undefined {
   if (!raw) return undefined

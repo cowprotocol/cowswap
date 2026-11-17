@@ -53,8 +53,6 @@ export interface TradeFormValidationCommonContext {
   isProxySetupValid: boolean | null | undefined
   customTokenError?: string
   isRestrictedForCountry: boolean
-  /** Solana's public launch switches the Solana Alpha trade limits off; read by the `getIsSolana*` services */
-  isSolanaPublicLaunched: boolean
   isBalancesLoading: boolean
   balancesError: string | null
   isInputCurrencyXstock: boolean
@@ -138,10 +136,6 @@ export enum TradeFormValidation {
   // RWA/Geo restrictions
   RestrictedForCountry,
   XstockMinimumTradeSize,
-
-  // Solana Alpha (unaudited launch)
-  SolanaAlphaMaxTradeSize,
-  SolanaAlphaUnknownUsdValue,
 
   // Widget controlled
   DisableTradeWithUnknownPriceImpact,
