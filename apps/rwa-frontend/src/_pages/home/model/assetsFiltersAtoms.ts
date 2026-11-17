@@ -13,12 +13,24 @@ export { NO_PANEL_FILTERS, type PanelFilters }
 
 const FILTER_DEBOUNCE_MS = 300
 
+const ASSETS_FILTERS_STORAGE_KEY = 'rwaAssetsFilters:v1'
+
 const jsonStorage = createJSONStorage<AssetsFilters>()
 
-export const assetsFiltersAtom = atomWithStorage<AssetsFilters>('rwaAssetsFilters:v1', DEFAULT_ASSETS_FILTERS, {
+const filtersStorage: typeof jsonStorage = {
   ...jsonStorage,
   getItem: (key, initialValue) => parseAssetsFilters(jsonStorage.getItem(key, initialValue), initialValue),
-})
+}
+
+export const assetsFiltersAtom = atomWithStorage<AssetsFilters>(
+  ASSETS_FILTERS_STORAGE_KEY,
+  DEFAULT_ASSETS_FILTERS,
+  filtersStorage,
+)
+
+export function readStoredAssetsFilters(): AssetsFilters {
+  return filtersStorage.getItem(ASSETS_FILTERS_STORAGE_KEY, DEFAULT_ASSETS_FILTERS)
+}
 
 /** Filters of the panel that are set, one per kind */
 export const activePanelFiltersCountAtom = atom((get) => {
