@@ -6,7 +6,7 @@ import { type ReactNode, useCallback, useMemo, useRef, useState } from 'react'
 import { useConnection } from 'wagmi'
 
 import { isSupportedChain } from '@cowprotocol/cow-sdk'
-import { type CowSwapWidgetParams, type TokenInfo, TradeType } from '@cowprotocol/widget-lib'
+import { type CowSwapWidgetParams, type TokenInfo } from '@cowprotocol/widget-lib'
 
 import dynamic from 'next/dynamic'
 
@@ -16,10 +16,13 @@ import styles from './TradeWidget.module.css'
 
 import { getTradeTokensFilters } from '../lib/tradeTokensFilters'
 import { getTradingPauseMessage } from '../lib/tradingPause'
+import { ENABLED_TRADE_TYPES } from '../model/tradeTypeAtom'
 import { TRADE_WIDGET_ID, useIsWalletOffTradeNetwork } from '../model/useSelectTradeToken'
 import { useTradeSelection } from '../model/useTradeSelection'
 import { useWidgetOrderAnalytics } from '../model/useWidgetOrderAnalytics'
+import { useWidgetParamsTradeType } from '../model/useWidgetParamsTradeType'
 import { useWidgetTradeTokenSync } from '../model/useWidgetTradeTokenSync'
+import { useWidgetTradeTypeSync } from '../model/useWidgetTradeTypeSync'
 
 import { assetQueryAtomFamily, type RwaAsset, type RwaMarketData, type RwaToken } from '@/entities/asset'
 import { APP_CODE, WIDGET_BASE_URL } from '@/shared/config'
@@ -41,10 +44,11 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
   const isDark = useIsDarkTheme()
   const selection = useTradeSelection(asset)
   const tradeTokenSyncListeners = useWidgetTradeTokenSync(asset, selection)
+  const tradeTypeSyncListeners = useWidgetTradeTypeSync()
   const orderAnalyticsListeners = useWidgetOrderAnalytics(asset)
   const listeners = useMemo(
-    () => [...tradeTokenSyncListeners, ...orderAnalyticsListeners],
-    [tradeTokenSyncListeners, orderAnalyticsListeners],
+    () => [...tradeTokenSyncListeners, ...tradeTypeSyncListeners, ...orderAnalyticsListeners],
+    [tradeTokenSyncListeners, tradeTypeSyncListeners, orderAnalyticsListeners],
   )
   const assetToken = selection?.assetToken
   const { tradingPause, market } = useAtomValue(assetQueryAtomFamily(asset.ticker)).data ?? {}
@@ -56,7 +60,7 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
   const [isWidgetLoading, setIsWidgetLoading] = useState(true)
   const onWidgetSettled = useCallback(() => setIsWidgetLoading(false), [])
 
-  const params = useMemo((): CowSwapWidgetParams | null => {
+  const widgetParams = useMemo((): CowSwapWidgetParams | null => {
     if (!assetToken || !side || !isSupportedChain(assetToken.chainId)) return null
 
     const quote = { asset: QUOTE_ASSET, amount: QUOTE_ASSET_AMOUNT }
@@ -66,8 +70,7 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
       baseUrl: WIDGET_BASE_URL,
       rootStyle: { width: '100%', height: 'var(--dynamicHeight, 640px)' },
       chainId: assetToken.chainId,
-      tradeType: TradeType.SWAP,
-      enabledTradeTypes: [TradeType.SWAP, TradeType.LIMIT, TradeType.ADVANCED],
+      enabledTradeTypes: [...ENABLED_TRADE_TYPES],
       ...(side === 'buy'
         ? { sell: quote, buy: { asset: assetToken.address } }
         : { sell: { asset: assetToken.address, amount: ASSET_TOKEN_AMOUNT }, buy: { asset: QUOTE_ASSET } }),
@@ -79,6 +82,7 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
       theme: isDark ? 'dark' : 'light',
     }
   }, [asset, assetToken, side, isConnected, isDark, market])
+  const params = useWidgetParamsTradeType(widgetParams)
 
   if (!params || !selection) {
     return <p>Trading is not available for {asset.ticker}</p>
