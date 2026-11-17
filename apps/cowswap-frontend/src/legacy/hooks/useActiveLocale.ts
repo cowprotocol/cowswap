@@ -1,9 +1,10 @@
-import { DEFAULT_LOCALE, SUPPORTED_LOCALES, SupportedLocale } from '@cowprotocol/common-const'
+import { DEFAULT_LOCALE, SupportedLocale } from '@cowprotocol/common-const'
 import { useParsedQueryString, parsedQueryString } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 
 import { cowSwapStore } from 'legacy/state'
 import { useUserLocale } from 'legacy/state/user/hooks'
+import { getWidgetLocale, parseLocale, setWidgetLocale } from 'legacy/utils/widgetLocale'
 
 /**
  * Returns the currently active locale, from a combination of user agent, query string, and user settings stored in redux (without react context)
@@ -40,39 +41,15 @@ export function useActiveLocale(): SupportedLocale {
   return resolveActiveLocale(urlLocale, userLocale)
 }
 
-/**
- * Given a locale string (e.g. from user agent), return the best match for corresponding SupportedLocale
- * @param maybeSupportedLocale the fuzzy locale identifier
- */
-function parseLocale(maybeSupportedLocale: unknown): SupportedLocale | undefined {
-  if (typeof maybeSupportedLocale !== 'string') return undefined
-  const lowerMaybeSupportedLocale = maybeSupportedLocale.toLowerCase()
-  return SUPPORTED_LOCALES.find(
-    (locale) =>
-      locale.toLowerCase() === lowerMaybeSupportedLocale || locale.split('-')[0] === lowerMaybeSupportedLocale,
-  )
-}
-
-/**
- * The integrator's locale, kept between its params updates: the widget's own links (e.g. the trade type tabs) don't
- * carry the `lng` query param
- */
-let widgetLocale: SupportedLocale | undefined
-
-/** Takes the locale of the integrator's params update: an update without `lng` goes back to the device locale */
-export function setWidgetLocale(lng: string | null): void {
-  widgetLocale = parseLocale(lng)
-}
-
 function resolveActiveLocale(
   urlLocale: SupportedLocale | undefined,
   userLocale: SupportedLocale | undefined | null,
 ): SupportedLocale {
   if (isInjectedWidget()) {
-    if (urlLocale) widgetLocale = urlLocale
+    if (urlLocale) setWidgetLocale(urlLocale)
 
     // Ignore persisted locale for widget mode so that the locale is determined by the widget URL alone:
-    return widgetLocale ?? navigatorLocale() ?? DEFAULT_LOCALE
+    return getWidgetLocale() ?? navigatorLocale() ?? DEFAULT_LOCALE
   }
 
   return urlLocale ?? userLocale ?? navigatorLocale() ?? DEFAULT_LOCALE
