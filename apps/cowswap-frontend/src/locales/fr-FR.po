@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-11-17 21:05\n"
+"PO-Revision-Date: 2026-11-17 22:10\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -341,7 +341,7 @@ msgstr "Erreur inattendue lors de la récupération des données : format de don
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/TwapStatusAndToggle/TwapStatusAndToggle.pure.tsx
 msgid "{totalParts, plural, one {# part} few {# parts} many {# parts} other {# parts}}"
-msgstr "{totalParts, plural, one {# partie} few {# parties} many {# parties} other {# parties}}"
+msgstr "{totalParts, plural, one {# tranche} few {# tranches} many {# tranches} other {# tranches}}"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/FAQContent.pure.tsx
 msgid "is a helper contract that improves the user experience within CoW Swap for features like"
@@ -413,7 +413,7 @@ msgstr "Le fournisseur de bridge a remplacé l’adresse du destinataire par <0/
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "Start time first part (1/{partsCount})"
-msgstr "Début de la première partie (1/{partsCount})"
+msgstr "Début de la première tranche (1/{partsCount})"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AppliedHookItem/index.tsx
 msgid "The Tenderly simulation was successful. Your transaction is expected to succeed."
@@ -429,7 +429,7 @@ msgstr "La configuration du widget CoW Swap contient des erreurs"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
 msgid "If the balance remains insufficient at creation time, this order portion will not be created. Add more <0><1/></0> before that time."
-msgstr "Si le solde reste insuffisant au moment de la création, cette partie de l'ordre ne sera pas créée. Ajoutez des <0><1/></0> avant cette échéance."
+msgstr "Si le solde reste insuffisant au moment de la création, cette tranche de l’ordre ne sera pas créée. Ajoutez des <0><1/></0> avant cette échéance."
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 msgid "Provide liquidity"
@@ -762,7 +762,7 @@ msgstr "Slippage maximal du swap"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SmallPartVolumeWarning.tsx
 msgid "The sell amount per part of your TWAP order should be at least <0>$<1/></0>. Decrease the number of parts or increase the total sell amount."
-msgstr "Le montant vendu par partie de votre ordre TWAP doit être d’au moins <0>$<1/></0>. Réduisez le nombre de parties ou augmentez le montant total vendu."
+msgstr "Le montant vendu par tranche de votre ordre TWAP doit être d’au moins <0>$<1/></0>. Réduisez le nombre de tranches ou augmentez le montant total vendu."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Content/NoOrders/OrdersTableNoOrdersContent.utils.tsx
 msgid "No filled orders found"
@@ -819,7 +819,7 @@ msgstr "Le destinataire est sur le réseau {chainName}. Vérifiez qu’il s’ag
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "Sell amount per part (1/{partsCount})"
-msgstr "Montant de vente par partie (1/{partsCount})"
+msgstr "Montant de vente par tranche (1/{partsCount})"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
 #~ msgid "Considering current network costs (<0><1/></0> per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}."
@@ -1063,7 +1063,7 @@ msgstr "Vos tokens favoris enregistrés. Modifiez cette liste sur la <0>page des
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
 msgid "This is the minimum amount that you will receive across your entire TWAP order, assuming all parts of the order execute."
-msgstr "Il s’agit du montant minimum que vous recevrez pour l’ensemble de votre ordre TWAP, à condition que toutes ses parties soient exécutées."
+msgstr "Il s’agit du montant minimum que vous recevrez pour l’ensemble de votre ordre TWAP, à condition que toutes ses tranches soient exécutées."
 
 #: apps/cowswap-frontend/src/pages/Account/Tokens/TokensOverview.tsx
 msgid "No tokens to display"
@@ -1322,7 +1322,7 @@ msgstr "Annulation de l’ordre avec l'identifiant {shortId} :<0/><1>{orderSumma
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Sell per part"
-msgstr "Montant vendu par partie"
+msgstr "Montant vendu par tranche"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsDropdown/SettingsDropdown.container.tsx
 msgid "Enable Hooks"
@@ -1955,7 +1955,7 @@ msgstr "Commencer avec les ordres limite"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 msgid "Solvers compete for every swap on @CoWSwap 🐮⚡\n\n"
 "Start swapping on swap.cow.fi"
-msgstr "Les solvers sont en compétition pour chaque swap sur @CoWSwap 🐮⚡\n\n"
+msgstr "Les solvers s’affrontent pour chaque swap sur @CoWSwap 🐮⚡\n\n"
 "Commencez à swapper sur swap.cow.fi"
 
 #: apps/cowswap-frontend/src/pages/graffiti/ClaimScreens.pure.tsx
@@ -2097,7 +2097,7 @@ msgstr "Vous avez participé à une CoW"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "Buy amount per part (1/{partsCount})"
-msgstr "Montant d'achat par partie (1/{partsCount})"
+msgstr "Montant d’achat par tranche (1/{partsCount})"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
@@ -2265,7 +2265,7 @@ msgstr "CoW AMM"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/BigPartTimeWarning.tsx
 msgid "Too much time between parts"
-msgstr "Intervalle trop long entre les parties"
+msgstr "Intervalle trop long entre les tranches"
 
 #: apps/cowswap-frontend/src/modules/trade/hooks/useGetConfirmButtonLabel.ts
 msgid "Swap and Bridge"
@@ -2403,7 +2403,7 @@ msgstr "ou"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SmallPartTimeWarning.tsx
 msgid "A minimum of <0>{time}</0> between parts is required. Decrease the number of parts or increase the total duration."
-msgstr "Un intervalle minimal de <0>{time}</0> entre les parties est requis. Réduisez le nombre de parties ou augmentez la durée totale."
+msgstr "Un intervalle minimal de <0>{time}</0> entre les tranches est requis. Réduisez le nombre de tranches ou augmentez la durée totale."
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ListItem/index.tsx
 msgid "Remove list"
@@ -2484,7 +2484,7 @@ msgstr "Pour les ordres de longue durée, envisagez d’augmenter le pourcentage
 
 #: apps/cowswap-frontend/src/modules/advancedOrders/containers/AdvancedOrdersWidget/index.tsx
 msgid "Get the Time-Weighted Average Price by splitting your large order into parts"
-msgstr "Obtenez le prix moyen pondéré dans le temps en divisant votre ordre important en plusieurs parties"
+msgstr "Obtenez le prix moyen pondéré dans le temps en divisant votre ordre important en plusieurs tranches"
 
 #: apps/cowswap-frontend/src/pages/graffiti/ClaimScreens.pure.tsx
 msgid "view transaction ↗"
@@ -3201,7 +3201,7 @@ msgstr "Échec de l’annulation de l’ordre vendant {sellTokenSymbol}"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "TWAP order split in <0>{partsCount, plural, one {# equal part} few {# equal parts} many {# equal parts} other {# equal parts}}</0>"
-msgstr "Ordre TWAP divisé en <0>{partsCount, plural, one {# partie égale} few {# parties égales} many {# parties égales} other {# parties égales}}</0>"
+msgstr "Ordre TWAP divisé en <0>{partsCount, plural, one {# tranche égale} few {# tranches égales} many {# tranches égales} other {# tranches égales}}</0>"
 
 #: apps/cowswap-frontend/src/legacy/utils/trade.ts
 msgid "Swap at most {inputAmountValue} {inputSymbol} for {outputAmountValue} {outputSymbol} to {toAddress}"
@@ -4682,7 +4682,7 @@ msgstr "Voir toutes les offres"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Estimated amount that you will receive from each part of the order."
-msgstr "Montant estimé que vous recevrez pour chaque partie de l’ordre."
+msgstr "Montant estimé que vous recevrez pour chaque tranche de l’ordre."
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "The swap adapter contracts integrate Aave Flash Loans and CoW Swap to facilitate advanced actions like repaying borrow positions using collateral. Learn more at https://aave.com/docs/developers/smart-contracts/swap-features.msg"
@@ -5272,7 +5272,7 @@ msgstr "{pendingSignaturesCount, plural, one {# signature supplémentaire est re
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "The time each part of your TWAP order will remain active."
-msgstr "La durée pendant laquelle chaque partie de votre ordre TWAP restera active."
+msgstr "La durée pendant laquelle chaque tranche de votre ordre TWAP restera active."
 
 #: apps/cowswap-frontend/src/modules/notifications/pure/TelegramConnectionStatus/index.tsx
 #~ msgid "Authorize Telegram"
@@ -5284,7 +5284,7 @@ msgstr "URL de la liste (https://)"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Buy per part"
-msgstr "Montant acheté par partie"
+msgstr "Montant acheté par tranche"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/QuoteErrorsButton.pure.tsx
 msgid "No intermediate tokens found for the route"
@@ -5320,7 +5320,7 @@ msgstr "Déposez des tokens sur le réseau {label}."
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Your TWAP order will be split into this many parts, which will execute one by one."
-msgstr "Votre ordre TWAP sera divisé en ce nombre de parties, qui seront exécutées l’une après l’autre."
+msgstr "Votre ordre TWAP sera divisé en ce nombre de tranches, qui seront exécutées l’une après l’autre."
 
 #: apps/cowswap-frontend/src/common/pure/TradeLoadingButton/index.tsx
 msgid "Hang in there. Calculating best price"
@@ -5806,7 +5806,7 @@ msgstr "Le délai d’attente de la transaction a expiré. Veuillez réessayer."
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/BigPartTimeWarning.tsx
 msgid "A maximum of <0>{time}</0> between parts is required. Increase the number of parts or decrease the total duration."
-msgstr "Un intervalle maximal de <0>{time}</0> entre les parties est requis. Augmentez le nombre de parties ou réduisez la durée totale."
+msgstr "Un intervalle maximal de <0>{time}</0> entre les tranches est requis. Augmentez le nombre de tranches ou réduisez la durée totale."
 
 #: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
 msgid "pixels covered so far"
@@ -5830,7 +5830,7 @@ msgstr "Min."
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "No. of parts"
-msgstr "Nombre de parties"
+msgstr "Nombre de tranches"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookDappIframeReview.pure.tsx
 msgid "The embedded hook dapp requested a hook-state change. Review the request before it can be applied."
@@ -6012,12 +6012,12 @@ msgstr "Haut"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Estimated amount that will be sold in each part of the order."
-msgstr "Montant estimé qui sera vendu dans chaque partie de l’ordre."
+msgstr "Montant estimé qui sera vendu dans chaque tranche de l’ordre."
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Part duration"
-msgstr "Durée de chaque partie"
+msgstr "Durée de chaque tranche"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 #~ msgid "hours"
@@ -6315,7 +6315,7 @@ msgstr "Reçu de l’ordre"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 msgid "{solverCount, plural, one {# solver competed for my swap on @CoWSwap.} few {# solvers competed for my swap on @CoWSwap.} many {# solvers competed for my swap on @CoWSwap.} other {# solvers competed for my swap on @CoWSwap.}} {winnerName} won 🐮⚡\n\n"
 "Start swapping on swap.cow.fi"
-msgstr "{solverCount, plural, one {# solver a participé à la compétition pour mon swap sur @CoWSwap.} few {# solvers ont participé à la compétition pour mon swap sur @CoWSwap.} many {# solvers ont participé à la compétition pour mon swap sur @CoWSwap.} other {# solvers ont participé à la compétition pour mon swap sur @CoWSwap.}} {winnerName} a gagné 🐮⚡\n\n"
+msgstr "{solverCount, plural, one {# solver s’est positionné sur mon swap sur @CoWSwap.} few {# solvers se sont affrontés pour mon swap sur @CoWSwap.} many {# solvers se sont affrontés pour mon swap sur @CoWSwap.} other {# solvers se sont affrontés pour mon swap sur @CoWSwap.}} {winnerName} a gagné 🐮⚡\n\n"
 "Commencez à swapper sur swap.cow.fi"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
@@ -7589,7 +7589,7 @@ msgstr "Votre code de parrainage est enregistré. Il sera associé après votre 
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
 msgid "Insufficient allowance granted for <0><1/></0>. If allowance remains insufficient at creation time, this portion will not be created. Approve the <2><3/></2> token before creation."
-msgstr "Autorisation insuffisante accordée pour <0><1/></0>. Si l'autorisation reste insuffisante au moment de la création, cette partie ne sera pas créée. Approuvez le token <2><3/></2> avant la création."
+msgstr "Autorisation insuffisante accordée pour <0><1/></0>. Si l’autorisation reste insuffisante au moment de la création, cette tranche ne sera pas créée. Approuvez le token <2><3/></2> avant la création."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HookSearchInput/index.tsx
 msgid "Clear search input"
@@ -7771,7 +7771,7 @@ msgstr "L’ordre a expiré"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "This is the amount that will be sold in each part of the TWAP order."
-msgstr "Il s’agit du montant vendu dans chaque partie de l’ordre TWAP."
+msgstr "Il s’agit du montant vendu dans chaque tranche de l’ordre TWAP."
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Quote expired. Refreshing..."
@@ -8265,7 +8265,7 @@ msgstr "L’adresse de dépôt du bridge n’est pas vérifiée ! Veuillez conta
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "This is the estimated amount you will receive for each part of the TWAP order."
-msgstr "Il s’agit du montant estimé que vous recevrez pour chaque partie de l’ordre TWAP."
+msgstr "Il s’agit du montant estimé que vous recevrez pour chaque tranche de l’ordre TWAP."
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Aave Repay with Collateral Flashloan"
@@ -8554,7 +8554,7 @@ msgstr "Récupéré avec succès"
 
 #: apps/cowswap-frontend/src/modules/twap/pure/PrimaryActionButton/PrimaryActionButton.pure.tsx
 msgid "Minimum trade size for xStocks tokens is ${XSTOCK_MIN_TRADE_SIZE_USD} per part"
-msgstr "Le montant minimum d’un trade de tokens xStocks est de ${XSTOCK_MIN_TRADE_SIZE_USD} par partie"
+msgstr "Le montant minimum d’un trade de tokens xStocks est de ${XSTOCK_MIN_TRADE_SIZE_USD} par tranche"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeCreationSubtitle.tsx
 #~ msgid "Connect to verify eligibility. Code binds on your first eligible trade. Earn {rewardAmount} {AFFILIATE_REWARDS_CURRENCY} per ${triggerVolume} of eligible volume in {timeCapDays} days. Payouts happen on Ethereum mainnet."
@@ -8604,7 +8604,7 @@ msgstr "🧽 effacer"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Part of a {twapOrderN}-part TWAP order split"
-msgstr "Partie d’un ordre TWAP divisé en {twapOrderN} parties"
+msgstr "Tranche d’un ordre TWAP divisé en {twapOrderN} tranches"
 
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/index.tsx
 msgid "Claim COW <0/>"
@@ -9733,7 +9733,7 @@ msgstr "Votre ordre faisait partie d’une Coincidence of Wants (CoW) : les solv
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "The first part of your TWAP order will become active as soon as you confirm the order below."
-msgstr "La première partie de votre ordre TWAP deviendra active dès que vous confirmerez l’ordre ci-dessous."
+msgstr "La première tranche de votre ordre TWAP deviendra active dès que vous confirmerez l’ordre ci-dessous."
 
 #. js-lingui-explicit-id
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
@@ -9819,7 +9819,7 @@ msgstr "Impossible de se connecter à l’URL fournie. Vérifiez qu’elle est c
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/SolverAuctionResult/AuctionLegend/AuctionLegend.pure.tsx
 msgid "{alsoBid} also bid"
-msgstr "Autres solvers ayant fait une offre : {alsoBid}"
+msgstr "Autres offres : {alsoBid}"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderFillsAt/OrderFillsAt.pure.tsx
 msgid "Pending execution"
@@ -10651,7 +10651,7 @@ msgstr "Vous passez de {sourceChainLabel} à {targetChainLabel}."
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SmallPartTimeWarning.tsx
 msgid "Insufficient time between parts"
-msgstr "Intervalle insuffisant entre les parties"
+msgstr "Intervalle insuffisant entre les tranches"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/index.tsx
 #~ msgid "<0>Select an {ACCOUNT_PROXY_LABEL}</0> and then select a token you want to recover from CoW Shed."
@@ -10740,7 +10740,7 @@ msgstr "L’<0>acquisition des COW issus du verrouillage de GNO</0> s’effectue
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "The \"Part duration\" refers to the duration between each part of your TWAP order.<0/><1/>Choosing a shorter time allows for faster execution of each part, potentially reducing price fluctuations. Striking the right balance is crucial for optimal execution."
-msgstr "La « Durée de chaque partie » correspond à l’intervalle entre chaque partie de votre ordre TWAP.<0/><1/>Choisir une durée plus courte permet une exécution plus rapide de chaque partie, ce qui peut réduire les fluctuations de prix. Trouver le bon équilibre est essentiel pour une exécution optimale."
+msgstr "La « Durée de chaque tranche » correspond à l’intervalle entre chaque tranche de votre ordre TWAP.<0/><1/>Choisir une durée plus courte permet une exécution plus rapide de chaque tranche, ce qui peut réduire les fluctuations de prix. Trouver le bon équilibre est essentiel pour une exécution optimale."
 
 #: apps/cowswap-frontend/src/modules/twap/pure/CustomDeadlineSelector/CustomDeadlineSelector.pure.tsx
 msgid "Hours"
@@ -10801,7 +10801,7 @@ msgstr "Erreur CoW Swap"
 
 #: apps/cowswap-frontend/src/modules/advancedOrders/containers/AdvancedOrdersWidget/index.tsx
 msgid "Customize your order size, expiration, and number of parts"
-msgstr "Personnalisez la taille, l’expiration et le nombre de parties de votre ordre"
+msgstr "Personnalisez la taille, l’expiration et le nombre de tranches de votre ordre"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/NetworkBridgeBanner/NetworkBridgeBanner.container.tsx
 msgid "{label} token bridge"
