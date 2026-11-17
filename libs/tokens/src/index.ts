@@ -8,6 +8,7 @@ migrateNetworkMismatchUserAddedTokens()
 
 // Updaters
 export { TokensListsUpdater } from './updaters/TokensListsUpdater'
+export { RwaTokensListsUpdater } from './updaters/RwaTokensListsUpdater'
 export { TokensListsTagsUpdater } from './updaters/TokensListsTagsUpdater'
 export { UnsupportedTokensUpdater } from './updaters/UnsupportedTokensUpdater'
 export { WidgetTokensListsUpdater } from './updaters/WidgetTokensListsUpdater'

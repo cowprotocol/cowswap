@@ -1,5 +1,5 @@
 import type * as ActiveLocaleModule from './useActiveLocale'
-import type * as WidgetLocaleModule from '../utils/widgetLocale'
+import type * as WidgetLocaleModule from 'entities/injectedWidget'
 
 jest.mock('legacy/state', () => ({ cowSwapStore: { getState: () => ({ user: { userLocale: 'fr-FR' } }) } }))
 
@@ -10,7 +10,7 @@ function loadActiveLocale(): typeof ActiveLocaleModule & Pick<typeof WidgetLocal
 
   jest.isolateModules(() => {
     activeLocaleModule = require('./useActiveLocale')
-    widgetLocaleModule = require('../utils/widgetLocale')
+    widgetLocaleModule = require('entities/injectedWidget')
   })
 
   if (!activeLocaleModule || !widgetLocaleModule) throw new Error('useActiveLocale not loaded')

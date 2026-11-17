@@ -191,6 +191,20 @@ describe('migrateRetiredTokenLists', () => {
   })
 
   // A half-written or hand-edited value must not take the whole lists state down with it
+  it.each([
+    ['a chain map that is a string', { [SupportedChainId.MAINNET]: 'broken' }],
+    ['a list entry that is a number', { [SupportedChainId.MAINNET]: { [LIVE_SOURCE]: 1 } }],
+    ['a root that is an array', [listState(LIVE_SOURCE)]],
+  ])('leaves v8 in place when it holds %s', async (_, stored) => {
+    const storedRaw = JSON.stringify(stored)
+    mockStorage.set(V8_KEY, storedRaw)
+
+    await migrateRetiredTokenLists()
+
+    expect(mockStorage.get(V8_KEY)).toBe(storedRaw)
+    expect(mockStorage.has(LATEST_KEY)).toBe(false)
+  })
+
   it('leaves v7 in place when it cannot be parsed', async () => {
     mockStorage.set(V7_KEY, 'not json')
 

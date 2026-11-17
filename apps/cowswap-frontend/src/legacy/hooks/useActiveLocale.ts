@@ -2,9 +2,10 @@ import { DEFAULT_LOCALE, SupportedLocale } from '@cowprotocol/common-const'
 import { useParsedQueryString, parsedQueryString } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 
+import { getWidgetLocale, parseLocale, setWidgetLocale } from 'entities/injectedWidget'
+
 import { cowSwapStore } from 'legacy/state'
 import { useUserLocale } from 'legacy/state/user/hooks'
-import { getWidgetLocale, parseLocale, setWidgetLocale } from 'legacy/utils/widgetLocale'
 
 /**
  * Returns the currently active locale, from a combination of user agent, query string, and user settings stored in redux (without react context)
@@ -48,7 +49,7 @@ function resolveActiveLocale(
   if (isInjectedWidget()) {
     if (urlLocale) setWidgetLocale(urlLocale)
 
-    // Ignore persisted locale for widget mode so that the locale is determined by the widget URL alone:
+    // Ignore persisted locale in widget mode: the integrator's URL / params update decides, then the device
     return getWidgetLocale() ?? navigatorLocale() ?? DEFAULT_LOCALE
   }
 

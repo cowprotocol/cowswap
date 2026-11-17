@@ -139,6 +139,7 @@ function TradeWidgetSkeleton({ overlay = false }: { overlay?: boolean }): ReactN
         <span className={`${styles.skeletonBlock} ${styles.skeletonTab}`} />
         <span className={`${styles.skeletonBlock} ${styles.skeletonTab}`} />
       </div>
+
       <span className={`${styles.skeletonBlock} ${styles.skeletonField}`} />
       <span className={`${styles.skeletonBlock} ${styles.skeletonField}`} />
       <span className={`${styles.skeletonBlock} ${styles.skeletonButton}`} />
