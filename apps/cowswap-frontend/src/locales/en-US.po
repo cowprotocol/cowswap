@@ -8469,8 +8469,8 @@ msgstr "Creation"
 #~ msgstr "Enable alpha networks"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
-msgid "Save at least <0>$2.50<1> · Joins batch in <2/></1></0>"
-msgstr "Save at least <0>$2.50<1> · Joins batch in <2/></1></0>"
+#~ msgid "Save at least <0>$2.50<1> · Joins batch in <2/></1></0>"
+#~ msgstr "Save at least <0>$2.50<1> · Joins batch in <2/></1></0>"
 
 #: apps/cowswap-frontend/src/modules/application/containers/AppMenu/index.tsx
 msgid "Disable Graffiti Theme"
