@@ -4,7 +4,6 @@ import { notFound } from 'next/navigation'
 
 import {
   Category,
-  getAllArticleSlugs,
   getArticleBySlug,
   getArticles,
   getCategories,
@@ -119,14 +118,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export async function generateStaticParams(): Promise<{ article: string }[]> {
-  try {
-    const slugs = await getAllArticleSlugs()
-    return slugs.map((article) => ({ article }))
-  } catch (error) {
-    console.error('Error generating static params:', error)
-    return []
-  }
+export function generateStaticParams(): [] {
+  // Generate on first request so builds can finish during a partial CMS outage.
+  return []
 }
 
 function isRichTextComponent(block: unknown): block is SharedRichTextComponent {

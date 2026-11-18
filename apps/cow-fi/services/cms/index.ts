@@ -1,4 +1,5 @@
 import { CmsClient, components } from '@cowprotocol/cms'
+import { isRecord } from '@cowprotocol/common-utils/json-utils'
 
 import { PaginationParam } from 'types'
 
@@ -70,48 +71,6 @@ export const client = CmsClient({
 })
 
 export type Page = Schemas['PageListResponseDataItem']
-
-/**
- * Returns all article slugs.
- *
- * @returns Slugs
- */
-export async function getAllArticleSlugs(): Promise<string[]> {
-  try {
-    const { data, error, response } = await client.GET('/articles', {
-      params: {
-        query: {
-          fields: ['slug'],
-          'pagination[pageSize]': DEFAULT_PAGE_SIZE,
-        },
-      },
-      querySerializer,
-      ...clientAddons,
-    })
-
-    if (error) {
-      console.error(`Error ${response.status} getting article slugs: ${response.url}`, error)
-      throw error
-    }
-
-    return data.data
-      .filter((article: Article) => article.attributes)
-      .map((article: Article) => article.attributes!.slug)
-  } catch (error) {
-    return handleCmsBuildFailure('getAllArticleSlugs', error, [])
-  }
-}
-
-/**
- * Returns all category slugs.
- *
- * @returns Slugs
- */
-export async function getAllCategorySlugs(): Promise<string[]> {
-  const categories = await getCategories()
-
-  return categories.map((category) => category.attributes!.slug!)
-}
 
 /**
  * Returns every published resource matching the given filters, across CMS pages.
@@ -476,7 +435,7 @@ function readPublishedSlugEntry(records: unknown, total: number, slug: string): 
     if (total === 0) return null
 
     const record: unknown = records[0]
-    if (record && typeof record === 'object' && 'attributes' in record && record.attributes) return record
+    if (isRecord(record) && isRecord(record.attributes)) return record
   }
 
   throw new Error(`Invalid CMS response for slug ${slug}`)
