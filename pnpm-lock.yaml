@@ -668,8 +668,8 @@ importers:
         specifier: 2.8.3
         version: 2.8.3(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/sdk-trading-solana':
-        specifier: 1.2.1
-        version: 1.2.1(ajv@8.17.1)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(multiformats@14.0.0)(typescript@5.9.3)(utf-8-validate@5.0.10)
+        specifier: 2.0.0
+        version: 2.0.0(ajv@8.17.1)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(multiformats@14.0.0)(typescript@5.9.3)(utf-8-validate@5.0.10)
       '@cowprotocol/sdk-viem-adapter':
         specifier: 0.3.39
         version: 0.3.39(viem@2.55.19(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
@@ -1670,8 +1670,8 @@ importers:
         specifier: workspace:*
         version: link:../currency
       '@cowprotocol/sdk-trading-solana':
-        specifier: 1.2.1
-        version: 1.2.1(ajv@8.17.1)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(multiformats@14.0.0)(typescript@5.9.3)(utf-8-validate@5.0.10)
+        specifier: 2.0.0
+        version: 2.0.0(ajv@8.17.1)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(multiformats@14.0.0)(typescript@5.9.3)(utf-8-validate@5.0.10)
       '@cowprotocol/tokens':
         specifier: workspace:*
         version: link:../tokens
@@ -3641,8 +3641,8 @@ packages:
   '@cowprotocol/sdk-subgraph@1.3.2':
     resolution: {integrity: sha512-IwFE19ki/Rwn6FGpmW7QrJR5k00boKo1WxbVQYxSIi9ImTy2nm8egJ4Z0exjkeBn5NeuXSedZvoYzj73TjT78g==}
 
-  '@cowprotocol/sdk-trading-solana@1.2.1':
-    resolution: {integrity: sha512-1UXmHD4BejeBPJ67T3U+DjgQEa0r1z3qxFjfEBdZME8tWm9fTfDDsJx934snL0HRCNNqfPiZi5o7zGqxGQPBbA==}
+  '@cowprotocol/sdk-trading-solana@2.0.0':
+    resolution: {integrity: sha512-vl9HhIJp0NblwziqVcukmM4XLbaZeAv5dN5JaDjCZ7Fam+9ERigeGlCqTm/B8SRNVbmd4Ml3NKa1CUHAhi6I7g==}
 
   '@cowprotocol/sdk-trading@1.3.0':
     resolution: {integrity: sha512-xzBwRWCSTPoKDyc2DjgjMhvE2vUMkSkag3hGNTLDb8smJD0zTVhk0oruEQiX7T0MrgGgwgenxeF4ZpywtWhAZg==}
@@ -21087,7 +21087,7 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@cowprotocol/sdk-trading-solana@1.2.1(ajv@8.17.1)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(multiformats@14.0.0)(typescript@5.9.3)(utf-8-validate@5.0.10)':
+  '@cowprotocol/sdk-trading-solana@2.0.0(ajv@8.17.1)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(multiformats@14.0.0)(typescript@5.9.3)(utf-8-validate@5.0.10)':
     dependencies:
       '@cowprotocol/sdk-app-data': 6.1.1(ajv@8.17.1)(multiformats@14.0.0)
       '@cowprotocol/sdk-common': 0.14.8
@@ -23292,7 +23292,7 @@ snapshots:
   '@metaplex-foundation/beet-solana@0.4.0(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)':
     dependencies:
       '@metaplex-foundation/beet': 0.7.1
-      '@solana/web3.js': 1.99.0(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@solana/web3.js': 1.98.4(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
       bs58: 5.0.0
       debug: 4.4.3(supports-color@5.5.0)
     transitivePeerDependencies:
@@ -26031,7 +26031,7 @@ snapshots:
   '@solana/buffer-layout-utils@0.3.0(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)':
     dependencies:
       '@solana/buffer-layout': 4.0.1
-      '@solana/web3.js': 1.99.0(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@solana/web3.js': 1.98.4(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
       bigint-buffer: 1.1.5
       bignumber.js: 9.1.2
     transitivePeerDependencies:
