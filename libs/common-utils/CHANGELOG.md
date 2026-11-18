@@ -1,5 +1,20 @@
 # Changelog
 
+## [3.23.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.22.4...common-utils-v3.23.0) (2026-11-18)
+
+### Minor Changes
+
+- feat: update SDK versions with updated near token lists (#8660)
+
+- feat(solana): support custom recipients (#8592)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.24.0
+  - @cowprotocol/currency@1.11.0
+  - @cowprotocol/types@4.16.0
+
 ## [3.22.4](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.22.3...common-utils-v3.22.4) (2026-11-16)
 
 ### Patch Changes

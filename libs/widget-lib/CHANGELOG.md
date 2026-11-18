@@ -1,5 +1,21 @@
 # Changelog
 
+## [4.16.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.15.0...widget-lib-v4.16.0) (2026-11-18)
+
+### Minor Changes
+
+- feat(rwa): limit RWA buy networks to the asset's chains (#8605)
+
+- feat: update SDK versions with updated near token lists (#8660)
+
+- feat(solana): support custom recipients (#8592)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.19.0
+  - @cowprotocol/iframe-transport@2.3.16
+
 ## [4.15.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.14.0...widget-lib-v4.15.0) (2026-11-11)
 
 ### Minor Changes
