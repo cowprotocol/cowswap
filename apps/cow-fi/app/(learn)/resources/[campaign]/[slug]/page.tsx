@@ -4,7 +4,6 @@ import { notFound, permanentRedirect } from 'next/navigation'
 
 import {
   Category,
-  getAllResourceSlugs,
   getArticles,
   getCategories,
   getResourceBySlug,
@@ -67,31 +66,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export async function generateStaticParams(): Promise<{ campaign: string; slug: string }[]> {
-  try {
-    return await getAllResourceSlugs()
-  } catch (error) {
-    console.error('Error generating resource static params:', error)
-    return []
-  }
+export function generateStaticParams(): [] {
+  // Generate on first request so builds can finish during a partial CMS outage.
+  return []
 }
 
 export default async function ResourcePage({ params }: Props): Promise<ReactNode> {
   const { campaign, slug } = await params
 
-  let resource
-  try {
-    resource = await getResourceBySlug(slug)
-  } catch (error) {
-    console.error(`Error fetching resource ${slug}:`, error)
-    return notFound()
-  }
-
+  const resource = await getResourceBySlug(slug)
   if (!resource?.attributes) {
     return notFound()
   }
 
-  // Keep outside try/catch — permanentRedirect throws a control-flow error Next must handle
   const resolution = resolveResourceRoute(campaign, resource.attributes.campaign, slug)
 
   if (resolution.action === 'not-found') {

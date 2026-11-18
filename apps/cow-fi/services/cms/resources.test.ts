@@ -1,4 +1,4 @@
-import { client, getAllResources, getAllResourceSlugs, getCampaignSummaries } from './index'
+import { client, getAllResources, getAllResourceSlugs, getCampaignSummaries, getResourceBySlug } from './index'
 
 type ResourceAttributes = {
   campaign?: string
@@ -6,12 +6,12 @@ type ResourceAttributes = {
 }
 
 function createCmsPage(
-  items: ResourceAttributes[],
+  items: unknown[],
   page: number,
   pageCount: number,
 ): {
   data: {
-    data: Array<{ attributes: ResourceAttributes }>
+    data: Array<{ attributes: unknown }>
     meta: { pagination: { page: number; pageCount: number; pageSize: number; total: number } }
   }
   error: undefined
@@ -121,6 +121,37 @@ describe('resource CMS pagination', () => {
         },
       }),
     )
+  })
+
+  it('distinguishes an incomplete lookup from a missing resource', async () => {
+    const missing = createCmsPage([], 1, 0)
+    const incomplete = createCmsPage([], 1, 1)
+    incomplete.data.meta.pagination.total = 1
+
+    jest
+      .spyOn(client, 'GET')
+      .mockResolvedValueOnce(incomplete as never)
+      .mockResolvedValueOnce(missing as never)
+
+    await expect(getResourceBySlug('cow-token')).rejects.toThrow('Invalid CMS response for slug cow-token')
+    await expect(getResourceBySlug('cow-token')).resolves.toBeNull()
+  })
+
+  it.each([
+    { shape: 'a string', attributes: 'invalid' },
+    { shape: 'an array', attributes: [] },
+    { shape: 'a boolean', attributes: true },
+  ])('rejects $shape as resource attributes', async ({ attributes }) => {
+    jest.spyOn(client, 'GET').mockResolvedValueOnce(createCmsPage([attributes], 1, 1) as never)
+
+    await expect(getResourceBySlug('cow-token')).rejects.toThrow('Invalid CMS response for slug cow-token')
+  })
+
+  it('accepts resource attributes with no campaign', async () => {
+    const attributes = { slug: 'cow-token' }
+    jest.spyOn(client, 'GET').mockResolvedValueOnce(createCmsPage([attributes], 1, 1) as never)
+
+    await expect(getResourceBySlug('cow-token')).resolves.toEqual({ attributes })
   })
 
   it('omits incomplete resources without using non-null assertions', async () => {
