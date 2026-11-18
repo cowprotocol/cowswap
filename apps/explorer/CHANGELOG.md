@@ -1,5 +1,29 @@
 # Changelog
 
+## [4.20.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.19.5...explorer-v4.20.0) (2026-11-18)
+
+### Minor Changes
+
+- feat: update SDK versions with updated near token lists (#8660)
+
+- feat(solana): support custom recipients (#8592)
+
+### Patch Changes
+
+- fix(explorer): add robots.txt (#8664)
+
+- fix(explorer): show a generic icon for unidentified solvers (#8540)
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.20.0
+  - @cowprotocol/common-const@3.24.0
+  - @cowprotocol/common-hooks@3.22.0
+  - @cowprotocol/common-utils@3.23.0
+  - @cowprotocol/core@3.16.0
+  - @cowprotocol/types@4.16.0
+  - @cowprotocol/ui@3.24.0
+  - @cowprotocol/hook-dapp-lib@2.5.4
+
 ## [4.19.5](https://github.com/cowprotocol/cowswap/compare/explorer-v4.19.4...explorer-v4.19.5) (2026-11-16)
 
 ### Patch Changes

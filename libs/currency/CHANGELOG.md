@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.11.0](https://github.com/cowprotocol/cowswap/compare/currency-v1.10.0...currency-v1.11.0) (2026-11-18)
+
+### Minor Changes
+
+- feat: update SDK versions with updated near token lists (#8660)
+
+- feat(solana): support custom recipients (#8592)
+
 ## [1.10.0](https://github.com/cowprotocol/cowswap/compare/currency-v1.9.2...currency-v1.10.0) (2026-11-10)
 
 ### Minor Changes

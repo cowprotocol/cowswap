@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.16.0](https://github.com/cowprotocol/cowswap/compare/types-v4.15.1...types-v4.16.0) (2026-11-18)
+
+### Minor Changes
+
+- feat: update SDK versions with updated near token lists (#8660)
+
+- feat(solana): support custom recipients (#8592)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.11.0
+
 ## [4.15.1](https://github.com/cowprotocol/cowswap/compare/types-v4.15.0...types-v4.15.1) (2026-11-11)
 
 ### Patch Changes
