@@ -40,45 +40,38 @@ export default async function ArticlePage({ params }: Props): Promise<ReactNode>
     return notFound()
   }
 
-  try {
-    const article = await fetchArticleWithRetry(articleSlug)
-
-    if (!article) {
-      return notFound()
-    }
-
-    // Fetch featured articles
-    const featuredArticlesResponse = await getArticles({
-      filters: {
-        featured: {
-          $eq: true,
-        },
-      },
-      pageSize: FEATURED_ARTICLES_PAGE_SIZE,
-    })
-    const featuredArticles = featuredArticlesResponse.data
-
-    // Use first 3 featured articles for "Read more" section to ensure deterministic ISR caching
-    const readMoreArticles = featuredArticles.slice(0, 3)
-    const categoriesResponse = await getCategories()
-    const allCategories =
-      categoriesResponse?.map((category: Category) => ({
-        name: category?.attributes?.name || '',
-        slug: category?.attributes?.slug || '',
-      })) || []
-
-    return (
-      <ArticlePageComponent
-        article={article}
-        randomArticles={readMoreArticles}
-        featuredArticles={featuredArticles}
-        allCategories={allCategories}
-      />
-    )
-  } catch (error) {
-    console.error(`Error fetching article ${articleSlug}:`, error)
+  const article = await fetchArticleWithRetry(articleSlug)
+  if (!article) {
     return notFound()
   }
+
+  const featuredArticlesResponse = await getArticles({
+    filters: {
+      featured: {
+        $eq: true,
+      },
+    },
+    pageSize: FEATURED_ARTICLES_PAGE_SIZE,
+  })
+  const featuredArticles = featuredArticlesResponse.data
+
+  // Use first 3 featured articles for "Read more" section to ensure deterministic ISR caching
+  const readMoreArticles = featuredArticles.slice(0, 3)
+  const categoriesResponse = await getCategories()
+  const allCategories =
+    categoriesResponse?.map((category: Category) => ({
+      name: category?.attributes?.name || '',
+      slug: category?.attributes?.slug || '',
+    })) || []
+
+  return (
+    <ArticlePageComponent
+      article={article}
+      randomArticles={readMoreArticles}
+      featuredArticles={featuredArticles}
+      allCategories={allCategories}
+    />
+  )
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

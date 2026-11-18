@@ -1,4 +1,4 @@
-import { client, getAllResources, getAllResourceSlugs, getCampaignSummaries } from './index'
+import { client, getAllResources, getAllResourceSlugs, getCampaignSummaries, getResourceBySlug } from './index'
 
 type ResourceAttributes = {
   campaign?: string
@@ -121,6 +121,20 @@ describe('resource CMS pagination', () => {
         },
       }),
     )
+  })
+
+  it('distinguishes an incomplete lookup from a missing resource', async () => {
+    const missing = createCmsPage([], 1, 0)
+    const incomplete = createCmsPage([], 1, 1)
+    incomplete.data.meta.pagination.total = 1
+
+    jest
+      .spyOn(client, 'GET')
+      .mockResolvedValueOnce(incomplete as never)
+      .mockResolvedValueOnce(missing as never)
+
+    await expect(getResourceBySlug('cow-token')).rejects.toThrow('Invalid CMS response for slug cow-token')
+    await expect(getResourceBySlug('cow-token')).resolves.toBeNull()
   })
 
   it('omits incomplete resources without using non-null assertions', async () => {
