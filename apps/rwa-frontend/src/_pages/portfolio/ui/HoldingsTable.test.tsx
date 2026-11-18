@@ -56,6 +56,31 @@ describe('HoldingsTable', () => {
     expect(screen.getAllByText('—')).toHaveLength(2)
   })
 
+  it('links a listed asset to its page, and shows an asset without a page unlinked', () => {
+    const run = token('RUN', 4663, '0x0000000000000000000000000000000000000005', 'Robinhood')
+    const robinhoodHolding: Holding = {
+      asset: { ticker: 'RUN', title: 'Sunrun', type: 'stock', tokens: [run] },
+      price: null,
+      tokens: [{ token: run, balance: '1000000000000000000', shares: 1, value: null }],
+      shares: 1,
+      value: null,
+    }
+
+    render(
+      <HoldingsTable
+        holdings={[...HOLDINGS, robinhoodHolding]}
+        getLogoUrl={() => null}
+        isWalletEmpty={false}
+        isFiltered={false}
+      />,
+    )
+
+    expect(screen.getByRole('link', { name: 'NVIDIA' }).getAttribute('href')).toBe('/asset/NVDA')
+    expect(screen.getByText('Sunrun')).toBeTruthy()
+    expect(screen.queryByRole('link', { name: 'Sunrun' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Sunrun actions' })).toBeNull()
+  })
+
   it('invites an empty wallet to explore assets', () => {
     render(<HoldingsTable holdings={[]} getLogoUrl={() => null} isWalletEmpty isFiltered={false} />)
 

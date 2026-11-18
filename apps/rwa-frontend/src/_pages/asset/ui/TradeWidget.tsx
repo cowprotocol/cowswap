@@ -16,7 +16,7 @@ import styles from './TradeWidget.module.css'
 
 import { getTradeTokensFilters } from '../lib/tradeTokensFilters'
 import { getTradingPauseMessage } from '../lib/tradingPause'
-import { TRADE_WIDGET_ID } from '../model/useSelectTradeToken'
+import { TRADE_WIDGET_ID, useIsWalletOffTradeNetwork } from '../model/useSelectTradeToken'
 import { useTradeSelection } from '../model/useTradeSelection'
 import { useWidgetOrderAnalytics } from '../model/useWidgetOrderAnalytics'
 import { useWidgetTradeTokenSync } from '../model/useWidgetTradeTokenSync'
@@ -51,6 +51,7 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
   const tradingPauseMessage =
     tradingPause?.issuer === assetToken?.issuer ? getTradingPauseMessage(tradingPause, new Date()) : null
   const side = selection?.side
+  const isWalletOffTradeNetwork = useIsWalletOffTradeNetwork(selection?.chainId ?? 0)
   const widgetRef = useRef<HTMLElement>(null)
   const [isWidgetLoading, setIsWidgetLoading] = useState(true)
   const onWidgetSettled = useCallback(() => setIsWidgetLoading(false), [])
@@ -87,7 +88,7 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
     <section ref={widgetRef} id={TRADE_WIDGET_ID} className={styles.widget}>
       <TradeTokenSelector asset={asset} selection={selection} />
       {tradingPauseMessage && <p className={styles.notice}>{tradingPauseMessage}</p>}
-      <div className={styles.frameContainer}>
+      <div className={styles.frameContainer} hidden={isWalletOffTradeNetwork}>
         <div className={styles.frame} data-loading={isWidgetLoading || undefined}>
           <CowSwapWidget
             params={params}

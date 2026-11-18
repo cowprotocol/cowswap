@@ -1,0 +1,258 @@
+.scene {
+  --saucer-beam: #3fc4ff;
+  --saucer-beam-opacity: 0.5;
+  --saucer-side: #005eb7;
+  --saucer-dome: #012f7a;
+  --saucer-cap: #fbe872;
+  --saucer-stars: #3fc4ff;
+
+  position: relative;
+  width: 100%;
+  height: clamp(16rem, 24vw, 22rem);
+  overflow: hidden;
+  pointer-events: none;
+  mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+}
+
+:global(:root[data-theme='dark']) .scene {
+  --saucer-beam: #f2cd16;
+  --saucer-beam-opacity: 0.25;
+  --saucer-side: #494c8c;
+  --saucer-dome: #2c2f6f;
+  --saucer-cap: #f2cd16;
+  --saucer-stars: #f2cd16;
+}
+
+.flight {
+  position: absolute;
+  inset: 0;
+  animation: flight-exit 10s linear infinite both;
+}
+
+.saucerEntry {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  animation: saucer-entry 10s linear infinite both;
+}
+
+.saucer {
+  position: absolute;
+  left: 50%;
+  bottom: -6%;
+  height: clamp(13.2rem, 19.8vw, 22.6rem);
+  aspect-ratio: 528 / 698;
+  transform: translate(-50%, 0);
+}
+
+.saucerSvg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.beam {
+  fill: var(--saucer-beam);
+  fill-opacity: var(--saucer-beam-opacity);
+}
+
+.side {
+  fill: var(--saucer-side);
+}
+
+.dome {
+  fill: var(--saucer-dome);
+}
+
+.cap {
+  fill: var(--saucer-cap);
+}
+
+.star {
+  --twinkle-direction: 1;
+  --twinkle-rotation: 5deg;
+  --twinkle-scale-min: 0.92;
+  --twinkle-scale-mid: 1.02;
+  --twinkle-scale-max: 1.08;
+
+  fill: var(--saucer-stars);
+  transform-origin: center;
+  transform-box: fill-box;
+  animation: twinkle 2.4s ease-in-out infinite;
+}
+
+.star2 {
+  --twinkle-direction: -1;
+  --twinkle-rotation: 7deg;
+  --twinkle-scale-max: 1.12;
+
+  animation-delay: 0.8s;
+}
+
+.star3 {
+  --twinkle-rotation: 4deg;
+  --twinkle-scale-min: 0.9;
+  --twinkle-scale-mid: 1;
+
+  animation-delay: 1.6s;
+}
+
+.cow {
+  position: absolute;
+  left: calc(50% + 30px);
+  bottom: 0;
+  z-index: 1;
+  width: clamp(5.9rem, 9.6vw, 9.6rem);
+  aspect-ratio: 122 / 75;
+  animation: cow-abduction 10s linear infinite both;
+}
+
+.cowSprite {
+  width: 100%;
+  height: 100%;
+  /* CoW Swap's light sprite has a white body, made for its sky-blue page, which disappears on the canvas */
+  background: url('./cow.svg') no-repeat bottom / contain;
+  animation: cow-shrink 10s linear infinite both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cow {
+    animation: none;
+    transform: translate(-50%, 0);
+  }
+
+  .flight,
+  .saucerEntry,
+  .cowSprite,
+  .star {
+    animation: none;
+  }
+}
+
+/*
+ * Both flights move a scene-sized box by a percentage. Chrome can keep a running animation's old cqw distance after a
+ * viewport change, for one element and not another, which sent the cow off without the saucer
+ */
+@keyframes saucer-entry {
+  0%,
+  16% {
+    transform: translateX(55%);
+    opacity: 0;
+  }
+
+  26%,
+  56% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  64% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+
+  72%,
+  100% {
+    transform: translateX(55%);
+    opacity: 0;
+  }
+}
+
+@keyframes flight-exit {
+  0%,
+  44%,
+  76%,
+  100% {
+    transform: translateX(0);
+  }
+
+  56%,
+  68% {
+    transform: translateX(-55%);
+  }
+}
+
+@keyframes cow-abduction {
+  0%,
+  28% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  36% {
+    opacity: 1;
+    transform: translate(-50%, -18%);
+  }
+
+  44%,
+  56% {
+    opacity: 1;
+    transform: translate(-50%, -38%);
+  }
+
+  60%,
+  74% {
+    opacity: 0;
+    transform: translate(-50%, -38%);
+  }
+
+  82%,
+  88% {
+    opacity: 0;
+    transform: translate(-50%, 0);
+  }
+
+  92%,
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+@keyframes cow-shrink {
+  0%,
+  28% {
+    transform: scale(1);
+  }
+
+  36% {
+    transform: scale(0.8);
+  }
+
+  44%,
+  74% {
+    transform: scale(0.3);
+  }
+
+  88% {
+    transform: scale(0.8);
+  }
+
+  92%,
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: rotate(calc(var(--twinkle-rotation) * var(--twinkle-direction) * -1)) scale(var(--twinkle-scale-min));
+  }
+
+  35% {
+    opacity: 0.75;
+    transform: rotate(calc(var(--twinkle-rotation) * var(--twinkle-direction) * -0.2)) scale(var(--twinkle-scale-mid));
+  }
+
+  50% {
+    opacity: 1;
+    transform: rotate(calc(var(--twinkle-rotation) * var(--twinkle-direction))) scale(var(--twinkle-scale-max));
+  }
+
+  70% {
+    opacity: 0.6;
+    transform: rotate(calc(var(--twinkle-rotation) * var(--twinkle-direction) * 0.25)) scale(var(--twinkle-scale-mid));
+  }
+}

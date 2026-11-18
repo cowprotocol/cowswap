@@ -10,6 +10,7 @@ import { SolanaRawOrder, SolanaRawTrade } from 'api/solanaOrderbook/types'
 const SOLANA_ORDER: SolanaRawOrder = {
   uid: '0xd2a46fcaa12798182177bc97ab8d413bd6a2b341c6f848741f86aac3e6ae15f0',
   owner: '2c1E71jPXqgM8nJXiQpCEwGhXSVA8GTN4a1qTS1ibyLa',
+  receiver: null,
   sellToken: 'So11111111111111111111111111111111111111112',
   buyToken: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
   sellTokenAccount: 'G5F2C2cdSnnx63Bf48xjJBxKfQqV2XKMwWo3JyuC4kWt',
@@ -27,6 +28,9 @@ const SOLANA_ORDER: SolanaRawOrder = {
   executedBuyAmount: '0',
   status: 'expired',
 }
+
+/** A wallet other than the order owner, which the book reports as `receiver` when placement named it. */
+const CUSTOM_RECEIVER = '3de7xiRK7hV6jnu5B1m9nLHdt7iPUunJoSxsZb1fSf35'
 
 /** A real `GET /api/v2/trades?orderUid=…` entry, unedited. */
 const SOLANA_TRADE: SolanaRawTrade = {
@@ -74,7 +78,15 @@ describe('toRawOrder', () => {
       orderPda: SOLANA_ORDER.orderPda,
       sellTokenAccount: SOLANA_ORDER.sellTokenAccount,
       buyTokenAccount: SOLANA_ORDER.buyTokenAccount,
+      receiverWallet: undefined,
     })
+  })
+
+  it('carries the wallet the buy token account was placed for', () => {
+    const order = toRawOrder({ ...SOLANA_ORDER, receiver: CUSTOM_RECEIVER })
+
+    expect(order.solana?.receiverWallet).toBe(CUSTOM_RECEIVER)
+    expect(order.receiver).toBe(SOLANA_ORDER.buyTokenAccount)
   })
 
   it('survives transformOrder, so components can still tell the order is Solana', () => {

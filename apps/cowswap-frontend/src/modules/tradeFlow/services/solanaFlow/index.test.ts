@@ -1,4 +1,4 @@
-import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
+import { NATIVE_CURRENCIES, TOKEN_2022_TAG, TokenWithLogo } from '@cowprotocol/common-const'
 import { captureError, ERROR_TYPES } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import {
@@ -13,6 +13,7 @@ import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { postSolanaSponsoredOrder } from '@cowprotocol/sdk-trading-solana'
 import { UiOrderType } from '@cowprotocol/types'
 
+import { TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { Connection, PublicKey } from '@solana/web3.js'
 import {
   solanaOrderNotPlacedAtom,
@@ -139,6 +140,12 @@ const MARKET_SIGNED_SELL_AMOUNT = 1_000_000n
 const MARKET_SIGNED_BUY_AMOUNT = 1_900_000n
 const LIMIT_SIGNED_SELL_AMOUNT = 5_000_000n
 const LIMIT_SIGNED_BUY_AMOUNT = 12_000_000n
+// The buy account each path's signed intent names. A swap keeps the quoted one; a limit order rebuilds
+// the intent against its own receiver and so names a different account. Distinct here so a test can tell
+// which intent reached the buy-ATA step. Written out rather than derived: jsdom's crypto shim breaks
+// `findProgramAddressSync`, so these stand in for the associated token addresses they represent.
+const QUOTED_BUY_TOKEN_ACCOUNT = new PublicKey(new Uint8Array(32).fill(10))
+const LIMIT_BUY_TOKEN_ACCOUNT = new PublicKey(new Uint8Array(32).fill(11))
 
 const wsol = new TokenWithLogo(
   undefined,
@@ -149,6 +156,15 @@ const wsol = new TokenWithLogo(
   'Wrapped SOL',
 )
 const usdc = new Token(SOLANA_CHAIN_ID, 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', 6, 'USDC')
+const token2022Sell = new TokenWithLogo(
+  undefined,
+  SOLANA_CHAIN_ID,
+  '9Pq7aLAbhDG2tTnS22cm6kuysZVcZpLFE368HWuypump',
+  6,
+  'JOB',
+  'DogWifJob',
+  [TOKEN_2022_TAG],
+)
 
 const APP_DATA: AppDataInfo = {
   doc: { version: LATEST_APP_DATA_VERSION, appCode: 'CoW Swap', metadata: {} },
@@ -185,14 +201,20 @@ function buildContext({
   orderClass = OrderClass.MARKET,
   buyAmount = outputAmount,
   quoteBuyToken = usdc.address,
+  quoteReceiver = RECEIVER_ADDRESS,
   owner = new PublicKey(SOLANA_ACCOUNT),
+  sellToken = wsol,
+  buyTokenProgramId = TOKEN_PROGRAM_ID,
 }: {
   isNativeSell?: boolean
   delegationAmount?: bigint
   orderClass?: OrderClass
   buyAmount?: CurrencyAmount<Token>
   quoteBuyToken?: string
+  quoteReceiver?: string
   owner?: PublicKey
+  sellToken?: TokenWithLogo
+  buyTokenProgramId?: PublicKey
 } = {}): SolanaTradeFlowContext {
   return {
     account: owner.toBase58(),
@@ -201,9 +223,14 @@ function buildContext({
       uid: new Uint8Array(32).fill(7),
       orderPda: new PublicKey(new Uint8Array(32).fill(4)),
       programId: new PublicKey(new Uint8Array(32).fill(5)),
-      funder: new PublicKey(new Uint8Array(32).fill(9)),
       // Post-slippage amounts: these are what gets signed on chain, and what the stored order must carry.
-      intent: { owner: new PublicKey(SOLANA_ACCOUNT), sellAmount: 1_000_000n, buyAmount: 1_900_000n },
+      intent: {
+        owner: new PublicKey(SOLANA_ACCOUNT),
+        sellAmount: 1_000_000n,
+        buyAmount: 1_900_000n,
+        buyTokenAccount: QUOTED_BUY_TOKEN_ACCOUNT,
+      },
+      buyTokenProgramId,
       funder: FUNDER_ADDRESS,
     } as unknown as SolanaTradeFlowContext['solanaQuote'],
     solana: {
@@ -211,7 +238,7 @@ function buildContext({
       provider: {} as SolanaProvider,
       owner,
     },
-    sellToken: wsol,
+    sellToken,
     sellAmount: SELL_AMOUNT,
     currentDelegation: 0n,
     delegationAmount,
@@ -234,7 +261,7 @@ function buildContext({
         },
         // The receiver the quote derived `intent.buyTokenAccount` from — the buy-ATA step must use this
         // one, not `context.receiver`, or it would name an account the order does not credit.
-        tradeParameters: { receiver: RECEIVER_ADDRESS },
+        tradeParameters: { receiver: quoteReceiver },
       },
       postSwapOrderFromQuote: jest.fn(),
     } as unknown as SolanaTradeFlowContext['tradeQuote'],
@@ -314,6 +341,7 @@ beforeEach(() => {
     fullAppData: MARKET_FULL_APP_DATA,
     sellAmount: MARKET_SIGNED_SELL_AMOUNT,
     buyAmount: MARKET_SIGNED_BUY_AMOUNT,
+    intent: { buyTokenAccount: QUOTED_BUY_TOKEN_ACCOUNT },
   })
   mockPlanCreateLimitOrderStep.mockResolvedValue({
     step: ORDER_STEP,
@@ -322,6 +350,7 @@ beforeEach(() => {
     appData: LIMIT_APP_DATA_HEX,
     sellAmount: LIMIT_SIGNED_SELL_AMOUNT,
     buyAmount: LIMIT_SIGNED_BUY_AMOUNT,
+    intent: { buyTokenAccount: LIMIT_BUY_TOKEN_ACCOUNT },
   })
 })
 
@@ -386,7 +415,8 @@ describe('solanaFlow', () => {
     expect(receiver.toBase58()).toBe(RECEIVER_ADDRESS)
     expect(receiver.toBase58()).not.toBe(context.context.receiver)
     expect(payer.toBase58()).toBe(SOLANA_ACCOUNT)
-    expect(quote).toBe(context.solanaQuote)
+    expect(quote.intent.buyTokenAccount).toEqual(QUOTED_BUY_TOKEN_ACCOUNT)
+    expect(quote.buyTokenProgramId).toBe(context.solanaQuote.buyTokenProgramId)
   })
 
   // A limit order never quotes (planCreateLimitOrderStep derives its own buyTokenAccount straight from
@@ -402,7 +432,12 @@ describe('solanaFlow', () => {
     expect(receiver.toBase58()).toBe(context.context.receiver)
     expect(receiver.toBase58()).not.toBe(RECEIVER_ADDRESS)
     expect(payer.toBase58()).toBe(SOLANA_ACCOUNT)
-    expect(quote).toBe(context.solanaQuote)
+    // The account the rebuilt intent names, never the quoted one: the associated token program rejects a
+    // create whose address is not the named receiver's, which would fail the whole bundle.
+    expect(quote.intent.buyTokenAccount).toEqual(LIMIT_BUY_TOKEN_ACCOUNT)
+    expect(quote.intent.buyTokenAccount).not.toEqual(context.solanaQuote.intent.buyTokenAccount)
+    // Both decisions read the same intent, so the skip check can never disagree with what was created.
+    expect(mockGetIsBuyAtaCreationSkipped).toHaveBeenCalledWith(expect.objectContaining({ quote }))
   })
 
   it('never posts the order from the quote', async () => {
@@ -762,6 +797,7 @@ describe('solanaFlow · appData', () => {
       sellAmount: MARKET_SIGNED_SELL_AMOUNT,
       buyAmount: MARKET_SIGNED_BUY_AMOUNT,
       feePayer: new PublicKey(SOLANA_ACCOUNT),
+      intent: { buyTokenAccount: QUOTED_BUY_TOKEN_ACCOUNT },
     }
     mockPlanCreateOrderStep.mockResolvedValue(planned)
     mockPlanCreateLimitOrderStep.mockResolvedValue(planned)
@@ -962,6 +998,63 @@ describe('solanaFlow · appData (isSolanaAppDataEnabled off)', () => {
   })
 })
 
+// Both of the intent's associated token accounts have to be derived with the mint's own token program:
+// a Token-2022 mint derived as classic SPL names an address the associated token program rejects
+// ("Provided seeds do not result in a valid address"), and the delegate step approves a different account.
+describe('solanaFlow · token programs', () => {
+  it.each([
+    ['a Token-2022 sell mint', token2022Sell, TOKEN_2022_PROGRAM_ID],
+    ['a classic SPL sell mint', wsol, TOKEN_PROGRAM_ID],
+  ])("passes %s's token program to the limit planner", async (_label, sellToken, expectedProgramId) => {
+    const context = buildContext({ orderClass: OrderClass.LIMIT, sellToken })
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(mockPlanCreateLimitOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ sellTokenProgramId: expectedProgramId }),
+    )
+  })
+
+  it.each([
+    ['a Token-2022 buy mint', token2022Sell, TOKEN_2022_PROGRAM_ID],
+    ['a classic SPL buy mint', usdc, TOKEN_PROGRAM_ID],
+  ])("derives %s's buy account with the selected token's program", async (_label, buyToken, expectedProgramId) => {
+    const context = buildContext({
+      orderClass: OrderClass.LIMIT,
+      buyAmount: CurrencyAmount.fromRawAmount(buyToken, '150000000'),
+      // The quote disagrees on purpose: its ids come from a token-list lookup that answers "classic SPL"
+      // for a mint the list has not loaded yet, and the intent must not inherit that.
+      buyTokenProgramId: TOKEN_PROGRAM_ID,
+    })
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(mockPlanCreateLimitOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ buyTokenProgramId: expectedProgramId }),
+    )
+    // The same value the buy-ATA step creates the account with, so the two can never disagree.
+    expect(mockPlanCreateBuyAtaStep).toHaveBeenCalledWith(
+      expect.objectContaining({ quote: expect.objectContaining({ buyTokenProgramId: expectedProgramId }) }),
+    )
+  })
+
+  // A swap keeps the quote's intent, whose buy account the SDK already derived with the quote's program.
+  // Creating that account with any other program names a different address, which the ATA program rejects.
+  it("creates a swap's buy account with the program that derived the quoted intent", async () => {
+    const context = buildContext({
+      orderClass: OrderClass.MARKET,
+      buyAmount: CurrencyAmount.fromRawAmount(token2022Sell, '150000000'),
+      buyTokenProgramId: TOKEN_PROGRAM_ID,
+    })
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(mockPlanCreateBuyAtaStep).toHaveBeenCalledWith(
+      expect.objectContaining({ quote: expect.objectContaining({ buyTokenProgramId: TOKEN_PROGRAM_ID }) }),
+    )
+  })
+})
+
 describe('solanaFlow · buy account creation', () => {
   it('leaves the account to the driver when the flag disables the creation', async () => {
     mockGetIsBuyAtaCreationSkipped.mockReturnValue(true)
@@ -972,7 +1065,7 @@ describe('solanaFlow · buy account creation', () => {
     await solanaFlow(context, buildAnalytics(), { isAtaCreationDisabled: true })
 
     expect(mockGetIsBuyAtaCreationSkipped).toHaveBeenCalledWith({
-      quote: context.solanaQuote,
+      quote: { intent: { buyTokenAccount: QUOTED_BUY_TOKEN_ACCOUNT }, buyTokenProgramId: TOKEN_PROGRAM_ID },
       owner: context.solana.owner,
       isAtaCreationDisabled: true,
     })
@@ -1198,6 +1291,26 @@ describe('solanaFlow · sponsored', () => {
 
     expect(result).toBe(true)
     expect(mockPostSolanaSponsoredOrder).toHaveBeenCalledTimes(1)
+  })
+
+  // Without this the settlement has no wallet to create the payout account for, and placement refuses
+  // the order as unreceivable — the custom-recipient failure the field exists to fix.
+  it('names the wallet the buy token account belongs to when it is not the owner', async () => {
+    await solanaFlow(buildContext(), buildAnalytics(), { isSponsored: true })
+
+    expect(mockPostSolanaSponsoredOrder).toHaveBeenCalledWith(
+      expect.objectContaining({ receiver: RECEIVER_ADDRESS }),
+      expect.anything(),
+    )
+  })
+
+  // Naming the owner means the same to placement as naming nobody. Undefined keeps it off the wire:
+  // the order book serializes the body with JSON.stringify, which drops them.
+  it('names no receiver when the payout goes to the owner', async () => {
+    await solanaFlow(buildContext({ quoteReceiver: SOLANA_ACCOUNT }), buildAnalytics(), { isSponsored: true })
+
+    expect(mockPostSolanaSponsoredOrder).toHaveBeenCalledTimes(1)
+    expect(mockPostSolanaSponsoredOrder.mock.calls[0]?.[0].receiver).toBeUndefined()
   })
 
   // The real blockhash usually outlives the shown window (the estimate is capped), so the chain-level

@@ -3,7 +3,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { type ReactNode, useId, useState } from 'react'
 
-import { useConnection } from 'wagmi'
+import { useConnection, useSwitchChain } from 'wagmi'
 
 import {
   isQuoteUnavailable,
@@ -19,7 +19,7 @@ import { getBestQuoteLabel, getCollapsedQuotedTokens, isRankedQuote } from '../l
 import { formatTokenStat } from '../lib/tokenStat'
 import { trackTradeTokenSelect } from '../lib/tradeAnalytics'
 import { tradeTokenKeyAtom } from '../model/tradeSelectionAtoms'
-import { useSelectTradeNetwork, useSelectTradeSide } from '../model/useSelectTradeToken'
+import { useIsWalletOffTradeNetwork, useSelectTradeNetwork, useSelectTradeSide } from '../model/useSelectTradeToken'
 
 import type { QuotedToken } from '../lib/quotedTokens'
 import type { TradeSelection } from '../model/useTradeSelection'
@@ -155,6 +155,7 @@ export function TradeTokenSelector({ asset, selection }: TradeTokenSelectorProps
           <span> to trade this tokenized asset.</span>
         </div>
       )}
+      <SwitchNetworkPrompt chainId={chainId} />
     </div>
   )
 }
@@ -184,6 +185,27 @@ function NetworkSelect({ asset, chainId }: { asset: RwaAsset; chainId: number })
   }
 
   return <Select variant="filled" aria-label="Network" value={chainId} options={options} onChange={onChange} />
+}
+
+function SwitchNetworkPrompt({ chainId }: { chainId: number }): ReactNode {
+  const isWalletOffTradeNetwork = useIsWalletOffTradeNetwork(chainId)
+  const { mutate: switchChain, isPending } = useSwitchChain()
+
+  if (!isWalletOffTradeNetwork) return null
+
+  return (
+    <div className={styles.connectPrompt}>
+      <button
+        type="button"
+        className={styles.switchNetwork}
+        disabled={isPending}
+        onClick={() => switchChain({ chainId })}
+      >
+        Switch to {getChainLabel(chainId)}
+      </button>
+      <span> to trade these tokens. Your wallet is on another network.</span>
+    </div>
+  )
 }
 
 function TradeTokenOption({

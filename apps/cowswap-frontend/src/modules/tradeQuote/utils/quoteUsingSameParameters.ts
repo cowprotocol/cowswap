@@ -73,6 +73,7 @@ export function quoteUsingSameParameters(
     [currentParams.amount === nextParams.amount.toString(), 'amount'],
     [currentParams.validFor === nextParams.validFor, 'validFor'],
     [currentParams.receiver === nextParams.receiver, 'receiver'],
+    [!!currentParams.partiallyFillable === !!nextParams.partiallyFillable, 'partiallyFillable'],
     /**
      * Check slippage only if it is set in nextParams
      * Because we should refetch quote only when a user changed slippage
@@ -171,11 +172,12 @@ function removeBridgePostHook(
  */
 function removeQuoteMetadata(appData: AppDataInfo['doc']): string {
   const { metadata: fullMetadata, ...rest } = appData
-  const { partnerFee, hooks, referrer, replacedOrder } = fullMetadata
+  const { partnerFee, hooks, referrer, replacedOrder, orderClass } = fullMetadata
 
   const obj = {
     ...rest,
     metadata: {
+      orderClass: orderClass ?? undefined,
       partnerFee: partnerFee ?? undefined,
       hooks: hooks ?? undefined,
       referrer: referrer ?? undefined,

@@ -10,7 +10,15 @@ if (!inputCurrency) {
 }
 
 const Fixtures = {
-  default: () => <RateImpactWarning withAcknowledge={true} rateImpact={-10} inputCurrency={inputCurrency} />,
+  default: () => (
+    <RateImpactWarning
+      withAcknowledge={true}
+      isAccepted={false}
+      onAcknowledgeChange={() => undefined}
+      rateImpact={-10}
+      inputCurrency={inputCurrency}
+    />
+  ),
 }
 
 export default Fixtures

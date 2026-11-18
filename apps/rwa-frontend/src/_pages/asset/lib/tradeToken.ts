@@ -4,7 +4,7 @@ import { getTokenKey, type RwaToken } from '@/entities/asset'
 
 export interface TradeToken {
   assetToken: RwaToken
-  /** `false` when the user picked `assetToken` */
+  /** `false` when user picked `assetToken` */
   isAutoSelected: boolean
 }
 

@@ -75,6 +75,15 @@ describe('SolverCompetitionExpand', () => {
     images.forEach((image) => expect(image.getAttribute('src')).toBe(cmsImage))
   })
 
+  it.each(['0xDd5A...C01b', '3jHwQj...E9be'])('renders a generic icon for the unidentified solver %s', (solver) => {
+    renderExpand(<SolverCompetitionExpand solvers={[{ solver }] as SolverCompetition[]} totalSolvers={12} />)
+
+    const stack = screen.getByTestId('solver-competition-stack')
+
+    expect(stack.querySelector('svg')).not.toBeNull()
+    expect(stack.textContent).toBe('')
+  })
+
   it('names the solver on the summary row when only one provided a solution', () => {
     renderExpand(<SolverCompetitionExpand solvers={[solvers[0]]} totalSolvers={12} />)
 

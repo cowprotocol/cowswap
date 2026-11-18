@@ -8,7 +8,7 @@ import { NATIVE_CURRENCIES, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/commo
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { buildSolanaLimitOrderOrder, encodeOrderIntent, SolanaLimitOrderParams } from '@cowprotocol/sdk-trading-solana'
 
-import { TOKEN_2022_PROGRAM_ID } from '@solana/spl-token'
+import { TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token'
 
 import { buildSolanaOrderIntent, SolanaIntentOrder } from './buildSolanaOrderIntent'
 
@@ -31,6 +31,8 @@ const baseParams: SolanaLimitOrderParams = {
   validTo: 1_900_000_000,
   partiallyFillable: false,
   appData: APP_DATA,
+  sellTokenProgramId: TOKEN_PROGRAM_ID,
+  buyTokenProgramId: TOKEN_PROGRAM_ID,
 }
 
 async function createOrder(
