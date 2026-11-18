@@ -46,6 +46,7 @@ interface TradeWidgetModalsProps {
   confirmModal: ReactNode | undefined
   genericModal: ReactNode | undefined
   onGenericModalDismiss?: Command
+  isGenericModalPending?: boolean
   renderFallback?: () => ReactNode
 }
 
@@ -55,6 +56,7 @@ export function TradeWidgetModals({
   confirmModal,
   genericModal,
   onGenericModalDismiss,
+  isGenericModalPending,
   renderFallback = () => null,
 }: TradeWidgetModalsProps): ReactNode {
   const { chainId, account } = useWalletInfo()
@@ -123,7 +125,7 @@ export function TradeWidgetModals({
     onGenericModalDismiss?.()
   }, [resetAllScreens, onGenericModalDismiss])
 
-  useCloseModalsOnWidgetRequest(closeAllScreens)
+  useCloseModalsOnWidgetRequest(closeAllScreens, isGenericModalPending)
 
   // Both Solana failure screens exit the same way: nothing was placed, so the way on is another
   // attempt from review. Price confirmation is forced because the quote kept refreshing meanwhile.

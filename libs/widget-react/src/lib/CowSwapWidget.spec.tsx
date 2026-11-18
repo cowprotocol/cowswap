@@ -1,3 +1,5 @@
+import { JSX, useState } from 'react'
+
 import type { CowSwapWidgetHandler, CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 import { createCowSwapWidget } from '@cowprotocol/widget-lib'
 
@@ -115,6 +117,46 @@ describe('CowSwapWidget', () => {
     render(<CowSwapWidget params={{ appCode: 'test-app' }} onLoadingError={onLoadingError} />)
 
     expect(onLoadingError).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('CowSwapWidget recovery after a failed creation', () => {
+  beforeEach(() => {
+    createCowSwapWidgetMock.mockReset()
+    createCowSwapWidgetMock.mockImplementation(createWidgetHandler)
+  })
+
+  it('retries a failed creation only when the settings change', () => {
+    createCowSwapWidgetMock.mockImplementationOnce(() => {
+      throw new Error('create failed')
+    })
+
+    const { rerender } = render(<CowSwapWidget params={{ appCode: 'a' }} />)
+    rerender(<CowSwapWidget params={{ appCode: 'a' }} />)
+    rerender(<CowSwapWidget params={{ appCode: 'a' }} />)
+
+    expect(createCowSwapWidgetMock).toHaveBeenCalledTimes(1)
+
+    rerender(<CowSwapWidget params={{ appCode: 'b' }} />)
+
+    expect(createCowSwapWidgetMock).toHaveBeenCalledTimes(2)
+    expect(createCowSwapWidgetMock.mock.calls[1]?.[1].params).toEqual({ appCode: 'b' })
+  })
+
+  it('does not retry when onLoadingError rerenders the parent with equivalent inline params', () => {
+    createCowSwapWidgetMock.mockImplementation(() => {
+      throw new Error('create failed')
+    })
+
+    function Parent(): JSX.Element {
+      const [, setFailures] = useState(0)
+
+      return <CowSwapWidget params={{ appCode: 'a' }} onLoadingError={() => setFailures((n) => n + 1)} />
+    }
+
+    render(<Parent />)
+
+    expect(createCowSwapWidgetMock).toHaveBeenCalledTimes(1)
   })
 })
 

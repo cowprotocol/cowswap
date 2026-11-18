@@ -48,6 +48,7 @@ export interface TradeWidgetProps {
   confirmModal?: ReactNode
   genericModal?: ReactNode
   onGenericModalDismiss?: Command
+  isGenericModalPending?: boolean
 }
 
 export interface TradeWidgetSlots {
