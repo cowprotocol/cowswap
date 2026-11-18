@@ -3,16 +3,18 @@
 import { type ReactNode, type RefObject, useEffect, useMemo, useRef, useState } from 'react'
 
 import { normalizeError } from '@cowprotocol/common-utils/errors'
+import { getGmtCustomTimezone } from '@cowprotocol/common-utils/tradingViewTimezone'
 
 import styles from './PriceChart.module.css'
 
 import { alignCandles, CHART_RESOLUTIONS } from '../lib/chartBars'
-import { formatTickMark, getCustomTimezone } from '../lib/chartTime'
+import { formatTickMark } from '../lib/chartTime'
 
 import type { RwaCandle, RwaChartRange, RwaChartType } from '../model/types'
 import type {
   ChartingLibraryFeatureset,
   CustomAliasedTimezone,
+  CustomTimezoneId,
   IBasicDataFeed,
   IChartingLibraryWidget,
   LibrarySymbolInfo,
@@ -314,7 +316,7 @@ function getThemeOverrides(element: HTMLElement): Overrides {
 function getUserTimezone(): UserTimezone {
   const name = Intl.DateTimeFormat().resolvedOptions().timeZone
 
-  return { name, custom: getCustomTimezone(name, new Date().getTimezoneOffset()) }
+  return { name, custom: getGmtCustomTimezone<CustomTimezoneId>(name, new Date().getTimezoneOffset()) }
 }
 
 function logChartError(err: unknown): void {
