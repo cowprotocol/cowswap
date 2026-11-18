@@ -11,6 +11,7 @@ import { APPLE_ICON, FAVICON } from '../seo'
 
 import type { Metadata, Viewport } from 'next'
 
+import { STOCKS_PAGE_HEADING } from '@/shared/config'
 import {
   buildPageMetadata,
   buildSiteStructuredData,
@@ -33,10 +34,10 @@ const inter = localFont({
   variable: '--font-inter',
 })
 
-const DEFAULT_TITLE = `${SITE_NAME}: tokens referencing stocks and ETFs`
+const DEFAULT_TITLE = `${STOCKS_PAGE_HEADING} | ${SITE_NAME}`
 
 export const metadata: Metadata = {
-  ...buildPageMetadata({ title: DEFAULT_TITLE, description: SITE_DESCRIPTION, path: '' }),
+  ...buildPageMetadata({ title: STOCKS_PAGE_HEADING, description: SITE_DESCRIPTION, path: '' }),
   // Pages inherit an unset field, and the canonical URL of one page must not leak into another
   alternates: null,
   metadataBase: new URL(SITE_URL),

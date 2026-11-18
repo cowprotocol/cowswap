@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { ProductsMenu } from './ProductsMenu'
 
 describe('ProductsMenu', () => {
-  it('lists the CoW products with CoW RWA as the current one, and closes on Escape', () => {
+  it('lists the CoW products with Stocks as the current one, and closes on Escape', () => {
     render(<ProductsMenu />)
 
     const trigger = screen.getByRole('button', { name: 'CoW products' })
@@ -14,7 +14,7 @@ describe('ProductsMenu', () => {
 
     const links = screen.getAllByRole('link')
 
-    expect(links.map((link) => link.textContent)).toEqual(['CoW DAO', 'CoW Swap', 'CoW Protocol', 'CoW RWA'])
+    expect(links.map((link) => link.textContent)).toEqual(['CoW DAO', 'CoW Swap', 'CoW Protocol', 'Stocks'])
     expect(links.map((link) => link.getAttribute('href'))).toEqual([
       'https://cow.fi/',
       'https://swap.cow.fi/',
@@ -23,7 +23,7 @@ describe('ProductsMenu', () => {
     ])
     expect(links.slice(0, 3).every((link) => link.getAttribute('target') === '_blank')).toBe(true)
 
-    const current = screen.getByRole('link', { name: 'CoW RWA' })
+    const current = screen.getByRole('link', { name: 'Stocks' })
 
     expect(current.getAttribute('aria-current')).toBe('true')
     expect(current.getAttribute('target')).toBeNull()

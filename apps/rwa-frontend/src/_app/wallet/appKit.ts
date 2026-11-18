@@ -35,8 +35,8 @@ export const appKit = createAppKit({
   enableInjected: false,
   projectId: WALLET_CONNECT_PROJECT_ID,
   metadata: {
-    name: 'CoW RWA',
-    description: 'Tokens referencing stocks and ETFs, with swaps powered by CoW Protocol',
+    name: 'CoW Swap',
+    description: 'Tokenized stocks, ETFs and commodities, with swaps powered by CoW Protocol',
     url: 'https://swap.cow.fi',
     icons: ['https://swap.cow.fi/favicon.png'],
   },

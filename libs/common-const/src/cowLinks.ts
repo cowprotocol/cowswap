@@ -9,7 +9,7 @@ export interface CowLinkGroup {
   links: CowLink[]
 }
 
-export type CowProductId = 'cowSwap' | 'cowProtocol' | 'cowRwa'
+export type CowProductId = 'cowSwap' | 'cowProtocol'
 
 export type CowSocialId = 'x' | 'discord' | 'github' | 'forum' | 'snapshot'
 
@@ -22,13 +22,20 @@ export const COWSWAP_COOKIE_POLICY_LINK = 'https://cow.fi/legal/cowswap-cookie-p
 
 export const COW_RWA_URL = 'https://swap.cow.fi/rwa'
 
+export const COW_SWAP_NAME = 'CoW Swap'
+
+export const COW_STOCKS_LINK: CowLink = {
+  label: 'Stocks',
+  href: COW_RWA_URL,
+  utmContent: 'footer-products-cow-rwa',
+}
+
 /**
  * CoW products of the header products menu and of the footer logo row, in display order
  */
 export const COW_PRODUCT_LINKS: (CowLink & { id: CowProductId })[] = [
-  { id: 'cowSwap', label: 'CoW Swap', href: 'https://swap.cow.fi/' },
+  { id: 'cowSwap', label: COW_SWAP_NAME, href: 'https://swap.cow.fi/' },
   { id: 'cowProtocol', label: 'CoW Protocol', href: 'https://cow.fi/cow-protocol' },
-  { id: 'cowRwa', label: 'CoW RWA', href: COW_RWA_URL },
 ]
 
 export const COW_SOCIAL_LINKS: (CowLink & { id: CowSocialId })[] = [
@@ -75,7 +82,7 @@ export const COW_FOOTER_NAV_GROUPS: CowLinkGroup[] = [
       { label: 'CoW Protocol', href: 'https://cow.fi/cow-protocol', utmContent: 'footer-products-cow-protocol' },
       { label: 'CoW Explorer', href: 'https://explorer.cow.fi', utmContent: 'footer-products-cow-explorer' },
       { label: 'CoW Widget', href: 'https://cow.fi/widget', utmContent: 'footer-products-cow-widget' },
-      { label: 'CoW RWA', href: COW_RWA_URL, utmContent: 'footer-products-cow-rwa' },
+      COW_STOCKS_LINK,
       { label: 'Solana', href: 'https://cow.fi/solana', utmContent: 'footer-products-solana' },
     ],
   },

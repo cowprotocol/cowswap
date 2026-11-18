@@ -28,7 +28,7 @@ describe('buildAssetStructuredData', () => {
         breadcrumb: {
           '@type': 'BreadcrumbList',
           itemListElement: [
-            { '@type': 'ListItem', position: 1, name: 'CoW RWA', item: 'https://swap.cow.fi/rwa' },
+            { '@type': 'ListItem', position: 1, name: 'CoW Swap', item: 'https://swap.cow.fi/rwa' },
             { '@type': 'ListItem', position: 2, name: 'Apple (AAPL)', item: 'https://swap.cow.fi/rwa/asset/AAPL' },
           ],
         },
