@@ -14,7 +14,7 @@ const starTogglePop = keyframes`
   }
 `
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div<{ $hasError?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -33,6 +33,15 @@ export const Wrapper = styled.div`
     background: var(${UI.COLOR_SUCCESS_BG});
     color: var(${UI.COLOR_SUCCESS_TEXT});
   }
+
+  ${({ $hasError }) =>
+    $hasError
+      ? css`
+          background: var(${UI.COLOR_DANGER_BG});
+          color: var(${UI.COLOR_DANGER_TEXT});
+          border-color: transparent;
+        `
+      : undefined}
 `
 
 export const Content = styled.div`
@@ -107,6 +116,29 @@ export const SaveAmount = styled.span`
 export const NextBatch = styled.span`
   ${font('FONT_SMALL_PLUS', 400)}
   color: var(${UI.COLOR_TEXT_SECONDARY});
+`
+
+export const ScheduleError = styled.span`
+  ${font('FONT_SMALL_PLUS', 400)}
+  color: var(${UI.COLOR_DANGER_TEXT});
+`
+
+export const NoBreakAroundDot = styled.span`
+  white-space: nowrap;
+`
+
+export const RetryButton = styled.button`
+  ${font('FONT_SMALL_PLUS', 600)}
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(${UI.COLOR_DANGER_TEXT});
+  cursor: pointer;
+  text-decoration: underline;
+
+  &:hover {
+    text-decoration-style: dotted;
+  }
 `
 
 export const WaitAndSaveToggle = styled(Toggle)`

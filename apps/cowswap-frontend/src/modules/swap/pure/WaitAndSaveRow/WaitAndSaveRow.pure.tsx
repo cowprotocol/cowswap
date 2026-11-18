@@ -12,9 +12,17 @@ export interface WaitAndSaveRowProps {
   isEnabled: boolean
   toggle: () => void
   joinsBatchInRef: RefObject<HTMLElement | null>
+  hasError: boolean
+  onRetry: () => void
 }
 
-export function WaitAndSaveRow({ isEnabled, toggle, joinsBatchInRef }: WaitAndSaveRowProps): ReactNode {
+export function WaitAndSaveRow({
+  isEnabled,
+  toggle,
+  joinsBatchInRef,
+  hasError,
+  onRetry,
+}: WaitAndSaveRowProps): ReactNode {
   const { t } = useLingui()
   const [starSpinKey, setStarSpinKey] = useState(0)
 
@@ -26,11 +34,12 @@ export function WaitAndSaveRow({ isEnabled, toggle, joinsBatchInRef }: WaitAndSa
   }
 
   return (
-    <styledEl.Wrapper>
+    <styledEl.Wrapper $hasError={hasError}>
       <styledEl.Content>
         <styledEl.Icon key={starSpinKey} $animate={starSpinKey > 0} aria-hidden>
           <SVG src={svgStarShineSrc} />
         </styledEl.Icon>
+
         <styledEl.TextColumn>
           <styledEl.TitleRow>
             <Trans>Wait & save</Trans>
@@ -45,25 +54,46 @@ export function WaitAndSaveRow({ isEnabled, toggle, joinsBatchInRef }: WaitAndSa
               }
             />
           </styledEl.TitleRow>
+
           <styledEl.DescriptionRow>
-            <styledEl.SaveAmount>
-              <Trans>Save $2.50</Trans>
-            </styledEl.SaveAmount>
-            <styledEl.NextBatch>
-              <Trans>
-                · Joins batch in <span ref={joinsBatchInRef} />
-              </Trans>
-            </styledEl.NextBatch>
+            {hasError ? (
+              <styledEl.ScheduleError>
+                <Trans>
+                  Couldn’t load the next batch{' '}
+                  <styledEl.NoBreakAroundDot>
+                    time ·{' '}
+                    <styledEl.RetryButton type="button" onClick={onRetry}>
+                      Try again
+                    </styledEl.RetryButton>
+                  </styledEl.NoBreakAroundDot>
+                </Trans>
+              </styledEl.ScheduleError>
+            ) : (
+              <styledEl.SaveAmount>
+                <Trans>
+                  Save at least{' '}
+                  <styledEl.NoBreakAroundDot>
+                    $2.50
+                    <styledEl.NextBatch>
+                      {' · '}Joins batch in <span ref={joinsBatchInRef} />
+                    </styledEl.NextBatch>
+                  </styledEl.NoBreakAroundDot>
+                </Trans>
+              </styledEl.SaveAmount>
+            )}
           </styledEl.DescriptionRow>
         </styledEl.TextColumn>
       </styledEl.Content>
-      <styledEl.WaitAndSaveToggle
-        id="wait-and-save-toggle"
-        checked={isEnabled}
-        toggle={handleToggle}
-        variant="success"
-        aria-label={t`Wait & save`}
-      />
+
+      {hasError ? null : (
+        <styledEl.WaitAndSaveToggle
+          id="wait-and-save-toggle"
+          checked={isEnabled}
+          toggle={handleToggle}
+          variant="success"
+          aria-label={t`Wait & save`}
+        />
+      )}
     </styledEl.Wrapper>
   )
 }
