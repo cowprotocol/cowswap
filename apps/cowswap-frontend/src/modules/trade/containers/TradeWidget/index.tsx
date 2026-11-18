@@ -14,7 +14,7 @@ import { TradeWidgetProps } from './types'
 import { useIsTokenSelectWide } from '../../hooks/useIsTokenSelectWide'
 
 export function TradeWidget(props: TradeWidgetProps): JSX.Element {
-  const { id, slots, params, confirmModal, genericModal, onGenericModalDismiss } = props
+  const { id, slots, params, confirmModal, genericModal, onGenericModalDismiss, isGenericModalPending } = props
   const {
     disableQuotePolling = false,
     disableNativeSelling = false,
@@ -40,6 +40,7 @@ export function TradeWidget(props: TradeWidgetProps): JSX.Element {
       confirmModal={confirmModal}
       genericModal={genericModal}
       onGenericModalDismiss={onGenericModalDismiss}
+      isGenericModalPending={isGenericModalPending}
       renderFallback={() => <TradeWidgetForm {...props} />}
     />
   )

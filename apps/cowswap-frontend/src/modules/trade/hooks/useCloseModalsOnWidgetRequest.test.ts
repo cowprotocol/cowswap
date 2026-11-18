@@ -27,9 +27,15 @@ interface WalletActions {
   isTradeSigning: boolean
   isApproving: boolean
   isZeroApproving: boolean
+  isGenericModalPending: boolean
 }
 
-const NO_WALLET_ACTIONS: WalletActions = { isTradeSigning: false, isApproving: false, isZeroApproving: false }
+const NO_WALLET_ACTIONS: WalletActions = {
+  isTradeSigning: false,
+  isApproving: false,
+  isZeroApproving: false,
+  isGenericModalPending: false,
+}
 
 describe('useCloseModalsOnWidgetRequest', () => {
   const resetTradeScreens = jest.fn()
@@ -72,15 +78,19 @@ describe('useCloseModalsOnWidgetRequest', () => {
     ['a trade', { ...NO_WALLET_ACTIONS, isTradeSigning: true }],
     ['an approval', { ...NO_WALLET_ACTIONS, isApproving: true }],
     ['an allowance reset', { ...NO_WALLET_ACTIONS, isZeroApproving: true }],
+    ['a generic modal action, e.g. an ETH-flow wrap', { ...NO_WALLET_ACTIONS, isGenericModalPending: true }],
   ])('keeps every modal while the wallet signs %s', (_, walletActions) => {
     mockWalletActions(walletActions)
     useCloseAllModalsRequestMock.mockReturnValue(0)
-    const { rerender } = renderHook(() => useCloseModalsOnWidgetRequest(resetTradeScreens))
+    const { rerender } = renderHook(
+      ({ isGenericModalPending }) => useCloseModalsOnWidgetRequest(resetTradeScreens, isGenericModalPending),
+      { initialProps: { isGenericModalPending: walletActions.isGenericModalPending } },
+    )
 
     useCloseAllModalsRequestMock.mockReturnValue(1)
-    rerender()
+    rerender({ isGenericModalPending: walletActions.isGenericModalPending })
     mockWalletActions(NO_WALLET_ACTIONS)
-    rerender()
+    rerender({ isGenericModalPending: false })
 
     expect(resetTradeScreens).not.toHaveBeenCalled()
     expect(setOrdersTableDrawerOpen).not.toHaveBeenCalled()

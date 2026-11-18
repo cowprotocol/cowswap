@@ -38,6 +38,12 @@ interface WidgetRefs {
   widgetHandlerRef: MutableRef<CowSwapWidgetHandler | null>
 }
 
+interface WidgetSettings {
+  params: CowSwapWidgetParams
+  provider?: EthereumProvider
+  enableSafeSdkBridge: boolean
+}
+
 // eslint-disable-next-line max-lines-per-function
 export function CowSwapWidget({
   params,
@@ -57,10 +63,16 @@ export function CowSwapWidget({
   const widgetHandlerRef = useRef<CowSwapWidgetHandler | null>(null)
   const handlerRefRef = useRef(handlerRef)
   const onLoadingErrorRef = useRef(onLoadingError)
+  const latestSettingsRef = useRef<WidgetSettings>({ params, provider, enableSafeSdkBridge })
+  const failedSettingsRef = useRef<WidgetSettings | null>(null)
 
   useEffect(() => {
     onLoadingErrorRef.current = onLoadingError
   }, [onLoadingError])
+
+  useEffect(() => {
+    latestSettingsRef.current = { params, provider, enableSafeSdkBridge }
+  })
 
   const setWidgetHandler = useCallback((handler: CowSwapWidgetHandler | null) => {
     widgetHandlerRef.current = handler
@@ -92,6 +104,7 @@ export function CowSwapWidget({
         console.error(`[WIDGET] ${errorMessage}`, error)
         destroyWidget(widgetHandlerRef.current, setWidgetHandler)
         paramsRef.current = null
+        failedSettingsRef.current = latestSettingsRef.current
         setError({ message: errorMessage, error })
         onLoadingErrorRef.current?.()
       }
@@ -105,19 +118,26 @@ export function CowSwapWidget({
   })
 
   useEffect(() => {
+    const failedSettings = failedSettingsRef.current
+
+    if (
+      !failedSettings ||
+      (failedSettings.provider === provider &&
+        failedSettings.enableSafeSdkBridge === enableSafeSdkBridge &&
+        !areParamsDifferent(failedSettings.params, params))
+    ) {
+      return
+    }
+
+    failedSettingsRef.current = null
     setError(null)
   }, [params, provider, enableSafeSdkBridge])
 
   useEffect(() => {
-    const paramsHooksDifferent = !!paramsRef.current && areParamsHooksDifferent(paramsRef.current, params)
     const enableSafeSdkBridgeDifferent = enableSafeSdkBridgeRef.current !== enableSafeSdkBridge
+    const paramsDifferent = !paramsRef.current || areParamsDifferent(paramsRef.current, params)
 
-    if (
-      !containerRef.current ||
-      (!paramsHooksDifferent &&
-        !enableSafeSdkBridgeDifferent &&
-        JSON.stringify(paramsRef.current) === JSON.stringify(params))
-    ) {
+    if (!containerRef.current || (!paramsDifferent && !enableSafeSdkBridgeDifferent)) {
       return
     }
 
@@ -213,6 +233,10 @@ export function CowSwapWidget({
       }}
     />
   )
+}
+
+function areParamsDifferent(prev: CowSwapWidgetParams, next: CowSwapWidgetParams): boolean {
+  return areParamsHooksDifferent(prev, next) || JSON.stringify(prev) !== JSON.stringify(next)
 }
 
 function areParamsHooksDifferent(prev: CowSwapWidgetParams, next: CowSwapWidgetParams): boolean {

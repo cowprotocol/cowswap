@@ -17,12 +17,12 @@ import { useTradeConfirmState } from './useTradeConfirmState'
  * Closes the trade screens, orders table and other modals when the widget integrator calls `closeAllModals()`.
  * A request is dropped while the wallet signs a trade, an approval or an allowance reset: closing would hide that flow, not stop it.
  */
-export function useCloseModalsOnWidgetRequest(resetTradeScreens: Command): void {
+export function useCloseModalsOnWidgetRequest(resetTradeScreens: Command, isGenericModalPending = false): void {
   const closeAllModalsRequest = useCloseAllModalsRequest()
   const { pendingTrade } = useTradeConfirmState()
   const { approveInProgress } = useAtomValue(approveProgressModalStateAtom)
   const { isApproving: isZeroApproving } = useZeroApprovalState()
-  const isWalletActionPending = !!pendingTrade || approveInProgress || isZeroApproving
+  const isWalletActionPending = !!pendingTrade || approveInProgress || isZeroApproving || isGenericModalPending
   // A request made before this trade widget was mounted is not for it
   const handledRequestRef = useRef(closeAllModalsRequest)
   const setOrdersTableDrawerOpen = useSetOrdersTableDrawerOpen()

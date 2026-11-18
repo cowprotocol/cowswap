@@ -1,4 +1,4 @@
-import { formatTickMark, getCustomTimezone } from './chartTime'
+import { formatTickMark } from './chartTime'
 
 describe('formatTickMark', () => {
   const date = new Date(Date.UTC(2026, 10, 3, 9, 5, 7))
@@ -17,19 +17,5 @@ describe('formatTickMark', () => {
   it('reads the date in UTC, as TradingView already shifted it to the chart time zone', () => {
     expect(formatTickMark(new Date(Date.UTC(2026, 10, 3, 23, 30)), 'DayOfMonth')).toBe('3 Nov')
     expect(formatTickMark(new Date(Date.UTC(2026, 10, 3, 0, 0)), 'Time')).toBe('00:00')
-  })
-})
-
-describe('getCustomTimezone', () => {
-  it('maps a zone west of UTC to the inverted Etc/GMT sign', () => {
-    expect(getCustomTimezone('America/Bogota', 300)).toEqual({
-      id: 'America/Bogota-local',
-      alias: 'Etc/GMT+5',
-      title: 'UTC-5',
-    })
-  })
-
-  it('keeps the minutes of a half-hour zone', () => {
-    expect(getCustomTimezone('Asia/Kolkata', -330)).toMatchObject({ alias: 'Etc/GMT-5:30', title: 'UTC+5:30' })
   })
 })

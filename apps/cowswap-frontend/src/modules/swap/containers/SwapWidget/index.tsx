@@ -13,11 +13,12 @@ import { Field } from 'legacy/state/types'
 import { useHooksEnabledManager } from 'legacy/state/user/hooks'
 
 import { TradeApproveWithAffectedOrderList, useIsInfiniteApproveDisabled } from 'modules/erc20Approve'
-import { EthFlowModal, EthFlowProps } from 'modules/ethFlow'
+import { EthFlowModal, EthFlowProps, useIsEthFlowWalletActionPending } from 'modules/ethFlow'
 import { PriceChartToggleButton } from 'modules/priceChart'
 import { SELL_ETH_RESET_STATE } from 'modules/swap/consts'
 import { AddIntermediateTokenModal } from 'modules/tokensList'
 import {
+  CloseModalsOnWidgetRequestUpdater,
   TradeRows,
   TradeWidget,
   TradeWidgetSlots,
@@ -92,6 +93,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
 
   const openNativeWrapModal = useCallback(() => setOpenNativeWrapModal(true), [])
   const dismissNativeWrapModal = useCallback(() => setOpenNativeWrapModal(false), [])
+  const isEthFlowWalletActionPending = useIsEthFlowWalletActionPending()
 
   const wrapCallback = useWrapNativeFlow()
   const updateSwapState = useUpdateSwapRawState()
@@ -270,11 +272,14 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
     <Container>
       <SwapDebugPanel contextIsReady={doTrade.contextIsReady} deadline={deadlineState[0]} />
       {showAddIntermediateTokenModal ? (
-        <AddIntermediateTokenModal
-          onDismiss={handleCloseImportModal}
-          onBack={handleCloseImportModal}
-          onImport={handleImport}
-        />
+        <>
+          <CloseModalsOnWidgetRequestUpdater onClose={handleCloseImportModal} />
+          <AddIntermediateTokenModal
+            onDismiss={handleCloseImportModal}
+            onBack={handleCloseImportModal}
+            onImport={handleImport}
+          />
+        </>
       ) : (
         <TradeWidget
           slots={slots}
@@ -295,6 +300,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
           }
           genericModal={showNativeWrapModal && <EthFlowModal {...ethFlowProps} />}
           onGenericModalDismiss={dismissNativeWrapModal}
+          isGenericModalPending={showNativeWrapModal && isEthFlowWalletActionPending}
         />
       )}
       <BottomBanners />
