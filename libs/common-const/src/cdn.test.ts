@@ -24,9 +24,8 @@ describe('Solana token list URLs', () => {
   })
 
   /**
-   * `tokensList.json` spells these URLs out and cannot interpolate an env var, while geoblocking matches a
-   * list by its URL. If these followed `COW_CDN`, an override would move only this copy and the configured
-   * list would quietly stop being restricted.
+   * `tokensList.json` spells these URLs out and cannot interpolate an env var. If these followed `COW_CDN`,
+   * an override would move only this copy and the configured list would drift from it.
    */
   it('ignore a REACT_APP_COW_CDN override', () => {
     const defaults = importCdn(undefined)

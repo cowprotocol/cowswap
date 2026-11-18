@@ -13,9 +13,9 @@ import { useModalIsOpen, useToggleModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
+import { ChainStatusBadgeContainer } from 'common/containers/ChainStatusBadge/ChainStatusBadge.container'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
-import { ChainStatusBadge } from 'common/pure/ChainStatusBadge/ChainStatusBadge.pure'
 import { NetworksList } from 'common/pure/NetworksList/NetworksList.pure'
 
 import * as styledEl from './NetworkSelector.styled'
@@ -84,7 +84,7 @@ export function NetworkSelector(): ReactNode {
           <>
             <styledEl.SelectorLogo src={logoUrl} />
             <styledEl.SelectorLabel>{info?.label}</styledEl.SelectorLabel>
-            <ChainStatusBadge chainId={chainId} />
+            <ChainStatusBadgeContainer chainId={chainId} />
             <styledEl.StyledChevronDown $isOpen={isOpen} />
           </>
         ) : (

@@ -108,6 +108,7 @@ export function BaseDetailsTable({
             onCopy={onCopy}
             orderOwner={owner}
             buyTokenAddress={buyToken.address}
+            receiverWallet={order.solana?.receiverWallet}
           />
           {(!partiallyFillable || txHash) && areTradesLoading ? (
             <Spinner />

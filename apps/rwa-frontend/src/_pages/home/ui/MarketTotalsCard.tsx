@@ -6,15 +6,13 @@ import styles from './MarketOverview.module.css'
 import { Sparkline } from './Sparkline'
 
 import { formatRefTime } from '../lib/formatRefTime'
-import { MARKET_DATA_HINT } from '../lib/marketDataHint'
+import { MARKET_DATA_HINT, TOTAL_VOLUME_HINT } from '../lib/marketDataHint'
 
 import { isUsMarketOpen, type RwaMarketOverview, type RwaTradingTime } from '@/entities/asset'
 import { formatCompactUsd } from '@/shared/lib/format'
+import { useIsHydrated } from '@/shared/lib/hydrated'
 import { InfoIcon } from '@/shared/ui/icons'
 import { Tooltip } from '@/shared/ui/tooltip'
-
-const VOLUME_HINT =
-  'Trading volume of the listed assets across every chain and issuer over the last 24 hours, from CoinGecko'
 
 interface MarketTotalsCardProps {
   /** `undefined` while loading */
@@ -23,6 +21,7 @@ interface MarketTotalsCardProps {
 
 export function MarketTotalsCard({ overview }: MarketTotalsCardProps): ReactNode {
   const refTime = overview?.updatedAt ? formatRefTime(overview.updatedAt, 'UTC') : null
+  const isHydrated = useIsHydrated()
 
   return (
     <section className={styles.card} aria-labelledby="market-totals-title">
@@ -40,13 +39,13 @@ export function MarketTotalsCard({ overview }: MarketTotalsCardProps): ReactNode
         <span className={styles.cardHint}>7D</span>
       </header>
       <div className={styles.totals}>
-        <Total label="Onchain market cap" value={overview && formatCompactUsd(overview.totals.marketCap)} />
+        <Total label="Tokenized market cap" value={overview && formatCompactUsd(overview.totals.marketCap)} />
         <Total
           label={
             <>
-              24h volume
-              <Tooltip className={styles.info} content={VOLUME_HINT}>
-                <span role="img" aria-label={VOLUME_HINT}>
+              24h total volume
+              <Tooltip className={styles.info} content={TOTAL_VOLUME_HINT}>
+                <span role="img" aria-label="About total volume">
                   <InfoIcon />
                 </span>
               </Tooltip>
@@ -67,7 +66,7 @@ export function MarketTotalsCard({ overview }: MarketTotalsCardProps): ReactNode
         <span>Today</span>
       </div>
       <footer className={styles.cardFooter}>
-        {overview?.tradingTime && <MarketStatus tradingTime={overview.tradingTime} />}
+        {overview?.tradingTime && isHydrated && <MarketStatus tradingTime={overview.tradingTime} />}
         {refTime && <span>Ref. {refTime}</span>}
       </footer>
     </section>

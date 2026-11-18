@@ -5,12 +5,6 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { SettingsMenu } from './SettingsMenu'
 
 describe('SettingsMenu', () => {
-  beforeAll(() => {
-    Object.defineProperty(window, 'matchMedia', {
-      value: () => ({ matches: false, addEventListener: () => undefined, removeEventListener: () => undefined }),
-    })
-  })
-
   afterEach(() => {
     localStorage.clear()
     delete document.documentElement.dataset.theme

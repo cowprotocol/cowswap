@@ -7,15 +7,18 @@ export {
   type CoingeckoOhlcvTimeframe,
   type CoingeckoOnchainToken,
   type CoingeckoRwaMarket,
+  type CoingeckoRwaMarketChart,
   fetchCoinsMarkets,
   fetchMarketChart,
   fetchOhlc,
   fetchOnchainTokenOhlcv,
   fetchOnchainTokens,
+  fetchRwaMarketChart,
   fetchRwaMarkets,
 } from './coingecko/coingeckoClient'
 export { withRetryBackoff } from './coingecko/retryBackoff'
 export { readVaultAssetsPerShare } from './erc4626/vaultRates'
+export { readUiMultipliers } from './erc8056/uiMultipliers'
 export { fetchNewsFeed } from './news-feed/newsFeedClient'
 export { type NewsFeedItem } from './news-feed/parseNewsFeed'
 export {

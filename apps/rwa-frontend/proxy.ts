@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server'
 
-// Asset pages are prerendered for upper-case tickers only, see `dynamicParams` in app/asset/[ticker]/page.tsx
+// Asset URLs use upper-case tickers: one page, and one ISR cache entry, per asset
 export function proxy(request: NextRequest): NextResponse {
   const [, , ticker = ''] = request.nextUrl.pathname.split('/')
   const upperTicker = ticker.toUpperCase()

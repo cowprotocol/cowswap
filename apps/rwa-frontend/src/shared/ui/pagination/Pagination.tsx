@@ -5,9 +5,11 @@ import styles from './Pagination.module.css'
 
 import { ChevronDownIcon } from '@/shared/ui/icons'
 
-const WIDE_SLOTS = 11
-const NARROW_SLOTS = 7
-const COMPACT_SLOTS = 5
+const PAGE_LISTS = [
+  { slots: 11, className: styles.wide },
+  { slots: 7, className: styles.narrow },
+  { slots: 5, className: styles.compact },
+]
 
 interface PageListProps {
   page: number
@@ -37,21 +39,16 @@ export function Pagination({ page, totalPages, onChange }: PaginationProps): Rea
       >
         <ChevronDownIcon className={styles.previousIcon} />
       </button>
-      <PageList page={page} totalPages={totalPages} slots={WIDE_SLOTS} className={styles.wide} onChange={onChange} />
-      <PageList
-        page={page}
-        totalPages={totalPages}
-        slots={NARROW_SLOTS}
-        className={styles.narrow}
-        onChange={onChange}
-      />
-      <PageList
-        page={page}
-        totalPages={totalPages}
-        slots={COMPACT_SLOTS}
-        className={styles.compact}
-        onChange={onChange}
-      />
+      {PAGE_LISTS.map(({ slots, className }) => (
+        <PageList
+          key={slots}
+          page={page}
+          totalPages={totalPages}
+          slots={slots}
+          className={className}
+          onChange={onChange}
+        />
+      ))}
       <button
         type="button"
         className={styles.arrow}

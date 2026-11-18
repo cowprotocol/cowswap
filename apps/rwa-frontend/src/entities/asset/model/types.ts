@@ -83,7 +83,7 @@ export interface RwaAssetsFilter {
   minMarketCap?: number
   /** USD */
   minVolume24h?: number
-  /** Matches ticker, title or token symbol */
+  /** Matches ticker, title or token symbol; profile description and small typos only when none of those match */
   query?: string
   tickers?: string[]
 }
@@ -195,8 +195,6 @@ export interface RwaTokenMarketData {
 
 export interface RwaTokenNetworkStats {
   address: string
-  /** USD, supply on the network times the token price */
-  onchainCap: number | null
   /** USD, DEX trades on the network */
   dexVolume24h: number | null
 }
@@ -214,10 +212,12 @@ export interface RwaTradingPause {
 
 export interface RwaTradingTime {
   title: string
-  /** `HH:mm UTC` */
+  /** `HH:mm` in `timeZone` */
   start: string
-  /** `HH:mm UTC` */
+  /** `HH:mm` in `timeZone` */
   end: string
+  /** IANA time zone of the exchange, e.g. `America/New_York` */
+  timeZone: string
 }
 
 export const RWA_SORT_FIELDS = ['priority', 'marketCap', 'volume24h', 'change24h', 'price', 'ticker', 'title'] as const

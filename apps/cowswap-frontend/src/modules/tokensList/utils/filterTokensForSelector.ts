@@ -4,6 +4,12 @@ import { CowSwapWidgetAppParams, TokenSelectorFilter } from '@cowprotocol/widget
 
 import { Field } from 'legacy/state/types'
 
+export function filterChainsForSelector<T extends { id: number }>(chains: T[], chainIds: number[] | undefined): T[] {
+  if (!chainIds) return chains
+
+  return chains.filter((chain) => chainIds.includes(chain.id))
+}
+
 /** `balances` is `null` when they don't narrow the tokens */
 export function filterTokensForSelector(
   tokens: TokenWithLogo[],

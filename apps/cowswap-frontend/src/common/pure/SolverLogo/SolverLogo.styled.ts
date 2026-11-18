@@ -1,5 +1,6 @@
 import { font, UI } from '@cowprotocol/ui'
 
+import { PiRobotFill } from 'react-icons/pi'
 import styled from 'styled-components/macro'
 
 export const LogoFrame = styled.span<{ $size: number }>`
@@ -29,4 +30,9 @@ export const LogoImage = styled.img`
   width: 100%;
   height: 100%;
   object-fit: contain;
+`
+
+export const UnknownSolverIcon = styled(PiRobotFill)`
+  width: 62%;
+  height: 62%;
 `

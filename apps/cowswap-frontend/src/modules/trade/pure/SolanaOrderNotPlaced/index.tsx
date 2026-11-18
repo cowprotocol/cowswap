@@ -2,7 +2,7 @@ import { ReactNode, useCallback, useState } from 'react'
 
 import { useCopyClipboard } from '@cowprotocol/common-hooks'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
-import { ButtonOutlined, ButtonPrimary, font, UI } from '@cowprotocol/ui'
+import { ButtonOutlined, ButtonPrimary, ExternalLink, font, UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -14,15 +14,18 @@ import { NewModal, NewModalProps } from 'common/pure/NewModal'
 
 import { SolanaTradeAmountsRow } from '../SolanaTradeAmountsRow'
 
+const SQUADS_SETUP_DOCS_LINK = 'https://docs.squads.so/main/navigating-your-squad/squadsx/start-using-squadsx'
+
 export type SolanaOrderNotPlacedProps = NewModalProps & {
   errorMessage: string
   logs: string[] | null
+  isSquadsSetupRequired: boolean
   inputAmount: Nullish<CurrencyAmount<Currency>>
   outputAmount: Nullish<CurrencyAmount<Currency>>
 }
 
 export function SolanaOrderNotPlaced(props: SolanaOrderNotPlacedProps): ReactNode {
-  const { errorMessage, logs, inputAmount, outputAmount, ...rest } = props
+  const { errorMessage, logs, isSquadsSetupRequired, inputAmount, outputAmount, ...rest } = props
   const { onDismiss } = rest
   const [areDetailsOpen, setAreDetailsOpen] = useState(false)
   const [isCopied, copy] = useCopyClipboard()
@@ -37,12 +40,7 @@ export function SolanaOrderNotPlaced(props: SolanaOrderNotPlacedProps): ReactNod
         <StatusPanel>
           <StatusHeadline>
             <AlertIcon size={48} />
-            <StatusHeading>
-              <Trans>Transaction checks failed</Trans>
-            </StatusHeading>
-            <StatusMessage>
-              <Trans>The transaction didn't pass its checks, so your order wasn't submitted.</Trans>
-            </StatusMessage>
+            <FailureCopy isSquadsSetupRequired={isSquadsSetupRequired} />
           </StatusHeadline>
 
           <DetailsToggle onClick={toggleDetails} aria-expanded={areDetailsOpen}>
@@ -89,6 +87,38 @@ function buildCopyPayload(errorMessage: string, logs: string[] | null): string {
   return logs ? `${errorBlock}\n\n${t`Logs (excerpt)`}\n${logs.join('\n')}` : errorBlock
 }
 
+function FailureCopy({ isSquadsSetupRequired }: { isSquadsSetupRequired: boolean }): ReactNode {
+  if (isSquadsSetupRequired) {
+    return (
+      <>
+        <StatusHeading>
+          <Trans>SquadsX is not set up to sign</Trans>
+        </StatusHeading>
+        <StatusMessage>
+          <Trans>
+            Your SquadsX extension is not an active proposer on this Squad, so it cannot submit orders. Add its key to
+            the Squad as a proposer, then try again.
+          </Trans>
+        </StatusMessage>
+        <SetupDocsLink href={SQUADS_SETUP_DOCS_LINK}>
+          <Trans>How to set up SquadsX</Trans>
+        </SetupDocsLink>
+      </>
+    )
+  }
+
+  return (
+    <>
+      <StatusHeading>
+        <Trans>Transaction checks failed</Trans>
+      </StatusHeading>
+      <StatusMessage>
+        <Trans>The transaction didn't pass its checks, so your order wasn't submitted.</Trans>
+      </StatusMessage>
+    </>
+  )
+}
+
 const StatusGroup = styled.div`
   display: flex;
   flex-direction: column;
@@ -130,6 +160,12 @@ const StatusHeading = styled.span`
 
 const StatusMessage = styled.span`
   ${font('FONT_NORMAL')}
+`
+
+const SetupDocsLink = styled(ExternalLink)`
+  color: inherit;
+  text-decoration: underline;
+  ${font('FONT_NORMAL', 'semibold')}
 `
 
 const DetailsToggle = styled.button`

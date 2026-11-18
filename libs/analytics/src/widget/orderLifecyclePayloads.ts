@@ -1,0 +1,229 @@
+import { formatUnits } from 'viem'
+
+import type { EnrichedOrder, TokenInfo } from '@cowprotocol/cow-sdk'
+import type {
+  BaseOrderPayload,
+  OnCancelledOrderPayload,
+  OnExpiredOrderPayload,
+  OnFulfilledOrderPayload,
+  OnPostedOrderPayload,
+} from '@cowprotocol/events'
+import type { UiOrderType } from '@cowprotocol/types'
+
+export type AnalyticsPayload = Record<string, unknown>
+
+type EnrichedOrderWithTokens = EnrichedOrder & {
+  inputToken?: TokenInfo
+  outputToken?: TokenInfo
+}
+
+type OrderTypeAnalyticsField = { orderType?: UiOrderType }
+type RawAmount = string | number | bigint | null | undefined
+
+type Tokenish = {
+  address?: string
+  decimals?: number
+}
+
+// Build analytics-friendly alias fields for currency/amounts.
+// These keys align with Safary's camelCase lexicon.
+export function buildAnalyticsCurrencyAliases(fields: AnalyticsPayload): AnalyticsPayload {
+  const sellTokenAddress = String(fields.sellToken || '')
+  const buyTokenAddress = String(fields.buyToken || '')
+  const sellTokenSymbol = typeof fields.sellTokenSymbol === 'string' ? fields.sellTokenSymbol.trim() : ''
+  const buyTokenSymbol = typeof fields.buyTokenSymbol === 'string' ? fields.buyTokenSymbol.trim() : ''
+
+  const sellAmountUnits = typeof fields.sellAmountUnits === 'string' ? fields.sellAmountUnits : undefined
+  const buyAmountUnits = typeof fields.buyAmountUnits === 'string' ? fields.buyAmountUnits : undefined
+
+  return {
+    fromCurrencyAddress: sellTokenAddress,
+    toCurrencyAddress: buyTokenAddress,
+    // Fall back to token addresses when symbols are missing.
+    fromCurrency: sellTokenSymbol || sellTokenAddress,
+    toCurrency: buyTokenSymbol || buyTokenAddress,
+    fromAmount: sellAmountUnits,
+    toAmount: buyAmountUnits,
+  }
+}
+
+export function buildBaseFields(payload: BaseOrderPayload & OrderTypeAnalyticsField): AnalyticsPayload {
+  return {
+    walletAddress: safeGetString(payload.order, 'owner'),
+    orderId: safeGetString(payload.order, 'uid'),
+    chainId: payload.chainId.toString(),
+    ...(payload.orderType ? { orderType: payload.orderType } : {}),
+  }
+}
+
+export function extractTokenMeta(order: Partial<EnrichedOrderWithTokens> | undefined): {
+  inputToken?: TokenInfo
+  outputToken?: TokenInfo
+} {
+  const inputToken = order?.inputToken
+  const outputToken = order?.outputToken
+
+  return {
+    inputToken: inputToken?.address ? inputToken : undefined,
+    outputToken: outputToken?.address ? outputToken : undefined,
+  }
+}
+
+export function getOrderPayload(payload: BaseOrderPayload & OrderTypeAnalyticsField): AnalyticsPayload {
+  const meta = extractTokenMeta(payload.order)
+  const base = buildBaseFields(payload)
+  const tokenFields = buildTokenFields(payload, meta)
+  const aliases = buildAnalyticsCurrencyAliases(tokenFields)
+
+  return { ...base, ...tokenFields, ...aliases }
+}
+
+export function mapCancelledOrder(p: OnCancelledOrderPayload): AnalyticsPayload {
+  const orderPayload = getOrderPayload(p)
+
+  return {
+    ...orderPayload,
+    orderId: p.analyticsOrderId ?? orderPayload.orderId,
+    walletAddress: p.analyticsWalletAddress ?? orderPayload.walletAddress,
+    reason: 'cancelled',
+    transactionHash: p.transactionHash || '',
+    isEoaTwap: p.isEoaTwap,
+  }
+}
+
+export function mapExpiredOrder(p: OnExpiredOrderPayload): AnalyticsPayload {
+  return {
+    ...getOrderPayload(p),
+    reason: 'expired',
+  }
+}
+
+export function mapFulfilledOrder(p: OnFulfilledOrderPayload): AnalyticsPayload {
+  const base = getOrderPayload(p)
+
+  const executedSellAmountAtoms = safeGetString(p.order, 'executedSellAmount')
+  const executedBuyAmountAtoms = safeGetString(p.order, 'executedBuyAmount')
+  const executedFeeAmountAtoms = safeGetString(p.order, 'executedFeeAmount')
+
+  const { inputToken, outputToken } = extractTokenMeta(p.order)
+
+  const hasBridgeOrder = Boolean(p.bridgeOrder)
+
+  const executedSellAmountUnits = formatTokenUnitsExact(inputToken, executedSellAmountAtoms)
+  const executedBuyAmountUnits = formatTokenUnitsExact(outputToken, executedBuyAmountAtoms)
+  const executedFeeAmountUnits = formatTokenUnitsExact(inputToken, executedFeeAmountAtoms)
+
+  return {
+    ...base,
+    // Atoms
+    executedSellAmount: executedSellAmountAtoms,
+    executedBuyAmount: executedBuyAmountAtoms,
+    executedFeeAmount: executedFeeAmountAtoms,
+
+    // Units (decimals-adjusted)
+    executedSellAmountUnits,
+    executedBuyAmountUnits,
+    executedFeeAmountUnits,
+
+    // Safary-lexicon style fields (explicit for fulfillment amounts)
+    fromAmount: executedSellAmountUnits,
+    toAmount: executedBuyAmountUnits,
+
+    // Note: bridge providers tag actual widget orders via bridgeOrder; this flag (isCrossChain) only captures the token selection being cross-chain.
+    isCrossChain: hasBridgeOrder,
+  }
+}
+
+export function mapPostedOrder(p: OnPostedOrderPayload): AnalyticsPayload {
+  const tokenFields: AnalyticsPayload = {
+    sellToken: safeGetString(p.inputToken, 'address'),
+    buyToken: safeGetString(p.outputToken, 'address'),
+    sellAmount: p.inputAmount.toString(),
+    buyAmount: p.outputAmount.toString(),
+    sellTokenSymbol: safeGetString(p.inputToken, 'symbol'),
+    buyTokenSymbol: safeGetString(p.outputToken, 'symbol'),
+    sellTokenDecimals: p.inputToken?.decimals,
+    buyTokenDecimals: p.outputToken?.decimals,
+    sellAmountUnits: formatTokenUnitsExact(p.inputToken, p.inputAmount),
+    buyAmountUnits: formatTokenUnitsExact(p.outputToken, p.outputAmount),
+  }
+
+  return {
+    walletAddress: p.owner || '',
+    orderId: p.orderUid,
+    chainId: p.chainId.toString(),
+    quoteId: p.quoteId === undefined ? undefined : String(p.quoteId),
+    ...tokenFields,
+    ...buildAnalyticsCurrencyAliases(tokenFields),
+    orderType: p.orderType,
+    partiallyFillable: p.partiallyFillable,
+    isEthFlow: Boolean(p.isEthFlow),
+    isEoaTwap: p.isEoaTwap,
+    isCrossChain: Boolean(p.isCrossChain),
+    destinationChainId: p.destinationChainId,
+    kind: p.kind,
+    receiver: p.receiver || '',
+    orderCreationHash: p.orderCreationHash || '',
+  }
+}
+
+// Specialized helper function for string properties to ensure we always return a string
+export function safeGetString<T, K extends keyof T>(obj: T | undefined, key: K, fallback: string = ''): string {
+  const value = obj && obj[key] != null ? obj[key] : fallback
+  return String(value)
+}
+
+function buildTokenFields(
+  payload: BaseOrderPayload,
+  meta: { inputToken?: TokenInfo; outputToken?: TokenInfo },
+): AnalyticsPayload {
+  const sellTokenAddress = safeGetString(payload.order, 'sellToken')
+  const buyTokenAddress = safeGetString(payload.order, 'buyToken')
+
+  const sellAmountAtoms = safeGetString(payload.order, 'sellAmount')
+  const buyAmountAtoms = safeGetString(payload.order, 'buyAmount')
+
+  const sellTokenDecimals: number | undefined = meta.inputToken?.decimals
+  const buyTokenDecimals: number | undefined = meta.outputToken?.decimals
+
+  return {
+    sellToken: sellTokenAddress,
+    buyToken: buyTokenAddress,
+    sellAmount: sellAmountAtoms,
+    buyAmount: buyAmountAtoms,
+    sellTokenSymbol: meta.inputToken?.symbol || '',
+    buyTokenSymbol: meta.outputToken?.symbol || '',
+    sellTokenDecimals,
+    buyTokenDecimals,
+    sellAmountUnits: formatTokenUnitsExact(meta.inputToken, sellAmountAtoms),
+    buyAmountUnits: formatTokenUnitsExact(meta.outputToken, buyAmountAtoms),
+  }
+}
+
+function formatTokenUnitsExact(meta: Tokenish | undefined, rawAmount: RawAmount): string | undefined {
+  if (!meta?.address || !isValidDecimals(meta.decimals)) return undefined
+
+  const atoms = toAtoms(rawAmount)
+
+  return atoms === undefined ? undefined : formatUnits(atoms, meta.decimals)
+}
+
+function isValidDecimals(decimals: number | undefined): decimals is number {
+  return typeof decimals === 'number' && Number.isInteger(decimals) && decimals >= 0
+}
+
+function toAtoms(rawAmount: RawAmount): bigint | undefined {
+  if (rawAmount === null || rawAmount === undefined) return undefined
+  if (typeof rawAmount === 'bigint') return rawAmount
+
+  const raw = String(rawAmount).trim()
+
+  // BigInt('') is 0n, but an empty amount is unknown
+  if (!raw) return undefined
+
+  try {
+    return BigInt(raw)
+  } catch {
+    return undefined
+  }
+}

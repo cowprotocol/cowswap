@@ -3,32 +3,12 @@
   flex-shrink: 0;
 }
 
-.trigger {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  border: none;
-  border-radius: 50%;
-  background: none;
-  color: var(--color-text-muted);
-}
-
-.trigger:hover,
-.trigger[aria-expanded='true'] {
-  background: var(--color-surface);
-  color: var(--color-text);
-}
-
 .menu {
   position: absolute;
   z-index: 100;
   top: calc(100% + 14px);
   right: 0;
   width: 320px;
-  max-width: calc(100vw - 32px);
   margin: 0;
   padding: 6px;
   border: 1px solid var(--color-border);
@@ -81,6 +61,5 @@
     top: calc(100% + 8px);
     left: 0;
     width: auto;
-    max-width: none;
   }
 }

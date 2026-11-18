@@ -5,8 +5,7 @@ import { areAddressesEqual, getAddressKey } from '@cowprotocol/cow-sdk'
 import { atomFamily } from 'jotai-family'
 import { atomWithQuery, queryClientAtom } from 'jotai-tanstack-query'
 
-import { loadChainBalances } from './loadChainBalances'
-import { withWatcherConnection } from './watcherConnections'
+import { loadChainBalanceSnapshot } from './loadChainBalances'
 
 import { tokenListQueryOptions } from '@/entities/asset'
 import { RWA_QUERY_KEY_ROOT } from '@/shared/api'
@@ -40,7 +39,7 @@ export const chainBalancesQueryAtomFamily = atomFamily(
         queryFn: async ({ signal }) => {
           const tokenList = await queryClient.ensureQueryData(tokenListQueryOptions())
 
-          return withWatcherConnection(() => loadChainBalances(chainId, owner, tokenList, signal))
+          return loadChainBalanceSnapshot(chainId, owner, tokenList, signal)
         },
         staleTime: BALANCES_STALE_TIME_MS,
         refetchOnWindowFocus: false,

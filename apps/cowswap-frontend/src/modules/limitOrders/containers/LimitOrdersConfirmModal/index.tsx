@@ -33,7 +33,9 @@ import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 
 import { LOW_RATE_THRESHOLD_PERCENT } from '../../const/trade'
+import { useOrderExpiryWarning } from '../../hooks/useOrderExpiryWarning'
 import { LimitOrdersDetails } from '../../pure/LimitOrdersDetails'
+import { OrderExpiryWarning } from '../../pure/OrderExpiryWarning/OrderExpiryWarning.pure'
 import { TradeRateDetails } from '../TradeRateDetails'
 
 export interface LimitOrdersConfirmModalProps {
@@ -71,6 +73,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps): Re
   const executionPrice = useAtomValue(executionPriceAtom)
   const limitRateState = useAtomValue(limitRateAtom)
   const partiallyFillableOverride = useAtom(partiallyFillableOverrideAtom)
+  const expiryWarning = useOrderExpiryWarning()
 
   const { amount: inputAmount } = inputCurrencyInfo
   const { amount: outputAmount } = outputCurrencyInfo
@@ -96,7 +99,11 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps): Re
   // Limit orders may be placed with amount > balance, so only block when the sell token balance
   // dropped to 0 while the modal was open (e.g. a previous order fully filled) — see issue #5645.
   const isInsufficientBalance = useIsZeroBalance(inputAmount?.currency)
-  const isConfirmDisabled = (isTooLowRate ? !warningsAccepted : false) || isInsufficientBalance || !isTradeContextReady
+  const isConfirmDisabled =
+    (isTooLowRate ? !warningsAccepted : false) ||
+    expiryWarning.isBlocking ||
+    isInsufficientBalance ||
+    !isTradeContextReady
 
   const inputSymbol = inputAmount?.currency?.symbol || t`token`
   const buttonText = isInsufficientBalance ? (
@@ -144,6 +151,12 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps): Re
               <TradeRateDetails />
             </LimitOrdersDetails>
             {restContent}
+            <OrderExpiryWarning
+              tier={expiryWarning.tier}
+              inputCurrency={inputAmount?.currency}
+              isAccepted={expiryWarning.isAccepted}
+              onAcknowledgeChange={expiryWarning.onAcknowledgeChange}
+            />
             <LimitOrdersWarnings isConfirmScreen={true} />
           </>
         )}

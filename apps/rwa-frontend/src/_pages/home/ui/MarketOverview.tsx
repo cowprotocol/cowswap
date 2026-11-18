@@ -15,7 +15,9 @@ import { StatusMessage } from '@/shared/ui/status-message'
 export function MarketOverview(): ReactNode {
   const { data, error } = useAtomValue(marketOverviewQueryAtom)
 
-  if (error && !data) return <StatusMessage>Failed to load the market overview: {error.message}</StatusMessage>
+  if (error && !data) {
+    return <StatusMessage>Failed to load the market overview: {error.message}</StatusMessage>
+  }
 
   const degraded = data?.degraded ?? false
 

@@ -8,7 +8,7 @@ import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { renderHook, waitFor } from '@testing-library/react'
 import { queryClientAtom } from 'jotai-tanstack-query'
 
-import { loadChainBalances } from './loadChainBalances'
+import { loadChainBalanceSnapshot } from './loadChainBalances'
 import { useAccountBalances } from './useAccountBalances'
 import { type ChainBalancesCallbacks, watchChainBalances } from './watchChainBalances'
 
@@ -16,10 +16,10 @@ import { AAPLX_MAINNET, OWNER } from '../lib/fixtures'
 
 import type { RwaToken, RwaTokenList } from '@/entities/asset'
 
-jest.mock('./loadChainBalances', () => ({ loadChainBalances: jest.fn() }))
+jest.mock('./loadChainBalances', () => ({ loadChainBalanceSnapshot: jest.fn() }))
 jest.mock('./watchChainBalances', () => ({ watchChainBalances: jest.fn() }))
 
-const loadChainBalancesMock = loadChainBalances as jest.Mock
+const loadChainBalanceSnapshotMock = loadChainBalanceSnapshot as jest.Mock
 const watchChainBalancesMock = watchChainBalances as jest.Mock
 
 const CHAIN_IDS = [1, 56, 100, 137, 8453, 42161, 43114]
@@ -35,7 +35,7 @@ const TOKEN_LIST: RwaTokenList = {
 describe('useAccountBalances', () => {
   beforeEach(() => {
     global.fetch = jest.fn().mockResolvedValue({ ok: true, status: 200, json: () => Promise.resolve(TOKEN_LIST) })
-    loadChainBalancesMock.mockReset().mockResolvedValue({ [TOKEN_KEY]: '2' })
+    loadChainBalanceSnapshotMock.mockReset().mockResolvedValue({ [TOKEN_KEY]: '2' })
     watchChainBalancesMock
       .mockReset()
       .mockImplementation(
@@ -57,7 +57,7 @@ describe('useAccountBalances', () => {
     await waitFor(() => expect(result.current.positions).toHaveLength(CHAIN_IDS.length))
 
     expect(watchChainBalancesMock.mock.calls.map(([chainId]) => chainId)).toEqual([1, 56, 100, 137, 8453])
-    expect(loadChainBalancesMock.mock.calls.map(([chainId]) => chainId).sort()).toEqual([42161, 43114])
+    expect(loadChainBalanceSnapshotMock.mock.calls.map(([chainId]) => chainId).sort()).toEqual([42161, 43114])
     expect(result.current.positions?.map(({ token, balance }) => [token.chainId, balance])).toEqual(
       CHAIN_IDS.map((chainId) => [chainId, chainId === 42161 || chainId === 43114 ? '2' : '1']),
     )

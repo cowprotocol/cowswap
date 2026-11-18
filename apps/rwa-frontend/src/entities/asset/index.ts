@@ -68,10 +68,11 @@ export {
   type RwaTradingPause,
   type RwaTradingTime,
 } from './model/types'
+export { isListedAsset, isRwaChain, RWA_CHAIN_IDS } from './model/networks'
 export { RWA_REGISTRY_EDIT_URL } from './model/registryEditUrl'
 export { AssetStats } from './ui/AssetStats'
 export { DividendNotes } from './ui/DividendNotes'
-export { pointsToCandles } from './lib/chartBars'
+export { pointsToCandles, withLatestPrice } from './lib/chartBars'
 export { PriceChart } from './ui/PriceChart'
 export { getDefaultSortOrder } from './model/assetsQuery'
 export {
@@ -88,3 +89,4 @@ export { getDailyStats, type RwaDailyStats } from './lib/dailyStats'
 export { getTokenKey } from './lib/tokenKey'
 export { getTokenUsdPrice } from './lib/tokenUsdPrice'
 export { isUsMarketOpen } from './lib/usMarketStatus'
+export { type RwaRelatedAsset } from './model/relatedAssets'

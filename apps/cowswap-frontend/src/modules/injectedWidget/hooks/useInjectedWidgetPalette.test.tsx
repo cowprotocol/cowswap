@@ -1,7 +1,9 @@
 import { createElement, type ReactNode } from 'react'
 
-import { renderHook, type RenderHookResult } from '@testing-library/react'
+import { act, renderHook, type RenderHookResult } from '@testing-library/react'
 import { MemoryRouter } from 'react-router'
+
+import { useNavigate } from 'common/hooks/useNavigate'
 
 import { useInjectedWidgetPalette } from './useInjectedWidgetPalette'
 
@@ -52,5 +54,20 @@ describe('useInjectedWidgetPalette', () => {
     expect(consoleError).toHaveBeenCalled()
 
     consoleError.mockRestore()
+  })
+
+  it('keeps the same palette object when other search params change', () => {
+    const paletteParam = `palette=${encodeURIComponent(JSON.stringify({ paper: '#ff0' }))}`
+    const { result } = renderHook(() => ({ palette: useInjectedWidgetPalette(), navigate: useNavigate() }), {
+      wrapper: ({ children }: { children: ReactNode }) =>
+        createElement(MemoryRouter, { initialEntries: [`/widget?${paletteParam}`] }, children),
+    })
+    const initialPalette = result.current.palette
+
+    act(() => {
+      result.current.navigate({ pathname: '/widget', search: `${paletteParam}&forceTradeNavigate=true` })
+    })
+
+    expect(result.current.palette).toBe(initialPalette)
   })
 })

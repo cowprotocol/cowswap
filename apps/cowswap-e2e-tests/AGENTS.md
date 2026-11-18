@@ -17,6 +17,7 @@ restatement of the design doc.
 - Run one test while iterating: `npx playwright test src/tests/<file>.spec.ts -g "<title substring>"`
 - Smoke only: `pnpx nx run cowswap-e2e-tests:e2e:smoke`
 - Playwright UI mode: `pnpx nx run cowswap-e2e-tests:e2e:ui`
+- RWA app only: `pnpm e2e:rwa` (see "RWA app" below)
 - Lint: `pnpx nx run cowswap-e2e-tests:lint`
 - Unit-test the mocks themselves (pure functions, no browser): `npx tsx --test "src/**/*.test.ts"`
 - Build the Synpress/MetaMask wallet cache (required once, only for the Synpress fixtures — see below):
@@ -71,6 +72,37 @@ Required env vars: `INTEGRATION_TEST_PRIVATE_KEY`, `REACT_APP_NETWORK_URL_111551
   you return. Read `req.body` inside a `postOrder`/similar override and use those values for your
   balance/UI assertions rather than recomputing slippage math yourself.
 
+## RWA app
+
+`src/rwa/` tests `apps/rwa-frontend` through its own `playwright.rwa.config.ts`: it starts `pnpm start:rwa` locally and
+a production build with `pnpm preview:rwa` in CI (both on port 3002, base path `/rwa`), and the default config's
+`testDir` never picks these specs up. They need no env vars, wallet or `mocks` fixture, so they import `test` from
+`@playwright/test` directly and drive `pages/RwaPage.ts`. In CI they run through `e2e-pw-rwa.yml`, and
+`e2e-pw-smoke.yml` skips changes that only touch `src/rwa/` or that config.
+
+- **Don't add a data fixture for a test that only needs chrome.** `RwaPage.goto()` aborts `/rwa/api/*` and every
+  non-local request, then forces the page tall with injected CSS. The header and the home toolbar render without data,
+  so these tests don't depend on CoinGecko or on the shape of an API response.
+- **Keep scroll anchoring off in scroll assertions.** Once the aborted requests give up, the market overview collapses
+  and Chrome's scroll anchoring moves `scrollY` with no input, while `overflow: hidden` is correctly applied. It looked
+  like a broken lock in about a third of the runs under CPU load. The injected CSS sets `overflow-anchor: none`.
+- **A scroll check needs real input, not `window.scrollTo`.** `overflow: hidden` blocks user scrolling but not
+  programmatic scrolling, so a programmatic check passes with the lock gone.
+- **Prove a new negative check by removing what it guards.** "The page didn't move" also holds when the wheel never
+  arrived, the page was too short to scroll, or a scrollable element took the input. So the wheel helper waits for the
+  page to receive the `wheel` event, each test first confirms the page scrolls, and `expectLocked` fails if a scrollable
+  element sits under the pointer. With real data the drawer's list overflows and takes a wheel at the screen's centre,
+  leaving the page still with the lock gone, so the drawer tests wheel over the backdrop.
+- **Don't add a touch test for the filters drawer.** With the CSS rule removed, a swipe still leaves the page still,
+  most likely through Base UI's own handling, so the test wouldn't guard the rule.
+- **Send touch input with CDP `Input.dispatchTouchEvent`, not `Input.synthesizeScrollGesture`.** The gesture scrolled
+  the page on macOS and never on the Linux CI runner, so passing locally didn't prove it worked. Both need Chromium,
+  and neither covers iOS Safari.
+- **Run these on Chromium only.** Firefox 111-120 has no `:has()`, a documented, accepted limit of the lock rules.
+- **Check who owns port 3002 before trusting a run.** Any 200 from `localhost:3002/rwa` counts as the server, so with
+  another worktree's `pnpm start:rwa` up, the tests run against that checkout, even mid-build in CI mode. Check with
+  `lsof -nP -iTCP:3002 -sTCP:LISTEN`, then `lsof -a -p <pid> -d cwd`.
+
 ## Using mocks
 
 `mocks` is auto-installed for every test (you don't need to request it to get the lockdown/reset
@@ -102,6 +134,9 @@ behavior, only to call its methods). Sub-mocks:
 
 ## Debugging failed tests
 
+- **Use the Node version in `.nvmrc`.** Under Node 26, `playwright install` with this suite's Playwright 1.49.1 hangs
+  while extracting the browser, with no error. Without a version manager, `pnpm --config.use-node-version=<version> exec
+  node -v` fetches that version into `~/Library/pnpm/nodejs/<version>/bin` (macOS) without changing the global Node.
 - **Check for a stray dev server or RPC proxy before starting a run**, especially your own from an
   earlier session: `lsof -nP -iTCP:3000 -sTCP:LISTEN` and `lsof -nP -iTCP:18545 -sTCP:LISTEN` (18545 is
   the fixed RPC-proxy port, shared for the whole run and baked into the Synpress/MetaMask cache). If

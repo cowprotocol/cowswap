@@ -16,11 +16,9 @@ import { sanitizeWidgetPalette } from '../utils/sanitizeWidgetPalette'
  */
 export function useInjectedWidgetPalette(): Partial<CowSwapWidgetPalette> | null | undefined {
   const { search } = useLocation()
+  const palette = new URLSearchParams(search).get('palette')
 
   return useMemo(() => {
-    const searchParams = new URLSearchParams(search)
-    const palette = searchParams.get('palette')
-
     // When the palette param is absent, do not change the current palette state.
     if (palette === null) {
       return undefined
@@ -37,5 +35,5 @@ export function useInjectedWidgetPalette(): Partial<CowSwapWidgetPalette> | null
       console.error('Failed to parse palette from URL', e)
       return null
     }
-  }, [search])
+  }, [palette])
 }

@@ -142,6 +142,11 @@ export interface TokenSelectorFilter {
   onlyWithBalance?: boolean
 
   /**
+   * Ids of the only networks to list in the selector. In the buy selector, the networks other than the sell token one are bridge targets.
+   */
+  selectableChainIds?: number[]
+
+  /**
    * Shown above the token list, to explain why tokens are missing
    */
   notice?: string
@@ -417,6 +422,13 @@ export interface CowSwapWidgetParams {
    * Defaults to false.
    */
   disablePriceChart?: boolean
+
+  /**
+   * Hides the post-swap take-profit banner (price percentage shortcuts that open a limit order).
+   * Automatically treated as `true` when Limit is not included in `enabledTradeTypes`.
+   * Defaults to false.
+   */
+  disablePricePercentageShortcuts?: boolean
 
   /**
    * Disable setting custom recipient for all trading widgets (swap,limit,twap)

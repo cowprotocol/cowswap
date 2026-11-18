@@ -83,6 +83,10 @@ jest.mock('../WaitAndSaveOutcome/WaitAndSaveOutcome.pure', () => ({
   ),
 }))
 
+jest.mock('../../containers/TakeProfitPrompt/TakeProfitPrompt.container', () => ({
+  TakeProfitPrompt: () => <div data-testid="take-profit-prompt" />,
+}))
+
 jest.mock('entities/injectedWidget', () => ({
   useInjectedWidgetParams: jest.fn(() => ({ disablePostTradeTips: false })),
 }))
@@ -216,6 +220,10 @@ describe('FinishedStep', () => {
     expect(getSharedText('Share this swap')).toBe(
       '2 solvers competed for my swap on @CoWSwap. Tsolver won 🐮⚡\n\nStart swapping on swap.cow.fi',
     )
+
+    const prompt = screen.getByTestId('take-profit-prompt')
+    const auction = screen.getByTestId('solver-auction-result')
+    expect(prompt.compareDocumentPosition(auction) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
 
   it('keeps the token pair mounted while executed amounts are still zero', () => {
@@ -262,6 +270,21 @@ describe('FinishedStep', () => {
     )
 
     expect(screen.getByTestId('trade-token-pair')).toBeTruthy()
+  })
+
+  it('hides the take-profit prompt when cancellation failed', () => {
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.CANCELLATION_FAILED}
+        order={order}
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+      >
+        <div />
+      </FinishedStep>,
+    )
+
+    expect(screen.queryByTestId('take-profit-prompt')).toBeNull()
   })
 
   it('omits solver expand and auction when there are no solvers', () => {

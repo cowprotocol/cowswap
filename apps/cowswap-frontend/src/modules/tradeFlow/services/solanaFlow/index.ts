@@ -3,7 +3,7 @@ import { jotaiStore } from '@cowprotocol/core'
 import { OrderClass, OrderKind, OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { Currency, CurrencyAmount, Token } from '@cowprotocol/currency'
 import type { SolanaOrderIntent, SolanaSwapOrder } from '@cowprotocol/sdk-trading-solana'
-import { postSolanaSponsoredOrder } from '@cowprotocol/sdk-trading-solana'
+import { isSolanaSmartContractWallet, postSolanaSponsoredOrder } from '@cowprotocol/sdk-trading-solana'
 import type { UiOrderType } from '@cowprotocol/types'
 
 import { PublicKey } from '@solana/web3.js'
@@ -48,6 +48,7 @@ import {
 
 import { assertSignedAppData } from './assertSignedAppData'
 import { getSolanaErrorLogs } from './getSolanaErrorLogs'
+import { isSquadsSetupError } from './isSquadsSetupError'
 import { LEGACY_SOLANA_LIMIT_APP_DATA_HASH, LEGACY_SOLANA_SWAP_APP_DATA } from './legacySolanaAppData'
 import { isSolanaOrderSubmitted, reportSolanaOrderError, SolanaOrderPhase } from './reportSolanaOrderError'
 
@@ -111,7 +112,11 @@ export async function solanaFlow(
   // is rejected as `WrongFeePayer`. A deployment without sponsoring reports none, which leaves the
   // owner paying — the only thing it can do there. Declared out here because the error handling
   // reports which path was actually taken, not which one was asked for.
-  const sponsor = isSponsored ? solanaQuote.funder : undefined
+  //
+  // A program-owned wallet is placed self-paid instead: sponsored placement needs the funder as fee
+  // payer and `CreateOrder` top-level, while a vault signs only from inside `VaultTransactionExecute`,
+  // so the order book rejects such a bundle as `WrongFeePayer`.
+  const sponsor = isSponsored && !isSolanaSmartContractWallet(solana.owner) ? solanaQuote.funder : undefined
 
   // Advanced as the flow moves, so a failure can say where it happened: wallets routinely throw a
   // bare "Unexpected error" with no message, no code and no logs, and then the phase is the only
@@ -125,6 +130,10 @@ export async function solanaFlow(
     const buySymbol = outputAmount.currency.symbol ?? 'token'
     const { owner, connection, provider } = solana
 
+    // Whose wallet the created intent's `buyTokenAccount` is the associated token account of: a limit
+    // order rebuilds the intent against the form's receiver, a swap keeps the one the quote derived it
+    // from. It must stay in step with `createdIntent` below — the associated token program rejects a
+    // create whose address is not the named wallet's.
     const buyAtaReceiver = new PublicKey(
       orderClass === OrderClass.LIMIT ? receiver : (tradeQuote.quoteResults.tradeParameters.receiver ?? receiver),
     )
@@ -135,6 +144,12 @@ export async function solanaFlow(
     // sponsor. Both the wrap's rent and its transfer therefore stay the owner's.
     const buyAtaRentPayer = sponsor ?? owner
 
+    // The wallet the order book is told the buy token account belongs to, so the settlement creates a
+    // missing one there the way it creates the owner's own. Only a sponsored order posts anything —
+    // a self-paid order never reaches placement, so its bundle creates the account itself — and
+    // naming the owner is the same as naming nobody.
+    const namedReceiver = sponsor && !buyAtaReceiver.equals(owner) ? buyAtaReceiver : undefined
+
     const {
       step: createOrderStep,
       orderId,
@@ -144,6 +159,7 @@ export async function solanaFlow(
       sellAmount: signedSellAmount,
       buyAmount: signedBuyAmount,
       feePayer,
+      intent: createdIntent,
     } = orderClass === OrderClass.LIMIT
       ? await planCreateLimitOrderStep({
           ownerAddress: account,
@@ -191,6 +207,11 @@ export async function solanaFlow(
       phase = 'plan'
     }
 
+    // The account the order actually credits, not the quoted one: a limit order rebuilds the intent
+    // against its own receiver. `buyTokenProgramId` still comes from the quote — it is a property of the
+    // buy mint, which no rebuild changes.
+    const buyAtaQuote = { intent: createdIntent, buyTokenProgramId: solanaQuote.buyTokenProgramId }
+
     // Wrap only applies to a native SOL sell and delegate only when the existing delegation is short —
     // both plan functions return null otherwise, so the transaction carries the minimum instructions.
     // `isNativeSell` reflects the user's actual selection, not `inputAmount.currency` — the Solana quote
@@ -202,9 +223,14 @@ export async function solanaFlow(
       planCreateBuyAtaStep({
         payer: buyAtaRentPayer,
         receiver: buyAtaReceiver,
-        quote: solanaQuote,
+        quote: buyAtaQuote,
         buySymbol,
-        isCreationSkipped: getIsBuyAtaCreationSkipped({ quote: solanaQuote, owner, isAtaCreationDisabled }),
+        isCreationSkipped: getIsBuyAtaCreationSkipped({
+          quote: buyAtaQuote,
+          owner,
+          receiver: namedReceiver,
+          isAtaCreationDisabled,
+        }),
       }),
       createOrderStep,
     ].filter((step): step is SolanaFlowStep => step !== null)
@@ -217,6 +243,7 @@ export async function solanaFlow(
           { connection, provider, feePayer },
           steps,
           tradeQuote.quoteResults,
+          namedReceiver,
           () => attemptId === latestAttemptId,
           () => {
             phase = 'submit'
@@ -342,6 +369,7 @@ export async function solanaFlow(
         tradeAmounts,
         errorMessage: swapErrorMessage,
         logs: getSolanaErrorLogs(error),
+        isSquadsSetupRequired: isSquadsSetupError(error),
       })
     }
 
@@ -452,6 +480,8 @@ async function postSponsoredBundle(
   context: SignSolanaFlowContext,
   steps: SolanaFlowStep[],
   quoteResults: SolanaTradeFlowContext['tradeQuote']['quoteResults'],
+  /** The wallet the buy token account belongs to, when the order names one — see `namedReceiver`. */
+  receiver: PublicKey | undefined,
   isCurrentAttempt: () => boolean,
   /** Fired just before the bundle is handed over, after which its outcome is no longer ours to know. */
   onSubmissionStart: () => void,
@@ -511,8 +541,12 @@ async function postSponsoredBundle(
     onSubmissionStart()
 
     await postSolanaSponsoredOrder(
-      // The endpoint answers `id: null` when it could not store the quote, which the type does not admit.
-      { partiallySignedTx: transaction, quoteId: quoteResults.quoteResponse.id ?? undefined },
+      {
+        partiallySignedTx: transaction,
+        receiver: receiver?.toBase58(),
+        // The endpoint answers `id: null` when it could not store the quote, which the type does not admit.
+        quoteId: quoteResults.quoteResponse.id ?? undefined,
+      },
       { orderBookApi },
     )
   } finally {

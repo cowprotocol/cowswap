@@ -118,6 +118,9 @@ const RECEIVER_ADDRESS = '5k75h1UBx8gJp6kTkPcbkgAgPmrPBiLHLLXmzMfVsBEZ'
 // possibly-stale one) so tests can tell which one a given code path actually used. Must be a real,
 // parseable base58 pubkey: `solanaFlow` now passes it through `new PublicKey(...)` for limit orders.
 const RESOLVED_RECEIVER_ADDRESS = new PublicKey(new Uint8Array(32).fill(6)).toBase58()
+// A real Squads vault. jsdom's crypto shim breaks `findProgramAddressSync`, so the PDA is written out
+// rather than derived; the test asserts it really is off the curve.
+const VAULT_OWNER = new PublicKey('D9DvzXZjyqECswED5YgHi4wA1qTVjjiGP76sN6Dr8vGE')
 // The back end's rotating sponsor account, reported by the quote.
 const FUNDER_ADDRESS = new PublicKey(new Uint8Array(32).fill(8)).toBase58()
 const SOLANA_CHAIN_ID = SupportedChainId.SOLANA
@@ -136,6 +139,12 @@ const MARKET_SIGNED_SELL_AMOUNT = 1_000_000n
 const MARKET_SIGNED_BUY_AMOUNT = 1_900_000n
 const LIMIT_SIGNED_SELL_AMOUNT = 5_000_000n
 const LIMIT_SIGNED_BUY_AMOUNT = 12_000_000n
+// The buy account each path's signed intent names. A swap keeps the quoted one; a limit order rebuilds
+// the intent against its own receiver and so names a different account. Distinct here so a test can tell
+// which intent reached the buy-ATA step. Written out rather than derived: jsdom's crypto shim breaks
+// `findProgramAddressSync`, so these stand in for the associated token addresses they represent.
+const QUOTED_BUY_TOKEN_ACCOUNT = new PublicKey(new Uint8Array(32).fill(10))
+const LIMIT_BUY_TOKEN_ACCOUNT = new PublicKey(new Uint8Array(32).fill(11))
 
 const wsol = new TokenWithLogo(
   undefined,
@@ -182,15 +191,19 @@ function buildContext({
   orderClass = OrderClass.MARKET,
   buyAmount = outputAmount,
   quoteBuyToken = usdc.address,
+  quoteReceiver = RECEIVER_ADDRESS,
+  owner = new PublicKey(SOLANA_ACCOUNT),
 }: {
   isNativeSell?: boolean
   delegationAmount?: bigint
   orderClass?: OrderClass
   buyAmount?: CurrencyAmount<Token>
   quoteBuyToken?: string
+  quoteReceiver?: string
+  owner?: PublicKey
 } = {}): SolanaTradeFlowContext {
   return {
-    account: SOLANA_ACCOUNT,
+    account: owner.toBase58(),
     isNativeSell,
     solanaQuote: {
       uid: new Uint8Array(32).fill(7),
@@ -198,13 +211,18 @@ function buildContext({
       programId: new PublicKey(new Uint8Array(32).fill(5)),
       funder: new PublicKey(new Uint8Array(32).fill(9)),
       // Post-slippage amounts: these are what gets signed on chain, and what the stored order must carry.
-      intent: { owner: new PublicKey(SOLANA_ACCOUNT), sellAmount: 1_000_000n, buyAmount: 1_900_000n },
+      intent: {
+        owner: new PublicKey(SOLANA_ACCOUNT),
+        sellAmount: 1_000_000n,
+        buyAmount: 1_900_000n,
+        buyTokenAccount: QUOTED_BUY_TOKEN_ACCOUNT,
+      },
       funder: FUNDER_ADDRESS,
     } as unknown as SolanaTradeFlowContext['solanaQuote'],
     solana: {
       connection: {} as Connection,
       provider: {} as SolanaProvider,
-      owner: new PublicKey(SOLANA_ACCOUNT),
+      owner,
     },
     sellToken: wsol,
     sellAmount: SELL_AMOUNT,
@@ -229,7 +247,7 @@ function buildContext({
         },
         // The receiver the quote derived `intent.buyTokenAccount` from — the buy-ATA step must use this
         // one, not `context.receiver`, or it would name an account the order does not credit.
-        tradeParameters: { receiver: RECEIVER_ADDRESS },
+        tradeParameters: { receiver: quoteReceiver },
       },
       postSwapOrderFromQuote: jest.fn(),
     } as unknown as SolanaTradeFlowContext['tradeQuote'],
@@ -309,6 +327,7 @@ beforeEach(() => {
     fullAppData: MARKET_FULL_APP_DATA,
     sellAmount: MARKET_SIGNED_SELL_AMOUNT,
     buyAmount: MARKET_SIGNED_BUY_AMOUNT,
+    intent: { buyTokenAccount: QUOTED_BUY_TOKEN_ACCOUNT },
   })
   mockPlanCreateLimitOrderStep.mockResolvedValue({
     step: ORDER_STEP,
@@ -317,6 +336,7 @@ beforeEach(() => {
     appData: LIMIT_APP_DATA_HEX,
     sellAmount: LIMIT_SIGNED_SELL_AMOUNT,
     buyAmount: LIMIT_SIGNED_BUY_AMOUNT,
+    intent: { buyTokenAccount: LIMIT_BUY_TOKEN_ACCOUNT },
   })
 })
 
@@ -381,7 +401,8 @@ describe('solanaFlow', () => {
     expect(receiver.toBase58()).toBe(RECEIVER_ADDRESS)
     expect(receiver.toBase58()).not.toBe(context.context.receiver)
     expect(payer.toBase58()).toBe(SOLANA_ACCOUNT)
-    expect(quote).toBe(context.solanaQuote)
+    expect(quote.intent.buyTokenAccount).toEqual(QUOTED_BUY_TOKEN_ACCOUNT)
+    expect(quote.buyTokenProgramId).toBe(context.solanaQuote.buyTokenProgramId)
   })
 
   // A limit order never quotes (planCreateLimitOrderStep derives its own buyTokenAccount straight from
@@ -397,7 +418,12 @@ describe('solanaFlow', () => {
     expect(receiver.toBase58()).toBe(context.context.receiver)
     expect(receiver.toBase58()).not.toBe(RECEIVER_ADDRESS)
     expect(payer.toBase58()).toBe(SOLANA_ACCOUNT)
-    expect(quote).toBe(context.solanaQuote)
+    // The account the rebuilt intent names, never the quoted one: the associated token program rejects a
+    // create whose address is not the named receiver's, which would fail the whole bundle.
+    expect(quote.intent.buyTokenAccount).toEqual(LIMIT_BUY_TOKEN_ACCOUNT)
+    expect(quote.intent.buyTokenAccount).not.toEqual(context.solanaQuote.intent.buyTokenAccount)
+    // Both decisions read the same intent, so the skip check can never disagree with what was created.
+    expect(mockGetIsBuyAtaCreationSkipped).toHaveBeenCalledWith(expect.objectContaining({ quote }))
   })
 
   it('never posts the order from the quote', async () => {
@@ -551,6 +577,25 @@ describe('solanaFlow', () => {
   it('does not mark a self-paid order as sponsored', async () => {
     await solanaFlow(buildContext(), buildAnalytics())
 
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ order: expect.objectContaining({ isSponsored: false }) }),
+      expect.anything(),
+    )
+  })
+
+  // A vault's order only reaches the chain nested in `VaultTransactionExecute`, while sponsored
+  // placement needs the funder as fee payer and `CreateOrder` top-level — the order book rejects the
+  // combination as `WrongFeePayer`. Self-paid is the path such an owner can actually complete.
+  it('places self-paid for a smart contract wallet owner, even with sponsoring on', async () => {
+    mockSignSolanaFlow.mockResolvedValue({ transaction: 'base64-tx', signedAtMs: Date.now() })
+
+    expect(PublicKey.isOnCurve(VAULT_OWNER.toBytes())).toBe(false)
+
+    await solanaFlow(buildContext({ owner: VAULT_OWNER }), buildAnalytics(), { isSponsored: true })
+
+    expect(mockSignSolanaFlow).not.toHaveBeenCalled()
+    expect(mockPostSolanaSponsoredOrder).not.toHaveBeenCalled()
+    expect(mockSendSolanaFlow).toHaveBeenCalled()
     expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
       expect.objectContaining({ order: expect.objectContaining({ isSponsored: false }) }),
       expect.anything(),
@@ -738,6 +783,7 @@ describe('solanaFlow · appData', () => {
       sellAmount: MARKET_SIGNED_SELL_AMOUNT,
       buyAmount: MARKET_SIGNED_BUY_AMOUNT,
       feePayer: new PublicKey(SOLANA_ACCOUNT),
+      intent: { buyTokenAccount: QUOTED_BUY_TOKEN_ACCOUNT },
     }
     mockPlanCreateOrderStep.mockResolvedValue(planned)
     mockPlanCreateLimitOrderStep.mockResolvedValue(planned)
@@ -948,7 +994,7 @@ describe('solanaFlow · buy account creation', () => {
     await solanaFlow(context, buildAnalytics(), { isAtaCreationDisabled: true })
 
     expect(mockGetIsBuyAtaCreationSkipped).toHaveBeenCalledWith({
-      quote: context.solanaQuote,
+      quote: { intent: { buyTokenAccount: QUOTED_BUY_TOKEN_ACCOUNT }, buyTokenProgramId: undefined },
       owner: context.solana.owner,
       isAtaCreationDisabled: true,
     })
@@ -983,6 +1029,7 @@ describe('solanaFlow · order not placed', () => {
       tradeAmounts: { inputAmount: context.context.inputAmount, outputAmount: context.context.outputAmount },
       errorMessage: KEYRING_ERROR,
       logs,
+      isSquadsSetupRequired: false,
     })
   })
 
@@ -1002,6 +1049,16 @@ describe('solanaFlow · order not placed', () => {
       outputAmount: context.context.outputAmount,
     })
     expect(jotaiStore.get(solanaOrderNotPlacedAtom)).toBeNull()
+  })
+
+  // The wallet refuses every order until the SquadsX key is a proposer on the Squad, and its own
+  // wording gives the user nothing to act on.
+  it('flags a SquadsX key that is not a proposer so the screen can explain the setup step', async () => {
+    mockSendSolanaFlow.mockRejectedValue(new Error('this extension is not an active proposer on the selected multisig'))
+
+    await solanaFlow(buildContext(), buildAnalytics())
+
+    expect(jotaiStore.get(solanaOrderNotPlacedAtom)).toEqual(expect.objectContaining({ isSquadsSetupRequired: true }))
   })
 
   // Cancelling is a decision, not a failure: "Transaction checks failed" would be a lie about it.
@@ -1163,6 +1220,26 @@ describe('solanaFlow · sponsored', () => {
 
     expect(result).toBe(true)
     expect(mockPostSolanaSponsoredOrder).toHaveBeenCalledTimes(1)
+  })
+
+  // Without this the settlement has no wallet to create the payout account for, and placement refuses
+  // the order as unreceivable — the custom-recipient failure the field exists to fix.
+  it('names the wallet the buy token account belongs to when it is not the owner', async () => {
+    await solanaFlow(buildContext(), buildAnalytics(), { isSponsored: true })
+
+    expect(mockPostSolanaSponsoredOrder).toHaveBeenCalledWith(
+      expect.objectContaining({ receiver: RECEIVER_ADDRESS }),
+      expect.anything(),
+    )
+  })
+
+  // Naming the owner means the same to placement as naming nobody. Undefined keeps it off the wire:
+  // the order book serializes the body with JSON.stringify, which drops them.
+  it('names no receiver when the payout goes to the owner', async () => {
+    await solanaFlow(buildContext({ quoteReceiver: SOLANA_ACCOUNT }), buildAnalytics(), { isSponsored: true })
+
+    expect(mockPostSolanaSponsoredOrder).toHaveBeenCalledTimes(1)
+    expect(mockPostSolanaSponsoredOrder.mock.calls[0]?.[0].receiver).toBeUndefined()
   })
 
   // The real blockhash usually outlives the shown window (the estimate is capped), so the chain-level

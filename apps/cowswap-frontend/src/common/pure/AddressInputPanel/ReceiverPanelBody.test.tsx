@@ -78,6 +78,10 @@ const BTC_CHAIN_INFO = { label: 'Bitcoin' } as ReturnType<typeof useReceiverChai
 
 const VALID_EVM_ADDRESS = '0x1234567890123456789012345678901234567890'
 const VALID_SOL_ADDRESS = 'SolValid1111111111111111111111111111111111111'
+/** A real associated token account: program-derived, so off the ed25519 curve. */
+const SOL_PDA_ADDRESS = 'HGTu6fBshWXJQe59C31RgyGcfhEusg1Y65Upcmd9zvCM'
+/** A real wallet address, on the curve. */
+const SOL_WALLET_ADDRESS = '2c1E71jPXqgM8nJXiQpCEwGhXSVA8GTN4a1qTS1ibyLa'
 const VALID_BTC_ADDRESS = 'bc1qvalid_long_enough'
 
 // --- Mock helpers ---
@@ -234,6 +238,37 @@ describe('ReceiverPanelBody — confirmation row visibility', () => {
   it('does NOT show for EOA when isSmartContractWallet is false (non-bridging mode)', () => {
     mockValidAddress()
     renderComponent({ value: VALID_EVM_ADDRESS, isSmartContractWalletBridging: false })
+    expect(screen.queryByRole('checkbox')).toBeNull()
+  })
+})
+
+describe('ReceiverPanelBody — program-derived recipient', () => {
+  function renderSolanaTrade(value: string): void {
+    mockUseWalletInfo.mockReturnValue({ chainId: SupportedChainId.SOLANA })
+    mockSolanaChainInfo()
+    mockValidAddress()
+    renderComponent({ value, targetChainId: SupportedChainId.SOLANA })
+  }
+
+  it('asks the trader to confirm a recipient no key pair can sign for', () => {
+    renderSolanaTrade(SOL_PDA_ADDRESS)
+
+    expect(screen.getByRole('checkbox')).not.toBeNull()
+    expect(screen.getByText(/program address, not a wallet/)).not.toBeNull()
+  })
+
+  it('asks nothing of a plain wallet recipient', () => {
+    renderSolanaTrade(SOL_WALLET_ADDRESS)
+
+    expect(screen.queryByRole('checkbox')).toBeNull()
+  })
+
+  it('does not ask while the address is still invalid', () => {
+    mockUseWalletInfo.mockReturnValue({ chainId: SupportedChainId.SOLANA })
+    mockSolanaChainInfo()
+    mockInvalidAddress()
+    renderComponent({ value: SOL_PDA_ADDRESS, targetChainId: SupportedChainId.SOLANA })
+
     expect(screen.queryByRole('checkbox')).toBeNull()
   })
 })

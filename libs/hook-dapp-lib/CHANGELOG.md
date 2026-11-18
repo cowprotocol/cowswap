@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.5.3](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v2.5.2...hook-dapp-lib-v2.5.3) (2026-11-11)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/iframe-transport@2.3.15
+
+## [2.5.2](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v2.5.1...hook-dapp-lib-v2.5.2) (2026-11-10)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/iframe-transport@2.3.14
+
 ## [2.5.1](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v2.5.0...hook-dapp-lib-v2.5.1) (2026-11-05)
 
 ### Patch Changes

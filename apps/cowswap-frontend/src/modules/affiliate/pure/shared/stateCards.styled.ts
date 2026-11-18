@@ -51,8 +51,11 @@ export const UnsupportedNetworkHeader = styled.h2`
   font-weight: 600;
 `
 
-export const UnsupportedNetworkMessage = styled.p`
-  margin: 0;
+export const UnsupportedNetworkMessage = styled.div`
   text-align: center;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
+
+  > p {
+    margin: 0;
+  }
 `

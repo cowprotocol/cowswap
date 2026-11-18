@@ -4,6 +4,7 @@ import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Token } from '@cowprotocol/currency'
+import { isSolanaSmartContractWallet } from '@cowprotocol/sdk-trading-solana'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAppKitConnection } from '@reown/appkit-adapter-solana/react'
@@ -25,6 +26,7 @@ import { useSolanaTradeOverhead } from './useSolanaTradeOverhead'
 jest.mock('@cowprotocol/wallet', () => ({ useWalletInfo: jest.fn() }))
 jest.mock('@cowprotocol/common-hooks', () => ({ useFeatureFlags: jest.fn() }))
 jest.mock('@reown/appkit-adapter-solana/react', () => ({ useAppKitConnection: jest.fn() }))
+jest.mock('@cowprotocol/sdk-trading-solana', () => ({ isSolanaSmartContractWallet: jest.fn() }))
 jest.mock('modules/trade', () => ({
   getSolanaTradeOverhead: jest.fn(),
   getWrapFundedAccounts: jest.fn(),
@@ -41,6 +43,7 @@ jest.mock('modules/tradeQuote', () => ({
 const mockUseWalletInfo = jest.mocked(useWalletInfo)
 const mockUseFeatureFlags = jest.mocked(useFeatureFlags)
 const mockUseAppKitConnection = jest.mocked(useAppKitConnection)
+const mockIsSolanaSmartContractWallet = jest.mocked(isSolanaSmartContractWallet)
 const mockGetSolanaTradeOverhead = jest.mocked(getSolanaTradeOverhead)
 const mockGetWrapFundedAccounts = jest.mocked(getWrapFundedAccounts)
 const mockPlanSolanaTradeFundedAccounts = jest.mocked(planSolanaTradeFundedAccounts)
@@ -78,6 +81,7 @@ beforeEach(() => {
   mockUseFeatureFlags.mockReturnValue({} as unknown as ReturnType<typeof useFeatureFlags>)
   mockUseAppKitConnection.mockReturnValue({ connection } as unknown as ReturnType<typeof useAppKitConnection>)
   mockUseIsWrapOrUnwrap.mockReturnValue(false)
+  mockIsSolanaSmartContractWallet.mockReturnValue(false)
   mockUseTradeQuote.mockReturnValue({ quote: { solanaQuote: {} } } as unknown as ReturnType<typeof useTradeQuote>)
   mockGetWrapFundedAccounts.mockReturnValue(WRAP_ACCOUNTS)
   mockPlanSolanaTradeFundedAccounts.mockReturnValue(FULL_ACCOUNTS)
@@ -113,6 +117,60 @@ describe('useSolanaTradeOverhead', () => {
 
     await waitFor(() => expect(mockGetSolanaTradeOverhead).toHaveBeenCalled())
     expect(mockGetSolanaTradeOverhead).toHaveBeenCalledWith(connection, FULL_ACCOUNTS, { ownerPaysFees: true })
+  })
+
+  // A vault's order rides inside `VaultTransactionExecute`, so the member executing the proposal
+  // pays the fee — and the priority-fee headroom with it. The rents stay the vault's, since the
+  // bundle names it as payer for the accounts it creates.
+  it('leaves the fees to the member executing a multisig proposal', async () => {
+    setup({ inputCurrency: NATIVE_SOL, isSponsored: false })
+    mockIsSolanaSmartContractWallet.mockReturnValue(true)
+
+    renderHook(() => useSolanaTradeOverhead(), { wrapper })
+
+    await waitFor(() => expect(mockGetSolanaTradeOverhead).toHaveBeenCalled())
+    expect(mockGetSolanaTradeOverhead).toHaveBeenCalledWith(connection, FULL_ACCOUNTS, { ownerPaysFees: false })
+    expect(mockIsSolanaSmartContractWallet.mock.calls[0]?.[0]?.toString()).toBe(OWNER)
+  })
+
+  it('leaves the fees to the member on a multisig wrap, which is a proposal too', async () => {
+    setup({ inputCurrency: NATIVE_SOL, isSponsored: false })
+    mockUseIsWrapOrUnwrap.mockReturnValue(true)
+    mockIsSolanaSmartContractWallet.mockReturnValue(true)
+
+    renderHook(() => useSolanaTradeOverhead(), { wrapper })
+
+    await waitFor(() => expect(mockGetSolanaTradeOverhead).toHaveBeenCalled())
+    expect(mockGetSolanaTradeOverhead).toHaveBeenCalledWith(connection, [], { ownerPaysFees: false })
+  })
+
+  it('still charges an ordinary wallet the fee to wrap', async () => {
+    setup({ inputCurrency: NATIVE_SOL, isSponsored: false })
+    mockUseIsWrapOrUnwrap.mockReturnValue(true)
+
+    renderHook(() => useSolanaTradeOverhead(), { wrapper })
+
+    await waitFor(() => expect(mockGetSolanaTradeOverhead).toHaveBeenCalled())
+    expect(mockGetSolanaTradeOverhead).toHaveBeenCalledWith(connection, [], { ownerPaysFees: true })
+  })
+
+  /**
+   * `useWalletInfo` sources the chain id and the account separately, so reopening a Solana session left
+   * a Solana chain id paired with an EVM account for a render or two. Every base58 decode below throws
+   * on one, from inside render — which the error boundary turned into "Something went wrong".
+   */
+  it('stays quiet rather than decoding an EVM account left over from a wallet switch', async () => {
+    setup({ inputCurrency: NATIVE_SOL, isSponsored: false })
+    mockUseWalletInfo.mockReturnValue({
+      chainId: SupportedChainId.SOLANA,
+      account: '0x9FA3c00a92Ec5f96B1Ad2527ab41B3932EFEDa58',
+    } as unknown as ReturnType<typeof useWalletInfo>)
+
+    const { result } = renderHook(() => useSolanaTradeOverhead(), { wrapper })
+
+    await waitFor(() => expect(result.current).toBeNull())
+    expect(mockGetSolanaTradeOverhead).not.toHaveBeenCalled()
+    expect(mockPlanSolanaTradeFundedAccounts).not.toHaveBeenCalled()
   })
 
   it('ignores the sponsor when asked for the full placement cost', async () => {

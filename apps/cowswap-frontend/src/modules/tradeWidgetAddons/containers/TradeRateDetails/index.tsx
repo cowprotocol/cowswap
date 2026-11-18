@@ -132,6 +132,7 @@ export function TradeRateDetails({
           isSponsored={solanaTxCost.isSponsored}
           ownerDeposit={solanaTxCost.ownerDeposit}
           ownerDepositUsd={solanaOwnerDepositUsd}
+          isFeePaidByVaultMember={solanaTxCost.isFeePaidByVaultMember}
           detailRowStyle
         />
       )}

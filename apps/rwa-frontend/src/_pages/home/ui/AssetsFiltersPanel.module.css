@@ -94,19 +94,7 @@
 }
 
 .search input {
-  flex: 1;
-  min-width: 0;
-  padding: 0;
-  border: none;
-  border-radius: 0;
-  background: none;
-  color: var(--color-text);
   font-size: 13px;
-  outline: none;
-}
-
-.search input::placeholder {
-  color: var(--color-text-secondary);
 }
 
 .options {
@@ -234,45 +222,45 @@
   opacity: 0;
 }
 
-.sections[data-touch] {
+.sections[data-in-drawer] {
   gap: 24px;
 }
 
-.sections[data-touch] .sectionTitle {
+.sections[data-in-drawer] .sectionTitle {
   font-size: 14px;
   line-height: 20px;
 }
 
-.sections[data-touch] .option {
+.sections[data-in-drawer] .option {
   min-height: 44px;
   padding: 0;
 }
 
-.sections[data-touch] .option:hover,
-.sections[data-touch] .option:focus-within {
+.sections[data-in-drawer] .option:hover,
+.sections[data-in-drawer] .option:focus-within {
   background: none;
 }
 
-.sections[data-touch] .option:has(:focus-visible) {
+.sections[data-in-drawer] .option:has(:focus-visible) {
   background: var(--color-surface);
 }
 
-.sections[data-touch] .optionLabel {
+.sections[data-in-drawer] .optionLabel {
   gap: 12px;
   align-self: stretch;
   font-size: 15px;
 }
 
-.sections[data-touch] .checkbox {
+.sections[data-in-drawer] .checkbox {
   width: 20px;
   height: 20px;
 }
 
-.sections[data-touch] .segments {
+.sections[data-in-drawer] .segments {
   align-self: stretch;
 }
 
-.sections[data-touch] .segment {
+.sections[data-in-drawer] .segment {
   flex: 1;
   justify-content: center;
   height: 38px;

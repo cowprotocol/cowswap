@@ -8,22 +8,31 @@ import { TradeBarActions } from './TradeBarActions'
 import { tradeSideAtom } from '../model/tradeSelectionAtoms'
 import { TRADE_WIDGET_ID } from '../model/useSelectTradeToken'
 
+import { mockViewport } from '@/shared/lib/testing'
+
 jest.mock('wagmi', () => ({ useChainId: jest.fn(), useConnection: jest.fn(), useSwitchChain: jest.fn() }))
 jest.mock('@/widgets/header', () => ({
+  WALLET_BAR_HEIGHT: 56,
   WalletBarSlot: ({ children }: { children: ReactNode }) => <div data-testid="wallet-bar">{children}</div>,
 }))
 
-let reportVisibleHeight: (height: number) => void = () => undefined
-let observerOptions: IntersectionObserverInit | undefined
+interface EdgeObserver {
+  rootMargin: string | undefined
+  report(isIntersecting: boolean): void
+}
+
+let edgeObservers: EdgeObserver[] = []
 
 class MockIntersectionObserver {
   observe = jest.fn()
   disconnect = jest.fn()
 
   constructor(callback: IntersectionObserverCallback, options?: IntersectionObserverInit) {
-    observerOptions = options
-    reportVisibleHeight = (height) =>
-      callback([{ intersectionRect: { height } } as IntersectionObserverEntry], this as unknown as IntersectionObserver)
+    edgeObservers.push({
+      rootMargin: options?.rootMargin,
+      report: (isIntersecting) =>
+        callback([{ isIntersecting } as IntersectionObserverEntry], this as unknown as IntersectionObserver),
+    })
   }
 }
 
@@ -46,7 +55,11 @@ function TradeSection(): ReactNode {
 describe('TradeBarActions', () => {
   beforeAll(() => {
     Object.defineProperty(window, 'IntersectionObserver', { value: MockIntersectionObserver })
-    Object.defineProperty(window, 'matchMedia', { value: () => ({ matches: true }) })
+    mockViewport(390)
+  })
+
+  beforeEach(() => {
+    edgeObservers = []
   })
 
   function renderSection(): ReturnType<typeof createStore> {
@@ -67,18 +80,20 @@ describe('TradeBarActions', () => {
     const actions = [bar.getByRole('button', { name: 'Buy NVDA' }), bar.getByRole('button', { name: 'Sell NVDA' })]
     const areInert = (): boolean[] => actions.map((action) => action.closest('[inert]') !== null)
 
-    expect(observerOptions?.rootMargin).toBe('0px 0px -56px 0px')
+    const [topEdge, bottomEdge] = edgeObservers
+
+    expect(edgeObservers.map(({ rootMargin }) => rootMargin)).toEqual(['-120px 0px 0px 0px', '0px 0px -176px 0px'])
     expect(areInert()).toEqual([false, false])
 
-    act(() => reportVisibleHeight(119))
+    act(() => topEdge.report(true))
 
     expect(areInert()).toEqual([false, false])
 
-    act(() => reportVisibleHeight(120))
+    act(() => bottomEdge.report(true))
 
     expect(areInert()).toEqual([true, true])
 
-    act(() => reportVisibleHeight(0))
+    act(() => topEdge.report(false))
 
     expect(areInert()).toEqual([false, false])
   })

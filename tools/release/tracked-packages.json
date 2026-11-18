@@ -3,6 +3,7 @@
     "apps/cow-fi",
     "apps/cowswap-frontend",
     "apps/explorer",
+    "apps/rwa-frontend",
     "apps/widget-configurator",
     "libs/abis",
     "libs/analytics",

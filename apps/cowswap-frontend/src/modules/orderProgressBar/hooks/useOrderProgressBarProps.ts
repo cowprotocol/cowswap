@@ -20,6 +20,7 @@ import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { type SwapAndBridgeContext, SwapAndBridgeStatus } from 'modules/bridge'
 
 import { getOrderCompetitionStatus } from 'api/cowProtocol/api'
+import { useActiveSolversCount } from 'common/hooks/useActiveSolversCount'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { useSolversInfoByAddress } from 'common/hooks/useSolversInfoByAddress'
@@ -210,9 +211,7 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
   } = useGetExecutingOrderState(orderId)
 
   const solversInfoByAddress = useSolversInfoByAddress(chainId)
-  // Count distinct solvers, not addresses: the CMS keeps a solver's retired deployments alongside
-  // the live one, so one solver can contribute several addresses for the same chain.
-  const totalSolvers = new Set(Object.values(solversInfoByAddress).map(({ solverId }) => solverId)).size
+  const totalSolvers = useActiveSolversCount(chainId)
 
   const doNotQuery = getDoNotQueryStatusEndpoint(order, apiSolverCompetition, !!disableProgressBar)
 

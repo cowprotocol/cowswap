@@ -48,11 +48,12 @@ jest.mock('common/constants/routes', () => ({
     ACCOUNT_AFFILIATE_TRADER: '/account/affiliate/trader',
     PLAY_COWRUNNER: '/play/cowrunner',
     PLAY_MEVSLICER: '/play/mevslicer',
+    GRAFFITI: '/graffiti',
   },
 }))
 
-function getMoreItemHrefs(isSolversEnabled: boolean): string[] {
-  const navItems = NAV_ITEMS(SupportedChainId.MAINNET, isSolversEnabled)
+function getMoreItemHrefs({ isSolversEnabled = false, isGraffitiWallEnabled = false } = {}): string[] {
+  const navItems = NAV_ITEMS(SupportedChainId.MAINNET, { isSolversEnabled, isGraffitiWallEnabled })
   const moreItem = navItems[navItems.length - 1]
 
   if (!moreItem?.children) {
@@ -64,10 +65,18 @@ function getMoreItemHrefs(isSolversEnabled: boolean): string[] {
 
 describe('NAV_ITEMS', () => {
   it('hides solvers menu item when the solvers flag is disabled', () => {
-    expect(getMoreItemHrefs(false)).not.toContain('https://explorer.cow.fi/solvers')
+    expect(getMoreItemHrefs({ isSolversEnabled: false })).not.toContain('https://explorer.cow.fi/solvers')
   })
 
   it('shows solvers menu item when the solvers flag is enabled', () => {
-    expect(getMoreItemHrefs(true)).toContain('https://explorer.cow.fi/solvers')
+    expect(getMoreItemHrefs({ isSolversEnabled: true })).toContain('https://explorer.cow.fi/solvers')
+  })
+
+  it('hides the graffiti wall menu item when the graffiti wall flag is disabled', () => {
+    expect(getMoreItemHrefs({ isGraffitiWallEnabled: false })).not.toContain('/graffiti')
+  })
+
+  it('shows the graffiti wall menu item when the graffiti wall flag is enabled', () => {
+    expect(getMoreItemHrefs({ isGraffitiWallEnabled: true })).toContain('/graffiti')
   })
 })

@@ -3,7 +3,10 @@ import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { TradeFormValidationContext } from '../types'
 
 export function getIsSolanaSellUsdValueUnknown(tradeFormValidationContext: TradeFormValidationContext): boolean {
-  const { inputCurrency, inputCurrencyAmount, inputCurrencyFiatAmount } = tradeFormValidationContext.derivedTradeState
+  const { derivedTradeState, isSolanaPublicLaunched } = tradeFormValidationContext
+  const { inputCurrency, inputCurrencyAmount, inputCurrencyFiatAmount } = derivedTradeState
+
+  if (isSolanaPublicLaunched) return false
 
   if (!inputCurrency || !isSolanaChain(inputCurrency.chainId)) return false
 

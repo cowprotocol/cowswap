@@ -13,7 +13,7 @@ const NVDA: RwaAsset = {
   logoUrl: 'https://example.com/nvda.png',
   type: 'stock',
   priority: 9,
-  allowedTradingTime: { title: 'US market open', start: '13:30 UTC', end: '20:00 UTC' },
+  allowedTradingTime: { title: 'US market open', start: '09:30', end: '16:00', timeZone: 'America/New_York' },
   tokens: [
     {
       chainId: 1,

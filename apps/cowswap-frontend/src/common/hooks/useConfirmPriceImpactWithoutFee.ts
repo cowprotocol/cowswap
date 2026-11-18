@@ -5,6 +5,7 @@ import { Percent } from '@cowprotocol/currency'
 import { t } from '@lingui/core/macro'
 
 import { useConfirmationRequest } from 'common/hooks/useConfirmationRequest'
+import { logPriceImpactConfirmed } from 'common/services/logPriceImpactConfirmed'
 
 import { BRIDGE_PRICE_IMPACT_THRESHOLD, PRICE_IMPACT_THRESHOLD } from '../constants/priceImpact'
 
@@ -51,6 +52,15 @@ export function useConfirmPriceImpactWithoutFee(isBridge: boolean): ConfirmPrice
             description,
             skipInput: shouldSkipInput,
           })
+
+          if (result) {
+            logPriceImpactConfirmed({
+              priceImpact: priceImpact.toFixed(2),
+              isBridge,
+              isCritical: !shouldSkipInput,
+            })
+          }
+
           setIsConfirmed(result)
           return result
         } catch {

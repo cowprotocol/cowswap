@@ -1,3 +1,4 @@
+import { createStore, Provider as JotaiProvider } from 'jotai'
 import { ReactNode } from 'react'
 
 import { i18n } from '@lingui/core'
@@ -10,6 +11,8 @@ import { activityDerivedStateMock } from 'mocks/activityDerivedStateMock'
 import { getOrderMock } from 'mocks/orderMock'
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
 import { getCowswapTheme } from 'theme'
+
+import { orderFailureReasonsAtom } from 'modules/orders'
 
 import { ActivityStatus } from 'common/types/activity'
 
@@ -61,37 +64,58 @@ beforeAll(() => {
       }) as unknown as MediaQueryList)
 })
 
-function renderContent(stepName: OrderProgressBarStepName = OrderProgressBarStepName.FINISHED): RenderResult {
+function renderContent(
+  stepName: OrderProgressBarStepName = OrderProgressBarStepName.FINISHED,
+  failureReasons: Record<string, 'multisig-rejected'> = {},
+): RenderResult {
   const order = getOrderMock(SupportedChainId.MAINNET)
+  const store = createStore()
+
+  store.set(orderFailureReasonsAtom, failureReasons)
 
   return render(
     <StyledComponentsThemeProvider theme={getCowswapTheme(false)}>
-      <I18nProvider i18n={i18n}>
-        <TransactionSubmittedContent
-          chainId={SupportedChainId.MAINNET}
-          hash={order.id}
-          onDismiss={() => undefined}
-          activityDerivedState={{
-            ...activityDerivedStateMock,
-            isConfirmed: true,
-            isOrder: true,
-            order,
-            status: ActivityStatus.CONFIRMED,
-          }}
-          orderProgressBarProps={{
-            chainId: SupportedChainId.MAINNET,
-            isBridgingTrade: false,
-            isProgressBarSetup: true,
-            showCancellationModal: null,
-            stepName,
-          }}
-        />
-      </I18nProvider>
+      <JotaiProvider store={store}>
+        <I18nProvider i18n={i18n}>
+          <TransactionSubmittedContent
+            chainId={SupportedChainId.MAINNET}
+            hash={order.id}
+            onDismiss={() => undefined}
+            activityDerivedState={{
+              ...activityDerivedStateMock,
+              isConfirmed: true,
+              isOrder: true,
+              order,
+              status: ActivityStatus.CONFIRMED,
+            }}
+            orderProgressBarProps={{
+              chainId: SupportedChainId.MAINNET,
+              isBridgingTrade: false,
+              isProgressBarSetup: true,
+              showCancellationModal: null,
+              stepName,
+            }}
+          />
+        </I18nProvider>
+      </JotaiProvider>
     </StyledComponentsThemeProvider>,
   )
 }
 
 describe('TransactionSubmittedContent', () => {
+  // A rejected proposal means no order exists and none is coming. Leaving the confirmation on a
+  // progress UI for something that will never happen is what made this read as "just a title".
+  it('shows the rejection as an error modal, like a wallet rejection, not a progress step', () => {
+    const order = getOrderMock(SupportedChainId.MAINNET)
+
+    renderContent(OrderProgressBarStepName.FINISHED, { [order.id]: 'multisig-rejected' })
+
+    expect(screen.getByText('Your multisig rejected this order, so it was not placed.')).toBeTruthy()
+    expect(screen.getByText('Dismiss')).toBeTruthy()
+    expect(screen.queryByTestId('order-progress-bar')).toBeNull()
+    expect(screen.queryByTestId('finished-success-heading')).toBeNull()
+  })
+
   it('opens the success modal once the order is finished', () => {
     renderContent()
 

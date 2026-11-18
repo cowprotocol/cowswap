@@ -14,7 +14,6 @@
   inset: 0;
   display: flex;
   align-items: flex-end;
-  justify-content: center;
 }
 
 .popup {
@@ -30,9 +29,8 @@
   transition: transform 450ms cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-/* Base UI's scroll lock reserves the scrollbar's gutter. A fixed backdrop stops short of it, and only the root's solid background color paints it */
-html:has(.backdrop) {
-  background: var(--color-backdrop-on-canvas);
+body:has(.backdrop) {
+  overflow: hidden;
 }
 
 .backdrop[data-starting-style],
@@ -124,18 +122,9 @@ html:has(.backdrop) {
   outline-offset: 2px;
 }
 
-.visuallyHidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .backdrop,
   .popup {
-    transition-duration: 0ms;
+    transition: none;
   }
 }

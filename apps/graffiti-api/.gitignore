@@ -1,0 +1,22 @@
+# Solana keypairs (mint, treasury) — NEVER commit
+.keys/
+
+# Runtime state
+data/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Build output
+dist/
+
+# Deps
+node_modules/
+
+# Env
+.env
+.env.local
+
+# Dev server log
+api.log

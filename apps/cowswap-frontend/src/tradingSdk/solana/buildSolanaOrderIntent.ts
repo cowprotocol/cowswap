@@ -3,9 +3,15 @@ import { hexToBytes, isHex } from 'viem'
 import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { encodeOrderIntent, hashOrderIntent, SolanaOrderIntent, toOrderId } from '@cowprotocol/sdk-trading-solana'
+import {
+  deriveAta,
+  encodeOrderIntent,
+  hashOrderIntent,
+  SolanaOrderIntent,
+  toOrderId,
+} from '@cowprotocol/sdk-trading-solana'
 
-import { getAssociatedTokenAddressSync, TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token'
+import { TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { PublicKey } from '@solana/web3.js'
 
 import { BaseOrder } from 'legacy/state/orders/actions'
@@ -64,10 +70,8 @@ export async function buildSolanaOrderIntent(order: SolanaIntentOrder): Promise<
     for (const buyTokenProgram of isNativeBuy ? [TOKEN_PROGRAM_ID] : TOKEN_PROGRAMS) {
       const intent: SolanaOrderIntent = {
         ...baseIntent,
-        sellTokenAccount: getAssociatedTokenAddressSync(sellMint, owner, false, sellTokenProgram),
-        buyTokenAccount: isNativeBuy
-          ? receiver
-          : getAssociatedTokenAddressSync(buyMint, receiver, false, buyTokenProgram),
+        sellTokenAccount: deriveAta(sellMint, owner, sellTokenProgram),
+        buyTokenAccount: isNativeBuy ? receiver : deriveAta(buyMint, receiver, buyTokenProgram),
       }
 
       const uid = await hashOrderIntent(encodeOrderIntent(intent))

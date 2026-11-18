@@ -207,7 +207,8 @@ export const ThemeColorVars = css`
     ${UI.FONT_SIZE_MEDIUM}: ${FONT_SIZING.FONT_MEDIUM[0]}px;
     ${UI.FONT_SIZE_LARGE}: ${FONT_SIZING.FONT_LARGE[0]}px;
     ${UI.FONT_SIZE_LARGER}: ${FONT_SIZING.FONT_LARGER[0]}px;
-    ${UI.FONT_SIZE_LARGEST}: 24px;
+    ${UI.FONT_SIZE_LARGEST}: ${FONT_SIZING.FONT_LARGEST[0]}px;
+    ${UI.FONT_SIZE_TITLE}: ${FONT_SIZING.FONT_TITLE[0]}px;
 
     // Line Heights:
     ${

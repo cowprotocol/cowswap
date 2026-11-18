@@ -2,12 +2,15 @@
 
 Every issuer passes a stock's dividends on to holders, but in one of three places:
 
-- **In the token price** (`price-accrual`): Ondo, Coinbase and wrapped xStocks. Your balance never changes,
-  and each token becomes worth a bit more than one share.
+- **In the token price** (`price-accrual`): Ondo, Coinbase, Robinhood, ST0x, wrapped xStocks and wrapped
+  Dinari dShares. Your balance never changes, and each token becomes worth a bit more than one share.
 - **In your balance** (`rebase`): xStocks and bStocks. The token price stays close to one share, and your
   balance grows.
-- **In your wallet as cash** (`cash-payout`): Reality. The token price stays close to one share, and the
-  dividend is paid out separately in stablecoins.
+- **In your wallet as cash** (`cash-payout`): Reality, Dinari and Anchored. The token price stays close to one
+  share, and the dividend is paid out separately in stablecoins.
+
+Stove Finance and Securitize have no model in the app: their docs don't say how dividends reach holders (see
+below).
 
 The first two reinvest the dividend, with no payout or airdrop. All three leave the holder with the same value.
 But a raw Ondo token and a raw xStocks token of the same stock are not equal units. Comparing them "per token"
@@ -105,6 +108,73 @@ one share, and dividends never go into the token.
 The payout terms depend on the stock, the record date and where the token is held, so not every holder gets
 every dividend.
 
+## Robinhood: price accrual
+
+Robinhood stock tokens (issued by Robinhood Assets (Jersey) Limited, on Robinhood Chain, 4663) reinvest dividends
+through a **multiplier** instead of paying cash: "your token dynamically represents more than one share".
+Stock splits go into the same multiplier.
+
+- **Balance:** constant. `balanceOf()` returns the raw balance, not scaled by the multiplier.
+- **Token price:** about stock price × multiplier. Robinhood's oracle `latestRoundData()` already returns the
+  price per token.
+- **Multiplier:** onchain, ERC-8056 `uiMultiplier()` (18 decimals) on each token, with the pending one in
+  `newUIMultiplier()` and `effectiveAt()`. On 2026-11-11 54 of the 203 registry tokens were above 1, up to 4
+  after a split.
+
+The app reads `uiMultiplier()` of every Robinhood token of the registry.
+
+Robinhood's older EU "stock tokens" on Arbitrum One (Robinhood Europe) are a different product: they pay cash
+dividends in EUR. The registry has none of them.
+
+## ST0x: price accrual
+
+ST0x tokens (`WT` prefix, Base) are **ERC-4626 wrappers** ("wtStock") of a base token ("tStock", one per share)
+issued by S01 Issuer GmbH. Dividends are delivered to the wrapper as extra tStock, with no new wtStock minted,
+so they work like wrapped xStocks:
+
+- **Balance:** constant, including through stock splits: the base token rebases, the wrapper's rate changes.
+- **Token price:** about stock price × the rate, which grows with dividends. Delivery can come days after the
+  ex-dividend date and differ by chain.
+- **Rate:** `convertToAssets(1e18)` on the token. On 2026-11-11 7 of the 21 registry tokens were above 1, up
+  to 1.017.
+
+The app reads the rate of every ST0x token of the registry, the same way as wrapped xStocks.
+
+## Dinari: cash payout
+
+Dinari dShares (Ethereum, Base, Arbitrum, Avalanche) pay cash dividends automatically in **USD+**, Dinari's
+stablecoin, to wallets registered to a KYC'd account. Holders don't claim, and payouts under $0.10 are skipped.
+Some third-party pages say USDC through a claim contract instead; the model is cash payout either way.
+
+- **Balance:** constant apart from splits. A dShare rebases on splits only: `balanceOf()` already applies the
+  cumulative split factor (`balancePerShare()`, 10 for NVDA after its 10:1 split), and `sharesOf()` returns the
+  raw balance. The fraction left by a reverse split is paid in USD+.
+- **Token price:** stays close to the stock price.
+
+**Wrapped dShares** (`WrappedDShare`, ERC-4626) are price accrual: the vault receives dividends as underlying
+dShares. The registry has none of them, so the app has no rule for them.
+
+## Anchored: cash payout
+
+Anchored aStocks (issued by Anchored Capital Ltd (BVI)) pay cash dividends in **USDC**, net of taxes, fees and operational costs,
+automatically to the wallet linked to the holder's Anchored account. No claim is needed.
+
+- **Balance:** constant. Splits "may be reflected through token adjustments, balance adjustments, contract
+  updates, issuer actions", depending on the action and the chain.
+- **Token price:** stays close to the stock price.
+
+The docs don't say whether a wallet without an Anchored account gets the payout.
+
+## Without a model
+
+- **Stove Finance:** dividends are paid from a vault, "represented as equivalent stablecoins or reinvested
+  tokens", without saying which. Each holder must call `processCorporateActions()` before transferring again,
+  and splits change balances directly. Its contracts aren't published.
+- **Securitize** (`CURR`, Currenc Group): issuer-sponsored ordinary shares, one token per share, with "equal
+  rights in corporate actions". The filing says nothing about dividends.
+
+Their tokens get no dividend note and no shares per token, so their prices are compared per token.
+
 ## Worked example
 
 A stock trades at $100 and pays a $1 dividend. On the ex-dividend date it opens at $99. You hold 10
@@ -134,8 +204,8 @@ behaves like Ondo, and bStocks like xStocks. A Reality holder keeps 10 tokens wo
   Ondo by the size of its premium. The portfolio and the positions table use per-token prices, falling
   back to the stock price × multiplier when a token has none.
 - **"Equivalent shares" is balance × multiplier.** The app loads Ondo's multiplier (`ONDO_API_KEY`), uses 1
-  for rebasing xStocks and bStocks and for cash-payout Reality tokens, and reads what a wrapped xStocks token
-  redeems for onchain. Without a multiplier, as for Coinbase, it estimates the shares of a price-accrual
+  for rebasing xStocks and bStocks and for cash-payout Reality, Dinari and Anchored tokens, reads what a wrapped
+  xStocks or ST0x token redeems for onchain, and reads Robinhood's `uiMultiplier()`. Without a multiplier, as for Coinbase, it estimates the shares of a price-accrual
   token as token price ÷ stock price.
 - **xStocks and bStocks balances change on their own.** A holder sees their balance grow after a dividend
   with no trade in their history. The asset page and the trade widget announce the pause around a pending
@@ -159,3 +229,12 @@ How the multipliers were wired in is in `.plans/completed/2026-10-23-rwa-dividen
 - bStocks: https://www.bstocks.finance/en and https://finst.com/en/learn/articles/what-are-bstocks
 - Reality: https://www.bitget.com/academy/reality-rtokens-vs-ondo-tokenized-stocks-us-equity and
   https://www.bitget.com/academy/how-to-receive-dividends-from-tokenized-us-stocks-bitget-2026-guide
+- Robinhood: https://docs.robinhood.com/rhj/faq, https://docs.robinhood.com/chain/stock-tokens/ and
+  https://docs.robinhood.com/chain/oracles-and-price-feeds
+- ST0x: https://st0x.io/faqs and https://st0x.io/docs/corporate-actions
+- Dinari: https://docs.dinari.com/docs/dividend-payments, https://docs.dinari.com/docs/stock-split-handling and
+  https://github.com/dinaricrypto/sbt-contracts (`DShare.sol`, `WrappedDShare.sol`)
+- Anchored: https://docs.anchored.finance/getting-started/corporate-actions.md and
+  https://docs.anchored.finance/general/faqs.md
+- Stove Finance: https://docs.stove.finance/architecture/corporate-actions.md
+- Securitize (`CURR`): https://www.sec.gov/Archives/edgar/data/1862935/000149315226015819/form6-k.htm

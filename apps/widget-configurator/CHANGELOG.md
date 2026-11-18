@@ -1,5 +1,90 @@
 # Changelog
 
+## [3.21.4](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.21.3...widget-configurator-v3.21.4) (2026-11-16)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.23.0
+  - @cowprotocol/analytics@3.19.2
+  - @cowprotocol/common-hooks@3.21.1
+  - @cowprotocol/common-utils@3.22.4
+  - @cowprotocol/ui@3.23.2
+
+## [3.21.3](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.21.2...widget-configurator-v3.21.3) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.23.1
+
+## [3.21.2](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.21.1...widget-configurator-v3.21.2) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/assets@2.11.0
+  - @cowprotocol/common-const@3.22.0
+  - @cowprotocol/common-hooks@3.21.0
+  - @cowprotocol/ui@3.23.0
+  - @cowprotocol/analytics@3.19.1
+  - @cowprotocol/common-utils@3.22.3
+
+## [3.21.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.21.0...widget-configurator-v3.21.1) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.19.0
+  - @cowprotocol/assets@2.10.0
+  - @cowprotocol/common-const@3.21.0
+  - @cowprotocol/ui@3.22.0
+  - @cowprotocol/common-hooks@3.20.1
+  - @cowprotocol/common-utils@3.22.2
+
+## [3.21.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.20.0...widget-configurator-v3.21.0) (2026-11-11)
+
+### Minor Changes
+
+- feat: take profit (#8460)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.20.0
+  - @cowprotocol/analytics@3.18.0
+  - @cowprotocol/common-const@3.20.0
+  - @cowprotocol/types@4.15.1
+  - @cowprotocol/widget-lib@4.15.0
+  - @cowprotocol/ui@3.21.1
+  - @cowprotocol/common-utils@3.22.1
+  - @cowprotocol/events@4.18.1
+  - @cowprotocol/widget-react@3.3.5
+
+## [3.20.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.19.0...widget-configurator-v3.20.0) (2026-11-10)
+
+### Minor Changes
+
+- feat(networks): networks update (#8456)
+
+- feat(solana): pass appData to quote (#8509)
+
+### Patch Changes
+
+- fix(solana): use SDK for quote costs breakdown (#8522)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.22.0
+  - @cowprotocol/analytics@3.17.0
+  - @cowprotocol/common-const@3.19.0
+  - @cowprotocol/common-hooks@3.19.0
+  - @cowprotocol/events@4.18.0
+  - @cowprotocol/types@4.15.0
+  - @cowprotocol/ui@3.21.0
+  - @cowprotocol/widget-lib@4.14.0
+  - @cowprotocol/assets@2.9.0
+  - @cowprotocol/widget-react@3.3.4
+
 ## [3.19.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.18.2...widget-configurator-v3.19.0) (2026-11-05)
 
 ### Minor Changes

@@ -3,6 +3,7 @@
 export { loadingOpacityMixin, LoadingRows, LoadingRowSmall } from './pure/Loader/styled'
 export * from './colors'
 export * from './consts'
+export * from './containers/CookieConsentBanner'
 export * from './containers/CowSwapSafeAppLink'
 export * from './containers/ExternalLink'
 export * from './containers/Footer'

@@ -65,14 +65,23 @@ export function CowSdkUpdater(): null {
   const setAppSignerAccount = useSetAtom(appSignerAccountAtom)
 
   useEffect(() => {
-    if (!publicClient) return
+    if (!publicClient || !walletClient) return
 
-    if (walletClient) {
-      const adapter = new ViemAdapter({ provider: publicClient, walletClient })
-      setGlobalAdapter(adapter as AbstractProviderAdapter)
-      setAppSigner(adapter.signer)
-      setAppSignerAccount(walletClient.account.address)
+    // A WalletConnect session approved for Solana only (Ledger Live) leaves wagmi connected with no
+    // eip155 account; the wallet client it resolves then has none, and ViemAdapter throws on that.
+    // Drop the signer instead of keeping the previous EVM one: `chainId` follows the selected
+    // network rather than the connected namespace, so an EVM chain stays selectable and
+    // `useAppSigner` consumers would otherwise sign with an account that is no longer connected.
+    if (!walletClient.account) {
+      setAppSigner(undefined)
+      setAppSignerAccount(undefined)
+      return
     }
+
+    const adapter = new ViemAdapter({ provider: publicClient, walletClient })
+    setGlobalAdapter(adapter as AbstractProviderAdapter)
+    setAppSigner(adapter.signer)
+    setAppSignerAccount(walletClient.account.address)
   }, [publicClient, walletClient, setAppSigner, setAppSignerAccount])
 
   return null

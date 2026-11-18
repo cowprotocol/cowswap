@@ -11,6 +11,7 @@ import { useSafeEffect } from 'common/hooks/useSafeMemo'
 import {
   TRADE_URL_BUY_AMOUNT_KEY,
   TRADE_URL_ORDER_KIND_KEY,
+  TRADE_URL_PRICE_PERCENTAGE_KEY,
   TRADE_URL_SELL_AMOUNT_KEY,
 } from 'common/modules/tradeNavigation'
 import { TradeAmounts } from 'common/types'
@@ -21,6 +22,7 @@ import { useTradeState } from './useTradeState'
 import { ExtendedTradeRawState } from '../types'
 
 interface SetupTradeAmountsParams {
+  onSetup?: (params: URLSearchParams) => void
   onlySell?: boolean
   onAmountsUpdate?: (amounts: TradeAmounts) => void
 }
@@ -32,7 +34,7 @@ interface SetupTradeAmountsParams {
  *
  * In case when both sellAmount and buyAmount specified, the price will be automatically calculated
  */
-export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: SetupTradeAmountsParams): void {
+export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onSetup, onlySell }: SetupTradeAmountsParams): void {
   const navigate = useNavigate()
   const { search } = useLocation()
   const params = useMemo(() => new URLSearchParams(search), [search])
@@ -67,7 +69,8 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
     if (
       !queryParams.has(TRADE_URL_BUY_AMOUNT_KEY) &&
       !queryParams.has(TRADE_URL_SELL_AMOUNT_KEY) &&
-      !queryParams.has(TRADE_URL_ORDER_KIND_KEY)
+      !queryParams.has(TRADE_URL_ORDER_KIND_KEY) &&
+      !queryParams.has(TRADE_URL_PRICE_PERCENTAGE_KEY)
     ) {
       return
     }
@@ -75,6 +78,7 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
     queryParams.delete(TRADE_URL_BUY_AMOUNT_KEY)
     queryParams.delete(TRADE_URL_SELL_AMOUNT_KEY)
     queryParams.delete(TRADE_URL_ORDER_KIND_KEY)
+    queryParams.delete(TRADE_URL_PRICE_PERCENTAGE_KEY)
 
     navigate({ pathname: pathname.slice(1), search: queryParams.toString() }, { replace: true })
   }, [navigate])
@@ -82,6 +86,8 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
   // TODO: Reduce function complexity by extracting logic
   // eslint-disable-next-line complexity
   useSafeEffect(() => {
+    if (params.has(TRADE_URL_PRICE_PERCENTAGE_KEY) && (!inputCurrency || !outputCurrency)) return
+
     const orderKind = params.get(TRADE_URL_ORDER_KIND_KEY) as OrderKind | null
     const sellAmount = getIntOrFloat(params.get(TRADE_URL_SELL_AMOUNT_KEY))
     const buyAmount = getIntOrFloat(params.get(TRADE_URL_BUY_AMOUNT_KEY))
@@ -122,7 +128,7 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
       update.inputCurrencyAmount = FractionUtils.serializeFractionToJSON(tryParseCurrencyAmount('1', inputCurrency))
     }
 
-    const hasUpdates = Object.keys(update).length > 0
+    const hasUpdates = Object.keys(update).length > 0 || params.has(TRADE_URL_PRICE_PERCENTAGE_KEY)
 
     if (hasUpdates) {
       // Clean params only when an update was applied or currencies are loaded
@@ -135,6 +141,7 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
       if (sellCurrencyAmount && buyCurrencyAmount) {
         onAmountsUpdate?.({ inputAmount: sellCurrencyAmount, outputAmount: buyCurrencyAmount })
       }
+      onSetup?.(params)
     }
     // Trigger only when URL or assets are changed
   }, [params, inputCurrency, outputCurrency, cleanParams, onlySell])
