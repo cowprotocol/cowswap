@@ -9,9 +9,18 @@ import { useTokensToSelect } from '../../../../hooks/useTokensToSelect'
 import { getTokenSelectorFilter } from '../../../../utils/filterTokensForSelector'
 
 export function ConnectedTokenList(): ReactNode {
-  const { isRouteAvailable } = useTokensToSelect()
+  const { isRouteAvailable, areTokensFromBridge, isLoading, tokens } = useTokensToSelect()
   const { field } = useSelectTokenWidgetState()
   const tokensFilter = getTokenSelectorFilter(field, useInjectedWidgetParams())
+  const areFilteredTokensNotBridgeable = Boolean(
+    areTokensFromBridge && tokensFilter?.tokens && !isLoading && tokens.length === 0,
+  )
 
-  return <TokenList isRouteAvailable={isRouteAvailable} notice={tokensFilter?.notice} />
+  return (
+    <TokenList
+      isRouteAvailable={isRouteAvailable}
+      areFilteredTokensNotBridgeable={areFilteredTokensNotBridgeable}
+      notice={tokensFilter?.notice}
+    />
+  )
 }

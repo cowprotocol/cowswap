@@ -51,6 +51,11 @@ jest.mock('@cowprotocol/analytics', () => {
     initGtm: jest.fn().mockImplementation(() => ({
       sendEvent: jest.fn(),
     })),
+    initGtmWithConsent: jest.fn().mockImplementation(() => ({
+      sendEvent: jest.fn(),
+    })),
+    openCookieSettings: jest.fn(),
+    isCookieConsentRequired: jest.fn(() => true),
     initPixelAnalytics: jest.fn().mockImplementation(() => ({
       sendEvent: jest.fn(),
     })),
@@ -81,6 +86,14 @@ beforeEach(() => {
   const { __resetGtmInstance } = require('@cowprotocol/analytics')
   __resetGtmInstance()
 })
+
+// jsdom ships `crypto.getRandomValues` but no `crypto.subtle`, which the
+// graffiti burn memo needs to hash its cells. Node's is the same algorithm.
+if (!globalThis.crypto?.subtle) {
+  const { webcrypto } = require('node:crypto')
+
+  Object.defineProperty(globalThis, 'crypto', { configurable: true, value: webcrypto })
+}
 
 import { i18n } from '@lingui/core'
 

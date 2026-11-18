@@ -1,10 +1,11 @@
+import { useAtomValue } from 'jotai'
 import { type CSSProperties, type ReactNode, useMemo, useState } from 'react'
 
 import { useAnalyticsReporter } from '@cowprotocol/analytics'
 import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import type { NotificationModel } from '@cowprotocol/core'
-import { Footer, Media } from '@cowprotocol/ui'
+import { closableBannersStateAtom, Footer, Media } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
@@ -14,21 +15,24 @@ import { useDarkModeManager } from 'legacy/state/user/hooks'
 
 import { AccountModal } from 'modules/account'
 import { AffiliateTraderModal } from 'modules/affiliate'
+import { useIsGraffitiWallEnabled } from 'modules/graffitiWall'
 import { useInjectedWidgetMetaData } from 'modules/injectedWidget'
 import { useSpeechBubbleNotification } from 'modules/notifications'
 import { useInitializeUtm } from 'modules/utm'
 
+import { BANNER_IDS } from 'common/constants/banners'
 import { CoWAmmBanner } from 'common/containers/CoWAmmBanner'
 import { InvalidLocalTimeWarning } from 'common/containers/InvalidLocalTimeWarning'
-import { useCustomTheme } from 'common/hooks/useCustomTheme'
 import { useGetMarketDimension } from 'common/hooks/useGetMarketDimension'
 
+import { CowSpeechBubbleGraffitiWallBanner } from './CowSpeechBubble/CowSpeechBubbleGraffitiWallBanner'
 import { CowSpeechBubbleHiringBanner } from './CowSpeechBubble/CowSpeechBubbleHiringBanner'
 import { CowSpeechBubbleNotificationBanner } from './CowSpeechBubble/CowSpeechBubbleNotificationBanner'
 import { RecoveryBanner } from './RecoveryBanner'
 import { SnowfallOverlay } from './SnowfallOverlay.pure'
 
-import { PageBackgroundContext, PageBackgroundVariant } from '../../contexts/PageBackgroundContext'
+import { PageBackgroundContext, PageBackgroundVariant, PageLayoutVariant } from '../../contexts/PageBackgroundContext'
+import { useAppTheme } from '../../hooks/useAppTheme'
 import { ADDITIONAL_FOOTER_CONTENT, PRODUCT_VARIANT } from '../App/menuConsts'
 import * as styledEl from '../App/styled'
 import { isChristmasTheme as isChristmasThemeHelper } from '../App/styled'
@@ -41,17 +45,19 @@ interface AppContainerProps {
 
 interface CowSpeechBubbleVisibilityParams {
   isInjectedWidgetMode: boolean
+  isFullBleed: boolean
   pageScene: ReactNode | null
   pageBackgroundVariant: PageBackgroundVariant
   customTheme: CustomThemeKey
   isChristmasTheme: boolean
 }
 
-type CustomThemeKey = ReturnType<typeof useCustomTheme>
+type CustomThemeKey = ReturnType<typeof useAppTheme>
 
 interface FooterSectionProps {
   show: boolean
   showCowSpeechBubble: boolean
+  showGraffitiWallBubble: boolean
   currentNotification: NotificationModel | null
   onDismissNotification: () => void
   pageScene: ReactNode | null
@@ -77,36 +83,44 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
   const [darkMode] = useDarkModeManager()
   const [pageBackgroundVariant, setPageBackgroundVariant] = useState<PageBackgroundVariant>('default')
   const [pageScene, setPageScene] = useState<ReactNode | null>(null)
+  const [pageLayout, setPageLayout] = useState<PageLayoutVariant>('default')
+  const isFullBleed = pageLayout === 'fullBleed'
 
   const isMobile = useMediaQuery(Media.upToMedium(false))
 
-  const customTheme = useCustomTheme()
+  const customTheme = useAppTheme()
   const pageBackgroundValue = useMemo(
     () => ({
       variant: pageBackgroundVariant,
       setVariant: setPageBackgroundVariant,
       scene: pageScene,
       setScene: setPageScene,
+      layout: pageLayout,
+      setLayout: setPageLayout,
     }),
-    [pageBackgroundVariant, pageScene],
+    [pageBackgroundVariant, pageScene, pageLayout],
   )
 
   const networkAndAccountControls = <NetworkAndAccountControls />
   const isChristmasTheme = isChristmasThemeHelper(customTheme)
   const shouldRenderCowSpeechBubble = shouldDisplayCowSpeechBubble({
     isInjectedWidgetMode,
+    isFullBleed,
     pageScene,
     pageBackgroundVariant,
     customTheme,
     isChristmasTheme,
   })
   const { currentNotification, dismiss } = useSpeechBubbleNotification()
+  const closedBanners = useAtomValue(closableBannersStateAtom)
+  const isGraffitiWallEnabled = useIsGraffitiWallEnabled()
+  const showGraffitiWallBubble = isGraffitiWallEnabled && !closedBanners[BANNER_IDS.GRAFFITI_WALL_SPEECH_BUBBLE]
   const hasActiveSpeechBubbleNotification = shouldRenderCowSpeechBubble && Boolean(currentNotification)
   const showSnowfall = !isInjectedWidgetMode && isChristmasTheme
 
   return (
     <PageBackgroundContext.Provider value={pageBackgroundValue}>
-      <styledEl.AppWrapper>
+      <styledEl.AppWrapper $fullBleed={isFullBleed} customTheme={customTheme} backgroundVariant={pageBackgroundVariant}>
         <URLWarning />
         <RecoveryBanner />
         <InvalidLocalTimeWarning />
@@ -123,15 +137,17 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
           customTheme={customTheme}
           backgroundVariant={pageBackgroundVariant}
           $hasActiveSpeechBubbleNotification={hasActiveSpeechBubbleNotification}
+          $fullBleed={isFullBleed}
         >
           {children}
-          <styledEl.Marginer />
+          {!isFullBleed && <styledEl.Marginer />}
         </styledEl.BodyWrapper>
 
         <SnowfallOverlay show={showSnowfall} isMobile={isMobile} darkMode={darkMode} />
         <FooterSection
-          show={!isInjectedWidgetMode}
+          show={!isInjectedWidgetMode && !isFullBleed}
           showCowSpeechBubble={shouldRenderCowSpeechBubble}
+          showGraffitiWallBubble={showGraffitiWallBubble}
           currentNotification={currentNotification}
           onDismissNotification={dismiss}
           pageScene={pageScene}
@@ -149,11 +165,14 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
 function FooterSection({
   show,
   showCowSpeechBubble,
+  showGraffitiWallBubble,
   currentNotification,
   onDismissNotification,
   pageScene,
   isRwaEnabled,
 }: FooterSectionProps): ReactNode {
+  const customTheme = useAppTheme()
+
   if (!show) {
     return null
   }
@@ -161,13 +180,15 @@ function FooterSection({
   const bubbleElement: ReactNode = showCowSpeechBubble ? (
     currentNotification ? (
       <CowSpeechBubbleNotificationBanner currentNotification={currentNotification} onClose={onDismissNotification} />
+    ) : showGraffitiWallBubble ? (
+      <CowSpeechBubbleGraffitiWallBanner />
     ) : (
       <CowSpeechBubbleHiringBanner />
     )
   ) : null
 
   return (
-    <styledEl.FooterSlot>
+    <styledEl.FooterSlot customTheme={customTheme}>
       {bubbleElement}
       {pageScene && <styledEl.SceneContainer>{pageScene}</styledEl.SceneContainer>}
       <Footer
@@ -182,6 +203,7 @@ function FooterSection({
 
 function shouldDisplayCowSpeechBubble({
   isInjectedWidgetMode,
+  isFullBleed,
   pageScene,
   pageBackgroundVariant,
   customTheme,
@@ -189,6 +211,7 @@ function shouldDisplayCowSpeechBubble({
 }: CowSpeechBubbleVisibilityParams): boolean {
   return (
     !isInjectedWidgetMode &&
+    !isFullBleed &&
     !pageScene &&
     pageBackgroundVariant !== 'nocows' &&
     customTheme !== 'darkHalloween' &&

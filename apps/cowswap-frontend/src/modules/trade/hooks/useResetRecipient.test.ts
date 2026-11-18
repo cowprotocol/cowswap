@@ -66,6 +66,8 @@ jest.mock('../state/alternativeOrder', () => ({
 }))
 
 const RECIPIENT = '0x000000000000000000000000000000000000dEaD'
+/** `SupportedChainId.SOLANA`, inlined because this file mocks the SDK down to `isEvmChain`. */
+const SOLANA_CHAIN_ID = 1000000001
 
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
 const mockUseIsCustomRecipientDisabled = useIsCustomRecipientDisabled as jest.MockedFunction<
@@ -150,6 +152,30 @@ describe('useResetRecipient', () => {
     const onChangeRecipient = jest.fn()
 
     renderHook(() => useResetRecipient(onChangeRecipient))
+
+    expect(onChangeRecipient).toHaveBeenCalledWith(null)
+  })
+
+  // Solana used to force `useIsCustomRecipientDisabled` true, which cleared the recipient on its own.
+  // With that gone, this chain-change reset is the only thing keeping an address entered on an EVM
+  // chain from paying out a Solana trade.
+  it('clears a recipient entered on an EVM chain when the wallet switches to Solana', () => {
+    const onChangeRecipient = jest.fn()
+    let currentChainId = 1
+
+    mockUseWalletInfo.mockImplementation(() => ({ chainId: currentChainId }) as ReturnType<typeof useWalletInfo>)
+
+    const { rerender } = renderHook(() => useResetRecipient(onChangeRecipient))
+
+    mockUseDerivedTradeState.mockReturnValue({
+      recipient: RECIPIENT,
+      inputCurrency: { chainId: 1 },
+      outputCurrency: { chainId: 1 },
+    } as ReturnType<typeof useDerivedTradeState>)
+    onChangeRecipient.mockClear()
+
+    currentChainId = SOLANA_CHAIN_ID
+    rerender()
 
     expect(onChangeRecipient).toHaveBeenCalledWith(null)
   })

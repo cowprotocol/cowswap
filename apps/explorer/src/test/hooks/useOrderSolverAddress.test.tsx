@@ -151,6 +151,7 @@ describe('useOrderSolver - solver address resolution', () => {
       solverId: UNKNOWN_ADDRESS,
       displayName: '0x2222...2222',
       image: undefined,
+      isUnidentified: true,
     })
   })
 })

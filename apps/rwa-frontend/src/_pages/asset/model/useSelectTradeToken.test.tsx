@@ -1,10 +1,12 @@
 import { createStore, Provider } from 'jotai'
 import type { ReactNode } from 'react'
 
+import { useConnection } from 'wagmi'
+
 import { act, renderHook } from '@testing-library/react'
 
 import { tradeSideAtom } from './tradeSelectionAtoms'
-import { TRADE_WIDGET_ID, useJumpToTrade } from './useSelectTradeToken'
+import { TRADE_WIDGET_ID, useIsWalletOffTradeNetwork, useJumpToTrade } from './useSelectTradeToken'
 
 import type { RwaQuoteSide } from '@/entities/asset'
 
@@ -65,5 +67,22 @@ describe('useJumpToTrade', () => {
     expect(scrollIntoView.mock.contexts).toEqual([document.getElementById(TRADE_WIDGET_ID)])
     expect(scrollIntoView).toHaveBeenCalledWith({ behavior: 'auto', block: 'nearest' })
     expect(document.activeElement).toBe(document.body)
+  })
+})
+
+describe('useIsWalletOffTradeNetwork', () => {
+  const useConnectionMock = useConnection as jest.Mock
+
+  it.each([
+    { isConnected: true, chainId: 100, expected: true },
+    { isConnected: true, chainId: 11155111, expected: true },
+    { isConnected: true, chainId: 1, expected: false },
+    { isConnected: false, chainId: undefined, expected: false },
+  ])('is $expected for a wallet on $chainId (connected: $isConnected) trading on Ethereum', (connection) => {
+    useConnectionMock.mockReturnValue(connection)
+
+    const { result } = renderHook(() => useIsWalletOffTradeNetwork(1))
+
+    expect(result.current).toBe(connection.expected)
   })
 })

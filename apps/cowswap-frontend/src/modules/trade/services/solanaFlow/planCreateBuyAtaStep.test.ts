@@ -144,12 +144,36 @@ describe('getIsBuyAtaCreationSkipped', () => {
     expect(isSkipped).toBe(false)
   })
 
-  // Placement refuses an order paying out to another wallet's missing account: the driver only
-  // derives the owner's own associated address, so nothing on its side can create that one.
-  it('keeps the creation for a custom receiver', () => {
+  // A self-paid order never reaches placement, so it names no receiver and the driver knows only the
+  // owner's own associated address — the bundle has to create this one itself.
+  it('keeps the creation for a custom receiver the order does not name', () => {
     const isSkipped = getIsBuyAtaCreationSkipped({
       quote: quoteForOwner(RECEIVER),
       owner: PAYER,
+      isAtaCreationDisabled: true,
+    })
+
+    expect(isSkipped).toBe(false)
+  })
+
+  it('leaves the account to the driver when the order names the receiver it belongs to', () => {
+    const isSkipped = getIsBuyAtaCreationSkipped({
+      quote: quoteForOwner(RECEIVER),
+      owner: PAYER,
+      receiver: RECEIVER,
+      isAtaCreationDisabled: true,
+    })
+
+    expect(isSkipped).toBe(true)
+  })
+
+  // Placement answers `InvalidBuyTokenAccount` for this one, so the bundle must not hand the account
+  // over on the strength of a receiver that does not own it.
+  it('keeps the creation when the named receiver is not whose account the payout lands in', () => {
+    const isSkipped = getIsBuyAtaCreationSkipped({
+      quote: quoteForOwner(RECEIVER),
+      owner: PAYER,
+      receiver: PAYER,
       isAtaCreationDisabled: true,
     })
 

@@ -40,3 +40,36 @@ describe('useFeatureFlags', () => {
     })
   })
 })
+
+describe('useFeatureFlags with REACT_APP_FEATURE_FLAGS', () => {
+  const originalValue = process.env.REACT_APP_FEATURE_FLAGS
+
+  beforeEach(() => {
+    mockUseFlags.mockReturnValue(LD_FLAGS)
+  })
+
+  afterEach(() => {
+    if (originalValue === undefined) delete process.env.REACT_APP_FEATURE_FLAGS
+    else process.env.REACT_APP_FEATURE_FLAGS = originalValue
+  })
+
+  it('merges env overrides over unresolved LaunchDarkly flags', () => {
+    process.env.REACT_APP_FEATURE_FLAGS = '{"isSolanaThemeEnabled":true,"isTwapEoaEnabled":false}'
+
+    const { result } = renderHook(() => useFeatureFlags())
+
+    expect(result.current).toEqual({
+      ...LD_FLAGS,
+      isSolanaThemeEnabled: true,
+      isTwapEoaEnabled: false,
+    })
+  })
+
+  it('ignores malformed JSON', () => {
+    process.env.REACT_APP_FEATURE_FLAGS = 'not json'
+
+    const { result } = renderHook(() => useFeatureFlags())
+
+    expect(result.current).toBe(LD_FLAGS)
+  })
+})

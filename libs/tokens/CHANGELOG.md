@@ -1,5 +1,64 @@
 # Changelog
 
+## [3.20.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.19.4...tokens-v3.20.0) (2026-11-18)
+
+### Minor Changes
+
+- feat: update SDK versions with updated near token lists (#8660)
+
+- feat(solana): support custom recipients (#8592)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.24.0
+  - @cowprotocol/common-hooks@3.22.0
+  - @cowprotocol/common-utils@3.23.0
+  - @cowprotocol/core@3.16.0
+  - @cowprotocol/currency@1.11.0
+  - @cowprotocol/types@4.16.0
+  - @cowprotocol/ui@3.24.0
+
+## [3.19.4](https://github.com/cowprotocol/cowswap/compare/tokens-v3.19.3...tokens-v3.19.4) (2026-11-16)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.23.0
+  - @cowprotocol/common-hooks@3.21.1
+  - @cowprotocol/common-utils@3.22.4
+  - @cowprotocol/core@3.15.4
+  - @cowprotocol/ui@3.23.2
+
+## [3.19.3](https://github.com/cowprotocol/cowswap/compare/tokens-v3.19.2...tokens-v3.19.3) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.23.1
+
+## [3.19.2](https://github.com/cowprotocol/cowswap/compare/tokens-v3.19.1...tokens-v3.19.2) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.22.0
+  - @cowprotocol/common-hooks@3.21.0
+  - @cowprotocol/ui@3.23.0
+  - @cowprotocol/common-utils@3.22.3
+  - @cowprotocol/core@3.15.3
+
+## [3.19.1](https://github.com/cowprotocol/cowswap/compare/tokens-v3.19.0...tokens-v3.19.1) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.21.0
+  - @cowprotocol/ui@3.22.0
+  - @cowprotocol/common-hooks@3.20.1
+  - @cowprotocol/common-utils@3.22.2
+  - @cowprotocol/core@3.15.2
+
 ## [3.19.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.18.0...tokens-v3.19.0) (2026-11-11)
 
 ### Minor Changes

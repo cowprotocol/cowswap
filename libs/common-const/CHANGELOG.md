@@ -1,5 +1,45 @@
 # Changelog
 
+## [3.24.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.23.0...common-const-v3.24.0) (2026-11-18)
+
+### Minor Changes
+
+- feat: update SDK versions with updated near token lists (#8660)
+
+- feat(cow-fi): add CoW Protocol on Solana landing page (#8470)
+
+- feat(cow-fi): gate GTM on cookie consent (#8606)
+
+- feat(graffiti): collaborative graffiti wall (consolidated) (#8560)
+
+- feat(solana): support custom recipients (#8592)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.11.0
+  - @cowprotocol/types@4.16.0
+
+## [3.23.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.22.0...common-const-v3.23.0) (2026-11-16)
+
+### Minor Changes
+
+- feat: show Solana second in the network selector (#8652)
+
+## [3.22.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.21.0...common-const-v3.22.0) (2026-11-13)
+
+### Minor Changes
+
+- feat(graffiti): collaborative graffiti wall (consolidated) (#8560)
+
+## [3.21.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.20.0...common-const-v3.21.0) (2026-11-13)
+
+### Minor Changes
+
+- feat(cow-fi): gate GTM on cookie consent
+
+- feat(cow-fi): add CoW Protocol on Solana landing page (#8470)
+
 ## [3.20.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.19.0...common-const-v3.20.0) (2026-11-11)
 
 ### Minor Changes

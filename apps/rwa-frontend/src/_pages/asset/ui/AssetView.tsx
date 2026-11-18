@@ -16,17 +16,24 @@ import { useAssetMarket } from '../model/useAssetMarket'
 import { useAssetPriceStats } from '../model/useAssetPriceStats'
 import { useFitStickyTop } from '../model/useFitStickyTop'
 
-import { AssetStats, type RwaAsset } from '@/entities/asset'
+import { AssetStats, type RwaAsset, type RwaRelatedAsset } from '@/entities/asset'
+import { useIsHydrated } from '@/shared/lib/hydrated'
 import { StatusMessage } from '@/shared/ui/status-message'
 import { TokenLogo } from '@/shared/ui/token-logo'
 
 const SIDE_STICKY_GAP = 16
 
-export function AssetView({ asset }: { asset: RwaAsset }): ReactNode {
+interface AssetViewProps {
+  asset: RwaAsset
+  relatedAssets: RwaRelatedAsset[]
+}
+
+export function AssetView({ asset, relatedAssets }: AssetViewProps): ReactNode {
   const { data, error } = useAssetMarket(asset.ticker)
   const { marketKind, stats, provider } = useAssetPriceStats(asset.ticker)
   const sideRef = useRef<HTMLElement>(null)
-  const tradingPauseMessage = getTradingPauseMessage(data?.tradingPause, new Date())
+  const isHydrated = useIsHydrated()
+  const tradingPauseMessage = isHydrated ? getTradingPauseMessage(data?.tradingPause, new Date()) : null
 
   useFitStickyTop(sideRef, SIDE_STICKY_GAP)
 
@@ -49,7 +56,7 @@ export function AssetView({ asset }: { asset: RwaAsset }): ReactNode {
         <TradeWidget asset={asset} />
       </aside>
       <div className={styles.details}>
-        <AssetAccount asset={asset} />
+        <AssetAccount asset={asset} relatedAssets={relatedAssets} />
       </div>
     </div>
   )

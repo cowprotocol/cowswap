@@ -20,6 +20,9 @@ const SCROLL_SETTLE_MS = 500
 const RETRY_TIMEOUT_MS = 30_000
 const BACKDROP_Y_PX = 30
 const PAST_PHONE_WIDTH_PX = 800
+// Mirrors COOKIE_CONSENT_NAME and COOKIE_CONSENT_POLICY_VERSION in libs/analytics/src/consent, which this app doesn't depend on
+const COOKIE_CONSENT_NAME = 'cowCookieConsent'
+const COOKIE_CONSENT_POLICY_VERSION = 1
 
 export class RwaPage {
   readonly menuButton: Locator
@@ -43,6 +46,7 @@ export class RwaPage {
 
   async goto(): Promise<void> {
     await this.blockLiveData()
+    await this.storeCookieChoice()
     await this.page.goto(BASE_PATH, { waitUntil: 'domcontentloaded' })
     await this.page.addStyleTag({ content: TALL_STABLE_PAGE_CSS })
   }
@@ -190,6 +194,18 @@ export class RwaPage {
     await this.page.route(
       ({ hostname, pathname }) => hostname !== 'localhost' || pathname.startsWith(`${BASE_PATH}/api/`),
       (route) => route.abort(),
+    )
+  }
+
+  // A stored rejection keeps the cookie banner, which sits over the bottom of the page, out of the scroll assertions
+  private async storeCookieChoice(): Promise<void> {
+    await this.page.addInitScript(
+      ({ name, policyVersion }) => {
+        const record = { choice: 'rejected', decidedAt: new Date().toISOString(), policyVersion }
+
+        document.cookie = `${name}=${encodeURIComponent(JSON.stringify(record))}; Path=/`
+      },
+      { name: COOKIE_CONSENT_NAME, policyVersion: COOKIE_CONSENT_POLICY_VERSION },
     )
   }
 

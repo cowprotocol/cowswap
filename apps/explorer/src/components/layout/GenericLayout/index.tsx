@@ -1,5 +1,7 @@
 import { PropsWithChildren } from 'react'
 
+import { CookieConsentBannerContainer } from '@cowprotocol/ui'
+
 import { ThemeProvider, StaticGlobalStyle, ThemedGlobalStyle } from 'theme'
 
 import { Footer } from './Footer'
@@ -21,6 +23,7 @@ export const GenericLayout: React.FC<Props> = ({ header = defaultHeader, footer 
       {header}
       {children}
       {footer}
+      <CookieConsentBannerContainer />
     </ThemeProvider>
   </>
 )

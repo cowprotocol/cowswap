@@ -132,7 +132,7 @@ jobs:
 
       # Per-package `<short>-v<version>` tag + GitHub release for every pending
       # entry — apps included. Runs AFTER npm publish so a failed publish
-      # doesn't leave orphan tags. The `cowswap-v*` and `explorer-v*` tags
+      # doesn't leave orphan tags. The `cowswap-v*`, `explorer-v*` and `rwa-frontend-v*` tags
       # this pushes are what triggers deployment-v2.yml.
       - name: Create tags and GitHub releases
         env:

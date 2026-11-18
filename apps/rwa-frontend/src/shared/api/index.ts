@@ -6,6 +6,7 @@ export {
   createBalancesWatcherSession,
   watchBalances,
 } from './balances-watcher/balancesWatcherClient'
+export { readTokenBalances } from './erc20/tokenBalances'
 export { readTokensMetadata, type TokenMetadata, type TokensMetadataMap } from './erc20/tokensMetadata'
 export { orderBookApi } from './order-book/orderBookApi'
 export { programmaticOrderApi } from './programmatic-orders/programmaticOrderApi'

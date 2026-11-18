@@ -1,5 +1,51 @@
 # Changelog
 
+## [3.13.0](https://github.com/cowprotocol/cowswap/compare/multicall-v3.12.5...multicall-v3.13.0) (2026-11-18)
+
+### Minor Changes
+
+- feat: update SDK versions with updated near token lists (#8660)
+
+- feat(solana): support custom recipients (#8592)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.24.0
+  - @cowprotocol/types@4.16.0
+  - @cowprotocol/wallet@3.23.0
+
+## [3.12.5](https://github.com/cowprotocol/cowswap/compare/multicall-v3.12.4...multicall-v3.12.5) (2026-11-16)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.23.0
+  - @cowprotocol/wallet@3.22.2
+
+## [3.12.4](https://github.com/cowprotocol/cowswap/compare/multicall-v3.12.3...multicall-v3.12.4) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.22.1
+
+## [3.12.3](https://github.com/cowprotocol/cowswap/compare/multicall-v3.12.2...multicall-v3.12.3) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.22.0
+  - @cowprotocol/wallet@3.22.0
+
+## [3.12.2](https://github.com/cowprotocol/cowswap/compare/multicall-v3.12.1...multicall-v3.12.2) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.21.0
+  - @cowprotocol/wallet@3.21.2
+
 ## [3.12.1](https://github.com/cowprotocol/cowswap/compare/multicall-v3.12.0...multicall-v3.12.1) (2026-11-11)
 
 ### Patch Changes

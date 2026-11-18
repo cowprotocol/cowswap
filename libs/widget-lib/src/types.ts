@@ -142,6 +142,11 @@ export interface TokenSelectorFilter {
   onlyWithBalance?: boolean
 
   /**
+   * Ids of the only networks to list in the selector. In the buy selector, the networks other than the sell token one are bridge targets.
+   */
+  selectableChainIds?: number[]
+
+  /**
    * Shown above the token list, to explain why tokens are missing
    */
   notice?: string
