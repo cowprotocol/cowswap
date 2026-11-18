@@ -23,7 +23,7 @@ Container work this needs: `ticker` and `side` variables, and tags for the event
 
 - `src/shared/lib/analytics`: `loadGtm()`, `trackEvent(name, params)` and `setAnalyticsDimension()`. Every event and
   its params are typed in `events.ts` (`RwaAnalyticsEvents`): add a new event there and to this page.
-- `src/_app/analytics/Analytics.tsx`: loads GTM, sends page views and the wallet events.
+- `src/_app/analytics/Analytics.tsx`: loads GTM once cookies are accepted, sends page views and the wallet events.
 - `src/_pages/asset/model/useWidgetOrderAnalytics.ts`: order events from the trade widget.
 
 The `@cowprotocol/analytics` root entry isn't used: it imports Lingui macros (which Turbopack doesn't run), Sentry and
@@ -32,6 +32,18 @@ subpath, the same mappers CoW Swap uses. The data layer format is the same: even
 carries the dimensions CoW Swap sends.
 
 Run `window.dataLayer` in the browser console to see the pushed events, or use GTM preview mode.
+
+## Cookie consent
+
+Nothing reaches GTM before the visitor clicks **Accept All** in the cookie banner (`_app/layout/CookieConsentBanner.tsx`):
+`trackEvent` drops events until then, because GTM would replay queued `dataLayer` entries once it loads. On acceptance,
+`loadGtm()` pushes a Google Consent Mode `default` with everything granted, then loads the container, and `Analytics.tsx`
+sends a `page_view` for the current page and `wallet_connected` for an already connected wallet.
+
+The choice comes from `@cowprotocol/analytics/consent`, shared with CoW Swap, cow.fi and the Explorer through a
+`.cow.fi` cookie, so a choice made on one of them applies here too, and an open tab picks up a choice made in another
+tab. **Cookie settings** in the footer reopens the banner; rejecting after an acceptance clears the tracker cookies
+and reloads the page.
 
 ## Dimensions
 
