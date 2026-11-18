@@ -19,14 +19,12 @@ export interface TwapSchedule {
 
 /** `now` in unix seconds */
 export function getTwapProgress({ startTime, interval, partsCount }: TwapSchedule, now: number): TwapProgress {
-  const toMinutes = (seconds: number): number => Math.max(1, Math.ceil(seconds / 60))
-
   if (now < startTime) {
     return {
       isScheduled: true,
       part: 1,
       partsCount,
-      minutesLeft: toMinutes(startTime - now),
+      minutesLeft: toMinutesLeft(startTime - now),
       isLastPart: partsCount === 1,
     }
   }
@@ -38,7 +36,7 @@ export function getTwapProgress({ startTime, interval, partsCount }: TwapSchedul
       isScheduled: false,
       part: nextIndex + 1,
       partsCount,
-      minutesLeft: toMinutes(startTime + nextIndex * interval - now),
+      minutesLeft: toMinutesLeft(startTime + nextIndex * interval - now),
       isLastPart: false,
     }
   }
@@ -47,7 +45,12 @@ export function getTwapProgress({ startTime, interval, partsCount }: TwapSchedul
     isScheduled: false,
     part: partsCount,
     partsCount,
-    minutesLeft: toMinutes(startTime + partsCount * interval - now),
+    minutesLeft: toMinutesLeft(startTime + partsCount * interval - now),
     isLastPart: true,
   }
+}
+
+/** Whole minutes in `seconds`, rounded up and at least 1 */
+export function toMinutesLeft(seconds: number): number {
+  return Math.max(1, Math.ceil(seconds / 60))
 }
