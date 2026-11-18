@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 
 import localFont from 'next/font/local'
 
+import { CookieConsentBanner } from './CookieConsentBanner'
 import { Footer } from './Footer'
 import { LegalNotice } from './LegalNotice'
 import { Providers } from './Providers'
@@ -60,6 +61,7 @@ export function RootLayout({ children }: { children: ReactNode }): ReactNode {
             </main>
           </div>
           <Footer />
+          <CookieConsentBanner />
         </Providers>
       </body>
     </html>

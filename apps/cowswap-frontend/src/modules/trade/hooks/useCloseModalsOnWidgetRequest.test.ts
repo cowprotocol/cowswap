@@ -6,6 +6,7 @@ import { useCloseModals } from 'legacy/state/application/hooks'
 
 import { useCloseAccountModal } from 'modules/account'
 import { useCloseAllModalsRequest } from 'modules/injectedWidget'
+import { useZeroApprovalState } from 'modules/zeroApproval'
 
 import { useCloseModalsOnWidgetRequest } from './useCloseModalsOnWidgetRequest'
 import { useSetOrdersTableDrawerOpen } from './useSetOrdersTableDrawerOpen'
@@ -18,8 +19,17 @@ jest.mock('./useSetOrdersTableDrawerOpen', () => ({ useSetOrdersTableDrawerOpen:
 jest.mock('./useTradeConfirmState', () => ({ useTradeConfirmState: jest.fn() }))
 jest.mock('jotai', () => ({ ...jest.requireActual('jotai'), useAtomValue: jest.fn() }))
 jest.mock('modules/erc20Approve', () => ({ approveProgressModalStateAtom: {} }))
+jest.mock('modules/zeroApproval', () => ({ useZeroApprovalState: jest.fn() }))
 
 const useCloseAllModalsRequestMock = jest.mocked(useCloseAllModalsRequest)
+
+interface WalletActions {
+  isTradeSigning: boolean
+  isApproving: boolean
+  isZeroApproving: boolean
+}
+
+const NO_WALLET_ACTIONS: WalletActions = { isTradeSigning: false, isApproving: false, isZeroApproving: false }
 
 describe('useCloseModalsOnWidgetRequest', () => {
   const resetTradeScreens = jest.fn()
@@ -32,7 +42,7 @@ describe('useCloseModalsOnWidgetRequest', () => {
     jest.mocked(useSetOrdersTableDrawerOpen).mockReturnValue(setOrdersTableDrawerOpen)
     jest.mocked(useCloseAccountModal).mockReturnValue(closeAccountModal)
     jest.mocked(useCloseModals).mockReturnValue(closeAppModals)
-    mockWalletActions({ isTradeSigning: false, isApproving: false })
+    mockWalletActions(NO_WALLET_ACTIONS)
   })
 
   it('closes every modal on a new request', () => {
@@ -59,8 +69,9 @@ describe('useCloseModalsOnWidgetRequest', () => {
   })
 
   it.each([
-    ['a trade', { isTradeSigning: true, isApproving: false }],
-    ['an approval', { isTradeSigning: false, isApproving: true }],
+    ['a trade', { ...NO_WALLET_ACTIONS, isTradeSigning: true }],
+    ['an approval', { ...NO_WALLET_ACTIONS, isApproving: true }],
+    ['an allowance reset', { ...NO_WALLET_ACTIONS, isZeroApproving: true }],
   ])('keeps every modal while the wallet signs %s', (_, walletActions) => {
     mockWalletActions(walletActions)
     useCloseAllModalsRequestMock.mockReturnValue(0)
@@ -68,7 +79,7 @@ describe('useCloseModalsOnWidgetRequest', () => {
 
     useCloseAllModalsRequestMock.mockReturnValue(1)
     rerender()
-    mockWalletActions({ isTradeSigning: false, isApproving: false })
+    mockWalletActions(NO_WALLET_ACTIONS)
     rerender()
 
     expect(resetTradeScreens).not.toHaveBeenCalled()
@@ -77,9 +88,10 @@ describe('useCloseModalsOnWidgetRequest', () => {
   })
 })
 
-function mockWalletActions({ isTradeSigning, isApproving }: { isTradeSigning: boolean; isApproving: boolean }): void {
+function mockWalletActions({ isTradeSigning, isApproving, isZeroApproving }: WalletActions): void {
   jest.mocked(useTradeConfirmState).mockReturnValue({
     pendingTrade: isTradeSigning ? {} : null,
   } as ReturnType<typeof useTradeConfirmState>)
   jest.mocked(useAtomValue).mockReturnValue({ approveInProgress: isApproving })
+  jest.mocked(useZeroApprovalState).mockReturnValue({ isApproving: isZeroApproving })
 }
