@@ -3,6 +3,7 @@ import { ReactNode, useCallback, useEffect, useRef } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { useAddUserToken } from '@cowprotocol/tokens'
+import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { solanaOrderNotPlacedAtom, solanaSigningWindowExpiredAtom } from 'entities/trade'
@@ -44,6 +45,7 @@ import { WrapNativeModal } from '../WrapNativeModal'
 interface TradeWidgetModalsProps {
   confirmModal: ReactNode | undefined
   genericModal: ReactNode | undefined
+  onGenericModalDismiss?: Command
   renderFallback?: () => ReactNode
 }
 
@@ -52,6 +54,7 @@ interface TradeWidgetModalsProps {
 export function TradeWidgetModals({
   confirmModal,
   genericModal,
+  onGenericModalDismiss,
   renderFallback = () => null,
 }: TradeWidgetModalsProps): ReactNode {
   const { chainId, account } = useWalletInfo()
@@ -115,7 +118,12 @@ export function TradeWidgetModals({
     ],
   )
 
-  useCloseModalsOnWidgetRequest(resetAllScreens)
+  const closeAllScreens = useCallback(() => {
+    resetAllScreens()
+    onGenericModalDismiss?.()
+  }, [resetAllScreens, onGenericModalDismiss])
+
+  useCloseModalsOnWidgetRequest(closeAllScreens)
 
   // Both Solana failure screens exit the same way: nothing was placed, so the way on is another
   // attempt from review. Price confirmation is forced because the quote kept refreshing meanwhile.

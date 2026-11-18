@@ -25,11 +25,11 @@ describe('getCustomTimezone', () => {
     expect(getCustomTimezone('America/Bogota', 300)).toEqual({
       id: 'America/Bogota-local',
       alias: 'Etc/GMT+5',
-      title: 'America/Bogota',
+      title: 'UTC-5',
     })
   })
 
   it('keeps the minutes of a half-hour zone', () => {
-    expect(getCustomTimezone('Asia/Kolkata', -330).alias).toBe('Etc/GMT-5:30')
+    expect(getCustomTimezone('Asia/Kolkata', -330)).toMatchObject({ alias: 'Etc/GMT-5:30', title: 'UTC+5:30' })
   })
 })

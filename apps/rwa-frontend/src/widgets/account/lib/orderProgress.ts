@@ -11,9 +11,13 @@ export function formatOrderProgress(
   { filledFraction, validTo }: Pick<OpenOrder, 'filledFraction' | 'validTo'>,
   now: number,
 ): string {
+  const filled = filledFraction > 0 ? `${percentFormatter.format(filledFraction)} filled` : null
+
+  if (validTo <= now) {
+    return filled ? `${filled} · Expired` : 'Expired'
+  }
+
   const timeLeft = formatDuration(toMinutesLeft(validTo - now))
 
-  return filledFraction > 0
-    ? `${percentFormatter.format(filledFraction)} filled · ${timeLeft} left`
-    : `Expires in ${timeLeft}`
+  return filled ? `${filled} · ${timeLeft} left` : `Expires in ${timeLeft}`
 }

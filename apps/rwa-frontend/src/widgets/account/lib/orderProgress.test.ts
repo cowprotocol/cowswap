@@ -20,7 +20,9 @@ describe('formatOrderProgress', () => {
     expect(formatOrderProgress({ filledFraction: 0.25, validTo: NOW + 6 * 3600 }, NOW)).toBe('25% filled · 6h left')
   })
 
-  it('keeps a minute for an order past its expiry the order book still lists as open', () => {
-    expect(formatOrderProgress({ filledFraction: 0, validTo: NOW - 30 }, NOW)).toBe('Expires in 1 min')
+  it('shows an order past its expiry the order book still lists as open as expired', () => {
+    expect(formatOrderProgress({ filledFraction: 0, validTo: NOW - 30 }, NOW)).toBe('Expired')
+    expect(formatOrderProgress({ filledFraction: 0, validTo: NOW }, NOW)).toBe('Expired')
+    expect(formatOrderProgress({ filledFraction: 0.25, validTo: NOW - 30 }, NOW)).toBe('25% filled · Expired')
   })
 })

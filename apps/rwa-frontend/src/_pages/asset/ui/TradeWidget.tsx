@@ -27,6 +27,7 @@ import { useWidgetTradeTypeSync } from '../model/useWidgetTradeTypeSync'
 
 import { assetQueryAtomFamily, type RwaAsset, type RwaMarketData, type RwaToken } from '@/entities/asset'
 import { APP_CODE, WIDGET_BASE_URL } from '@/shared/config'
+import { useIsHydrated } from '@/shared/lib/hydrated'
 import { useIsDarkTheme } from '@/shared/lib/theme'
 import { useWalletProvider } from '@/shared/lib/wallet'
 
@@ -55,8 +56,9 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
   )
   const assetToken = selection?.assetToken
   const { tradingPause, market } = useAtomValue(assetQueryAtomFamily(asset.ticker)).data ?? {}
+  const isHydrated = useIsHydrated()
   const tradingPauseMessage =
-    tradingPause?.issuer === assetToken?.issuer ? getTradingPauseMessage(tradingPause, new Date()) : null
+    isHydrated && tradingPause?.issuer === assetToken?.issuer ? getTradingPauseMessage(tradingPause, new Date()) : null
   const side = selection?.side
   const isWalletOffTradeNetwork = useIsWalletOffTradeNetwork(selection?.chainId ?? 0)
   const widgetRef = useRef<HTMLElement>(null)
@@ -87,7 +89,7 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
       locale: WIDGET_LOCALE,
     }
   }, [asset, assetToken, side, isConnected, isDark, market])
-  const params = useWidgetParamsTradeType(widgetParams)
+  const params = useWidgetParamsTradeType(widgetParams, provider)
 
   if (!params || !selection) {
     return <p>Trading is not available for {asset.ticker}</p>

@@ -26,7 +26,7 @@ interface CreateWidgetParams {
   enableSafeSdkBridge: boolean
 }
 type MutableRef<T> = { current: T }
-type TryOrHandleError = (action: string, actionThatMightFail: Command) => void
+type SetWidgetHandler = (handler: CowSwapWidgetHandler | null) => void
 
 type WidgetErrorState = { error: Error; message: string } | null
 
@@ -54,32 +54,59 @@ export function CowSwapWidget({
   const listenersRef = useRef<CowWidgetEventListeners | undefined>(listeners)
   const enableSafeSdkBridgeRef = useRef(enableSafeSdkBridge)
   const containerRef = useRef<HTMLDivElement | null>(null)
-  const internalHandlerRef = useRef<CowSwapWidgetHandler | null>(null)
-  const widgetHandlerRef = handlerRef ?? internalHandlerRef
+  const widgetHandlerRef = useRef<CowSwapWidgetHandler | null>(null)
+  const handlerRefRef = useRef(handlerRef)
   const onLoadingErrorRef = useRef(onLoadingError)
 
   useEffect(() => {
     onLoadingErrorRef.current = onLoadingError
   }, [onLoadingError])
 
-  const tryOrHandleError = useCallback((action: string, actionThatMightFail: Command) => {
-    try {
-      console.log(`[WIDGET] ${action}`)
-      actionThatMightFail()
-    } catch (_error) {
-      const errorMessage = `Error ${action.toLowerCase()}`
-      const error = _error instanceof Error ? _error : new Error('Unknown CowSwapWidget error', { cause: _error })
+  const setWidgetHandler = useCallback((handler: CowSwapWidgetHandler | null) => {
+    widgetHandlerRef.current = handler
 
-      console.error(`[WIDGET] ${errorMessage}`, error)
-      setError({ message: errorMessage, error })
-      onLoadingErrorRef.current?.()
-    }
+    if (handlerRefRef.current) handlerRefRef.current.current = handler
   }, [])
+
+  useEffect(() => {
+    handlerRefRef.current = handlerRef
+
+    if (!handlerRef) return
+
+    handlerRef.current = widgetHandlerRef.current
+
+    return () => {
+      handlerRef.current = null
+    }
+  }, [handlerRef])
+
+  const tryOrHandleError = useCallback(
+    (action: string, actionThatMightFail: Command) => {
+      try {
+        console.log(`[WIDGET] ${action}`)
+        actionThatMightFail()
+      } catch (_error) {
+        const errorMessage = `Error ${action.toLowerCase()}`
+        const error = _error instanceof Error ? _error : new Error('Unknown CowSwapWidget error', { cause: _error })
+
+        console.error(`[WIDGET] ${errorMessage}`, error)
+        destroyWidget(widgetHandlerRef.current, setWidgetHandler)
+        paramsRef.current = null
+        setError({ message: errorMessage, error })
+        onLoadingErrorRef.current?.()
+      }
+    },
+    [setWidgetHandler],
+  )
 
   useDestroyWidgetOnUnmount({
     refs: { paramsRef, providerRef, listenersRef, enableSafeSdkBridgeRef, widgetHandlerRef },
-    tryOrHandleError,
+    setWidgetHandler,
   })
+
+  useEffect(() => {
+    setError(null)
+  }, [params, provider, enableSafeSdkBridge])
 
   useEffect(() => {
     const paramsHooksDifferent = !!paramsRef.current && areParamsHooksDifferent(paramsRef.current, params)
@@ -101,57 +128,64 @@ export function CowSwapWidget({
 
     if (handler === null) {
       tryOrHandleError('Creating a new widget', () => {
-        widgetHandlerRef.current = createWidget({
-          container,
-          params,
-          provider: providerRef.current,
-          listeners,
-          onReady,
-          onLoadingError,
-          enableSafeSdkBridge,
-        })
+        setWidgetHandler(
+          createWidget({
+            container,
+            params,
+            provider: providerRef.current,
+            listeners,
+            onReady,
+            onLoadingError,
+            enableSafeSdkBridge,
+          }),
+        )
         listenersRef.current = listeners
       })
     } else if (enableSafeSdkBridgeDifferent) {
       tryOrHandleError('Recreating the widget', () => {
+        setWidgetHandler(null)
         handler.destroy()
-        widgetHandlerRef.current = createWidget({
-          container,
-          params,
-          provider: providerRef.current,
-          listeners,
-          onReady,
-          onLoadingError,
-          enableSafeSdkBridge,
-        })
+        setWidgetHandler(
+          createWidget({
+            container,
+            params,
+            provider: providerRef.current,
+            listeners,
+            onReady,
+            onLoadingError,
+            enableSafeSdkBridge,
+          }),
+        )
         listenersRef.current = listeners
       })
     } else {
       tryOrHandleError('Updating the widget', () => handler.updateParams(params))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params, enableSafeSdkBridge, tryOrHandleError])
+  }, [params, enableSafeSdkBridge, tryOrHandleError, error])
 
   useEffect(() => {
-    if (!widgetHandlerRef.current || providerRef.current === provider) {
-      return
-    }
+    if (providerRef.current === provider) return
 
     providerRef.current = provider
 
+    const handler = widgetHandlerRef.current
     const container = containerRef.current
-    if (container) {
+    if (handler && container) {
       tryOrHandleError('Updating the provider', () => {
-        widgetHandlerRef.current?.destroy()
+        setWidgetHandler(null)
+        handler.destroy()
 
-        widgetHandlerRef.current = createWidget({
-          container,
-          params,
-          provider: providerRef.current,
-          listeners,
-          onReady,
-          enableSafeSdkBridge,
-        })
+        setWidgetHandler(
+          createWidget({
+            container,
+            params,
+            provider: providerRef.current,
+            listeners,
+            onReady,
+            enableSafeSdkBridge,
+          }),
+        )
         enableSafeSdkBridgeRef.current = enableSafeSdkBridge
       })
     }
@@ -163,7 +197,7 @@ export function CowSwapWidget({
 
     const handler = widgetHandlerRef.current
     tryOrHandleError('Updating the listeners', () => handler.updateListeners(listeners))
-  }, [listeners, tryOrHandleError, widgetHandlerRef])
+  }, [listeners, tryOrHandleError])
 
   if (error) {
     return <WidgetError error={error} />
@@ -219,12 +253,24 @@ function createWidget({
   })
 }
 
+function destroyWidget(handler: CowSwapWidgetHandler | null, setWidgetHandler: SetWidgetHandler): void {
+  if (!handler) return
+
+  setWidgetHandler(null)
+
+  try {
+    handler.destroy()
+  } catch (err: unknown) {
+    console.error('[WIDGET] Error destroying the widget', err)
+  }
+}
+
 function useDestroyWidgetOnUnmount({
   refs,
-  tryOrHandleError,
+  setWidgetHandler,
 }: {
   refs: WidgetRefs
-  tryOrHandleError: TryOrHandleError
+  setWidgetHandler: SetWidgetHandler
 }): void {
   useEffect(() => {
     return () => {
@@ -233,11 +279,7 @@ function useDestroyWidgetOnUnmount({
       refs.listenersRef.current = undefined
       refs.enableSafeSdkBridgeRef.current = true
 
-      const handler = refs.widgetHandlerRef.current
-      if (handler) {
-        tryOrHandleError('Destroy widget', () => handler.destroy())
-        refs.widgetHandlerRef.current = null
-      }
+      destroyWidget(refs.widgetHandlerRef.current, setWidgetHandler)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
