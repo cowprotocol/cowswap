@@ -2,10 +2,7 @@ import { fetchWithTimeout } from './api-utils'
 
 let bffBearerToken: string | null = null
 
-export async function bffFetch(
-  input: RequestInfo | URL,
-  init: Parameters<typeof fetchWithTimeout>[1] = {},
-): Promise<Response> {
+export async function bffFetch(input: string, init: Parameters<typeof fetchWithTimeout>[1] = {}): Promise<Response> {
   const token = bffBearerToken
   if (!token) return fetchWithTimeout(input, init)
 
