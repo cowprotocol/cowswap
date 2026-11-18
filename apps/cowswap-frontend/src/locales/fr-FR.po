@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-11-18 00:29\n"
+"PO-Revision-Date: 2026-11-18 01:33\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -441,7 +441,7 @@ msgstr "Ajouter une action post-hook"
 
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 msgid "{symbolName} orders require a minimum transaction expiration time threshold of {minutes, plural, one {# minute} few {# minutes} many {# minutes} other {# minutes}} to ensure the best swapping experience."
-msgstr "Les ordres {symbolName} requièrent un délai d'expiration minimum de {minutes, plural, one {# minute} few {# minutes} many {# minutes} other {# minutes}} pour garantir la meilleure expérience de swap."
+msgstr "Les ordres {symbolName} requièrent un délai d’expiration minimum de {minutes, plural, one {# minute} few {# minutes} many {# minutes} other {# minutes}} pour garantir la meilleure expérience de swap."
 
 #: apps/cowswap-frontend/src/pages/error/NotFound/index.tsx
 msgid "The page you are looking for does not exist."
@@ -881,7 +881,7 @@ msgstr "La requête a expiré. Veuillez réessayer."
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/pure/Row/RowDeadline/index.tsx
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/pure/Row/RowSlippageContent/index.tsx
 msgid "(modified)"
-msgstr "(modifié)"
+msgstr "(modifiée)"
 
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
 #~ msgid "A resident of any jurisdiction where trading securities or cryptographic tokens is regulated or prohibited by applicable laws."
@@ -1264,7 +1264,7 @@ msgstr "Activation de l’ordre TWAP"
 #: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartHeader.tsx
 #: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartTooltip.tsx
 msgid "Market Cap"
-msgstr "Capitalisation boursière"
+msgstr "Capitalisation"
 
 #: apps/cowswap-frontend/src/common/pure/CustomRecipientWarningBanner/index.tsx
 msgid "Order recipient address differs from order owner!"
@@ -5104,7 +5104,7 @@ msgstr "Saisir un prix"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/common.tsx
 msgid "Couldn't verify {accountProxyLabel}, please try later"
-msgstr "Impossible de vérifier {accountProxyLabel}. Veuillez réessayer plus tard"
+msgstr "Impossible de vérifier le {accountProxyLabel}. Veuillez réessayer plus tard"
 
 #: apps/cowswap-frontend/src/modules/application/containers/AppContainer/CowSpeechBubble/CowSpeechBubbleGraffitiWallBanner.tsx
 msgid "Visit the graffiti wall"
@@ -6528,7 +6528,7 @@ msgstr "Expiration de la transaction"
 
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 msgid "CoW Swap has dynamically selected this slippage tolerance, accounting for current gas prices and trade size, to ensure your trade executes quickly while still getting the best price."
-msgstr "CoW Swap a sélectionné dynamiquement cette tolérance au slippage selon les frais de gas actuels et la taille du trade, afin de garantir une exécution rapide tout en vous obtenant le meilleur prix."
+msgstr "CoW Swap a sélectionné dynamiquement cette tolérance au slippage selon les frais de gas actuels et la taille du trade, afin de garantir une exécution rapide tout en obtenant le meilleur prix."
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "UPPERCASE | 5-20 chars | A-Z 0-9 - _"
@@ -6983,7 +6983,7 @@ msgstr "Action"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactIndicator/index.tsx
 msgid "This price is {displayedPercent}% higher than current market price. You could be selling your <0/> at a loss! Click on \"Market price\" to set your limit price to the current market price."
-msgstr "Ce prix est supérieur de {displayedPercent}% au prix actuel du marché. Vous pourriez vendre votre <0/> à perte ! Cliquez sur « Prix du marché » pour définir votre prix limite sur le prix actuel du marché."
+msgstr "Ce prix est supérieur de {displayedPercent}% au prix actuel du marché. Vous pourriez vendre vos <0/> à perte ! Cliquez sur « Prix du marché » pour définir votre prix limite sur le prix actuel du marché."
 
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
 msgid "Swap with"
@@ -7433,7 +7433,7 @@ msgstr "Tous les tokens"
 
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 msgid "When selling {aNativeCurrency}, the minimum slippage tolerance is set to {minimumETHFlowSlippage}% or higher{amountRange} to ensure a high likelihood of order matching, even in volatile market conditions."
-msgstr "Lors de la vente de {aNativeCurrency}, la tolérance minimale au slippage est fixée à {minimumETHFlowSlippage}% ou plus{amountRange} afin d’assurer une forte probabilité d’exécution de l’ordre, même lorsque le marché est volatil."
+msgstr "Lorsque vous vendez {aNativeCurrency}, la tolérance minimale au slippage est fixée à {minimumETHFlowSlippage}% ou plus{amountRange} afin d’assurer une forte probabilité d’exécution de l’ordre, même lorsque le marché est volatil."
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokenSearchContent/useSearchRows.ts
 msgid "Additional Results from External Sources"
@@ -9277,7 +9277,7 @@ msgstr "À propos de CoW Swap"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/ExpiredStep.tsx
 msgid "Unlike on other exchanges, you won't be charged for this! Feel free to"
-msgstr "Contrairement aux autres plateformes d’échange, aucun frais ne vous seront facturés ! N’hésitez pas à"
+msgstr "Contrairement aux autres plateformes d’échange, rien ne vous est facturé ! N’hésitez pas à"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/ClaimGnoHookApp/index.tsx
 msgid "Error loading the claimable amount"
@@ -9561,7 +9561,7 @@ msgstr "Les notifications pour les ordres de type swap et bridge ne sont pas enc
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactIndicator/index.tsx
 msgid "This price is {displayedPercent}% lower than current market price. You could be selling your <0/> at a loss! Click on \"Market price\" to set your limit price to the current market price."
-msgstr "Ce prix est inférieur de {displayedPercent}% au prix actuel du marché. Vous pourriez vendre votre <0/> à perte ! Cliquez sur « Prix du marché » pour définir votre prix limite sur le prix actuel du marché."
+msgstr "Ce prix est inférieur de {displayedPercent}% au prix actuel du marché. Vous pourriez vendre vos <0/> à perte ! Cliquez sur « Prix du marché » pour définir votre prix limite sur le prix actuel du marché."
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
 #~ msgid "There {areIs} <0>{ordersWithPermitLength}</0> existing {orderWord} using a <1/> token approval. If you sign a new one, only one order can fill. Continue with current permit amount or choose full approval so all orders can be filled."
@@ -9868,7 +9868,7 @@ msgstr "Dans tous les cas, les trades sont protégés contre la MEV : votre slip
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactIndicator/index.tsx
 msgid "Your order will execute when the market price is {displayedPercent}% better than the current market price."
-msgstr "Votre ordre sera exécuté lorsque le prix du marché sera supérieur de {displayedPercent}% au prix actuel du marché."
+msgstr "Votre ordre sera exécuté lorsque le prix du marché sera plus favorable de {displayedPercent}% que le prix actuel du marché."
 
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/AccountProxyRecoverPage/AccountProxyRecoverPage.container.tsx
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/WidgetPageTitle/WidgetPageTitle.container.tsx
@@ -10352,7 +10352,7 @@ msgstr "ALPHA"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/common.tsx
 msgid "Loading {accountProxyLabel}"
-msgstr "Chargement de {accountProxyLabel}"
+msgstr "Chargement du {accountProxyLabel}"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/ManageListsAndTokens/index.tsx
 msgid "Manage"
