@@ -15,16 +15,18 @@ const mockUseFlags = jest.mocked(useFlags)
 
 describe('useIsSolanaVisible', () => {
   it.each`
-    isSolanaEnabled | isAlphaNetworksOptionVisible | optedIn  | expected
-    ${true}         | ${false}                     | ${false} | ${true}
-    ${true}         | ${true}                      | ${false} | ${true}
-    ${false}        | ${true}                      | ${false} | ${false}
-    ${false}        | ${true}                      | ${true}  | ${true}
-    ${false}        | ${false}                     | ${true}  | ${false}
+    isSolanaEnabled | isAlphaNetworksOptionVisible | isSolanaPublicLaunched | optedIn  | expected
+    ${true}         | ${false}                     | ${false}               | ${false} | ${true}
+    ${true}         | ${true}                      | ${false}               | ${false} | ${true}
+    ${false}        | ${true}                      | ${false}               | ${false} | ${false}
+    ${false}        | ${true}                      | ${false}               | ${true}  | ${true}
+    ${false}        | ${false}                     | ${false}               | ${true}  | ${false}
+    ${false}        | ${false}                     | ${true}                | ${false} | ${true}
+    ${false}        | ${true}                      | ${true}                | ${false} | ${true}
   `(
-    'is $expected with isSolanaEnabled $isSolanaEnabled, option visible $isAlphaNetworksOptionVisible, opted in $optedIn',
-    ({ isSolanaEnabled, isAlphaNetworksOptionVisible, optedIn, expected }) => {
-      mockUseFlags.mockReturnValue({ isSolanaEnabled, isAlphaNetworksOptionVisible })
+    'is $expected with isSolanaEnabled $isSolanaEnabled, option visible $isAlphaNetworksOptionVisible, public launch $isSolanaPublicLaunched, opted in $optedIn',
+    ({ isSolanaEnabled, isAlphaNetworksOptionVisible, isSolanaPublicLaunched, optedIn, expected }) => {
+      mockUseFlags.mockReturnValue({ isSolanaEnabled, isAlphaNetworksOptionVisible, isSolanaPublicLaunched })
       const store = createStore()
       store.set(alphaNetworksEnabledAtom, optedIn)
       const wrapper = ({ children }: { children: ReactNode }): ReactNode => createElement(Provider, { store }, children)

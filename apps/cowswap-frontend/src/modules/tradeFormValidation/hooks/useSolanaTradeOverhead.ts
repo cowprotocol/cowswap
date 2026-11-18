@@ -2,7 +2,8 @@ import { useMemo } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
-import { isSolanaChain } from '@cowprotocol/cow-sdk'
+import { isSolanaAddress, isSolanaChain } from '@cowprotocol/cow-sdk'
+import { isSolanaSmartContractWallet } from '@cowprotocol/sdk-trading-solana'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAppKitConnection } from '@reown/appkit-adapter-solana/react'
@@ -38,8 +39,9 @@ interface OverheadRequest {
  * Lamports the trade needs on top of the sell amount: rents + fees + the wallet's rent-exempt reserve
  * (`required` gates the trade, `maxReserve` adds priority-fee headroom for the MAX button). On a
  * sponsored trade only a native sell debits the owner at all, and then only for the wrap: the
- * transfer itself, and the rent for the WSOL account it opens. `null` while unknown or when nothing
- * debits the wallet at all.
+ * transfer itself, and the rent for the WSOL account it opens. A multisig vault is not charged the
+ * fees, which the member executing the proposal pays. `null` while unknown or when nothing debits
+ * the wallet at all.
  */
 export function useSolanaTradeOverhead({
   ignoreSponsor = false,
@@ -59,29 +61,37 @@ export function useSolanaTradeOverhead({
   const { isAtaCreationDisabled } = useFeatureFlags()
 
   const request = useMemo<OverheadRequest | null>(() => {
-    if (!isSolanaChain(chainId) || !account) return null
+    // The chain id and the account arrive from separate sources, so a wallet switch or a page restore
+    // leaves a Solana chain id paired with an EVM account for a render or two. Decoding one as base58
+    // throws, and this runs during render, where the error boundary turns that into a blank page.
+    if (!isSolanaChain(chainId) || !isSolanaAddress(account)) return null
 
-    // A wrap/unwrap is a plain owner-paid transaction — never sponsored, no quote involved.
-    if (isWrapUnwrap) return { fundedAccounts: [], ownerPaysFees: true }
+    const owner = new PublicKey(account)
+
+    // A vault never signs a transaction itself: its order rides inside `VaultTransactionExecute`, so
+    // the member who executes the approved proposal pays the fee. The rents stay the vault's — the
+    // bundle names it as payer for every account it creates.
+    const ownerPaysFees = !isSolanaSmartContractWallet(owner)
+
+    // A wrap/unwrap never goes through a sponsor, and has no quote involved.
+    if (isWrapUnwrap) return { fundedAccounts: [], ownerPaysFees }
 
     if (!solanaQuote) return null
 
     // The WSOL account a native sell opens is the owner's, so its rent is the owner's even here —
     // every other account the bundle creates is the sponsor's, as are the fees.
     if (isSponsored) {
-      return isNativeSell
-        ? { fundedAccounts: getWrapFundedAccounts(new PublicKey(account)), ownerPaysFees: false }
-        : null
+      return isNativeSell ? { fundedAccounts: getWrapFundedAccounts(owner), ownerPaysFees: false } : null
     }
 
     return {
       fundedAccounts: planSolanaTradeFundedAccounts({
-        owner: new PublicKey(account),
+        owner,
         quote: solanaQuote,
         isNativeSell,
         isAtaCreationDisabled: Boolean(isAtaCreationDisabled),
       }),
-      ownerPaysFees: true,
+      ownerPaysFees,
     }
   }, [chainId, account, solanaQuote, isNativeSell, isSponsored, isWrapUnwrap, isAtaCreationDisabled])
 

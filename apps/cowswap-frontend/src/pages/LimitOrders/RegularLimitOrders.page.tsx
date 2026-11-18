@@ -1,8 +1,7 @@
-import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { ReactNode, Suspense, useCallback, useMemo } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
-import type { Fraction } from '@cowprotocol/currency'
 import { Dialog, DialogOrInline, Media, Modal } from '@cowprotocol/ui'
 
 import { useLingui } from '@lingui/react/macro'
@@ -17,8 +16,7 @@ import {
   LimitOrdersWidget,
   limitRateAtom,
   updateLimitRateAtom,
-  limitPickerModeAtom,
-  useUpdateActiveRate,
+  useLimitPriceChartPicker,
 } from 'modules/limitOrders'
 import { LimitOrdersPermitUpdater, ordersTableStateAtom, OrdersTableWidget, useOrdersTable } from 'modules/ordersTable'
 import { PriceChart, getLimitPriceFromRate } from 'modules/priceChart'
@@ -41,8 +39,7 @@ export function RegularLimitOrdersPage(): ReactNode {
   const { inputCurrency, outputCurrency, isUnlocked } = useLimitOrdersDerivedState()
   const { activeRate, isInverted } = useAtomValue(limitRateAtom)
   const updateLimitRate = useSetAtom(updateLimitRateAtom)
-  const [isLimitPickerMode, setLimitPickerMode] = useAtom(limitPickerModeAtom)
-  const updateRate = useUpdateActiveRate()
+  const onSelectLimitPrice = useLimitPriceChartPicker()
   const referenceLines = useMemo(
     () => [
       {
@@ -57,14 +54,6 @@ export function RegularLimitOrdersPage(): ReactNode {
     ],
     [inputCurrency, outputCurrency, activeRate, t],
   )
-  const handleSelectLimitPrice = useCallback(
-    (activeRate: Fraction) => {
-      updateRate({ activeRate, isAlternativeOrderRate: false, isRateFromUrl: false, isTypedValue: false })
-      setLimitPickerMode(false)
-    },
-    [setLimitPickerMode, updateRate],
-  )
-
   const handleOrdersTableDrawerOpenChange = useCallback(
     (open: boolean) => {
       setOrdersTableDrawerOpen(open)
@@ -92,7 +81,7 @@ export function RegularLimitOrdersPage(): ReactNode {
             onSelectCurrency={(currency) =>
               updateLimitRate({ isInverted: Boolean(outputCurrency?.equals(currency)), isTypedValue: false })
             }
-            onSelectLimitPrice={isLimitPickerMode ? handleSelectLimitPrice : undefined}
+            onSelectLimitPrice={onSelectLimitPrice}
             referenceLines={referenceLines}
           />
           {!hideOrdersTable && (

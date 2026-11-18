@@ -22,13 +22,15 @@ export function useWidgetTradeTokenSync(asset: RwaAsset, selection: TradeSelecti
   return useMemo(() => {
     if (!side || !assetToken) return []
 
-    const chainTokens = asset.tokens.filter((token) => token.chainId === chainId)
+    // The sell network follows the wallet, so a sell token of another network applies once the wallet switches to it.
+    // A buy token of another network is a bridge target and must not move the traded network.
+    const tradedTokens = side === 'sell' ? asset.tokens : asset.tokens.filter((token) => token.chainId === chainId)
 
     return [
       {
         event: CowWidgetEvents.ON_CHANGE_TRADE_PARAMS,
         handler: (payload) => {
-          const widgetToken = findWidgetTradeToken(payload, side, chainTokens)
+          const widgetToken = findWidgetTradeToken(payload, side, tradedTokens)
           const widgetTokenKey = widgetToken ? getTokenKey(widgetToken) : null
           // The widget repeats the params on every amount or quote change, and an event sent before it applied a
           // token picked above the widget would still carry the previous one: only a change made in the widget counts

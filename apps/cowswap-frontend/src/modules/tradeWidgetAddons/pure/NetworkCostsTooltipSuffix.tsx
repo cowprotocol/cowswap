@@ -2,21 +2,21 @@ import { ReactNode } from 'react'
 
 import { t } from '@lingui/core/macro'
 
-import { useIsEoaEthFlow, useShouldPayGas } from 'modules/trade'
+import { GasPaymentReason, useGasPaymentReason } from 'modules/trade'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 export function NetworkCostsTooltipSuffix(): ReactNode {
-  const isEoaEthFlow = useIsEoaEthFlow()
-  const shouldPayGas = useShouldPayGas()
+  const gasPaymentReason = useGasPaymentReason()
   const native = useNativeCurrency()
 
-  if (!shouldPayGas) return null
+  if (!gasPaymentReason) return null
 
   const nativeSymbol = native.symbol || ''
-  const reason = isEoaEthFlow
-    ? t`Because you are selling ${nativeSymbol} (native currency)`
-    : t`Because you are using a smart contract wallet`
+  const reason =
+    gasPaymentReason === GasPaymentReason.EthFlow
+      ? t`Because you are selling ${nativeSymbol} (native currency)`
+      : t`Because you are using a smart contract wallet`
 
   return (
     <>

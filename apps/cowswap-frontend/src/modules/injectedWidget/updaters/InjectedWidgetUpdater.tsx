@@ -16,6 +16,7 @@ import * as Sentry from '@sentry/browser'
 import { injectedWidgetParamsAtom } from 'entities/injectedWidget'
 
 import { useNavigate } from 'common/hooks/useNavigate'
+import { TRADE_URL_FORCE_NAVIGATE_KEY } from 'common/modules/tradeNavigation'
 
 import { IframeResizer } from './IframeResizer'
 
@@ -126,8 +127,7 @@ export function InjectedWidgetUpdater(): ReactNode {
         errors,
       })
 
-      // Navigate to the new path
-      navigate(data.urlParams, { replace: true })
+      navigate(withForceTradeNavigate(data.urlParams), { replace: true })
     }
 
     // Start listening for messages inside of React
@@ -202,4 +202,14 @@ export function InjectedWidgetUpdater(): ReactNode {
       <IframeResizer />
     </>
   )
+}
+
+function withForceTradeNavigate({
+  pathname,
+  search,
+}: UpdateParamsPayload['urlParams']): UpdateParamsPayload['urlParams'] {
+  const searchParams = new URLSearchParams(search)
+  searchParams.set(TRADE_URL_FORCE_NAVIGATE_KEY, 'true')
+
+  return { pathname, search: searchParams.toString() }
 }

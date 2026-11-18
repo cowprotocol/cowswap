@@ -9,6 +9,7 @@ import { StatusBadge } from './StatusBadge'
 
 import { formatActivityDate } from '../lib/formatActivityDate'
 import { formatPaidAmount, formatReceivedAmount } from '../lib/formatTradeLeg'
+import { ORDER_TYPE_LABELS } from '../lib/orderType'
 
 import type { Activity } from '../api/activity'
 import type { RwaTokenSummary } from '@/entities/asset'
@@ -78,7 +79,7 @@ function ActivityRow({ item, logoUrl }: { item: Activity; logoUrl: string | null
               {assetToken.symbol}
             </span>
             <span className={`${styles.secondary} ${styles.inlineLogo}`}>
-              Swap · {assetToken.issuer} · <ChainLabel chainId={assetToken.chainId} />
+              {getOrderTypeLabel(item)} · {assetToken.issuer} · <ChainLabel chainId={assetToken.chainId} />
             </span>
           </div>
         </div>
@@ -103,4 +104,8 @@ function ActivityRow({ item, logoUrl }: { item: Activity; logoUrl: string | null
       </td>
     </tr>
   )
+}
+
+function getOrderTypeLabel({ orderType, twapPart }: Activity): string {
+  return twapPart ? `TWAP part ${twapPart.number}/${twapPart.count}` : ORDER_TYPE_LABELS[orderType]
 }

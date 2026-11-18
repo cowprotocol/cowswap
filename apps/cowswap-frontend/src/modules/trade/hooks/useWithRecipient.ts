@@ -7,7 +7,7 @@ import { useIsWrapOrUnwrap } from './useIsWrapOrUnwrap'
  * Returns whether the recipient input should be shown.
  *
  * Rules:
- * - Never shown when custom recipients are disabled (injected widget, Solana)
+ * - Never shown when custom recipients are disabled (injected widget)
  * - Always shown for non-EVM bridging (SOL, BTC, etc.) — toggle is locked
  * - Always shown when a recipient is set in the URL
  * - Shown when the user explicitly enabled the toggle — regardless of wallet state

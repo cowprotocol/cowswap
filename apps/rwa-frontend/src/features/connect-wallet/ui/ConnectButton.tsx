@@ -8,6 +8,7 @@ import { useAppKit } from '@reown/appkit/react'
 
 import styles from './ConnectButton.module.css'
 
+import { trackEvent } from '@/shared/lib/analytics'
 import { shortenAddress } from '@/shared/lib/format'
 import { ChevronDownIcon } from '@/shared/ui/icons'
 
@@ -18,11 +19,19 @@ interface ConnectButtonProps {
 
 export function ConnectButton({ variant = 'primary' }: ConnectButtonProps): ReactNode {
   const { open } = useAppKit()
+
   const { address, isConnected } = useConnection()
 
   if (!isConnected || !address) {
     return (
-      <button className={`${styles.connect} ${styles[variant]}`} type="button" onClick={() => open()}>
+      <button
+        className={`${styles.connect} ${styles[variant]}`}
+        type="button"
+        onClick={() => {
+          trackEvent('connect_wallet_click', { variant })
+          open()
+        }}
+      >
         Connect wallet
       </button>
     )

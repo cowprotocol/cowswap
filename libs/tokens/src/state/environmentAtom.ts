@@ -8,7 +8,6 @@ interface TokensModuleEnvironment {
   enableLpTokensByDefault?: boolean
   hideFavoriteTokens?: boolean
   isYieldEnabled?: boolean
-  excludeRwaLists?: boolean
   widgetAppCode?: string
   selectedLists?: string[]
   sellSelectedLists?: string[]

@@ -3,17 +3,10 @@
   display: flex;
 }
 
-.toggle {
+.root .toggle,
+.bar .close,
+.hint {
   display: none;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  border: none;
-  border-radius: 50%;
-  background: none;
-  color: var(--color-text-muted);
 }
 
 .toggle svg {
@@ -21,20 +14,9 @@
   height: 20px;
 }
 
-.toggle:hover,
-.toggle[aria-expanded='true'] {
-  background: var(--color-surface);
-  color: var(--color-text);
-}
-
 .panel,
 .bar {
   display: contents;
-}
-
-.close,
-.hint {
-  display: none;
 }
 
 .search {
@@ -59,19 +41,8 @@
   color: var(--color-text-secondary);
 }
 
-.input::placeholder {
-  color: var(--color-text-secondary);
-}
-
 .input {
-  flex: 1;
-  min-width: 0;
-  padding: 0;
-  border: none;
-  border-radius: 0;
-  background: none;
   font-size: 14px;
-  outline: none;
 }
 
 .input::-webkit-search-cancel-button {
@@ -151,12 +122,16 @@
 }
 
 @media (max-width: 720px) {
-  .toggle {
+  .root .toggle {
     display: inline-flex;
   }
 
   .panel {
     display: none;
+  }
+
+  body:has(.fieldShown) {
+    overflow: hidden;
   }
 
   .fieldShown .panel {
@@ -176,12 +151,6 @@
     gap: 8px;
   }
 
-  .fieldShown .search {
-    flex: 1;
-    width: auto;
-    box-shadow: none;
-  }
-
   /* iOS zooms into inputs under 16px */
   .input {
     font-size: 16px;
@@ -191,17 +160,9 @@
     display: none;
   }
 
-  .close {
+  .bar .close {
     display: inline-flex;
-    align-items: center;
-    justify-content: center;
     flex-shrink: 0;
-    width: 44px;
-    height: 44px;
-    padding: 0;
-    border: none;
-    border-radius: 50%;
-    background: none;
     color: var(--color-text-secondary);
   }
 

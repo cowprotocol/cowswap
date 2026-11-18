@@ -7,7 +7,15 @@ import { queryClientAtom } from 'jotai-tanstack-query'
 
 import { HomePage } from './HomePage'
 
-import type { RwaAssetListItem, RwaAssetsPage, RwaMarketOverview, RwaMarketOverviewItem } from '@/entities/asset'
+import { DEFAULT_ASSETS_PAGE_QUERY } from '../model/assetsPageQuery'
+
+import {
+  assetsPageQueryOptions,
+  type RwaAssetListItem,
+  type RwaAssetsPage,
+  type RwaMarketOverview,
+  type RwaMarketOverviewItem,
+} from '@/entities/asset'
 
 const NVDA: RwaMarketOverviewItem = {
   ticker: 'NVDA',
@@ -34,7 +42,7 @@ const OVERVIEW: RwaMarketOverview = {
   gainers: [NVDA],
   losers: [],
   updatedAt: '2026-10-01T14:00:00.000Z',
-  tradingTime: { title: 'US market open', start: '13:30 UTC', end: '20:00 UTC' },
+  tradingTime: { title: 'US market open', start: '09:30', end: '16:00', timeZone: 'America/New_York' },
   degraded: false,
 }
 
@@ -108,9 +116,22 @@ function mockApi(overview: RwaMarketOverview | null, assetsPage: RwaAssetsPage |
   }) as unknown as typeof fetch
 }
 
-function renderHomePage(): RenderResult {
+function mockPendingAssetsApi(overview: RwaMarketOverview): void {
+  global.fetch = jest.fn((url: string) =>
+    url.includes('/assets?')
+      ? new Promise(() => undefined)
+      : Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(overview) }),
+  ) as unknown as typeof fetch
+}
+
+/** `serverAssetsPage` stands for the default table page the server renders */
+function renderHomePage(serverAssetsPage?: RwaAssetsPage): RenderResult {
   const store = createStore()
-  store.set(queryClientAtom, new QueryClient({ defaultOptions: { queries: { retry: false } } }))
+  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
+
+  if (serverAssetsPage)
+    queryClient.setQueryData(assetsPageQueryOptions(DEFAULT_ASSETS_PAGE_QUERY).queryKey, serverAssetsPage)
+  store.set(queryClientAtom, queryClient)
 
   return render(
     <Provider store={store}>
@@ -120,19 +141,6 @@ function renderHomePage(): RenderResult {
 }
 
 describe('HomePage', () => {
-  beforeEach(() => {
-    Object.defineProperty(window, 'matchMedia', {
-      writable: true,
-      configurable: true,
-      value: (query: string) => ({
-        matches: false,
-        media: query,
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-      }),
-    })
-  })
-
   afterEach(() => {
     localStorage.clear()
   })
@@ -208,7 +216,7 @@ describe('HomePage', () => {
     fireEvent.click(screen.getByRole('checkbox', { name: 'Ondo' }))
     fireEvent.click(screen.getByRole('checkbox', { name: 'xStocks' }))
     fireEvent.click(
-      within(screen.getByRole('radiogroup', { name: 'Onchain market cap' })).getByRole('radio', { name: '$10M+' }),
+      within(screen.getByRole('radiogroup', { name: 'Tokenized market cap' })).getByRole('radio', { name: '$10M+' }),
     )
 
     expect(await screen.findByRole('button', { name: 'Filters 2 active' })).toBeTruthy()
@@ -220,7 +228,7 @@ describe('HomePage', () => {
     expect(screen.queryByRole('button', { name: 'Clear' })).toBeNull()
     expect(screen.getByRole('button', { name: 'All', pressed: true })).toBeTruthy()
     expect(
-      within(screen.getByRole('radiogroup', { name: 'Onchain market cap' })).getByRole('radio', { name: 'Any' }),
+      within(screen.getByRole('radiogroup', { name: 'Tokenized market cap' })).getByRole('radio', { name: 'Any' }),
     ).toHaveProperty('checked', true)
   })
 
@@ -239,6 +247,27 @@ describe('HomePage', () => {
         'type=index&issuer=Ondo&chainId=1&minVolume24h=1000000',
       ),
     )
+  })
+
+  it('hides the server-rendered rows while the stored filters load', async () => {
+    localStorage.setItem('rwaAssetsFilters:v1', JSON.stringify({ type: 'index' }))
+    mockPendingAssetsApi(OVERVIEW)
+    renderHomePage(ASSETS_PAGE)
+
+    expect(await screen.findByRole('button', { name: 'ETFs', pressed: true })).toBeTruthy()
+    expect(screen.queryByText('$180M')).toBeNull()
+  })
+
+  it('keeps the server-rendered rows while a filter picked on the page loads', async () => {
+    mockPendingAssetsApi(OVERVIEW)
+    renderHomePage(ASSETS_PAGE)
+
+    expect(await screen.findByText('$180M')).toBeTruthy()
+
+    fireEvent.click(screen.getByRole('button', { name: 'ETFs' }))
+
+    expect(await screen.findByRole('button', { name: 'ETFs', pressed: true })).toBeTruthy()
+    expect(screen.getByText('$180M')).toBeTruthy()
   })
 
   it('shows the scope of a filtered table in the footer', async () => {
@@ -266,7 +295,9 @@ describe('HomePage', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Filters' }))
     fireEvent.click(screen.getByRole('checkbox', { name: 'xStocks' }))
     fireEvent.click(screen.getByRole('checkbox', { name: 'Ondo' }))
-    fireEvent.click(within(screen.getByRole('radiogroup', { name: '24h volume' })).getByRole('radio', { name: '$1M+' }))
+    fireEvent.click(
+      within(screen.getByRole('radiogroup', { name: '24h total volume' })).getByRole('radio', { name: '$1M+' }),
+    )
     fireEvent.click(screen.getByRole('button', { name: 'Asset' }))
 
     await waitFor(() =>
@@ -286,10 +317,10 @@ describe('HomePage', () => {
     mockApi(OVERVIEW, ASSETS_PAGE)
     renderHomePage()
 
-    const header = await screen.findByRole('columnheader', { name: '24h volume' })
+    const header = await screen.findByRole('columnheader', { name: /^24h total volume/ })
 
     expect(header.getAttribute('aria-sort')).toBe('descending')
-    expect(screen.getByRole('columnheader', { name: 'Onchain market cap' })).toBeTruthy()
+    expect(screen.getByRole('columnheader', { name: 'Tokenized market cap' })).toBeTruthy()
     expect(
       (global.fetch as jest.Mock).mock.calls
         .map(([url]) => String(url))
@@ -321,10 +352,10 @@ describe('HomePage', () => {
 
     const totals = await screen.findByRole('region', { name: 'Market overview' })
 
-    expect(totals.textContent).toContain('Onchain market cap')
-    expect(totals.textContent).toContain('24h volume')
+    expect(totals.textContent).toContain('Tokenized market cap')
+    expect(totals.textContent).toContain('24h total volume')
     expect(await screen.findByText('Ref. 14:00 UTC')).toBeTruthy()
-    expect(screen.getByText('24h volume · All networks')).toBeTruthy()
+    expect(screen.getByText('24h total volume · DEX volume chart · All networks')).toBeTruthy()
   })
 
   it('stores starred assets and requests them in the watchlist mode', async () => {

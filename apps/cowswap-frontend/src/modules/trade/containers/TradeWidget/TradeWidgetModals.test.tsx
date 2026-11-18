@@ -53,7 +53,6 @@ jest.mock('modules/rwa', () => ({
 jest.mock('modules/tokensList', () => ({
   ImportTokenModal: () => null,
   useCloseTokenSelectWidget: () => mockNoop,
-  useRestrictedTokensImportStatus: () => ({ restriction: null }),
   useSelectTokenWidgetState: () => ({ field: undefined }),
   useTokenListAddingError: () => mockTokenListAddingError,
 }))
@@ -189,6 +188,7 @@ describe('TradeWidgetModals · Solana order not placed', () => {
         tradeAmounts: EXPIRED_TRADE,
         errorMessage: WALLET_ERROR,
         logs: null,
+        isSquadsSetupRequired: false,
       })
     })
   }
@@ -228,6 +228,7 @@ describe('TradeWidgetModals · Solana order not placed', () => {
         tradeAmounts: EXPIRED_TRADE,
         errorMessage: WINDOW_CLOSED_MESSAGE,
         logs: null,
+        isSquadsSetupRequired: false,
       })
     })
 

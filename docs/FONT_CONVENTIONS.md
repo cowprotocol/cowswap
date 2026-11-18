@@ -21,7 +21,7 @@ Applies to new or edited styles in `libs/ui` and `apps/cowswap-frontend`. Explor
   ```
 - `SHOULD NOT` use `Font` from `@cowprotocol/ui` in component styles. `Font.family*` is for theme and `:root` assignment; `Font.weight*` is for deriving CSS variables. In components, pass a weight name to `font()` (`'medium'`, `'semibold'`).
 - Default UI type is Inter via `var(${UI.FONT_FAMILY_PRIMARY})` / `font()`. `SHOULD` use `var(${UI.FONT_SIZE_*})` / `var(${UI.FONT_WEIGHT_*})` only when the mixin cannot be used (inline styles, non-styled-components).
-- Studio Feixen Sans is a gradual brand-only exception while Marketing rebrands. `MUST NOT` use Feixen outside the allowlist below. `MUST NOT` apply `fontFamilyBrand` in `libs/ui` components, Explorer, or cow-fi product UI. Studio Feixen Mono is removed from CoW Swap ([#8047](https://github.com/cowprotocol/cowswap/pull/8047)); `MUST NOT` reintroduce it.
+- Studio Feixen Sans is a gradual brand-only exception while Marketing rebrands. `MUST NOT` use Feixen outside the allowlist below. `MUST NOT` apply `fontFamilyBrand` in `libs/ui` components, Explorer, or cow-fi product UI. Studio Feixen Mono is removed from CoW Swap ([#8047](https://github.com/cowprotocol/cowswap/pull/8047)); `MUST NOT` reintroduce it. The cow.fi `/solana` campaign page is the only exception, and loads it locally in `apps/cow-fi/app/(main)/solana/styled.ts`.
 - Expanding the allowlist requires updating this section in the same PR.
 
 ## Studio Feixen Sans allowlist (`fontFamilyBrand`)

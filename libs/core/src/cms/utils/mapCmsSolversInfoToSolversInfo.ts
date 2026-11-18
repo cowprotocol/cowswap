@@ -5,10 +5,6 @@ export function mapCmsSolversInfoToSolversInfo(cmsSolversInfo: CmsSolversInfo): 
     if (info?.attributes) {
       const { solverId, displayName, image, solver_networks, description, active } = info.attributes
 
-      if (active === false) {
-        return acc
-      }
-
       // TODO: Reduce function complexity by extracting logic
       // eslint-disable-next-line complexity
       const solverNetworks = solver_networks?.data?.reduce<SolverNetwork[]>((acc, entry) => {
@@ -36,7 +32,14 @@ export function mapCmsSolversInfoToSolversInfo(cmsSolversInfo: CmsSolversInfo): 
         return acc
       }
 
-      acc.push({ solverId, displayName, description, image: image?.data?.attributes?.url, solverNetworks })
+      acc.push({
+        solverId,
+        displayName,
+        description,
+        image: image?.data?.attributes?.url,
+        solverNetworks,
+        isActive: active !== false,
+      })
     }
 
     return acc

@@ -6,7 +6,7 @@ import test from 'node:test'
 
 import { encodeRegistry, readRegistry, writeRegistry } from './registryFile.mjs'
 
-const TRADING_TIME = { title: 'US market open', start: '13:30 UTC', end: '20:00 UTC' }
+const TRADING_TIME = { title: 'US market open', start: '09:30', end: '16:00', timeZone: 'America/New_York' }
 
 const asset = (ticker, sector) => ({
   ticker,

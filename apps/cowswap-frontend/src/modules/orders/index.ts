@@ -1,6 +1,7 @@
 export * from './hooks/useTokensForOrdersList'
 export * from './hooks/useSWRProdOrders'
 export * from './hooks/useLoadMoreOrders'
+export * from './state/orderFailureReasonAtom'
 export * from './state/ordersLimitAtom'
 export * from './utils/getTokensListFromOrders'
 

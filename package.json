@@ -22,15 +22,17 @@
     "start:cowfi": "cross-env PORT=3001 nx run cow-fi:dev",
     "start:sdk-tools": "nx run sdk-tools:serve",
     "start:rwa": "cross-env PORT=3002 nx run rwa-frontend:dev",
+    "preview:rwa": "cross-env PORT=3002 nx run rwa-frontend:start",
     "e2e": "nx run cowswap-e2e-tests:e2e",
     "e2e:patient": "cross-env TIMEOUT_MULTIPLIER=20 nx run cowswap-e2e-tests:e2e",
     "e2e:build-cache": "nx run cowswap-e2e-tests:e2e:build-cache",
     "e2e:smoke": "nx run cowswap-e2e-tests:e2e:smoke",
     "e2e:ui": "nx run cowswap-e2e-tests:e2e:ui",
+    "e2e:rwa": "nx run cowswap-e2e-tests:e2e:rwa",
     "e2e:record-mocks": "nx run cowswap-e2e-tests:e2e:record-mocks",
     "build": "pnpm run build:cowswap",
     "build:all": "cross-env NODE_OPTIONS=--max-old-space-size=8192 nx run-many -t build --no-cloud",
-    "build:cowswap": "cross-env NODE_ENV=production NODE_OPTIONS=--max-old-space-size=8192 nx build cowswap-frontend --no-cloud",
+    "build:cowswap": "cross-env NODE_ENV=production NODE_OPTIONS=--max-old-space-size=5120 nx build cowswap-frontend --no-cloud",
     "build:explorer": "nx build explorer --no-cloud",
     "build:widget": "nx build widget-configurator --no-cloud",
     "build:cowfi": "nx build cow-fi --no-cloud && pnpm run postbuild:cowfi",
@@ -109,7 +111,8 @@
     "strictDepBuilds": true,
     "allowBuilds": {
       "nx": true,
-      "@swc/core": true
+      "@swc/core": true,
+      "better-sqlite3": true
     },
     "overrides": {
       "@wagmi/core": "3.4.8",

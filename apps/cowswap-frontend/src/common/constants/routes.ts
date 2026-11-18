@@ -50,6 +50,8 @@ export const Routes = {
   FAQ_ETH_FLOW: '/faq/sell-native',
   PLAY_COWRUNNER: '/play/cow-runner',
   PLAY_MEVSLICER: '/play/mev-slicer',
+  GRAFFITI: '/graffiti',
+  GRAFFITI_CLAIM: '/graffiti/claim',
   ANYSWAP_AFFECTED: '/anyswap-affected-users',
   CHAT: '/chat',
   DOCS: '/docs',

@@ -1,2 +1,2 @@
 export { Header } from './ui/Header'
-export { WalletBarSlot } from './ui/WalletBar'
+export { WALLET_BAR_HEIGHT, WalletBarSlot } from './ui/WalletBar'

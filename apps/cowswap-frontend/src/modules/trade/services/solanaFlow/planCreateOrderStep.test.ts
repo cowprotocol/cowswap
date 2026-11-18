@@ -89,6 +89,20 @@ describe('planCreateOrderStep', () => {
     expect(signingScheme).toBe(SigningScheme.PRESIGN)
   })
 
+  // Both planners hand their intent back so the caller plans the buy account from the one actually
+  // signed, rather than from the quote.
+  it('returns the intent it signed', async () => {
+    const { intent } = await planCreateOrderStep({
+      ...quote,
+      appDataDoc: APP_DATA_DOC,
+      sellSymbol: 'SOL',
+      buySymbol: 'USDC',
+      validTo: VALID_TO,
+    })
+
+    expect(intent).toBe(builtOrder.intent)
+  })
+
   // The fee payer decides who the transaction must name, and a sponsored order is the only case where
   // it is not the owner.
   it('passes the sponsor through and reports it as the fee payer', async () => {

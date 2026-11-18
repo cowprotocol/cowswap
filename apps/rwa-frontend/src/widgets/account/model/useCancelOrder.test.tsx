@@ -9,6 +9,7 @@ import { act, renderHook } from '@testing-library/react'
 
 import { useCancelOrder, useOrderCancellation } from './useCancelOrder'
 
+import { cancelCowShedTwap } from '../api/cancelCowShedTwap'
 import { cancelOrder } from '../api/cancelOrder'
 
 import type { OpenOrder } from '../api/openOrders'
@@ -16,6 +17,7 @@ import type { OpenOrder } from '../api/openOrders'
 jest.mock('wagmi', () => ({ useConfig: () => ({}) }))
 jest.mock('wagmi/actions', () => ({ waitForTransactionReceipt: jest.fn() }))
 jest.mock('../api/cancelOrder', () => ({ cancelOrder: jest.fn() }))
+jest.mock('../api/cancelCowShedTwap', () => ({ cancelCowShedTwap: jest.fn() }))
 
 const cancelOrderMock = cancelOrder as jest.Mock
 const waitForReceiptMock = waitForTransactionReceipt as jest.Mock
@@ -55,6 +57,19 @@ describe('useCancelOrder', () => {
     )
     expect(result.current.state).toEqual({ status: 'cancelled', type: 'soft' })
     expect(invalidateQueries).toHaveBeenCalledWith({ queryKey: ['rwa', 'open-orders'] })
+  })
+
+  it('cancels a TWAP placed by an EOA through its CoW Shed', async () => {
+    const twap = { eventId: '0xuid', hash: `0x${'aa'.repeat(32)}`, cowShedAddress: '0xc0e' }
+    ;(cancelCowShedTwap as jest.Mock).mockResolvedValue(TX_HASH)
+    waitForReceiptMock.mockResolvedValue({ status: 'success' })
+    const { result } = renderCancelOrder()
+
+    await act(() => result.current.cancel({ ...ORDER, type: 'twap', cowShedTwap: twap }, 'hard'))
+
+    expect(cancelCowShedTwap).toHaveBeenCalledWith(expect.objectContaining({ chainId: 1, twap }))
+    expect(cancelOrderMock).not.toHaveBeenCalled()
+    expect(result.current.state).toEqual({ status: 'cancelled', type: 'hard' })
   })
 
   it('waits for the hard cancellation transaction', async () => {

@@ -59,6 +59,11 @@ export interface CoingeckoRwaMarket {
   } | null
 }
 
+export interface CoingeckoRwaMarketChart {
+  /** `[timestamp ms, price USD per share]` over every tokenized version of the RWA */
+  tokenized_prices: [number, number][]
+}
+
 interface CoingeckoConfig {
   baseUrl: string
   headers: Record<string, string>
@@ -194,6 +199,20 @@ export async function fetchOnchainTokens(
 
     return data
   })
+}
+
+/** `id` is a RWA id (`/rwas/list`). `null` without the Pro plan or when CoinGecko has no such RWA */
+export async function fetchRwaMarketChart(
+  id: string,
+  days: CoingeckoChartDays,
+  revalidateSeconds: number,
+): Promise<CoingeckoRwaMarketChart | null> {
+  if (!isProPlan()) return null
+
+  return fetchJsonOrNotFound<CoingeckoRwaMarketChart>(
+    `${getConfig().baseUrl}/rwas/${encodeURIComponent(id)}/market_chart?vs_currency=usd&days=${days}`,
+    revalidateSeconds,
+  )
 }
 
 /**

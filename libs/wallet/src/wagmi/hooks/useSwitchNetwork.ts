@@ -5,6 +5,7 @@ import { useConnection } from 'wagmi'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { useSolanaAccount } from '../../api/hooks/useSolanaAccount'
 import { walletInfoAtom } from '../../api/state'
 import { getReownChainNamespace } from '../../reown/getReownChainNamespace'
 import { getReownNetwork } from '../../reown/networks'
@@ -14,9 +15,12 @@ import { isNetworkSwitchUnsupportedAtom } from '../state/walletMetadata.atoms'
 import type { AppKitNetwork } from '@reown/appkit-common'
 
 export function useSwitchNetwork(): (chainId: SupportedChainId) => Promise<void> {
-  const { isConnected } = useConnection()
+  // wagmi only tracks the eip155 namespace, so a Solana-only session reads as disconnected here
+  const { isConnected: isEvmConnected } = useConnection()
+  const solanaAccount = useSolanaAccount()
   const networkSwitchUnsupported = useAtomValue(isNetworkSwitchUnsupportedAtom)
   const setWalletInfo = useSetAtom(walletInfoAtom)
+  const isConnected = isEvmConnected || Boolean(solanaAccount)
 
   return useCallback(
     async (chainId: SupportedChainId) => {

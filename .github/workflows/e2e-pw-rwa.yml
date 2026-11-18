@@ -1,0 +1,44 @@
+name: E2E PW RWA
+
+on:
+  pull_request:
+    paths:
+      - 'apps/rwa-frontend/**'
+      - 'apps/cowswap-e2e-tests/src/rwa/**'
+      - 'apps/cowswap-e2e-tests/playwright.rwa.config.ts'
+      - 'apps/cowswap-e2e-tests/project.json'
+      - 'apps/cowswap-e2e-tests/package.json'
+      - '.github/workflows/e2e-pw-rwa.yml'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+
+concurrency:
+  group: e2e-pw-rwa-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  rwa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    env:
+      CI: 'true'
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: lts/jod
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @cowprotocol/cowswap-e2e-pw exec playwright install --with-deps chromium
+      - run: pnpm e2e:rwa
+      - if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: playwright-report-rwa
+          path: apps/cowswap-e2e-tests/playwright-report
+          retention-days: 7

@@ -21,13 +21,18 @@ const usdc = new Token(SupportedChainId.SOLANA, 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4
 const ERROR_MESSAGE = 'An unknown error occurred while handling the keyring (v2) request'
 const LOGS = ['Program log: CreateIdempotent', 'Program log: Error: Associated address does not match seed derivation']
 
-function renderScreen(logs: string[] | null = null, onDismiss = jest.fn()): { onDismiss: jest.Mock } {
+function renderScreen(
+  logs: string[] | null = null,
+  onDismiss = jest.fn(),
+  isSquadsSetupRequired = false,
+): { onDismiss: jest.Mock } {
   render(
     <StyledComponentsThemeProvider theme={getCowswapTheme(false)}>
       <I18nProvider i18n={i18n}>
         <SolanaOrderNotPlaced
           errorMessage={ERROR_MESSAGE}
           logs={logs}
+          isSquadsSetupRequired={isSquadsSetupRequired}
           inputAmount={CurrencyAmount.fromRawAmount(usdc, '1000000')}
           outputAmount={CurrencyAmount.fromRawAmount(wrappedSol, '8273000')}
           onDismiss={onDismiss}
@@ -46,6 +51,28 @@ describe('SolanaOrderNotPlaced', () => {
     expect(screen.getByText('Order not placed')).toBeTruthy()
     expect(screen.getByText('Transaction checks failed')).toBeTruthy()
     expect(screen.getByText("The transaction didn't pass its checks, so your order wasn't submitted.")).toBeTruthy()
+  })
+
+  // "Transaction checks failed" sends the user looking at their order; the problem is that the
+  // extension was never added to the Squad, and only the Squads docs can fix it.
+  it('names the missing Squads setup and links to its docs', () => {
+    renderScreen(null, jest.fn(), true)
+
+    expect(screen.getByText('SquadsX is not set up to sign')).toBeTruthy()
+    expect(screen.queryByText('Transaction checks failed')).toBeNull()
+    expect(screen.getByRole('link', { name: 'How to set up SquadsX' }).getAttribute('href')).toBe(
+      'https://docs.squads.so/main/navigating-your-squad/squadsx/start-using-squadsx',
+    )
+  })
+
+  // The guidance replaces the headline, not the evidence: the wallet's own wording still has to be
+  // copyable for support.
+  it('keeps the technical details available on the Squads screen', () => {
+    renderScreen(null, jest.fn(), true)
+
+    fireEvent.click(screen.getByRole('button', { name: /Show technical details/ }))
+
+    expect(screen.getByText(ERROR_MESSAGE)).toBeTruthy()
   })
 
   // The whole point of the screen: the wallet's own wording is kept, but out of the way.

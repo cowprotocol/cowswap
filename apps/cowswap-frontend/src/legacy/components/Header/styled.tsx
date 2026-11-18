@@ -2,6 +2,8 @@ import { Media, RowFixed, UI } from '@cowprotocol/ui'
 
 import styled, { css } from 'styled-components/macro'
 
+import { MOBILE_HEADER_CONTROLS_HEIGHT_PX } from 'common/constants/common'
+
 export const HeaderControls = styled.div`
   display: flex;
   flex-direction: row;
@@ -13,7 +15,7 @@ export const HeaderControls = styled.div`
 
   ${Media.upToMedium()} {
     margin: 0 0 0 auto;
-    height: 56px;
+    height: ${MOBILE_HEADER_CONTROLS_HEIGHT_PX}px;
     width: 100%;
     position: fixed;
     bottom: 0;

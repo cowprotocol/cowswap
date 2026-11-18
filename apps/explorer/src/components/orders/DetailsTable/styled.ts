@@ -1,5 +1,6 @@
 import { Color, Media, UI } from '@cowprotocol/ui'
 
+import { PiRobotFill } from 'react-icons/pi'
 import styled from 'styled-components/macro'
 
 import { LinkWithPrefixNetwork } from '../../common/LinkWithPrefixNetwork'
@@ -104,6 +105,11 @@ export const SolverBadgeFallback = styled.div`
   justify-content: center;
   font-size: 1.2rem;
   font-weight: ${({ theme }): string => theme.fontBold};
+`
+
+export const SolverBadgeUnknownIcon = styled(PiRobotFill)`
+  width: 62%;
+  height: 62%;
 `
 
 export const SolverBadgeName = styled.span`

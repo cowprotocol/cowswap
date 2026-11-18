@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react'
 
+import { TradeType } from '@cowprotocol/widget-lib'
+
 import { NumberInput } from '../../ui/inputs/NumberInput/NumberInput.component'
 import { SwitchInput } from '../../ui/inputs/SwitchInput/SwitchInput'
 
@@ -11,6 +13,8 @@ export interface BehaviorSectionFormProps extends SidebarSectionFormProps {
 }
 
 export function BehaviorSectionForm({ values, onChange, toastManager }: BehaviorSectionFormProps): ReactNode {
+  const isLimitEnabled = values.enabledTradeTypes.includes(TradeType.LIMIT)
+
   return (
     <>
       <SwitchInput
@@ -28,6 +32,13 @@ export function BehaviorSectionForm({ values, onChange, toastManager }: Behavior
         checked={!values.disablePostTradeTips}
         label="Show post-trade tips"
         onChange={(enabled) => onChange('disablePostTradeTips', !enabled)}
+      />
+      <SwitchInput
+        checked={isLimitEnabled && !values.disablePricePercentageShortcuts}
+        disabled={!isLimitEnabled}
+        label="Show take-profit shortcuts"
+        helperText="Post-swap banner with percentage shortcuts that open a limit order. Requires Limit trade type."
+        onChange={(enabled) => onChange('disablePricePercentageShortcuts', !enabled)}
       />
       <SwitchInput
         checked={!values.disableSwitchingTokens}

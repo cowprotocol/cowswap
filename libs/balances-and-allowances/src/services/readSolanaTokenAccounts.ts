@@ -1,11 +1,6 @@
-import {
-  type Account,
-  ASSOCIATED_TOKEN_PROGRAM_ID,
-  getAssociatedTokenAddressSync,
-  TOKEN_2022_PROGRAM_ID,
-  TOKEN_PROGRAM_ID,
-  unpackAccount,
-} from '@solana/spl-token'
+import { deriveAta } from '@cowprotocol/sdk-trading-solana'
+
+import { type Account, TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID, unpackAccount } from '@solana/spl-token'
 import { AccountInfo, Connection, PublicKey } from '@solana/web3.js'
 
 export interface SolanaTokenMint {
@@ -88,7 +83,7 @@ function getCachedAta(
 
   let ata: PublicKey | null = null
   try {
-    ata = getAssociatedTokenAddressSync(new PublicKey(mint), owner, false, programId, ASSOCIATED_TOKEN_PROGRAM_ID)
+    ata = deriveAta(new PublicKey(mint), owner, programId)
   } catch {
     // Malformed mint: leave the default `null` so the rest of the list still loads.
   }

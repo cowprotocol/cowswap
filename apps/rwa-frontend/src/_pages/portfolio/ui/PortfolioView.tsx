@@ -18,6 +18,7 @@ import { type Portfolio, usePortfolio } from '../model/usePortfolio'
 import type { RwaAssetSummary } from '@/entities/asset'
 
 import { ConnectButton } from '@/features/connect-wallet'
+import { trackEvent } from '@/shared/lib/analytics'
 import { StatusMessage } from '@/shared/ui/status-message'
 import { type AccountTab, AccountTabs, ActivityTable, OpenOrdersTable } from '@/widgets/account'
 
@@ -148,7 +149,13 @@ function Positions({ portfolio, isWalletEmpty, isFiltered }: PositionsProps): Re
             )}
           </p>
         )}
-        <BalancesStatus progress={portfolio.balancesProgress} onRefresh={portfolio.refreshBalances} />
+        <BalancesStatus
+          progress={portfolio.balancesProgress}
+          onRefresh={() => {
+            portfolio.refreshBalances()
+            trackEvent('portfolio_refresh', {})
+          }}
+        />
       </div>
     </>
   )

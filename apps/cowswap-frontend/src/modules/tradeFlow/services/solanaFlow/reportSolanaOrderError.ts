@@ -3,6 +3,7 @@ import { OrderBookApiError, OrderClass, SupportedChainId } from '@cowprotocol/co
 
 import { SolanaAppDataMismatchError } from './assertSignedAppData'
 import { getSolanaErrorLogs } from './getSolanaErrorLogs'
+import { isSquadsSetupError } from './isSquadsSetupError'
 
 export const SOLANA_ORDER_SENTRY_SCOPE = 'SolanaOrder'
 
@@ -37,6 +38,7 @@ export interface ReportSolanaOrderErrorParams {
  * Why the attempt failed, as far as the client can tell:
  * - `user-rejected` — the wallet prompt was declined
  * - `window-expired` — the blockhash died before the signature came back
+ * - `squads-setup` — the SquadsX extension is not an active proposer on the Squad
  * - `app-data-mismatch` — the signed hash does not cover the doc being registered
  * - `insufficient-funds` — not enough SOL for fees or rent
  * - `order-book` — the order book refused the signed bundle
@@ -46,6 +48,7 @@ export interface ReportSolanaOrderErrorParams {
 export type SolanaOrderErrorReason =
   | 'user-rejected'
   | 'window-expired'
+  | 'squads-setup'
   | 'app-data-mismatch'
   | 'insufficient-funds'
   | 'order-book'
@@ -155,6 +158,7 @@ function classifySolanaOrderError({
 }: Pick<ReportSolanaOrderErrorParams, 'error' | 'isRejection' | 'isWindowExpiryFailure'>): SolanaOrderErrorReason {
   if (isRejection) return 'user-rejected'
   if (isWindowExpiryFailure) return 'window-expired'
+  if (isSquadsSetupError(error)) return 'squads-setup'
   if (error instanceof SolanaAppDataMismatchError) return 'app-data-mismatch'
   if (isInsufficientFundsProviderError(error)) return 'insufficient-funds'
   if (error instanceof OrderBookApiError) return 'order-book'

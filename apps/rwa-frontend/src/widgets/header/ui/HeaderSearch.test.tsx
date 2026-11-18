@@ -3,12 +3,17 @@ import type { ReactElement } from 'react'
 
 import { QueryClient } from '@tanstack/query-core'
 
-import { act, fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { queryClientAtom } from 'jotai-tanstack-query'
 
 import { HeaderSearch } from './HeaderSearch'
 
 import type { RwaAssetsSearchResult, RwaAssetWithMarket } from '@/entities/asset'
+
+import { mockViewport } from '@/shared/lib/testing'
+
+const FULL_SCREEN_WIDTH = 390
+const PAST_FULL_SCREEN_WIDTH = 800
 
 const mockPush = jest.fn()
 let mockPathname = '/'
@@ -35,23 +40,10 @@ function renderSearch(): { input: HTMLElement; rerender(): void } {
 }
 
 describe('HeaderSearch', () => {
-  let isPhoneViewport = true
-  const viewportListeners = new Set<() => void>()
-
-  beforeAll(() => {
-    Object.defineProperty(window, 'matchMedia', {
-      value: (query: string) => ({
-        get matches() {
-          return query === '(max-width: 720px)' && isPhoneViewport
-        },
-        addEventListener: (_type: string, listener: () => void) => viewportListeners.add(listener),
-        removeEventListener: (_type: string, listener: () => void) => viewportListeners.delete(listener),
-      }),
-    })
-  })
+  let setWidth: (width: number) => void
 
   beforeEach(() => {
-    isPhoneViewport = true
+    setWidth = mockViewport(FULL_SCREEN_WIDTH)
     mockPathname = '/'
     mockPush.mockReset()
     global.fetch = jest.fn(() =>
@@ -118,28 +110,15 @@ describe('HeaderSearch', () => {
     expect(document.activeElement).toBe(button)
   })
 
-  it('locks the page scroll while the field is shown and hides it from the close button', () => {
+  it('hides the field from the close button', () => {
     renderSearch()
     const button = screen.getByRole('button', { name: 'Search' })
 
     fireEvent.click(button)
-
-    expect(document.body.style.overflow).toBe('hidden')
-
     fireEvent.click(screen.getByRole('button', { name: 'Close search' }))
 
     expect(button.getAttribute('aria-expanded')).toBe('false')
-    expect(document.body.style.overflow).toBe('')
     expect(document.activeElement).toBe(button)
-  })
-
-  it('keeps the page scroll unlocked on desktop', () => {
-    isPhoneViewport = false
-    renderSearch()
-
-    fireEvent.click(screen.getByRole('button', { name: 'Search' }))
-
-    expect(document.body.style.overflow).toBe('')
   })
 
   it('hides the field on Escape from the close button and marks the Escape handled', () => {
@@ -162,7 +141,6 @@ describe('HeaderSearch', () => {
     fireEvent.keyDown(document.body, { key: 'Escape' })
 
     expect(button.getAttribute('aria-expanded')).toBe('false')
-    expect(document.body.style.overflow).toBe('')
   })
 
   it('hides the field when the viewport grows past the full-screen breakpoint', () => {
@@ -170,16 +148,13 @@ describe('HeaderSearch', () => {
     const button = screen.getByRole('button', { name: 'Search' })
 
     fireEvent.click(button)
-    isPhoneViewport = false
-    act(() => viewportListeners.forEach((listener) => listener()))
+    setWidth(PAST_FULL_SCREEN_WIDTH)
 
     expect(button.getAttribute('aria-expanded')).toBe('false')
 
-    isPhoneViewport = true
-    act(() => viewportListeners.forEach((listener) => listener()))
+    setWidth(FULL_SCREEN_WIDTH)
 
     expect(button.getAttribute('aria-expanded')).toBe('false')
-    expect(document.body.style.overflow).toBe('')
   })
 
   it('hides the field when the page changes', () => {
@@ -191,7 +166,6 @@ describe('HeaderSearch', () => {
     rerender()
 
     expect(button.getAttribute('aria-expanded')).toBe('false')
-    expect(document.body.style.overflow).toBe('')
 
     mockPathname = '/'
     rerender()

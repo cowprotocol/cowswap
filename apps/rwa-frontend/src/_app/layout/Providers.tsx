@@ -5,6 +5,7 @@ import { type ReactNode, useEffect, useState } from 'react'
 
 import { queryClientAtom } from 'jotai-tanstack-query'
 
+import { Analytics } from '../analytics'
 import { QueryCachePersistence, ServiceWorkerRegistration } from '../offline'
 import { createQueryClient } from '../query'
 import { WalletProvider } from '../wallet'
@@ -26,6 +27,7 @@ export function Providers({ children }: { children: ReactNode }): ReactNode {
       <WalletProvider queryClient={queryClient}>
         <QueryCachePersistence queryClient={queryClient} />
         <ServiceWorkerRegistration />
+        <Analytics />
         {children}
       </WalletProvider>
     </JotaiProvider>

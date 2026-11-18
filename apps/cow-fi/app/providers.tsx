@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 
-import { CowAnalyticsProvider, initGtm } from '@cowprotocol/analytics'
+import { CowAnalyticsProvider, initGtmWithConsent } from '@cowprotocol/analytics'
+import { CookieConsentBannerContainer } from '@cowprotocol/ui'
 
 import { ApolloProvider } from '@apollo/client'
 import { useServerInsertedHTML } from 'next/navigation'
@@ -15,7 +16,7 @@ import { ThemeProvider } from '../theme'
 import { WithLDProvider } from '@/components/WithLDProvider'
 import GlobalStyles from '@/styles/global.styles'
 
-const cowAnalytics = initGtm()
+const cowAnalytics = initGtmWithConsent()
 
 /** Root client providers: styling, Apollo, feature flags, theme, and analytics. */
 export function Providers({ children }: { children: React.ReactNode }): React.ReactNode {
@@ -28,6 +29,7 @@ export function Providers({ children }: { children: React.ReactNode }): React.Re
               <ThemeProvider>
                 <GlobalStyles />
                 <CowAnalyticsProvider cowAnalytics={cowAnalytics}>{children}</CowAnalyticsProvider>
+                <CookieConsentBannerContainer variant="paleBlue" />
               </ThemeProvider>
             </WithLDProvider>
           </ApolloProvider>

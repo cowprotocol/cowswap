@@ -1,5 +1,69 @@
 # Changelog
 
+## [3.19.2](https://github.com/cowprotocol/cowswap/compare/analytics-v3.19.1...analytics-v3.19.2) (2026-11-16)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.23.0
+  - @cowprotocol/common-hooks@3.21.1
+  - @cowprotocol/common-utils@3.22.4
+
+## [3.19.1](https://github.com/cowprotocol/cowswap/compare/analytics-v3.19.0...analytics-v3.19.1) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.22.0
+  - @cowprotocol/common-hooks@3.21.0
+  - @cowprotocol/common-utils@3.22.3
+
+## [3.19.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.18.0...analytics-v3.19.0) (2026-11-13)
+
+### Minor Changes
+
+- feat(cow-fi): gate GTM on cookie consent
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.21.0
+  - @cowprotocol/common-hooks@3.20.1
+  - @cowprotocol/common-utils@3.22.2
+
+## [3.18.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.17.0...analytics-v3.18.0) (2026-11-11)
+
+### Minor Changes
+
+- feat(rwa): google analytics (#8542)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.20.0
+  - @cowprotocol/common-const@3.20.0
+  - @cowprotocol/types@4.15.1
+  - @cowprotocol/common-utils@3.22.1
+  - @cowprotocol/events@4.18.1
+
+## [3.17.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.16.4...analytics-v3.17.0) (2026-11-10)
+
+### Minor Changes
+
+- feat(solana): pass appData to quote (#8509)
+
+### Patch Changes
+
+- fix(solana): use SDK for quote costs breakdown (#8522)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.22.0
+  - @cowprotocol/common-const@3.19.0
+  - @cowprotocol/common-hooks@3.19.0
+  - @cowprotocol/currency@1.10.0
+  - @cowprotocol/events@4.18.0
+  - @cowprotocol/types@4.15.0
+
 ## [3.16.4](https://github.com/cowprotocol/cowswap/compare/analytics-v3.16.3...analytics-v3.16.4) (2026-11-05)
 
 ### Patch Changes

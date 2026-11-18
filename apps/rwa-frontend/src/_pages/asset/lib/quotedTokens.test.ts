@@ -71,14 +71,13 @@ describe('toQuotedTokens', () => {
       {
         chainId: AAPLON_MAINNET.chainId,
         address: AAPLON_MAINNET.address.toLowerCase(),
-        onchainCap: 5,
-        dexVolume24h: 1,
+        dexVolume24h: 5,
       },
-      { chainId: 42161, address: AAPLX_MAINNET.address, onchainCap: 7, dexVolume24h: 2 },
+      { chainId: 42161, address: AAPLX_MAINNET.address, dexVolume24h: 7 },
     ]
 
     expect(
-      toQuotedTokens(CHAIN_TOKENS, undefined, stats, null, NO_SHARES).map((quoted) => quoted.stats?.onchainCap),
+      toQuotedTokens(CHAIN_TOKENS, undefined, stats, null, NO_SHARES).map((quoted) => quoted.stats?.dexVolume24h),
     ).toEqual([undefined, 5])
   })
 })

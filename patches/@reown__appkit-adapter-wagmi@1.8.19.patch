@@ -1,8 +1,8 @@
 diff --git a/dist/esm/src/client.js b/dist/esm/src/client.js
-index 79697e342068039131b11f6f47d97702e28c9ff2..6f57d7a020b50f91f3b88f25db1df023a5302f39 100644
+index 79697e342068039131b11f6f47d97702e28c9ff2..11adfa863077bbcc62e048dccb5e1eb8825d231b 100644
 --- a/dist/esm/src/client.js
 +++ b/dist/esm/src/client.js
-@@ -152,9 +152,10 @@ export class WagmiAdapter extends AdapterBlueprint {
+@@ -152,9 +152,14 @@ export class WagmiAdapter extends AdapterBlueprint {
                  }
                  if (accountData.status === 'connected') {
                      const hasAccountChanged = accountData.address !== prevAccountData?.address;
@@ -10,12 +10,16 @@ index 79697e342068039131b11f6f47d97702e28c9ff2..6f57d7a020b50f91f3b88f25db1df023
 +                    const hasConnectorChanged = accountData.connector?.id !== prevAccountData.connector?.id;
                      const hasConnectionStatusChanged = prevAccountData.status !== 'connected';
 -                    if (hasAccountChanged || hasConnectorChanged || hasConnectionStatusChanged) {
-+                    if (accountData.connector &&
++                    // A WalletConnect session approved for Solana only (Ledger Live) leaves wagmi
++                    // connected with no eip155 account, and handleAccountChanged checksums the
++                    // address without a guard.
++                    if (accountData.address &&
++                        accountData.connector &&
 +                        (hasAccountChanged || hasConnectorChanged || hasConnectionStatusChanged)) {
                          this.setupWatchPendingTransactions();
                          this.handleAccountChanged({
                              address: accountData.address,
-@@ -344,13 +345,33 @@ export class WagmiAdapter extends AdapterBlueprint {
+@@ -344,13 +349,33 @@ export class WagmiAdapter extends AdapterBlueprint {
          await this.addThirdPartyConnectors();
      }
      async syncConnections() {
@@ -51,7 +55,7 @@ index 79697e342068039131b11f6f47d97702e28c9ff2..6f57d7a020b50f91f3b88f25db1df023
          await reconnect(this.wagmiConfig, {
              connectors: wagmiConnectors
          });
-@@ -358,8 +379,13 @@ export class WagmiAdapter extends AdapterBlueprint {
+@@ -358,8 +383,13 @@ export class WagmiAdapter extends AdapterBlueprint {
      async syncConnection(params) {
          const { id, chainId } = params;
          const connections = getConnections(this.wagmiConfig);
@@ -66,7 +70,7 @@ index 79697e342068039131b11f6f47d97702e28c9ff2..6f57d7a020b50f91f3b88f25db1df023
          const provider = (await connector?.getProvider());
          const isSafeApp = CoreHelperUtil.isSafeApp();
          if (isSafeApp && id === CommonConstantsUtil.CONNECTOR_ID.SAFE && !connection?.accounts.length) {
-@@ -379,6 +405,17 @@ export class WagmiAdapter extends AdapterBlueprint {
+@@ -379,6 +409,17 @@ export class WagmiAdapter extends AdapterBlueprint {
                  };
              }
          }
@@ -84,7 +88,7 @@ index 79697e342068039131b11f6f47d97702e28c9ff2..6f57d7a020b50f91f3b88f25db1df023
          return {
              chainId: Number(connection?.chainId),
              address: this.toChecksummedAddress(connection?.accounts[0]),
-@@ -424,7 +461,11 @@ export class WagmiAdapter extends AdapterBlueprint {
+@@ -424,7 +465,11 @@ export class WagmiAdapter extends AdapterBlueprint {
              if (provider && info && connector.id === CommonConstantsUtil.CONNECTOR_ID.EIP6963) {
                  connector.setEip6963Wallet?.({ provider, info });
              }
@@ -97,7 +101,7 @@ index 79697e342068039131b11f6f47d97702e28c9ff2..6f57d7a020b50f91f3b88f25db1df023
              if (connection) {
                  await this.wagmiConfig.storage?.setItem('recentConnectorId', connector.id);
                  const sortedAccounts = [...connection.accounts].sort((a, b) => {
-@@ -520,13 +561,14 @@ export class WagmiAdapter extends AdapterBlueprint {
+@@ -520,13 +565,14 @@ export class WagmiAdapter extends AdapterBlueprint {
                          chainId,
                          token: params.tokens?.[caipNetwork.caipNetworkId]?.address
                      });

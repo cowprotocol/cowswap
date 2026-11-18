@@ -5,8 +5,10 @@ import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { TradeFormValidationContext } from '../types'
 
 export function getIsSolanaTradeAboveLimit(tradeFormValidationContext: TradeFormValidationContext): boolean {
-  const { derivedTradeState } = tradeFormValidationContext
+  const { derivedTradeState, isSolanaPublicLaunched } = tradeFormValidationContext
   const { orderKind, inputCurrency, inputCurrencyFiatAmount, outputCurrencyFiatAmount } = derivedTradeState
+
+  if (isSolanaPublicLaunched) return false
 
   if (!inputCurrency || !isSolanaChain(inputCurrency.chainId)) return false
 

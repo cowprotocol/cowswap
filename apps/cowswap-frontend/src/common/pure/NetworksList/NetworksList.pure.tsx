@@ -6,12 +6,13 @@ import { Badge, BadgeTypes } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 
+import { ChainStatusBadgeContainer } from 'common/containers/ChainStatusBadge/ChainStatusBadge.container'
+
 import { ActiveRowLinks } from './ActiveRowLinks/ActiveRowLinks.pure'
 import * as styledEl from './NetworksList.styled'
 import { getLogo } from './NetworksList.utils'
 
 import { useDeprecatedChains } from '../../hooks/useDeprecatedChains'
-import { ChainStatusBadge } from '../ChainStatusBadge/ChainStatusBadge.pure'
 
 const NEW_NETWORK_IDS: Set<TargetChainId> = new Set([SupportedChainId.ROBINHOOD])
 
@@ -67,7 +68,10 @@ export function NetworksList({
             )}
 
             {!isDeprecatedNetwork && (
-              <ChainStatusBadge chainId={targetChainId} style={isActive ? { marginRight: '10px' } : undefined} />
+              <ChainStatusBadgeContainer
+                chainId={targetChainId}
+                style={isActive ? { marginRight: '10px' } : undefined}
+              />
             )}
 
             {isActive && <styledEl.FlyoutRowActiveIndicator $active />}

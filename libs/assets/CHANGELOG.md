@@ -1,5 +1,25 @@
 # Changelog
 
+## [2.11.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.10.0...assets-v2.11.0) (2026-11-13)
+
+### Minor Changes
+
+- feat(graffiti): collaborative graffiti wall (consolidated) (#8560)
+
+## [2.10.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.9.0...assets-v2.10.0) (2026-11-13)
+
+### Minor Changes
+
+- feat(cow-fi): gate GTM on cookie consent
+
+- feat(cow-fi): add CoW Protocol on Solana landing page (#8470)
+
+## [2.9.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.8.0...assets-v2.9.0) (2026-11-10)
+
+### Minor Changes
+
+- feat(rwa): standardize header and footer with CoW product links (#8516)
+
 ## [2.8.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.7.0...assets-v2.8.0) (2026-11-05)
 
 ### Minor Changes

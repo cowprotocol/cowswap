@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ComponentType, PropsWithChildren, ReactNode } from 'react'
 
 import svgCowammSrc from '@cowprotocol/assets/images/logo-cowamm.svg'
 import svgCowdaoSrc from '@cowprotocol/assets/images/logo-cowdao.svg'
@@ -322,7 +322,11 @@ export interface LogoProps {
   href?: string // Optional href for the logo
   external?: boolean // Indicates if the href is an external link
   className?: string
+  /** Renders an internal href through the host app's router, so the click does not reload the page. */
+  LinkComponent?: LogoLinkComponent
 }
+
+type LogoLinkComponent = ComponentType<PropsWithChildren<{ href: string }>>
 
 export const ProductLogoWrapper = styled.span<{
   color?: string
@@ -376,6 +380,36 @@ export const ProductLogoWrapper = styled.span<{
   }
 `
 
+interface LogoLinkProps {
+  href: string
+  external: boolean
+  ariaLabel: string
+  LinkComponent?: LogoLinkComponent
+}
+
+const LogoLink = ({
+  href,
+  external,
+  ariaLabel,
+  LinkComponent,
+  children,
+}: PropsWithChildren<LogoLinkProps>): ReactNode => {
+  if (LinkComponent && !external) {
+    return <LinkComponent href={href}>{children}</LinkComponent>
+  }
+
+  return (
+    <a
+      href={href}
+      target={external ? '_blank' : '_self'}
+      rel={external ? 'noopener noreferrer' : undefined}
+      aria-label={ariaLabel}
+    >
+      {children}
+    </a>
+  )
+}
+
 // TODO: Reduce function complexity by extracting logic
 
 export const ProductLogo = ({
@@ -389,10 +423,13 @@ export const ProductLogo = ({
   href,
   external = false,
   className,
+  LinkComponent,
 }: LogoProps): ReactNode => {
   const themeMode = useTheme()
   const selectedTheme = customThemeMode || (themeMode.darkMode ? 'dark' : 'light')
-  const logoForTheme = LOGOS[variant][selectedTheme] || LOGOS[variant]['light'] // Fallback to light theme if selected theme is not available
+  // A theme without its own logo falls back within its own brightness family,
+  // otherwise a dark theme renders the dark-blue light-mode logo on a dark page.
+  const logoForTheme = LOGOS[variant][selectedTheme] || LOGOS[variant][themeMode.darkMode ? 'dark' : 'light']
   const logoInfo = logoIconOnly && logoForTheme.logoIconOnly ? logoForTheme.logoIconOnly : logoForTheme.default
 
   const initialColor = logoInfo.preserveOriginalColors ? undefined : overrideColor || logoInfo.color
@@ -420,14 +457,9 @@ export const ProductLogo = ({
       preserveOriginalColors={logoInfo.preserveOriginalColors}
     >
       {href ? (
-        <a
-          href={href}
-          target={external ? '_blank' : '_self'}
-          rel={external ? 'noopener noreferrer' : undefined}
-          aria-label={getAccessibleAltText()}
-        >
+        <LogoLink href={href} external={external} ariaLabel={getAccessibleAltText()} LinkComponent={LinkComponent}>
           {logoElement}
-        </a>
+        </LogoLink>
       ) : (
         logoElement
       )}

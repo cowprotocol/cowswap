@@ -18,6 +18,7 @@ import {
   trackAffiliateEvent,
 } from '../analytics/affiliateAnalytics.utils'
 import { useAffiliateStateViewAnalytics } from '../hooks/useAffiliateStateViewAnalytics'
+import { useAffiliateSupportedNetworkNames } from '../hooks/useAffiliateSupportedNetworkNames'
 import { useAffiliateTraderRecoverySideEffect } from '../hooks/useAffiliateTraderRecoverySideEffect'
 import { useAffiliateTraderRefUrlSideEffect } from '../hooks/useAffiliateTraderRefUrlSideEffect'
 import { TraderWalletStatus, useAffiliateTraderWallet } from '../hooks/useAffiliateTraderWallet'
@@ -73,11 +74,12 @@ export function AffiliateTraderModal(): ReactNode {
   })
 
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const supportedNetworks = useAffiliateSupportedNetworkNames()
   const showAffiliateBanner = walletStatus === TraderWalletStatus.UNSUPPORTED && !isProviderNetworkUnsupported
 
   return (
     <>
-      {isModalOpen && showAffiliateBanner && <UnsupportedNetwork />}
+      {isModalOpen && showAffiliateBanner && <UnsupportedNetwork supportedNetworks={supportedNetworks} />}
       <CowModal isOpen={isModalOpen} onDismiss={toggleAffiliateModal} padding="0" maxHeight={90}>
         <ModalContainer>
           <Modal.Header onBack={toggleAffiliateModal} />
