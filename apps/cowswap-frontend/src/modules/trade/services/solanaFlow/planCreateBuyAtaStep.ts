@@ -3,7 +3,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { deriveAta, type SolanaQuote } from '@cowprotocol/sdk-trading-solana'
 
 import { t } from '@lingui/core/macro'
-import { createAssociatedTokenAccountIdempotentInstruction, TOKEN_PROGRAM_ID } from '@solana/spl-token'
+import { createAssociatedTokenAccountIdempotentInstruction } from '@solana/spl-token'
 import { PublicKey } from '@solana/web3.js'
 
 import { SolanaFlowStep, SolanaFundedAccount } from './types'
@@ -45,9 +45,8 @@ export function getCreateBuyAtaFundedAccounts(quote: BuyAtaQuote, isCreationSkip
     {
       address: intent.buyTokenAccount,
       // A Token-2022 mint's extensions decide how large its accounts are, so the size is resolved from
-      // the mint rather than assumed. The sdk preview this branch pins still leaves the program id out
-      // of a quote, where the classic SPL token program is meant; drop the fallback with the pin.
-      size: { mint: intent.buyMint, tokenProgramId: buyTokenProgramId ?? TOKEN_PROGRAM_ID },
+      // the mint rather than assumed.
+      size: { mint: intent.buyMint, tokenProgramId: buyTokenProgramId },
     },
   ]
 }
