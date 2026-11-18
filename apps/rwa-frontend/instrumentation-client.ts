@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/nextjs'
 
-import { getSentryOptions } from '@/shared/lib/sentry'
+import { getSentryOptions } from '@/_app/sentry'
 
 const options = getSentryOptions()
 
