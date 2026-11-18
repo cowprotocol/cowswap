@@ -23,7 +23,7 @@ interface DigitReelProps {
 }
 
 export function CountdownDigits({ remainingSec }: CountdownDigitsProps): ReactNode {
-  const totalSeconds = Math.max(0, remainingSec)
+  const totalSeconds = Math.ceil(Math.max(0, remainingSec))
   const minutes = Math.min(99, Math.floor(totalSeconds / 60))
   const seconds = totalSeconds % 60
 
