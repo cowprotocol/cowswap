@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue } from 'jotai'
-import { ReactNode, useCallback, useRef, useEffect, useState } from 'react'
+import { ReactNode, useCallback, useRef } from 'react'
 
 import { useCountdown } from '@cowprotocol/common-hooks'
 import { formatBatchCountdown } from '@cowprotocol/common-utils'
@@ -25,20 +25,12 @@ export function WaitAndSaveRowContainer(): ReactNode {
 
   const onRetry = useCallback(() => undefined, [])
 
-  const [hasError, setHasError] = useState(true)
-
-  useEffect(() => {
-    setTimeout(() => {
-      setHasError(true)
-    }, 4000)
-  }, [])
-
   return (
     <WaitAndSaveRow
       isEnabled={isEnabled}
       toggle={toggle}
       joinsBatchInRef={joinsBatchInRef}
-      hasError={hasError}
+      hasError={false}
       onRetry={onRetry}
     />
   )

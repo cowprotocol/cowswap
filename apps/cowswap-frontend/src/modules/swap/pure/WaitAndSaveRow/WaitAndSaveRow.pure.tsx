@@ -14,6 +14,7 @@ export interface WaitAndSaveRowProps {
   joinsBatchInRef: RefObject<HTMLElement | null>
   hasError: boolean
   onRetry: () => void
+  saveAmount?: string
 }
 
 export function WaitAndSaveRow({
@@ -22,6 +23,7 @@ export function WaitAndSaveRow({
   joinsBatchInRef,
   hasError,
   onRetry,
+  saveAmount,
 }: WaitAndSaveRowProps): ReactNode {
   const { t } = useLingui()
   const [starSpinKey, setStarSpinKey] = useState(0)
@@ -68,18 +70,24 @@ export function WaitAndSaveRow({
                   </styledEl.NoBreakAroundDot>
                 </Trans>
               </styledEl.ScheduleError>
-            ) : (
+            ) : saveAmount ? (
               <styledEl.SaveAmount>
                 <Trans>
                   Save at least{' '}
                   <styledEl.NoBreakAroundDot>
-                    $2.50
+                    {saveAmount}
                     <styledEl.NextBatch>
-                      {' · '}Joins batch in <span ref={joinsBatchInRef} />
+                      {' · '}Join batch in <span ref={joinsBatchInRef} />
                     </styledEl.NextBatch>
                   </styledEl.NoBreakAroundDot>
                 </Trans>
               </styledEl.SaveAmount>
+            ) : (
+              <styledEl.NextBatch>
+                <Trans>
+                  Save more by joining a batch in <span ref={joinsBatchInRef} />
+                </Trans>
+              </styledEl.NextBatch>
             )}
           </styledEl.DescriptionRow>
         </styledEl.TextColumn>
