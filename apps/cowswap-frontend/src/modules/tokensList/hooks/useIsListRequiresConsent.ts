@@ -2,10 +2,10 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { getSourceAsKey, restrictedListsAtom } from '@cowprotocol/tokens'
+import { isRwaTokenListSource } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { getConsentFromCache, rwaConsentCacheAtom, RwaConsentKey, useGeoStatus } from 'modules/rwa'
+import { getConsentFromCache, RWA_CONSENT_HASH, rwaConsentCacheAtom, RwaConsentKey, useGeoStatus } from 'modules/rwa'
 
 export interface ListConsentResult {
   requiresConsent: boolean
@@ -18,7 +18,6 @@ export function useIsListRequiresConsent(listSource: string | undefined): ListCo
   const { account } = useWalletInfo()
   const { isRwaGeoblockEnabled } = useFeatureFlags()
   const geoStatus = useGeoStatus()
-  const restrictedLists = useAtomValue(restrictedListsAtom)
   const consentCache = useAtomValue(rwaConsentCacheAtom)
 
   return useMemo(() => {
@@ -33,17 +32,15 @@ export function useIsListRequiresConsent(listSource: string | undefined): ListCo
     }
 
     // If still loading, return loading state
-    if (!restrictedLists.isLoaded || geoStatus.isLoading) {
+    if (geoStatus.isLoading) {
       return { requiresConsent: false, consentHash: null, isLoading: true }
     }
 
-    const sourceKey = getSourceAsKey(listSource)
-    const consentHash = restrictedLists.consentHashPerList[sourceKey]
-
-    // If list is not restricted, no consent required
-    if (!consentHash) {
+    if (!isRwaTokenListSource(listSource)) {
       return { requiresConsent: false, consentHash: null, isLoading: false }
     }
+
+    const consentHash = RWA_CONSENT_HASH
 
     // If country is known, no consent check needed (blocked check happens elsewhere)
     if (geoStatus.country) {
@@ -65,5 +62,5 @@ export function useIsListRequiresConsent(listSource: string | undefined): ListCo
       consentHash,
       isLoading: false,
     }
-  }, [isRwaGeoblockEnabled, listSource, restrictedLists, geoStatus, account, consentCache])
+  }, [isRwaGeoblockEnabled, listSource, geoStatus, account, consentCache])
 }

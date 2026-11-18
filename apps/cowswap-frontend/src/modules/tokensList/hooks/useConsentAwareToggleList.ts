@@ -3,10 +3,10 @@ import { useCallback } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { getSourceAsKey, ListState, restrictedListsAtom, useToggleList } from '@cowprotocol/tokens'
+import { isRwaTokenListSource, ListState, useToggleList } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { getConsentFromCache, rwaConsentCacheAtom, RwaConsentKey, useGeoStatus } from 'modules/rwa'
+import { getConsentFromCache, RWA_CONSENT_HASH, rwaConsentCacheAtom, RwaConsentKey, useGeoStatus } from 'modules/rwa'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
@@ -21,7 +21,6 @@ export function useConsentAwareToggleList(): (list: ListState, enabled: boolean)
   const { account } = useWalletInfo()
   const { isRwaGeoblockEnabled } = useFeatureFlags()
   const geoStatus = useGeoStatus()
-  const restrictedLists = useAtomValue(restrictedListsAtom)
   const consentCache = useAtomValue(rwaConsentCacheAtom)
   const updateWidgetState = useUpdateSelectTokenWidgetState()
   const cowAnalytics = useCowAnalytics()
@@ -50,41 +49,26 @@ export function useConsentAwareToggleList(): (list: ListState, enabled: boolean)
 
       // A known country is decided by the trade-time check in `useRwaTokenStatus`, so consent is only
       // worth asking for while the country is unknown.
-      if (!geoStatus.country && restrictedLists.isLoaded) {
-        const sourceKey = getSourceAsKey(list.source)
-        const consentHash = restrictedLists.consentHashPerList[sourceKey]
+      if (!geoStatus.country && isRwaTokenListSource(list.source)) {
+        // no wallet: allow toggle, the consent check is deferred to trade time
+        if (!account) {
+          baseToggleList(list, enabled)
+          return
+        }
 
-        if (consentHash) {
-          // list is restricted - if no wallet, allow toggle (consent check deferred to trade time)
-          if (!account) {
-            baseToggleList(list, enabled)
-            return
-          }
+        const consentKey: RwaConsentKey = { wallet: account, ipfsHash: RWA_CONSENT_HASH }
+        const existingConsent = getConsentFromCache(consentCache, consentKey)
 
-          // wallet connected - check if consent exists
-          const consentKey: RwaConsentKey = { wallet: account, ipfsHash: consentHash }
-          const existingConsent = getConsentFromCache(consentCache, consentKey)
-
-          if (!existingConsent?.acceptedAt) {
-            // wallet connected but no consent - set pending state (data only, no callbacks)
-            // the token selector's postFlow will show the consent modal
-            updateWidgetState({ listToToggle: { list, consentHash } })
-            return
-          }
+        if (!existingConsent?.acceptedAt) {
+          // set pending state (data only, no callbacks): the token selector's postFlow shows the consent modal
+          updateWidgetState({ listToToggle: { list, consentHash: RWA_CONSENT_HASH } })
+          return
         }
       }
 
       // no consent required or consent already given
       baseToggleList(list, enabled)
     },
-    [
-      baseToggleList,
-      isRwaGeoblockEnabled,
-      geoStatus.country,
-      restrictedLists,
-      account,
-      consentCache,
-      updateWidgetState,
-    ],
+    [baseToggleList, isRwaGeoblockEnabled, geoStatus.country, account, consentCache, updateWidgetState],
   )
 }
