@@ -11,7 +11,15 @@ import { APPLE_ICON, FAVICON } from '../seo'
 
 import type { Metadata, Viewport } from 'next'
 
-import { buildPageMetadata, IS_INDEXABLE, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '@/shared/lib/seo/index.server'
+import {
+  buildPageMetadata,
+  buildSiteStructuredData,
+  IS_INDEXABLE,
+  JsonLd,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_URL,
+} from '@/shared/lib/seo/index.server'
 import { THEME_INIT_SCRIPT } from '@/shared/lib/theme'
 import { OfflineBanner } from '@/shared/ui/offline-banner'
 import { Header } from '@/widgets/header'
@@ -38,6 +46,8 @@ export const metadata: Metadata = {
   robots: IS_INDEXABLE ? { index: true, follow: true } : { index: false, follow: false },
 }
 
+const SITE_STRUCTURED_DATA = buildSiteStructuredData()
+
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
@@ -49,6 +59,7 @@ export function RootLayout({ children }: { children: ReactNode }): ReactNode {
     <html lang="en" className={inter.variable} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+        <JsonLd data={SITE_STRUCTURED_DATA} />
       </head>
       <body>
         <Providers>
