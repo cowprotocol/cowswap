@@ -235,6 +235,10 @@ msgstr "Active referrals"
 msgid "Dismiss graffiti wall message"
 msgstr "Dismiss graffiti wall message"
 
+#: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
+msgid "Couldn’t load the next batch time"
+msgstr "Couldn’t load the next batch time"
+
 #: apps/cowswap-frontend/src/modules/usdAmount/apis/getBffUsdPrice.ts
 msgid "Unexpected response from BFF: {resStatus}"
 msgstr "Unexpected response from BFF: {resStatus}"
@@ -3884,6 +3888,7 @@ msgstr "drawing {width}×{height} exceeds the max area ({maxBoxWidth}×{maxBoxHe
 #~ msgstr "Lock this code to your wallet?"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
+#: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Try again"
 msgstr "Try again"
