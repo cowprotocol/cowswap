@@ -1,6 +1,6 @@
 import { JSX, useState } from 'react'
 
-import type { CowSwapWidgetHandler, CowSwapWidgetParams } from '@cowprotocol/widget-lib'
+import type { CowSwapWidgetHandler, CowSwapWidgetParams, EthereumProvider } from '@cowprotocol/widget-lib'
 import { createCowSwapWidget } from '@cowprotocol/widget-lib'
 
 import { render } from '@testing-library/react'
@@ -118,6 +118,28 @@ describe('CowSwapWidget', () => {
 
     expect(onLoadingError).toHaveBeenCalledTimes(1)
   })
+
+  it('forwards onLoadingError to the widget recreated for a new provider', () => {
+    const onLoadingError = jest.fn()
+    const params: CowSwapWidgetParams = { appCode: 'a' }
+
+    const { rerender } = render(<CowSwapWidget params={params} onLoadingError={onLoadingError} />)
+    rerender(<CowSwapWidget params={params} provider={createProvider()} onLoadingError={onLoadingError} />)
+
+    expect(createCowSwapWidgetMock).toHaveBeenCalledTimes(2)
+    expect(createCowSwapWidgetMock.mock.calls[1]?.[1].onLoadingError).toBe(onLoadingError)
+  })
+
+  it('recreates the widget once with the new provider when the provider and bridge flag change together', () => {
+    const params: CowSwapWidgetParams = { appCode: 'a' }
+    const nextProvider = createProvider()
+
+    const { rerender } = render(<CowSwapWidget params={params} provider={createProvider()} enableSafeSdkBridge />)
+    rerender(<CowSwapWidget params={params} provider={nextProvider} enableSafeSdkBridge={false} />)
+
+    expect(createCowSwapWidgetMock).toHaveBeenCalledTimes(2)
+    expect(createCowSwapWidgetMock.mock.calls[1]?.[1].provider).toBe(nextProvider)
+  })
 })
 
 describe('CowSwapWidget recovery after a failed creation', () => {
@@ -159,6 +181,10 @@ describe('CowSwapWidget recovery after a failed creation', () => {
     expect(createCowSwapWidgetMock).toHaveBeenCalledTimes(1)
   })
 })
+
+function createProvider(): EthereumProvider {
+  return { on: jest.fn(), request: jest.fn() }
+}
 
 function createWidgetHandler(): CowSwapWidgetHandler {
   return {

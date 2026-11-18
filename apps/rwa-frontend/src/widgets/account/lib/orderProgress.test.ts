@@ -1,4 +1,8 @@
-import { formatOrderProgress } from './orderProgress'
+import { OrderStatus } from '@cowprotocol/cow-sdk'
+
+import { formatOrderProgress, getOrderStatusLabel } from './orderProgress'
+
+import type { TwapProgress } from './twapProgress'
 
 const NOW = 1_800_000_000
 
@@ -24,5 +28,30 @@ describe('formatOrderProgress', () => {
     expect(formatOrderProgress({ filledFraction: 0, validTo: NOW - 30 }, NOW)).toBe('Expired')
     expect(formatOrderProgress({ filledFraction: 0, validTo: NOW }, NOW)).toBe('Expired')
     expect(formatOrderProgress({ filledFraction: 0.25, validTo: NOW - 30 }, NOW)).toBe('25% filled · Expired')
+  })
+})
+
+describe('getOrderStatusLabel', () => {
+  const twapProgress = (isScheduled: boolean): TwapProgress => ({
+    isScheduled,
+    part: 1,
+    partsCount: 2,
+    minutesLeft: 10,
+    isLastPart: false,
+  })
+
+  it('shows Open until validTo, then Expired', () => {
+    expect(getOrderStatusLabel({ status: OrderStatus.OPEN, validTo: NOW + 60 }, null, NOW)).toBe('Open')
+    expect(getOrderStatusLabel({ status: OrderStatus.OPEN, validTo: NOW }, null, NOW)).toBe('Expired')
+  })
+
+  it('keeps the presign and TWAP labels regardless of validTo', () => {
+    expect(getOrderStatusLabel({ status: OrderStatus.PRESIGNATURE_PENDING, validTo: NOW - 60 }, null, NOW)).toBe(
+      'Awaiting signature',
+    )
+    expect(getOrderStatusLabel({ status: OrderStatus.OPEN, validTo: NOW - 60 }, twapProgress(true), NOW)).toBe(
+      'Scheduled',
+    )
+    expect(getOrderStatusLabel({ status: OrderStatus.OPEN, validTo: NOW - 60 }, twapProgress(false), NOW)).toBe('Open')
   })
 })

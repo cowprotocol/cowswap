@@ -1,5 +1,29 @@
 # Changelog
 
+## [3.23.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.22.2...wallet-v3.23.0) (2026-11-18)
+
+### Minor Changes
+
+- feat: update SDK versions with updated near token lists (#8660)
+
+- feat(graffiti): collaborative graffiti wall (consolidated) (#8560)
+
+- feat(solana): support custom recipients (#8592)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.24.0
+  - @cowprotocol/common-hooks@3.22.0
+  - @cowprotocol/common-utils@3.23.0
+  - @cowprotocol/core@3.16.0
+  - @cowprotocol/currency@1.11.0
+  - @cowprotocol/ens@3.13.0
+  - @cowprotocol/types@4.16.0
+  - @cowprotocol/ui@3.24.0
+  - @cowprotocol/assets@2.12.0
+  - @cowprotocol/iframe-transport@2.3.16
+
 ## [3.22.2](https://github.com/cowprotocol/cowswap/compare/wallet-v3.22.1...wallet-v3.22.2) (2026-11-16)
 
 ### Patch Changes

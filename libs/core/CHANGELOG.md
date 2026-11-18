@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.16.0](https://github.com/cowprotocol/cowswap/compare/core-v3.15.4...core-v3.16.0) (2026-11-18)
+
+### Minor Changes
+
+- feat: update SDK versions with updated near token lists (#8660)
+
+- feat(solana): support custom recipients (#8592)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.24.0
+  - @cowprotocol/common-utils@3.23.0
+
 ## [3.15.4](https://github.com/cowprotocol/cowswap/compare/core-v3.15.3...core-v3.15.4) (2026-11-16)
 
 ### Patch Changes
