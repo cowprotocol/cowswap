@@ -1,5 +1,25 @@
 # Changelog
 
+## [3.20.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.19.2...analytics-v3.20.0) (2026-11-18)
+
+### Minor Changes
+
+- feat: update SDK versions with updated near token lists (#8660)
+
+- feat(cow-fi): gate GTM on cookie consent (#8606)
+
+- feat(solana): support custom recipients (#8592)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.24.0
+  - @cowprotocol/common-hooks@3.22.0
+  - @cowprotocol/common-utils@3.23.0
+  - @cowprotocol/currency@1.11.0
+  - @cowprotocol/events@4.19.0
+  - @cowprotocol/types@4.16.0
+
 ## [3.19.2](https://github.com/cowprotocol/cowswap/compare/analytics-v3.19.1...analytics-v3.19.2) (2026-11-16)
 
 ### Patch Changes

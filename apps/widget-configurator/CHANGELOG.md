@@ -1,5 +1,27 @@
 # Changelog
 
+## [3.22.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.21.4...widget-configurator-v3.22.0) (2026-11-18)
+
+### Minor Changes
+
+- feat: update SDK versions with updated near token lists (#8660)
+
+- feat(solana): support custom recipients (#8592)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/widget-lib@4.16.0
+  - @cowprotocol/analytics@3.20.0
+  - @cowprotocol/common-const@3.24.0
+  - @cowprotocol/common-hooks@3.22.0
+  - @cowprotocol/common-utils@3.23.0
+  - @cowprotocol/events@4.19.0
+  - @cowprotocol/types@4.16.0
+  - @cowprotocol/ui@3.24.0
+  - @cowprotocol/assets@2.12.0
+  - @cowprotocol/widget-react@3.3.6
+
 ## [3.21.4](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.21.3...widget-configurator-v3.21.4) (2026-11-16)
 
 ### Patch Changes

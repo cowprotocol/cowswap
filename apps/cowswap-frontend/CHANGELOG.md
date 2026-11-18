@@ -1,5 +1,59 @@
 # Changelog
 
+## [3.39.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.38.3...cowswap-v3.39.0) (2026-11-18)
+
+### Minor Changes
+
+- feat(rwa): limit RWA buy networks to the asset's chains (#8605)
+
+- feat(limit-orders): warn that long-lived orders can fill when funds return (#8571)
+
+- feat: update SDK versions with updated near token lists (#8660)
+
+- feat(graffiti): collaborative graffiti wall (consolidated) (#8560)
+
+- feat(solana): support custom recipients (#8592)
+
+### Patch Changes
+
+- fix(affiliate): treat deprecated chains as unsupported (#8553)
+
+- fix(trade): don't reuse a quote across order types (#8550)
+
+- fix(solana): derive limit order token accounts with the mint's token program (#8659)
+
+- fix(header): keep the selected network when clicking the logo (#8614)
+
+- fix: disable wait and save for bridge orders (#8578)
+
+- fix(progress-bar): show a generic icon for unidentified solvers (#8537)
+
+- fix(trade): show network costs gas suffix only when gas is paid (#8570)
+
+- fix: simple fix to avoid Wait and Save collisions (#8589)
+
+- Updated dependencies []:
+  - @cowprotocol/widget-lib@4.16.0
+  - @cowprotocol/analytics@3.20.0
+  - @cowprotocol/balances-and-allowances@3.20.0
+  - @cowprotocol/common-const@3.24.0
+  - @cowprotocol/common-hooks@3.22.0
+  - @cowprotocol/common-utils@3.23.0
+  - @cowprotocol/core@3.16.0
+  - @cowprotocol/currency@1.11.0
+  - @cowprotocol/ens@3.13.0
+  - @cowprotocol/events@4.19.0
+  - @cowprotocol/multicall@3.13.0
+  - @cowprotocol/permit-utils@3.14.0
+  - @cowprotocol/tokens@3.20.0
+  - @cowprotocol/types@4.16.0
+  - @cowprotocol/ui@3.24.0
+  - @cowprotocol/wallet@3.23.0
+  - @cowprotocol/assets@2.12.0
+  - @cowprotocol/snackbars@2.3.21
+  - @cowprotocol/iframe-transport@2.3.16
+  - @cowprotocol/hook-dapp-lib@2.5.4
+
 ## [3.38.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.38.2...cowswap-v3.38.3) (2026-11-16)
 
 ### Patch Changes

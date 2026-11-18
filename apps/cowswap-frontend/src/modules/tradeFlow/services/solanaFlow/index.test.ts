@@ -1,4 +1,4 @@
-import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
+import { NATIVE_CURRENCIES, TOKEN_2022_TAG, TokenWithLogo } from '@cowprotocol/common-const'
 import { captureError, ERROR_TYPES } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import {
@@ -13,6 +13,7 @@ import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { postSolanaSponsoredOrder } from '@cowprotocol/sdk-trading-solana'
 import { UiOrderType } from '@cowprotocol/types'
 
+import { TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { Connection, PublicKey } from '@solana/web3.js'
 import {
   solanaOrderNotPlacedAtom,
@@ -155,6 +156,15 @@ const wsol = new TokenWithLogo(
   'Wrapped SOL',
 )
 const usdc = new Token(SOLANA_CHAIN_ID, 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', 6, 'USDC')
+const token2022Sell = new TokenWithLogo(
+  undefined,
+  SOLANA_CHAIN_ID,
+  '9Pq7aLAbhDG2tTnS22cm6kuysZVcZpLFE368HWuypump',
+  6,
+  'JOB',
+  'DogWifJob',
+  [TOKEN_2022_TAG],
+)
 
 const APP_DATA: AppDataInfo = {
   doc: { version: LATEST_APP_DATA_VERSION, appCode: 'CoW Swap', metadata: {} },
@@ -193,6 +203,8 @@ function buildContext({
   quoteBuyToken = usdc.address,
   quoteReceiver = RECEIVER_ADDRESS,
   owner = new PublicKey(SOLANA_ACCOUNT),
+  sellToken = wsol,
+  buyTokenProgramId = TOKEN_PROGRAM_ID,
 }: {
   isNativeSell?: boolean
   delegationAmount?: bigint
@@ -201,6 +213,8 @@ function buildContext({
   quoteBuyToken?: string
   quoteReceiver?: string
   owner?: PublicKey
+  sellToken?: TokenWithLogo
+  buyTokenProgramId?: PublicKey
 } = {}): SolanaTradeFlowContext {
   return {
     account: owner.toBase58(),
@@ -209,7 +223,6 @@ function buildContext({
       uid: new Uint8Array(32).fill(7),
       orderPda: new PublicKey(new Uint8Array(32).fill(4)),
       programId: new PublicKey(new Uint8Array(32).fill(5)),
-      funder: new PublicKey(new Uint8Array(32).fill(9)),
       // Post-slippage amounts: these are what gets signed on chain, and what the stored order must carry.
       intent: {
         owner: new PublicKey(SOLANA_ACCOUNT),
@@ -217,6 +230,7 @@ function buildContext({
         buyAmount: 1_900_000n,
         buyTokenAccount: QUOTED_BUY_TOKEN_ACCOUNT,
       },
+      buyTokenProgramId,
       funder: FUNDER_ADDRESS,
     } as unknown as SolanaTradeFlowContext['solanaQuote'],
     solana: {
@@ -224,7 +238,7 @@ function buildContext({
       provider: {} as SolanaProvider,
       owner,
     },
-    sellToken: wsol,
+    sellToken,
     sellAmount: SELL_AMOUNT,
     currentDelegation: 0n,
     delegationAmount,
@@ -984,6 +998,63 @@ describe('solanaFlow · appData (isSolanaAppDataEnabled off)', () => {
   })
 })
 
+// Both of the intent's associated token accounts have to be derived with the mint's own token program:
+// a Token-2022 mint derived as classic SPL names an address the associated token program rejects
+// ("Provided seeds do not result in a valid address"), and the delegate step approves a different account.
+describe('solanaFlow · token programs', () => {
+  it.each([
+    ['a Token-2022 sell mint', token2022Sell, TOKEN_2022_PROGRAM_ID],
+    ['a classic SPL sell mint', wsol, TOKEN_PROGRAM_ID],
+  ])("passes %s's token program to the limit planner", async (_label, sellToken, expectedProgramId) => {
+    const context = buildContext({ orderClass: OrderClass.LIMIT, sellToken })
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(mockPlanCreateLimitOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ sellTokenProgramId: expectedProgramId }),
+    )
+  })
+
+  it.each([
+    ['a Token-2022 buy mint', token2022Sell, TOKEN_2022_PROGRAM_ID],
+    ['a classic SPL buy mint', usdc, TOKEN_PROGRAM_ID],
+  ])("derives %s's buy account with the selected token's program", async (_label, buyToken, expectedProgramId) => {
+    const context = buildContext({
+      orderClass: OrderClass.LIMIT,
+      buyAmount: CurrencyAmount.fromRawAmount(buyToken, '150000000'),
+      // The quote disagrees on purpose: its ids come from a token-list lookup that answers "classic SPL"
+      // for a mint the list has not loaded yet, and the intent must not inherit that.
+      buyTokenProgramId: TOKEN_PROGRAM_ID,
+    })
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(mockPlanCreateLimitOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ buyTokenProgramId: expectedProgramId }),
+    )
+    // The same value the buy-ATA step creates the account with, so the two can never disagree.
+    expect(mockPlanCreateBuyAtaStep).toHaveBeenCalledWith(
+      expect.objectContaining({ quote: expect.objectContaining({ buyTokenProgramId: expectedProgramId }) }),
+    )
+  })
+
+  // A swap keeps the quote's intent, whose buy account the SDK already derived with the quote's program.
+  // Creating that account with any other program names a different address, which the ATA program rejects.
+  it("creates a swap's buy account with the program that derived the quoted intent", async () => {
+    const context = buildContext({
+      orderClass: OrderClass.MARKET,
+      buyAmount: CurrencyAmount.fromRawAmount(token2022Sell, '150000000'),
+      buyTokenProgramId: TOKEN_PROGRAM_ID,
+    })
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(mockPlanCreateBuyAtaStep).toHaveBeenCalledWith(
+      expect.objectContaining({ quote: expect.objectContaining({ buyTokenProgramId: TOKEN_PROGRAM_ID }) }),
+    )
+  })
+})
+
 describe('solanaFlow · buy account creation', () => {
   it('leaves the account to the driver when the flag disables the creation', async () => {
     mockGetIsBuyAtaCreationSkipped.mockReturnValue(true)
@@ -994,7 +1065,7 @@ describe('solanaFlow · buy account creation', () => {
     await solanaFlow(context, buildAnalytics(), { isAtaCreationDisabled: true })
 
     expect(mockGetIsBuyAtaCreationSkipped).toHaveBeenCalledWith({
-      quote: { intent: { buyTokenAccount: QUOTED_BUY_TOKEN_ACCOUNT }, buyTokenProgramId: undefined },
+      quote: { intent: { buyTokenAccount: QUOTED_BUY_TOKEN_ACCOUNT }, buyTokenProgramId: TOKEN_PROGRAM_ID },
       owner: context.solana.owner,
       isAtaCreationDisabled: true,
     })
