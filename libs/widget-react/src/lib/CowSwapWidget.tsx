@@ -93,7 +93,7 @@ export function CowSwapWidget({
   }, [handlerRef])
 
   const tryOrHandleError = useCallback(
-    (action: string, actionThatMightFail: Command) => {
+    (action: string, attemptedSettings: WidgetSettings, actionThatMightFail: Command) => {
       try {
         console.log(`[WIDGET] ${action}`)
         actionThatMightFail()
@@ -104,7 +104,7 @@ export function CowSwapWidget({
         console.error(`[WIDGET] ${errorMessage}`, error)
         destroyWidget(widgetHandlerRef.current, setWidgetHandler)
         paramsRef.current = null
-        failedSettingsRef.current = latestSettingsRef.current
+        failedSettingsRef.current = attemptedSettings
         setError({ message: errorMessage, error })
         onLoadingErrorRef.current?.()
       }
@@ -147,12 +147,13 @@ export function CowSwapWidget({
     enableSafeSdkBridgeRef.current = enableSafeSdkBridge
 
     if (handler === null) {
-      tryOrHandleError('Creating a new widget', () => {
+      providerRef.current = provider
+      tryOrHandleError('Creating a new widget', { params, provider, enableSafeSdkBridge }, () => {
         setWidgetHandler(
           createWidget({
             container,
             params,
-            provider: providerRef.current,
+            provider,
             listeners,
             onReady,
             onLoadingError,
@@ -162,14 +163,15 @@ export function CowSwapWidget({
         listenersRef.current = listeners
       })
     } else if (enableSafeSdkBridgeDifferent) {
-      tryOrHandleError('Recreating the widget', () => {
+      providerRef.current = provider
+      tryOrHandleError('Recreating the widget', { params, provider, enableSafeSdkBridge }, () => {
         setWidgetHandler(null)
         handler.destroy()
         setWidgetHandler(
           createWidget({
             container,
             params,
-            provider: providerRef.current,
+            provider,
             listeners,
             onReady,
             onLoadingError,
@@ -179,7 +181,9 @@ export function CowSwapWidget({
         listenersRef.current = listeners
       })
     } else {
-      tryOrHandleError('Updating the widget', () => handler.updateParams(params))
+      tryOrHandleError('Updating the widget', { params, provider: providerRef.current, enableSafeSdkBridge }, () =>
+        handler.updateParams(params),
+      )
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params, enableSafeSdkBridge, tryOrHandleError, error])
@@ -192,7 +196,7 @@ export function CowSwapWidget({
     const handler = widgetHandlerRef.current
     const container = containerRef.current
     if (handler && container) {
-      tryOrHandleError('Updating the provider', () => {
+      tryOrHandleError('Updating the provider', { params, provider, enableSafeSdkBridge }, () => {
         setWidgetHandler(null)
         handler.destroy()
 
@@ -200,9 +204,10 @@ export function CowSwapWidget({
           createWidget({
             container,
             params,
-            provider: providerRef.current,
+            provider,
             listeners,
             onReady,
+            onLoadingError,
             enableSafeSdkBridge,
           }),
         )
@@ -216,7 +221,7 @@ export function CowSwapWidget({
     if (!widgetHandlerRef.current || listenersRef.current === listeners) return
 
     const handler = widgetHandlerRef.current
-    tryOrHandleError('Updating the listeners', () => handler.updateListeners(listeners))
+    tryOrHandleError('Updating the listeners', latestSettingsRef.current, () => handler.updateListeners(listeners))
   }, [listeners, tryOrHandleError])
 
   if (error) {

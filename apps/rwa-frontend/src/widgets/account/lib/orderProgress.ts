@@ -1,4 +1,6 @@
-import { toMinutesLeft } from './twapProgress'
+import { OrderStatus } from '@cowprotocol/cow-sdk'
+
+import { toMinutesLeft, type TwapProgress } from './twapProgress'
 
 import type { OpenOrder } from '../api/openOrders'
 
@@ -20,4 +22,16 @@ export function formatOrderProgress(
   const timeLeft = formatDuration(toMinutesLeft(validTo - now))
 
   return filled ? `${filled} · ${timeLeft} left` : `Expires in ${timeLeft}`
+}
+
+/** `now` in unix seconds */
+export function getOrderStatusLabel(
+  { status, validTo }: Pick<OpenOrder, 'status' | 'validTo'>,
+  twapProgress: TwapProgress | null,
+  now: number,
+): string {
+  if (status === OrderStatus.PRESIGNATURE_PENDING) return 'Awaiting signature'
+  if (twapProgress) return twapProgress.isScheduled ? 'Scheduled' : 'Open'
+
+  return validTo <= now ? 'Expired' : 'Open'
 }
