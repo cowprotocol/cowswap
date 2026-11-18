@@ -2,11 +2,11 @@
 
 Turnstile is mounted in swap, limit, yield, and twap forms through `containers/CaptchaWidget.container.tsx`.
 
-On success, `api/captchaApi.ts` exchanges the Turnstile token for a JWT, `entities/captcha/state/captchaJwtAtom.ts` stores it, and `CaptchaWidget` applies it through `setBearerToken()`.
+On success, `api/captchaApi.ts` exchanges the Turnstile token for a JWT, `entities/captcha/state/captchaJwtAtom.ts` stores it, and `CaptchaWidget` applies it through `setBearerToken()` to order book requests and to BFF requests made with `bffFetch` (`@cowprotocol/common-utils`). BFF requests without a JWT are still sent.
 
 Exchange URL: selected backend API origin plus `/auth/turnstile`.
 
-Feature flag: `isCaptchaEnabled`. Missing or false disables the widget, prevents token exchange, and clears any stored captcha JWT from the orderbook bearer token path.
+Feature flag: `isCaptchaEnabled`. Missing or false disables the widget, prevents token exchange, and clears any stored captcha JWT from order book and BFF requests.
 
 Deployment requirements:
 
