@@ -3757,8 +3757,8 @@ msgstr "Leave setup"
 #~ msgstr "Copy tx hash"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
-msgid "Save <0>$2.50<1> · Joins batch in <2/></1></0>"
-msgstr "Save <0>$2.50<1> · Joins batch in <2/></1></0>"
+#~ msgid "Save <0>$2.50<1> · Joins batch in <2/></1></0>"
+#~ msgstr "Save <0>$2.50<1> · Joins batch in <2/></1></0>"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step1.tsx
 msgid "Sent {nativeTokenSymbol}"
@@ -8459,6 +8459,10 @@ msgstr "Creation"
 #: apps/cowswap-frontend/src/modules/application/containers/AppMenu/index.tsx
 #~ msgid "Enable alpha networks"
 #~ msgstr "Enable alpha networks"
+
+#: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
+msgid "Save at least <0>$2.50<1> · Joins batch in <2/></1></0>"
+msgstr "Save at least <0>$2.50<1> · Joins batch in <2/></1></0>"
 
 #: apps/cowswap-frontend/src/modules/application/containers/AppMenu/index.tsx
 msgid "Disable Graffiti Theme"
