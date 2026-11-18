@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-11-17 23:10\n"
+"PO-Revision-Date: 2026-11-18 00:29\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -2960,7 +2960,7 @@ msgstr "TVL"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
 msgid "· Joins batch in <0/>"
-msgstr "· Intégration au lot dans <0/>"
+msgstr "· Rejoint le lot dans <0/>"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/Toggle/Toggle.tsx
 msgid "Unlimited one-time"
@@ -3719,7 +3719,7 @@ msgstr "Alignez le QR code dans le cadre."
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTable.tsx
 #: apps/cowswap-frontend/src/modules/application/containers/AppMenu/index.tsx
 msgid "Trade"
-msgstr "Trader"
+msgstr "Trade"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Content/NoOrders/OrdersTableNoOrdersContent.utils.tsx
 #~ msgid "No open orders found in your last {limit} orders"
@@ -4191,7 +4191,7 @@ msgstr "Wallet non pris en charge"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/WaitAndSaveOutcome/WaitAndSaveOutcome.pure.tsx
 msgid "≈ {gainFiat} more than trading alone"
-msgstr "≈ {gainFiat} de plus que pour un ordre seul"
+msgstr "≈ {gainFiat} de plus qu’avec un ordre traité seul"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderCodeInfo.tsx
@@ -8575,7 +8575,7 @@ msgstr "Ordre exécuté"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/WaitAndSaveOutcome/WaitAndSaveOutcome.pure.tsx
 msgid "more than trading alone"
-msgstr "de plus que pour un ordre seul"
+msgstr "de plus qu’avec un ordre traité seul"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerCodeCreation.tsx
 #~ msgid "Invalid request."
@@ -9183,7 +9183,7 @@ msgstr "Autoriser CoW Swap à utiliser vos <0/>"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "Share this swap"
-msgstr "Partager ce swap"
+msgstr "Partagez ce swap"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/TraderReferralCodeStatusMessages.tsx
 #~ msgid "successfully"
@@ -10372,7 +10372,7 @@ msgstr "Source"
 
 #: apps/cowswap-frontend/src/pages/graffiti/NetworkGate.pure.tsx
 msgid "Welcome! This wall is painted with <0>{TOKEN_SYMBOL}</0>, a Solana token. Every painted cell burns 1 {TOKEN_SYMBOL}."
-msgstr "Bienvenue ! Ce mur se peint avec le token Solana <0>{TOKEN_SYMBOL}</0>. Chaque case peinte brûle 1 {TOKEN_SYMBOL}."
+msgstr "Bienvenue ! Ce mur se peint avec le token Solana <0>{TOKEN_SYMBOL}</0>. Chaque pixel peint brûle 1 {TOKEN_SYMBOL}."
 
 #: apps/cowswap-frontend/src/modules/zeroApproval/containers/ZeroApprovalModal/ZeroApprovalModal.tsx
 msgid "Reset {symbol} allowance to 0 before setting new spending cap"
