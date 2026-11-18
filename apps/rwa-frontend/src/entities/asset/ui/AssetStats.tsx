@@ -1,3 +1,5 @@
+'use client'
+
 import type { ReactNode } from 'react'
 
 import styles from './AssetStats.module.css'
@@ -7,6 +9,7 @@ import { getMinutesToUsMarketChange, isUsMarketOpen, US_MARKET_EARLY_CLOSE } fro
 import type { RwaAsset, RwaMarketData, RwaMarketKind, RwaTradingTime } from '../model/types'
 
 import { formatDuration, formatPercent, formatUsd } from '@/shared/lib/format'
+import { useIsHydrated } from '@/shared/lib/hydrated'
 import { InfoIcon } from '@/shared/ui/icons'
 import { Tooltip } from '@/shared/ui/tooltip'
 
@@ -20,6 +23,7 @@ interface AssetStatsProps {
 
 export function AssetStats({ asset, market, marketKind, provider }: AssetStatsProps): ReactNode {
   const change = market?.change24h
+  const isHydrated = useIsHydrated()
   const changeClassName = change ? (change > 0 ? styles.positive : styles.negative) : ''
 
   return (
@@ -35,8 +39,8 @@ export function AssetStats({ asset, market, marketKind, provider }: AssetStatsPr
           </Tooltip>
         </span>
       </div>
-      {/* Rendered once market data loads, so a prerendered page doesn't hydrate with the build time status */}
-      {market && asset.allowedTradingTime && <MarketStatus tradingTime={asset.allowedTradingTime} />}
+      {/* Rendered after hydration, so a page from the ISR cache doesn't show the status of its render time */}
+      {market && isHydrated && asset.allowedTradingTime && <MarketStatus tradingTime={asset.allowedTradingTime} />}
     </div>
   )
 }
