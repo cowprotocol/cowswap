@@ -294,6 +294,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
             />
           }
           genericModal={showNativeWrapModal && <EthFlowModal {...ethFlowProps} />}
+          onGenericModalDismiss={dismissNativeWrapModal}
         />
       )}
       <BottomBanners />

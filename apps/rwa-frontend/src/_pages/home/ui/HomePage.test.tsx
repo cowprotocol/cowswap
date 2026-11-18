@@ -149,6 +149,7 @@ function renderHomePage({
 
 describe('HomePage', () => {
   afterEach(() => {
+    jest.useRealTimers()
     localStorage.clear()
   })
 
@@ -186,16 +187,19 @@ describe('HomePage', () => {
   })
 
   it('keeps the type filter through the market refresh', async () => {
+    const { refetchInterval } = assetsPageQueryOptions(DEFAULT_ASSETS_PAGE_QUERY)
+    if (typeof refetchInterval !== 'number') throw new Error('The assets page has no market refresh interval')
+
+    jest.useFakeTimers()
     mockApi(OVERVIEW, ASSETS_PAGE)
-    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
     const fetchMock = global.fetch as jest.Mock
-    renderHomePage({ queryClient })
+    renderHomePage()
 
     fireEvent.click(await screen.findByRole('button', { name: 'ETFs' }))
     await waitFor(() => expect(String(fetchMock.mock.calls.at(-1)?.[0])).toContain('type=index'))
     const callsBeforeRefresh = fetchMock.mock.calls.length
 
-    await act(() => queryClient.refetchQueries({ type: 'active' }))
+    await act(() => jest.advanceTimersByTimeAsync(refetchInterval))
 
     const refreshedAssetsUrls = fetchMock.mock.calls
       .slice(callsBeforeRefresh)

@@ -379,6 +379,31 @@ describe('createCowSwapWidget', () => {
   })
 })
 
+describe('createCowSwapWidget baseUrl origin', () => {
+  afterEach(() => {
+    widgetHandlers.splice(0).forEach((handler) => handler.destroy())
+    document.body.innerHTML = ''
+  })
+
+  it('rejects reloading the iframe on another origin, keeping the loaded widget', () => {
+    const handler = createWidget('https://swap.cow.fi')
+    const iframe = handler.iframe
+    const srcBefore = iframe.src
+
+    expect(() =>
+      handler.updateParams({
+        appCode: 'test-app',
+        baseUrl: 'https://other.example',
+        disableWindowOpen: true,
+        standaloneMode: false,
+      }),
+    ).toThrow('Changing `baseUrl` to another origin requires creating a new widget')
+
+    expect(iframe.src).toBe(srcBefore)
+    expect(iframe.getAttribute('sandbox')).toBe(WIDGET_IFRAME_SANDBOX)
+  })
+})
+
 describe('createCowSwapWidget closeAllModals', () => {
   afterEach(() => {
     widgetHandlers.splice(0).forEach((handler) => handler.destroy())

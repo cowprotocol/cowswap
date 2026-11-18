@@ -89,7 +89,7 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
       locale: WIDGET_LOCALE,
     }
   }, [asset, assetToken, side, isConnected, isDark, market])
-  const params = useWidgetParamsTradeType(widgetParams)
+  const params = useWidgetParamsTradeType(widgetParams, provider)
 
   if (!params || !selection) {
     return <p>Trading is not available for {asset.ticker}</p>

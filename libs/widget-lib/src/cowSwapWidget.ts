@@ -198,10 +198,15 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
     iframe,
     updateParams: (newParams: CowSwapWidgetParams) => {
       if (!iframeWindow) return
-      currentParams = resolveWidgetParams(newParams)
+      const nextParams = resolveWidgetParams(newParams)
+      const shouldReloadIframe = requiresIframeReload(iframe, nextParams)
+
+      if (shouldReloadIframe) assertSameIframeOrigin(nextParams, iframeOrigin)
+
+      currentParams = nextParams
 
       applyContainerStyles(container, currentParams, lastDynamicHeight)
-      if (requiresIframeReload(iframe, currentParams)) {
+      if (shouldReloadIframe) {
         reloadIframe(iframe, currentParams)
       } else {
         updateParams(iframeWindow, iframeOrigin, currentParams, provider)
@@ -275,6 +280,16 @@ function applyContainerStyles(container: HTMLElement, params: CowSwapWidgetParam
   })
 
   if (lastDynamicHeight) container.style.setProperty(DYNAMIC_HEIGHT_CSS_VAR, lastDynamicHeight)
+}
+
+/**
+ * Every message to and from the widget is bound to the origin it was created with,
+ * so reloading the iframe on another origin would leave the widget unable to talk to the page.
+ */
+function assertSameIframeOrigin(params: CowSwapWidgetParams, iframeOrigin: string): void {
+  if (new URL(buildWidgetUrl(params)).origin !== iframeOrigin) {
+    throw new Error('Changing `baseUrl` to another origin requires creating a new widget')
+  }
 }
 
 /**

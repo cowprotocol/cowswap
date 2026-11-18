@@ -29,6 +29,16 @@ jest.mock('lib/i18n', () => ({
 describe('LanguageProvider', () => {
   const setLocale = jest.fn()
 
+  const initialLang = document.documentElement.getAttribute('lang')
+
+  afterEach(() => {
+    if (initialLang === null) {
+      document.documentElement.removeAttribute('lang')
+    } else {
+      document.documentElement.setAttribute('lang', initialLang)
+    }
+  })
+
   beforeEach(() => {
     jest.clearAllMocks()
     jest.mocked(useUserLocaleManager).mockReturnValue({ locale: null, setLocale })
@@ -48,6 +58,7 @@ describe('LanguageProvider', () => {
 
   it('keeps the stored CoW Swap locale in the widget, whose locale is set by the integrator', () => {
     jest.mocked(isInjectedWidget).mockReturnValue(true)
+    document.documentElement.setAttribute('lang', 'fr-FR')
 
     renderProvider()
 

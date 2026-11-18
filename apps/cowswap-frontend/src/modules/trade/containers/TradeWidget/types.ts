@@ -1,5 +1,7 @@
 import { ReactNode } from 'react'
 
+import { Command } from '@cowprotocol/types'
+
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { CurrencyInputPanelProps } from 'common/pure/CurrencyInputPanel'
@@ -45,6 +47,7 @@ export interface TradeWidgetProps {
   disableOutput?: boolean
   confirmModal?: ReactNode
   genericModal?: ReactNode
+  onGenericModalDismiss?: Command
 }
 
 export interface TradeWidgetSlots {
