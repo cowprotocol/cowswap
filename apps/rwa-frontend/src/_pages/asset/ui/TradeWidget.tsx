@@ -26,7 +26,7 @@ import { useWidgetTradeTokenSync } from '../model/useWidgetTradeTokenSync'
 import { useWidgetTradeTypeSync } from '../model/useWidgetTradeTypeSync'
 
 import { assetQueryAtomFamily, type RwaAsset, type RwaMarketData, type RwaToken } from '@/entities/asset'
-import { APP_CODE, WIDGET_BASE_URL } from '@/shared/config'
+import { APP_CODE, getWidgetBaseUrl } from '@/shared/config'
 import { useIsHydrated } from '@/shared/lib/hydrated'
 import { useIsDarkTheme } from '@/shared/lib/theme'
 import { useWalletProvider } from '@/shared/lib/wallet'
@@ -73,7 +73,7 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
 
     return {
       appCode: APP_CODE,
-      baseUrl: WIDGET_BASE_URL,
+      baseUrl: getWidgetBaseUrl(typeof window === 'undefined' ? undefined : window.location),
       rootStyle: { width: '100%', height: 'var(--dynamicHeight, 640px)' },
       chainId: assetToken.chainId,
       enabledTradeTypes: [...ENABLED_TRADE_TYPES],
