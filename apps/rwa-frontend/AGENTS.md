@@ -35,7 +35,7 @@ This file: rwa-frontend app-specific commands only.
 - `NEXT_PUBLIC_ENABLE_SW=true`: register the service worker in dev (production always registers it).
 - `NEXT_PUBLIC_BALANCES_WATCHER_BASE_URL`: balances watcher API (defaults to `https://balances-watcher.cow.fi`).
 - `NEXT_PUBLIC_SITE_ORIGIN`: origin that serves the app under `/rwa`, used for canonical links, Open Graph and the sitemap (defaults to `https://swap.cow.fi`). Only `VERCEL_ENV=production` is indexable: other deployments get `noindex`.
-- `NEXT_PUBLIC_SENTRY_DSN`: DSN of the `rwa` Sentry project (`cowprotocol` org). Without it Sentry stays off in the browser, Node.js and edge runtimes (`getSentryOptions` in `_app/sentry`).
+- `NEXT_PUBLIC_SENTRY_DSN`: DSN of the `rwa` Sentry project (`cowprotocol` org). Without it Sentry stays off in the browser, Node.js and edge runtimes (`getSentryOptions` in `_app/sentry`). Wallet addresses in balances watcher URLs are redacted from breadcrumbs, spans and error events there: extend `WALLET_URL_SEGMENT` when a new request URL carries the connected wallet.
 - `NEXT_PUBLIC_SENTRY_TRACES_SAMPLE_RATE`: share of traced requests and navigations, 0 to 1 (defaults to `0.1`). Errors are always sent.
 - `SENTRY_AUTH_TOKEN`: Sentry org token (build-only), for uploading source maps; the browser maps are deleted from the build after upload. Without it nothing is uploaded and stack traces stay minified. `SENTRY_ORG` and `SENTRY_PROJECT` override `cowprotocol` and `rwa`.
 - `NEXT_PUBLIC_RWA_TOKEN_LIST_URL`: hosted copy of `/api/v1/token-list` for the balances watcher, which only accepts lists from `files.cow.fi` and `raw.githubusercontent.com`. Without it the list's tokens are sent as `customTokens`.
