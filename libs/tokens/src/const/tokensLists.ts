@@ -3,8 +3,9 @@ import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import lpTokensList from './lpTokensList.json'
 import tokensList from './tokensList.json'
 
-import { ListSourceConfig, ListsSourcesByNetwork } from '../types'
 import { getSourceAsKey } from '../utils/getSourceAsKey'
+
+import type { ListSourceConfig, ListsSourcesByNetwork } from '../listSourceConfig'
 
 export const LP_TOKEN_LISTS = lpTokensList as Array<ListSourceConfig>
 

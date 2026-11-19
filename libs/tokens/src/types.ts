@@ -2,9 +2,10 @@ import { MessageDescriptor } from '@lingui/core'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { SupportedChainId, TargetChainId } from '@cowprotocol/cow-sdk'
-import { LpTokenProvider, PersistentStateByChain, TokenInfo } from '@cowprotocol/types'
+import { PersistentStateByChain, TokenInfo } from '@cowprotocol/types'
 import { StatusColorVariant } from '@cowprotocol/ui'
 
+import { ListSourceConfig } from './listSourceConfig'
 import { TokensBySymbol } from './state/tokens/allTokensAtom'
 
 import type { TokenList as UniTokenList } from '@uniswap/token-lists'
@@ -25,16 +26,7 @@ export type AdditionalChainTokenListsByChainState = Partial<
 >
 export type ListsEnabledState = { [listId: string]: boolean | undefined }
 
-export type ListSourceConfig = {
-  widgetAppCode?: string
-  category?: 'RWA'
-  priority?: number
-  enabledByDefault?: boolean
-  lpTokenProvider?: LpTokenProvider
-  source: string
-}
-
-export type ListsSourcesByNetwork = PersistentStateByChain<Array<ListSourceConfig>>
+export type { ListSourceConfig, ListsSourcesByNetwork } from './listSourceConfig'
 
 export interface ListState extends Pick<ListSourceConfig, 'source' | 'priority' | 'widgetAppCode' | 'lpTokenProvider'> {
   list: UniTokenList
