@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import type { CowSwapTheme } from '@cowprotocol/ui'
@@ -37,15 +37,31 @@ export function ThemeConfigUpdater({ customTheme }: ThemeConfigUpdaterProps = {}
     setWidgetTheme(injectedWidgetTheme ?? undefined)
   }, [injectedWidgetTheme])
 
-  useEffect(() => {
+  const paletteTheme = !isInjectedWidget() && customTheme === VICE_THEME ? customTheme : undefined
+  const appliedPaletteTheme = useRef<CowSwapTheme | undefined>(undefined)
+
+  const theme = useMemo(() => {
     const defaultTheme = getCowswapTheme(darkMode)
 
-    if (isInjectedWidget()) {
-      setThemeConfig(mapWidgetTheme(widgetTheme, defaultTheme))
-    } else {
-      setThemeConfig(customTheme === VICE_THEME ? { ...defaultTheme, ...VICE_THEME_PALETTE } : defaultTheme)
-    }
-  }, [setThemeConfig, darkMode, widgetTheme, customTheme])
+    if (isInjectedWidget()) return mapWidgetTheme(widgetTheme, defaultTheme)
+
+    return paletteTheme ? { ...defaultTheme, ...VICE_THEME_PALETTE } : defaultTheme
+  }, [darkMode, widgetTheme, paletteTheme])
+
+  /**
+   * A custom palette goes on, and comes off, before paint. Left to the passive effect below, it
+   * lands a frame after the page scene it belongs to, which shows as a flash of the other colours.
+   */
+  useLayoutEffect(() => {
+    if (appliedPaletteTheme.current === paletteTheme) return
+
+    appliedPaletteTheme.current = paletteTheme
+    setThemeConfig(theme)
+  }, [paletteTheme, setThemeConfig, theme])
+
+  useEffect(() => {
+    setThemeConfig(theme)
+  }, [setThemeConfig, theme])
 
   return null
 }

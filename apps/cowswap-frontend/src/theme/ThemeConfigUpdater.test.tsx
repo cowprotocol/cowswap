@@ -1,6 +1,8 @@
 import { useSetAtom } from 'jotai'
+import { useEffect } from 'react'
 
 import { isInjectedWidget } from '@cowprotocol/common-utils'
+import type { CowSwapTheme } from '@cowprotocol/ui'
 
 import { renderHook } from '@testing-library/react'
 
@@ -48,6 +50,27 @@ const mockedGetCowswapTheme = getCowswapTheme as jest.MockedFunction<typeof getC
 const mockedMapWidgetTheme = mapWidgetTheme as jest.MockedFunction<typeof mapWidgetTheme>
 const mockedUseIsDarkMode = useIsDarkMode as jest.MockedFunction<typeof useIsDarkMode>
 const mockedUseInjectedWidgetPalette = useInjectedWidgetPalette as jest.MockedFunction<typeof useInjectedWidgetPalette>
+
+/**
+ * Passive effects run in declaration order and only after every layout effect, so a probe effect
+ * declared ahead of the updater splits its `setThemeConfig` calls into the two phases.
+ */
+function renderAndRecordPhases(customTheme: CowSwapTheme | undefined): string[] {
+  const phases: string[] = []
+  let painted = false
+
+  mockedUseSetAtom.mockReturnValue(() => phases.push(painted ? 'after paint' : 'before paint'))
+
+  renderHook(() => {
+    useEffect(() => {
+      painted = true
+    }, [])
+
+    return ThemeConfigUpdater({ customTheme })
+  })
+
+  return phases
+}
 
 describe('ThemeConfigUpdater', () => {
   const mockSetThemeConfig = jest.fn()
@@ -112,6 +135,17 @@ describe('ThemeConfigUpdater', () => {
       renderHook(() => ThemeConfigUpdater({ customTheme: VICE_THEME }))
 
       expect(mockSetThemeConfig).toHaveBeenCalledWith({ ...(darkTheme as object), ...VICE_THEME_PALETTE })
+    })
+
+    it('applies the Vice palette before paint', () => {
+      mockedUseIsDarkMode.mockReturnValue(true)
+      mockedGetCowswapTheme.mockReturnValue(darkTheme)
+
+      expect(renderAndRecordPhases(VICE_THEME)).toEqual(['before paint', 'after paint'])
+    })
+
+    it('leaves the default theme to the passive effect', () => {
+      expect(renderAndRecordPhases(undefined)).toEqual(['after paint'])
     })
 
     it('keeps the default theme for a custom theme that has no palette', () => {
