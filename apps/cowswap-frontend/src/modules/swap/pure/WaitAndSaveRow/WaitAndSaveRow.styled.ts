@@ -1,4 +1,4 @@
-import { Toggle, UI, font } from '@cowprotocol/ui'
+import { ExternalLink, Toggle, UI, font } from '@cowprotocol/ui'
 
 import styled, { css, keyframes } from 'styled-components/macro'
 
@@ -98,24 +98,24 @@ export const TitleRow = styled.div`
   ${font('FONT_MEDIUM', 600)}
 `
 
+export const TitleAmount = styled.span`
+  color: var(${UI.COLOR_SUCCESS_TEXT});
+`
+
 export const DescriptionRow = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
-
-  strong {
-    font-weight: var(${UI.FONT_WEIGHT_BOLD});
-    color: var(${UI.COLOR_GREEN});
-  }
-`
-
-export const SaveAmount = styled.span`
-  ${font('FONT_SMALL_PLUS', 600)}
 `
 
 export const NextBatch = styled.span`
   ${font('FONT_SMALL_PLUS', 400)}
   color: var(${UI.COLOR_TEXT_SECONDARY});
+`
+
+export const NoVolumeFee = styled.span<{ $active: boolean }>`
+  ${({ $active }) => font('FONT_SMALL_PLUS', $active ? 600 : 400)}
+  color: ${({ $active }) => ($active ? `var(${UI.COLOR_SUCCESS_TEXT})` : `var(${UI.COLOR_TEXT_SECONDARY})`)};
 `
 
 export const ScheduleError = styled.span`
@@ -143,4 +143,27 @@ export const RetryButton = styled.button`
 
 export const WaitAndSaveToggle = styled(Toggle)`
   flex: 0 0 auto;
+`
+
+export const TooltipContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  > p {
+    margin: 0;
+  }
+`
+
+export const DocsLink = styled(ExternalLink)`
+  ${font('FONT_SMALL_PLUS', 'medium')}
+  color: var(${UI.COLOR_TEXT});
+  text-decoration: underline;
+  text-decoration-skip-ink: auto;
+
+  &:hover,
+  &:focus,
+  &:active {
+    text-decoration: underline;
+  }
 `

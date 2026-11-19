@@ -239,6 +239,12 @@ msgstr "Dismiss graffiti wall message"
 #~ msgid "Couldn’t load the next batch time"
 #~ msgstr "Couldn’t load the next batch time"
 
+#. placeholder {0}: isEnabled ? ' ' : ' ~'
+#: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
+#: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
+msgid "Joins batch in{0}<0/>"
+msgstr "Joins batch in{0}<0/>"
+
 #: apps/cowswap-frontend/src/modules/usdAmount/apis/getBffUsdPrice.ts
 msgid "Unexpected response from BFF: {resStatus}"
 msgstr "Unexpected response from BFF: {resStatus}"
@@ -1372,7 +1378,7 @@ msgstr "Connect your wallet to activate it and start earning rewards when you tr
 #~ msgid "Share your referral code and earn <0>{partnerRewardAmount}</0> for every <1>{triggerVolumeLabel}</1> in eligible volume within {affiliateTimeCapDays} days.<2/><3/>"
 #~ msgstr "Share your referral code and earn <0>{partnerRewardAmount}</0> for every <1>{triggerVolumeLabel}</1> in eligible volume within {affiliateTimeCapDays} days.<2/><3/>"
 
-#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/WaitAndSaveOutcome/WaitAndSaveOutcome.pure.tsx
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/WaitAndSaveOutcome/components/OutcomeWithWaivedFeeAndCow/OutcomeWithWaivedFeeAndCow.pure.tsx
 msgid "Wait & save · You saved"
 msgstr "Wait & save · You saved"
 
@@ -3294,6 +3300,10 @@ msgstr "An order's actual execution price will vary based on the market price an
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Approve {wrappedSymbol}"
 msgstr "Approve {wrappedSymbol}"
+
+#: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveTooltipContent.pure.tsx
+msgid "The countdown isn’t a guaranteed fill time. Price-improvement fees still apply."
+msgstr "The countdown isn’t a guaranteed fill time. Price-improvement fees still apply."
 
 #: apps/cowswap-frontend/src/modules/twap/pure/CustomDeadlineSelector/CustomDeadlineSelector.pure.tsx
 msgid "TWAP total duration"
@@ -5291,8 +5301,8 @@ msgstr "Read how to prevent losing funds"
 msgid "{pendingSignaturesCount, plural, one {# more signature is required} few {# more signatures are required} many {# more signatures are required} other {# more signatures are required}}"
 msgstr "{pendingSignaturesCount, plural, one {# more signature is required} few {# more signatures are required} many {# more signatures are required} other {# more signatures are required}}"
 
-#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/WaitAndSaveOutcome/WaitAndSaveOutcome.pure.tsx
-#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/WaitAndSaveOutcome/WaitAndSaveOutcome.pure.tsx
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/WaitAndSaveOutcome/components/OutcomeWithCow/OutcomeWithCow.pure.tsx
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/WaitAndSaveOutcome/components/OutcomeWithWaivedFeeAndCow/OutcomeWithWaivedFeeAndCow.pure.tsx
 msgid "Better price than trading alone"
 msgstr "Better price than trading alone"
 
@@ -5596,7 +5606,7 @@ msgstr ""
 #~ msgid "Confirm the approval transaction in your connected wallet. Each part is pulled right before it trades."
 #~ msgstr "Confirm the approval transaction in your connected wallet. Each part is pulled right before it trades."
 
-#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/WaitAndSaveOutcome/WaitAndSaveOutcome.pure.tsx
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/WaitAndSaveOutcome/components/OutcomeWithWaivedFee/OutcomeWithWaivedFee.pure.tsx
 msgid "Wait & save: <0>{volumeFeeSavedFiat}</0> saved on the volume fee"
 msgstr "Wait & save: <0>{volumeFeeSavedFiat}</0> saved on the volume fee"
 
@@ -5782,6 +5792,10 @@ msgstr "Connect wallet"
 #: apps/cowswap-frontend/src/modules/twap/pure/CustomDeadlineSelector/index.tsx
 #~ msgid "Total time to complete the order is <0/>"
 #~ msgstr "Total time to complete the order is <0/>"
+
+#: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveTooltipContent.pure.tsx
+msgid "How Wait & save works"
+msgstr "How Wait & save works"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/ProtocolFeeRow/index.tsx
 msgid "This {protocolFeeBps} BPS fee incentivizes solvers to find better prices for users. It is only applied if the trade is executed."
@@ -7233,9 +7247,9 @@ msgstr "Selected token: {0}"
 #~ msgid "Wallet signer unavailable."
 #~ msgstr "Wallet signer unavailable."
 
-#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/WaitAndSaveOutcome/WaitAndSaveOutcome.pure.tsx
-#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/WaitAndSaveOutcome/WaitAndSaveOutcome.pure.tsx
-#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/WaitAndSaveOutcome/WaitAndSaveOutcome.pure.tsx
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/WaitAndSaveOutcome/components/OutcomeWithCow/OutcomeWithCow.pure.tsx
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/WaitAndSaveOutcome/components/OutcomeWithCow/OutcomeWithCow.pure.tsx
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/WaitAndSaveOutcome/components/OutcomeWithWaivedFeeAndCow/OutcomeWithWaivedFeeAndCow.pure.tsx
 #: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
 #: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
 #: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
@@ -7354,7 +7368,8 @@ msgstr "cancellation"
 #~ msgid "Create a LlamaPay vesting contract"
 #~ msgstr "Create a LlamaPay vesting contract"
 
-#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/WaitAndSaveOutcome/WaitAndSaveOutcome.pure.tsx
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/WaitAndSaveOutcome/components/OutcomeWithWaivedFeeAndCow/OutcomeWithWaivedFeeAndCow.pure.tsx
+#: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
 msgid "No volume fee"
 msgstr "No volume fee"
 
@@ -7971,8 +7986,8 @@ msgstr "This is the cost of settling your order on-chain, including gas and any 
 #~ msgstr "more signature is"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
-msgid "Save more by joining a batch in <0/>"
-msgstr "Save more by joining a batch in <0/>"
+#~ msgid "Save more by joining a batch in <0/>"
+#~ msgstr "Save more by joining a batch in <0/>"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/LimitOrdersSettings.pure.tsx
 #~ msgid "<0><1>Allow you to choose whether your limit orders will be <2>Partially fillable</2> or <3>Fill or kill</3>.</1><4><5><6><7>Partially fillable</7> orders may be filled partially if there isn't enough liquidity to fill the full amount.</6><8><9>Fill or kill</9> orders will either be filled fully or not at all.</8></5></4></0>"
@@ -9758,8 +9773,8 @@ msgid "Default approve"
 msgstr "Default approve"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
-msgid "Join the next batch to save on volume fees and potentially get a better price. Prices may change, and the countdown isn’t a guaranteed fill time. Price-improvement fees still apply."
-msgstr "Join the next batch to save on volume fees and potentially get a better price. Prices may change, and the countdown isn’t a guaranteed fill time. Price-improvement fees still apply."
+#~ msgid "Join the next batch to save on volume fees and potentially get a better price. Prices may change, and the countdown isn’t a guaranteed fill time. Price-improvement fees still apply."
+#~ msgstr "Join the next batch to save on volume fees and potentially get a better price. Prices may change, and the countdown isn’t a guaranteed fill time. Price-improvement fees still apply."
 
 #: apps/cowswap-frontend/src/modules/account/pure/OrderFillabilityWarning/index.tsx
 msgid "Order cannot be filled due to insufficient balance on the current account."
@@ -10153,6 +10168,10 @@ msgstr "Best price found!"
 msgid "Bridging succeeded"
 msgstr "Bridging succeeded"
 
+#: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveTooltipContent.pure.tsx
+msgid "Join the next batch and pay no volume fee."
+msgstr "Join the next batch and pay no volume fee."
+
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
 msgid "Tokens must be different"
 msgstr "Tokens must be different"
@@ -10193,9 +10212,17 @@ msgstr "{days, plural, one {# day} few {# days} many {# days} other {# days}}"
 msgid "Destination transaction"
 msgstr "Destination transaction"
 
+#: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveTooltipContent.pure.tsx
+msgid "Matching with other orders can get you a better price too. That’s not guaranteed, and prices can change while you wait."
+msgstr "Matching with other orders can get you a better price too. That’s not guaranteed, and prices can change while you wait."
+
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/pure/NetworkCostsTooltipSuffix.tsx
 msgid "Because you are using a smart contract wallet"
 msgstr "Because you are using a smart contract wallet"
+
+#: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveTooltipContent.pure.tsx
+msgid "Join the next batch and pay no volume fee. That’s {saveAmount} less on this swap."
+msgstr "Join the next batch and pay no volume fee. That’s {saveAmount} less on this swap."
 
 #: apps/cowswap-frontend/src/pages/graffiti/ClaimScreens.pure.tsx
 msgid "This code is worth"
@@ -10382,8 +10409,8 @@ msgstr "You'll return to the TWAP form with your values preserved and a fresh qu
 msgid "Value"
 msgstr "Value"
 
-#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/WaitAndSaveOutcome/WaitAndSaveOutcome.pure.tsx
-#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/WaitAndSaveOutcome/WaitAndSaveOutcome.pure.tsx
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/WaitAndSaveOutcome/components/OutcomeWithCow/OutcomeWithCow.pure.tsx
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/WaitAndSaveOutcome/components/OutcomeWithWaivedFeeAndCow/OutcomeWithWaivedFeeAndCow.pure.tsx
 msgid "Compares what you received with the best offer solvers made for your order alone, in the same auction. It's not compared with swapping right away or with your quote."
 msgstr "Compares what you received with the best offer solvers made for your order alone, in the same auction. It's not compared with swapping right away or with your quote."
 
@@ -10817,8 +10844,8 @@ msgstr "<0>COW vesting from the GNO lock</0> is vested linearly over four years,
 #~ msgstr "Set up TWAP"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
-msgid "Save at least <0>{saveAmount}<1> · Join batch in <2/></1></0>"
-msgstr "Save at least <0>{saveAmount}<1> · Join batch in <2/></1></0>"
+#~ msgid "Save at least <0>{saveAmount}<1> · Join batch in <2/></1></0>"
+#~ msgstr "Save at least <0>{saveAmount}<1> · Join batch in <2/></1></0>"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "The \"Part duration\" refers to the duration between each part of your TWAP order.<0/><1/>Choosing a shorter time allows for faster execution of each part, potentially reducing price fluctuations. Striking the right balance is crucial for optimal execution."

@@ -47,8 +47,10 @@ describe('WaitAndSaveRow', () => {
   it('replaces the toggle with a retry action when the schedule failed', () => {
     const onRetry = jest.fn()
 
-    renderRow({ hasError: true, onRetry })
+    renderRow({ hasError: true, onRetry, saveAmount: '$2.50' })
 
+    expectExactText('Wait & save')
+    expect(screen.queryByText('$2.50')).toBeNull()
     expectExactText('Couldn’t load the next batch time · Try again')
     expect(screen.queryByRole('checkbox', { name: 'Wait & save' })).toBeNull()
 
@@ -56,15 +58,23 @@ describe('WaitAndSaveRow', () => {
     expect(onRetry).toHaveBeenCalledTimes(1)
   })
 
-  it('shows the save amount when provided', () => {
+  it('shows the save amount on the title and approximate joins-batch copy when provided', () => {
     renderRow({ saveAmount: '$2.50' })
 
-    expectExactText('Save at least $2.50 · Join batch in ')
+    expectExactText('Wait & save$2.50')
+    expectExactText('No volume fee · Joins batch in ~')
   })
 
-  it('falls back to generic save copy when no amount is provided', () => {
+  it('uses a live joins-batch prefix when enabled', () => {
+    renderRow({ isEnabled: true, saveAmount: '$2.50' })
+
+    expectExactText('No volume fee · Joins batch in ')
+  })
+
+  it('falls back to approximate joins-batch copy when no amount is provided', () => {
     renderRow()
 
-    expectExactText('Save more by joining a batch in ')
+    expectExactText('Wait & save')
+    expectExactText('Joins batch in ~')
   })
 })

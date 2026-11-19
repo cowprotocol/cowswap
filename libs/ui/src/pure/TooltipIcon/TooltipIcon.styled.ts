@@ -60,6 +60,10 @@ export const InstantTooltip = styled(NewTooltip).attrs({
   ${hitTargetStyles}
 `
 
+export const InteractiveTooltip = styled(NewTooltip)`
+  ${hitTargetStyles}
+`
+
 export const TriggerButton = styled.button`
   margin: 0;
   padding: 0;

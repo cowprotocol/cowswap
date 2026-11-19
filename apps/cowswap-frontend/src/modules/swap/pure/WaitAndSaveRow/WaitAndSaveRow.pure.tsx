@@ -7,6 +7,7 @@ import { Trans, useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
 import * as styledEl from './WaitAndSaveRow.styled'
+import { WaitAndSaveTooltipContent } from './WaitAndSaveTooltipContent.pure'
 
 export interface WaitAndSaveRowProps {
   isEnabled: boolean
@@ -45,15 +46,12 @@ export function WaitAndSaveRow({
         <styledEl.TextColumn>
           <styledEl.TitleRow>
             <Trans>Wait & save</Trans>
+            {saveAmount && !hasError ? <styledEl.TitleAmount>{saveAmount}</styledEl.TitleAmount> : null}
             <TooltipIcon
               type="info"
               title={t`Wait & save`}
-              content={
-                <Trans>
-                  Join the next batch to save on volume fees and potentially get a better price. Prices may change, and
-                  the countdown isn’t a guaranteed fill time. Price-improvement fees still apply.
-                </Trans>
-              }
+              interactive
+              content={<WaitAndSaveTooltipContent saveAmount={saveAmount && !hasError ? saveAmount : undefined} />}
             />
           </styledEl.TitleRow>
 
@@ -70,23 +68,27 @@ export function WaitAndSaveRow({
                   </styledEl.NoBreakAroundDot>
                 </Trans>
               </styledEl.ScheduleError>
-            ) : saveAmount ? (
-              <styledEl.SaveAmount>
-                <Trans>
-                  Save at least{' '}
-                  <styledEl.NoBreakAroundDot>
-                    {saveAmount}
-                    <styledEl.NextBatch>
-                      {' · '}Join batch in <span ref={joinsBatchInRef} />
-                    </styledEl.NextBatch>
-                  </styledEl.NoBreakAroundDot>
-                </Trans>
-              </styledEl.SaveAmount>
             ) : (
               <styledEl.NextBatch>
-                <Trans>
-                  Save more by joining a batch in <span ref={joinsBatchInRef} />
-                </Trans>
+                {saveAmount ? (
+                  <>
+                    <styledEl.NoVolumeFee $active={isEnabled}>
+                      <Trans>No volume fee</Trans>
+                    </styledEl.NoVolumeFee>{' '}
+                    <styledEl.NoBreakAroundDot>
+                      ·{' '}
+                      <Trans>
+                        Joins batch in{isEnabled ? ' ' : ' ~'}
+                        <span ref={joinsBatchInRef} />
+                      </Trans>
+                    </styledEl.NoBreakAroundDot>
+                  </>
+                ) : (
+                  <Trans>
+                    Joins batch in{isEnabled ? ' ' : ' ~'}
+                    <span ref={joinsBatchInRef} />
+                  </Trans>
+                )}
               </styledEl.NextBatch>
             )}
           </styledEl.DescriptionRow>
