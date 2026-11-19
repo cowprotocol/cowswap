@@ -1,7 +1,7 @@
 import type { FeatureFlags } from '@cowprotocol/common-const'
 import type { CowSwapTheme } from '@cowprotocol/ui'
 
-import { resolveCowSwapTheme } from './useCustomTheme'
+import { resolveCowSwapTheme, selectCustomThemeFlags } from './useCustomTheme'
 
 function buildFlags(overrides: FeatureFlags = {}): FeatureFlags {
   return {
@@ -95,5 +95,25 @@ describe('resolveCowSwapTheme', () => {
 
   test.each(cases)('$name', ({ darkMode, featureFlags, expected }) => {
     expect(resolveCowSwapTheme(darkMode, featureFlags)).toBe(expected)
+  })
+})
+
+describe('selectCustomThemeFlags', () => {
+  const persistedFlags = buildFlags({ isViceThemeEnabled: true })
+
+  it('uses the flags of the last visit while LaunchDarkly has none yet', () => {
+    expect(selectCustomThemeFlags({}, 'loading', persistedFlags)).toBe(persistedFlags)
+  })
+
+  it('uses the live flags as soon as there are any', () => {
+    const liveFlags = buildFlags()
+
+    expect(selectCustomThemeFlags(liveFlags, 'loading', persistedFlags)).toBe(liveFlags)
+  })
+
+  it.each(['ready', 'unavailable'] as const)('uses the live flags, even empty, once flags are %s', (status) => {
+    const liveFlags = {}
+
+    expect(selectCustomThemeFlags(liveFlags, status, persistedFlags)).toBe(liveFlags)
   })
 })

@@ -37,6 +37,8 @@ const CUSTOM_THEME_FLAG_KEYS: Readonly<CustomThemeFlagKeys> = Object.freeze({
 
 export const APRILS_FOOLS_FLAG_KEY = 'isAprilsFoolsEnabled'
 
+const CUSTOM_THEME_FLAGS_STORAGE_KEY = 'cowSwap.customThemeFlags'
+
 export interface CustomThemeContext {
   darkModeEnabled: boolean
 }
@@ -52,6 +54,32 @@ export function isCustomThemeEnabled(theme: CustomTheme, featureFlags?: FeatureF
   }
 
   return false
+}
+
+/**
+ * Stores the custom theme flags as LaunchDarkly resolved them. The next visit can then start in
+ * the same theme instead of painting the default one until LaunchDarkly has answered again.
+ */
+export function persistCustomThemeFlags(featureFlags: FeatureFlags): void {
+  if (typeof localStorage === 'undefined') return
+
+  const customThemeFlags = Object.fromEntries(
+    Object.values(CUSTOM_THEME_FLAG_KEYS).map((flagKey) => [flagKey, Boolean(featureFlags[flagKey])]),
+  )
+
+  try {
+    localStorage.setItem(CUSTOM_THEME_FLAGS_STORAGE_KEY, JSON.stringify(customThemeFlags))
+  } catch {
+    // Storage is full or blocked. The next visit starts in the default theme, as it would have.
+  }
+}
+
+export function readPersistedCustomThemeFlags(): FeatureFlags {
+  const persisted = readPersistedRecord()
+
+  return Object.fromEntries(
+    Object.values(CUSTOM_THEME_FLAG_KEYS).map((flagKey) => [flagKey, persisted[flagKey] === true]),
+  )
 }
 
 /**
@@ -85,4 +113,16 @@ export function resolveCustomThemeForContext(
   }
 
   return undefined
+}
+
+function readPersistedRecord(): Record<string, unknown> {
+  if (typeof localStorage === 'undefined') return {}
+
+  try {
+    const persisted: unknown = JSON.parse(localStorage.getItem(CUSTOM_THEME_FLAGS_STORAGE_KEY) || '{}')
+
+    return typeof persisted === 'object' && persisted !== null ? (persisted as Record<string, unknown>) : {}
+  } catch {
+    return {}
+  }
 }
