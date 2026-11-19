@@ -6,7 +6,7 @@ On success, `api/captchaApi.ts` exchanges the Turnstile token for a JWT, `entiti
 
 Exchange URL: selected backend API origin plus `/auth/turnstile`.
 
-Feature flag: `isCaptchaEnabled`. Missing or false disables the widget, prevents token exchange, and clears any stored captcha JWT from order book and BFF requests.
+Feature flag: `isCaptchaEnabled`. Missing or false disables the widget and prevents token exchange; `false` also clears any stored captcha JWT from order book and BFF requests.
 
 Deployment requirements:
 
