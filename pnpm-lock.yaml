@@ -1306,9 +1306,6 @@ importers:
       '@cowprotocol/sdk-viem-adapter':
         specifier: 0.3.39
         version: 0.3.39(viem@2.55.19(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
-      '@cowprotocol/tokens':
-        specifier: workspace:*
-        version: link:../../libs/tokens
       '@cowprotocol/widget-lib':
         specifier: workspace:*
         version: link:../../libs/widget-lib

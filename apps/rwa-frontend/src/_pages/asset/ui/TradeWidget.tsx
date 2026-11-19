@@ -14,7 +14,6 @@ import { TradeBarActions } from './TradeBarActions'
 import { TradeTokenSelector } from './TradeTokenSelector'
 import styles from './TradeWidget.module.css'
 
-import { getTradeTokenLists } from '../lib/tradeTokenLists'
 import { getTradeTokensFilters } from '../lib/tradeTokensFilters'
 import { getTradingPauseMessage } from '../lib/tradingPause'
 import { ENABLED_TRADE_TYPES } from '../model/tradeTypeAtom'
@@ -81,7 +80,6 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
       ...(side === 'buy'
         ? { sell: quote, buy: { asset: assetToken.address } }
         : { sell: { asset: assetToken.address, amount: ASSET_TOKEN_AMOUNT }, buy: { asset: QUOTE_ASSET } }),
-      tokenLists: getTradeTokenLists(assetToken.chainId),
       customTokens: asset.tokens.map((token) => toTokenInfo(token, market)),
       ...getTradeTokensFilters(asset, assetToken, side, isConnected),
       // The filters follow the Buy/Sell toggle above the widget, so the widget can't swap the tokens

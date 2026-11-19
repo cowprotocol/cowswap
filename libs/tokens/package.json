@@ -10,12 +10,6 @@
       "import": "./src/index.ts",
       "require": "./src/index.ts",
       "default": "./src/index.ts"
-    },
-    "./lists": {
-      "types": "./src/const/tokensLists.ts",
-      "import": "./src/const/tokensLists.ts",
-      "require": "./src/const/tokensLists.ts",
-      "default": "./src/const/tokensLists.ts"
     }
   },
   "publishConfig": {
@@ -26,11 +20,6 @@
         "types": "./index.d.ts",
         "import": "./index.mjs",
         "require": "./index.js"
-      },
-      "./lists": {
-        "types": "./lists.d.ts",
-        "import": "./lists.mjs",
-        "require": "./lists.js"
       }
     }
   },

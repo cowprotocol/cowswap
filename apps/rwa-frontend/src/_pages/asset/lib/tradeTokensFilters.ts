@@ -12,11 +12,13 @@ export function getTradeTokensFilters(
 ): TradeTokensFilters {
   const assetTokens = asset.tokens.map((token) => token.address)
   const assetChainIds = [...new Set(asset.tokens.map((token) => token.chainId))]
+  const sameTokens = asset.tokens.filter((token) => token.symbol === assetToken.symbol)
+  const sameTokenAddresses = sameTokens.map((token) => token.address)
 
   if (side === 'buy') {
     return {
       sellTokensFilter: {
-        excludedTokens: assetTokens,
+        excludedTokens: sameTokenAddresses,
         onlyWithBalance: true,
         notice: isConnected
           ? `Only tokens with a positive balance in your wallet can be used to pay for ${asset.ticker}.`
@@ -31,8 +33,6 @@ export function getTradeTokensFilters(
     }
   }
 
-  const sameTokens = asset.tokens.filter((token) => token.symbol === assetToken.symbol)
-
   return {
     sellTokensFilter: isConnected
       ? {
@@ -42,10 +42,10 @@ export function getTradeTokensFilters(
           notice: `Only the tokenized ${asset.ticker} with a positive balance in your wallet is listed.`,
         }
       : {
-          tokens: sameTokens.map((token) => token.address),
+          tokens: sameTokenAddresses,
           selectableChainIds: [...new Set(sameTokens.map((token) => token.chainId))],
           notice: `Only the ${assetToken.symbol} token selected above is listed.`,
         },
-    buyTokensFilter: { excludedTokens: assetTokens },
+    buyTokensFilter: { excludedTokens: sameTokenAddresses },
   }
 }

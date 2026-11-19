@@ -21,7 +21,6 @@
     "@cowprotocol/events": "workspace:*",
     "@cowprotocol/sdk-composable": "1.8.16",
     "@cowprotocol/sdk-viem-adapter": "0.3.39",
-    "@cowprotocol/tokens": "workspace:*",
     "@cowprotocol/widget-lib": "workspace:*",
     "@cowprotocol/widget-react": "workspace:*",
     "@reown/appkit": "1.8.19",

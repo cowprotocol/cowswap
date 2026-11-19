@@ -20,13 +20,14 @@ const AAPL: RwaAsset = {
 }
 
 const ASSET_TOKENS = [AAPLX_MAINNET.address, AAPLON_MAINNET.address, AAPLX_ARBITRUM.address]
+const AAPLX_TOKENS = [AAPLX_MAINNET.address, AAPLX_ARBITRUM.address]
 
 describe('getTradeTokensFilters', () => {
-  it('buys the asset tokens of any network with any other token held', () => {
+  it('buys the asset tokens of any network with any token held but the bought one', () => {
     const { sellTokensFilter, buyTokensFilter } = getTradeTokensFilters(AAPL, AAPLX_MAINNET, 'buy', true)
 
     expect(sellTokensFilter).toEqual({
-      excludedTokens: ASSET_TOKENS,
+      excludedTokens: AAPLX_TOKENS,
       onlyWithBalance: true,
       notice: expect.stringContaining('positive balance in your wallet'),
     })
@@ -36,7 +37,7 @@ describe('getTradeTokensFilters', () => {
     expect(buyTokensFilter?.notice).toContain('AAPL')
   })
 
-  it('sells the asset tokens held on any of its networks for any other token', () => {
+  it('sells the asset tokens held on any of its networks for any token but the sold one', () => {
     const { sellTokensFilter, buyTokensFilter } = getTradeTokensFilters(AAPL, AAPLX_ARBITRUM, 'sell', true)
 
     expect(sellTokensFilter).toEqual({
@@ -45,7 +46,15 @@ describe('getTradeTokensFilters', () => {
       selectableChainIds: [AAPLX_MAINNET.chainId, AAPLX_ARBITRUM.chainId],
       notice: expect.stringContaining('AAPL'),
     })
-    expect(buyTokensFilter).toEqual({ excludedTokens: ASSET_TOKENS })
+    expect(buyTokensFilter).toEqual({ excludedTokens: AAPLX_TOKENS })
+  })
+
+  it("trades an issuer's token for another issuer's token of the asset", () => {
+    const sellFilters = getTradeTokensFilters(AAPL, AAPLX_MAINNET, 'sell', true)
+    const buyFilters = getTradeTokensFilters(AAPL, AAPLON_MAINNET, 'buy', true)
+
+    expect(sellFilters.buyTokensFilter?.excludedTokens).not.toContain(AAPLON_MAINNET.address)
+    expect(buyFilters.sellTokensFilter?.excludedTokens).toEqual([AAPLON_MAINNET.address])
   })
 
   it('sells only the selected asset token without a wallet', () => {
