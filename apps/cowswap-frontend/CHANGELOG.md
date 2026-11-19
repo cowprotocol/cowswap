@@ -1,5 +1,28 @@
 # Changelog
 
+## [3.40.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.39.0...cowswap-v3.40.0) (2026-11-19)
+
+### Minor Changes
+
+- feat(theme): cherry pick #8678 (vice theme)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/assets@2.13.0
+  - @cowprotocol/common-const@3.25.0
+  - @cowprotocol/ui@3.25.0
+  - @cowprotocol/wallet@3.23.1
+  - @cowprotocol/analytics@3.20.1
+  - @cowprotocol/balances-and-allowances@3.20.1
+  - @cowprotocol/common-hooks@3.22.1
+  - @cowprotocol/common-utils@3.23.1
+  - @cowprotocol/core@3.16.1
+  - @cowprotocol/ens@3.13.1
+  - @cowprotocol/multicall@3.13.1
+  - @cowprotocol/tokens@3.20.1
+  - @cowprotocol/snackbars@2.3.22
+
 ## [3.39.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.38.3...cowswap-v3.39.0) (2026-11-18)
 
 ### Minor Changes
