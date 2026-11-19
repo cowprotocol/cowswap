@@ -1,20 +1,13 @@
-import { createStore, Provider } from 'jotai'
-import { createElement, ReactNode } from 'react'
+import { renderHook } from '@testing-library/react'
 
-import { act, renderHook } from '@testing-library/react'
+async function renderIsSolanaAvailable(hash: string): Promise<boolean> {
+  window.location.hash = hash
+  // The flag is read at module load, so each case needs a fresh module instance.
+  jest.resetModules()
 
-import { useIsSolanaAvailable, useSetIsSolanaEnabledInWidget } from './useIsSolanaAvailable'
+  const { useIsSolanaAvailable } = await import('./useIsSolanaAvailable')
 
-function renderSolanaAvailability(): ReturnType<
-  typeof renderHook<{ isAvailable: boolean; setEnabledInWidget: (value: boolean) => void }, unknown>
-> {
-  const store = createStore()
-  const wrapper = ({ children }: { children: ReactNode }): ReactNode => createElement(Provider, { store }, children)
-
-  return renderHook(
-    () => ({ isAvailable: useIsSolanaAvailable(), setEnabledInWidget: useSetIsSolanaEnabledInWidget() }),
-    { wrapper },
-  )
+  return renderHook(() => useIsSolanaAvailable()).result.current
 }
 
 describe('useIsSolanaAvailable', () => {
@@ -22,31 +15,19 @@ describe('useIsSolanaAvailable', () => {
     window.location.hash = ''
   })
 
-  it('is true outside the widget', () => {
-    expect(renderSolanaAvailability().result.current.isAvailable).toBe(true)
+  it('is true outside the widget', async () => {
+    expect(await renderIsSolanaAvailable('')).toBe(true)
   })
 
-  it('is false inside the widget until a partner opts in', () => {
-    window.location.hash = '#/1/widget/swap'
-
-    expect(renderSolanaAvailability().result.current.isAvailable).toBe(false)
+  it('is false inside the widget until a partner opts in', async () => {
+    expect(await renderIsSolanaAvailable('#/1/widget/swap/_/_')).toBe(false)
   })
 
-  it('follows the opt-in inside the widget', () => {
-    window.location.hash = '#/1/widget/swap'
-
-    const { result } = renderSolanaAvailability()
-
-    act(() => result.current.setEnabledInWidget(true))
-
-    expect(result.current.isAvailable).toBe(true)
+  it('follows the opt-in carried in the widget URL', async () => {
+    expect(await renderIsSolanaAvailable('#/1/widget/swap/_/_?solanaEnabled=true')).toBe(true)
   })
 
-  it('ignores the opt-in outside the widget', () => {
-    const { result } = renderSolanaAvailability()
-
-    act(() => result.current.setEnabledInWidget(false))
-
-    expect(result.current.isAvailable).toBe(true)
+  it('ignores the flag outside the widget', async () => {
+    expect(await renderIsSolanaAvailable('#/1/swap/_/_?solanaEnabled=true')).toBe(true)
   })
 })
