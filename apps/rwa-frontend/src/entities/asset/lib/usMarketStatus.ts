@@ -47,7 +47,10 @@ export function getMinutesToUsMarketChange(tradingTime: RwaTradingTime, now: Dat
   return null
 }
 
-/** The `tradingTime` session on the `now` date of its time zone as instants. `null` for an unparsable `tradingTime` */
+/**
+ * The current or next `tradingTime` session as instants, or today's when none is within 14 days.
+ * `null` for an unparsable `tradingTime`
+ */
 export function getUsMarketSessionInstants(tradingTime: RwaTradingTime, now: Date): UsMarketSessionInstants | null {
   const session = parseSession(tradingTime)
 
@@ -55,11 +58,12 @@ export function getUsMarketSessionInstants(tradingTime: RwaTradingTime, now: Dat
 
   const { start, end, timeZone } = session
   const local = toZonedDate(now, timeZone)
+  const day = getCurrentOrNextSessionDay(local, session) ?? local
 
   return {
-    start: zonedTimeToDate(local, start, timeZone),
-    end: zonedTimeToDate(local, end, timeZone),
-    earlyCloseEnd: zonedTimeToDate(local, Math.min(end, EARLY_CLOSE_MINUTES), timeZone),
+    start: zonedTimeToDate(day, start, timeZone),
+    end: zonedTimeToDate(day, end, timeZone),
+    earlyCloseEnd: zonedTimeToDate(day, Math.min(end, EARLY_CLOSE_MINUTES), timeZone),
   }
 }
 
@@ -86,6 +90,17 @@ export function isValidTimeZone(timeZone: string): boolean {
   } catch {
     return false
   }
+}
+
+function getCurrentOrNextSessionDay(local: ZonedDate, session: DaySession): CalendarDate | null {
+  for (let daysAhead = 0; daysAhead <= MAX_DAYS_TO_NEXT_OPEN; daysAhead++) {
+    const day = shiftDays(local, daysAhead)
+    const daySession = getDaySession(day, session)
+
+    if (daySession && (daysAhead > 0 || local.minutes < daySession.end)) return day
+  }
+
+  return null
 }
 
 function getDaySession(date: CalendarDate, { start, end }: DaySession): DaySession | null {

@@ -13,6 +13,22 @@ describe('formatUsMarketSession', () => {
       '13:30 – 17:00',
       'Lisbon',
     ],
+    [
+      'Lisbon on the weekend before New York starts summer time',
+      '2026-03-07T12:00:00Z',
+      'Europe/Lisbon',
+      '13:30 – 20:00',
+      '13:30 – 17:00',
+      'Lisbon',
+    ],
+    [
+      'Lisbon on the weekend before New York ends summer time',
+      '2026-10-31T12:00:00Z',
+      'Europe/Lisbon',
+      '14:30 – 21:00',
+      '14:30 – 18:00',
+      'Lisbon',
+    ],
     ['Lisbon in standard time', '2026-11-19T12:00:00Z', 'Europe/Lisbon', '14:30 – 21:00', '14:30 – 18:00', 'Lisbon'],
     ['New York', '2026-11-19T12:00:00Z', 'America/New_York', '09:30 – 16:00', '09:30 – 13:00', 'New York'],
     [
