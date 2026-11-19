@@ -10,7 +10,8 @@ export interface CookieConsentBannerContainerProps {
   copy?: CookieConsentCopy
   title?: string
   illustration?: ReactNode
-  variant?: 'white' | 'paleBlue' | 'trading'
+  /** `themed` takes its colours from the app theme's primary colour; the others use fixed brand colours. */
+  variant?: 'white' | 'paleBlue' | 'trading' | 'themed'
   /** Pixels. Height of a bar the app fixes to the bottom of the screen up to `Media.upToMedium`. Default 0 */
   bottomBarHeight?: number
 }

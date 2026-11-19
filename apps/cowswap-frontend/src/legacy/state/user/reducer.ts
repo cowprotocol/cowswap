@@ -11,9 +11,17 @@ export interface UserState {
   hooksEnabled: boolean
 }
 
+/**
+ * Read at load rather than left to `UserUpdater`, whose effect runs after the first paint. Starting
+ * from `false` made a first visit in a dark system render the light theme for a moment.
+ */
+function matchesSystemDarkMode(): boolean {
+  return typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-color-scheme: dark)').matches
+}
+
 export const initialState: UserState = {
   selectedWallet: undefined,
-  matchesDarkMode: false,
+  matchesDarkMode: matchesSystemDarkMode(),
   userDarkMode: null,
   // TODO: mod, shouldn't be here
   hooksEnabled: false,
