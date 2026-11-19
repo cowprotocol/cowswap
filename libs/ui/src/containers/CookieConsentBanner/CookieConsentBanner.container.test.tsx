@@ -1,6 +1,7 @@
 import { COOKIE_CONSENT_COPY, CookieConsentBannerControls, useCookieConsentBanner } from '@cowprotocol/analytics'
 
 import { fireEvent, render, screen } from '@testing-library/react'
+import { DefaultTheme, ThemeProvider } from 'styled-components/macro'
 
 import { CookieConsentBannerContainer } from './CookieConsentBanner.container'
 
@@ -102,6 +103,25 @@ describe('CookieConsentBannerContainer', () => {
     expect(screen.getByRole('heading', { name: COOKIE_CONSENT_COPY.title })).toBeTruthy()
     expect(document.querySelector('img')?.parentElement?.getAttribute('aria-hidden')).toBe('true')
     expect(screen.getByRole('dialog').textContent).toContain(COOKIE_CONSENT_COPY.message)
+  })
+
+  it('takes its colours from the theme in the themed presentation', () => {
+    mockBanner()
+    const theme = { primary: '#f05d95', buttonTextCustom: '#1e002e', paper: '#2a1145' } as DefaultTheme
+
+    render(
+      <ThemeProvider theme={theme}>
+        <CookieConsentBannerContainer variant="themed" />
+      </ThemeProvider>,
+    )
+
+    const style = getComputedStyle(screen.getByRole('dialog'))
+
+    expect(style.getPropertyValue('--cookie-banner-background')).toBe('#f05d95')
+    expect(style.getPropertyValue('--cookie-banner-text')).toBe('#1e002e')
+    expect(style.getPropertyValue('--cookie-banner-button')).toBe('#1e002e')
+    expect(style.getPropertyValue('--cookie-banner-button-text')).toBe('#f05d95')
+    expect(style.getPropertyValue('--cookie-banner-button-hover')).toBe('#2a1145')
   })
 
   it('supports the trading presentation while preserving the consent controls', () => {

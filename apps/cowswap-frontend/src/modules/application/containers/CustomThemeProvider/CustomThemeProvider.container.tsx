@@ -22,7 +22,7 @@ export function CustomThemeProvider({ children }: CustomThemeProviderProps): Rea
   const hasPalette = appTheme === VICE_THEME
 
   const theme = useMemo(
-    () => (hasPalette ? { ...baseTheme, ...VICE_THEME_PALETTE } : baseTheme),
+    () => (hasPalette ? { ...baseTheme, ...VICE_THEME_PALETTE, customTheme: VICE_THEME } : baseTheme),
     [hasPalette, baseTheme],
   )
 

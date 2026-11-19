@@ -1,4 +1,4 @@
-import { CowProtocolTheme } from '@cowprotocol/ui'
+import { CowProtocolTheme, CowSwapTheme } from '@cowprotocol/ui'
 
 declare module 'styled-components' {
   /**
@@ -9,6 +9,8 @@ declare module 'styled-components' {
     /** Properties specific to CoWSwap widget functionality */
     isWidget: boolean
     isIframe: boolean
+    /** The custom theme whose palette is laid over this theme, if any. */
+    customTheme?: CowSwapTheme
   }
 
   // Use CoWSwapTheme as the default theme for styled-components in this app

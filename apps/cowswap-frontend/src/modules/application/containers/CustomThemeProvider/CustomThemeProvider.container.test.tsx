@@ -71,6 +71,24 @@ describe('CustomThemeProvider', () => {
     expect(screen.getByTestId('primary').textContent).toBe(VICE_THEME_PALETTE.primary)
   })
 
+  it('names the custom theme on the theme it provides', () => {
+    mockedUseAppTheme.mockReturnValue(VICE_THEME)
+
+    function CurrentCustomTheme(): ReactNode {
+      return <span data-testid="custom-theme">{useTheme().customTheme}</span>
+    }
+
+    render(
+      <StyledComponentsThemeProvider theme={baseTheme}>
+        <CustomThemeProvider>
+          <CurrentCustomTheme />
+        </CustomThemeProvider>
+      </StyledComponentsThemeProvider>,
+    )
+
+    expect(screen.getByTestId('custom-theme').textContent).toBe(VICE_THEME)
+  })
+
   it('declares the Vice colour variables under a selector that outranks the root ones', () => {
     mockedUseAppTheme.mockReturnValue(VICE_THEME)
 
