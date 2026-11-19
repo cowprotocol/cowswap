@@ -7,6 +7,8 @@ import { TradeQuoteState } from 'modules/tradeQuote'
 
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 
+import { formatRwaWeekendEnd } from '../utils/formatRwaWeekendEnd.utils'
+
 export function useTokenCustomTradeError(
   inputCurrency: Currency | undefined | null,
   outputCurrent: Currency | undefined | null,
@@ -23,7 +25,7 @@ export function useTokenCustomTradeError(
     if (!isValidQuoteError(error)) return undefined
     if (error.type !== QuoteApiErrorCodes.InsufficientLiquidity) return undefined
 
-    return `${rwaToken.symbol} not tradable until Sunday 23:59 UTC`
+    return `${rwaToken.symbol} not tradable until ${formatRwaWeekendEnd(new Date())}`
   }, [isWeekendDay, error, rwaToken])
 }
 
