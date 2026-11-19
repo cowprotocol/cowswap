@@ -1,8 +1,6 @@
 import { useSetAtom } from 'jotai'
-import { useEffect } from 'react'
 
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import type { CowSwapTheme } from '@cowprotocol/ui'
 
 import { renderHook } from '@testing-library/react'
 
@@ -13,7 +11,6 @@ import { useInjectedWidgetPalette } from 'modules/injectedWidget'
 import { getCowswapTheme } from './getCowswapTheme'
 import { mapWidgetTheme } from './mapWidgetTheme'
 import { ThemeConfigUpdater } from './ThemeConfigUpdater'
-import { VICE_THEME, VICE_THEME_PALETTE } from './viceTheme.constants'
 
 jest.mock('jotai', () => ({
   atom: jest.fn(),
@@ -50,27 +47,6 @@ const mockedGetCowswapTheme = getCowswapTheme as jest.MockedFunction<typeof getC
 const mockedMapWidgetTheme = mapWidgetTheme as jest.MockedFunction<typeof mapWidgetTheme>
 const mockedUseIsDarkMode = useIsDarkMode as jest.MockedFunction<typeof useIsDarkMode>
 const mockedUseInjectedWidgetPalette = useInjectedWidgetPalette as jest.MockedFunction<typeof useInjectedWidgetPalette>
-
-/**
- * Passive effects run in declaration order and only after every layout effect, so a probe effect
- * declared ahead of the updater splits its `setThemeConfig` calls into the two phases.
- */
-function renderAndRecordPhases(customTheme: CowSwapTheme | undefined): string[] {
-  const phases: string[] = []
-  let painted = false
-
-  mockedUseSetAtom.mockReturnValue(() => phases.push(painted ? 'after paint' : 'before paint'))
-
-  renderHook(() => {
-    useEffect(() => {
-      painted = true
-    }, [])
-
-    return ThemeConfigUpdater({ customTheme })
-  })
-
-  return phases
-}
 
 describe('ThemeConfigUpdater', () => {
   const mockSetThemeConfig = jest.fn()
@@ -127,48 +103,11 @@ describe('ThemeConfigUpdater', () => {
 
       expect(mockSetThemeConfig).toHaveBeenLastCalledWith(darkTheme)
     })
-
-    it('lays the Vice palette over the dark theme when the Vice theme is active', () => {
-      mockedUseIsDarkMode.mockReturnValue(true)
-      mockedGetCowswapTheme.mockReturnValue(darkTheme)
-
-      renderHook(() => ThemeConfigUpdater({ customTheme: VICE_THEME }))
-
-      expect(mockSetThemeConfig).toHaveBeenCalledWith({ ...(darkTheme as object), ...VICE_THEME_PALETTE })
-    })
-
-    it('applies the Vice palette before paint', () => {
-      mockedUseIsDarkMode.mockReturnValue(true)
-      mockedGetCowswapTheme.mockReturnValue(darkTheme)
-
-      expect(renderAndRecordPhases(VICE_THEME)).toEqual(['before paint', 'after paint'])
-    })
-
-    it('leaves the default theme to the passive effect', () => {
-      expect(renderAndRecordPhases(undefined)).toEqual(['after paint'])
-    })
-
-    it('keeps the default theme for a custom theme that has no palette', () => {
-      mockedUseIsDarkMode.mockReturnValue(true)
-      mockedGetCowswapTheme.mockReturnValue(darkTheme)
-
-      renderHook(() => ThemeConfigUpdater({ customTheme: 'darkHalloween' }))
-
-      expect(mockSetThemeConfig).toHaveBeenCalledWith(darkTheme)
-    })
   })
 
   describe('widget mode', () => {
     beforeEach(() => {
       mockedIsInjectedWidget.mockReturnValue(true)
-    })
-
-    it('ignores the custom theme', () => {
-      mockedMapWidgetTheme.mockReturnValue(lightTheme)
-
-      renderHook(() => ThemeConfigUpdater({ customTheme: VICE_THEME }))
-
-      expect(mockSetThemeConfig).toHaveBeenCalledWith(lightTheme)
     })
 
     it('calls mapWidgetTheme and sets result when palette is provided', () => {

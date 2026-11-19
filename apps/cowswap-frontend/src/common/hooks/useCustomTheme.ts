@@ -2,11 +2,9 @@ import { useMemo } from 'react'
 
 import type { FeatureFlags } from '@cowprotocol/common-const'
 import { CustomTheme, resolveCustomThemeForContext } from '@cowprotocol/common-const'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { useFeatureFlags, useTheme } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import type { CowSwapTheme } from '@cowprotocol/ui'
-
-import { useDarkModeManager } from '../../legacy/state/user/hooks'
 
 export function resolveCowSwapTheme(darkMode: boolean, featureFlags?: FeatureFlags): CowSwapTheme | undefined {
   const activeTheme = resolveCustomThemeForContext(featureFlags, { darkModeEnabled: darkMode })
@@ -27,7 +25,7 @@ export function resolveCowSwapTheme(darkMode: boolean, featureFlags?: FeatureFla
 }
 
 export function useCustomTheme(): CowSwapTheme | undefined {
-  const [darkMode] = useDarkModeManager()
+  const { darkMode } = useTheme()
   const featureFlags = useFeatureFlags()
   const isWidget = isInjectedWidget()
 
