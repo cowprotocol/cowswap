@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
-import { getAddressKey } from '@cowprotocol/cow-sdk'
+import { getAddressKey, isSolanaChain } from '@cowprotocol/cow-sdk'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 import { resolveFlexibleConfig } from '@cowprotocol/widget-lib'
 
@@ -60,6 +60,12 @@ const widgetPartnerFeeAtom = atom<VolumeFee | undefined>((get) => {
   const tradeType = get(tradeTypeAtom)?.tradeType
 
   if (!tradeType || !partnerFee) {
+    return undefined
+  }
+
+  // `getSolanaQuote` never forwards a partner fee to the SDK, so nothing collects one on Solana.
+  // Resolving it here anyway would put a fee row in front of the user that no order charges.
+  if (isSolanaChain(chainId)) {
     return undefined
   }
 

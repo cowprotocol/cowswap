@@ -17,7 +17,7 @@ describe('isSolanaEnabledForWidget', () => {
     expect(isSolanaEnabledForWidget({ enableSolana: true, standaloneMode: false })).toBe(false)
   })
 
-  it('is false while a partner fee is set', () => {
-    expect(isSolanaEnabledForWidget({ enableSolana: true, partnerFee: PARTNER_FEE })).toBe(false)
+  it('is unaffected by a partner fee, which simply is not charged on Solana', () => {
+    expect(isSolanaEnabledForWidget({ enableSolana: true, partnerFee: PARTNER_FEE })).toBe(true)
   })
 })

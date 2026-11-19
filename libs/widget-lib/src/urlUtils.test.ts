@@ -234,10 +234,13 @@ describe('buildWidgetUrlQuery', () => {
     expect(buildWidgetUrlQuery({ enableSolana: true }).get('solanaEnabled')).toBe('true')
   })
 
-  it('does not serialize solanaEnabled when the opt-in cannot apply', () => {
+  it('does not serialize solanaEnabled in dapp mode', () => {
     expect(buildWidgetUrlQuery({ enableSolana: true, standaloneMode: false }).get('solanaEnabled')).toBeNull()
+  })
+
+  it('still serializes solanaEnabled when a partner fee is set', () => {
     expect(
       buildWidgetUrlQuery({ enableSolana: true, partnerFee: { bps: 50, recipient: '0x1234' } }).get('solanaEnabled'),
-    ).toBeNull()
+    ).toBe('true')
   })
 })

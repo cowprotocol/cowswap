@@ -5,6 +5,7 @@ import {
   buildConfiguratorState,
   getDefaultCustomColorsByTheme,
   getSolanaBlockedReason,
+  getSolanaFeeNotice,
   isSolanaSelectable,
   resolveConfiguratorCustomColorsByTheme,
   resolveConfiguratorFormValues,
@@ -97,9 +98,10 @@ describe('Solana availability', () => {
     partnerFeeBps: 0,
   } as const
 
-  it('is selectable once a standalone widget opts in without a fee', () => {
+  it('is selectable once a standalone widget opts in', () => {
     expect(isSolanaSelectable(OPTED_IN)).toBe(true)
     expect(getSolanaBlockedReason(OPTED_IN)).toBeUndefined()
+    expect(getSolanaFeeNotice(OPTED_IN)).toBeUndefined()
   })
 
   it('is not selectable until the partner opts in, but the switch stays usable', () => {
@@ -109,10 +111,17 @@ describe('Solana availability', () => {
     expect(getSolanaBlockedReason(values)).toBeUndefined()
   })
 
-  it.each([
-    ['dapp mode', { ...OPTED_IN, widgetMode: 'dapp' } as const],
-    ['a partner fee', { ...OPTED_IN, partnerFeeBps: 50 } as const],
-  ])('blocks the opt-in on %s', (_, values) => {
+  it('stays selectable with a partner fee set, and warns that Solana earns none', () => {
+    const values = { ...OPTED_IN, partnerFeeBps: 50 }
+
+    expect(isSolanaSelectable(values)).toBe(true)
+    expect(getSolanaBlockedReason(values)).toBeUndefined()
+    expect(getSolanaFeeNotice(values)).toEqual(expect.any(String))
+  })
+
+  it('blocks the opt-in in dapp mode', () => {
+    const values = { ...OPTED_IN, widgetMode: 'dapp' } as const
+
     expect(getSolanaBlockedReason(values)).toEqual(expect.any(String))
     expect(isSolanaSelectable(values)).toBe(false)
   })
