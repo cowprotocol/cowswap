@@ -13,3 +13,18 @@ export function isSolanaEnabledForWidget(params: Partial<CowSwapWidgetParams>): 
 
   return Boolean(enableSolana) && standaloneMode !== false
 }
+
+/**
+ * Reads back the flag {@link isSolanaEnabledForWidget} wrote into an iframe `src`.
+ *
+ * The Solana wallet adapters are built from that URL while the widget's bundle loads, so a later
+ * `updateParams` cannot switch them on — the iframe has to be reloaded, and that decision needs the
+ * value the running iframe was actually created with.
+ */
+export function isSolanaEnabledInWidgetSrc(src: string): boolean {
+  const hashSearch = src.split('#')[1]?.split('?')[1]
+
+  if (!hashSearch) return false
+
+  return new URLSearchParams(hashSearch).get('solanaEnabled') === 'true'
+}

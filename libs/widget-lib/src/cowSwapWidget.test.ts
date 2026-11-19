@@ -379,6 +379,53 @@ describe('createCowSwapWidget', () => {
   })
 })
 
+describe('createCowSwapWidget Solana opt-in', () => {
+  afterEach(() => {
+    widgetHandlers.splice(0).forEach((handler) => handler.destroy())
+    document.body.innerHTML = ''
+    jest.restoreAllMocks()
+  })
+
+  it('reloads the iframe with the Solana flag when enableSolana is turned on via updateParams', () => {
+    const handler = createWidget()
+    const iframe = handler.iframe
+
+    expect(iframe.src).not.toContain('solanaEnabled')
+
+    handler.updateParams({
+      appCode: 'test-app',
+      chainId: 1,
+      tradeType: TradeType.SWAP,
+      enableSolana: true,
+    })
+
+    expect(iframe.src).toBe('about:blank')
+
+    const postMessageSpy = jest.spyOn(widgetIframeTransport, 'postMessageToWindow').mockImplementation(() => void 0)
+    iframe.dispatchEvent(new Event('load'))
+    postMessageSpy.mockRestore()
+
+    expect(iframe.src).toContain('solanaEnabled=true')
+  })
+
+  it('keeps the iframe when enableSolana is unchanged on updateParams', () => {
+    const handler = createWidget(undefined, { enableSolana: true })
+    const iframe = handler.iframe
+    const srcBefore = iframe.src
+
+    expect(srcBefore).toContain('solanaEnabled=true')
+
+    handler.updateParams({
+      appCode: 'test-app',
+      chainId: 100,
+      tradeType: TradeType.SWAP,
+      enableSolana: true,
+    })
+
+    expect(iframe.src).toBe(srcBefore)
+  })
+})
+
 describe('createCowSwapWidget param validation', () => {
   afterEach(() => {
     widgetHandlers.splice(0).forEach((handler) => handler.destroy())

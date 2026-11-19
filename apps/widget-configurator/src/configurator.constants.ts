@@ -145,7 +145,7 @@ export const DEFAULT_CONFIGURATOR_FORM_VALUES: ConfiguratorFormValues = {
   // Basics:
 
   appCode: '',
-  widgetMode: 'dapp',
+  widgetMode: 'standalone',
   locale: '',
 
   // Trade Setup:
@@ -154,7 +154,7 @@ export const DEFAULT_CONFIGURATOR_FORM_VALUES: ConfiguratorFormValues = {
   currentTradeType: TRADE_MODES[0],
   chainId: SupportedChainId.MAINNET,
   disableCrossChainSwap: false,
-  enableSolana: false,
+  enableSolana: true,
 
   // Tokens:
 
