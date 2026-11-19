@@ -4,7 +4,7 @@ import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { getPrioritizedTokenKeys, getUnknownPrioritizedTokenKeys } from './getPrioritizedTokenKeys'
 
 const WSTETH = '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0'
-const WSTETH_LOWERCASE = '0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0'
+const WSTETH_LOWERCASE = WSTETH.toLowerCase()
 const LDO = '0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32'
 const SOLANA_MINT = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
 
