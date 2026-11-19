@@ -4,6 +4,8 @@ import { VirtualItem } from '@tanstack/react-virtual'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { getPrioritizedTokenKeys } from '@cowprotocol/tokens'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
@@ -38,9 +40,18 @@ export function TokensVirtualList({
   } = useTokenListContext()
   const { values: balances } = selectTokenContext.balancesState
   const { isYieldEnabled } = useFeatureFlags()
-  const { hideRecentTokens, hideFavoriteTokens } = useInjectedWidgetParams()
+  const { hideRecentTokens, hideFavoriteTokens, prioritizedTokens } = useInjectedWidgetParams()
+  const { chainId: walletChainId } = useWalletInfo()
 
-  const sortedTokens = useMemo(() => sortTokensByBalance(tokensToDisplay, balances), [tokensToDisplay, balances])
+  const prioritizedTokenKeys = useMemo(
+    () => getPrioritizedTokenKeys(prioritizedTokens, selectedTargetChainId ?? walletChainId),
+    [prioritizedTokens, selectedTargetChainId, walletChainId],
+  )
+
+  const sortedTokens = useMemo(
+    () => sortTokensByBalance(tokensToDisplay, balances, prioritizedTokenKeys),
+    [tokensToDisplay, balances, prioritizedTokenKeys],
+  )
 
   const rows = useMemo<TokensVirtualRow[]>(
     () =>

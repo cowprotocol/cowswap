@@ -1,9 +1,12 @@
 import { useSetAtom, useAtomValue } from 'jotai'
 import { ReactNode, useEffect, useMemo } from 'react'
 
+import type { TargetChainId } from '@cowprotocol/cow-sdk'
 import { TokenInfo } from '@cowprotocol/types'
 
 import useSWR from 'swr'
+
+import { usePrioritizedTokensWarning } from './usePrioritizedTokensWarning'
 
 import { useAddList } from '../../hooks/lists/useAddList'
 import { useRemoveList } from '../../hooks/lists/useRemoveList'
@@ -19,6 +22,7 @@ export interface CustomTokensListsUpdaterProps {
   sellTokenLists?: string[]
   buyTokenLists?: string[]
   customTokens?: TokenInfo[]
+  prioritizedTokens?: Partial<Record<TargetChainId, string[]>>
   hideFavoriteTokens?: boolean
   appCode?: string
   onTokenListAddingError(error: Error): void
@@ -39,6 +43,7 @@ export function WidgetTokensListsUpdater(props: CustomTokensListsUpdaterProps): 
     buyTokenLists,
     appCode,
     customTokens,
+    prioritizedTokens,
     hideFavoriteTokens,
     onTokenListAddingError,
     onRemoveList,
@@ -75,7 +80,7 @@ export function WidgetTokensListsUpdater(props: CustomTokensListsUpdaterProps): 
     })
   }, [allWidgetLists, allTokensLists])
 
-  const { data: fetchedLists } = useSWR<ListState[] | null>(
+  const { data: fetchedLists, isLoading: areWidgetListsLoading } = useSWR<ListState[] | null>(
     ['useSearchList', listsToImport],
     () => {
       if (!listsToImport) return null
@@ -92,6 +97,8 @@ export function WidgetTokensListsUpdater(props: CustomTokensListsUpdaterProps): 
     },
     {},
   )
+
+  usePrioritizedTokensWarning(prioritizedTokens, areWidgetListsLoading)
 
   /**
    * Add new lists

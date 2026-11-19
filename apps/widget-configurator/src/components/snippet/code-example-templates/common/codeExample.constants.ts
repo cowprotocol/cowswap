@@ -25,6 +25,7 @@ export const COMMENTS_BY_PARAM_NAME: Partial<Record<keyof CowSwapWidgetParams, s
   sellTokenLists: 'Token lists available only in the sell selector',
   buyTokenLists: 'Token lists available only in the buy selector',
   tokenLists: 'All default enabled token lists. Also see https://tokenlists.org',
+  prioritizedTokens: 'Per chain id: tokens listed right after native and held tokens, in this order',
 
   // Theme Colors:
 
