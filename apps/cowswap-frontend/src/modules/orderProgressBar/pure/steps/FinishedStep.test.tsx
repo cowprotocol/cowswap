@@ -78,9 +78,28 @@ jest.mock('../SolverAuctionResult/SolverAuctionResult.pure', () => ({
 }))
 
 jest.mock('../WaitAndSaveOutcome/WaitAndSaveOutcome.pure', () => ({
-  WaitAndSaveOutcome: ({ gainAmount }: { gainAmount: string }) => (
-    <div data-testid="wait-and-save-outcome">{gainAmount}</div>
-  ),
+  WaitAndSaveOutcome: (props: {
+    variant: string
+    gainAmount?: string
+    priceImprovement?: string
+    totalSaved?: string
+    volumeFeeSaved?: string
+    volumeFeeSavedFiat?: string
+  }) => {
+    if (props.variant === 'withWaivedFee') {
+      return (
+        <div data-testid="wait-and-save-outcome">{`Wait & save: ${props.volumeFeeSavedFiat} saved on the volume fee`}</div>
+      )
+    }
+
+    if (props.variant === 'withWaivedFeeAndCow') {
+      return (
+        <div data-testid="wait-and-save-outcome">{`Wait & save · You saved ${props.totalSaved} Better price than trading alone +${props.priceImprovement} No volume fee +${props.volumeFeeSaved}`}</div>
+      )
+    }
+
+    return <div data-testid="wait-and-save-outcome">{props.gainAmount}</div>
+  },
 }))
 
 jest.mock('../../containers/TakeProfitPrompt/TakeProfitPrompt.container', () => ({
@@ -415,7 +434,9 @@ describe('FinishedStep', () => {
     expect(screen.queryByTestId('solver-competition-expand')).toBeNull()
     expect(screen.queryByRole('link', { name: /Share this/ })).toBeNull()
   })
+})
 
+describe('FinishedStep Wait & Save', () => {
   it('renders the green card and CoW strip instead of surplus when Wait & Save beat trading alone', () => {
     renderFinished(
       <FinishedStep
@@ -426,13 +447,9 @@ describe('FinishedStep', () => {
         surplusData={surplusData}
         waitAndSave={{
           outcome: {
+            variant: 'withCow',
             gainAmount: '1.46',
-            gainFiat: '$4.50',
-            gainNumeric: 1.46,
-            gainPercent: 0.3,
             tokenSymbol: 'RAI',
-            tradingAloneAmount: '485.72',
-            tradingAloneNumeric: 485.72,
           },
           strip: { hasAloneBid: true, kind: 'cow' },
         }}
@@ -444,7 +461,7 @@ describe('FinishedStep', () => {
     )
 
     expect(screen.getByTestId('cow-participation-footer').textContent).toBe('cow')
-    expect(screen.getByTestId('wait-and-save-outcome').textContent).toBe('1.46')
+    expect(screen.getByTestId('wait-and-save-outcome').textContent).toContain('1.46')
     expect(screen.queryByTestId('sold-surplus')).toBeNull()
     expect(screen.queryByTestId('received-surplus')).toBeNull()
     expect(screen.queryByTestId('finished-tips')).toBeNull()
@@ -484,6 +501,66 @@ describe('FinishedStep', () => {
     expect(screen.getByTestId('finished-tips').textContent).toBe('Tips')
     expect(screen.getByTestId('solver-competition-expand')).toBeTruthy()
     expect(screen.queryByTestId('solver-auction-result')).toBeNull()
+  })
+
+  it('shows the compact fee-waiver banner with surplus and without the CoW strip', () => {
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={order}
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+        surplusData={surplusData}
+        waitAndSave={{
+          outcome: { variant: 'withWaivedFee', volumeFeeSavedFiat: '$0.30' },
+          strip: { companionCount: 3, hasAloneBid: false, kind: 'batched' },
+        }}
+        solvers={[{ solver: 'tsolver', displayName: 'Tsolver' }]}
+        totalSolvers={10}
+      >
+        <div data-testid="finished-tips">Tips</div>
+      </FinishedStep>,
+    )
+
+    expect(screen.queryByTestId('cow-participation-footer')).toBeNull()
+    expect(screen.getByTestId('wait-and-save-outcome').textContent).toContain(
+      'Wait & save: $0.30 saved on the volume fee',
+    )
+    expect(screen.getByTestId('received-surplus').textContent).toContain('+')
+    expect(screen.getByTestId('finished-tips').textContent).toBe('Tips')
+  })
+
+  it('shows the two-row savings summary and CoW strip when fee waiver and comparison are both available', () => {
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={order}
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+        surplusData={surplusData}
+        waitAndSave={{
+          outcome: {
+            variant: 'withWaivedFeeAndCow',
+            priceImprovement: '$4.50',
+            totalSaved: '$4.80',
+            volumeFeeSaved: '$0.30',
+          },
+          strip: { hasAloneBid: true, kind: 'cow' },
+        }}
+        solvers={[{ solver: 'tsolver', displayName: 'Tsolver' }]}
+        totalSolvers={10}
+      >
+        <div data-testid="finished-tips">Tips</div>
+      </FinishedStep>,
+    )
+
+    expect(screen.getByTestId('cow-participation-footer').textContent).toBe('cow')
+    expect(screen.getByTestId('wait-and-save-outcome').textContent).toContain('Wait & save · You saved')
+    expect(screen.getByTestId('wait-and-save-outcome').textContent).toContain('$4.80')
+    expect(screen.getByTestId('wait-and-save-outcome').textContent).toContain('Better price than trading alone')
+    expect(screen.getByTestId('wait-and-save-outcome').textContent).toContain('No volume fee')
+    expect(screen.queryByTestId('received-surplus')).toBeNull()
+    expect(screen.queryByTestId('finished-tips')).toBeNull()
   })
 
   it('shows the joined strip and the solver auction when there is no gain and no surplus', () => {
@@ -583,13 +660,9 @@ describe('FinishedStep sharing', () => {
         randomBenefit="CoW Protocol is MEV protected"
         waitAndSave={{
           outcome: {
+            variant: 'withCow',
             gainAmount: '1.46',
-            gainFiat: '$4.50',
-            gainNumeric: 1.46,
-            gainPercent: 0.3,
             tokenSymbol: 'RAI',
-            tradingAloneAmount: '485.72',
-            tradingAloneNumeric: 485.72,
           },
           strip: { hasAloneBid: true, kind: 'cow' },
         }}
@@ -598,7 +671,7 @@ describe('FinishedStep sharing', () => {
       </FinishedStep>,
     )
 
-    expect(screen.getByTestId('wait-and-save-outcome').textContent).toBe('1.46')
+    expect(screen.getByTestId('wait-and-save-outcome').textContent).toContain('1.46')
     expect(getSharedText('Share this win!')).toBe(
       'Hey, I just got an extra 1.46 RAI with Wait & save on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi',
     )

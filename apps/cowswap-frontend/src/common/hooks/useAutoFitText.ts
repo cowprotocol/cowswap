@@ -1,4 +1,9 @@
-import { DependencyList, RefObject, useLayoutEffect, useRef } from 'react'
+import { DependencyList, RefObject, useLayoutEffect, useRef, useState } from 'react'
+
+export interface AutoFitTextResult<T extends HTMLElement = HTMLElement> {
+  ref: RefObject<T | null>
+  isFitted: boolean
+}
 
 interface AutoFitOptions {
   min?: number
@@ -31,10 +36,17 @@ interface NormalizedOptions {
 /**
  * Lightweight auto-fit hook to scale text so it fits its parent box.
  * It uses binary search over font sizes and ResizeObserver to re-apply on layout changes.
+ * `isFitted` flips true after the first successful fit (useful for blur/opacity reveals).
  */
-export function useAutoFitText<T extends HTMLElement = HTMLElement>(options: AutoFitOptions = {}): RefObject<T | null> {
+export function useAutoFitText<T extends HTMLElement = HTMLElement>(
+  options: AutoFitOptions = {},
+): AutoFitTextResult<T> {
   const { min = 12, max = 48, step = 1, mode = 'multi', deps = EMPTY_DEPS } = options
   const ref = useRef<T | null>(null)
+  const [isFitted, setIsFitted] = useState(false)
+  const hasFittedRef = useRef(false)
+  // Value-stable key so inline `deps: [content]` arrays do not retrigger the effect every render.
+  const depsKey = deps.map(String).join('\0')
 
   useLayoutEffect(() => {
     const { minBound, maxBound, stepSize, shouldWarn } = normalizeOptions(min, max, step)
@@ -44,17 +56,26 @@ export function useAutoFitText<T extends HTMLElement = HTMLElement>(options: Aut
     if (!node || !parent) return
 
     if (shouldWarn) {
-      // Warn rather than throw so callers see the misconfiguration without breaking rendering
       console.warn('useAutoFitText: normalizing invalid options', { min, max, step })
     }
 
     const whiteSpace = mode === 'single' ? 'nowrap' : 'normal'
 
+    hasFittedRef.current = false
+    setIsFitted(false)
+
     const rafRef = { id: 0 }
     const teardowns: Array<() => void> = []
     const scheduleFit = (): void => {
       cancelAnimationFrame(rafRef.id)
-      rafRef.id = requestAnimationFrame(() => fitText({ node, parent, minBound, maxBound, stepSize, whiteSpace }))
+      rafRef.id = requestAnimationFrame(() => {
+        fitText({ node, parent, minBound, maxBound, stepSize, whiteSpace })
+
+        if (!hasFittedRef.current) {
+          hasFittedRef.current = true
+          setIsFitted(true)
+        }
+      })
     }
 
     scheduleFit()
@@ -74,9 +95,9 @@ export function useAutoFitText<T extends HTMLElement = HTMLElement>(options: Aut
       cancelAnimationFrame(rafRef.id)
       teardowns.forEach((fn) => fn())
     }
-  }, [deps, max, min, mode, step])
+  }, [depsKey, max, min, mode, step])
 
-  return ref
+  return { ref, isFitted }
 }
 
 function fitText({ node, parent, minBound, maxBound, stepSize, whiteSpace }: FitConfig): void {
@@ -86,9 +107,18 @@ function fitText({ node, parent, minBound, maxBound, stepSize, whiteSpace }: Fit
   }
 
   const fits = (): boolean => {
-    const { width, height } = node.getBoundingClientRect()
-    const { width: pWidth, height: pHeight } = parent.getBoundingClientRect()
-    return width <= pWidth && height <= pHeight
+    // Width: scroll vs parent content box (slot wrappers keep padding out of the measure).
+    // Height: skip for nowrap — a content-sized parent matches the child, so scrollHeight
+    // often reads 1px larger and the search collapses to min.
+    if (node.scrollWidth > parent.clientWidth) {
+      return false
+    }
+
+    if (whiteSpace === 'nowrap') {
+      return true
+    }
+
+    return node.scrollHeight <= parent.clientHeight
   }
 
   let low = minBound

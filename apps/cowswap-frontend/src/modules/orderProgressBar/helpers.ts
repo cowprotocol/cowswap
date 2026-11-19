@@ -38,8 +38,7 @@ export function getTwitterShareUrlForBenefit(benefit: string): string {
   return `https://x.com/intent/tweet?text=${twitterText}`
 }
 
-export function getTwitterShareUrlForWaitAndSave(gainAmount: string, tokenSymbol: string): string {
-  const gain = `${gainAmount} ${tokenSymbol}`
+export function getTwitterShareUrlForWaitAndSave(gain: string): string {
   const twitterText = encodeURIComponent(
     t`Hey, I just got an extra ${gain} with Wait & save on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi`,
   )

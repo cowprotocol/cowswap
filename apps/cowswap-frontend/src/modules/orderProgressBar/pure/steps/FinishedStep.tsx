@@ -43,6 +43,7 @@ import { OrderProgressBarProps, OrderProgressBarStepName } from '../../types'
 import { ConfirmationOutcomeSlot } from '../ConfirmationOutcomeSlot/ConfirmationOutcomeSlot.pure'
 import { SolverAuctionResult } from '../SolverAuctionResult/SolverAuctionResult.pure'
 import { SolverCompetitionExpand } from '../SolverCompetitionExpand/SolverCompetitionExpand.pure'
+import { isWaitAndSaveOutcomeWithCow } from '../WaitAndSaveOutcome/isWaitAndSaveOutcomeWithCow.utils'
 import { WaitAndSaveOutcome } from '../WaitAndSaveOutcome/WaitAndSaveOutcome.pure'
 
 export interface FinishedSuccessHeadingProps {
@@ -100,7 +101,8 @@ export function FinishedStep({
   const cancellationFailed = stepName === 'cancellationFailed'
   const { showSurplus } = surplusData || {}
   const shouldShowSurplus = Boolean(debugForceShowSurplus || showSurplus)
-  const showWaitAndSaveCard = Boolean(waitAndSave?.outcome)
+  const waitAndSaveOutcome = waitAndSave?.outcome
+  const showComparisonOutcome = Boolean(waitAndSaveOutcome && isWaitAndSaveOutcomeWithCow(waitAndSaveOutcome))
   const isSell = Boolean(order && isSellOrder(order.kind))
   const surplusTooltip = isSell
     ? t`The extra amount you received compared to your limit price.`
@@ -110,11 +112,11 @@ export function FinishedStep({
     () =>
       getFinishedSurplusSecondaryAmount(
         surplusData,
-        shouldShowSurplus && !showWaitAndSaveCard,
+        shouldShowSurplus && !showComparisonOutcome,
         surplusTooltip,
         surplusPrefix,
       ),
-    [surplusData, shouldShowSurplus, showWaitAndSaveCard, surplusTooltip, surplusPrefix],
+    [surplusData, shouldShowSurplus, showComparisonOutcome, surplusTooltip, surplusPrefix],
   )
 
   const showConfetti = useWithConfetti({
@@ -125,7 +127,7 @@ export function FinishedStep({
 
   const soldLabel = t`You sold`
   const receivedLabel = t`You received`
-  const celebrateWin = shouldShowSurplus || showWaitAndSaveCard
+  const celebrateWin = shouldShowSurplus || Boolean(waitAndSaveOutcome)
   const tokenPair = useFinishedTokenPair(order, soldLabel, receivedLabel, surplusSecondaryAmount, waitAndSave)
 
   const competitionPending = waitAndSave?.pending === true
@@ -133,7 +135,7 @@ export function FinishedStep({
   const outcomeLoading = solverCompetitionPending || competitionPending || surplusPending
   const solversList = competitionPending ? [] : (solvers ?? [])
   const hasSolvers = solversList.length > 0
-  const showExpandedAuction = hasSolvers && !shouldShowSurplus && !showWaitAndSaveCard
+  const showExpandedAuction = hasSolvers && !shouldShowSurplus && !showComparisonOutcome
   const showCollapsedSolvers = !outcomeLoading && hasSolvers && !showExpandedAuction
   const showShare = !outcomeLoading && (!disablePostTradeTips || celebrateWin)
   const shareContent = getFinishedShareContent({
@@ -159,9 +161,9 @@ export function FinishedStep({
           <TakeProfitPrompt order={order} onDismiss={onDismiss} />
         ) : null}
 
-        {waitAndSave?.outcome ? <WaitAndSaveOutcome {...waitAndSave.outcome} /> : null}
+        {waitAndSaveOutcome ? <WaitAndSaveOutcome {...waitAndSaveOutcome} /> : null}
 
-        {outcomeLoading || !showWaitAndSaveCard ? (
+        {outcomeLoading || !showComparisonOutcome ? (
           <ConfirmationOutcomeSlot loading={outcomeLoading}>
             {showExpandedAuction ? (
               <SolverAuctionResult
@@ -323,10 +325,15 @@ function getFinishedShareContent({
 }: Pick<FinishedStepProps, 'surplusData' | 'order' | 'solvers' | 'randomBenefit' | 'waitAndSave'> & {
   shouldShowSurplus: boolean
 }): FinishedShareButtonProps {
-  if (waitAndSave?.outcome) {
+  if (waitAndSave?.outcome && isWaitAndSaveOutcomeWithCow(waitAndSave.outcome)) {
+    const gain =
+      waitAndSave.outcome.variant === 'withCow'
+        ? `${waitAndSave.outcome.gainAmount} ${waitAndSave.outcome.tokenSymbol}`
+        : waitAndSave.outcome.priceImprovement
+
     return {
       kind: FinishedShareKind.WAIT_AND_SAVE,
-      twitterUrl: getTwitterShareUrlForWaitAndSave(waitAndSave.outcome.gainAmount, waitAndSave.outcome.tokenSymbol),
+      twitterUrl: getTwitterShareUrlForWaitAndSave(gain),
     }
   }
   if (shouldShowSurplus) {
@@ -393,8 +400,11 @@ function useFinishedTokenPair(
     }
 
     const pair = buildFinishedTokenPair(order, soldLabel, receivedLabel, surplusSecondaryAmount)
+    const showCowFooter = Boolean(
+      pair && waitAndSave?.strip && (!waitAndSave.outcome || isWaitAndSaveOutcomeWithCow(waitAndSave.outcome)),
+    )
 
-    if (!pair || !waitAndSave?.strip) {
+    if (!showCowFooter || !waitAndSave?.strip) {
       return pair
     }
 

@@ -20,6 +20,7 @@ import {
   type WaitAndSaveCompetitionDerivation,
 } from '../pure/WaitAndSaveOutcome/deriveWaitAndSaveCompetition.utils'
 import { selectWaitAndSaveStrip, type WaitAndSaveStrip } from '../pure/WaitAndSaveOutcome/selectWaitAndSaveStrip.utils'
+import { WAIT_AND_SAVE_HARDCODED_VOLUME_FEE_SAVED_FIAT } from '../pure/WaitAndSaveOutcome/waitAndSaveOutcome.constants'
 
 import type { WaitAndSaveOutcomeProps } from '../pure/WaitAndSaveOutcome/WaitAndSaveOutcome.pure'
 
@@ -85,12 +86,17 @@ function toSettledConfirmation(params: {
   const displayedSolvers = derivation?.solvers.length
     ? toDisplayedSolverCompetition(derivation.solvers, solversInfoByAddress)
     : undefined
+  const outcome = buyToken
+    ? buildWaitAndSaveOutcome({
+        buyToken,
+        fiatAmount: gainFiat,
+        gain: derivation?.positiveGain,
+        volumeFeeSavedFiat: WAIT_AND_SAVE_HARDCODED_VOLUME_FEE_SAVED_FIAT,
+      })
+    : undefined
 
   return {
-    outcome:
-      buyToken && derivation?.positiveGain
-        ? buildWaitAndSaveOutcome({ buyToken, fiatAmount: gainFiat, gain: derivation.positiveGain })
-        : undefined,
+    outcome,
     pending: false,
     solvers: displayedSolvers?.length ? displayedSolvers : undefined,
     strip: selectWaitAndSaveStrip(derivation),

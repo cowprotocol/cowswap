@@ -26,8 +26,13 @@ export function Donut({ value, label, subtitle }: DonutProps): ReactNode {
   const isComplete = normalizedValue === 100
   const hasProgress = renderedValue > 0
   const hasSubtitle = shouldRenderSubtitle(subtitle)
-  const labelRef = useAutoFitText<HTMLSpanElement>({ min: 14, max: 24, mode: 'single', deps: [label] })
-  const subtitleRef = useAutoFitText<HTMLSpanElement>({ min: 11, max: 15, mode: 'single', deps: [subtitle] })
+  const { ref: labelRef } = useAutoFitText<HTMLSpanElement>({ min: 14, max: 24, mode: 'single', deps: [label] })
+  const { ref: subtitleRef } = useAutoFitText<HTMLSpanElement>({
+    min: 11,
+    max: 15,
+    mode: 'single',
+    deps: [subtitle],
+  })
 
   return (
     <styledEl.Wrapper>
