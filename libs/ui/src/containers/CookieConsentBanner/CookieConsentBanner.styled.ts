@@ -125,7 +125,15 @@ export const ChoiceButton = styled(ButtonPrimary)`
   }
 `
 
-export const Card = styled.section<{ $variant: 'white' | 'paleBlue' | 'trading' }>`
+const themedColors = css`
+  --cookie-banner-background: ${({ theme }) => theme.primary};
+  --cookie-banner-text: ${({ theme }) => theme.buttonTextCustom};
+  --cookie-banner-button: ${({ theme }) => theme.buttonTextCustom};
+  --cookie-banner-button-text: ${({ theme }) => theme.primary};
+  --cookie-banner-button-hover: ${({ theme }) => theme.paper};
+`
+
+export const Card = styled.section<{ $variant: 'white' | 'paleBlue' | 'trading' | 'themed' }>`
   ${({ $variant, theme }) => {
     const darkCard = $variant === 'trading' && !theme.darkMode
     const background =
@@ -149,6 +157,8 @@ export const Card = styled.section<{ $variant: 'white' | 'paleBlue' | 'trading' 
       --cookie-banner-button-hover: ${darkCard ? Color.blue200Primary : Color.cowfi_darkBlue2};
     `
   }}
+
+  ${({ $variant }) => $variant === 'themed' && themedColors}
 
   display: flex;
   flex-flow: column nowrap;

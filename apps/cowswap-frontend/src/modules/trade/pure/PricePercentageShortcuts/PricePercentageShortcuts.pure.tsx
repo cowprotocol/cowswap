@@ -17,6 +17,7 @@ export interface PricePercentageShortcutsProps {
     invalid: boolean
     focus?: boolean
     onChange: (percentage: string) => void
+    onBlur?: () => void
   }
 }
 
@@ -59,7 +60,7 @@ export function PricePercentageShortcuts(props: PricePercentageShortcutsProps): 
           key={percentage}
           type="button"
           disabled={disabled}
-          aria-pressed={!disabled && selectedPreset === percentage}
+          aria-pressed={selectedPreset === percentage}
           title={isInverted ? t`${percentage}% below market` : t`${percentage}% above market`}
           onClick={() => onSelect(percentage)}
         >
@@ -68,16 +69,13 @@ export function PricePercentageShortcuts(props: PricePercentageShortcutsProps): 
         </styledEl.Shortcut>
       ))}
       {customInput ? (
-        <styledEl.CustomPercentage
-          ref={customField}
-          $selected={!disabled && customInput.selected}
-          $invalid={customInput.invalid}
-        >
+        <styledEl.CustomPercentage ref={customField} $selected={customInput.selected} $invalid={customInput.invalid}>
           <styledEl.CustomInput
             value={customInput.value}
             onUserInput={(value) => {
               if (isValidPercentageInput(value)) customInput.onChange(value)
             }}
+            onBlur={customInput.onBlur}
             disabled={disabled}
             autoFocus={focusCustom && !disabled}
             placeholder={t`Custom %`}

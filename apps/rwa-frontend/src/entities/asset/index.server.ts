@@ -23,6 +23,7 @@ export {
   getRegistry,
 } from './model/registry'
 export { getDefaultSortOrder } from './model/assetsQuery'
+export { getRelatedAssets } from './model/relatedAssets'
 export { buildRwaTokenList } from './model/tokenList'
 export { validateRegistry } from './model/validateRegistry'
 export {

@@ -23,8 +23,6 @@ const compactUsdFormatter = new Intl.NumberFormat('en-US', {
 
 const tokenAmountFormatter = new Intl.NumberFormat('en-US', { maximumFractionDigits: 6 })
 
-const dateTimeFormatter = new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeStyle: 'short' })
-
 // `en-GB` writes September as "Sept" in recent ICU, so the "14 Sep 2026" order is built from `en-US` parts
 const dateFormatter = new Intl.DateTimeFormat('en-US', {
   day: 'numeric',
@@ -46,11 +44,6 @@ export function formatDate(isoDate: string | null | undefined): string {
   const parts = Object.fromEntries(dateFormatter.formatToParts(time).map(({ type, value }) => [type, value]))
 
   return `${parts.day} ${parts.month} ${parts.year}`
-}
-
-/** `timestamp` is in Unix seconds */
-export function formatDateTime(timestamp: number | null | undefined): string {
-  return timestamp === null || timestamp === undefined ? EMPTY_VALUE : dateTimeFormatter.format(timestamp * 1000)
 }
 
 export function formatDuration(minutes: number): string {

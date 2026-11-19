@@ -76,6 +76,15 @@ export const Intro = styled.p`
   margin: 0 0 2.4rem;
   font-size: 1.4rem;
   max-width: 70ch;
+
+  > button {
+    background: none;
+    border: 0;
+    padding: 0;
+    font: inherit;
+    color: ${Color.explorer_textActive};
+    cursor: pointer;
+  }
 `
 export const Workspace = styled.div`
   display: grid;

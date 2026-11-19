@@ -1,4 +1,4 @@
-import { useSetAtom } from 'jotai'
+import { useSetAtom, useStore } from 'jotai'
 import { useCallback } from 'react'
 
 import { useChainId, useConnection, useSwitchChain } from 'wagmi'
@@ -6,6 +6,7 @@ import { useChainId, useConnection, useSwitchChain } from 'wagmi'
 import { flushSync } from 'react-dom'
 
 import { tradeChainIdAtom, tradeSideAtom, tradeTokenKeyAtom } from './tradeSelectionAtoms'
+import { tradeWidgetHandlerRefAtom } from './tradeWidgetHandlerRefAtom'
 
 import { trackTradeTokenSelect } from '../lib/tradeAnalytics'
 
@@ -24,17 +25,22 @@ export function useIsWalletOffTradeNetwork(tradeChainId: number): boolean {
   return isConnected && chainId !== tradeChainId
 }
 
-/** Switches the widget to `side`, then scrolls to it and, below the chart, focuses its side toggle */
+/**
+ * Switches the widget to `side`, closes what covers its trade form (like the orders table), then scrolls to it and,
+ * below the chart, focuses its side toggle
+ */
 export function useJumpToTrade(): (side: RwaQuoteSide) => void {
+  const store = useStore()
   const setSide = useSetAtom(tradeSideAtom)
 
   return useCallback(
     (side: RwaQuoteSide) => {
+      store.get(tradeWidgetHandlerRefAtom).current?.closeAllModals()
       // Commits the new side first, so the scroll lands on the widget's final layout
       flushSync(() => setSide(side))
       revealTradeWidget(side)
     },
-    [setSide],
+    [store, setSide],
   )
 }
 

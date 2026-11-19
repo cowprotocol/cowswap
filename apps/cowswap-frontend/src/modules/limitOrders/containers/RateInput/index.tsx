@@ -35,7 +35,7 @@ import { limitPickerModeAtom } from 'modules/limitOrders/state/limitPickerModeAt
 import { limitRateAtom, updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { toFraction } from 'modules/limitOrders/utils/toFraction'
 import { priceChartModalOpenAtom, priceChartVisibleAtom, useIsPriceChartAvailable } from 'modules/priceChart'
-import { getPercentageRate, PricePercentageShortcuts } from 'modules/trade'
+import { getPercentageRate, PRICE_PERCENTAGE_PRESETS, PricePercentageShortcuts } from 'modules/trade'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { useConvertUsdToTokenValue } from 'common/hooks/useConvertUsdToTokenValue'
@@ -56,8 +56,11 @@ import {
   getPercentageLockedInversion,
   getSelectedPercentage,
   getSelectedPreset,
+  matchesPresetPercentage,
   matchesRate,
 } from './utils/pricePercentage.utils'
+
+const TAKE_PROFIT_MARKET_RATE_WAIT_MS = 3_000
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
@@ -75,6 +78,7 @@ export function RateInput() {
     initialRate,
     focusCustomPercentage,
     percentageSelection,
+    isRateFromUrl,
   } = useAtomValue(limitRateAtom)
   const updateRate = useUpdateActiveRate()
   const updateLimitRateState = useSetAtom(updateLimitRateAtom)
@@ -123,6 +127,10 @@ export function RateInput() {
   // Handle rate input
   const handleUserInput = useCallback(
     (typedValue: string) => {
+      if (focusCustomPercentage) {
+        updateLimitRateState({ focusCustomPercentage: false })
+      }
+
       // Always pass through empty string to allow clearing
       if (typedValue === '') {
         setTypedTrailingZeros('')
@@ -177,7 +185,15 @@ export function RateInput() {
         isAlternativeOrderRate: false,
       })
     },
-    [isUsdRateMode, isInverted, updateRate, updateLimitRateState, displayedRate, convertUsdToTokenValue],
+    [
+      focusCustomPercentage,
+      isUsdRateMode,
+      isInverted,
+      updateRate,
+      updateLimitRateState,
+      displayedRate,
+      convertUsdToTokenValue,
+    ],
   )
 
   // Handle set market price
@@ -291,7 +307,12 @@ export function RateInput() {
 
   const [customInput, setCustomPercentageDraft] = useState<CustomPercentageInput | null>(null)
   const selectedPercentage = getSelectedPercentage(percentageSelection, isInverted)
-  const selectedPreset = getSelectedPreset(marketRate, activeRate, isInverted)
+  const matchedPreset = getSelectedPreset(marketRate, activeRate, isInverted)
+  const pendingPreset =
+    selectedPercentage && (PRICE_PERCENTAGE_PRESETS as readonly string[]).includes(selectedPercentage)
+      ? selectedPercentage
+      : undefined
+  const selectedPreset = matchedPreset ?? pendingPreset
   const customValue = getCustomValue(customInput, selectedPreset, selectedPercentage)
   const customRate = getCustomRate(marketRate, customInput, percentageSelection, isInverted)
 
@@ -302,6 +323,50 @@ export function RateInput() {
   useEffect(() => {
     setCustomPercentageDraft((current) => getMatchingCustomInput(current, selectedPercentage, activeRate))
   }, [activeRate, selectedPercentage])
+
+  const shortcutsDisabled =
+    isRateInputDisabled || !areBothCurrencies || isLoadingMarketRate || !marketRate?.greaterThan(0)
+
+  // Clear + focus in one rAF: clearing selection re-runs this effect and would cancel a separate focus frame.
+  useEffect(() => {
+    if (!percentageSelection && !focusCustomPercentage) return
+
+    const expectedRate = percentageSelection
+      ? getPercentageRate(marketRate, percentageSelection.value, percentageSelection.isInverted)
+      : null
+    const isApplied =
+      !focusCustomPercentage && matchesRate(expectedRate, activeRate, percentageSelection?.isInverted ?? isInverted)
+    const isPendingTakeProfit = isRateFromUrl || focusCustomPercentage
+
+    // Keep an already-applied selection during background market-rate refreshes.
+    if (isApplied) return
+    // Price failure must not drop a selection the user or QuoteObserver already applied.
+    if (!isPendingTakeProfit) return
+    // Pending with a settled market rate can be applied by QuoteObserver; do not clear yet.
+    if (marketRate?.greaterThan(0) && !isLoadingMarketRate) return
+
+    const focusPriceField = (): void => {
+      updateLimitRateState({ percentageSelection: null, focusCustomPercentage: false })
+      document.getElementById('rate-limit-amount-input')?.focus()
+    }
+
+    if (isLoadingMarketRate) {
+      const timerId = window.setTimeout(focusPriceField, TAKE_PROFIT_MARKET_RATE_WAIT_MS)
+      return () => window.clearTimeout(timerId)
+    }
+
+    const frameId = requestAnimationFrame(focusPriceField)
+    return () => cancelAnimationFrame(frameId)
+  }, [
+    percentageSelection,
+    focusCustomPercentage,
+    isLoadingMarketRate,
+    marketRate,
+    updateLimitRateState,
+    activeRate,
+    isInverted,
+    isRateFromUrl,
+  ])
 
   const handlePercentageRateChange = (rate: Fraction | null, percentage?: string): void => {
     setTypedTrailingZeros('')
@@ -422,9 +487,16 @@ export function RateInput() {
               setCustomPercentageDraft({ value, rate })
               handlePercentageRateChange(rate, value)
             },
+            onBlur: () => {
+              if (!matchesPresetPercentage(customValue)) return
+              setCustomPercentageDraft(null)
+              if (focusCustomPercentage) {
+                updateLimitRateState({ focusCustomPercentage: false })
+              }
+            },
           }}
           isInverted={isInverted}
-          disabled={isRateInputDisabled || !areBothCurrencies || isLoadingMarketRate || !marketRate?.greaterThan(0)}
+          disabled={shortcutsDisabled}
         />
       </styledEl.Wrapper>
 

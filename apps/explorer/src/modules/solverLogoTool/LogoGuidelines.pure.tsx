@@ -1,11 +1,11 @@
 import { ReactElement } from 'react'
 
-import { SAMPLES } from './solverLogoTool.constants'
+import { LOGO_GUIDELINES_ID, SAMPLES } from './solverLogoTool.constants'
 import { Guidelines } from './solverLogoTool.styled'
 
 export function LogoGuidelines(): ReactElement {
   return (
-    <Guidelines id="solver-logo-guidelines" aria-labelledby="solver-logo-guidelines-title">
+    <Guidelines id={LOGO_GUIDELINES_ID} aria-labelledby="solver-logo-guidelines-title" tabIndex={-1}>
       <h2 id="solver-logo-guidelines-title">A few things make a big difference.</h2>
       <p>Use one logo-only asset that stays recognisable in both themes.</p>
       <div className="guideline-grid">

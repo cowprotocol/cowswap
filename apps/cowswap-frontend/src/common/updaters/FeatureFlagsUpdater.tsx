@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useLayoutEffect } from 'react'
 
-import { syncBootFeatureFlags } from '@cowprotocol/common-const'
+import { persistCustomThemeFlags, syncBootFeatureFlags } from '@cowprotocol/common-const'
 import { useFeatureFlags, useIsSolanaAvailable } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 
@@ -25,7 +25,10 @@ export function FeatureFlagsUpdater(): null {
       setFeatureFlags(flags)
       setFeatureFlagsStatus(clientError ? 'unavailable' : 'ready')
       // Widget flags have Solana forced off, persisting them would leak into the app on the same origin
-      if (!isInjectedWidget()) syncBootFeatureFlags({ isSolanaEnabled: isSolanaAvailable })
+      if (!isInjectedWidget()) {
+        syncBootFeatureFlags({ isSolanaEnabled: isSolanaAvailable })
+        if (!clientError) persistCustomThemeFlags(flags)
+      }
       return
     }
 

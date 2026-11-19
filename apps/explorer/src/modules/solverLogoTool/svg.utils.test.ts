@@ -26,6 +26,17 @@ describe('self-contained SVG validation', () => {
       readSvg('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">' + content + '</svg>'),
     ).toThrow()
   })
+  it.each([
+    '<style>path{mask-image:image-set(url(#brand) 1x)}</style>',
+    '<path style="mask-image:-webkit-image-set(url(#brand) 1x)"/>',
+    '<path mask-image="image(url(#brand))"/>',
+    '<path style="mask-image:cross-fade(url(#brand), transparent)"/>',
+    '<path style="mask-image:-webkit-cross-fade(url(#brand), url(#brand), 50%)"/>',
+  ])('rejects CSS image functions even with local references: %s', (content) => {
+    expect(() =>
+      readSvg('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">' + content + '</svg>'),
+    ).toThrow('without CSS image functions')
+  })
   it('rejects malformed XML and uses explicit dimensions when no viewBox exists', () => {
     expect(() => readSvg('<svg><path></svg>')).toThrow()
     expect(readSvg('<svg xmlns="http://www.w3.org/2000/svg" width="100px" height="80"/>')).toMatchObject({

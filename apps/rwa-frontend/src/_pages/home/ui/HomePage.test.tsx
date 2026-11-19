@@ -2,12 +2,20 @@ import { createStore, Provider } from 'jotai'
 
 import { QueryClient } from '@tanstack/query-core'
 
-import { fireEvent, render, type RenderResult, screen, waitFor, within } from '@testing-library/react'
+import { act, fireEvent, render, type RenderResult, screen, waitFor, within } from '@testing-library/react'
 import { queryClientAtom } from 'jotai-tanstack-query'
 
 import { HomePage } from './HomePage'
 
-import type { RwaAssetListItem, RwaAssetsPage, RwaMarketOverview, RwaMarketOverviewItem } from '@/entities/asset'
+import { DEFAULT_ASSETS_PAGE_QUERY } from '../model/assetsPageQuery'
+
+import {
+  assetsPageQueryOptions,
+  type RwaAssetListItem,
+  type RwaAssetsPage,
+  type RwaMarketOverview,
+  type RwaMarketOverviewItem,
+} from '@/entities/asset'
 
 const NVDA: RwaMarketOverviewItem = {
   ticker: 'NVDA',
@@ -96,6 +104,12 @@ const DEGRADED_ASSETS_PAGE: RwaAssetsPage = {
   degraded: true,
 }
 
+interface RenderHomePageOptions {
+  /** The default table page the server renders */
+  serverAssetsPage?: RwaAssetsPage
+  queryClient?: QueryClient
+}
+
 function mockApi(overview: RwaMarketOverview | null, assetsPage: RwaAssetsPage | null = null): void {
   global.fetch = jest.fn((url: string) => {
     const body = url.endsWith('/market-overview') ? overview : url.includes('/assets?') ? assetsPage : null
@@ -108,9 +122,23 @@ function mockApi(overview: RwaMarketOverview | null, assetsPage: RwaAssetsPage |
   }) as unknown as typeof fetch
 }
 
-function renderHomePage(): RenderResult {
+function mockPendingAssetsApi(overview: RwaMarketOverview): void {
+  global.fetch = jest.fn((url: string) =>
+    url.includes('/assets?')
+      ? new Promise(() => undefined)
+      : Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(overview) }),
+  ) as unknown as typeof fetch
+}
+
+function renderHomePage({
+  serverAssetsPage,
+  queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } }),
+}: RenderHomePageOptions = {}): RenderResult {
   const store = createStore()
-  store.set(queryClientAtom, new QueryClient({ defaultOptions: { queries: { retry: false } } }))
+
+  if (serverAssetsPage)
+    queryClient.setQueryData(assetsPageQueryOptions(DEFAULT_ASSETS_PAGE_QUERY).queryKey, serverAssetsPage)
+  store.set(queryClientAtom, queryClient)
 
   return render(
     <Provider store={store}>
@@ -121,6 +149,7 @@ function renderHomePage(): RenderResult {
 
 describe('HomePage', () => {
   afterEach(() => {
+    jest.useRealTimers()
     localStorage.clear()
   })
 
@@ -155,6 +184,31 @@ describe('HomePage', () => {
     expect(screen.getByRole('button', { name: 'ETFs', pressed: false })).toBeTruthy()
     expect(screen.getByRole('button', { name: 'All', pressed: false })).toBeTruthy()
     await waitFor(() => expect(String((global.fetch as jest.Mock).mock.calls.at(-1)?.[0])).toContain('type=commodity'))
+  })
+
+  it('keeps the type filter through the market refresh', async () => {
+    const { refetchInterval } = assetsPageQueryOptions(DEFAULT_ASSETS_PAGE_QUERY)
+    if (typeof refetchInterval !== 'number') throw new Error('The assets page has no market refresh interval')
+
+    jest.useFakeTimers()
+    mockApi(OVERVIEW, ASSETS_PAGE)
+    const fetchMock = global.fetch as jest.Mock
+    renderHomePage()
+
+    fireEvent.click(await screen.findByRole('button', { name: 'ETFs' }))
+    await waitFor(() => expect(String(fetchMock.mock.calls.at(-1)?.[0])).toContain('type=index'))
+    const callsBeforeRefresh = fetchMock.mock.calls.length
+
+    await act(() => jest.advanceTimersByTimeAsync(refetchInterval))
+
+    const refreshedAssetsUrls = fetchMock.mock.calls
+      .slice(callsBeforeRefresh)
+      .map(([url]) => String(url))
+      .filter((url) => url.includes('/assets?'))
+
+    expect(refreshedAssetsUrls).not.toHaveLength(0)
+    expect(refreshedAssetsUrls.every((url) => url.includes('type=index'))).toBe(true)
+    expect(screen.getByRole('button', { name: 'ETFs', pressed: true })).toBeTruthy()
   })
 
   it('toggles a type off when it is selected again', async () => {
@@ -226,6 +280,27 @@ describe('HomePage', () => {
         'type=index&issuer=Ondo&chainId=1&minVolume24h=1000000',
       ),
     )
+  })
+
+  it('hides the server-rendered rows while the stored filters load', async () => {
+    localStorage.setItem('rwaAssetsFilters:v1', JSON.stringify({ type: 'index' }))
+    mockPendingAssetsApi(OVERVIEW)
+    renderHomePage({ serverAssetsPage: ASSETS_PAGE })
+
+    expect(await screen.findByRole('button', { name: 'ETFs', pressed: true })).toBeTruthy()
+    expect(screen.queryByText('$180M')).toBeNull()
+  })
+
+  it('keeps the server-rendered rows while a filter picked on the page loads', async () => {
+    mockPendingAssetsApi(OVERVIEW)
+    renderHomePage({ serverAssetsPage: ASSETS_PAGE })
+
+    expect(await screen.findByText('$180M')).toBeTruthy()
+
+    fireEvent.click(screen.getByRole('button', { name: 'ETFs' }))
+
+    expect(await screen.findByRole('button', { name: 'ETFs', pressed: true })).toBeTruthy()
+    expect(screen.getByText('$180M')).toBeTruthy()
   })
 
   it('shows the scope of a filtered table in the footer', async () => {

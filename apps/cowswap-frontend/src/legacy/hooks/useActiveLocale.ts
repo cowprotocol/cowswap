@@ -1,8 +1,8 @@
-import { useMemo } from 'react'
-
-import { DEFAULT_LOCALE, SUPPORTED_LOCALES, SupportedLocale } from '@cowprotocol/common-const'
+import { DEFAULT_LOCALE, SupportedLocale } from '@cowprotocol/common-const'
 import { useParsedQueryString, parsedQueryString } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
+
+import { getWidgetLocale, parseLocale, setWidgetLocale } from 'entities/injectedWidget'
 
 import { cowSwapStore } from 'legacy/state'
 import { useUserLocale } from 'legacy/state/user/hooks'
@@ -38,20 +38,8 @@ export function navigatorLocale(): SupportedLocale | undefined {
 export function useActiveLocale(): SupportedLocale {
   const urlLocale = useUrlLocale()
   const userLocale = useUserLocale()
-  return useMemo(() => resolveActiveLocale(urlLocale, userLocale), [urlLocale, userLocale])
-}
-
-/**
- * Given a locale string (e.g. from user agent), return the best match for corresponding SupportedLocale
- * @param maybeSupportedLocale the fuzzy locale identifier
- */
-function parseLocale(maybeSupportedLocale: unknown): SupportedLocale | undefined {
-  if (typeof maybeSupportedLocale !== 'string') return undefined
-  const lowerMaybeSupportedLocale = maybeSupportedLocale.toLowerCase()
-  return SUPPORTED_LOCALES.find(
-    (locale) =>
-      locale.toLowerCase() === lowerMaybeSupportedLocale || locale.split('-')[0] === lowerMaybeSupportedLocale,
-  )
+  // Not memoized by the URL locale: a widget params update can drop the integrator's locale while `lng` stays absent
+  return resolveActiveLocale(urlLocale, userLocale)
 }
 
 function resolveActiveLocale(
@@ -59,8 +47,10 @@ function resolveActiveLocale(
   userLocale: SupportedLocale | undefined | null,
 ): SupportedLocale {
   if (isInjectedWidget()) {
-    // Ignore persisted locale for widget mode so that the locale is determined by the widget URL alone:
-    return urlLocale ?? navigatorLocale() ?? DEFAULT_LOCALE
+    if (urlLocale) setWidgetLocale(urlLocale)
+
+    // Ignore persisted locale in widget mode: the integrator's URL / params update decides, then the device
+    return getWidgetLocale() ?? navigatorLocale() ?? DEFAULT_LOCALE
   }
 
   return urlLocale ?? userLocale ?? navigatorLocale() ?? DEFAULT_LOCALE
