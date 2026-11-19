@@ -3953,8 +3953,8 @@ msgid "Candlestick chart"
 msgstr "Candlestick chart"
 
 #: apps/cowswap-frontend/src/modules/application/containers/AppMenu/index.tsx
-#~ msgid "Disable Alpha Networks"
-#~ msgstr "Disable Alpha Networks"
+msgid "Disable Alpha Networks"
+msgstr "Disable Alpha Networks"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Content/NoWallet/OrdersTableNoWalletContent.tsx
 #~ msgid "To use {orderType} orders, please connect your wallet <0/>to one of our supported networks."
@@ -4293,8 +4293,8 @@ msgid "🐮 At Solana Breakpoint? Find us at the CoW Protocol booth and ask for 
 msgstr "🐮 At Solana Breakpoint? Find us at the CoW Protocol booth and ask for the {TOKEN_SYMBOL} airdrop."
 
 #: apps/cowswap-frontend/src/modules/application/containers/AppMenu/index.tsx
-#~ msgid "Enable Alpha Networks"
-#~ msgstr "Enable Alpha Networks"
+msgid "Enable Alpha Networks"
+msgstr "Enable Alpha Networks"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "You can avoid price impact on large trades by using TWAP orders on CoW Swap."

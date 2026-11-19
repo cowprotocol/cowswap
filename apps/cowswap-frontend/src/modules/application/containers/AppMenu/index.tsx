@@ -9,6 +9,7 @@ import { Color, MenuBar, type CowSwapTheme } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
+import { alphaNetworksEnabledAtom, ARE_ALPHA_NETWORKS_OFFERED } from 'entities/alphaNetworks'
 import SVG from 'react-inlinesvg'
 import { NavLink } from 'react-router'
 
@@ -150,6 +151,7 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
 }
 
 function useSettingsNavItems(darkMode: boolean, toggleDarkMode: Command): SettingsNavItem[] {
+  const [areAlphaNetworksEnabled, setAlphaNetworksEnabled] = useAtom(alphaNetworksEnabledAtom)
   const [graffitiThemeEnabled, setGraffitiThemeEnabled] = useAtom(graffitiThemeEnabledAtom)
   const graffitiThemeOffered = useIsGraffitiThemeOffered()
   const { t } = useLingui()
@@ -168,7 +170,24 @@ function useSettingsNavItems(darkMode: boolean, toggleDarkMode: Command): Settin
             },
           ]
         : []),
+      ...(ARE_ALPHA_NETWORKS_OFFERED
+        ? [
+            {
+              label: areAlphaNetworksEnabled ? t`Disable Alpha Networks` : t`Enable Alpha Networks`,
+              onClick: () => setAlphaNetworksEnabled(!areAlphaNetworksEnabled),
+            },
+          ]
+        : []),
     ],
-    [darkMode, toggleDarkMode, graffitiThemeOffered, graffitiThemeEnabled, setGraffitiThemeEnabled, t],
+    [
+      darkMode,
+      toggleDarkMode,
+      graffitiThemeOffered,
+      graffitiThemeEnabled,
+      setGraffitiThemeEnabled,
+      areAlphaNetworksEnabled,
+      setAlphaNetworksEnabled,
+      t,
+    ],
   )
 }
