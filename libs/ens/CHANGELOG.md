@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.13.1](https://github.com/cowprotocol/cowswap/compare/ens-v3.13.0...ens-v3.13.1) (2026-11-19)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.25.0
+  - @cowprotocol/common-utils@3.23.1
+
 ## [3.13.0](https://github.com/cowprotocol/cowswap/compare/ens-v3.12.4...ens-v3.13.0) (2026-11-18)
 
 ### Minor Changes

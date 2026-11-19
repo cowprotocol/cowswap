@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.13.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.12.0...assets-v2.13.0) (2026-11-19)
+
+### Minor Changes
+
+- feat(theme): cherry pick #8678 (vice theme)
+
 ## [2.12.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.11.0...assets-v2.12.0) (2026-11-18)
 
 ### Minor Changes
