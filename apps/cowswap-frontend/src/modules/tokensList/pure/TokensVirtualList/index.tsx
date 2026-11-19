@@ -16,6 +16,7 @@ import { buildVirtualRows, sortTokensByBalance } from './tokensVirtualListUtils'
 import { TokensVirtualRowRenderer } from './TokensVirtualRowRenderer'
 import { TokensVirtualRow } from './types'
 
+import { usePrioritizedTokensWarning } from '../../hooks/usePrioritizedTokensWarning'
 import { useTokenListContext } from '../../hooks/useTokenListContext'
 
 export interface TokensVirtualListProps {
@@ -32,6 +33,7 @@ export function TokensVirtualList({
   onClearRecentTokens,
 }: TokensVirtualListProps): ReactNode {
   const {
+    allTokens,
     selectTokenContext,
     hideFavoriteTokensTooltip,
     selectedTargetChainId,
@@ -42,11 +44,14 @@ export function TokensVirtualList({
   const { isYieldEnabled } = useFeatureFlags()
   const { hideRecentTokens, hideFavoriteTokens, prioritizedTokens } = useInjectedWidgetParams()
   const { chainId: walletChainId } = useWalletInfo()
+  const listChainId = selectedTargetChainId ?? walletChainId
 
   const prioritizedTokenKeys = useMemo(
-    () => getPrioritizedTokenKeys(prioritizedTokens, selectedTargetChainId ?? walletChainId),
-    [prioritizedTokens, selectedTargetChainId, walletChainId],
+    () => getPrioritizedTokenKeys(prioritizedTokens, listChainId),
+    [prioritizedTokens, listChainId],
   )
+
+  usePrioritizedTokensWarning(listChainId, allTokens)
 
   const sortedTokens = useMemo(
     () => sortTokensByBalance(tokensToDisplay, balances, prioritizedTokenKeys),
