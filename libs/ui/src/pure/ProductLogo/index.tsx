@@ -8,8 +8,10 @@ import svgCowrwaSrc from '@cowprotocol/assets/images/logo-cowrwa.svg'
 import svgCowswapChristmasDarkSrc from '@cowprotocol/assets/images/logo-cowswap-christmas-dark.svg'
 import svgCowswapChristmasLightSrc from '@cowprotocol/assets/images/logo-cowswap-christmas-light.svg'
 import svgCowswapHalloweenSrc from '@cowprotocol/assets/images/logo-cowswap-halloween.svg'
+import svgCowswapViceSrc from '@cowprotocol/assets/images/logo-cowswap-vice.svg'
 import svgCowswapSrc from '@cowprotocol/assets/images/logo-cowswap.svg'
 import svgCowwidgetSrc from '@cowprotocol/assets/images/logo-cowwidget.svg'
+import iconCowViceSrc from '@cowprotocol/assets/images/logo-icon-cow-vice.svg'
 import iconCowSrc from '@cowprotocol/assets/images/logo-icon-cow.svg'
 import iconMevblockerSrc from '@cowprotocol/assets/images/logo-icon-mevblocker.svg'
 import svgMevblockerSrc from '@cowprotocol/assets/images/logo-mevblocker.svg'
@@ -109,6 +111,18 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
         color: '#004293',
         height: '56px',
         heightMobile: '50px',
+        preserveOriginalColors: true,
+      },
+    },
+    darkVice: {
+      default: {
+        src: svgCowswapViceSrc,
+        alt: 'CoW Swap',
+        preserveOriginalColors: true,
+      },
+      logoIconOnly: {
+        src: iconCowViceSrc,
+        alt: 'CoW Swap',
         preserveOriginalColors: true,
       },
     },

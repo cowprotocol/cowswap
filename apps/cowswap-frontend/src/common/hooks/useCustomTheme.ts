@@ -19,6 +19,10 @@ export function resolveCowSwapTheme(darkMode: boolean, featureFlags?: FeatureFla
     return darkMode ? 'darkChristmas' : 'lightChristmas'
   }
 
+  if (activeTheme === CustomTheme.VICE) {
+    return 'darkVice'
+  }
+
   return undefined
 }
 

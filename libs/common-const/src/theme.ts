@@ -9,6 +9,7 @@ export const USER_STATE_STORAGE_KEY = 'redux_localstorage_simple_user'
 export enum CustomTheme {
   CHRISTMAS = 'CHRISTMAS',
   HALLOWEEN = 'HALLOWEEN',
+  VICE = 'VICE',
   NONE = 'NONE',
 }
 
@@ -18,7 +19,7 @@ type CustomThemeFlagKeys = Partial<Record<CustomTheme, string>>
 // themes still require their LaunchDarkly flags to be true before they can activate.
 export const ACTIVE_CUSTOM_THEME: CustomTheme = CustomTheme.HALLOWEEN
 
-const CUSTOM_THEME_PRIORITY: CustomTheme[] = [CustomTheme.HALLOWEEN, CustomTheme.CHRISTMAS]
+const CUSTOM_THEME_PRIORITY: CustomTheme[] = [CustomTheme.HALLOWEEN, CustomTheme.CHRISTMAS, CustomTheme.VICE]
 
 export function getCustomThemePriority(): CustomTheme[] {
   if (ACTIVE_CUSTOM_THEME === CustomTheme.NONE) {
@@ -31,6 +32,7 @@ export function getCustomThemePriority(): CustomTheme[] {
 const CUSTOM_THEME_FLAG_KEYS: Readonly<CustomThemeFlagKeys> = Object.freeze({
   [CustomTheme.CHRISTMAS]: 'isChristmasEnabled',
   [CustomTheme.HALLOWEEN]: 'isHalloweenEnabled',
+  [CustomTheme.VICE]: 'isViceThemeEnabled',
 })
 
 export const APRILS_FOOLS_FLAG_KEY = 'isAprilsFoolsEnabled'
@@ -55,6 +57,7 @@ export function isCustomThemeEnabled(theme: CustomTheme, featureFlags?: FeatureF
 /**
  * Resolve the active custom theme for a given UI context. Halloween has global priority but
  * requires dark mode; if it is enabled by flags yet dark mode is off, no seasonal theme is applied.
+ * Vice is dark-only as well, but out of dark mode it steps aside for the next enabled theme.
  */
 export function resolveCustomThemeForContext(
   featureFlags: FeatureFlags | undefined,
@@ -74,6 +77,10 @@ export function resolveCustomThemeForContext(
 
     if (theme === CustomTheme.CHRISTMAS) {
       return CustomTheme.CHRISTMAS
+    }
+
+    if (theme === CustomTheme.VICE && context.darkModeEnabled) {
+      return CustomTheme.VICE
     }
   }
 

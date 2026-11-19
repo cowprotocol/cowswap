@@ -7,6 +7,7 @@ function buildFlags(overrides: FeatureFlags = {}): FeatureFlags {
   return {
     isHalloweenEnabled: false,
     isChristmasEnabled: false,
+    isViceThemeEnabled: false,
     ...overrides,
   }
 }
@@ -70,6 +71,24 @@ describe('resolveCowSwapTheme', () => {
       name: 'prefers Halloween when both seasonal flags are enabled in dark mode',
       darkMode: true,
       featureFlags: buildFlags({ isHalloweenEnabled: true, isChristmasEnabled: true }),
+      expected: 'darkHalloween',
+    },
+    {
+      name: 'activates Vice in dark mode',
+      darkMode: true,
+      featureFlags: buildFlags({ isViceThemeEnabled: true }),
+      expected: 'darkVice',
+    },
+    {
+      name: 'skips Vice when dark mode is disabled',
+      darkMode: false,
+      featureFlags: buildFlags({ isViceThemeEnabled: true }),
+      expected: undefined,
+    },
+    {
+      name: 'prefers Halloween over Vice when both are enabled in dark mode',
+      darkMode: true,
+      featureFlags: buildFlags({ isHalloweenEnabled: true, isViceThemeEnabled: true }),
       expected: 'darkHalloween',
     },
   ]

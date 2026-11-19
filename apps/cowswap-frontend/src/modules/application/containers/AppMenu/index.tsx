@@ -35,6 +35,7 @@ import { HideMobile, isMobileQuery } from './styled'
 
 import { useAppTheme } from '../../hooks/useAppTheme'
 import { NAV_ITEMS, PRODUCT_VARIANT } from '../App/menuConsts'
+import { isViceTheme, VICE_MENU_BAR_COLORS } from '../App/viceTheme.styled'
 
 const LinkComponent = ({ href, children }: PropsWithChildren<{ href: string }>): ReactNode => {
   const external = href.startsWith('http')
@@ -136,6 +137,7 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
       customTheme={customTheme}
       defaultFillDark="rgba(222, 227, 230, 0.4)"
       hoverBackgroundDark={'#18193B'}
+      {...(isViceTheme(customTheme) ? VICE_MENU_BAR_COLORS : undefined)}
       id={APP_HEADER_ELEMENT_ID}
       languageNavItems={languageNavItems}
       logoHref={logoHref}

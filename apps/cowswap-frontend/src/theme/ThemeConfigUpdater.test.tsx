@@ -11,6 +11,7 @@ import { useInjectedWidgetPalette } from 'modules/injectedWidget'
 import { getCowswapTheme } from './getCowswapTheme'
 import { mapWidgetTheme } from './mapWidgetTheme'
 import { ThemeConfigUpdater } from './ThemeConfigUpdater'
+import { VICE_THEME, VICE_THEME_PALETTE } from './viceTheme.constants'
 
 jest.mock('jotai', () => ({
   atom: jest.fn(),
@@ -103,11 +104,37 @@ describe('ThemeConfigUpdater', () => {
 
       expect(mockSetThemeConfig).toHaveBeenLastCalledWith(darkTheme)
     })
+
+    it('lays the Vice palette over the dark theme when the Vice theme is active', () => {
+      mockedUseIsDarkMode.mockReturnValue(true)
+      mockedGetCowswapTheme.mockReturnValue(darkTheme)
+
+      renderHook(() => ThemeConfigUpdater({ customTheme: VICE_THEME }))
+
+      expect(mockSetThemeConfig).toHaveBeenCalledWith({ ...(darkTheme as object), ...VICE_THEME_PALETTE })
+    })
+
+    it('keeps the default theme for a custom theme that has no palette', () => {
+      mockedUseIsDarkMode.mockReturnValue(true)
+      mockedGetCowswapTheme.mockReturnValue(darkTheme)
+
+      renderHook(() => ThemeConfigUpdater({ customTheme: 'darkHalloween' }))
+
+      expect(mockSetThemeConfig).toHaveBeenCalledWith(darkTheme)
+    })
   })
 
   describe('widget mode', () => {
     beforeEach(() => {
       mockedIsInjectedWidget.mockReturnValue(true)
+    })
+
+    it('ignores the custom theme', () => {
+      mockedMapWidgetTheme.mockReturnValue(lightTheme)
+
+      renderHook(() => ThemeConfigUpdater({ customTheme: VICE_THEME }))
+
+      expect(mockSetThemeConfig).toHaveBeenCalledWith(lightTheme)
     })
 
     it('calls mapWidgetTheme and sets result when palette is provided', () => {

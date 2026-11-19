@@ -66,11 +66,14 @@ import { WidgetTokensUpdater } from 'common/updaters/WidgetTokensUpdater'
 
 import { FaviconAnimationUpdater } from './FaviconAnimationUpdater'
 
+import { useAppTheme } from '../../hooks/useAppTheme'
+
 export function Updaters(): ReactNode {
   useAtomValue(eoaTwapOrdersEffectAtom)
   useAtomValue(twapAppziSurveyEffectAtom)
 
   const { isYieldEnabled } = useFeatureFlags()
+  const appTheme = useAppTheme()
   const tradeTypeInfo = useTradeTypeInfo()
   const isYieldWidget = tradeTypeInfo?.tradeType === TradeType.YIELD
   const { chainId: sourceChainId } = useSourceChainId()
@@ -84,7 +87,7 @@ export function Updaters(): ReactNode {
       <BlockNumberUpdater />
       <FeatureFlagsUpdater />
       <BridgeProvidersUpdater />
-      <ThemeConfigUpdater />
+      <ThemeConfigUpdater customTheme={appTheme} />
       <ThemeFromUrlUpdater />
       <ConnectionStatusUpdater />
       <TradingSdkUpdater />
