@@ -12,7 +12,7 @@ export function getTradeTokensFilters(
 ): TradeTokensFilters {
   const assetTokens = asset.tokens.map((token) => token.address)
   const assetChainIds = [...new Set(asset.tokens.map((token) => token.chainId))]
-  const sameTokens = asset.tokens.filter((token) => token.symbol === assetToken.symbol)
+  const sameTokens = asset.tokens.filter((token) => isSameIssuerToken(token, assetToken))
   const sameTokenAddresses = sameTokens.map((token) => token.address)
 
   if (side === 'buy') {
@@ -48,4 +48,8 @@ export function getTradeTokensFilters(
         },
     buyTokensFilter: { excludedTokens: sameTokenAddresses },
   }
+}
+
+function isSameIssuerToken(token: RwaToken, assetToken: RwaToken): boolean {
+  return token.issuer === assetToken.issuer && token.symbol.toLowerCase() === assetToken.symbol.toLowerCase()
 }

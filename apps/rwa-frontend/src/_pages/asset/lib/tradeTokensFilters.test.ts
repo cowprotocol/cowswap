@@ -19,6 +19,26 @@ const AAPL: RwaAsset = {
   tokens: [AAPLX_MAINNET, AAPLON_MAINNET, AAPLX_ARBITRUM],
 }
 
+const AAPL_DINARI_MAINNET: RwaToken = {
+  ...AAPLX_MAINNET,
+  address: '0x0000000000000000000000000000000000000a01',
+  symbol: 'AAPL',
+  issuer: 'Dinari',
+}
+
+const AAPL_ROBINHOOD: RwaToken = {
+  ...AAPLX_MAINNET,
+  address: '0x0000000000000000000000000000000000000a02',
+  symbol: 'AAPL',
+  issuer: 'Robinhood',
+}
+
+const AAPLX_UPPERCASE: RwaToken = {
+  ...AAPLX_ARBITRUM,
+  address: '0x0000000000000000000000000000000000000a03',
+  symbol: 'AAPLX',
+}
+
 const ASSET_TOKENS = [AAPLX_MAINNET.address, AAPLON_MAINNET.address, AAPLX_ARBITRUM.address]
 const AAPLX_TOKENS = [AAPLX_MAINNET.address, AAPLX_ARBITRUM.address]
 
@@ -80,5 +100,16 @@ describe('getTradeTokensFilters', () => {
 
     expect(buyFilters.sellTokensFilter?.notice).toBeUndefined()
     expect(sellFilters.sellTokensFilter?.notice).not.toContain('wallet')
+  })
+
+  it('tells the tokens apart by issuer, whatever the symbol casing', () => {
+    const asset: RwaAsset = { ...AAPL, tokens: [AAPLX_MAINNET, AAPLX_UPPERCASE, AAPL_DINARI_MAINNET, AAPL_ROBINHOOD] }
+
+    expect(getTradeTokensFilters(asset, AAPL_DINARI_MAINNET, 'sell', true).buyTokensFilter).toEqual({
+      excludedTokens: [AAPL_DINARI_MAINNET.address],
+    })
+    expect(getTradeTokensFilters(asset, AAPLX_MAINNET, 'sell', true).buyTokensFilter).toEqual({
+      excludedTokens: [AAPLX_MAINNET.address, AAPLX_UPPERCASE.address],
+    })
   })
 })
