@@ -27,6 +27,7 @@ export const COW_SWAP_THEMES = [
   'lightChristmas',
   'darkChristmas',
   'darkGraffiti',
+  'darkVice',
 ] as const
 
 export type CowSwapTheme = (typeof COW_SWAP_THEMES)[number]

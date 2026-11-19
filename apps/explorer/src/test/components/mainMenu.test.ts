@@ -14,10 +14,10 @@ function getOtherSectionLinkTitles(isSolversEnabled: boolean): string[] {
 
 describe('getMainMenu', () => {
   it('includes the Solvers link when the feature is enabled', () => {
-    expect(getOtherSectionLinkTitles(true)).toEqual(['Solvers', 'AppData'])
+    expect(getOtherSectionLinkTitles(true)).toEqual(['Solvers', 'Solver logos', 'AppData'])
   })
 
   it('removes the Solvers link when the feature is disabled', () => {
-    expect(getOtherSectionLinkTitles(false)).toEqual(['AppData'])
+    expect(getOtherSectionLinkTitles(false)).toEqual(['Solver logos', 'AppData'])
   })
 })

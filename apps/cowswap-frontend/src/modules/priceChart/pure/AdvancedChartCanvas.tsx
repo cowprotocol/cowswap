@@ -1,6 +1,6 @@
 import { type ReactNode, useEffect, useId, useRef, useState } from 'react'
 
-import { normalizeError } from '@cowprotocol/common-utils'
+import { getGmtCustomTimezone, normalizeError } from '@cowprotocol/common-utils'
 
 import { useTheme } from 'common/hooks/useTheme'
 
@@ -14,7 +14,6 @@ import { usePriceChartAdvancedSeries } from '../hooks/usePriceChartAdvancedSerie
 import { usePriceChartAdvancedTheme } from '../hooks/usePriceChartAdvancedTheme'
 import { formatPriceChartValue, logPriceChart } from '../lib/priceChart.utils'
 import { loadChartLayout, saveChartLayout } from '../lib/priceChartAdvancedLayout.utils'
-import { getCustomTimezone } from '../lib/priceChartAdvancedTimezone.utils'
 import { loadAdvancedChartWidget } from '../lib/priceChartAdvancedWidget.service'
 import { getThemeOverrides, removeChartWidget } from '../lib/priceChartAdvancedWidget.utils'
 
@@ -22,7 +21,7 @@ import type { PriceChartReferenceLine } from '../lib/priceChart.types'
 import type { PriceChartDatafeedController } from '../lib/priceChartAdvancedDatafeed.service'
 import type { ChartSymbol } from '../lib/priceChartAdvancedSymbols.utils'
 import type { AttachedPriceChartExecutionMarker } from '../lib/priceChartExecutionMarker.utils'
-import type { IChartingLibraryWidget } from 'charting_library'
+import type { CustomTimezoneId, IChartingLibraryWidget } from 'charting_library'
 
 export interface AdvancedChartCanvasProps {
   activeTicker: string
@@ -81,7 +80,7 @@ export function AdvancedChartCanvas({
 
       const { theme: currentTheme, activeTicker: currentTicker } = latestRef.current
       const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
-      const customTimezone = getCustomTimezone(userTimezone, new Date().getTimezoneOffset())
+      const customTimezone = getGmtCustomTimezone<CustomTimezoneId>(userTimezone, new Date().getTimezoneOffset())
       const timezone = 'Etc/UTC'
       const overrides = { ...getThemeOverrides(currentTheme), timezone } as const
       widget = new TradingViewWidget({

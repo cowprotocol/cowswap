@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 
 import { notFound } from 'next/navigation'
 
-import { getAllResources, getCampaignSummaries } from '../../../../services/cms'
+import { getAllResources } from '../../../../services/cms'
 
 import type { Metadata } from 'next'
 
@@ -26,9 +26,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   })
 }
 
-export async function generateStaticParams(): Promise<{ campaign: string }[]> {
-  const campaigns = await getCampaignSummaries()
-  return campaigns.map(({ campaign }) => ({ campaign }))
+export function generateStaticParams(): [] {
+  // Generate on first request so builds can finish during a partial CMS outage.
+  return []
 }
 
 export default async function ResourcesCampaignPage({ params }: Props): Promise<ReactNode> {

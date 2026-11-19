@@ -1,13 +1,16 @@
 import { ReactNode } from 'react'
 
 import { CookieConsentCopy } from '@cowprotocol/analytics'
+import { useTheme } from '@cowprotocol/common-hooks'
 import { CookieConsentBannerContainer } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
+import { VICE_THEME } from 'theme/viceTheme.constants'
 
 import { MOBILE_HEADER_CONTROLS_HEIGHT_PX } from 'common/constants/common'
 
 export function CookieConsentBanner(): ReactNode {
+  const { customTheme } = useTheme()
   const copy: CookieConsentCopy = {
     title: t`Cookies? Your mooove.`,
     ariaLabel: t`Cookie consent`,
@@ -19,6 +22,10 @@ export function CookieConsentBanner(): ReactNode {
   }
 
   return (
-    <CookieConsentBannerContainer copy={copy} variant="trading" bottomBarHeight={MOBILE_HEADER_CONTROLS_HEIGHT_PX} />
+    <CookieConsentBannerContainer
+      copy={copy}
+      variant={customTheme === VICE_THEME ? 'themed' : 'trading'}
+      bottomBarHeight={MOBILE_HEADER_CONTROLS_HEIGHT_PX}
+    />
   )
 }

@@ -13,13 +13,14 @@ import {
 } from '@cowprotocol/widget-lib'
 
 import * as Sentry from '@sentry/browser'
-import { injectedWidgetParamsAtom } from 'entities/injectedWidget'
+import { injectedWidgetParamsAtom, setWidgetLocale } from 'entities/injectedWidget'
 
 import { useNavigate } from 'common/hooks/useNavigate'
 import { TRADE_URL_FORCE_NAVIGATE_KEY } from 'common/modules/tradeNavigation'
 
 import { IframeResizer } from './IframeResizer'
 
+import { useListenCloseAllModals } from '../hooks/useListenCloseAllModals'
 import { WidgetParamsErrorsScreen } from '../pure/WidgetParamsErrorsScreen'
 import { injectedWidgetHooksEnabledAtom } from '../state/injectedWidgetHooksEnabledAtom'
 import { injectedWidgetMetaDataAtom } from '../state/injectedWidgetMetaDataAtom'
@@ -85,6 +86,7 @@ export function InjectedWidgetUpdater(): ReactNode {
   ] = useAtom(injectedWidgetParamsAtom)
   const setHooksEnabled = useSetAtom(injectedWidgetHooksEnabledAtom)
   const updateMetaData = useSetAtom(injectedWidgetMetaDataAtom)
+  useListenCloseAllModals()
 
   const prevPartnerFee = usePrevious(partnerFee)
   const navigate = useNavigate()
@@ -117,15 +119,13 @@ export function InjectedWidgetUpdater(): ReactNode {
       prevData.current = data
 
       const appParams = data.appParams
-      const hooksEnabled = new URLSearchParams(data.urlParams.search).get('hooksEnabled') === 'true'
+      const urlQuery = new URLSearchParams(data.urlParams.search)
+      setWidgetLocale(urlQuery.get('lng'))
 
       const errors = validateWidgetParams(appParams)
-      setHooksEnabled(hooksEnabled)
+      setHooksEnabled(urlQuery.get('hooksEnabled') === 'true')
 
-      updateParams({
-        params: appParams,
-        errors,
-      })
+      updateParams({ params: appParams, errors })
 
       navigate(withForceTradeNavigate(data.urlParams), { replace: true })
     }

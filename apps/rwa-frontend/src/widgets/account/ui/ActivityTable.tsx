@@ -39,12 +39,12 @@ export function ActivityTable({ activity, error, emptyText, getLogoUrl }: Activi
       <table className={styles.table}>
         <thead>
           <tr>
-            <th className={styles.wide}>Activity</th>
-            <th className={styles.numeric}>Paid → received</th>
-            <th className={`${styles.numeric} ${styles.sorted}`} aria-sort="descending">
+            <th className={styles.activityColumn}>Activity</th>
+            <th className={`${styles.numeric} ${styles.activityAmountColumn}`}>Paid → received</th>
+            <th className={`${styles.numeric} ${styles.sorted} ${styles.activityDateColumn}`} aria-sort="descending">
               <span aria-hidden="true">↓</span> Date
             </th>
-            <th className={styles.numeric}>Status</th>
+            <th className={`${styles.numeric} ${styles.activityStatusColumn}`}>Status</th>
             <th className={styles.menuColumn}>
               <span className={styles.visuallyHidden}>Actions</span>
             </th>

@@ -1,6 +1,7 @@
 import { Provider, createStore } from 'jotai'
 import { act } from 'react'
 
+import { readPersistedCustomThemeFlags } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
 import { render } from '@testing-library/react'
@@ -64,6 +65,51 @@ describe('FeatureFlagsUpdater', () => {
 
     expect(store.get(featureFlagsAtom)).toBe(flags)
     expect(store.get(featureFlagsStatusAtom)).toBe('ready')
+  })
+
+  it('persists the custom theme flags once LaunchDarkly resolves', () => {
+    useFeatureFlagsMock.mockReturnValue({ isViceThemeEnabled: true })
+    useLDClientMock.mockReturnValue({} as ReturnType<typeof useLDClient>)
+
+    render(
+      <Provider store={createStore()}>
+        <FeatureFlagsUpdater />
+      </Provider>,
+    )
+
+    expect(readPersistedCustomThemeFlags().isViceThemeEnabled).toBe(true)
+  })
+
+  it('keeps the persisted custom theme flags when LaunchDarkly fails', () => {
+    localStorage.setItem('cowSwap.customThemeFlags', JSON.stringify({ isViceThemeEnabled: true }))
+    useLDClientMock.mockReturnValue({} as ReturnType<typeof useLDClient>)
+    useLDClientErrorMock.mockReturnValue(new Error('LaunchDarkly is down'))
+
+    render(
+      <Provider store={createStore()}>
+        <FeatureFlagsUpdater />
+      </Provider>,
+    )
+
+    expect(readPersistedCustomThemeFlags().isViceThemeEnabled).toBe(true)
+  })
+
+  it('does not persist custom theme flags inside the widget', () => {
+    useFeatureFlagsMock.mockReturnValue({ isViceThemeEnabled: true })
+    useLDClientMock.mockReturnValue({} as ReturnType<typeof useLDClient>)
+    window.location.hash = '#/1/widget/swap'
+
+    try {
+      render(
+        <Provider store={createStore()}>
+          <FeatureFlagsUpdater />
+        </Provider>,
+      )
+    } finally {
+      window.location.hash = ''
+    }
+
+    expect(localStorage.getItem('cowSwap.customThemeFlags')).toBeNull()
   })
 
   it('fails open when LaunchDarkly initialization times out', () => {
