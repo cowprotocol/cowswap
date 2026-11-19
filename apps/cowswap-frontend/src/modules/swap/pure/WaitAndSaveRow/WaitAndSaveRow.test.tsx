@@ -19,13 +19,17 @@ jest.mock('react-inlinesvg', () => () => null)
 function expectExactText(text: string): void {
   expect(
     screen.getByText((_, element) => {
-      if (!element || element.textContent !== text) {
+      if (!element || normalizeText(element.textContent) !== text) {
         return false
       }
 
-      return Array.from(element.children).every((child) => child.textContent !== text)
+      return Array.from(element.children).every((child) => normalizeText(child.textContent) !== text)
     }),
   ).toBeTruthy()
+}
+
+function normalizeText(value: string | null | undefined): string {
+  return (value ?? '').replace(/\s+/g, ' ').trim()
 }
 
 function renderRow(props: Partial<WaitAndSaveRowProps> = {}): void {
@@ -61,14 +65,14 @@ describe('WaitAndSaveRow', () => {
   it('shows the save amount on the title and approximate joins-batch copy when provided', () => {
     renderRow({ saveAmount: '$2.50' })
 
-    expectExactText('Wait & save$2.50')
+    expectExactText('Wait & save $2.50')
     expectExactText('No volume fee · Joins batch in ~')
   })
 
   it('uses a live joins-batch prefix when enabled', () => {
     renderRow({ isEnabled: true, saveAmount: '$2.50' })
 
-    expectExactText('No volume fee · Joins batch in ')
+    expectExactText('No volume fee · Joins batch in')
   })
 
   it('falls back to approximate joins-batch copy when no amount is provided', () => {

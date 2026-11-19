@@ -92,14 +92,15 @@ export const TextColumn = styled.div`
 `
 
 export const TitleRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 4px;
   ${font('FONT_MEDIUM', 600)}
 `
 
 export const TitleAmount = styled.span`
   color: var(${UI.COLOR_SUCCESS_TEXT});
+`
+
+export const TitleTooltip = styled.span`
+  vertical-align: middle;
 `
 
 export const DescriptionRow = styled.div`
@@ -121,10 +122,6 @@ export const NoVolumeFee = styled.span<{ $active: boolean }>`
 export const ScheduleError = styled.span`
   ${font('FONT_SMALL_PLUS', 400)}
   color: var(${UI.COLOR_DANGER_TEXT});
-`
-
-export const NoBreakAroundDot = styled.span`
-  white-space: nowrap;
 `
 
 export const RetryButton = styled.button`

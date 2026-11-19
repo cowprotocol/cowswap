@@ -44,54 +44,14 @@ export function WaitAndSaveRow({
         </styledEl.Icon>
 
         <styledEl.TextColumn>
-          <styledEl.TitleRow>
-            <Trans>Wait & save</Trans>
-            {saveAmount && !hasError ? <styledEl.TitleAmount>{saveAmount}</styledEl.TitleAmount> : null}
-            <TooltipIcon
-              type="info"
-              title={t`Wait & save`}
-              interactive
-              content={<WaitAndSaveTooltipContent saveAmount={saveAmount && !hasError ? saveAmount : undefined} />}
-            />
-          </styledEl.TitleRow>
-
-          <styledEl.DescriptionRow>
-            {hasError ? (
-              <styledEl.ScheduleError>
-                <Trans>
-                  Couldn’t load the next batch{' '}
-                  <styledEl.NoBreakAroundDot>
-                    time ·{' '}
-                    <styledEl.RetryButton type="button" onClick={onRetry}>
-                      Try again
-                    </styledEl.RetryButton>
-                  </styledEl.NoBreakAroundDot>
-                </Trans>
-              </styledEl.ScheduleError>
-            ) : (
-              <styledEl.NextBatch>
-                {saveAmount ? (
-                  <>
-                    <styledEl.NoVolumeFee $active={isEnabled}>
-                      <Trans>No volume fee</Trans>
-                    </styledEl.NoVolumeFee>{' '}
-                    <styledEl.NoBreakAroundDot>
-                      ·{' '}
-                      <Trans>
-                        Joins batch in{isEnabled ? ' ' : ' ~'}
-                        <span ref={joinsBatchInRef} />
-                      </Trans>
-                    </styledEl.NoBreakAroundDot>
-                  </>
-                ) : (
-                  <Trans>
-                    Joins batch in{isEnabled ? ' ' : ' ~'}
-                    <span ref={joinsBatchInRef} />
-                  </Trans>
-                )}
-              </styledEl.NextBatch>
-            )}
-          </styledEl.DescriptionRow>
+          <WaitAndSaveTitle hasError={hasError} saveAmount={saveAmount} />
+          <WaitAndSaveDescription
+            hasError={hasError}
+            isEnabled={isEnabled}
+            joinsBatchInRef={joinsBatchInRef}
+            onRetry={onRetry}
+            saveAmount={saveAmount}
+          />
         </styledEl.TextColumn>
       </styledEl.Content>
 
@@ -105,5 +65,101 @@ export function WaitAndSaveRow({
         />
       )}
     </styledEl.Wrapper>
+  )
+}
+
+function WaitAndSaveDescription({
+  hasError,
+  isEnabled,
+  joinsBatchInRef,
+  onRetry,
+  saveAmount,
+}: {
+  hasError: boolean
+  isEnabled: boolean
+  joinsBatchInRef: RefObject<HTMLElement | null>
+  onRetry: () => void
+  saveAmount?: string
+}): ReactNode {
+  const joinsBatchGap = isEnabled ? ' ' : ' ~'
+
+  return (
+    <styledEl.DescriptionRow>
+      {hasError ? (
+        <styledEl.ScheduleError>
+          <Trans>
+            Couldn’t load the next batch{' '}
+            <span className="noBreak">
+              time ·{' '}
+              <styledEl.RetryButton type="button" onClick={onRetry}>
+                Try again
+              </styledEl.RetryButton>
+            </span>
+          </Trans>
+        </styledEl.ScheduleError>
+      ) : (
+        <styledEl.NextBatch>
+          {saveAmount ? (
+            <>
+              <styledEl.NoVolumeFee $active={isEnabled}>
+                <Trans>No volume</Trans>{' '}
+              </styledEl.NoVolumeFee>
+              <span className="noBreak">
+                <styledEl.NoVolumeFee $active={isEnabled}>
+                  <Trans>fee</Trans>
+                </styledEl.NoVolumeFee>
+                {' · '}
+                <Trans>Joins</Trans>
+              </span>{' '}
+              <Trans>
+                batch in{joinsBatchGap}
+                <span ref={joinsBatchInRef} />
+              </Trans>
+            </>
+          ) : (
+            <Trans>
+              Joins batch in{joinsBatchGap}
+              <span ref={joinsBatchInRef} />
+            </Trans>
+          )}
+        </styledEl.NextBatch>
+      )}
+    </styledEl.DescriptionRow>
+  )
+}
+
+function WaitAndSaveTitle({ hasError, saveAmount }: { hasError: boolean; saveAmount?: string }): ReactNode {
+  const { t } = useLingui()
+  const visibleAmount = saveAmount && !hasError ? saveAmount : undefined
+
+  const tooltip = (
+    <styledEl.TitleTooltip>
+      <TooltipIcon
+        type="info"
+        title={t`Wait & save`}
+        interactive
+        content={<WaitAndSaveTooltipContent saveAmount={visibleAmount} />}
+      />
+    </styledEl.TitleTooltip>
+  )
+
+  return (
+    <styledEl.TitleRow>
+      {visibleAmount ? (
+        <Trans>Wait & save </Trans>
+      ) : (
+        <Trans>
+          Wait & <span className="noBreak">save {visibleAmount ? null : tooltip}</span>
+        </Trans>
+      )}
+
+      {visibleAmount ? (
+        <styledEl.TitleAmount className="noBreak">
+          {visibleAmount}
+          {'\u00A0'}
+          {tooltip}
+        </styledEl.TitleAmount>
+      ) : null}
+    </styledEl.TitleRow>
   )
 }
