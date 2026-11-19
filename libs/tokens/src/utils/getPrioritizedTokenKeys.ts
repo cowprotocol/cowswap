@@ -1,4 +1,3 @@
-import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 
 export function getPrioritizedTokenKeys(prioritizedTokens: unknown, chainId: number | undefined): string[] {
@@ -13,14 +12,4 @@ export function getPrioritizedTokenKeys(prioritizedTokens: unknown, chainId: num
     .map((address) => getAddressKey(address.trim()))
 
   return [...new Set(keys)]
-}
-
-export function getUnknownPrioritizedTokenKeys(
-  prioritizedTokens: unknown,
-  chainId: number,
-  tokens: TokenWithLogo[],
-): string[] {
-  const knownKeys = new Set(tokens.map((token) => getAddressKey(token.address)))
-
-  return getPrioritizedTokenKeys(prioritizedTokens, chainId).filter((key) => !knownKeys.has(key))
 }

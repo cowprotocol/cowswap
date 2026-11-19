@@ -364,7 +364,7 @@ export interface CowSwapWidgetParams {
    * Tokens moved up in the token selector list: right after the native token and the tokens the wallet holds,
    * in this order, even with a zero balance. Only the order changes: no badge and no separate section,
    * unlike "Favorite tokens".
-   * Keyed by chain id. Addresses missing from the active token lists are skipped and listed in a console warning (add them with `customTokens`).
+   * Keyed by chain id. Addresses missing from the active token lists are skipped (add them with `customTokens`).
    */
   prioritizedTokens?: Partial<Record<TargetChainId, string[]>>
 
