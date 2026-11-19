@@ -1,5 +1,6 @@
 export { InjectedWidgetUpdater } from './updaters/InjectedWidgetUpdater'
 export { CowEventsUpdater } from './updaters/CowEventsUpdater'
+export { SolanaAvailabilityUpdater } from './updaters/SolanaAvailabilityUpdater'
 export { useIsInfiniteApproveDisabledInWidget } from './hooks/useIsInfiniteApproveDisabledInWidget'
 export { useInjectedWidgetDeadline } from './hooks/useInjectedWidgetDeadline'
 export { useInjectedWidgetMetaData } from './hooks/useInjectedWidgetMetaData'

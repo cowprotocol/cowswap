@@ -1,6 +1,7 @@
 import { DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK } from '@cowprotocol/common-const'
 import { isRecord } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isSolanaEnabledForWidget } from '@cowprotocol/widget-lib'
 import type { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
 import { PaletteMode } from '@mui/material'
@@ -57,6 +58,27 @@ export function getDefaultCustomColorsByTheme(): Record<PaletteMode, ColorPalett
     light: { ...DEFAULT_LIGHT_PALETTE },
     dark: { ...DEFAULT_DARK_PALETTE },
   }
+}
+
+export function getSolanaBlockedReason({ partnerFeeBps, widgetMode }: ConfiguratorFormValues): string | undefined {
+  if (widgetMode !== 'standalone') {
+    return 'Solana needs standalone mode: a dapp-provided EIP-1193 provider cannot sign Solana transactions.'
+  }
+
+  if (partnerFeeBps > 0) {
+    return 'Solana is unavailable while a partner fee is set, because partner fees are not charged on Solana yet.'
+  }
+
+  return undefined
+}
+
+export function isSolanaSelectable({ enableSolana, partnerFeeBps, widgetMode }: ConfiguratorFormValues): boolean {
+  return isSolanaEnabledForWidget({
+    enableSolana,
+    // Only the presence of a fee decides; `recipient` is never read.
+    partnerFee: partnerFeeBps > 0 ? { bps: partnerFeeBps, recipient: '' } : undefined,
+    standaloneMode: widgetMode === 'standalone',
+  })
 }
 
 export function resolveConfiguratorCustomColorsByTheme(persistedValue: unknown): Record<PaletteMode, ColorPalette> {

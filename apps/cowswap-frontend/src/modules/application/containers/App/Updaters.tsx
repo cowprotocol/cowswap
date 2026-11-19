@@ -24,7 +24,7 @@ import { BalancesDevtools, CommonPriorityBalancesAndAllowancesUpdater } from 'mo
 import { PendingBridgeOrdersUpdater, BridgingEnabledUpdater } from 'modules/bridge'
 import { BalancesCombinedUpdater } from 'modules/combinedBalances'
 import { InFlightOrderFinalizeUpdater } from 'modules/ethFlow'
-import { CowEventsUpdater, InjectedWidgetUpdater } from 'modules/injectedWidget'
+import { CowEventsUpdater, InjectedWidgetUpdater, SolanaAvailabilityUpdater } from 'modules/injectedWidget'
 import { FinalizeTxUpdater } from 'modules/onchainTransactions'
 import {
   OrderProgressEventsUpdater,
@@ -103,6 +103,7 @@ export function Updaters(): ReactNode {
       <InFlightOrderFinalizeUpdater />
       <SpotPricesUpdater />
       <InjectedWidgetUpdater />
+      <SolanaAvailabilityUpdater />
       <WidgetStandaloneModeUpdater standaloneMode={standaloneMode} />
       <WidgetSafeApp />
       <CowEventsUpdater />

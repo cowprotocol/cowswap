@@ -313,6 +313,15 @@ export interface CowSwapWidgetParams {
   targetChainId?: number
 
   /**
+   * Lists Solana among the widget's networks. Requires standalone mode, and is ignored while
+   * `partnerFee` is set, because partner fees are not charged on Solana yet.
+   * Read when the iframe loads: turning it on through `updateParams` takes effect only after the
+   * widget is recreated, because the Solana wallet connector is built from the initial URL.
+   * Defaults to `false`.
+   */
+  enableSolana?: boolean
+
+  /**
    * The token lists (as urls) enabled for the widget.
    * These lists are available to both sell and buy selectors.
    */

@@ -1,4 +1,5 @@
 import { COWSWAP_ORIGIN } from './const'
+import { isSolanaEnabledForWidget } from './solanaAccess'
 import { isCowSwapWidgetPalette } from './themeUtils'
 import { CowSwapWidgetParams, TradeType } from './types'
 
@@ -30,9 +31,12 @@ export function buildWidgetUrl(params: Partial<CowSwapWidgetParams>): string {
 export function buildWidgetUrlQuery(params: Partial<CowSwapWidgetParams>): URLSearchParams {
   const query = new URLSearchParams()
 
-  return addHooksEnabledToQuery(
-    addLocaleToQuery(
-      addTargetChainIdToQuery(addThemePaletteToQuery(addTradeAmountsToQuery(query, params), params), params),
+  return addSolanaEnabledToQuery(
+    addHooksEnabledToQuery(
+      addLocaleToQuery(
+        addTargetChainIdToQuery(addThemePaletteToQuery(addTradeAmountsToQuery(query, params), params), params),
+        params,
+      ),
       params,
     ),
     params,
@@ -98,6 +102,14 @@ function addHooksEnabledToQuery(query: URLSearchParams, params: Partial<CowSwapW
 function addLocaleToQuery(query: URLSearchParams, params: Partial<CowSwapWidgetParams>): URLSearchParams {
   if (params.locale) {
     query.append('lng', params.locale)
+  }
+
+  return query
+}
+
+function addSolanaEnabledToQuery(query: URLSearchParams, params: Partial<CowSwapWidgetParams>): URLSearchParams {
+  if (isSolanaEnabledForWidget(params)) {
+    query.append('solanaEnabled', 'true')
   }
 
   return query

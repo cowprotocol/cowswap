@@ -7,6 +7,7 @@ export {
   WIDGET_IFRAME_SANDBOX,
 } from './cowSwapWidget.constants'
 export type { CowSwapWidgetHandler } from './cowSwapWidget'
+export { isSolanaEnabledForWidget } from './solanaAccess'
 export { resolveFlexibleConfigValues } from './resolveFlexibleConfigValues'
 export { sanitizeWidgetBaseUrl, SHOULD_THROW_IF_INVALID_URL } from './urlUtils'
 export { widgetIframeTransport } from './widgetIframeTransport'

@@ -1,4 +1,4 @@
-import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { getIsSolanaEnabledFromWidgetUrl, isInjectedWidget } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import type { CaipNetworkId } from '@reown/appkit'
@@ -11,8 +11,9 @@ export interface OpenWalletModalEventDetail {
 /** Custom event name for "open wallet modal". Dispatched by the app; handled in Web3Provider to open Reown (AppKit). */
 export const OPEN_WALLET_MODAL_EVENT = 'cowswap-open-wallet-modal'
 
-// Solana is not supported in the widget yet (e.g. partner fees)
-export const IS_SOLANA_WALLET_ENABLED = !isInjectedWidget()
+// In the widget Solana is opt-in per partner, and the adapters are built before the params arrive,
+// so the opt-in travels in the iframe URL (see `isSolanaEnabledForWidget`).
+export const IS_SOLANA_WALLET_ENABLED = !isInjectedWidget() || getIsSolanaEnabledFromWidgetUrl()
 
 export const WC_DISABLED_TEXT =
   'Wallet-connect based wallet is already in use. Please disconnect it to connect to this wallet.'
