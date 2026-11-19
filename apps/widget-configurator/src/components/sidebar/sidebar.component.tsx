@@ -23,6 +23,7 @@ import { ColorPalette, ConfiguratorFormValues, ConfiguratorState } from '../../c
 import {
   buildConfiguratorState,
   getDefaultCustomColorsByTheme,
+  isSolanaSelectable,
   resolveConfiguratorCustomColorsByTheme,
   resolveConfiguratorFormValues,
 } from '../../configurator.utils'
@@ -180,7 +181,12 @@ export function Sidebar({
     [handleConfiguratorFormChange],
   )
 
-  useSyncWidgetNetwork(configuratorFormValues.chainId, setNetworkControlState, configuratorFormValues.widgetMode)
+  useSyncWidgetNetwork(
+    configuratorFormValues.chainId,
+    setNetworkControlState,
+    configuratorFormValues.widgetMode,
+    isSolanaSelectable(configuratorFormValues),
+  )
 
   return (
     <Drawer sx={(theme: Theme) => getDrawerSx(theme, isResizing)} variant="persistent" anchor="left" open={isOpen}>

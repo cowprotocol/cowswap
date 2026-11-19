@@ -33,6 +33,7 @@ export interface ConfiguratorFormValues {
   currentTradeType: TradeType
   chainId: SupportedChainId
   disableCrossChainSwap: boolean
+  enableSolana: boolean
   // slippage?: SlippageConfig // TODO: Not used for whatever reason.
 
   // Tokens:

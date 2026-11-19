@@ -11,10 +11,11 @@ export function useSyncWidgetNetwork(
   chainId: SupportedChainId,
   setNetworkControlState: (chainId: SupportedChainId) => void,
   widgetMode: WidgetMode,
+  isSolanaEnabled: boolean,
 ): void {
   const { chainId: walletChainId, isConnected } = useConnection()
   const { mutate: switchChain } = useSwitchChain()
-  const availableChains = useAvailableChains({ excludeSolana: true })
+  const availableChains = useAvailableChains({ excludeSolana: !isSolanaEnabled })
   const walletChainIdRef = useRef(walletChainId)
   const currentChainIdRef = useRef(chainId)
   // eslint-disable-next-line react-hooks/refs

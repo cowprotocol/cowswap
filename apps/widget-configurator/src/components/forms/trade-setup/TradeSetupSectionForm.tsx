@@ -6,6 +6,7 @@ import { useAvailableChains } from '@cowprotocol/common-hooks'
 import { isChainDeprecated, type SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { TRADE_MODES_OPTIONS, TRADE_TYPE_OPTIONS } from '../../../configurator.constants'
+import { getSolanaBlockedReason, getSolanaFeeNotice, isSolanaSelectable } from '../../../configurator.utils'
 import { MultiSelectInput } from '../../ui/inputs/Select/multi/MultiSelectInput.component'
 import { SelectInput } from '../../ui/inputs/Select/single/SelectInput.component'
 import { SwitchInput } from '../../ui/inputs/SwitchInput/SwitchInput'
@@ -14,7 +15,9 @@ import type { SelectInputOption } from '../../ui/inputs/Select/base/BaseSelectIn
 import type { SidebarSectionFormProps } from '../forms.types'
 
 export function TradeSetupSectionForm({ values, onChange }: SidebarSectionFormProps): ReactNode {
-  const availableChains = useAvailableChains({ excludeSolana: true })
+  const availableChains = useAvailableChains({ excludeSolana: !isSolanaSelectable(values) })
+  const solanaBlockedReason = getSolanaBlockedReason(values)
+  const solanaHelperText = solanaBlockedReason ?? getSolanaFeeNotice(values)
 
   const chainOptions: SelectInputOption<SupportedChainId>[] = useMemo(() => {
     const availableChainsSet = new Set(availableChains)
@@ -58,6 +61,14 @@ export function TradeSetupSectionForm({ values, onChange }: SidebarSectionFormPr
         checked={!values.disableCrossChainSwap}
         label="Allow cross-chain swaps"
         onChange={(enabled) => onChange('disableCrossChainSwap', !enabled)}
+      />
+
+      <SwitchInput
+        checked={values.enableSolana}
+        disabled={!!solanaBlockedReason}
+        label="Enable Solana"
+        helperText={solanaHelperText}
+        onChange={(enabled) => onChange('enableSolana', enabled)}
       />
     </>
   )

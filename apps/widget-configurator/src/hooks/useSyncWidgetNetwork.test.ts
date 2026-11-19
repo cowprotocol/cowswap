@@ -38,7 +38,7 @@ describe('useSyncWidgetNetwork', () => {
       isConnected: true,
     } as unknown as ReturnType<typeof useConnection>)
 
-    renderHook(() => useSyncWidgetNetwork(SupportedChainId.MAINNET, setNetworkControlState, 'dapp'))
+    renderHook(() => useSyncWidgetNetwork(SupportedChainId.MAINNET, setNetworkControlState, 'dapp', false))
 
     expect(setNetworkControlState).not.toHaveBeenCalled()
   })
@@ -51,7 +51,7 @@ describe('useSyncWidgetNetwork', () => {
       isConnected: true,
     } as unknown as ReturnType<typeof useConnection>)
 
-    renderHook(() => useSyncWidgetNetwork(SupportedChainId.MAINNET, setNetworkControlState, 'dapp'))
+    renderHook(() => useSyncWidgetNetwork(SupportedChainId.MAINNET, setNetworkControlState, 'dapp', false))
 
     expect(setNetworkControlState).toHaveBeenCalledWith(SupportedChainId.GNOSIS_CHAIN)
   })
@@ -63,7 +63,7 @@ describe('useSyncWidgetNetwork', () => {
       isConnected: true,
     } as unknown as ReturnType<typeof useConnection>)
 
-    renderHook(() => useSyncWidgetNetwork(SupportedChainId.MAINNET, setNetworkControlState, 'standalone'))
+    renderHook(() => useSyncWidgetNetwork(SupportedChainId.MAINNET, setNetworkControlState, 'standalone', false))
 
     expect(setNetworkControlState).not.toHaveBeenCalled()
   })
@@ -75,7 +75,7 @@ describe('useSyncWidgetNetwork', () => {
       isConnected: true,
     } as unknown as ReturnType<typeof useConnection>)
 
-    renderHook(() => useSyncWidgetNetwork(SupportedChainId.SOLANA, setNetworkControlState, 'standalone'))
+    renderHook(() => useSyncWidgetNetwork(SupportedChainId.SOLANA, setNetworkControlState, 'standalone', false))
 
     expect(setNetworkControlState).toHaveBeenLastCalledWith(SupportedChainId.MAINNET)
   })
@@ -87,7 +87,7 @@ describe('useSyncWidgetNetwork', () => {
       typeof useConnection
     >)
 
-    renderHook(() => useSyncWidgetNetwork(SupportedChainId.SOLANA, setNetworkControlState, 'dapp'))
+    renderHook(() => useSyncWidgetNetwork(SupportedChainId.SOLANA, setNetworkControlState, 'dapp', false))
 
     expect(setNetworkControlState).toHaveBeenLastCalledWith(SupportedChainId.MAINNET)
   })
@@ -102,9 +102,27 @@ describe('useSyncWidgetNetwork', () => {
       isConnected: true,
     } as unknown as ReturnType<typeof useConnection>)
 
-    renderHook(() => useSyncWidgetNetwork(SupportedChainId.SOLANA, setNetworkControlState, 'dapp'))
+    renderHook(() => useSyncWidgetNetwork(SupportedChainId.SOLANA, setNetworkControlState, 'dapp', false))
 
     expect(setNetworkControlState).toHaveBeenLastCalledWith(SupportedChainId.GNOSIS_CHAIN)
     expect(switchChain).not.toHaveBeenCalled()
+  })
+
+  it('keeps Solana selected in standalone mode once the partner enabled it', () => {
+    const setNetworkControlState = jest.fn()
+
+    mockedUseAvailableChains.mockReturnValue([
+      SupportedChainId.MAINNET,
+      SupportedChainId.GNOSIS_CHAIN,
+      SupportedChainId.SOLANA,
+    ])
+    mockedUseConnection.mockReturnValue({
+      chainId: SupportedChainId.GNOSIS_CHAIN,
+      isConnected: true,
+    } as unknown as ReturnType<typeof useConnection>)
+
+    renderHook(() => useSyncWidgetNetwork(SupportedChainId.SOLANA, setNetworkControlState, 'standalone', true))
+
+    expect(setNetworkControlState).not.toHaveBeenCalled()
   })
 })
