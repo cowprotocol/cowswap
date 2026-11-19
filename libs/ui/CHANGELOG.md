@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.25.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.24.0...ui-v3.25.0) (2026-11-19)
+
+### Minor Changes
+
+- feat(theme): cherry pick #8678 (vice theme)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/assets@2.13.0
+  - @cowprotocol/common-const@3.25.0
+  - @cowprotocol/analytics@3.20.1
+  - @cowprotocol/common-hooks@3.22.1
+  - @cowprotocol/common-utils@3.23.1
+  - @cowprotocol/core@3.16.1
+
 ## [3.24.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.23.2...ui-v3.24.0) (2026-11-18)
 
 ### Minor Changes
