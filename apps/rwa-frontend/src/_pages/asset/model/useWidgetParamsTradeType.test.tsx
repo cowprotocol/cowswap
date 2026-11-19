@@ -57,6 +57,15 @@ describe('useWidgetParamsTradeType', () => {
     expect(result.current?.tradeType).toBe(TradeType.SWAP)
   })
 
+  it('keeps the sent tab when only the theme changes after a tab change in the widget', () => {
+    const { store, result, rerender } = renderParams()
+
+    store.set(tradeTypeAtom, TradeType.LIMIT)
+    rerender({ ...buildParams(1), theme: 'dark' })
+
+    expect(result.current).toEqual({ ...buildParams(1), theme: 'dark', tradeType: TradeType.SWAP })
+  })
+
   it('opens the remembered tab in the iframe recreated for a new provider', () => {
     const { store, result, rerender } = renderParams()
 
