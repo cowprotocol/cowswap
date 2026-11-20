@@ -1,7 +1,6 @@
 import { useAtom, useSetAtom } from 'jotai'
 import { ReactNode, useEffect, useRef } from 'react'
 
-import { usePrevious } from '@cowprotocol/common-hooks'
 import { deepEqual } from '@cowprotocol/common-utils'
 import { getParentOrigin } from '@cowprotocol/iframe-transport'
 import {
@@ -12,7 +11,6 @@ import {
   WidgetMethodsListen,
 } from '@cowprotocol/widget-lib'
 
-import * as Sentry from '@sentry/browser'
 import { injectedWidgetParamsAtom, setWidgetLocale } from 'entities/injectedWidget'
 
 import { useNavigate } from 'common/hooks/useNavigate'
@@ -21,9 +19,11 @@ import { TRADE_URL_FORCE_NAVIGATE_KEY } from 'common/modules/tradeNavigation'
 import { IframeResizer } from './IframeResizer'
 
 import { useListenCloseAllModals } from '../hooks/useListenCloseAllModals'
+import { useReportDiscardedPartnerFee } from '../hooks/useReportDiscardedPartnerFee'
 import { WidgetParamsErrorsScreen } from '../pure/WidgetParamsErrorsScreen'
 import { injectedWidgetHooksEnabledAtom } from '../state/injectedWidgetHooksEnabledAtom'
 import { injectedWidgetMetaDataAtom } from '../state/injectedWidgetMetaDataAtom'
+import { getCurrentLocationWithTheme, isThemeOnlyWidgetUpdate } from '../utils/themeOnlyWidgetUpdate.utils'
 import { validateWidgetParams } from '../utils/validateWidgetParams'
 import {
   cacheWidgetMessage,
@@ -87,8 +87,8 @@ export function InjectedWidgetUpdater(): ReactNode {
   const setHooksEnabled = useSetAtom(injectedWidgetHooksEnabledAtom)
   const updateMetaData = useSetAtom(injectedWidgetMetaDataAtom)
   useListenCloseAllModals()
+  useReportDiscardedPartnerFee(appCode, partnerFee)
 
-  const prevPartnerFee = usePrevious(partnerFee)
   const navigate = useNavigate()
   const prevData = useRef<UpdateParamsPayload | null>(null)
   const isReadySentRef = useRef(false)
@@ -112,6 +112,12 @@ export function InjectedWidgetUpdater(): ReactNode {
         // This is needed since the app updates the pathname independently of the widget params
         window.location.pathname === data.urlParams.pathname
       ) {
+        return
+      }
+
+      if (isThemeOnlyWidgetUpdate(prevData.current, data)) {
+        prevData.current = data
+        navigate(getCurrentLocationWithTheme(data.urlParams.search), { replace: true })
         return
       }
 
@@ -175,26 +181,6 @@ export function InjectedWidgetUpdater(): ReactNode {
       widgetIframeTransport.stopListeningWindowListener(window, updateAppDataListener)
     }
   }, [setHooksEnabled, updateMetaData, navigate, updateParams])
-
-  // Log an error when partnerFee was set and then discarded
-  useEffect(() => {
-    if (!appCode) return
-
-    if (prevPartnerFee && !partnerFee) {
-      const sentryError = Object.assign(
-        new Error(`AppCode: ${appCode}, BPS: ${prevPartnerFee.bps}, recipient: ${prevPartnerFee.recipient}`),
-        {
-          name: 'PartnerFeeDiscarded',
-        },
-      )
-
-      Sentry.captureException(sentryError, {
-        tags: {
-          errorType: 'PartnerFeeDiscarded',
-        },
-      })
-    }
-  }, [appCode, partnerFee, prevPartnerFee])
 
   return (
     <>
