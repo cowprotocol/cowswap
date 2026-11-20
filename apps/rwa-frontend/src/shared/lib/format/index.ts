@@ -10,3 +10,4 @@ export {
   shortenAddress,
   toTokenUnits,
 } from './format'
+export { formatLocalTime, getLocalTimeParts, type LocalTimeParts } from './localTime'
