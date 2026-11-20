@@ -18,10 +18,10 @@ export function getTradingPauseMessage(
   const endParts = getLocalTimeParts(end, timeZone)
 
   if (now.getTime() >= start) {
-    return `${pause.issuer} tokens are paused until ${endParts.time} ${endParts.zone} while their balances update.`
+    return `${pause.issuer} tokens are paused until ${endParts.time} while their balances update.`
   }
 
   const startParts = getLocalTimeParts(start, timeZone)
 
-  return `${pause.issuer} tokens pause trading on ${startParts.month} ${startParts.day}, ${startParts.time}–${endParts.time} ${endParts.zone}, while their balances update.`
+  return `${pause.issuer} tokens pause trading on ${startParts.month} ${startParts.day}, ${startParts.time}–${endParts.time}, while their balances update.`
 }

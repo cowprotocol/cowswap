@@ -390,9 +390,7 @@ describe('HomePage', () => {
 
     expect(totals.textContent).toContain('Tokenized market cap')
     expect(totals.textContent).toContain('24h total volume')
-    const refTime = formatRefTime(UPDATED_AT, Intl.DateTimeFormat().resolvedOptions().timeZone)
-
-    expect(await screen.findByText(`Ref. ${refTime}`)).toBeTruthy()
+    expect(await screen.findByText(`Ref. ${formatRefTime(UPDATED_AT)}`)).toBeTruthy()
     expect(screen.getByText('24h total volume · DEX volume chart · All networks')).toBeTruthy()
   })
 

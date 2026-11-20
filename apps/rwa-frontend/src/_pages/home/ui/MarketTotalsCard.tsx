@@ -21,10 +21,7 @@ interface MarketTotalsCardProps {
 
 export function MarketTotalsCard({ overview }: MarketTotalsCardProps): ReactNode {
   const isHydrated = useIsHydrated()
-  const refTime =
-    isHydrated && overview?.updatedAt
-      ? formatRefTime(overview.updatedAt, Intl.DateTimeFormat().resolvedOptions().timeZone)
-      : null
+  const refTime = isHydrated && overview?.updatedAt ? formatRefTime(overview.updatedAt) : null
 
   return (
     <section className={styles.card} aria-labelledby="market-totals-title">

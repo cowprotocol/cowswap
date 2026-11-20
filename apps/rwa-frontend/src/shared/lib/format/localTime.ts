@@ -7,15 +7,11 @@ export interface LocalTimeParts {
   year: string
   /** `15:05` */
   time: string
-  /** `GMT+9`, `PST`, `UTC` */
-  zone: string
 }
 
-/** `14:00 GMT+9`, `timestamp` (ms) in `timeZone`, the user's time zone by default */
+/** `14:00`, `timestamp` (ms) in `timeZone`, the user's time zone by default */
 export function formatLocalTime(timestamp: number, timeZone?: string): string {
-  const { time, zone } = getLocalTimeParts(timestamp, timeZone)
-
-  return `${time} ${zone}`
+  return getLocalTimeParts(timestamp, timeZone).time
 }
 
 /** `timestamp` (ms) in `timeZone`, the user's time zone by default */
@@ -27,7 +23,6 @@ export function getLocalTimeParts(timestamp: number, timeZone?: string): LocalTi
     hour: '2-digit',
     minute: '2-digit',
     hourCycle: 'h23',
-    timeZoneName: 'short',
     timeZone,
   }).formatToParts(timestamp)
   const part = (type: Intl.DateTimeFormatPartTypes): string => parts.find((item) => item.type === type)?.value ?? ''
@@ -37,6 +32,5 @@ export function getLocalTimeParts(timestamp: number, timeZone?: string): LocalTi
     month: part('month'),
     year: part('year'),
     time: `${part('hour')}:${part('minute')}`,
-    zone: part('timeZoneName'),
   }
 }
