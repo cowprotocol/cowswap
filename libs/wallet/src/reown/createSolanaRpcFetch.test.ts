@@ -155,6 +155,32 @@ describe('createSolanaRpcFetch', () => {
       expect(fetchFn).toHaveBeenCalledTimes(1)
     })
 
+    it('reports a send whose fallback never settles', async () => {
+      const sendInit: RequestInit = { method: 'POST', body: '{"method":"sendTransaction","params":["tx"]}' }
+      const fetchFn = jest.fn((url: RequestInfo | URL, init?: RequestInit) =>
+        url === PRIMARY_URL ? Promise.resolve(response(503)) : hangingUntilAborted(init),
+      )
+      const rpcFetch = createSolanaRpcFetch({ primaryUrl: PRIMARY_URL, fallbackUrl: FALLBACK_URL, fetchFn })
+
+      rpcFetch(PRIMARY_URL, sendInit).catch(() => undefined)
+      await jest.advanceTimersByTimeAsync(30_000)
+
+      expect(captureErrorMock.mock.calls[0][3]).toMatchObject({ recovered: 'false' })
+      expect(captureErrorMock.mock.calls[0][4]).toEqual(['SolanaRpc', 'SolanaRpcError', 'unresolved'])
+    })
+
+    it('does not report a send as unresolved once the fallback answers', async () => {
+      const sendInit: RequestInit = { method: 'POST', body: '{"method":"sendTransaction","params":["tx"]}' }
+      const fetchFn = jest.fn((url: RequestInfo | URL) => Promise.resolve(response(url === PRIMARY_URL ? 503 : 200)))
+      const rpcFetch = createSolanaRpcFetch({ primaryUrl: PRIMARY_URL, fallbackUrl: FALLBACK_URL, fetchFn })
+
+      await rpcFetch(PRIMARY_URL, sendInit)
+      await jest.advanceTimersByTimeAsync(60_000)
+
+      expect(captureErrorMock).toHaveBeenCalledTimes(1)
+      expect(captureErrorMock.mock.calls[0][4]).toEqual(['SolanaRpc', 'SolanaRpcError', 'recovered'])
+    })
+
     it('does not time out sendTransaction on the fallback', async () => {
       const sendInit: RequestInit = { method: 'POST', body: '{"method":"sendTransaction","params":["tx"]}' }
       let resolveFallback: (value: Response) => void = () => undefined

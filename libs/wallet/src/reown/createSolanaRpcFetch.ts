@@ -7,6 +7,7 @@ const HTTP_TOO_MANY_REQUESTS = 429
 const REPORT_THROTTLE_MS = ms`60s`
 const PRIMARY_TIMEOUT_MS = ms`5s`
 const FALLBACK_TIMEOUT_MS = ms`15s`
+const UNSETTLED_SEND_REPORT_MS = ms`30s`
 const SENTRY_SCOPE = 'SolanaRpc'
 
 const logger = createCowLogger(SENTRY_SCOPE)
@@ -31,7 +32,7 @@ interface PrimaryFailure {
   status?: number
 }
 
-type ReportOutcome = 'recovered' | 'failed'
+type ReportOutcome = 'recovered' | 'failed' | 'unresolved'
 
 interface RequestAbort {
   signal: AbortSignal
@@ -50,8 +51,7 @@ export function createSolanaRpcFetch({
 }: SolanaRpcFetchParams): FetchFn {
   const lastReportedAt = new Map<ReportOutcome, number>()
 
-  const report = ({ reason, status }: PrimaryFailure, recovered: boolean, fallbackError?: Error): void => {
-    const outcome: ReportOutcome = recovered ? 'recovered' : 'failed'
+  const report = ({ reason, status }: PrimaryFailure, outcome: ReportOutcome, fallbackError?: Error): void => {
     // Throttled per outcome, so a primary the fallback covered cannot silence a request that failed outright.
     const reportedAt = lastReportedAt.get(outcome)
     const timestamp = now()
@@ -76,12 +76,20 @@ export function createSolanaRpcFetch({
       {
         scope: SENTRY_SCOPE,
         errorType: sentryError.name,
-        recovered: String(recovered),
+        recovered: String(outcome === 'recovered'),
         ...(status !== undefined ? { httpStatus: String(status) } : undefined),
       },
       [SENTRY_SCOPE, sentryError.name, outcome],
     )
   }
+
+  // A send is deliberately left without a fallback timeout, so reporting only once the request
+  // settles would stay silent forever on one that hangs — the case worth hearing about most.
+  const scheduleUnsettledReport = (
+    failure: PrimaryFailure,
+    init: RequestInit | undefined,
+  ): ReturnType<typeof setTimeout> | undefined =>
+    isSendTransaction(init) ? setTimeout(() => report(failure, 'unresolved'), UNSETTLED_SEND_REPORT_MS) : undefined
 
   return async (input, init) => {
     if (primaryUrl === fallbackUrl || input.toString() !== primaryUrl) {
@@ -92,22 +100,24 @@ export function createSolanaRpcFetch({
 
     if ('response' in attempt) return attempt.response
 
+    const unsettledReport = scheduleUnsettledReport(attempt.failure, init)
+
     try {
       const response = await fetchFallback(fetchFn, fallbackUrl, init, fallbackTimeoutMs)
-      const fallbackFailure = shouldFallback(response)
-        ? new Error(`Solana RPC fallback responded with HTTP ${response.status}`)
-        : undefined
+      const fallbackFailure = describeFallbackRefusal(response)
 
-      report(attempt.failure, !fallbackFailure, fallbackFailure)
+      report(attempt.failure, fallbackFailure ? 'failed' : 'recovered', fallbackFailure)
 
       return response
     } catch (err: unknown) {
       const error = normalizeError(err)
 
       // The caller gave up while the fallback was in flight, so nothing about the RPC has been established.
-      if (!init?.signal?.aborted) report(attempt.failure, false, error)
+      if (!init?.signal?.aborted) report(attempt.failure, 'failed', error)
 
       throw error
+    } finally {
+      clearTimeout(unsettledReport)
     }
   }
 }
@@ -144,6 +154,10 @@ function createRequestAbort(callerSignal: AbortSignal | null | undefined, timeou
     isTimedOut: () => isTimedOut,
     clear: () => clearTimeout(timeoutId),
   }
+}
+
+function describeFallbackRefusal(response: Response): Error | undefined {
+  return shouldFallback(response) ? new Error(`Solana RPC fallback responded with HTTP ${response.status}`) : undefined
 }
 
 async function fetchFallback(
