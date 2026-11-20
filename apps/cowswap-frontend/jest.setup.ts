@@ -4,6 +4,7 @@ jest.mock('lottie-react', () => () => null)
 
 jest.mock('@marsidev/react-turnstile', () => ({
   __esModule: true,
+  DEFAULT_SCRIPT_ID: 'cf-turnstile-script',
   Turnstile: () => null,
 }))
 

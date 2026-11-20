@@ -6,9 +6,8 @@ import { DEFAULT_LOCALE } from '@cowprotocol/common-const'
 import { useFeatureFlags, useTheme } from '@cowprotocol/common-hooks'
 import { getJwtTtl, normalizeError } from '@cowprotocol/common-utils'
 
-import { Turnstile, type TurnstileInstance } from '@marsidev/react-turnstile'
+import { DEFAULT_SCRIPT_ID, Turnstile, type TurnstileInstance } from '@marsidev/react-turnstile'
 import { setBearerToken } from 'cowSdk'
-import { captchaErrorAtom } from 'entities/captcha/state/captchaErrorAtom'
 import { captchaInteractionRequiredAtom } from 'entities/captcha/state/captchaInteractionRequiredAtom'
 import { captchaJwtAtom } from 'entities/captcha/state/captchaJwtAtom'
 
@@ -16,8 +15,9 @@ import { useActiveLocale } from 'legacy/hooks/useActiveLocale'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
-import { exchangeTurnstileToken } from '../api/captchaApi'
+import { exchangeTurnstileToken, isTurnstileTimeoutOrDuplicate } from '../api/captchaApi'
 import { TURNSTILE_DEMO_INTERACTIVE_SITE_KEY, TURNSTILE_SITE_KEY } from '../config/captcha.const'
+import { useCaptchaChallengeRetry } from '../hooks/useCaptchaChallengeRetry'
 import { useCaptchaDebugControls } from '../hooks/useCaptchaDebugControls'
 import { logCaptcha } from '../logger'
 
@@ -27,12 +27,13 @@ const ignoreCaptchaEvent: typeof trackCaptchaEvent = () => undefined
 /* eslint-disable max-lines-per-function */
 export function CaptchaWidget(): ReactNode {
   const [captchaJwt, setCaptchaJwt] = useAtom(captchaJwtAtom)
-  const [captchaError, setCaptchaError] = useAtom(captchaErrorAtom)
   const setCaptchaInteractionRequired = useSetAtom(captchaInteractionRequiredAtom)
   const { isCaptchaEnabled } = useFeatureFlags()
   const captchaRef = useRef<TurnstileInstance | undefined>(undefined)
   const exchangeRequestIdRef = useRef(0)
   const [siteKey, setSiteKey] = useState(TURNSTILE_SITE_KEY)
+  const [turnstileMountKey, setTurnstileMountKey] = useState(0)
+  const { resetAttempts, scheduleRetry } = useCaptchaChallengeRetry()
   const theme = useTheme()
   const locale = useActiveLocale()
 
@@ -42,7 +43,7 @@ export function CaptchaWidget(): ReactNode {
     setCaptchaInteractionRequired(false)
 
     return () => setCaptchaInteractionRequired(false)
-  }, [captchaError, captchaJwt, isCaptchaEnabled, setCaptchaInteractionRequired, siteKey])
+  }, [captchaJwt, isCaptchaEnabled, setCaptchaInteractionRequired, siteKey])
 
   useEffect(() => {
     if (isCaptchaEnabled === undefined) return
@@ -69,10 +70,11 @@ export function CaptchaWidget(): ReactNode {
     if (isCaptchaEnabled !== false) return
 
     exchangeRequestIdRef.current += 1
+    resetAttempts()
 
     setBearerToken(null)
     if (captchaJwt) setCaptchaJwt(null)
-  }, [captchaJwt, isCaptchaEnabled, setCaptchaJwt])
+  }, [captchaJwt, isCaptchaEnabled, resetAttempts, setCaptchaJwt])
 
   useEffect(() => {
     if (!isCaptchaEnabled || !captchaJwt) return
@@ -87,11 +89,11 @@ export function CaptchaWidget(): ReactNode {
 
   useCaptchaDebugControls({ exchangeRequestIdRef, setCaptchaJwt, setSiteKey })
 
-  if (!isCaptchaEnabled || !siteKey || captchaJwt || captchaError) return null
+  if (!isCaptchaEnabled || !siteKey || captchaJwt) return null
 
   return (
     <Turnstile
-      key={siteKey}
+      key={`${siteKey}-${turnstileMountKey}`}
       ref={captchaRef}
       siteKey={siteKey}
       style={{ width: '100%', display: 'block' }}
@@ -100,6 +102,7 @@ export function CaptchaWidget(): ReactNode {
         language: locale === 'pseudo' ? DEFAULT_LOCALE : locale,
         size: 'flexible',
         appearance: 'interaction-only',
+        retry: 'never',
         // execution: 'execute',
         // refreshExpired: 'manual',
       }}
@@ -135,16 +138,19 @@ export function CaptchaWidget(): ReactNode {
 
           logCaptcha.info('JWT received', { requestId })
           trackCaptcha({ action: 'captcha_challenge_solved' })
+          resetAttempts()
           setCaptchaJwt(jwt)
         } catch (err: unknown) {
           if (exchangeRequestIdRef.current !== requestId) return
 
           const error = normalizeError(err)
-          setCaptchaError(error)
 
           logCaptcha.error(new Error('JWT exchange failed', { cause: error }), undefined, { requestId })
           trackCaptcha({ action: 'captcha_challenge_failed', reason: 'jwtExchangeFailed' })
           setCaptchaJwt(null)
+          scheduleRetry(() => captchaRef.current?.reset(), {
+            immediate: isTurnstileTimeoutOrDuplicate(error),
+          })
         }
       }}
       onExpire={() => {
@@ -163,25 +169,30 @@ export function CaptchaWidget(): ReactNode {
 
         const error = new Error('Challenge errored')
         logCaptcha.error(error, undefined, { errorCode, hostname: window.location.hostname })
-        setCaptchaError(error)
         trackCaptcha({ action: 'captcha_challenge_failed', reason: 'turnstileError' })
         setCaptchaJwt(null)
+        scheduleRetry(() => captchaRef.current?.reset())
       }}
       onUnsupported={() => {
         setCaptchaInteractionRequired(false)
         const error = new Error('Challenge unsupported by browser')
         logCaptcha.error(error)
-        setCaptchaError(error)
         trackCaptcha({ action: 'captcha_challenge_failed', reason: 'browserUnsupported' })
+        scheduleRetry(() => captchaRef.current?.reset())
       }}
       scriptOptions={{
         onError: () => {
           setCaptchaInteractionRequired(false)
           const error = new Error('Turnstile script failed to load')
           logCaptcha.error(error)
-          setCaptchaError(error)
+          scheduleRetry(() => reloadTurnstileScript(() => setTurnstileMountKey((key) => key + 1)))
         },
       }}
     />
   )
+}
+
+function reloadTurnstileScript(onReloaded: () => void): void {
+  document.getElementById(DEFAULT_SCRIPT_ID)?.remove()
+  onReloaded()
 }
