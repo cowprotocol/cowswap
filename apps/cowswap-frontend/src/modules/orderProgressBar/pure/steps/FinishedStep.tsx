@@ -127,7 +127,7 @@ export function FinishedStep({
 
   const soldLabel = t`You sold`
   const receivedLabel = t`You received`
-  const celebrateWin = shouldShowSurplus || Boolean(waitAndSaveOutcome)
+  const celebrateWin = shouldShowSurplus || showComparisonOutcome
   const tokenPair = useFinishedTokenPair(order, soldLabel, receivedLabel, surplusSecondaryAmount, waitAndSave)
 
   const competitionPending = waitAndSave?.pending === true

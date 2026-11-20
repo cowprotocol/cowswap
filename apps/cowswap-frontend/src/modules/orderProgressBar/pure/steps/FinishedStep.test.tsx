@@ -738,4 +738,52 @@ describe('FinishedStep sharing', () => {
       'Hey, I just got an extra 2.47 USDC on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi',
     )
   })
+
+  it('does not treat fee-only Wait & save as a shareable win when tips are disabled', () => {
+    jest.mocked(useInjectedWidgetParams).mockReturnValue({ disablePostTradeTips: true })
+
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={order}
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+        waitAndSave={{
+          outcome: { variant: 'withWaivedFee', volumeFeeSavedFiat: '$0.30' },
+          strip: { comparisonUnavailable: true, hasAloneBid: false, kind: 'joined' },
+        }}
+      >
+        <div>CoW Protocol is MEV protected</div>
+      </FinishedStep>,
+    )
+
+    expect(screen.queryByRole('link', { name: /Share this/ })).toBeNull()
+  })
+
+  it('keeps Wait & save comparison sharing when post-trade tips are disabled', () => {
+    jest.mocked(useInjectedWidgetParams).mockReturnValue({ disablePostTradeTips: true })
+
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={order}
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+        waitAndSave={{
+          outcome: {
+            variant: 'withCow',
+            gainAmount: '1.46',
+            tokenSymbol: 'RAI',
+          },
+          strip: { hasAloneBid: true, kind: 'cow' },
+        }}
+      >
+        <div>CoW Protocol is MEV protected</div>
+      </FinishedStep>,
+    )
+
+    expect(getSharedText('Share this win!')).toBe(
+      'Hey, I just got an extra 1.46 RAI with Wait & save on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi',
+    )
+  })
 })
