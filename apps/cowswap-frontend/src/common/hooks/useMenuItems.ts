@@ -2,6 +2,8 @@ import { useCallback } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { getIsSafeAppIframe, isInjectedWidget } from '@cowprotocol/common-utils'
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
 
@@ -17,6 +19,7 @@ import {
 } from '../constants/routes'
 
 export function useMenuItems(): IMenuItem[] {
+  const { chainId } = useWalletInfo()
   const isHooksEnabled = useHooksEnabled()
   const { isYieldEnabled, isRwaEnabled } = useFeatureFlags()
   const { i18n } = useLingui()
@@ -46,7 +49,7 @@ export function useMenuItems(): IMenuItem[] {
     items.push(extractMenuItem(YIELD_MENU_ITEM))
   }
 
-  if (isRwaEnabled && !isInjectedWidget() && !getIsSafeAppIframe()) {
+  if (isRwaEnabled && !isSolanaChain(chainId) && !isInjectedWidget() && !getIsSafeAppIframe()) {
     items.push(extractMenuItem(RWA_MENU_ITEM))
   }
 
