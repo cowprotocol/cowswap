@@ -1,6 +1,7 @@
-import { ReactNode } from 'react'
+import { ReactNode, useCallback, useState } from 'react'
 
-import { useRemainingSeconds } from '@cowprotocol/common-hooks'
+import { useLocalTimeOffset } from '@cowprotocol/common-hooks'
+import { getServerNowSec } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { ButtonPrimary, Media, UI } from '@cowprotocol/ui'
 
@@ -8,10 +9,9 @@ import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
 
+import { MilkGlass } from 'common/pure/MilkGlassCountdown/MilkGlass/MilkGlass.pure'
+import { MilkGlassCountdown } from 'common/pure/MilkGlassCountdown/MilkGlassCountdown.pure'
 import { NewModal, NewModalProps } from 'common/pure/NewModal'
-
-import { CountdownDigits } from './CountdownDigits'
-import { MilkGlass } from './MilkGlass'
 
 import { SolanaTradeAmountsRow } from '../SolanaTradeAmountsRow'
 
@@ -37,8 +37,16 @@ export type SolanaSigningCountdownProps = NewModalProps & {
 export function SolanaSigningCountdown(props: SolanaSigningCountdownProps): ReactNode {
   const { expiresAt, durationMs, inputAmount, outputAmount, recipient, onExpiredDismiss, ...rest } = props
 
-  const remainingMs = (useRemainingSeconds(expiresAt) ?? 0) * 1000
-  const isExpired = remainingMs === 0
+  const timeOffsetSec = useLocalTimeOffset() ?? 0
+  const targetEpochSec = Math.floor(expiresAt / 1000)
+  const [isExpired, setIsExpired] = useState(() => targetEpochSec <= getServerNowSec(timeOffsetSec))
+
+  const onRemainingChange = useCallback((remainingSec: number) => {
+    if (remainingSec <= 0) {
+      setIsExpired(true)
+    }
+  }, [])
+
   const onDismiss = isExpired && onExpiredDismiss ? onExpiredDismiss : rest.onDismiss
 
   return (
@@ -50,9 +58,9 @@ export function SolanaSigningCountdown(props: SolanaSigningCountdownProps): Reac
     >
       <HeroGroup>
         <Hero $isExpired={isExpired}>
-          <TimerColumn $isExpired={isExpired}>
-            {isExpired ? (
-              <>
+          {isExpired ? (
+            <>
+              <ExpiredTimerColumn>
                 <ExpiredDigits>00:00</ExpiredDigits>
                 <ExpiredHeading>
                   <Trans>Signing time expired</Trans>
@@ -60,19 +68,19 @@ export function SolanaSigningCountdown(props: SolanaSigningCountdownProps): Reac
                 <ExpiredHint>
                   <Trans>Review your swap to get a fresh signing request.</Trans>
                 </ExpiredHint>
-              </>
-            ) : (
-              <>
-                <CountdownDigits remainingMs={remainingMs} />
-                <TimerLabel>
-                  <Trans>To sign the transaction in your wallet</Trans>
-                </TimerLabel>
-              </>
-            )}
-          </TimerColumn>
-          <GlassBox>
-            <MilkGlass fraction={durationMs > 0 ? remainingMs / durationMs : 0} isExpired={isExpired} />
-          </GlassBox>
+              </ExpiredTimerColumn>
+              <GlassBox>
+                <MilkGlass fraction={0} isExpired />
+              </GlassBox>
+            </>
+          ) : (
+            <MilkGlassCountdown
+              targetEpochSec={targetEpochSec}
+              durationMs={durationMs}
+              onRemainingChange={onRemainingChange}
+              label={<Trans>To sign the transaction in your wallet</Trans>}
+            />
+          )}
         </Hero>
 
         <SolanaTradeAmountsRow inputAmount={inputAmount} outputAmount={outputAmount} recipient={recipient} />
@@ -106,19 +114,18 @@ const Hero = styled.div<{ $isExpired: boolean }>`
   gap: 16px 28px;
   width: 100%;
   min-height: 260px;
-  padding: 24px 28px;
+  padding: ${({ $isExpired }) => ($isExpired ? '24px 28px' : '0')};
   background: ${({ $isExpired }) => ($isExpired ? EXPIRED_HERO_BG : `var(${UI.COLOR_BLUE_300_PRIMARY})`)};
   color: var(${UI.COLOR_TEXT});
 `
 
-const TimerColumn = styled.div<{ $isExpired: boolean }>`
+const ExpiredTimerColumn = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: ${({ $isExpired }) => ($isExpired ? '8px' : '4px')};
+  gap: 8px;
   width: 204px;
 
-  /* Below this the hero row no longer fits and the glass wraps under the timer, so center to match. */
   ${Media.upToExtraSmall()} {
     align-items: center;
     text-align: center;
@@ -129,12 +136,6 @@ const GlassBox = styled.div`
   display: flex;
   justify-content: center;
   flex: 0 0 150px;
-`
-
-const TimerLabel = styled.span`
-  font-size: 13px;
-  line-height: 18px;
-  width: 100%;
 `
 
 const ExpiredDigits = styled.span`

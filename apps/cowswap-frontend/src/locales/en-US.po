@@ -4848,9 +4848,17 @@ msgstr "A {width}×{height} pixel wall shared by everyone, painted live on Solan
 msgid "Add post-hook"
 msgstr "Add post-hook"
 
+#: apps/cowswap-frontend/src/common/pure/MilkGlassCountdown/CountdownDigits/CountdownDigits.pure.tsx
+msgid "{seconds, plural, one {# second remaining} other {# seconds remaining}}"
+msgstr "{seconds, plural, one {# second remaining} other {# seconds remaining}}"
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "CoW Swap is the only exchange that matches Coincidences of Wants (CoWs): peer-to-peer swaps that save on settlement costs."
 msgstr "CoW Swap is the only exchange that matches Coincidences of Wants (CoWs): peer-to-peer swaps that save on settlement costs."
+
+#: apps/cowswap-frontend/src/common/pure/MilkGlassCountdown/CountdownDigits/CountdownDigits.pure.tsx
+msgid "{minutes, plural, one {# minute} other {# minutes}}"
+msgstr "{minutes, plural, one {# minute} other {# minutes}}"
 
 #: apps/cowswap-frontend/src/modules/twap/hooks/useCancelTwapOrder.ts
 #~ msgid "EOA TWAP cancellation is not implemented"
@@ -8145,6 +8153,10 @@ msgstr "You receive exactly"
 msgid "Checking"
 msgstr "Checking"
 
+#: apps/cowswap-frontend/src/common/pure/MilkGlassCountdown/CountdownDigits/CountdownDigits.pure.tsx
+msgid "{seconds, plural, one {# second} other {# seconds}}"
+msgstr "{seconds, plural, one {# second} other {# seconds}}"
+
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Enter an amount"
 msgstr "Enter an amount"
@@ -10034,6 +10046,10 @@ msgstr "Transaction failed"
 #: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
 msgid "Approve spending <0/> <1/> on CoW Swap"
 msgstr "Approve spending <0/> <1/> on CoW Swap"
+
+#: apps/cowswap-frontend/src/common/pure/MilkGlassCountdown/CountdownDigits/CountdownDigits.pure.tsx
+msgid "remaining"
+msgstr "remaining"
 
 #: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartSettingsDropdown.tsx
 msgid "Refresh chart data every 30 seconds."
