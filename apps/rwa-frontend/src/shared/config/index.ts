@@ -1,4 +1,5 @@
 export { APP_CODE } from './appCode'
+export { getBalancesWatcherBaseUrl } from './balancesWatcher'
 export { BASE_PATH, withBasePath } from './basePath'
 export { MEDIA_QUERIES } from './mediaQueries'
 export { WALLET_CONNECT_PROJECT_ID } from './walletConnect'

@@ -2,7 +2,7 @@ import { normalizeError } from '@cowprotocol/common-utils/errors'
 import { isRecord, tryParseJson } from '@cowprotocol/common-utils/json-utils'
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 
-const BALANCES_WATCHER_BASE_URL = process.env.NEXT_PUBLIC_BALANCES_WATCHER_BASE_URL || 'https://balances-watcher.cow.fi'
+import { getBalancesWatcherBaseUrl } from '@/shared/config'
 
 const BALANCE_UPDATE_EVENT = 'balance_update'
 const ERROR_EVENT = 'error'
@@ -37,7 +37,7 @@ export async function createBalancesWatcherSession(
   owner: string,
   tokens: BalancesWatcherTokens,
 ): Promise<void> {
-  const response = await fetch(`${BALANCES_WATCHER_BASE_URL}/${chainId}/sessions/${owner}`, {
+  const response = await fetch(`${getBaseUrl()}/${chainId}/sessions/${owner}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'X-Client-Id': getClientId() },
     body: JSON.stringify(tokens),
@@ -67,7 +67,7 @@ export function watchBalances(params: BalancesWatcherParams): BalancesWatcherSub
     .then(() => {
       if (closed) return
 
-      const url = new URL(`${BALANCES_WATCHER_BASE_URL}/sse/${params.chainId}/balances/${params.owner}`)
+      const url = new URL(`${getBaseUrl()}/sse/${params.chainId}/balances/${params.owner}`)
       // EventSource can't send headers, the watcher reads the client id from the query too
       url.searchParams.set('client_id', getClientId())
 
@@ -104,6 +104,10 @@ export function watchBalances(params: BalancesWatcherParams): BalancesWatcherSub
       eventSource?.close()
     },
   }
+}
+
+function getBaseUrl(): string {
+  return getBalancesWatcherBaseUrl(typeof window === 'undefined' ? undefined : window.location.hostname)
 }
 
 /** The watcher ties a session to the client id, so the session POST and the stream must share it */
