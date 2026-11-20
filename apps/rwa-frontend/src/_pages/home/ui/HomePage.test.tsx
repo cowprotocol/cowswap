@@ -7,6 +7,7 @@ import { queryClientAtom } from 'jotai-tanstack-query'
 
 import { HomePage } from './HomePage'
 
+import { formatRefTime } from '../lib/formatRefTime'
 import { DEFAULT_ASSETS_PAGE_QUERY } from '../model/assetsPageQuery'
 
 import {
@@ -29,6 +30,8 @@ const NVDA: RwaMarketOverviewItem = {
   ],
 }
 
+const UPDATED_AT = '2026-10-01T14:00:00.000Z'
+
 const OVERVIEW: RwaMarketOverview = {
   totals: {
     marketCap: 526_000_000,
@@ -41,7 +44,7 @@ const OVERVIEW: RwaMarketOverview = {
   mostTraded: [{ ...NVDA, series: null }],
   gainers: [NVDA],
   losers: [],
-  updatedAt: '2026-10-01T14:00:00.000Z',
+  updatedAt: UPDATED_AT,
   tradingTime: { title: 'US market open', start: '09:30', end: '16:00', timeZone: 'America/New_York' },
   degraded: false,
 }
@@ -379,7 +382,7 @@ describe('HomePage', () => {
     ).toBe(true)
   })
 
-  it('labels the totals and most traded with the tokenized market figures, at a UTC reference time', async () => {
+  it('labels the totals and most traded with the tokenized market figures, at a local reference time', async () => {
     mockApi(OVERVIEW)
     renderHomePage()
 
@@ -387,7 +390,7 @@ describe('HomePage', () => {
 
     expect(totals.textContent).toContain('Tokenized market cap')
     expect(totals.textContent).toContain('24h total volume')
-    expect(await screen.findByText('Ref. 14:00 UTC')).toBeTruthy()
+    expect(await screen.findByText(`Ref. ${formatRefTime(UPDATED_AT)}`)).toBeTruthy()
     expect(screen.getByText('24h total volume · DEX volume chart · All networks')).toBeTruthy()
   })
 
