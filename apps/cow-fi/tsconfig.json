@@ -1,7 +1,6 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "baseUrl": ".",
     "paths": {
       "@cowprotocol/common-utils/json-utils": ["../../libs/common-utils/src/json-utils.ts"],
       "@cowprotocol/common-utils/safeLink": ["../../libs/common-utils/src/safeLink.ts"],
