@@ -1,7 +1,9 @@
 import { useAtomValue, useSetAtom } from 'jotai/index'
 import { useCallback, useMemo } from 'react'
 
+import { isRejectRequestProviderError, normalizeError } from '@cowprotocol/common-utils'
 import { isSolanaChain } from '@cowprotocol/cow-sdk'
+import { useAddSnackbar } from '@cowprotocol/snackbars'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'entities/ordersToCancel/ordersToCancel.atom'
@@ -10,10 +12,12 @@ import { ordersTableStateAtom } from 'modules/ordersTable/state/ordersTable.atom
 
 import { MAX_SOLANA_BATCH_CANCEL_ORDERS } from 'common/constants/common'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
+import { useSolanaReclaimRent } from 'common/hooks/useSolanaReclaimRent'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { useOrdersTableTokenApprove } from './useOrdersTableTokenApprove'
+import { useSolanaReclaimableRent } from './useSolanaReclaimableRent'
 
 import {
   useGetAlternativeOrderModalContextCallback,
@@ -28,6 +32,9 @@ export function useOrderActions(): OrderActions {
   const ordersToCancel = useAtomValue(ordersToCancelAtom)
   const updateOrdersToCancel = useSetAtom(updateOrdersToCancelAtom)
   const selectReceiptOrder = useSelectReceiptOrder()
+  const reclaimableRent = useSolanaReclaimableRent()
+  const reclaimRent = useSolanaReclaimRent()
+  const addSnackbar = useAddSnackbar()
   // Solana batch cancellation bundles the whole selection into a single transaction, so the selection
   // is capped well below the point where it could overflow the transaction size limit.
   const isSolana = isSolanaChain(chainId)
@@ -56,6 +63,31 @@ export function useOrderActions(): OrderActions {
     [allOrders, cancelOrder],
   )
 
+  const getReclaimRent = useCallback(
+    (order: ParsedOrder) => {
+      if (!reclaimableRent.orderIds.has(order.id)) return null
+
+      return () => {
+        reclaimRent([{ id: order.id, placedAt: order.creationTime.getTime() }])
+          .then(() => reclaimableRent.markReclaimed([order.id]))
+          .catch((err: unknown) => {
+            const error = normalizeError(err)
+
+            if (!isRejectRequestProviderError(error)) {
+              addSnackbar({
+                id: `reclaim-rent-${order.id}`,
+                icon: 'alert',
+                content: error.message,
+              })
+            }
+
+            reclaimableRent.refresh()
+          })
+      }
+    },
+    [reclaimableRent, reclaimRent, addSnackbar],
+  )
+
   const getAlternativeOrderModalContext = useGetAlternativeOrderModalContextCallback()
 
   const approveOrderToken = useOrdersTableTokenApprove()
@@ -63,6 +95,7 @@ export function useOrderActions(): OrderActions {
   return useMemo(
     () => ({
       getShowCancellationModal,
+      getReclaimRent,
       getAlternativeOrderModalContext,
       selectReceiptOrder,
       toggleOrderForCancellation,
@@ -71,6 +104,7 @@ export function useOrderActions(): OrderActions {
     }),
     [
       getShowCancellationModal,
+      getReclaimRent,
       getAlternativeOrderModalContext,
       selectReceiptOrder,
       toggleOrderForCancellation,

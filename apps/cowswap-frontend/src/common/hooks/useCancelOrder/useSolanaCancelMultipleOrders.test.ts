@@ -26,7 +26,7 @@ const txHash = 'solanaBatchTxHash'
 
 jest.mock('tradingSdk/solanaTradingSdk', () => ({
   SOLANA_TRADING_ENV: 'prod',
-  solanaTradingSdk: { cancelOrders: jest.fn() },
+  solanaTradingSdk: { cancelOrders: jest.fn(), reclaimOrders: jest.fn() },
 }))
 jest.mock('@cowprotocol/wallet', () => ({
   useSolanaWalletProvider: jest.fn(),
@@ -49,6 +49,7 @@ const mockBuildSolanaCancelOrderParams = buildSolanaCancelOrderParams as jest.Mo
 const setOrderCancellationHash = jest.fn()
 const transactionAdder = jest.fn()
 const mockCancelOrders = solanaTradingSdk.cancelOrders as jest.MockedFunction<typeof solanaTradingSdk.cancelOrders>
+const mockReclaimOrders = solanaTradingSdk.reclaimOrders as jest.MockedFunction<typeof solanaTradingSdk.reclaimOrders>
 
 const provider = {} as SolanaProvider
 const connection = {} as Connection
@@ -57,6 +58,9 @@ const instructions = [
   { keys: [], programId: orderPda, data: Buffer.from([1]) },
   { keys: [], programId: orderPda, data: Buffer.from([2]) },
 ] as ReturnType<typeof solanaTradingSdk.cancelOrders>
+const reclaimInstructions = [{ keys: [], programId: orderPda, data: Buffer.from([5]) }] as ReturnType<
+  typeof solanaTradingSdk.reclaimOrders
+>
 
 function makeOrder(id: string): CancellableOrder {
   return {
@@ -79,13 +83,15 @@ describe('useSolanaCancelMultipleOrders', () => {
     mockUseSolanaWalletProvider.mockReturnValue(provider)
     mockUseAppKitConnection.mockReturnValue({ connection } as ReturnType<typeof useAppKitConnection>)
     mockSendSolanaTransaction.mockResolvedValue({ hash: txHash, lastValidBlockHeight: 100 })
-    mockBuildSolanaCancelOrderParams.mockImplementation(async (_connection, ownerAddress, orders) =>
-      orders.map(() => ({ ownerAddress, orderPda, intent: undefined })),
-    )
+    mockBuildSolanaCancelOrderParams.mockImplementation(async (_connection, ownerAddress, orders) => ({
+      cancelParams: orders.map(() => ({ ownerAddress, orderPda, intent: undefined })),
+      reclaimParams: [{ ownerAddress, orderPda }],
+    }))
     ;(useAllOrdersMap as jest.Mock).mockReturnValue({
       [orderA.id]: { id: orderA.id, order: storedOrderA, isSafeWallet: false },
     })
     mockCancelOrders.mockReturnValue(instructions)
+    mockReclaimOrders.mockReturnValue(reclaimInstructions)
     ;(useSetOrderCancellationHash as jest.Mock).mockReturnValue(setOrderCancellationHash)
     ;(useTransactionAdder as jest.Mock).mockReturnValue(transactionAdder)
   })
@@ -110,7 +116,10 @@ describe('useSolanaCancelMultipleOrders', () => {
       expect.objectContaining({ orderPda, ownerAddress: expect.any(PublicKey) }),
       expect.objectContaining({ orderPda, ownerAddress: expect.any(PublicKey) }),
     ])
-    expect(mockSendSolanaTransaction).toHaveBeenCalledWith(connection, provider, expect.any(PublicKey), instructions)
+    expect(mockSendSolanaTransaction).toHaveBeenCalledWith(connection, provider, expect.any(PublicKey), [
+      ...instructions,
+      ...reclaimInstructions,
+    ])
 
     expect(setOrderCancellationHash).toHaveBeenCalledTimes(2)
     expect(setOrderCancellationHash).toHaveBeenCalledWith({ chainId, id: orderA.id, hash: txHash })
