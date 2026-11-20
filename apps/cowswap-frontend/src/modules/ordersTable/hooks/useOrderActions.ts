@@ -12,12 +12,12 @@ import { ordersTableStateAtom } from 'modules/ordersTable/state/ordersTable.atom
 
 import { MAX_SOLANA_BATCH_CANCEL_ORDERS } from 'common/constants/common'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
-import { useSolanaReclaimRent } from 'common/hooks/useSolanaReclaimRent'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { useOrdersTableTokenApprove } from './useOrdersTableTokenApprove'
 import { useSolanaReclaimableRent } from './useSolanaReclaimableRent'
+import { useSolanaReclaimRent } from './useSolanaReclaimRent'
 
 import {
   useGetAlternativeOrderModalContextCallback,

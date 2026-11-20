@@ -12,8 +12,7 @@ import { solanaTradingSdk } from 'tradingSdk/solanaTradingSdk'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { sendSolanaTransaction } from 'modules/trade/services/solanaSend/sendSolanaTransaction' // TODO: Don't use 'modules' import
+import { sendSolanaTransaction } from 'modules/trade'
 
 /**
  * Closes the on-chain accounts of orders that were cancelled before they expired, which returns the rent
@@ -40,9 +39,22 @@ export function useSolanaReclaimRent(): (orders: SolanaOrderToReclaim[]) => Prom
       }
 
       const instructions = solanaTradingSdk.reclaimOrders(reclaimable.map(({ params }) => params))
-      const { hash } = await sendSolanaTransaction(connection, provider, owner, instructions)
+      const { hash, blockhash, lastValidBlockHeight } = await sendSolanaTransaction(
+        connection,
+        provider,
+        owner,
+        instructions,
+      )
 
       addTransaction({ hash, summary: t`Reclaim rent of cancelled orders` })
+
+      // Submitting is not landing, and the caller drops the order from its list on success: resolving
+      // here would hide an entry whose rent is still on-chain, with nothing left to re-check it.
+      const { value } = await connection.confirmTransaction({ signature: hash, blockhash, lastValidBlockHeight })
+
+      if (value.err) {
+        throw new Error(t`The reclaim transaction failed on-chain`)
+      }
     },
     [account, provider, connection, addTransaction],
   )

@@ -15,7 +15,7 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/common/hooks/useCancelMultipleOrders.ts
 #: apps/cowswap-frontend/src/common/hooks/useCancelOrder/useSolanaCancelMultipleOrders.ts
-#: apps/cowswap-frontend/src/common/hooks/useSolanaReclaimRent.ts
+#: apps/cowswap-frontend/src/modules/ordersTable/hooks/useSolanaReclaimRent.ts
 #: apps/cowswap-frontend/src/modules/twap/hooks/useCancelTwapOrder.ts
 msgid "Wallet not connected"
 msgstr "Wallet not connected"
@@ -3664,7 +3664,7 @@ msgstr "Approve {symbol} (unlimited)"
 msgid "At current gas prices, your remaining {nativeSymbol} balance after confirmation may be only sufficient for<0>up to {txsRemaining} wrapping, unwrapping, or approval operation(s).</0>"
 msgstr "At current gas prices, your remaining {nativeSymbol} balance after confirmation may be only sufficient for<0>up to {txsRemaining} wrapping, unwrapping, or approval operation(s).</0>"
 
-#: apps/cowswap-frontend/src/common/hooks/useSolanaReclaimRent.ts
+#: apps/cowswap-frontend/src/modules/ordersTable/hooks/useSolanaReclaimRent.ts
 msgid "There is no rent left to reclaim"
 msgstr "There is no rent left to reclaim"
 
@@ -5906,6 +5906,10 @@ msgstr "The order remains open. Execution requires sufficient <0><1/></0> balanc
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Morpho Borrow"
 #~ msgstr "Morpho Borrow"
+
+#: apps/cowswap-frontend/src/modules/ordersTable/hooks/useSolanaReclaimRent.ts
+msgid "The reclaim transaction failed on-chain"
+msgstr "The reclaim transaction failed on-chain"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 #~ msgid "Sign the setup in your wallet. This registers just-in-time funding and creates the TWAP."
@@ -9908,7 +9912,7 @@ msgstr "Your order will execute when the market price is {displayedPercent}% bet
 msgid "Recover funds"
 msgstr "Recover funds"
 
-#: apps/cowswap-frontend/src/common/hooks/useSolanaReclaimRent.ts
+#: apps/cowswap-frontend/src/modules/ordersTable/hooks/useSolanaReclaimRent.ts
 msgid "Reclaim rent of cancelled orders"
 msgstr "Reclaim rent of cancelled orders"
 

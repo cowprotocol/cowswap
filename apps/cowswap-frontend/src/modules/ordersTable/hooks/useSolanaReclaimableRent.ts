@@ -2,30 +2,39 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
-import { backendEnv } from '@cowprotocol/common-utils'
+import { backendEnv, normalizeError } from '@cowprotocol/common-utils'
 import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { useAppKitConnection } from '@reown/appkit-adapter-solana/react'
 import { PublicKey } from '@solana/web3.js'
+import ms from 'ms.macro'
 import useSWR from 'swr'
-import { buildSolanaReclaimOrderParams } from 'tradingSdk/solana/buildSolanaReclaimOrderParams'
+import { buildSolanaReclaimOrderParams, SAFE_TO_RECLAIM_AFTER } from 'tradingSdk/solana/buildSolanaReclaimOrderParams'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
+
+import { useSolanaConnection } from 'common/hooks/useSolanaConnection'
 
 import { ordersTableStateAtom } from '../state/ordersTable.atoms'
 import { isParsedOrder } from '../utils/orderTableGroupUtils'
 
 const EMPTY_IDS: ReadonlySet<string> = new Set()
 
+const WAITING_POLL_INTERVAL = ms`1m`
+
+interface ReclaimableRentState {
+  orderIds: ReadonlySet<string>
+  /** True while an order is too young to reclaim, so it qualifies on its own a few minutes later. */
+  hasWaitingOrder: boolean
+}
+
+const EMPTY_STATE: ReclaimableRentState = { orderIds: EMPTY_IDS, hasWaitingOrder: false }
+
 export interface SolanaReclaimableRent {
   /** Orders in the current list whose rent the connected wallet can still take back. */
   orderIds: ReadonlySet<string>
   refresh: () => void
-  /**
-   * Drops `ids` from the list without re-reading the chain: a reclaim transaction is only submitted, not
-   * confirmed, so a read taken right after it still reports the PDA the reclaim is about to close.
-   */
+  /** Drops `ids` from the list without re-reading the chain, for a reclaim already confirmed on-chain. */
   markReclaimed: (ids: string[]) => void
 }
 
@@ -35,7 +44,7 @@ export interface SolanaReclaimableRent {
  */
 export function useSolanaReclaimableRent(): SolanaReclaimableRent {
   const { chainId, account } = useWalletInfo()
-  const { connection } = useAppKitConnection()
+  const connection = useSolanaConnection()
   const { filteredOrders } = useAtomValue(ordersTableStateAtom)
 
   const cancelledOrders = useMemo(
@@ -48,27 +57,43 @@ export function useSolanaReclaimableRent(): SolanaReclaimableRent {
   )
 
   const { data, mutate } = useSWR(
-    isSolanaChain(chainId) && account && connection && cancelledOrders.length
+    isSolanaChain(chainId) && account && cancelledOrders.length
       ? [chainId, account, cancelledOrders, 'useSolanaReclaimableRent']
       : null,
-    async ([, owner, orders]) => {
-      if (!connection) return EMPTY_IDS
+    async ([, owner, orders]): Promise<ReclaimableRentState> => {
+      try {
+        const reclaimable = await buildSolanaReclaimOrderParams(connection, new PublicKey(owner), orders, backendEnv)
 
-      const reclaimable = await buildSolanaReclaimOrderParams(connection, new PublicKey(owner), orders, backendEnv)
-
-      return new Set(reclaimable.map(({ id }) => id))
+        return {
+          orderIds: new Set(reclaimable.map(({ id }) => id)),
+          hasWaitingOrder: orders.some(({ placedAt }) => Date.now() - placedAt <= SAFE_TO_RECLAIM_AFTER),
+        }
+      } catch (err: unknown) {
+        // Swallowing this would hide the entry with no trace of why, and the table has no error surface
+        console.error('[reclaimable rent] failed to read order accounts', normalizeError(err))
+        throw err
+      }
     },
-    SWR_NO_REFRESH_OPTIONS,
+    {
+      ...SWR_NO_REFRESH_OPTIONS,
+      // Nothing else in the table notices an order ageing out of its safety window, so poll while one
+      // is waiting and stop as soon as none is.
+      refreshInterval: (latest) => (latest?.hasWaitingOrder ? WAITING_POLL_INTERVAL : 0),
+    },
   )
 
   return useMemo(
     () => ({
-      orderIds: data ?? EMPTY_IDS,
+      orderIds: data?.orderIds ?? EMPTY_IDS,
       refresh: () => void mutate(),
       markReclaimed: (ids: string[]) =>
-        void mutate((current) => new Set([...(current ?? EMPTY_IDS)].filter((id) => !ids.includes(id))), {
-          revalidate: false,
-        }),
+        void mutate(
+          (current = EMPTY_STATE) => ({
+            ...current,
+            orderIds: new Set([...current.orderIds].filter((id) => !ids.includes(id))),
+          }),
+          { revalidate: false },
+        ),
     }),
     [data, mutate],
   )

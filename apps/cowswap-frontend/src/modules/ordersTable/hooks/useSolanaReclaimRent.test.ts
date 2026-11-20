@@ -8,8 +8,7 @@ import { solanaTradingSdk } from 'tradingSdk/solanaTradingSdk'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { sendSolanaTransaction } from 'modules/trade/services/solanaSend/sendSolanaTransaction'
+import { sendSolanaTransaction } from 'modules/trade'
 
 import { useSolanaReclaimRent } from './useSolanaReclaimRent'
 
@@ -31,7 +30,7 @@ jest.mock('@cowprotocol/wallet', () => ({
 }))
 jest.mock('@reown/appkit-adapter-solana/react', () => ({ useAppKitConnection: jest.fn() }))
 jest.mock('legacy/state/enhancedTransactions/hooks')
-jest.mock('modules/trade/services/solanaSend/sendSolanaTransaction')
+jest.mock('modules/trade')
 jest.mock('tradingSdk/solana/buildSolanaReclaimOrderParams')
 
 const mockUseSolanaWalletProvider = useSolanaWalletProvider as jest.MockedFunction<typeof useSolanaWalletProvider>
@@ -45,7 +44,8 @@ const mockReclaimOrders = solanaTradingSdk.reclaimOrders as jest.MockedFunction<
 
 const transactionAdder = jest.fn()
 const provider = {} as SolanaProvider
-const connection = {} as Connection
+const confirmTransaction = jest.fn()
+const connection = { confirmTransaction } as unknown as Connection
 const orderPda = new PublicKey('So11111111111111111111111111111111111111112')
 const instruction = { keys: [], programId: orderPda, data: Buffer.from([5]) } as TransactionInstruction
 
@@ -56,7 +56,8 @@ describe('useSolanaReclaimRent', () => {
     mockUseWalletInfo.mockReturnValue({ account: SOLANA_ACCOUNT, chainId } as ReturnType<typeof useWalletInfo>)
     mockUseSolanaWalletProvider.mockReturnValue(provider)
     mockUseAppKitConnection.mockReturnValue({ connection } as ReturnType<typeof useAppKitConnection>)
-    mockSendSolanaTransaction.mockResolvedValue({ hash: txHash, lastValidBlockHeight: 100 })
+    mockSendSolanaTransaction.mockResolvedValue({ hash: txHash, lastValidBlockHeight: 100, blockhash: 'blockhash' })
+    confirmTransaction.mockResolvedValue({ value: { err: null } })
     mockBuildSolanaReclaimOrderParams.mockImplementation(async (_connection, ownerAddress, orders) =>
       orders.map(({ id }) => ({ id, params: { ownerAddress, orderPda } })),
     )
@@ -80,6 +81,19 @@ describe('useSolanaReclaimRent', () => {
     expect(mockReclaimOrders).toHaveBeenCalledWith([{ ownerAddress: expect.any(PublicKey), orderPda }])
     expect(mockSendSolanaTransaction).toHaveBeenCalledWith(connection, provider, expect.any(PublicKey), [instruction])
     expect(transactionAdder).toHaveBeenCalledWith({ hash: txHash, summary: expect.any(String) })
+    expect(confirmTransaction).toHaveBeenCalledWith({
+      signature: txHash,
+      blockhash: 'blockhash',
+      lastValidBlockHeight: 100,
+    })
+  })
+
+  it('rejects when the reclaim lands but reverts, so the caller can put the entry back', async () => {
+    confirmTransaction.mockResolvedValue({ value: { err: { InstructionError: [0, 'Custom'] } } })
+
+    const { result } = renderHook(() => useSolanaReclaimRent())
+
+    await expect(result.current([orderToReclaim])).rejects.toThrow('failed on-chain')
   })
 
   it('throws without sending when the rent is already gone', async () => {

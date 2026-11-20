@@ -21,10 +21,11 @@ const orderA = { id: idA } as SolanaIntentOrder
 const orderB = { id: idB } as SolanaIntentOrder
 const intent = { sellAmount: 1n } as NonNullable<Awaited<ReturnType<typeof buildSolanaOrderIntent>>>
 
-function accountInfo(createdBy: PublicKey): { data: Buffer } {
+function accountInfo(createdBy: PublicKey, cancelled = false): { data: Buffer } {
   const data = Buffer.alloc(ENCODED_ORDER_ACCOUNT_SIZE)
 
   data[0] = 0x80
+  data[2] = cancelled ? 1 : 0
   data.set(createdBy.toBytes(), 19)
 
   return { data }
@@ -104,6 +105,17 @@ describe('buildSolanaCancelOrderParams', () => {
   it('leaves the rent of a sponsored order alone, since the program only pays its funder', async () => {
     const { reclaimParams } = await buildSolanaCancelOrderParams(
       makeConnection([accountInfo(sponsor)]),
+      owner,
+      [{ id: idA, order: orderA }],
+      'prod',
+    )
+
+    expect(reclaimParams).toEqual([])
+  })
+
+  it('does not reclaim a PDA that already reads as cancelled, which an earlier attempt may have created', async () => {
+    const { reclaimParams } = await buildSolanaCancelOrderParams(
+      makeConnection([accountInfo(owner, true)]),
       owner,
       [{ id: idA, order: orderA }],
       'prod',

@@ -10,9 +10,10 @@ export interface SolanaCancellationParams {
   cancelParams: CancelOrderParams[]
   /**
    * Closing the order PDA is a separate instruction, so a cancellation that doesn't carry one leaves the
-   * rent locked until the order expires. Only orders already on-chain are reclaimed: one the cancellation
-   * creates to record the cancellation must stay until `validTo`, or a creation still in flight could
-   * bring the order back.
+   * rent locked until the order expires. Only live orders are reclaimed — on-chain and not yet
+   * cancelled. A PDA that already reads as cancelled may be one an earlier attempt created just to
+   * record the cancellation, and that must stay until `validTo` or a creation still in flight could
+   * bring the order back; the orders table offers those separately, once they are old enough to be safe.
    */
   reclaimParams: ReclaimOrderParams[]
 }
@@ -49,7 +50,7 @@ export async function buildSolanaCancelOrderParams(
   )
 
   const reclaimParams = entries
-    .filter(({ account }) => account?.createdBy.equals(owner))
+    .filter(({ account }) => account && !account.cancelled && account.createdBy.equals(owner))
     .map(({ orderPda }) => ({ ownerAddress: owner, orderPda }))
 
   return { cancelParams, reclaimParams }

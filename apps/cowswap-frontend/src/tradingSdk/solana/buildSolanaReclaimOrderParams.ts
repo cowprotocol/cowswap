@@ -12,7 +12,7 @@ import { fetchSolanaOrderAccounts } from './fetchSolanaOrderAccounts'
  * Nothing on-chain tells that PDA apart from a normally cancelled one, but a signed transaction dies with
  * its blockhash, so an order this much older than its placement can no longer be created by anyone.
  */
-const SAFE_TO_RECLAIM_AFTER = ms`5m`
+export const SAFE_TO_RECLAIM_AFTER = ms`5m`
 
 export interface SolanaOrderToReclaim {
   id: string

@@ -11,6 +11,7 @@ export interface BuiltSolanaTransaction {
   transaction: Transaction
   /** The block height past which the transaction can no longer be included. */
   lastValidBlockHeight: number
+  blockhash: string
 }
 
 /**
@@ -26,5 +27,5 @@ export async function buildSolanaTransaction({
   const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash()
   const transaction = new Transaction({ feePayer, blockhash, lastValidBlockHeight }).add(...instructions)
 
-  return { transaction, lastValidBlockHeight }
+  return { transaction, lastValidBlockHeight, blockhash }
 }
