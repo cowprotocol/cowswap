@@ -95,27 +95,32 @@ describe('useWaitAndSaveConfirmation', () => {
     expect(result.current.outcome).toBeUndefined()
   })
 
-  it('returns the CoW strip, green-card amounts, and winner-first solvers', () => {
+  it('returns the CoW strip, combined savings summary, and winner-first solvers', () => {
     useWaitAndSaveSolverCompetitionMock.mockReturnValue({ competition: COMPETITION, pending: false })
 
     const { result } = renderConfirmation()
 
     expect(result.current.pending).toBe(false)
     expect(result.current.strip).toEqual({ hasAloneBid: true, kind: 'cow' })
-    expect(result.current.outcome?.gainAmount).toBeTruthy()
-    expect(result.current.outcome?.gainFiat.startsWith('$')).toBe(true)
-    expect(result.current.outcome?.tokenSymbol).toBe('USDC')
+    expect(result.current.outcome).toMatchObject({
+      variant: 'withWaivedFeeAndCow',
+      volumeFeeSaved: '$0.30',
+    })
+    if (result.current.outcome?.variant === 'withWaivedFeeAndCow') {
+      expect(result.current.outcome.priceImprovement.startsWith('$')).toBe(true)
+      expect(result.current.outcome.totalSaved.startsWith('$')).toBe(true)
+    }
     expect(result.current.solvers?.[0]?.solver).toBeTruthy()
     expect(result.current.solvers?.[0]?.executedAmounts?.buy).toBe('1500000')
   })
 
-  it('falls back to joined the batch when the lookup times out', () => {
+  it('falls back to fee-waiver-only and joined strip when the lookup times out', () => {
     useWaitAndSaveSolverCompetitionMock.mockReturnValue({ competition: undefined, pending: false })
 
     const { result } = renderConfirmation()
 
     expect(result.current).toEqual({
-      outcome: undefined,
+      outcome: { variant: 'withWaivedFee', volumeFeeSavedFiat: '$0.30' },
       pending: false,
       solvers: undefined,
       strip: { comparisonUnavailable: true, hasAloneBid: false, kind: 'joined' },

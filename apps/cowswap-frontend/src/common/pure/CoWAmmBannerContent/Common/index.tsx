@@ -32,7 +32,7 @@ export function StarIcon({ size, top, bottom, right, color }: StarIconProps): Re
 }
 
 export function TextFit({ mode, children, minFontSize, maxFontSize }: TextFitProps): ReactNode {
-  const textRef = useAutoFitText<HTMLDivElement>({ min: minFontSize, max: maxFontSize, mode })
+  const { ref: textRef } = useAutoFitText<HTMLDivElement>({ min: minFontSize, max: maxFontSize, mode })
 
   return (
     <div
