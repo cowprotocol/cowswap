@@ -20,11 +20,18 @@ export const MilkGlass = memo(
     const drainRef = useRef<SVGGElement>(null)
     const moustacheRef = useRef<SVGPathElement>(null)
 
-    const applyFraction = useCallback((nextFraction: number): void => {
+    const applyFraction = useCallback((nextFraction: number, animate = true): void => {
       const level = Math.min(1, Math.max(0, nextFraction))
       const drain = drainRef.current
       if (drain) {
+        if (!animate) {
+          drain.style.transition = 'none'
+        }
         drain.style.transform = `translateY(${(1 - level) * styledEl.DRAIN_TRAVEL_PX}px)`
+        if (!animate) {
+          void drain.getBoundingClientRect()
+          drain.style.transition = ''
+        }
       }
 
       const moustache = moustacheRef.current
@@ -34,10 +41,16 @@ export const MilkGlass = memo(
       }
     }, [])
 
-    useImperativeHandle(ref, () => ({ setFraction: applyFraction }), [applyFraction])
+    useImperativeHandle(
+      ref,
+      () => ({
+        setFraction: (nextFraction: number) => applyFraction(nextFraction, true),
+      }),
+      [applyFraction],
+    )
 
     useLayoutEffect(() => {
-      applyFraction(fraction)
+      applyFraction(fraction, false)
     }, [fraction, applyFraction])
 
     const strokeColor = isExpired ? styledEl.EXPIRED_INK : 'white'
@@ -60,11 +73,11 @@ export const MilkGlass = memo(
         <path d={styledEl.GLASS_SILHOUETTE_PATH} transform="translate(5 4)" opacity="0.12" fill="white" />
 
         <g clipPath={`url(#${clipPathId})`}>
-          <g ref={drainRef} style={{ transition: 'transform 1s linear' }}>
+          <styledEl.DrainGroup ref={drainRef}>
             <styledEl.SwayingSurface>
               <path d={styledEl.MILK_GENTLE_SURFACE_PATH} transform="translate(-95 22)" fill="white" />
             </styledEl.SwayingSurface>
-          </g>
+          </styledEl.DrainGroup>
         </g>
 
         <path

@@ -40,6 +40,11 @@ export const Vessel = styled.svg`
   width: 100%;
   max-width: ${VESSEL_WIDTH}px;
   height: auto;
+  max-height: 100%;
+`
+
+export const DrainGroup = styled.g`
+  transition: transform 1s linear;
 `
 
 export const SwayingSurface = styled.g`
