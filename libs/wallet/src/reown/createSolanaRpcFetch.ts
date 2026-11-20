@@ -7,8 +7,9 @@ const HTTP_TOO_MANY_REQUESTS = 429
 const REPORT_THROTTLE_MS = ms`60s`
 const PRIMARY_TIMEOUT_MS = ms`5s`
 const FALLBACK_TIMEOUT_MS = ms`15s`
+const SENTRY_SCOPE = 'SolanaRpc'
 
-const logger = createCowLogger('SolanaRpc')
+const logger = createCowLogger(SENTRY_SCOPE)
 
 export interface SolanaRpcFetchParams {
   primaryUrl: string
@@ -22,6 +23,15 @@ export interface SolanaRpcFetchParams {
 }
 
 type FetchFn = typeof globalThis.fetch
+
+type PrimaryAttempt = { response: Response } | { failure: PrimaryFailure }
+
+interface PrimaryFailure {
+  reason: Error
+  status?: number
+}
+
+type ReportOutcome = 'recovered' | 'failed'
 
 interface RequestAbort {
   signal: AbortSignal
@@ -38,29 +48,38 @@ export function createSolanaRpcFetch({
   timeoutMs = PRIMARY_TIMEOUT_MS,
   fallbackTimeoutMs = FALLBACK_TIMEOUT_MS,
 }: SolanaRpcFetchParams): FetchFn {
-  let lastReportedAt: number | undefined
+  const lastReportedAt = new Map<ReportOutcome, number>()
 
-  const report = (reason: Error, status: number | undefined): void => {
+  const report = ({ reason, status }: PrimaryFailure, recovered: boolean, fallbackError?: Error): void => {
+    const outcome: ReportOutcome = recovered ? 'recovered' : 'failed'
+    // Throttled per outcome, so a primary the fallback covered cannot silence a request that failed outright.
+    const reportedAt = lastReportedAt.get(outcome)
     const timestamp = now()
 
-    if (lastReportedAt !== undefined && timestamp - lastReportedAt < REPORT_THROTTLE_MS) return
-    lastReportedAt = timestamp
+    if (reportedAt !== undefined && timestamp - reportedAt < REPORT_THROTTLE_MS) return
+    lastReportedAt.set(outcome, timestamp)
 
     const isRateLimited = status === HTTP_TOO_MANY_REQUESTS
     const sentryError = new Error(reason.message, { cause: reason })
     sentryError.name = isRateLimited ? 'SolanaRpcRateLimitError' : 'SolanaRpcError'
 
-    logger.warn(`${sentryError.name} (status: ${status ?? 'n/a'}), falling back`, reason)
+    logger.warn(`${sentryError.name} (status: ${status ?? 'n/a'}, outcome: ${outcome})`, reason)
 
     captureError(
       sentryError,
       undefined,
-      { httpStatus: status, message: sentryError.message },
       {
-        scope: 'SolanaRpc',
+        httpStatus: status,
+        message: sentryError.message,
+        ...(fallbackError ? { fallbackMessage: fallbackError.message } : undefined),
+      },
+      {
+        scope: SENTRY_SCOPE,
         errorType: sentryError.name,
+        recovered: String(recovered),
         ...(status !== undefined ? { httpStatus: String(status) } : undefined),
       },
+      [SENTRY_SCOPE, sentryError.name, outcome],
     )
   }
 
@@ -69,27 +88,27 @@ export function createSolanaRpcFetch({
       return fetchFn(input, init)
     }
 
-    const callerSignal = init?.signal
-    const primaryAbort = createRequestAbort(callerSignal, isSendTransaction(init) ? undefined : timeoutMs)
+    const attempt = await fetchPrimary(fetchFn, input, init, timeoutMs)
+
+    if ('response' in attempt) return attempt.response
 
     try {
-      const response = await fetchFn(input, { ...init, signal: primaryAbort.signal })
+      const response = await fetchFallback(fetchFn, fallbackUrl, init, fallbackTimeoutMs)
+      const fallbackFailure = shouldFallback(response)
+        ? new Error(`Solana RPC fallback responded with HTTP ${response.status}`)
+        : undefined
 
-      if (!shouldFallback(response)) return response
+      report(attempt.failure, !fallbackFailure, fallbackFailure)
 
-      report(new Error(`Solana RPC responded with HTTP ${response.status}`), response.status)
+      return response
     } catch (err: unknown) {
       const error = normalizeError(err)
 
-      if (callerSignal?.aborted) throw error
+      // The caller gave up while the fallback was in flight, so nothing about the RPC has been established.
+      if (!init?.signal?.aborted) report(attempt.failure, false, error)
 
-      const reason = primaryAbort.isTimedOut() ? new Error(`Solana RPC did not respond within ${timeoutMs}ms`) : error
-      report(reason, undefined)
-    } finally {
-      primaryAbort.clear()
+      throw error
     }
-
-    return fetchFallback(fetchFn, fallbackUrl, init, fallbackTimeoutMs)
   }
 }
 
@@ -145,6 +164,38 @@ async function fetchFallback(
     throw new Error(`Solana RPC fallback did not respond within ${timeoutMs}ms`, { cause: error })
   } finally {
     fallbackAbort.clear()
+  }
+}
+
+async function fetchPrimary(
+  fetchFn: FetchFn,
+  input: RequestInfo | URL,
+  init: RequestInit | undefined,
+  timeoutMs: number,
+): Promise<PrimaryAttempt> {
+  const callerSignal = init?.signal
+  const primaryAbort = createRequestAbort(callerSignal, isSendTransaction(init) ? undefined : timeoutMs)
+
+  try {
+    const response = await fetchFn(input, { ...init, signal: primaryAbort.signal })
+
+    if (!shouldFallback(response)) return { response }
+
+    return {
+      failure: { reason: new Error(`Solana RPC responded with HTTP ${response.status}`), status: response.status },
+    }
+  } catch (err: unknown) {
+    const error = normalizeError(err)
+
+    if (callerSignal?.aborted) throw error
+
+    return {
+      failure: {
+        reason: primaryAbort.isTimedOut() ? new Error(`Solana RPC did not respond within ${timeoutMs}ms`) : error,
+      },
+    }
+  } finally {
+    primaryAbort.clear()
   }
 }
 
