@@ -7,9 +7,6 @@ import { TradeFlowContext } from '../../types/TradeFlowContext'
 
 import { swapFlow } from './index'
 
-jest.mock('modules/appData', () => ({
-  getValidFromFromAppDataDoc: jest.fn().mockReturnValue(undefined),
-}))
 jest.mock('modules/permit', () => ({
   callDataContainsPermitSigner: jest.fn().mockReturnValue(false),
   handlePermit: jest.fn().mockResolvedValue({ fullAppData: '{}', doc: {} }),

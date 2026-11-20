@@ -13,7 +13,7 @@ import useSWR from 'swr'
 import { AppDispatch } from 'legacy/state'
 import { useCloseModals } from 'legacy/state/application/hooks'
 
-import { useAppData, useAppDataHooks, useWaitAndSaveValidFrom } from 'modules/appData'
+import { useAppData, useAppDataHooks, useWaitAndSaveValidTo } from 'modules/appData'
 import { useBridgeQuoteAmounts } from 'modules/bridge'
 import { useGetAmountToSignApprove } from 'modules/erc20Approve'
 import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'modules/permit'
@@ -89,8 +89,8 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
     orderKind,
   } = derivedTradeState || {}
 
-  const waitAndSaveValidFrom = useWaitAndSaveValidFrom()
-  const validTo = getOrderValidTo(deadline, tradeQuote, waitAndSaveValidFrom)
+  const waitAndSaveValidTo = useWaitAndSaveValidTo()
+  const validTo = getOrderValidTo(deadline, tradeQuote, waitAndSaveValidTo)
 
   const settlementChainId = settlementContract.chainId
 

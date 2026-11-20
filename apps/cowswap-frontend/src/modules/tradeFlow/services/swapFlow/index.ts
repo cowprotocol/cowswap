@@ -24,7 +24,6 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { mapUnsignedOrderToOrder, wrapErrorInOperatorError } from 'legacy/utils/trade'
 
-import { getValidFromFromAppDataDoc } from 'modules/appData'
 import { WidgetHookDeclineError } from 'modules/injectedWidget'
 import { emitPostedOrderEvent } from 'modules/orders'
 import { callDataContainsPermitSigner, handlePermit } from 'modules/permit'
@@ -297,7 +296,6 @@ export async function swapFlow(
         ? BridgeInvalidEip1271SignatureError
         : getSwapErrorMessage(error, chainId)
 
-    const waitAndSaveValidFrom = getValidFromFromAppDataDoc(orderParams.appData.doc)
     const isDuplicatedOrder = isDuplicatedOrderError(error)
 
     captureError(
@@ -305,7 +303,6 @@ export async function swapFlow(
       ERROR_TYPES.ON_SWAP,
       {
         swapErrorMessage,
-        waitAndSaveValidFrom,
         validTo: orderParams.validTo,
       },
       isDuplicatedOrder ? { duplicatedOrder: 'true' } : undefined,

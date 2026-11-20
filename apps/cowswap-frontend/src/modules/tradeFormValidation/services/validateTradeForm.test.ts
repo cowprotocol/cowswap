@@ -919,6 +919,24 @@ describe('validateTradeForm - Solana swap recipient', () => {
         TradeFormValidation.QuoteLoading,
       )
     })
+
+    test('adds CanonicalBatchScheduleLoading while Wait & Save has no batch floor', () => {
+      expect(
+        validateTradeForm({
+          ...withPendingQuotes(null),
+          isCanonicalBatchScheduleLoading: true,
+        }),
+      ).toContain(TradeFormValidation.CanonicalBatchScheduleLoading)
+    })
+
+    test('does not add CanonicalBatchScheduleLoading when the schedule is ready', () => {
+      expect(
+        validateTradeForm({
+          ...withPendingQuotes(null),
+          isCanonicalBatchScheduleLoading: false,
+        }) || [],
+      ).not.toContain(TradeFormValidation.CanonicalBatchScheduleLoading)
+    })
   })
 })
 

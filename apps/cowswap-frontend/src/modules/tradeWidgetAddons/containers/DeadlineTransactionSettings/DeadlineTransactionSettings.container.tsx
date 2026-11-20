@@ -10,7 +10,7 @@ import { SettingsInput, SettingsFeedback } from '@cowprotocol/ui'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
-import { cowBatchValidFromAtom, useIsWaitAndSaveAvailable, waitAndSaveEnabledAtom } from 'modules/trade'
+import { canonicalBatchCountdownTargetAtom, useIsWaitAndSaveAvailable, waitAndSaveEnabledAtom } from 'modules/trade'
 
 import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 'common/utils/tradeSettingsTooltips'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
@@ -28,10 +28,10 @@ export function DeadlineTransactionSettings({ deadlineState }: DeadlineSettingsP
   const nativeCurrency = useNativeCurrency()
   const isWaitAndSaveAvailable = useIsWaitAndSaveAvailable()
   const isWaitAndSaveEnabled = useAtomValue(waitAndSaveEnabledAtom)
-  const validFrom = useAtomValue(cowBatchValidFromAtom)
+  const countdownTargetEpochSec = useAtomValue(canonicalBatchCountdownTargetAtom)
 
   const showWaitForCows = isWaitAndSaveAvailable && isWaitAndSaveEnabled
-  const hasValidFrom = validFrom !== undefined
+  const hasCountdownTarget = countdownTargetEpochSec !== undefined
 
   const batchWaitRef = useRef<HTMLElement | null>(null)
   const totalExpiryRef = useRef<HTMLElement | null>(null)
@@ -39,7 +39,7 @@ export function DeadlineTransactionSettings({ deadlineState }: DeadlineSettingsP
   const [isExpirationShorterThanWait, setIsExpirationShorterThanWait] = useState(false)
 
   // The countdown spans only exist in the Wait for CoWs message, which the deadline error replaces.
-  const batchWaitEpochSec = showWaitForCows && !error ? validFrom : undefined
+  const batchWaitEpochSec = showWaitForCows && !error && hasCountdownTarget ? countdownTargetEpochSec : undefined
   const totalExpiryEpochSec = batchWaitEpochSec !== undefined ? batchWaitEpochSec + deadline : undefined
 
   const syncWarning = useCallback((remainingSec: number | undefined, deadlineSec: number) => {
@@ -77,7 +77,7 @@ export function DeadlineTransactionSettings({ deadlineState }: DeadlineSettingsP
   const deadlineRangeMessage = t`Minimum ${minMinutes} min, maximum ${maxMinutes} min.`
 
   const waitForCowsMessage = showWaitForCows ? (
-    hasValidFrom ? (
+    hasCountdownTarget ? (
       <Trans>
         With Wait for CoWs, expiration starts after the next batch (~
         <span ref={batchWaitRef} />
