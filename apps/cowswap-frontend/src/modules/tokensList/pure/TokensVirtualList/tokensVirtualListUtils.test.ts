@@ -135,6 +135,97 @@ describe('sortTokensByBalance', () => {
   })
 })
 
+describe('sortTokensByBalance with prioritized tokens', () => {
+  const native = NATIVE_CURRENCIES[SupportedChainId.MAINNET]
+
+  function mainnetToken(symbol: string, address: string): TokenWithLogo {
+    return TokenWithLogo.fromToken({ chainId: SupportedChainId.MAINNET, address, decimals: 18, name: symbol, symbol })
+  }
+
+  const aave = mainnetToken('AAVE', '0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9')
+  const dai = mainnetToken('DAI', '0x6B175474E89094C44Da98b954EedeAC495271d0F')
+  const ldo = mainnetToken('LDO', '0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32')
+  const steth = mainnetToken('stETH', '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84')
+  const wbtc = mainnetToken('WBTC', '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599')
+  const wsteth = mainnetToken('wstETH', '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0')
+  const listOrder = [native, aave, dai, ldo, steth, wbtc, wsteth]
+  const prioritizedKeys = [getAddressKey(wsteth.address), getAddressKey(ldo.address)]
+
+  it('puts prioritized tokens right after native when no wallet is connected', () => {
+    expect(sortTokensByBalance(listOrder, undefined, prioritizedKeys)).toEqual([
+      native,
+      wsteth,
+      ldo,
+      aave,
+      dai,
+      steth,
+      wbtc,
+    ])
+  })
+
+  it('puts prioritized tokens after held tokens, in the configured order', () => {
+    const balances = { [getAddressKey(steth.address)]: 5n, [getAddressKey(aave.address)]: 2n }
+
+    expect(sortTokensByBalance(listOrder, balances, prioritizedKeys)).toEqual([
+      native,
+      steth,
+      aave,
+      wsteth,
+      ldo,
+      dai,
+      wbtc,
+    ])
+  })
+
+  it('keeps a held prioritized token in the balance group', () => {
+    const balances = { [getAddressKey(ldo.address)]: 1n }
+
+    expect(sortTokensByBalance(listOrder, balances, prioritizedKeys)).toEqual([
+      native,
+      ldo,
+      wsteth,
+      aave,
+      dai,
+      steth,
+      wbtc,
+    ])
+  })
+
+  it('treats a zero balance as not held', () => {
+    const balances = { [getAddressKey(wsteth.address)]: 0n }
+
+    expect(sortTokensByBalance(listOrder, balances, prioritizedKeys)).toEqual([
+      native,
+      wsteth,
+      ldo,
+      aave,
+      dai,
+      steth,
+      wbtc,
+    ])
+  })
+
+  it('ignores the native token and addresses missing from the list', () => {
+    const keys = [
+      getAddressKey(native.address),
+      getAddressKey('0x000000000000000000000000000000000000dEaD'),
+      getAddressKey(ldo.address),
+    ]
+
+    expect(sortTokensByBalance(listOrder, {}, keys)).toEqual([native, ldo, aave, dai, steth, wbtc, wsteth])
+  })
+
+  it('puts prioritized tokens before Solana-ranked tokens', () => {
+    const ranked = rankedToken('AAA', 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', 1)
+    const prioritized = rankedToken('ZZZ', 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB')
+
+    expect(sortTokensByBalance([ranked, prioritized], {}, [getAddressKey(prioritized.address)])).toEqual([
+      prioritized,
+      ranked,
+    ])
+  })
+})
+
 describe('buildVirtualRows', () => {
   const defaultParams = {
     sortedTokens: [],

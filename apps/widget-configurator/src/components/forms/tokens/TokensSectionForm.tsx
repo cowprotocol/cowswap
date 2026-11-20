@@ -1,10 +1,13 @@
 import { type ReactNode, useCallback, useState } from 'react'
 
+import { CHAIN_INFO } from '@cowprotocol/common-const'
+
 import { Box } from '@mui/material'
 import { Plus } from 'react-feather'
 
 import { AddCustomTokensDialog } from './dialog/AddCustomTokensDialog.component'
 import {
+  PRIORITIZED_TOKENS_HELPER_TEXT,
   TOKEN_LIST_HELPER_TEXT_BY_SCOPE,
   TOKEN_LIST_MENU_PROPS,
   TOKEN_LIST_SELECT_CONFIG,
@@ -20,6 +23,7 @@ import {
 import { LinkButton } from '../../ui/buttons/link/LinkButton.component'
 import { CurrencyInputControl } from '../../ui/inputs/CurrencyInput/CurrencyInputControl'
 import { MultiSelectInput } from '../../ui/inputs/Select/multi/MultiSelectInput.component'
+import { TextareaInput } from '../../ui/inputs/TextareaInput/TextareaInput.component'
 
 import type { SidebarSectionFormProps } from '../forms.types'
 
@@ -59,6 +63,16 @@ export function TokensSectionForm({ values, onChange }: SidebarSectionFormProps)
         tokenValue={values.buyToken}
         tokenAmountValue={values.buyTokenAmount}
         onChange={onChange}
+      />
+      <TextareaInput
+        name="prioritizedTokensText"
+        label={`Prioritized tokens (${CHAIN_INFO[values.chainId]?.label ?? values.chainId})`}
+        placeholder="One address per line"
+        helperText={PRIORITIZED_TOKENS_HELPER_TEXT}
+        value={values.prioritizedTokensText[values.chainId] ?? ''}
+        onChange={(_, text) =>
+          onChange('prioritizedTokensText', { ...values.prioritizedTokensText, [values.chainId]: text ?? '' })
+        }
       />
 
       {TOKEN_LIST_SELECT_CONFIG.map(({ label, scope }) => (
