@@ -1,7 +1,7 @@
 ---
 author: agents
 status: active roadmap
-last_reviewed: 2026-08-28
+last_reviewed: 2026-10-30
 source_of_truth_scope: next steps to move from partial checks to fully enforced contributor harnesses
 ---
 
@@ -16,6 +16,21 @@ Implemented:
 - Root AGENTS is compact and acts as a TOC.
 - `pnpm agents:check` validates AGENTS/doc harness integrity.
 - CI job `agent-harness` enforces these checks on PRs/pushes.
+- Atom-first logic ratchet for cowswap-frontend (see Track 1).
+
+### Atom-first logic (enforced)
+
+Business logic stays in pure functions and Jotai atoms. The rules live in root `AGENTS.md`, `docs/STATE_MANAGEMENT.md`, and `apps/cowswap-frontend/AGENTS.md`.
+
+- `eslint.config.js` uses core `no-restricted-imports` so the existing `@typescript-eslint/no-restricted-imports` list stays intact. New files under `state/` and `utils/` cannot import `react`, `react-redux`, or `legacy/state`. Existing violators are an allowlist in that config.
+- `tools/scripts/architecture-and-tests-guardrail.mjs` ratchets four counts against `tools/baselines/architecture-and-tests-baseline.json`:
+  - `legacy/state` import bindings anywhere under `apps/cowswap-frontend/src`
+  - domain-hook orchestration: `hooks/` files under `modules/`, `entities/`, or `common/` that combine `useMemo` / `useCallback` / `useEffect` / `useLayoutEffect` with 3 or more domain hook imports (React, Jotai, SWR, and Lingui hooks do not count)
+  - atom-alias hooks: a `useX` function or `const useX` arrow whose body only forwards `useAtomValue` / `useSetAtom` / `useAtom` of a bare atom identifier (a property access, an index, or an atom-family call stays allowed)
+  - unit tests with more than 3 `jest.mock()` calls plus `render` / `renderHook` from `@testing-library/react`
+- Commands: `pnpm arch:check`, `pnpm arch:baseline:update`. `pnpm agents:check` runs the check.
+- `render` / `renderHook` imports from `@testing-library/react` in cowswap-frontend unit tests are ESLint warnings.
+- Side effects and deadline waits are documented in `docs/STATE_MANAGEMENT.md` and are prose. New work uses `observe` from `jotai-effect` instead of an updater, and `setTimeout` via `runCountdown` / `useRemainingSeconds` instead of `setInterval` when the wake-up time is known. Existing updaters are not ratcheted.
 
 Still pending:
 
