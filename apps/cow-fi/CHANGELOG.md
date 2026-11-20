@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.19.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.19.0...cow-fi-v2.19.1) (2026-11-19)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/assets@2.13.0
+  - @cowprotocol/common-const@3.25.0
+  - @cowprotocol/ui@3.25.0
+  - @cowprotocol/wallet@3.23.1
+  - @cowprotocol/analytics@3.20.1
+  - @cowprotocol/common-hooks@3.22.1
+  - @cowprotocol/common-utils@3.23.1
+  - @cowprotocol/core@3.16.1
+
 ## [2.19.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.18.3...cow-fi-v2.19.0) (2026-11-18)
 
 ### Minor Changes

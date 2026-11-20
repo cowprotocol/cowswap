@@ -1,7 +1,7 @@
 import { GNO, USDC_SEPOLIA, ZERO_FRACTION } from '@cowprotocol/common-const'
 import { buildPriceFromCurrencyAmounts, FractionUtils, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Currency, Price } from '@cowprotocol/currency'
+import { Currency, Price, Token } from '@cowprotocol/currency'
 
 import { calculatePriceDifference, CalculatePriceDifferenceParams } from './calculatePriceDifference'
 
@@ -42,6 +42,24 @@ describe('Not enough parameters (returns null)', () => {
         isInverted: false,
       }),
     ).toBe(null)
+  })
+
+  it('returns `null` when prices are from different markets', () => {
+    const referencePrice = buildPrice('1', '1')
+    const baseOnOtherChain = new Token(
+      SupportedChainId.MAINNET,
+      USDC_SEPOLIA.address,
+      USDC_SEPOLIA.decimals,
+      USDC_SEPOLIA.symbol,
+    )
+    const targetPrice = new Price(
+      baseOnOtherChain,
+      referencePrice.quoteCurrency,
+      referencePrice.denominator,
+      referencePrice.numerator,
+    )
+
+    expect(calculatePriceDifference({ referencePrice, targetPrice, isInverted: false })).toBe(null)
   })
 })
 

@@ -4,8 +4,7 @@ import type { ReactNode } from 'react'
 
 import styles from './AssetStats.module.css'
 
-import { formatUsMarketSession, getTimeZoneCity } from '../lib/formatUsMarketSession'
-import { getMinutesToUsMarketChange, isUsMarketOpen } from '../lib/usMarketStatus'
+import { getMinutesToUsMarketChange, isUsMarketOpen, US_MARKET_EARLY_CLOSE } from '../lib/usMarketStatus'
 
 import type { RwaAsset, RwaMarketData, RwaMarketKind, RwaTradingTime } from '../model/types'
 
@@ -58,32 +57,31 @@ function getPriceHint({ title }: RwaAsset, marketKind: RwaMarketKind, provider: 
   return `The price and chart show the ${title} share on its exchange${source}, including extended-hours sessions. Token prices may differ from the stock price. ${disclaimer}`
 }
 
+function getTimeZoneCity(timeZone: string): string {
+  return (timeZone.split('/').pop() ?? timeZone).replace(/_/g, ' ')
+}
+
 function MarketStatus({ tradingTime }: { tradingTime: RwaTradingTime }): ReactNode {
   const now = new Date()
   const open = isUsMarketOpen(tradingTime, now)
   const minutesToChange = getMinutesToUsMarketChange(tradingTime, now)
-  const localTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
-  const localSession = formatUsMarketSession(tradingTime, now, localTimeZone)
-  const exchangeCity = getTimeZoneCity(tradingTime.timeZone)
-  const isExchangeTimeZone = localTimeZone === tradingTime.timeZone
 
   return (
     <Tooltip
       className={styles.status}
       content={
-        localSession && (
-          <>
-            US regular session, {localSession.city} time:
-            <ul className={styles.sessionList}>
-              <li>
-                {localSession.regular}
-                {!isExchangeTimeZone && ` (${tradingTime.start} – ${tradingTime.end} ${exchangeCity})`}, Mon–Fri in{' '}
-                {exchangeCity}, except US market holidays
-              </li>
-              <li>{localSession.earlyClose} on early-close days</li>
-            </ul>
-          </>
-        )
+        <>
+          US regular session:
+          <ul className={styles.sessionList}>
+            <li>
+              {tradingTime.start} – {tradingTime.end} {getTimeZoneCity(tradingTime.timeZone)} time, Mon–Fri, except US
+              market holidays
+            </li>
+            <li>
+              {tradingTime.start} – {US_MARKET_EARLY_CLOSE} on early-close days
+            </li>
+          </ul>
+        </>
       }
     >
       <span className={open ? styles.statusOpen : styles.statusClosed}>US market {open ? 'open' : 'closed'}</span>
