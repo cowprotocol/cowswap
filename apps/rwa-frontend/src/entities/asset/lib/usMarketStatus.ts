@@ -8,11 +8,8 @@ const EARLY_CLOSE_HOUR = 13
 const EARLY_CLOSE_MINUTES = EARLY_CLOSE_HOUR * MINUTES_PER_HOUR
 const MAX_DAYS_TO_NEXT_OPEN = 14
 
-export interface UsMarketSessionInstants {
-  start: Date
-  end: Date
-  earlyCloseEnd: Date
-}
+/** Exchange-local close of US market early-close days, `HH:mm` */
+export const US_MARKET_EARLY_CLOSE = `${EARLY_CLOSE_HOUR}:00`
 
 interface DaySession {
   start: number
@@ -45,22 +42,6 @@ export function getMinutesToUsMarketChange(tradingTime: RwaTradingTime, now: Dat
   }
 
   return null
-}
-
-/** The `tradingTime` session on the `now` date of its time zone as instants. `null` for an unparsable `tradingTime` */
-export function getUsMarketSessionInstants(tradingTime: RwaTradingTime, now: Date): UsMarketSessionInstants | null {
-  const session = parseSession(tradingTime)
-
-  if (!session) return null
-
-  const { start, end, timeZone } = session
-  const local = toZonedDate(now, timeZone)
-
-  return {
-    start: zonedTimeToDate(local, start, timeZone),
-    end: zonedTimeToDate(local, end, timeZone),
-    earlyCloseEnd: zonedTimeToDate(local, Math.min(end, EARLY_CLOSE_MINUTES), timeZone),
-  }
 }
 
 /** Within `tradingTime` in its time zone on US market trading days, closing at 1 pm on early-close days */
