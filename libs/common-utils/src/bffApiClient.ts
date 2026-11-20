@@ -5,6 +5,7 @@ import {
   RetryableResponseError,
   STATUS_CODES_TO_RETRY,
 } from './api-utils'
+import { bffFetch } from './bffFetch'
 import { fetchWithRateLimit } from './fetchWithRateLimit'
 import { stripTrailingSlash } from './url-utils'
 
@@ -63,11 +64,11 @@ export abstract class BffApiClient {
 
   private performFetch(url: string, init: FetchInit): Promise<Response> {
     if (this.fetchRateLimited === NO_RATE_LIMIT) {
-      return fetchWithTimeout(url, init)
+      return bffFetch(url, init)
     }
 
     return this.fetchRateLimited(async () => {
-      const response = await fetchWithTimeout(url, init)
+      const response = await bffFetch(url, init)
       if (STATUS_CODES_TO_RETRY.has(response.status)) {
         throw new RetryableResponseError(response.status)
       }

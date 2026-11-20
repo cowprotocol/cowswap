@@ -2,6 +2,7 @@ import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
 import { BFF_BASE_URL } from '@cowprotocol/common-const'
+import { bffFetch } from '@cowprotocol/common-utils'
 import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export interface GetTopTokenHoldersParams {
@@ -24,7 +25,7 @@ interface CachedValue<T> {
 export async function getTopTokenHolder({ tokenAddress, chainId }: GetTopTokenHoldersParams) {
   if (!tokenAddress) return
 
-  return (await fetch(`${BFF_BASE_URL}/${chainId}/tokens/${tokenAddress}/topHolders`, {
+  return (await bffFetch(`${BFF_BASE_URL}/${chainId}/tokens/${tokenAddress}/topHolders`, {
     method: 'GET',
   }).then((res) => res.json())) as TokenHolder[]
 }

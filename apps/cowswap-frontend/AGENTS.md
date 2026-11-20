@@ -32,6 +32,7 @@ Root rules: [`../../AGENTS.md`](../../AGENTS.md) (global safety, workflow, and v
 
 ## Security notes
 - Safe API client token handling is documented in [`docs/safe-api-token.md`](./docs/safe-api-token.md). Treat `REACT_APP_SAFE_API_AUTH_TOKEN` as an intentional public client token unless that document changes.
+- BFF requests (`BFF_BASE_URL`), including those in shared libs CoW Swap uses, `SHOULD` go through `bffFetch` or `BffApiClient` from `@cowprotocol/common-utils` so they carry the captcha JWT. See [`src/modules/captcha/README.md`](./src/modules/captcha/README.md).
 
 ## Module structure and boundaries
 - Organize domain code by module under `src/modules/<domain>/`.
