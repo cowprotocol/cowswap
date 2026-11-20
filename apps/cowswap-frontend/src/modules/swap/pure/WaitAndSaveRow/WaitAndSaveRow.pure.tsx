@@ -104,14 +104,12 @@ function WaitAndSaveDescription({
               <styledEl.NoVolumeFee $active={isEnabled}>
                 <Trans>No volume</Trans>{' '}
               </styledEl.NoVolumeFee>
-              <span className="noBreak">
-                <styledEl.NoVolumeFee $active={isEnabled}>
-                  <Trans>fee</Trans>
-                </styledEl.NoVolumeFee>
-                {' · '}
-                <Trans>Joins</Trans>
-              </span>{' '}
               <Trans>
+                <span className="noBreak">
+                  <styledEl.NoVolumeFee $active={isEnabled}>fee</styledEl.NoVolumeFee>
+                  {' · '}
+                  Joins
+                </span>{' '}
                 batch in{joinsBatchGap}
                 <span ref={joinsBatchInRef} />
               </Trans>
