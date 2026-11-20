@@ -13,8 +13,6 @@ export interface PlanSolanaTradeFundedAccountsParams {
   owner: PublicKey
   quote: BuyAtaQuote
   isNativeSell: boolean
-  /** LaunchDarkly `isAtaCreationDisabled`. Defaults to false. */
-  isAtaCreationDisabled?: boolean
 }
 
 /**
@@ -28,9 +26,8 @@ export function planSolanaTradeFundedAccounts({
   owner,
   quote,
   isNativeSell,
-  isAtaCreationDisabled = false,
 }: PlanSolanaTradeFundedAccountsParams): SolanaFundedAccount[] {
-  const isBuyAtaCreationSkipped = getIsBuyAtaCreationSkipped({ quote, owner, isAtaCreationDisabled })
+  const isBuyAtaCreationSkipped = getIsBuyAtaCreationSkipped({ quote, owner })
 
   return [
     ...(isNativeSell ? getWrapFundedAccounts(owner) : []),

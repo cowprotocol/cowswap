@@ -74,7 +74,7 @@ These shipped with the wall but are not about it, and reverting them buys nothin
 - `libs/ui/src/pure/MenuBar/` — the `blur` prop
 - `libs/ui/src/pure/ProductLogo/index.tsx` — a theme without its own logo now falls back within its own brightness family
 - `modules/application/contexts/PageBackgroundContext.tsx` — the `fullBleed` page layout and `useFullBleedPage`
-- `libs/common-const/src/featureFlags.ts`, `libs/common-hooks/src/useFeatureFlags.ts` — `REACT_APP_FEATURE_FLAGS` / `REACT_APP_BOOT_FEATURE_FLAGS` overrides for local dev
+- `libs/common-hooks/src/useFeatureFlags.ts` — the `REACT_APP_FEATURE_FLAGS` override for local dev
 - `libs/wallet/**` — Solana devnet support, the AppKit modal DOM-event fix, and network switching from a Solana-only session
 - `apps/cowswap-frontend/vite.config.mts` — `NO_SOURCEMAP`
 

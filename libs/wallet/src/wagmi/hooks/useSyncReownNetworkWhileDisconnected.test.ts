@@ -7,11 +7,6 @@ import { useSyncReownNetworkWhileDisconnected } from './useSyncReownNetworkWhile
 
 import { reownAppKit } from '../config'
 
-jest.mock('@cowprotocol/common-const', () => ({
-  ...jest.requireActual('@cowprotocol/common-const'),
-  IS_SOLANA_ENABLED: true,
-}))
-
 jest.mock('@reown/appkit/networks', () => ({
   solana: {
     id: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',

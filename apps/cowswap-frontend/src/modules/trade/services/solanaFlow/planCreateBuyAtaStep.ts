@@ -16,8 +16,6 @@ export interface IsBuyAtaCreationSkippedParams {
   /** The wallet the order names to the order book as its receiver, when that is not the owner. Only a
    * sponsored order posts one, so a self-paid order leaves it out. */
   receiver?: PublicKey
-  /** LaunchDarkly `isAtaCreationDisabled`. */
-  isAtaCreationDisabled: boolean
 }
 
 export interface PlanCreateBuyAtaStepParams {
@@ -59,16 +57,7 @@ export function getCreateBuyAtaFundedAccounts(quote: BuyAtaQuote, isCreationSkip
  * creates the associated token account of that wallet and nothing else, so an account belonging to a
  * wallet it was never told about stays the bundle's own to create.
  */
-export function getIsBuyAtaCreationSkipped({
-  quote,
-  owner,
-  receiver,
-  isAtaCreationDisabled,
-}: IsBuyAtaCreationSkippedParams): boolean {
-  if (!isAtaCreationDisabled) {
-    return false
-  }
-
+export function getIsBuyAtaCreationSkipped({ quote, owner, receiver }: IsBuyAtaCreationSkippedParams): boolean {
   const { intent, buyTokenProgramId } = quote
   const namedAta = deriveAta(intent.buyMint, receiver ?? owner, buyTokenProgramId)
 

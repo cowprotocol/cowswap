@@ -1,19 +1,18 @@
 import { useMemo } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
-import { useAvailableChains } from '@cowprotocol/common-hooks'
 import { ChainInfo } from '@cowprotocol/cow-sdk'
 
-import { useIsSolanaVisible } from 'entities/alphaNetworks'
+import { useVisibleChains } from 'entities/alphaNetworks'
 
 import { mapChainInfo } from '../utils/mapChainInfo'
 
 /**
  * Returns the list of supported source (sell-side) chains as ChainInfo[].
- * Filters by feature flags and the alpha networks setting via useAvailableChains.
+ * Filters by feature flags and by alpha-network opt-in via useVisibleChains.
  */
 export function useSupportedChains(): ChainInfo[] {
-  const availableChains = useAvailableChains({ excludeSolana: !useIsSolanaVisible() })
+  const availableChains = useVisibleChains()
 
   return useMemo(() => {
     return availableChains.reduce((acc, id) => {

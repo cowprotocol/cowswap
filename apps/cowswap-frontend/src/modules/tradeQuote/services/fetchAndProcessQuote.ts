@@ -40,7 +40,7 @@ export async function fetchAndProcessQuote(
   { useSuggestedSlippageApi }: TradeQuotePollingParameters,
   appData: AppDataInfo['doc'] | undefined,
   tradeQuoteManager: TradeQuoteManager,
-  isSolanaEnabled = false,
+  isSolanaAvailable = false,
   getCorrelatedTokens?: SwapAdvancedSettings['getCorrelatedTokens'],
 ): Promise<void> {
   const { priceQuality } = fetchParams
@@ -79,7 +79,7 @@ export async function fetchAndProcessQuote(
         advancedSettings,
         tradeQuoteManager,
         processQuoteError,
-        isSolanaEnabled,
+        isSolanaAvailable,
       )
     }
   } finally {
@@ -139,11 +139,11 @@ async function fetchSwapQuote(
   advancedSettings: SwapAdvancedSettings,
   tradeQuoteManager: TradeQuoteManager,
   processQuoteError: (errorLocation: string, error: unknown) => void,
-  isSolanaEnabled: boolean,
+  isSolanaAvailable: boolean,
 ): Promise<void> {
   const isFinalQuote = getIsFinalQuote(fetchParams)
 
-  if (isSolanaEnabled && isSolanaChain(quoteParams.sellTokenChainId)) {
+  if (isSolanaAvailable && isSolanaChain(quoteParams.sellTokenChainId)) {
     const solanaRequest = isFinalQuote
       ? getOptimalSolanaQuote(quoteParams, advancedSettings)
       : getFastSolanaQuote(quoteParams, advancedSettings)

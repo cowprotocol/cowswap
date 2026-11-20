@@ -15,26 +15,34 @@ import { getWsolAssociatedTokenAccount } from '../wrapNativeSolana/const'
 import type { BuyAtaQuote } from '../solanaFlow/planCreateBuyAtaStep'
 
 const OWNER = new PublicKey('9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM')
+const RECEIVER = new PublicKey('5k75h1UBx8gJp6kTkPcbkgAgPmrPBiLHLLXmzMfVsBEZ')
 const BUY_MINT = new PublicKey('EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v')
 
+/** The owner's own associated address, which the driver creates at settle — so the bundle never does. */
 function quoteFor(programId: PublicKey): BuyAtaQuote {
   const buyTokenAccount = getAssociatedTokenAddressSync(BUY_MINT, OWNER, false, programId)
 
   return { intent: { buyMint: BUY_MINT, buyTokenAccount }, buyTokenProgramId: programId } as BuyAtaQuote
 }
 
+/** A custom receiver's account, which the driver was never told about and the bundle has to create. */
+function receiverQuoteFor(programId: PublicKey): BuyAtaQuote {
+  const buyTokenAccount = getAssociatedTokenAddressSync(BUY_MINT, RECEIVER, false, programId)
+
+  return { intent: { buyMint: BUY_MINT, buyTokenAccount }, buyTokenProgramId: programId } as BuyAtaQuote
+}
+
 describe('planSolanaTradeFundedAccounts', () => {
-  it('declares the wrapped-SOL account, the buy-token account and the order PDA on a native sell', () => {
+  it('declares the wrapped-SOL account and the order PDA on a native sell', () => {
     const accounts = planSolanaTradeFundedAccounts({
       owner: OWNER,
       quote: quoteFor(TOKEN_PROGRAM_ID),
       isNativeSell: true,
     })
 
-    expect(accounts).toHaveLength(3)
+    expect(accounts).toHaveLength(2)
     expect(accounts[0].address?.equals(getWsolAssociatedTokenAccount(OWNER))).toBe(true)
-    expect(accounts[1].address?.equals(quoteFor(TOKEN_PROGRAM_ID).intent.buyTokenAccount)).toBe(true)
-    expect(accounts[2].address).toBeUndefined()
+    expect(accounts[1].address).toBeUndefined()
   })
 
   // A native-SOL buy creates no token account (settlement pays lamports). Without this skip the
@@ -55,27 +63,12 @@ describe('planSolanaTradeFundedAccounts', () => {
   it('drops the wrapped-SOL account when the sell token is not native', () => {
     const accounts = planSolanaTradeFundedAccounts({
       owner: OWNER,
-      quote: quoteFor(TOKEN_PROGRAM_ID),
+      quote: receiverQuoteFor(TOKEN_PROGRAM_ID),
       isNativeSell: false,
     })
 
     expect(accounts).toHaveLength(2)
     expect(accounts.some(({ address }) => address?.equals(getWsolAssociatedTokenAccount(OWNER)))).toBe(false)
-  })
-
-  it('carries the buy mint and its token program so the account size can be resolved from the chain', () => {
-    const accounts = planSolanaTradeFundedAccounts({
-      owner: OWNER,
-      quote: quoteFor(TOKEN_2022_PROGRAM_ID),
-      isNativeSell: false,
-    })
-
-    const { size } = accounts[0]
-
-    if (typeof size === 'number') throw new Error('Buy-token account size must be resolved from its mint')
-
-    expect(size.mint.equals(BUY_MINT)).toBe(true)
-    expect(size.tokenProgramId.equals(TOKEN_2022_PROGRAM_ID)).toBe(true)
   })
 
   // The rent gates the trade button and the MAX reserve: still pricing an account the bundle no
@@ -85,7 +78,6 @@ describe('planSolanaTradeFundedAccounts', () => {
       owner: OWNER,
       quote: quoteFor(TOKEN_PROGRAM_ID),
       isNativeSell: false,
-      isAtaCreationDisabled: true,
     })
 
     expect(accounts).toHaveLength(1)
@@ -93,32 +85,32 @@ describe('planSolanaTradeFundedAccounts', () => {
   })
 
   it('keeps the buy-token account of a custom receiver, which the driver cannot create', () => {
-    const receiver = new PublicKey('5k75h1UBx8gJp6kTkPcbkgAgPmrPBiLHLLXmzMfVsBEZ')
-    const buyTokenAccount = getAssociatedTokenAddressSync(BUY_MINT, receiver, false, TOKEN_PROGRAM_ID)
+    const quote = receiverQuoteFor(TOKEN_PROGRAM_ID)
 
-    const accounts = planSolanaTradeFundedAccounts({
-      owner: OWNER,
-      quote: { intent: { buyMint: BUY_MINT, buyTokenAccount }, buyTokenProgramId: TOKEN_PROGRAM_ID } as BuyAtaQuote,
-      isNativeSell: false,
-      isAtaCreationDisabled: true,
-    })
+    const accounts = planSolanaTradeFundedAccounts({ owner: OWNER, quote, isNativeSell: false })
 
     expect(accounts).toHaveLength(2)
-    expect(accounts[0].address?.equals(buyTokenAccount)).toBe(true)
+    expect(accounts[0].address?.equals(quote.intent.buyTokenAccount)).toBe(true)
   })
 
   // The rent depends on the account's size, and a Token-2022 mint's extensions decide it, so the
-  // quote's program has to reach `size` rather than being assumed.
+  // quote's program has to reach `size` rather than being assumed. Priced against a custom receiver:
+  // the owner's own account is the driver's to create, so it never reaches `size` at all.
   it.each([
     ['a Token-2022 mint', TOKEN_2022_PROGRAM_ID],
     ['a classic SPL mint', TOKEN_PROGRAM_ID],
   ])("resolves the buy account's size with %s's own token program", (_label, programId) => {
-    const accounts = planSolanaTradeFundedAccounts({ owner: OWNER, quote: quoteFor(programId), isNativeSell: false })
+    const accounts = planSolanaTradeFundedAccounts({
+      owner: OWNER,
+      quote: receiverQuoteFor(programId),
+      isNativeSell: false,
+    })
 
     const { size } = accounts[0]
 
     if (typeof size === 'number') throw new Error('Buy-token account size must be resolved from its mint')
 
+    expect(size.mint.equals(BUY_MINT)).toBe(true)
     expect(size.tokenProgramId.equals(programId)).toBe(true)
   })
 })
