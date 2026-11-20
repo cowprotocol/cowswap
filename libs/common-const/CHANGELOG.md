@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.25.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.24.0...common-const-v3.25.0) (2026-11-19)
+
+### Minor Changes
+
+- feat(theme): cherry pick #8678 (vice theme)
+
 ## [3.24.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.23.0...common-const-v3.24.0) (2026-11-18)
 
 ### Minor Changes

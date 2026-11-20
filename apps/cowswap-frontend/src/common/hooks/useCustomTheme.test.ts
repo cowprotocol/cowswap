@@ -1,12 +1,13 @@
 import type { FeatureFlags } from '@cowprotocol/common-const'
 import type { CowSwapTheme } from '@cowprotocol/ui'
 
-import { resolveCowSwapTheme } from './useCustomTheme'
+import { resolveCowSwapTheme, selectCustomThemeFlags } from './useCustomTheme'
 
 function buildFlags(overrides: FeatureFlags = {}): FeatureFlags {
   return {
     isHalloweenEnabled: false,
     isChristmasEnabled: false,
+    isViceThemeEnabled: false,
     ...overrides,
   }
 }
@@ -72,9 +73,47 @@ describe('resolveCowSwapTheme', () => {
       featureFlags: buildFlags({ isHalloweenEnabled: true, isChristmasEnabled: true }),
       expected: 'darkHalloween',
     },
+    {
+      name: 'activates Vice in dark mode',
+      darkMode: true,
+      featureFlags: buildFlags({ isViceThemeEnabled: true }),
+      expected: 'darkVice',
+    },
+    {
+      name: 'skips Vice when dark mode is disabled',
+      darkMode: false,
+      featureFlags: buildFlags({ isViceThemeEnabled: true }),
+      expected: undefined,
+    },
+    {
+      name: 'prefers Halloween over Vice when both are enabled in dark mode',
+      darkMode: true,
+      featureFlags: buildFlags({ isHalloweenEnabled: true, isViceThemeEnabled: true }),
+      expected: 'darkHalloween',
+    },
   ]
 
   test.each(cases)('$name', ({ darkMode, featureFlags, expected }) => {
     expect(resolveCowSwapTheme(darkMode, featureFlags)).toBe(expected)
+  })
+})
+
+describe('selectCustomThemeFlags', () => {
+  const persistedFlags = buildFlags({ isViceThemeEnabled: true })
+
+  it('uses the flags of the last visit while LaunchDarkly has none yet', () => {
+    expect(selectCustomThemeFlags({}, 'loading', persistedFlags)).toBe(persistedFlags)
+  })
+
+  it('uses the live flags as soon as there are any', () => {
+    const liveFlags = buildFlags()
+
+    expect(selectCustomThemeFlags(liveFlags, 'loading', persistedFlags)).toBe(liveFlags)
+  })
+
+  it.each(['ready', 'unavailable'] as const)('uses the live flags, even empty, once flags are %s', (status) => {
+    const liveFlags = {}
+
+    expect(selectCustomThemeFlags(liveFlags, status, persistedFlags)).toBe(liveFlags)
   })
 })
