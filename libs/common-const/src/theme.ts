@@ -9,6 +9,7 @@ export const USER_STATE_STORAGE_KEY = 'redux_localstorage_simple_user'
 export enum CustomTheme {
   CHRISTMAS = 'CHRISTMAS',
   HALLOWEEN = 'HALLOWEEN',
+  VICE = 'VICE',
   NONE = 'NONE',
 }
 
@@ -18,7 +19,7 @@ type CustomThemeFlagKeys = Partial<Record<CustomTheme, string>>
 // themes still require their LaunchDarkly flags to be true before they can activate.
 export const ACTIVE_CUSTOM_THEME: CustomTheme = CustomTheme.HALLOWEEN
 
-const CUSTOM_THEME_PRIORITY: CustomTheme[] = [CustomTheme.HALLOWEEN, CustomTheme.CHRISTMAS]
+const CUSTOM_THEME_PRIORITY: CustomTheme[] = [CustomTheme.HALLOWEEN, CustomTheme.CHRISTMAS, CustomTheme.VICE]
 
 export function getCustomThemePriority(): CustomTheme[] {
   if (ACTIVE_CUSTOM_THEME === CustomTheme.NONE) {
@@ -31,9 +32,12 @@ export function getCustomThemePriority(): CustomTheme[] {
 const CUSTOM_THEME_FLAG_KEYS: Readonly<CustomThemeFlagKeys> = Object.freeze({
   [CustomTheme.CHRISTMAS]: 'isChristmasEnabled',
   [CustomTheme.HALLOWEEN]: 'isHalloweenEnabled',
+  [CustomTheme.VICE]: 'isViceThemeEnabled',
 })
 
 export const APRILS_FOOLS_FLAG_KEY = 'isAprilsFoolsEnabled'
+
+const CUSTOM_THEME_FLAGS_STORAGE_KEY = 'cowSwap.customThemeFlags'
 
 export interface CustomThemeContext {
   darkModeEnabled: boolean
@@ -53,8 +57,35 @@ export function isCustomThemeEnabled(theme: CustomTheme, featureFlags?: FeatureF
 }
 
 /**
+ * Stores the custom theme flags as LaunchDarkly resolved them. The next visit can then start in
+ * the same theme instead of painting the default one until LaunchDarkly has answered again.
+ */
+export function persistCustomThemeFlags(featureFlags: FeatureFlags): void {
+  if (typeof localStorage === 'undefined') return
+
+  const customThemeFlags = Object.fromEntries(
+    Object.values(CUSTOM_THEME_FLAG_KEYS).map((flagKey) => [flagKey, Boolean(featureFlags[flagKey])]),
+  )
+
+  try {
+    localStorage.setItem(CUSTOM_THEME_FLAGS_STORAGE_KEY, JSON.stringify(customThemeFlags))
+  } catch {
+    // Storage is full or blocked. The next visit starts in the default theme, as it would have.
+  }
+}
+
+export function readPersistedCustomThemeFlags(): FeatureFlags {
+  const persisted = readPersistedRecord()
+
+  return Object.fromEntries(
+    Object.values(CUSTOM_THEME_FLAG_KEYS).map((flagKey) => [flagKey, persisted[flagKey] === true]),
+  )
+}
+
+/**
  * Resolve the active custom theme for a given UI context. Halloween has global priority but
  * requires dark mode; if it is enabled by flags yet dark mode is off, no seasonal theme is applied.
+ * Vice is dark-only as well, but out of dark mode it steps aside for the next enabled theme.
  */
 export function resolveCustomThemeForContext(
   featureFlags: FeatureFlags | undefined,
@@ -75,7 +106,23 @@ export function resolveCustomThemeForContext(
     if (theme === CustomTheme.CHRISTMAS) {
       return CustomTheme.CHRISTMAS
     }
+
+    if (theme === CustomTheme.VICE && context.darkModeEnabled) {
+      return CustomTheme.VICE
+    }
   }
 
   return undefined
+}
+
+function readPersistedRecord(): Record<string, unknown> {
+  if (typeof localStorage === 'undefined') return {}
+
+  try {
+    const persisted: unknown = JSON.parse(localStorage.getItem(CUSTOM_THEME_FLAGS_STORAGE_KEY) || '{}')
+
+    return typeof persisted === 'object' && persisted !== null ? (persisted as Record<string, unknown>) : {}
+  } catch {
+    return {}
+  }
 }

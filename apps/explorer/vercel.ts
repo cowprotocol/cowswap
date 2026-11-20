@@ -5,6 +5,10 @@ export const config: VercelConfig = {
   outputDirectory: '../../build/explorer',
   // Uses install:ci because this app may require SDK preview package switching.
   installCommand: 'cd ../../ && pnpm run install:ci',
+  headers: [
+    { source: '/solver-logo-tool', headers: [{ key: 'X-Robots-Tag', value: 'noindex, follow' }] },
+    { source: '/solver-logo-tool/', headers: [{ key: 'X-Robots-Tag', value: 'noindex, follow' }] },
+  ],
   rewrites: [
     {
       source: '/(.*)',
