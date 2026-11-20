@@ -5,6 +5,7 @@ import { isMobile } from '@cowprotocol/common-utils'
 const GUARD_FLAG = '__mobileInjectedProviderGuarded__'
 const GUARD_RESET = '__mobileInjectedProviderGuardReset__'
 const GUARD_TIMEOUT_MS = 1000
+const CHAIN_ID_FALLBACK_DEADLINE_MS = 30_000
 // MetaMask iOS injected provider can leave optional wallet discovery RPCs
 // pending forever. Use safe defaults so capability/disconnect hooks settle.
 const GUARDED_METHODS: Partial<Record<string, () => unknown>> = {
@@ -138,17 +139,27 @@ function getProviderChainId(provider: GuardedProvider): string | undefined {
 }
 
 function requestChainIdWithFallback(chainIdRequest: Promise<unknown>, provider: GuardedProvider): Promise<unknown> {
+  let poll: ReturnType<typeof setInterval> | undefined
+  let deadline: ReturnType<typeof setTimeout> | undefined
+
+  const stopPolling = (): void => {
+    if (poll) clearInterval(poll)
+    if (deadline) clearTimeout(deadline)
+  }
+
   return Promise.race([
-    chainIdRequest,
-    new Promise((resolve, reject) => {
-      setTimeout(() => {
+    chainIdRequest.finally(stopPolling),
+    new Promise((resolve) => {
+      // wagmi reads the chain id right after the account grant, so rejecting here fails the whole
+      // connect once the user has already approved the prompt. Keep polling for a cached chain id
+      // instead, and stop at the deadline so a wallet that answers neither leaves no live timer.
+      poll = setInterval(() => {
         const fallbackChainId = getProviderChainId(provider)
-        if (fallbackChainId) {
-          resolve(fallbackChainId)
-        } else {
-          reject(new Error('eth_chainId timed out'))
-        }
+        if (!fallbackChainId) return
+        stopPolling()
+        resolve(fallbackChainId)
       }, GUARD_TIMEOUT_MS)
+      deadline = setTimeout(stopPolling, CHAIN_ID_FALLBACK_DEADLINE_MS)
     }),
   ])
 }

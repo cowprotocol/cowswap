@@ -8,7 +8,7 @@ import { EvmChains } from '@cowprotocol/cow-sdk'
 import { createAppKit } from '@reown/appkit/react'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { OptionsController } from '@reown/appkit-controllers'
+import { OptionsController, StorageUtil } from '@reown/appkit-controllers'
 
 import { getConnectors } from './getConnectors'
 import { getReownDefaultNetwork } from './getReownDefaultNetwork'
@@ -17,7 +17,7 @@ import { installWalletTransactionGuard, type WalletTransactionGuard } from './wa
 import { bindActiveProvider } from '../bindActiveProvider'
 import { IS_SOLANA_WALLET_ENABLED } from '../constants'
 import { interceptEIP6963Providers } from '../providerIsolation'
-import { SAFE_CONNECTOR_ID } from '../reown/consts'
+import { SAFE_CONNECTOR_ID, WALLET_CONNECT_CONNECTOR_ID } from '../reown/consts'
 import { createSolanaRpcFetch, getReownRpcUrl } from '../reown/createSolanaRpcFetch'
 import { SUPPORTED_REOWN_NETWORKS } from '../reown/networks'
 import { SOLANA_NETWORK, SOLANA_RPC_URL } from '../reown/solanaNetwork'
@@ -60,6 +60,23 @@ const projectId = 'ac287751638b5d374a03c39e37f70376'
 
 const solanaRpcUrl = SOLANA_RPC_URL
 customRpcUrls[SOLANA_NETWORK.caipNetworkId] = [{ url: solanaRpcUrl }]
+
+const FEATURED_WALLET_IDS = [
+  // Coinbase Wallet
+  'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
+  // imToken — shown prominently so users inside imToken's browser can find the WalletConnect path
+  'ef333840daf915aafdc4a004525502d6d49d77bd9c65e0642dbaefb3c2893bef',
+  // Phantom and Solflare announce no connector outside their own in-app browsers, so a featured
+  // entry is the only thing a mobile user can tap to reach their deeplink.
+  ...(IS_SOLANA_WALLET_ENABLED
+    ? [
+        // Phantom
+        'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393',
+        // Solflare
+        '1ca0bdd4747578705b1939af023d120677c64fe6ca76add81fda36e350605e79',
+      ]
+    : []),
+]
 
 const metadata = {
   name: 'CoW Swap | The smartest way to trade cryptocurrencies',
@@ -128,12 +145,7 @@ const reownAppKit = createAppKit({
   enableInjected: false,
   enableReconnect: isSafeApp || isMobile || isWidget || hasRecentConnector,
   enableWalletGuide: false,
-  featuredWalletIds: [
-    // Coinbase Wallet
-    'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
-    // imToken — shown prominently so users inside imToken's browser can find the WalletConnect path
-    'ef333840daf915aafdc4a004525502d6d49d77bd9c65e0642dbaefb3c2893bef',
-  ],
+  featuredWalletIds: FEATURED_WALLET_IDS,
   features: {
     swaps: false,
     onramp: false,
@@ -152,13 +164,18 @@ const reownAppKit = createAppKit({
 })
 
 /**
- * Reconnect to the injected wallet, waiting for it to become available first.
+ * Connect to the injected wallet, waiting for it to become available first.
  *
  * Mobile in-app browsers (e.g. MetaMask on iOS) may attach `window.ethereum` a
  * few hundred ms after the app bootstraps, so the synchronous check below can run
- * before the provider exists and the eager reconnect never fires (#7862). Wait for
+ * before the provider exists and the eager connect never fires (#7862). Wait for
  * the provider to appear — via an EIP-6963 announcement or a short poll — before
  * connecting, giving up after a timeout so we never hang.
+ *
+ * This runs on the first visit too, not only once a connector has been remembered: inside a
+ * wallet's in-app browser the user arrived from that wallet and expects to be connected. Mobile
+ * browsers that inject a provider during ordinary browsing (Brave, Opera) therefore prompt on
+ * load as well, which is the accepted cost.
  */
 function autoConnectInjectedWhenReady(): void {
   const connect = (): void => {
@@ -194,12 +211,24 @@ function autoConnectInjectedWhenReady(): void {
   window.dispatchEvent(new Event('eip6963:requestProvider'))
 }
 
+// A recorded disconnect is the user's explicit "stay signed out"; auto-connecting would undo it.
+// The id is whichever connector was active, so an announced wallet records its rdns rather than
+// `injected`. WalletConnect disconnects every namespace at once and records an empty id for the
+// ones with no connector, and neither says anything about the browser-injected wallet.
+// `getDisconnectedConnectorIds()` returns a bare `{}` before anything is stored, so the declared
+// per-namespace arrays can be missing at runtime.
+const hasExplicitDisconnect = Boolean(
+  StorageUtil.getDisconnectedConnectorIds().eip155?.some(
+    (connectorId) => connectorId && connectorId !== WALLET_CONNECT_CONNECTOR_ID,
+  ),
+)
+
 /**
  * Instantly connect to Safe if in Safe
  */
 if (isSafeApp) {
   connectWalletById(SAFE_CONNECTOR_ID, 'safe')
-} else if (hasRecentConnector && isMobile) {
+} else if (isMobile && !isWidget && !hasExplicitDisconnect) {
   autoConnectInjectedWhenReady()
 }
 
