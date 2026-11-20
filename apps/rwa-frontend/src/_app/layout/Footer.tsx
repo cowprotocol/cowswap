@@ -9,10 +9,7 @@ import {
   COW_FOOTER_NAV_GROUPS,
   COW_PRODUCT_LINKS,
   COW_SOCIAL_LINKS,
-  type CowProductId,
 } from '@cowprotocol/common-const/cowLinks'
-
-import Link from 'next/link'
 
 import styles from './Footer.module.css'
 import { SocialIcon } from './SocialIcon'
@@ -22,7 +19,6 @@ import { CowLogo } from '@/shared/ui/cow-logo'
 const PRODUCT_LOGO_HEIGHT = 16
 const DAO_LOGO_HEIGHT = 32
 const MOO = 'MOOOOOOOOOOOOOOOOOO'
-const CURRENT_PRODUCT: CowProductId = 'cowRwa'
 
 export function Footer(): ReactNode {
   const contentId = useId()
@@ -87,19 +83,12 @@ export function Footer(): ReactNode {
           </button>
         </p>
         <div className={styles.products}>
-          {COW_PRODUCT_LINKS.map(({ id, label, href }) =>
-            id === CURRENT_PRODUCT ? (
-              <Link key={id} className={styles.product} href="/">
-                <CowLogo height={PRODUCT_LOGO_HEIGHT} />
-                {label}
-              </Link>
-            ) : (
-              <a key={id} className={styles.product} href={href} target="_blank" rel="noopener noreferrer">
-                <CowLogo height={PRODUCT_LOGO_HEIGHT} />
-                {label}
-              </a>
-            ),
-          )}
+          {COW_PRODUCT_LINKS.map(({ id, label, href }) => (
+            <a key={id} className={styles.product} href={href} target="_blank" rel="noopener noreferrer">
+              <CowLogo height={PRODUCT_LOGO_HEIGHT} />
+              {label}
+            </a>
+          ))}
         </div>
         <button
           className={styles.toggle}

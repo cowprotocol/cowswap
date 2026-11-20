@@ -1,11 +1,13 @@
 import 'server-only'
 
+import { COW_SWAP_NAME } from '@cowprotocol/common-const/cowLinks'
+
 import { BASE_PATH } from '@/shared/config'
 
-export const SITE_NAME = 'CoW RWA'
+export const SITE_NAME = COW_SWAP_NAME
 
 export const SITE_DESCRIPTION =
-  'Explore third-party tokens referencing stocks and ETFs from onchain issuers across chains, with swaps powered by CoW Protocol. Eligibility restrictions apply. Not investment advice.'
+  'Explore tokenized stocks, ETFs and commodities from independent issuers across chains, with swaps powered by CoW Protocol. Eligibility restrictions apply. Not investment advice.'
 
 /** The CoW Swap origin, which serves the app under `BASE_PATH` */
 export const SITE_ORIGIN = new URL(process.env.NEXT_PUBLIC_SITE_ORIGIN || 'https://swap.cow.fi')

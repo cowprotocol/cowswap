@@ -66,8 +66,8 @@ msgstr "Signature is undefined!"
 #~ msgstr "years"
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
-msgid "Trade tokenized real-world assets"
-msgstr "Trade tokenized real-world assets"
+#~ msgid "Trade tokenized real-world assets"
+#~ msgstr "Trade tokenized real-world assets"
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
 msgid "Learn about surplus on CoW Swap"
@@ -1359,6 +1359,10 @@ msgstr "Overview"
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Loading operation"
 msgstr "Loading operation"
+
+#: apps/cowswap-frontend/src/common/constants/routes.ts
+msgid "Stocks"
+msgstr "Stocks"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeLinkingSubtitle.tsx
 msgid "Connect your wallet to activate it and start earning rewards when you trade."
@@ -2805,6 +2809,10 @@ msgstr "custom color"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "The extra amount you received compared to your limit price."
 msgstr "The extra amount you received compared to your limit price."
+
+#: apps/cowswap-frontend/src/common/constants/routes.ts
+msgid "Explore tokenized stocks, ETFs and commodities"
+msgstr "Explore tokenized stocks, ETFs and commodities"
 
 #: apps/cowswap-frontend/src/modules/orders/updaters/OrdersNotificationsUpdater/handlers.tsx
 msgid "Swap order filled"
@@ -8197,8 +8205,8 @@ msgstr "Cancelled order"
 #~ msgstr "Code binds on your first eligible trade. Earn {0} {1} per ${2} of eligible volume in {3} days. Payouts happen on Ethereum mainnet."
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
-msgid "RWA"
-msgstr "RWA"
+#~ msgid "RWA"
+#~ msgstr "RWA"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/index.tsx
 #~ msgid "Limit Order Settings"

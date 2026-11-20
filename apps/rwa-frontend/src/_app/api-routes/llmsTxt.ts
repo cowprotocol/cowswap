@@ -1,7 +1,7 @@
 import { RWA_ASSET_TYPE_LABELS, type RwaAsset } from '@/entities/asset'
 import { getAssets } from '@/entities/asset/index.server'
 import { getChainLabel } from '@/shared/lib/chain'
-import { DEPLOYMENT_URL } from '@/shared/lib/seo/index.server'
+import { DEPLOYMENT_URL, SITE_NAME } from '@/shared/lib/seo/index.server'
 
 const LLMS_TXT_MAX_AGE_SECONDS = 3600
 const WIDGET_DOCS_URL = 'https://docs.cow.fi/cow-protocol/tutorials/widget'
@@ -15,11 +15,11 @@ export function buildLlmsTxt(assets: RwaAsset[], appUrl: string): string {
   const exampleUrl = exampleAsset ? `${appUrl}/asset/${exampleAsset.ticker}` : appUrl
 
   return [
-    '# CoW RWA',
+    `# ${SITE_NAME}`,
     '',
-    '> Third-party tokens referencing stocks and ETFs, with swaps powered by CoW Protocol',
+    '> Tokenized stocks, ETFs and commodities from independent issuers, with swaps powered by CoW Protocol',
     '',
-    `CoW RWA lists ${assets.length} real-world assets tokenized by ${issuers.join(', ')} on ${networks.join(', ')}.`,
+    `CoW Swap lists ${assets.length} real-world assets tokenized by ${issuers.join(', ')} on ${networks.join(', ')}.`,
     'Each asset groups the tokens of every issuer and network. Prices, market cap and volume are the tokenized market of the asset over every chain and issuer, from CoinGecko.',
     'Trades are settled by CoW Protocol.',
     '',

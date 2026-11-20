@@ -19,7 +19,7 @@ import svgMenuHamburgerSrc from '@cowprotocol/assets/images/menu-hamburger.svg'
 import svgSettingsGlobalSrc from '@cowprotocol/assets/images/settings-global.svg'
 import svgXSrc from '@cowprotocol/assets/images/x.svg'
 import { LOCALE_DISPLAY_NAMES } from '@cowprotocol/common-const'
-import { COW_DAO_LINK, COW_PRODUCT_LINKS, type CowProductId } from '@cowprotocol/common-const/cowLinks'
+import { COW_DAO_LINK, COW_PRODUCT_LINKS, COW_STOCKS_LINK, type CowProductId } from '@cowprotocol/common-const/cowLinks'
 import { useBodyScrollbarLocker, useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
 
 import { t } from '@lingui/core/macro'
@@ -64,7 +64,6 @@ import type { CowSwapTheme } from '../../types'
 const PRODUCT_NAV_STYLES: Record<CowProductId, Pick<MenuItem, 'hoverColor' | 'hoverBgColor'>> = {
   cowSwap: { hoverColor: `var(${UI.COLOR_BLUE_300_PRIMARY})`, hoverBgColor: `var(${UI.COLOR_BLUE_900_PRIMARY})` },
   cowProtocol: { hoverColor: '#FCCAF2', hoverBgColor: '#AD02C6' },
-  cowRwa: { hoverColor: `var(${UI.COLOR_BLUE_300_PRIMARY})`, hoverBgColor: `var(${UI.COLOR_BLUE_900_PRIMARY})` },
 }
 
 function getDaoNavItems(isRwaEnabled: boolean): MenuItem[] {
@@ -78,13 +77,24 @@ function getDaoNavItems(isRwaEnabled: boolean): MenuItem[] {
       external: true,
       utmContent: 'menubar-dao-nav-cowdao',
     },
-    ...COW_PRODUCT_LINKS.filter(({ id }) => isRwaEnabled || id !== 'cowRwa').map(({ id, href }) => ({
+    ...COW_PRODUCT_LINKS.map(({ id, href }) => ({
       href,
       productVariant: COW_PRODUCT_VARIANTS[id],
       ...PRODUCT_NAV_STYLES[id],
       external: true,
       utmContent: `menubar-dao-nav-${id.toLowerCase()}`,
     })),
+    ...(isRwaEnabled
+      ? [
+          {
+            label: COW_STOCKS_LINK.label,
+            href: COW_STOCKS_LINK.href,
+            ...PRODUCT_NAV_STYLES.cowSwap,
+            external: true,
+            utmContent: 'menubar-dao-nav-cowrwa',
+          },
+        ]
+      : []),
   ]
 }
 

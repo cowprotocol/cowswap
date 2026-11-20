@@ -1,5 +1,6 @@
 export { APP_CODE } from './appCode'
 export { BASE_PATH, withBasePath } from './basePath'
+export { STOCKS_PAGE_HEADING } from './branding'
 export { MEDIA_QUERIES } from './mediaQueries'
 export { WALLET_CONNECT_PROJECT_ID } from './walletConnect'
 export { getWidgetBaseUrl } from './widget'

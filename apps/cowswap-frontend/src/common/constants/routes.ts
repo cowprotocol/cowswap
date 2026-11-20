@@ -109,8 +109,8 @@ export const HOOKS_STORE_MENU_ITEM: I18nIMenuItem = {
 
 export const RWA_MENU_ITEM: I18nIMenuItem = {
   route: Routes.RWA,
-  label: msg`RWA`,
-  description: msg`Trade tokenized real-world assets`,
+  label: msg`Stocks`,
+  description: msg`Explore tokenized stocks, ETFs and commodities`,
   badge: msg`New`,
   badgeType: BadgeTypes.ALERT,
 }

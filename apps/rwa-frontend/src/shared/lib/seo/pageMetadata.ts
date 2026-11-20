@@ -5,6 +5,8 @@ import { DEPLOYMENT_URL, SITE_NAME, SITE_URL } from './site'
 
 import type { Metadata } from 'next'
 
+import { STOCKS_PAGE_HEADING } from '@/shared/config'
+
 interface PageImage {
   /** Path under the base path, e.g. `/asset/AAPL/og-image` */
   path: string
@@ -19,7 +21,7 @@ interface PageMetadataParams {
   image?: PageImage
 }
 
-export const SITE_IMAGE: PageImage = { path: '/og-image', alt: `${SITE_NAME}: tokens referencing stocks and ETFs` }
+export const SITE_IMAGE: PageImage = { path: '/og-image', alt: `${STOCKS_PAGE_HEADING} | ${SITE_NAME}` }
 
 /**
  * `openGraph` and `twitter` of a page replace the root layout ones, so every page sets all their fields.
@@ -27,6 +29,7 @@ export const SITE_IMAGE: PageImage = { path: '/og-image', alt: `${SITE_NAME}: to
  */
 export function buildPageMetadata({ title, description, path, image = SITE_IMAGE }: PageMetadataParams): Metadata {
   const url = `${SITE_URL}${path}`
+  const shareTitle = `${title} | ${SITE_NAME}`
   const images = [
     { url: `${DEPLOYMENT_URL}${image.path}`, alt: image.alt, type: OG_IMAGE_CONTENT_TYPE, ...OG_IMAGE_SIZE },
   ]
@@ -40,14 +43,14 @@ export function buildPageMetadata({ title, description, path, image = SITE_IMAGE
       siteName: SITE_NAME,
       locale: 'en_US',
       url,
-      title,
+      title: shareTitle,
       description,
       images,
     },
     twitter: {
       card: 'summary_large_image',
       site: '@CoWSwap',
-      title,
+      title: shareTitle,
       description,
       images,
     },

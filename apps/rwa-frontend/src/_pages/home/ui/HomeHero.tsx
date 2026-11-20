@@ -2,13 +2,14 @@ import type { ReactNode } from 'react'
 
 import styles from './HomeHero.module.css'
 
+import { STOCKS_PAGE_HEADING } from '@/shared/config'
+
 export function HomeHero(): ReactNode {
   return (
     <header className={styles.hero}>
-      <h1 className={styles.heading}>Explore tokenized real-world assets</h1>
+      <h1 className={styles.heading}>{STOCKS_PAGE_HEADING}</h1>
       <p className={styles.subtitle}>
-        Explore third-party tokens referencing stocks and ETFs from onchain issuers across chains, with swaps powered by
-        CoW Protocol.
+        Explore tokens from independent issuers across chains, with swaps powered by CoW Protocol.
       </p>
       <p className={styles.disclaimer}>Eligibility restrictions apply. Not investment advice.</p>
     </header>
