@@ -148,6 +148,38 @@ describe('guardMobileInjectedProvider', () => {
     await expect(chainId).resolves.toBe('0x64')
   })
 
+  it('keeps waiting for eth_chainId when the provider has no chain id to fall back on', async () => {
+    jest.useFakeTimers()
+    let resolveChainId: (value: unknown) => void = () => void 0
+    const request = jest.fn<EIP1193Provider['request']>().mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveChainId = resolve
+        }),
+    )
+    const provider = guardMobileInjectedProvider(createProvider(request))
+    const chainId = provider?.request({ method: 'eth_chainId' })
+
+    jest.advanceTimersByTime(1000)
+    resolveChainId('0x1')
+
+    await expect(chainId).resolves.toBe('0x1')
+  })
+
+  it('falls back once the provider exposes a chain id after the first check', async () => {
+    jest.useFakeTimers()
+    const request = jest.fn<EIP1193Provider['request']>().mockReturnValue(new Promise(() => void 0))
+    const provider = createProvider(request)
+    const guardedProvider = guardMobileInjectedProvider(provider)
+    const chainId = guardedProvider?.request({ method: 'eth_chainId' })
+
+    jest.advanceTimersByTime(1000)
+    ;(provider as { chainId?: string }).chainId = '0x64'
+    jest.advanceTimersByTime(1000)
+
+    await expect(chainId).resolves.toBe('0x64')
+  })
+
   it('does not use the provider chain id when eth_chainId returns normally', async () => {
     jest.useFakeTimers()
     const request = jest.fn<EIP1193Provider['request']>().mockImplementation(({ method }) => {
