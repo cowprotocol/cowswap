@@ -15,7 +15,7 @@ import { TooltipPlacement } from '../Tooltip/Tooltip'
 export interface TooltipIconProps {
   type: TooltipIconType
   content: ReactNode
-  /** Drawer heading; defaults to a label derived from `type`. */
+  /** Accessible name and drawer heading; defaults to a label derived from `type`. */
   title?: string
   placement?: TooltipPlacement
   /** Keep the popup open while hovering it so links inside remain clickable. */
@@ -78,7 +78,9 @@ export function TooltipIcon({ type, content, title, placement, interactive = fal
 
   return (
     <HoverTooltip content={content} placement={placement}>
-      {icon}
+      <styledEl.TriggerButton type="button" aria-label={drawerTitle}>
+        {icon}
+      </styledEl.TriggerButton>
     </HoverTooltip>
   )
 }
@@ -97,10 +99,10 @@ function getDefaultDrawerTitle(type: TooltipIconType): string {
 function TooltipTypeIcon({ type }: { type: TooltipIconType }): ReactNode {
   switch (type) {
     case 'info':
-      return <styledEl.InfoIcon size={ICON_SIZE_PX} />
+      return <styledEl.InfoIcon size={ICON_SIZE_PX} aria-hidden />
     case 'alert':
-      return <styledEl.AlertIcon size={ICON_SIZE_PX} />
+      return <styledEl.AlertIcon size={ICON_SIZE_PX} aria-hidden />
     case 'help':
-      return <styledEl.HelpIcon src={svgQuestionSrc} width={ICON_SIZE_PX} height={ICON_SIZE_PX} />
+      return <styledEl.HelpIcon src={svgQuestionSrc} width={ICON_SIZE_PX} height={ICON_SIZE_PX} aria-hidden />
   }
 }
