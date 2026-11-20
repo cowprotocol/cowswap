@@ -2,7 +2,7 @@ import { normalizeError } from '@cowprotocol/common-utils/errors'
 import { isRecord, tryParseJson } from '@cowprotocol/common-utils/json-utils'
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 
-import { getBalancesWatcherBaseUrl } from '@/shared/config'
+import { getBalancesWatcherBaseUrl, getPageBackendEnv } from '@/shared/config'
 
 const BALANCE_UPDATE_EVENT = 'balance_update'
 const ERROR_EVENT = 'error'
@@ -107,7 +107,7 @@ export function watchBalances(params: BalancesWatcherParams): BalancesWatcherSub
 }
 
 function getBaseUrl(): string {
-  return getBalancesWatcherBaseUrl(typeof window === 'undefined' ? undefined : window.location.hostname)
+  return getBalancesWatcherBaseUrl(getPageBackendEnv())
 }
 
 /** The watcher ties a session to the client id, so the session POST and the stream must share it */

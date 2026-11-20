@@ -55,7 +55,7 @@ describe('watchBalances', () => {
     await flushPromises()
 
     expect(fetchMock).toHaveBeenCalledWith(
-      `https://balances-watcher.barn.cow.fi/1/sessions/${OWNER}`,
+      `https://balances-watcher.cow.fi/1/sessions/${OWNER}`,
       expect.objectContaining({
         method: 'POST',
         headers: expect.objectContaining({ 'X-Client-Id': '5b0c0d5e-1111-4222-8333-944455556666' }),
@@ -65,7 +65,7 @@ describe('watchBalances', () => {
 
     const [eventSource] = EventSourceMock.instances
     expect(eventSource.url.toString()).toBe(
-      `https://balances-watcher.barn.cow.fi/sse/1/balances/${OWNER}?client_id=5b0c0d5e-1111-4222-8333-944455556666`,
+      `https://balances-watcher.cow.fi/sse/1/balances/${OWNER}?client_id=5b0c0d5e-1111-4222-8333-944455556666`,
     )
 
     eventSource.emit('balance_update', JSON.stringify({ balances: { [TOKEN]: '10', other: 5 } }))
