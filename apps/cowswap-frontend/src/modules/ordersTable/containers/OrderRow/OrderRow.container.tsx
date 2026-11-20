@@ -119,6 +119,7 @@ export function OrderRow({
     () => (isChainIdDeprecated ? undefined : orderActions.getAlternativeOrderModalContext(order)),
     [order, orderActions, isChainIdDeprecated],
   )
+  const reclaimRent = useMemo(() => orderActions.getReclaimRent(order), [orderActions, order])
 
   const withAllowanceWarning = hasEnoughAllowance === false
   const withWarning =
@@ -409,6 +410,7 @@ export function OrderRow({
           activityUrl={activityUrl}
           openReceipt={onClick}
           showCancellationModal={showCancellationModal}
+          reclaimRent={reclaimRent}
           alternativeOrderModalContext={alternativeOrderModalContext}
         />
       </styledEl.CellElement>
