@@ -114,7 +114,7 @@ const Hero = styled.div<{ $isExpired: boolean }>`
   gap: 16px 28px;
   width: 100%;
   min-height: 260px;
-  padding: 24px 28px;
+  padding: ${({ $isExpired }) => ($isExpired ? '24px 28px' : '0')};
   background: ${({ $isExpired }) => ($isExpired ? EXPIRED_HERO_BG : `var(${UI.COLOR_BLUE_300_PRIMARY})`)};
   color: var(${UI.COLOR_TEXT});
 `
