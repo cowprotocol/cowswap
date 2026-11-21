@@ -70,15 +70,11 @@ export function isQuoteExpired(state: TradeQuoteState): boolean | undefined {
     return undefined
   }
 
-  const quoteExpirationTime = new Date(expiration).getTime()
+  // `expiration` is in server time, timeOffset converts it to local time
+  const quoteExpirationTime = new Date(expiration).getTime() + timeOffset * 1000
+  // Already in local time, so the offset must not be applied to it
   const maxExpirationTime = new Date(state.localQuoteTimestamp * 1000).getTime() + MAX_EXPIRATION_TIME
   const expirationTime = Math.min(quoteExpirationTime, maxExpirationTime)
 
-  const now = Date.now()
-  const delta = (expirationTime - now) / 1000
-
-  /**
-   * The difference between the expiration time and the current time (including 5 sec threshold)
-   */
-  return delta + timeOffset < 0
+  return expirationTime < Date.now()
 }

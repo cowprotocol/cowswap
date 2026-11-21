@@ -291,5 +291,43 @@ describe('Quote deadline utils', () => {
         expect(isQuoteExpired(getQuoteState(deadlineParams))).toBe(true)
       })
     })
+
+    describe('When the local clock differs from the server clock', () => {
+      // The API expires quotes 2 minutes after creation, later than the 1 minute local limit
+      const SERVER_EXPIRATION_GAP = 120
+      const deadline = 1800 // 30 min
+
+      /**
+       * clockOffset is local time minus server time, in seconds
+       * secondsSinceQuote is how long ago (in local time) the quote was received
+       */
+      function getSkewedQuoteState(clockOffset: number, secondsSinceQuote: number): TradeQuoteState {
+        const localQuoteTimestamp = Math.floor(NOW_TIME / 1000) - secondsSinceQuote
+        const serverQuoteTimestamp = localQuoteTimestamp - clockOffset
+
+        return getQuoteState({
+          validFor: deadline,
+          quoteValidTo: serverQuoteTimestamp + deadline,
+          localQuoteTimestamp,
+          expiration: new Date((serverQuoteTimestamp + SERVER_EXPIRATION_GAP) * 1000).toISOString(),
+        })
+      }
+
+      it('And the local clock is 2 minutes behind, then a fresh quote should not be expired', () => {
+        expect(isQuoteExpired(getSkewedQuoteState(-120, 1))).toBe(false)
+      })
+
+      it('And the local clock is 30 seconds behind, then a 40 seconds old quote should not be expired', () => {
+        expect(isQuoteExpired(getSkewedQuoteState(-30, 40))).toBe(false)
+      })
+
+      it('And the local clock is 30 seconds ahead, then a 70 seconds old quote should be expired', () => {
+        expect(isQuoteExpired(getSkewedQuoteState(30, 70))).toBe(true)
+      })
+
+      it('And the local clock is 2 minutes behind, then a quote older than 1 minute should be expired', () => {
+        expect(isQuoteExpired(getSkewedQuoteState(-120, 61))).toBe(true)
+      })
+    })
   })
 })
