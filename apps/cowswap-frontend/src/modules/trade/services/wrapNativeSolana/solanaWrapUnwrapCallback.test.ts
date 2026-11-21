@@ -7,7 +7,7 @@ import { NATIVE_CURRENCIES, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/commo
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@cowprotocol/currency'
 
-import { Connection, Transaction } from '@solana/web3.js'
+import { Connection, TransactionInstruction, TransactionMessage, VersionedTransaction } from '@solana/web3.js'
 
 import { solanaWrapUnwrapCallback, SolanaWrapUnwrapContext } from './solanaWrapUnwrapCallback'
 
@@ -23,7 +23,7 @@ const WSOL = WRAPPED_NATIVE_CURRENCIES[SupportedChainId.SOLANA]
 
 interface Harness {
   context: SolanaWrapUnwrapContext
-  sentTransactions: Transaction[]
+  sentTransactions: VersionedTransaction[]
   addTransaction: jest.Mock
   closeModals: jest.Mock
   openErrorModal: jest.Mock
@@ -46,7 +46,7 @@ function createHarness({
   /** One rejection per call to `sendTransaction`, oldest first; calls past the array resolve normally. */
   sendErrors?: unknown[]
 }): Harness {
-  const sentTransactions: Transaction[] = []
+  const sentTransactions: VersionedTransaction[] = []
   const getLatestBlockhash = jest
     .fn()
     .mockResolvedValue({ blockhash: BLOCKHASH, lastValidBlockHeight: LAST_VALID_BLOCK_HEIGHT })
@@ -60,7 +60,7 @@ function createHarness({
 
   let sendCallCount = 0
   const provider = {
-    sendTransaction: jest.fn(async (transaction: Transaction) => {
+    sendTransaction: jest.fn(async (transaction: VersionedTransaction) => {
       const error = sendErrors[sendCallCount]
       sendCallCount++
       if (error) throw error
@@ -97,6 +97,10 @@ function createHarness({
   }
 }
 
+function instructionsOf(transaction: VersionedTransaction): TransactionInstruction[] {
+  return TransactionMessage.decompile(transaction.message).instructions
+}
+
 describe('solanaWrapUnwrapCallback', () => {
   describe('wrapping SOL', () => {
     const amount = CurrencyAmount.fromRawAmount(SOL, 500n)
@@ -108,7 +112,7 @@ describe('solanaWrapUnwrapCallback', () => {
 
       expect(result).toEqual({ hash: SIGNATURE })
       expect(harness.sentTransactions).toHaveLength(1)
-      expect(harness.sentTransactions[0].instructions).toHaveLength(3)
+      expect(instructionsOf(harness.sentTransactions[0])).toHaveLength(3)
     })
 
     it('pays the fee from the connected account and uses a fresh blockhash', async () => {
@@ -117,8 +121,8 @@ describe('solanaWrapUnwrapCallback', () => {
       await solanaWrapUnwrapCallback(harness.context)
 
       const [transaction] = harness.sentTransactions
-      expect(transaction.feePayer?.toBase58()).toBe(ACCOUNT)
-      expect(transaction.recentBlockhash).toBe(BLOCKHASH)
+      expect(TransactionMessage.decompile(transaction.message).payerKey.toBase58()).toBe(ACCOUNT)
+      expect(transaction.message.recentBlockhash).toBe(BLOCKHASH)
     })
 
     it('records the transaction with the blockhash expiry so it can be finalized later', async () => {
@@ -191,7 +195,7 @@ describe('solanaWrapUnwrapCallback', () => {
 
       await solanaWrapUnwrapCallback(harness.context)
 
-      expect(harness.sentTransactions[0].instructions).toHaveLength(1)
+      expect(instructionsOf(harness.sentTransactions[0])).toHaveLength(1)
       expect(harness.addTransaction).toHaveBeenCalledWith(
         expect.objectContaining({ summary: 'Unwrap 0.000001 WSOL to 0.00001 SOL' }),
       )
@@ -221,7 +225,7 @@ describe('solanaWrapUnwrapCallback', () => {
 
       await solanaWrapUnwrapCallback(harness.context)
 
-      expect(harness.sentTransactions[0].instructions).toHaveLength(4)
+      expect(instructionsOf(harness.sentTransactions[0])).toHaveLength(4)
     })
 
     it('does not add the rent-exempt reserve when a remainder stays wrapped', async () => {

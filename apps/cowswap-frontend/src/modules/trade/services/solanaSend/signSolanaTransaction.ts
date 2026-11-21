@@ -1,13 +1,16 @@
-import { Transaction } from '@solana/web3.js'
+import { VersionedTransaction } from '@solana/web3.js'
 
 import type { Provider as SolanaProvider } from '@reown/appkit-adapter-solana/react'
 
 /**
- * Signs without submitting and returns the wire bytes as base64. `requireAllSignatures: false` because
- * the sponsor's signature slot stays empty until the back end fills it — the default would throw on it.
+ * Signs without submitting and returns the wire bytes as base64. The sponsor's signature slot travels
+ * zeroed — the back end fills it when it countersigns as fee payer.
  */
-export async function signSolanaTransaction(provider: SolanaProvider, transaction: Transaction): Promise<string> {
+export async function signSolanaTransaction(
+  provider: SolanaProvider,
+  transaction: VersionedTransaction,
+): Promise<string> {
   const signed = await provider.signTransaction(transaction)
 
-  return signed.serialize({ requireAllSignatures: false }).toString('base64')
+  return Buffer.from(signed.serialize()).toString('base64')
 }
