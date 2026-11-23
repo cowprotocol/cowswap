@@ -15,16 +15,22 @@ import * as sharedStyledEl from '../shared/WaitAndSaveOutcomeShared.styled'
 
 export interface OutcomeWithWaivedFeeAndCowProps {
   priceImprovement: string
+  priceImprovementTitle?: string
   totalSaved: string
+  totalSavedTitle?: string
   volumeFeeSaved: string
+  volumeFeeSavedTitle?: string
   comparisonTooltip?: ReactNode
   className?: string
 }
 
 export function OutcomeWithWaivedFeeAndCow({
   priceImprovement,
+  priceImprovementTitle,
   totalSaved,
+  totalSavedTitle,
   volumeFeeSaved,
+  volumeFeeSavedTitle,
   comparisonTooltip,
   className,
 }: OutcomeWithWaivedFeeAndCowProps): ReactNode {
@@ -38,6 +44,21 @@ export function OutcomeWithWaivedFeeAndCow({
   const tooltipContent =
     comparisonTooltip ??
     t`Compares what you received with the best offer solvers made for your order alone, in the same auction. It's not compared with swapping right away or with your quote.`
+  const totalSavedAmount = (
+    <sharedStyledEl.GainAmount ref={heroRef} $isFitted={isFitted}>
+      {totalSaved}
+    </sharedStyledEl.GainAmount>
+  )
+  const priceImprovementAmount = (
+    <>
+      +<styledEl.SavingsAmount>{priceImprovement}</styledEl.SavingsAmount>
+    </>
+  )
+  const volumeFeeSavedAmount = (
+    <>
+      +<styledEl.SavingsAmount>{volumeFeeSaved}</styledEl.SavingsAmount>
+    </>
+  )
 
   return (
     <sharedStyledEl.Wrapper className={className} data-testid="wait-and-save-outcome">
@@ -51,9 +72,13 @@ export function OutcomeWithWaivedFeeAndCow({
       </sharedStyledEl.TitleGroup>
 
       <sharedStyledEl.GainAmountSlot>
-        <sharedStyledEl.GainAmount ref={heroRef} $isFitted={isFitted}>
-          {totalSaved}
-        </sharedStyledEl.GainAmount>
+        {totalSavedTitle ? (
+          <styledEl.AmountTooltip content={totalSavedTitle} disableHoverablePopup placement="top">
+            {totalSavedAmount}
+          </styledEl.AmountTooltip>
+        ) : (
+          totalSavedAmount
+        )}
       </sharedStyledEl.GainAmountSlot>
 
       <styledEl.SavingsBox>
@@ -63,7 +88,13 @@ export function OutcomeWithWaivedFeeAndCow({
             <TooltipIcon type="info" title={t`Wait & save`} content={tooltipContent} />
           </styledEl.SavingsLabel>
           <styledEl.SavingsValue>
-            +<styledEl.SavingsAmount>{priceImprovement}</styledEl.SavingsAmount>
+            {priceImprovementTitle ? (
+              <styledEl.AmountTooltip content={priceImprovementTitle} disableHoverablePopup placement="top">
+                {priceImprovementAmount}
+              </styledEl.AmountTooltip>
+            ) : (
+              priceImprovementAmount
+            )}
           </styledEl.SavingsValue>
         </styledEl.SavingsRow>
 
@@ -72,7 +103,13 @@ export function OutcomeWithWaivedFeeAndCow({
             <Trans>No volume fee</Trans>
           </styledEl.SavingsLabel>
           <styledEl.SavingsValue>
-            +<styledEl.SavingsAmount>{volumeFeeSaved}</styledEl.SavingsAmount>
+            {volumeFeeSavedTitle ? (
+              <styledEl.AmountTooltip content={volumeFeeSavedTitle} disableHoverablePopup placement="top">
+                {volumeFeeSavedAmount}
+              </styledEl.AmountTooltip>
+            ) : (
+              volumeFeeSavedAmount
+            )}
           </styledEl.SavingsValue>
         </styledEl.SavingsRow>
       </styledEl.SavingsBox>

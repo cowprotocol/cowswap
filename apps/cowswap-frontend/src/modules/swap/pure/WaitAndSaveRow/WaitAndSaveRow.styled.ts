@@ -153,7 +153,9 @@ export const TooltipContent = styled.div`
 `
 
 export const DocsLink = styled(ExternalLink)`
-  ${font('FONT_SMALL_PLUS', 'medium')}
+  font-size: inherit;
+  line-height: inherit;
+  font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
   color: var(${UI.COLOR_TEXT});
   text-decoration: underline;
   text-decoration-skip-ink: auto;

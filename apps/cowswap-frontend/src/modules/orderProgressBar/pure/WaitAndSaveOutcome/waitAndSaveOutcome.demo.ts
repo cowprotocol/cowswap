@@ -20,8 +20,11 @@ export const WAIT_AND_SAVE_WITH_WAIVED_FEE_AND_COW_FIAT_DEMO: Extract<
 > = {
   variant: 'withWaivedFeeAndCow',
   priceImprovement: '$4.50',
+  priceImprovementTitle: '0.001234567890123456 WETH',
   totalSaved: '$4.80',
+  totalSavedTitle: '0.001316871349464753 WETH',
   volumeFeeSaved: WAIT_AND_SAVE_HARDCODED_VOLUME_FEE_SAVED_FIAT,
+  volumeFeeSavedTitle: '0.000082303459341297 WETH',
 }
 
 export const WAIT_AND_SAVE_WITH_WAIVED_FEE_AND_COW_TOKEN_DEMO: Extract<

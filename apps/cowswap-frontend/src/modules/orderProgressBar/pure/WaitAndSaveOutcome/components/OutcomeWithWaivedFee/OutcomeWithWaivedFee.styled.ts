@@ -16,7 +16,6 @@ export const CompactBox = styled.div`
 
 export const CompactText = styled.span`
   ${font('FONT_NORMAL', 'regular')}
-  line-height: 1;
   color: var(${UI.COLOR_SUCCESS_TEXT});
   text-align: center;
 `
