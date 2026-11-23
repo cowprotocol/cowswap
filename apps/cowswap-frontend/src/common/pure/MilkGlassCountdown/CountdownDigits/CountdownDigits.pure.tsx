@@ -29,7 +29,7 @@ export function CountdownDigits({ remainingSec }: CountdownDigitsProps): ReactNo
 
   return (
     <>
-      <styledEl.VisuallyHidden role="timer" aria-live="polite" aria-atomic="true">
+      <styledEl.VisuallyHidden role="timer">
         {minutes > 0 ? (
           <>
             <Plural value={minutes} one="# minute" other="# minutes" />{' '}
