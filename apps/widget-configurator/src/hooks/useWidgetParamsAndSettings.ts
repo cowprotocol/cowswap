@@ -2,6 +2,7 @@ import { useEffect, useState, useTransition } from 'react'
 
 import { CowSwapWidgetParams, TradeType, WidgetHookEvents } from '@cowprotocol/widget-lib'
 
+import { getPrioritizedTokensParam } from '../components/forms/tokens/TokensSectionForm.utils'
 import { scopeConfiguratorAppCode } from '../configurator.constants'
 import { ConfiguratorState } from '../configurator.types'
 import { CONFIGURATOR_DEFAULT_WIDGET_BASE_URL } from '../utils/base-url/baseUrl'
@@ -49,6 +50,7 @@ function buildWidgetParams(configuratorState: ConfiguratorState | null): CowSwap
     buyTokenAmount,
     tokenListUrls,
     customTokens,
+    prioritizedTokensText,
 
     // Theme Colors:
 
@@ -133,6 +135,7 @@ function buildWidgetParams(configuratorState: ConfiguratorState | null): CowSwap
     buyTokenLists: getTokenListsParam(tokenListUrls, 'enabledForBuy'),
     tokenLists: getTokenListsParam(tokenListUrls, 'enabled'),
     customTokens,
+    prioritizedTokens: getPrioritizedTokensParam(prioritizedTokensText),
 
     // Theme Colors:
 
