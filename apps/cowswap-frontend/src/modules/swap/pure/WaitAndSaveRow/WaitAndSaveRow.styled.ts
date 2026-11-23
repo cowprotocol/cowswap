@@ -14,6 +14,15 @@ const starTogglePop = keyframes`
   }
 `
 
+const batchTimeShimmer = keyframes`
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+`
+
 export const Wrapper = styled.div<{ $hasError?: boolean }>`
   display: flex;
   align-items: center;
@@ -118,6 +127,27 @@ export const NextBatch = styled.span`
   color: var(${UI.COLOR_TEXT_SECONDARY});
 `
 
+export const BatchTimeSkeleton = styled.span`
+  display: inline-block;
+  width: 3.5em;
+  height: 1em;
+  vertical-align: -0.15em;
+  border-radius: 4px;
+  background-color: color-mix(in srgb, var(${UI.COLOR_PAPER_DARKER}) 48%, transparent);
+  background-image: linear-gradient(
+    105deg,
+    transparent 28%,
+    color-mix(in srgb, var(${UI.COLOR_TEXT}) 12%, transparent) 50%,
+    transparent 72%
+  );
+  background-size: 220% 100%;
+  animation: ${batchTimeShimmer} 2.8s ease-in-out infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+`
+
 export const ErrorColumn = styled.span`
   display: flex;
   flex-direction: column;
@@ -138,6 +168,11 @@ export const RetryButton = styled.button`
   color: var(${UI.COLOR_DANGER_TEXT});
   cursor: pointer;
   text-decoration: underline;
+`
+
+export const FetchingBatchTime = styled.span`
+  ${font('FONT_SMALL_PLUS', 600)}
+  color: var(${UI.COLOR_DANGER_TEXT});
 `
 
 export const WaitAndSaveToggle = styled(Toggle)`

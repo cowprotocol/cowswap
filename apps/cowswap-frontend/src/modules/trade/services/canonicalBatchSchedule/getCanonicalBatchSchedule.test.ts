@@ -1,59 +1,82 @@
-import { getMockCanonicalBatchSchedule, mapCanonicalBatchSchedule } from './getCanonicalBatchSchedule'
+import {
+  CanonicalBatchSchedule,
+  getOptimisticCanonicalBatchSchedule,
+  mapCanonicalBatchSchedule,
+} from './getCanonicalBatchSchedule'
+
+const schedule: CanonicalBatchSchedule = {
+  nextBatch: 1_700_000_240,
+  nextBatchValidTo: 1_700_000_600,
+  intervalSeconds: 300,
+}
 
 describe('mapCanonicalBatchSchedule', () => {
-  it('anchors the countdown to the client clock using secondsUntilNextBatch', () => {
-    const nowMs = 1_700_000_000_000
-
+  it('uses nextBatch as the countdown target even when secondsUntilNextBatch differs', () => {
     expect(
-      mapCanonicalBatchSchedule(
-        {
-          intervalSeconds: 300,
-          nextBatch: 1_700_000_240,
-          secondsUntilNextBatch: 55,
-          nextBatchValidTo: 1_700_000_600,
-          nextBatchExpiration: 1_700_000_535,
-        },
-        nowMs,
-      ),
+      mapCanonicalBatchSchedule({
+        intervalSeconds: 300,
+        nextBatch: 1_700_000_240,
+        secondsUntilNextBatch: 55,
+        nextBatchValidTo: 1_700_000_900,
+      }),
     ).toEqual({
       nextBatch: 1_700_000_240,
-      secondsUntilNextBatch: 55,
-      countdownTargetEpochSec: 1_700_000_000 + 55,
-      nextBatchValidTo: 1_700_000_600,
-      nextBatchExpiration: 1_700_000_535,
+      nextBatchValidTo: 1_700_000_900,
+      intervalSeconds: 300,
     })
   })
 
-  it('derives nextBatchValidTo and nextBatchExpiration until the orderbook returns them', () => {
-    const nowMs = 1_700_000_000_000
+  it('takes nextBatchValidTo from the response', () => {
     const nextBatch = 1_700_000_240
     const intervalSeconds = 300
+    const nextBatchValidTo = 1_700_000_900
 
     expect(
-      mapCanonicalBatchSchedule(
-        {
-          intervalSeconds,
-          nextBatch,
-          secondsUntilNextBatch: 55,
-        },
-        nowMs,
-      ),
-    ).toMatchObject({
-      nextBatchValidTo: nextBatch + intervalSeconds + 60,
-      nextBatchExpiration: nextBatch + intervalSeconds - 5,
-    })
+      mapCanonicalBatchSchedule({
+        intervalSeconds,
+        nextBatch,
+        secondsUntilNextBatch: 55,
+        nextBatchValidTo,
+      }).nextBatchValidTo,
+    ).toBe(nextBatchValidTo)
+  })
+
+  it('throws when the body is invalid', () => {
+    const invalidBodies: unknown[] = [
+      {},
+      { nextBatch: 1_700_000_240, secondsUntilNextBatch: 55, intervalSeconds: 300 },
+      { nextBatchValidTo: 1_700_000_900, secondsUntilNextBatch: 55, intervalSeconds: 300 },
+      { nextBatch: 1_700_000_240, nextBatchValidTo: 1_700_000_900 },
+      { nextBatch: 1_700_000_240, nextBatchValidTo: 1_700_000_900, intervalSeconds: 0 },
+      { nextBatch: 1_700_000_240, nextBatchValidTo: 1_700_000_900, intervalSeconds: -300 },
+    ]
+
+    for (const body of invalidBodies) {
+      expect(() => mapCanonicalBatchSchedule(body)).toThrow('canonical_batch_schedule response is invalid')
+    }
   })
 })
 
-describe('getMockCanonicalBatchSchedule', () => {
-  it('returns a batch a few minutes ahead of now', () => {
-    const nowMs = 1_700_000_000_000
-    const schedule = getMockCanonicalBatchSchedule(nowMs)
+describe('getOptimisticCanonicalBatchSchedule', () => {
+  it('keeps the schedule while the batch is still ahead', () => {
+    expect(getOptimisticCanonicalBatchSchedule(schedule, 1_700_000_239_000)).toEqual(schedule)
+  })
 
-    expect(schedule.secondsUntilNextBatch).toBe(180)
-    expect(schedule.nextBatch).toBe(1_700_000_000 + 180)
-    expect(schedule.countdownTargetEpochSec).toBe(1_700_000_000 + 180)
-    expect(schedule.nextBatchValidTo).toBe(schedule.nextBatch + 180 + 60)
-    expect(schedule.nextBatchExpiration).toBe(schedule.nextBatchValidTo - 60 - 5)
+  it('steps one interval forward when the batch is due', () => {
+    expect(getOptimisticCanonicalBatchSchedule(schedule, schedule.nextBatch * 1_000)).toEqual({
+      nextBatch: schedule.nextBatch + schedule.intervalSeconds,
+      nextBatchValidTo: schedule.nextBatchValidTo + schedule.intervalSeconds,
+      intervalSeconds: schedule.intervalSeconds,
+    })
+  })
+
+  it('steps across the intervals that passed before the refetch resolves', () => {
+    const nowMs = (schedule.nextBatch + schedule.intervalSeconds + 10) * 1_000
+
+    expect(getOptimisticCanonicalBatchSchedule(schedule, nowMs)).toEqual({
+      nextBatch: schedule.nextBatch + schedule.intervalSeconds * 2,
+      nextBatchValidTo: schedule.nextBatchValidTo + schedule.intervalSeconds * 2,
+      intervalSeconds: schedule.intervalSeconds,
+    })
   })
 })

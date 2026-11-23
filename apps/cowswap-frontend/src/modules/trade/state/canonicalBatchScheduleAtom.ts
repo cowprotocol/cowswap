@@ -7,13 +7,13 @@ import { atomWithQuery } from 'jotai-tanstack-query'
 
 import {
   CanonicalBatchSchedule,
-  // fetchCanonicalBatchSchedule,
-  getMockCanonicalBatchSchedule,
+  fetchCanonicalBatchSchedule,
+  getOptimisticCanonicalBatchSchedule,
 } from '../services/canonicalBatchSchedule/getCanonicalBatchSchedule'
 
 /**
  * Orderbook canonical batch schedule for Wait & Save.
- * Refetches when `nextBatchExpiration` passes and when chainId changes.
+ * Refetches when `nextBatch` is due and when chainId changes.
  */
 export const canonicalBatchScheduleQueryAtom = atomWithQuery<CanonicalBatchSchedule | null>((get) => {
   const { chainId } = get(walletInfoAtom)
@@ -27,30 +27,34 @@ export const canonicalBatchScheduleQueryAtom = atomWithQuery<CanonicalBatchSched
         return null
       }
 
-      // TODO(orderbook canonical_batch_schedule): remove the mock and uncomment the fetch.
-      // return fetchCanonicalBatchSchedule(chainId)
-      return getMockCanonicalBatchSchedule()
+      return fetchCanonicalBatchSchedule(chainId)
     },
-    // TODO(orderbook): `nextBatchExpiration` should come from the schedule response
-    // (nextBatchValidTo - minValidity - ~5s). Refetch then, because the held batch is too late to sign.
+    // Refetch when this batch is due. Readers use the optimistic schedule until the response arrives.
     refetchInterval: (query) => {
       const schedule = query.state.data
       if (!schedule) {
         return false
       }
 
-      return Math.max(1_000, schedule.nextBatchExpiration * 1_000 - Date.now())
+      return Math.max(1_000, schedule.nextBatch * 1_000 - Date.now())
     },
     staleTime: 0,
   }
 })
 
-export const canonicalBatchNextBatchAtom = atom((get): number | undefined => {
-  return get(canonicalBatchScheduleQueryAtom).data?.nextBatch
+/** Server schedule rolled forward once `nextBatch` is due, until the refetch resolves. */
+export const canonicalBatchScheduleAtom = atom((get): CanonicalBatchSchedule | undefined => {
+  const schedule = get(canonicalBatchScheduleQueryAtom).data
+
+  if (!schedule) {
+    return undefined
+  }
+
+  return getOptimisticCanonicalBatchSchedule(schedule)
 })
 
-export const canonicalBatchCountdownTargetAtom = atom((get): number | undefined => {
-  return get(canonicalBatchScheduleQueryAtom).data?.countdownTargetEpochSec
+export const canonicalBatchNextBatchAtom = atom((get): number | undefined => {
+  return get(canonicalBatchScheduleAtom)?.nextBatch
 })
 
 export const isCanonicalBatchScheduleErrorAtom = atom((get): boolean => {

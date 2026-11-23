@@ -10,7 +10,7 @@ import { SettingsInput, SettingsFeedback } from '@cowprotocol/ui'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
-import { canonicalBatchCountdownTargetAtom, useIsWaitAndSaveAvailable, waitAndSaveEnabledAtom } from 'modules/trade'
+import { canonicalBatchNextBatchAtom, useIsWaitAndSaveAvailable, waitAndSaveEnabledAtom } from 'modules/trade'
 
 import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 'common/utils/tradeSettingsTooltips'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
@@ -28,7 +28,7 @@ export function DeadlineTransactionSettings({ deadlineState }: DeadlineSettingsP
   const nativeCurrency = useNativeCurrency()
   const isWaitAndSaveAvailable = useIsWaitAndSaveAvailable()
   const isWaitAndSaveEnabled = useAtomValue(waitAndSaveEnabledAtom)
-  const countdownTargetEpochSec = useAtomValue(canonicalBatchCountdownTargetAtom)
+  const countdownTargetEpochSec = useAtomValue(canonicalBatchNextBatchAtom)
 
   const showWaitForCows = isWaitAndSaveAvailable && isWaitAndSaveEnabled
   const hasCountdownTarget = countdownTargetEpochSec !== undefined

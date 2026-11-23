@@ -1,107 +1,88 @@
 import { normalizeError } from '@cowprotocol/common-utils'
-import { ORDER_BOOK_PROD_CONFIG, ORDER_BOOK_STAGING_CONFIG, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { orderBookApi } from 'cowSdk'
+// import { backendEnv } from '@cowprotocol/common-utils'
+// import { orderBookApi } from 'cowSdk'
+import { z } from 'zod'
 
-/** Client-anchored view of the schedule for the countdown and order `validTo`. */
-export interface CanonicalBatchSchedule {
-  nextBatch: number
-  countdownTargetEpochSec: number
-  secondsUntilNextBatch: number
-  nextBatchValidTo: number
-  nextBatchExpiration: number
-}
+// const CANONICAL_BATCH_SCHEDULE_PATH = '/api/v1/canonical_batch_schedule'
+/** Temporary until canonical_batch_schedule is on the env-resolved orderbook host. */
+const CANONICAL_BATCH_SCHEDULE_URL = 'https://barn.api.cow.fi/linea/api/v1/canonical_batch_schedule'
 
-/**
- * TODO(orderbook canonical_batch_schedule): the live response should also include
- * `nextBatchValidTo` and `nextBatchExpiration`. Until that ships they are derived below
- * and the query uses `getMockCanonicalBatchSchedule` instead of `fetchCanonicalBatchSchedule`.
- * Delete the mock and the derivation once those fields are returned.
- */
-export interface CanonicalBatchScheduleResponse {
-  intervalSeconds: number
-  nextBatch: number
-  secondsUntilNextBatch: number
-  /** Earliest signed `validTo` that still clears the next canonical batch, including a skipped one. */
-  nextBatchValidTo?: number
-  /** Unix seconds after which this schedule must be refetched. */
-  nextBatchExpiration?: number
-}
+const unixSecondsSchema = z.number().finite()
 
-const CANONICAL_BATCH_SCHEDULE_PATH = '/api/v1/canonical_batch_schedule'
+/** Orderbook fields we keep; extra JSON keys such as `secondsUntilNextBatch` are stripped. */
+const canonicalBatchScheduleSchema = z.object({
+  nextBatch: unixSecondsSchema,
+  /** Earliest signed `validTo` that still clears the next canonical batch, including a skipped one and accounting for min validity. */
+  nextBatchValidTo: unixSecondsSchema,
+  intervalSeconds: z.number().finite().positive(),
+})
 
-/** Temporary mock horizon until the schedule endpoint is deployed. Remove with the mock queryFn. */
-const MOCK_SECONDS_UNTIL_NEXT_BATCH = 180
-
-/**
- * Orderbook default `min_order_validity_period`.
- * TODO(orderbook): remove once `nextBatchValidTo` / `nextBatchExpiration` are on the response.
- */
-const ORDERBOOK_MIN_ORDER_VALIDITY_SECONDS = 60
-
-/** Slack before `nextBatchValidTo` so a refetch lands before the signed order would miss the batch. */
-const NEXT_BATCH_REFRESH_BUFFER_SECONDS = 5
+/** Canonical batch used as the countdown and as the `validTo` anchor. */
+export type CanonicalBatchSchedule = z.infer<typeof canonicalBatchScheduleSchema>
 
 export async function fetchCanonicalBatchSchedule(chainId: SupportedChainId): Promise<CanonicalBatchSchedule> {
-  const baseUrl = getOrderBookBaseUrl(chainId)
-  const response = await fetch(`${baseUrl}${CANONICAL_BATCH_SCHEDULE_PATH}`)
+  // Temporary: the schedule endpoint only exists on barn Linea.
+  if (chainId !== SupportedChainId.LINEA) {
+    throw new Error(`canonical_batch_schedule is not available on chain ${chainId}`)
+  }
+
+  // const baseUrl = getOrderBookBaseUrl(chainId)
+  // const response = await fetch(`${baseUrl}${CANONICAL_BATCH_SCHEDULE_PATH}`)
+  const response = await fetch(CANONICAL_BATCH_SCHEDULE_URL)
 
   if (!response.ok) {
     throw new Error(`canonical_batch_schedule failed with ${response.status}`)
   }
 
-  const body = (await response.json()) as CanonicalBatchScheduleResponse
-  assertCanonicalBatchScheduleResponse(body)
-
-  return mapCanonicalBatchSchedule(body)
+  return mapCanonicalBatchSchedule(await response.json())
 }
 
-export function getMockCanonicalBatchSchedule(nowMs: number = Date.now()): CanonicalBatchSchedule {
-  // TODO(orderbook canonical_batch_schedule): delete this mock and call fetchCanonicalBatchSchedule.
-  return mapCanonicalBatchSchedule(
-    {
-      intervalSeconds: MOCK_SECONDS_UNTIL_NEXT_BATCH,
-      nextBatch: Math.floor(nowMs / 1000) + MOCK_SECONDS_UNTIL_NEXT_BATCH,
-      secondsUntilNextBatch: MOCK_SECONDS_UNTIL_NEXT_BATCH,
-    },
-    nowMs,
-  )
-}
-
-export function mapCanonicalBatchSchedule(
-  response: CanonicalBatchScheduleResponse,
+/**
+ * Once `nextBatch` is due, step it and `nextBatchValidTo` forward by whole intervals.
+ * Callers keep a future batch while the refetch is still in flight. The offset between the two
+ * timestamps stays put, because the orderbook already baked min validity into `nextBatchValidTo`.
+ */
+export function getOptimisticCanonicalBatchSchedule(
+  schedule: CanonicalBatchSchedule,
   nowMs: number = Date.now(),
 ): CanonicalBatchSchedule {
-  const countdownTargetEpochSec = Math.floor(nowMs / 1000) + response.secondsUntilNextBatch
-  // Survives missing the current batch: validTo must reach the following batch plus min validity.
-  const derivedNextBatchValidTo = response.nextBatch + response.intervalSeconds + ORDERBOOK_MIN_ORDER_VALIDITY_SECONDS
-  const nextBatchValidTo = response.nextBatchValidTo ?? derivedNextBatchValidTo
-  const nextBatchExpiration =
-    response.nextBatchExpiration ??
-    nextBatchValidTo - ORDERBOOK_MIN_ORDER_VALIDITY_SECONDS - NEXT_BATCH_REFRESH_BUFFER_SECONDS
+  const nowSec = Math.floor(nowMs / 1000)
+
+  if (nowSec < schedule.nextBatch) {
+    return schedule
+  }
+
+  const elapsedIntervals = Math.floor((nowSec - schedule.nextBatch) / schedule.intervalSeconds) + 1
+  const shiftSeconds = elapsedIntervals * schedule.intervalSeconds
 
   return {
-    nextBatch: response.nextBatch,
-    secondsUntilNextBatch: response.secondsUntilNextBatch,
-    countdownTargetEpochSec,
-    nextBatchValidTo,
-    nextBatchExpiration,
+    intervalSeconds: schedule.intervalSeconds,
+    nextBatch: schedule.nextBatch + shiftSeconds,
+    nextBatchValidTo: schedule.nextBatchValidTo + shiftSeconds,
   }
 }
 
-function assertCanonicalBatchScheduleResponse(body: CanonicalBatchScheduleResponse): void {
-  if (
-    typeof body.intervalSeconds !== 'number' ||
-    typeof body.nextBatch !== 'number' ||
-    typeof body.secondsUntilNextBatch !== 'number'
-  ) {
+export function mapCanonicalBatchSchedule(response: unknown): CanonicalBatchSchedule {
+  const parsed = canonicalBatchScheduleSchema.safeParse(response)
+
+  if (!parsed.success) {
     throw normalizeError(new Error('canonical_batch_schedule response is invalid'))
   }
+
+  return parsed.data
 }
 
-function getOrderBookBaseUrl(chainId: SupportedChainId): string {
-  const { baseUrls, env } = orderBookApi.context
-  const urls = baseUrls ?? (env === 'prod' ? ORDER_BOOK_PROD_CONFIG : ORDER_BOOK_STAGING_CONFIG)
-
-  return urls[chainId]
-}
+// /** `getApiBaseUrls` is private; `getOrderLink` is the public resolver for the same base. */
+// function getOrderBookBaseUrl(chainId: SupportedChainId): string {
+//   const orderLink = orderBookApi.getOrderLink('', { chainId, env: backendEnv })
+//   const ordersPath = '/api/v1/orders/'
+//   const ordersPathIndex = orderLink.lastIndexOf(ordersPath)
+//
+//   if (ordersPathIndex === -1) {
+//     throw normalizeError(new Error(`canonical_batch_schedule has no orderbook URL for chain ${chainId}`))
+//   }
+//
+//   return orderLink.slice(0, ordersPathIndex)
+// }

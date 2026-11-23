@@ -9,7 +9,7 @@ import { useCountdown } from '@cowprotocol/common-hooks'
 
 import { render } from '@testing-library/react'
 
-import { canonicalBatchCountdownTargetAtom, useIsWaitAndSaveAvailable, waitAndSaveEnabledAtom } from 'modules/trade'
+import { canonicalBatchNextBatchAtom, useIsWaitAndSaveAvailable, waitAndSaveEnabledAtom } from 'modules/trade'
 
 import { DeadlineTransactionSettings } from './DeadlineTransactionSettings.container'
 
@@ -30,7 +30,7 @@ jest.mock('modules/trade', () => {
   const { atom } = jest.requireActual('jotai')
 
   return {
-    canonicalBatchCountdownTargetAtom: atom(undefined),
+    canonicalBatchNextBatchAtom: atom(undefined),
     waitAndSaveEnabledAtom: atom(false),
     useIsWaitAndSaveAvailable: jest.fn(),
   }
@@ -59,7 +59,7 @@ function renderSettings({ isWaitAndSaveAvailable, isWaitAndSaveEnabled }: Scenar
   useIsWaitAndSaveAvailableMock.mockReturnValue(isWaitAndSaveAvailable)
 
   const store = createStore()
-  store.set(canonicalBatchCountdownTargetAtom, COUNTDOWN_TARGET)
+  store.set(canonicalBatchNextBatchAtom, COUNTDOWN_TARGET)
   store.set(waitAndSaveEnabledAtom, isWaitAndSaveEnabled)
 
   render(

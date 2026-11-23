@@ -13,11 +13,10 @@ const WAIT_AND_SAVE_VALID_TO_ENTROPY_SECONDS = 30
 
 /**
  * Schedule anchors for a Wait for CoWs order.
- * `nextBatchValidTo` is the orderbook floor (min validity + skip buffer). Until that field
- * is on the schedule response it is derived in `mapCanonicalBatchSchedule`.
  */
 export interface WaitAndSaveValidToAnchor {
   nextBatch: number
+  /** Earliest signed `validTo` that still clears the next canonical batch, including a skipped one and accounting for min validity. */
   nextBatchValidTo: number
 }
 

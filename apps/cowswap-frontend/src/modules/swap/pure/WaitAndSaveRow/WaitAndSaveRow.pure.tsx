@@ -6,6 +6,8 @@ import { TooltipIcon } from '@cowprotocol/ui'
 import { Trans, useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
+import { ThreeDots } from 'common/pure/ThreeDots/ThreeDots.pure'
+
 import * as styledEl from './WaitAndSaveRow.styled'
 
 export interface WaitAndSaveRowProps {
@@ -13,6 +15,8 @@ export interface WaitAndSaveRowProps {
   toggle: () => void
   joinsBatchInRef: RefObject<HTMLElement | null>
   isScheduleError: boolean
+  isScheduleLoading: boolean
+  isScheduleFetching: boolean
   onRetry: () => void
 }
 
@@ -21,10 +25,13 @@ export function WaitAndSaveRow({
   toggle,
   joinsBatchInRef,
   isScheduleError,
+  isScheduleLoading,
+  isScheduleFetching,
   onRetry,
 }: WaitAndSaveRowProps): ReactNode {
   const { t } = useLingui()
   const [starSpinKey, setStarSpinKey] = useState(0)
+  const isRetrying = isScheduleError && isScheduleFetching
 
   const handleToggle = (): void => {
     if (!isEnabled) {
@@ -59,9 +66,16 @@ export function WaitAndSaveRow({
                 <styledEl.ScheduleError>
                   <Trans>Couldn’t load the next batch time</Trans>
                 </styledEl.ScheduleError>
-                <styledEl.RetryButton type="button" onClick={onRetry}>
-                  <Trans>Try again</Trans>
-                </styledEl.RetryButton>
+                {isRetrying ? (
+                  <styledEl.FetchingBatchTime>
+                    <Trans>Fetching batch time</Trans>
+                    <ThreeDots />
+                  </styledEl.FetchingBatchTime>
+                ) : (
+                  <styledEl.RetryButton type="button" onClick={onRetry}>
+                    <Trans>Try again</Trans>
+                  </styledEl.RetryButton>
+                )}
               </styledEl.ErrorColumn>
             ) : (
               <>
@@ -69,9 +83,15 @@ export function WaitAndSaveRow({
                   <Trans>Save $2.50</Trans>
                 </styledEl.SaveAmount>
                 <styledEl.NextBatch>
-                  <Trans>
-                    · Joins batch in <span ref={joinsBatchInRef} />
-                  </Trans>
+                  {isScheduleLoading ? (
+                    <Trans>
+                      · Joins batch in <styledEl.BatchTimeSkeleton aria-hidden />
+                    </Trans>
+                  ) : (
+                    <Trans>
+                      · Joins batch in <span ref={joinsBatchInRef} />
+                    </Trans>
+                  )}
                 </styledEl.NextBatch>
               </>
             )}

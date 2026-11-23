@@ -5,8 +5,8 @@ export * from './state/tradeTypeAtom'
 export { waitAndSaveEnabledAtom } from './state/waitAndSaveEnabledAtom'
 export {
   canonicalBatchScheduleQueryAtom,
+  canonicalBatchScheduleAtom,
   canonicalBatchNextBatchAtom,
-  canonicalBatchCountdownTargetAtom,
   isCanonicalBatchScheduleErrorAtom,
 } from './state/canonicalBatchScheduleAtom'
 export { useIsWaitAndSaveAvailable } from './hooks/useIsWaitAndSaveAvailable'

@@ -5,7 +5,7 @@ import { useCountdown } from '@cowprotocol/common-hooks'
 import { formatBatchCountdown } from '@cowprotocol/common-utils'
 
 import {
-  canonicalBatchCountdownTargetAtom,
+  canonicalBatchNextBatchAtom,
   canonicalBatchScheduleQueryAtom,
   isCanonicalBatchScheduleErrorAtom,
   waitAndSaveEnabledAtom,
@@ -16,9 +16,10 @@ import { WaitAndSaveRow } from '../../pure/WaitAndSaveRow/WaitAndSaveRow.pure'
 export function WaitAndSaveRowContainer(): ReactNode {
   const [isEnabled, setEnabled] = useAtom(waitAndSaveEnabledAtom)
   const joinsBatchInRef = useRef<HTMLElement | null>(null)
-  const countdownTargetEpochSec = useAtomValue(canonicalBatchCountdownTargetAtom)
+  const countdownTargetEpochSec = useAtomValue(canonicalBatchNextBatchAtom)
   const isScheduleError = useAtomValue(isCanonicalBatchScheduleErrorAtom)
-  const { refetch } = useAtomValue(canonicalBatchScheduleQueryAtom)
+  const { refetch, isFetching } = useAtomValue(canonicalBatchScheduleQueryAtom)
+  const isScheduleLoading = !isScheduleError && countdownTargetEpochSec === undefined
 
   useEffect(() => {
     if (isScheduleError && isEnabled) {
@@ -28,7 +29,7 @@ export function WaitAndSaveRowContainer(): ReactNode {
 
   useCountdown({
     targetRef: joinsBatchInRef,
-    targetEpochSec: isScheduleError ? undefined : countdownTargetEpochSec,
+    targetEpochSec: isScheduleError || isScheduleLoading ? undefined : countdownTargetEpochSec,
     format: formatBatchCountdown,
   })
 
@@ -46,6 +47,8 @@ export function WaitAndSaveRowContainer(): ReactNode {
       toggle={toggle}
       joinsBatchInRef={joinsBatchInRef}
       isScheduleError={isScheduleError}
+      isScheduleLoading={isScheduleLoading}
+      isScheduleFetching={isFetching}
       onRetry={retry}
     />
   )
