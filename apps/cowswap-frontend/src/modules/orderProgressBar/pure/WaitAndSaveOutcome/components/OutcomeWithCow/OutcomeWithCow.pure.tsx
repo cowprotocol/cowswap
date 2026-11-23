@@ -57,9 +57,13 @@ export function OutcomeWithCow({
 
       <styledEl.SubRow>
         <styledEl.SubText>
-          <Trans>Better price than trading alone</Trans>
+          <Trans>
+            Better price than trading{' '}
+            <span className="noBreak">
+              alone <TooltipIcon type="info" title={t`Wait & save`} content={tooltipContent} />
+            </span>
+          </Trans>
         </styledEl.SubText>
-        <TooltipIcon type="info" title={t`Wait & save`} content={tooltipContent} />
       </styledEl.SubRow>
     </sharedStyledEl.Wrapper>
   )

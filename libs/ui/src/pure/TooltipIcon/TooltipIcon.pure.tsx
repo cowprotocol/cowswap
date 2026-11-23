@@ -69,7 +69,7 @@ export function TooltipIcon({ type, content, title, placement, interactive = fal
         <BottomDrawer isOpen={isDrawerOpen} onOpenChange={handleDrawerOpenChange} a11yTitle={drawerTitle}>
           <Modal.Root>
             <Modal.Header title={drawerTitle} titleAs={BottomDrawer.Title} onClose={closeDrawer} />
-            <Modal.Content>{content}</Modal.Content>
+            <styledEl.DrawerBody>{content}</styledEl.DrawerBody>
           </Modal.Root>
         </BottomDrawer>
       </>

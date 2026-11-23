@@ -30,9 +30,8 @@ export const SavingsLabel = styled.span`
   ${font('FONT_NORMAL_PLUS', 'regular')}
   color: var(${UI.COLOR_SUCCESS_TEXT});
 
-  > * {
+  .noBreak > * {
     vertical-align: middle;
-    margin-left: 4px;
   }
 `
 

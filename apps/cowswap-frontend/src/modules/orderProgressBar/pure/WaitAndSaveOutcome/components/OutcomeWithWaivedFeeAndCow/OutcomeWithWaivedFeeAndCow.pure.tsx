@@ -84,8 +84,12 @@ export function OutcomeWithWaivedFeeAndCow({
       <styledEl.SavingsBox>
         <styledEl.SavingsRow>
           <styledEl.SavingsLabel>
-            <Trans>Better price than trading alone</Trans>
-            <TooltipIcon type="info" title={t`Wait & save`} content={tooltipContent} />
+            <Trans>
+              Better price than trading{' '}
+              <span className="noBreak">
+                alone <TooltipIcon type="info" title={t`Wait & save`} content={tooltipContent} />
+              </span>
+            </Trans>
           </styledEl.SavingsLabel>
           <styledEl.SavingsValue>
             {priceImprovementTitle ? (
