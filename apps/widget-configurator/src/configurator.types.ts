@@ -43,6 +43,7 @@ export interface ConfiguratorFormValues {
   buyTokenAmount: number
   tokenListUrls: TokenListItem[]
   customTokens: TokenInfo[]
+  prioritizedTokensText: Partial<Record<SupportedChainId, string>>
 
   // Theme Colors:
 

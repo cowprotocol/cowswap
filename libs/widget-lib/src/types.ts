@@ -1,4 +1,4 @@
-import type { EnrichedOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
+import type { EnrichedOrder, SupportedChainId, TargetChainId } from '@cowprotocol/cow-sdk'
 import {
   CowWidgetEventListeners,
   CowWidgetEventPayloadMap,
@@ -359,6 +359,14 @@ export interface CowSwapWidgetParams {
    * Control the "Favorite tokens" section displaying in the token selector
    */
   hideFavoriteTokens?: boolean
+
+  /**
+   * Tokens moved up in the token selector list: right after the native token and the tokens the wallet holds,
+   * in this order, even with a zero balance. Only the order changes: no badge and no separate section,
+   * unlike "Favorite tokens".
+   * Keyed by chain id. Addresses missing from the active token lists are skipped (add them with `customTokens`).
+   */
+  prioritizedTokens?: Partial<Record<TargetChainId, string[]>>
 
   /**
    * Swap, Limit or Advanced (Twap).
