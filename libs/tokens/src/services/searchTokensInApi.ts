@@ -1,5 +1,5 @@
 import { BFF_BASE_URL } from '@cowprotocol/common-const'
-import { fetchWithTimeout, JSON_HEADERS, parseJsonResponse, unwrapOk } from '@cowprotocol/common-utils'
+import { bffFetch, JSON_HEADERS, parseJsonResponse, unwrapOk } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export interface TokenSearchFromApiResult {
@@ -27,7 +27,7 @@ export async function searchTokensInApi(
 ): Promise<TokenSearchFromApiResult[]> {
   if (!SEARCH_CHAINS.includes(chainId)) return []
 
-  const response = await fetchWithTimeout(`${BFF_BASE_URL}/proxies/token-search`, {
+  const response = await bffFetch(`${BFF_BASE_URL}/proxies/token-search`, {
     method: 'POST',
     headers: JSON_HEADERS,
     body: JSON.stringify({ chainId, searchQuery }),

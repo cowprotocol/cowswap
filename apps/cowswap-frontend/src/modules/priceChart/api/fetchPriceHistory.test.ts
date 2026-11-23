@@ -1,5 +1,5 @@
 import { BFF_BASE_URL } from '@cowprotocol/common-const'
-import { fetchWithTimeout } from '@cowprotocol/common-utils'
+import { bffFetch } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { fetchPriceHistory, type PriceHistoryQuery } from './fetchPriceHistory'
@@ -8,7 +8,7 @@ import type { CandleInterval } from '../lib/priceChart.types'
 
 jest.mock('@cowprotocol/common-utils', () => ({
   createCowLogger: () => ({ debug: jest.fn(), error: jest.fn(), info: jest.fn(), warn: jest.fn() }),
-  fetchWithTimeout: jest.fn(),
+  bffFetch: jest.fn(),
 }))
 
 const QUERY: PriceHistoryQuery = {
@@ -18,7 +18,7 @@ const QUERY: PriceHistoryQuery = {
   to: 1710007200,
   interval: '7d',
 }
-const mockedFetch = jest.mocked(fetchWithTimeout)
+const mockedFetch = jest.mocked(bffFetch)
 
 function createResponse(body: unknown, status = 200): Response {
   return { ok: status >= 200 && status < 300, status, json: async () => body } as Response

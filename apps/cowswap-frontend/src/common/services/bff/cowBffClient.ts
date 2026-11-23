@@ -1,3 +1,4 @@
+import { bffFetch } from '@cowprotocol/common-utils'
 import { SlippageToleranceRequest, SlippageToleranceResponse } from '@cowprotocol/cow-sdk'
 
 const DEFAULT_TIMEOUT = 2000 // 2 sec
@@ -29,7 +30,7 @@ export class CoWBFFClient {
       const controller = new AbortController()
       const timeoutId = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT)
 
-      const response = await fetch(url, {
+      const response = await bffFetch(url, {
         method: 'GET',
         headers: {
           Accept: 'application/json',

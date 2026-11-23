@@ -1,20 +1,20 @@
 import { BFF_BASE_URL } from '@cowprotocol/common-const'
-import { fetchWithTimeout } from '@cowprotocol/common-utils'
+import { bffFetch } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { fetchTokenRestriction } from './fetchTokenRestriction'
 
 jest.mock('@cowprotocol/common-utils', () => ({
   ...jest.requireActual('@cowprotocol/common-utils'),
-  fetchWithTimeout: jest.fn(),
+  bffFetch: jest.fn(),
 }))
 
-const mockedFetchWithTimeout = jest.mocked(fetchWithTimeout)
+const mockedBffFetch = jest.mocked(bffFetch)
 
 const TOKEN_ADDRESS = '0x1234567890123456789012345678901234567890'
 
 function mockResponse(body: unknown, status = 200): void {
-  mockedFetchWithTimeout.mockResolvedValue({
+  mockedBffFetch.mockResolvedValue({
     ok: status >= 200 && status < 300,
     status,
     json: async () => body,
@@ -27,7 +27,7 @@ describe('fetchTokenRestriction', () => {
 
     await fetchTokenRestriction(SupportedChainId.MAINNET, TOKEN_ADDRESS, 'DE')
 
-    expect(mockedFetchWithTimeout).toHaveBeenCalledWith(
+    expect(mockedBffFetch).toHaveBeenCalledWith(
       `${BFF_BASE_URL}/get-token-restrictions/1/${TOKEN_ADDRESS}?countryCode=DE`,
       expect.objectContaining({ headers: { Accept: 'application/json' } }),
     )
