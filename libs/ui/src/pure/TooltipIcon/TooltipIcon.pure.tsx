@@ -15,16 +15,18 @@ import { TooltipPlacement } from '../Tooltip/Tooltip'
 export interface TooltipIconProps {
   type: TooltipIconType
   content: ReactNode
-  /** Drawer heading; defaults to a label derived from `type`. */
+  /** Accessible name and drawer heading; defaults to a label derived from `type`. */
   title?: string
   placement?: TooltipPlacement
+  /** Keep the popup open while hovering it so links inside remain clickable. */
+  interactive?: boolean
 }
 
 export type TooltipIconType = 'info' | 'alert' | 'help'
 
 const ICON_SIZE_PX = 14
 
-export function TooltipIcon({ type, content, title, placement }: TooltipIconProps): ReactNode {
+export function TooltipIcon({ type, content, title, placement, interactive = false }: TooltipIconProps): ReactNode {
   const isNarrowViewport = useMediaQuery(Media.upToExtraSmall(false))
   const hasFinePointer = useMediaQuery('(pointer: fine)')
   const shouldOpenInDrawer = isNarrowViewport || !hasFinePointer
@@ -32,6 +34,7 @@ export function TooltipIcon({ type, content, title, placement }: TooltipIconProp
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const drawerTitle = title ?? getDefaultDrawerTitle(type)
+  const HoverTooltip = interactive ? styledEl.InteractiveTooltip : styledEl.InstantTooltip
 
   const openDrawer = useCallback(() => {
     setIsDrawerOpen(true)
@@ -66,7 +69,7 @@ export function TooltipIcon({ type, content, title, placement }: TooltipIconProp
         <BottomDrawer isOpen={isDrawerOpen} onOpenChange={handleDrawerOpenChange} a11yTitle={drawerTitle}>
           <Modal.Root>
             <Modal.Header title={drawerTitle} titleAs={BottomDrawer.Title} onClose={closeDrawer} />
-            <Modal.Content>{content}</Modal.Content>
+            <styledEl.DrawerBody>{content}</styledEl.DrawerBody>
           </Modal.Root>
         </BottomDrawer>
       </>
@@ -74,9 +77,11 @@ export function TooltipIcon({ type, content, title, placement }: TooltipIconProp
   }
 
   return (
-    <styledEl.InstantTooltip content={content} placement={placement}>
-      {icon}
-    </styledEl.InstantTooltip>
+    <HoverTooltip content={content} placement={placement}>
+      <styledEl.TriggerButton type="button" aria-label={drawerTitle}>
+        {icon}
+      </styledEl.TriggerButton>
+    </HoverTooltip>
   )
 }
 
@@ -94,10 +99,10 @@ function getDefaultDrawerTitle(type: TooltipIconType): string {
 function TooltipTypeIcon({ type }: { type: TooltipIconType }): ReactNode {
   switch (type) {
     case 'info':
-      return <styledEl.InfoIcon size={ICON_SIZE_PX} />
+      return <styledEl.InfoIcon size={ICON_SIZE_PX} aria-hidden />
     case 'alert':
-      return <styledEl.AlertIcon size={ICON_SIZE_PX} />
+      return <styledEl.AlertIcon size={ICON_SIZE_PX} aria-hidden />
     case 'help':
-      return <styledEl.HelpIcon src={svgQuestionSrc} width={ICON_SIZE_PX} height={ICON_SIZE_PX} />
+      return <styledEl.HelpIcon src={svgQuestionSrc} width={ICON_SIZE_PX} height={ICON_SIZE_PX} aria-hidden />
   }
 }

@@ -1,8 +1,13 @@
 import { USDC_MAINNET, WETH_MAINNET } from '@cowprotocol/common-const'
 import { formatFiatAmount, formatTokenAmount } from '@cowprotocol/common-utils'
 import { CurrencyAmount } from '@cowprotocol/currency'
+import { getTokenAmountTitle } from '@cowprotocol/ui'
 
 import { buildWaitAndSaveOutcome, formatGainFiat } from './buildWaitAndSaveOutcome.utils'
+import {
+  WAIT_AND_SAVE_HARDCODED_VOLUME_FEE_SAVED_FIAT,
+  WAIT_AND_SAVE_HARDCODED_VOLUME_FEE_SAVED_USD,
+} from './waitAndSaveOutcome.constants'
 
 import type { PositiveAloneGain } from './deriveWaitAndSaveCompetition.utils'
 
@@ -11,6 +16,33 @@ const GAIN: PositiveAloneGain = {
   gainAmount: 50_000n,
   gainPercent: 5,
   winningBuyAmount: 1_050000n,
+}
+
+function fiatTitles(
+  token: typeof USDC_MAINNET,
+  gainAmountRaw: bigint,
+  fiatRaw: bigint,
+): {
+  priceImprovementTitle: string
+  totalSavedTitle: string
+  volumeFeeSavedTitle: string
+} {
+  const gainAmount = CurrencyAmount.fromRawAmount(token, gainAmountRaw.toString())
+  const fiatAmount = CurrencyAmount.fromRawAmount(token, fiatRaw.toString())
+  const feeFiat = CurrencyAmount.fromRawAmount(
+    token,
+    (
+      BigInt(Math.round(WAIT_AND_SAVE_HARDCODED_VOLUME_FEE_SAVED_USD * 100)) *
+      10n ** BigInt(Math.max(token.decimals - 2, 0))
+    ).toString(),
+  )
+  const feeAmount = gainAmount.multiply(feeFiat).divide(fiatAmount)
+
+  return {
+    priceImprovementTitle: getTokenAmountTitle({ amount: gainAmount, tokenSymbol: token }),
+    totalSavedTitle: getTokenAmountTitle({ amount: gainAmount.add(feeAmount), tokenSymbol: token }),
+    volumeFeeSavedTitle: getTokenAmountTitle({ amount: feeAmount, tokenSymbol: token }),
+  }
 }
 
 describe('formatGainFiat', () => {
@@ -31,25 +63,45 @@ describe('formatGainFiat', () => {
 })
 
 describe('buildWaitAndSaveOutcome', () => {
-  it('formats the hero with the token amount formatter and keeps the raw ratio', () => {
+  it('builds the comparison card with savings breakdown when fee waiver and comparison are both available', () => {
+    const fiatRaw = 4_500000n
     const outcome = buildWaitAndSaveOutcome({
       buyToken: USDC_MAINNET,
-      fiatAmount: CurrencyAmount.fromRawAmount(USDC_MAINNET, 4_500000n),
+      fiatAmount: CurrencyAmount.fromRawAmount(USDC_MAINNET, fiatRaw),
       gain: GAIN,
+      volumeFeeSavedFiat: WAIT_AND_SAVE_HARDCODED_VOLUME_FEE_SAVED_FIAT,
     })
+    const titles = fiatTitles(USDC_MAINNET, GAIN.gainAmount, fiatRaw)
 
-    expect(outcome.gainAmount).toBe(formatTokenAmount(CurrencyAmount.fromRawAmount(USDC_MAINNET, GAIN.gainAmount)))
-    expect(outcome.tradingAloneAmount).toBe(
-      formatTokenAmount(CurrencyAmount.fromRawAmount(USDC_MAINNET, GAIN.bestAloneBuyAmount)),
-    )
-    expect(outcome.gainFiat).toBe(`$${formatFiatAmount(CurrencyAmount.fromRawAmount(USDC_MAINNET, 4_500000n))}`)
-    expect(outcome.gainPercent).toBe(5)
-    expect(outcome.tokenSymbol).toBe('USDC')
-    expect(outcome.gainNumeric).toBe(0.05)
-    expect(outcome.tradingAloneNumeric).toBe(1)
+    expect(outcome).toEqual({
+      variant: 'withWaivedFeeAndCow',
+      priceImprovement: `$${formatFiatAmount(CurrencyAmount.fromRawAmount(USDC_MAINNET, fiatRaw))}`,
+      priceImprovementTitle: titles.priceImprovementTitle,
+      totalSaved: `$${formatFiatAmount(CurrencyAmount.fromRawAmount(USDC_MAINNET, 4_800000n))}`,
+      totalSavedTitle: titles.totalSavedTitle,
+      volumeFeeSaved: WAIT_AND_SAVE_HARDCODED_VOLUME_FEE_SAVED_FIAT,
+      volumeFeeSavedTitle: titles.volumeFeeSavedTitle,
+    })
   })
 
-  it('keeps a one-atom gain and omits the percent when the derivation has none', () => {
+  it('uses the token amount and symbol when fiat conversion is unavailable', () => {
+    const outcome = buildWaitAndSaveOutcome({
+      buyToken: WETH_MAINNET,
+      fiatAmount: null,
+      gain: GAIN,
+      volumeFeeSavedFiat: WAIT_AND_SAVE_HARDCODED_VOLUME_FEE_SAVED_FIAT,
+    })
+    const tokenAmount = formatTokenAmount(CurrencyAmount.fromRawAmount(WETH_MAINNET, GAIN.gainAmount))
+
+    expect(outcome).toEqual({
+      variant: 'withWaivedFeeAndCow',
+      priceImprovement: `${tokenAmount} WETH`,
+      totalSaved: `${tokenAmount} WETH`,
+      volumeFeeSaved: WAIT_AND_SAVE_HARDCODED_VOLUME_FEE_SAVED_FIAT,
+    })
+  })
+
+  it('builds the large comparison card when only a gain is available', () => {
     const outcome = buildWaitAndSaveOutcome({
       buyToken: WETH_MAINNET,
       fiatAmount: CurrencyAmount.fromRawAmount(USDC_MAINNET, 1n),
@@ -61,9 +113,34 @@ describe('buildWaitAndSaveOutcome', () => {
       },
     })
 
-    expect(outcome.gainAmount).toBe(formatTokenAmount(CurrencyAmount.fromRawAmount(WETH_MAINNET, 1n)))
-    expect(outcome.gainAmount).not.toBe('')
-    expect(outcome.gainPercent).toBeUndefined()
-    expect(outcome.gainFiat).toBe('<$0.01')
+    expect(outcome).toEqual({
+      variant: 'withCow',
+      gainAmount: formatTokenAmount(CurrencyAmount.fromRawAmount(WETH_MAINNET, 1n)),
+      tokenSymbol: 'WETH',
+    })
+  })
+
+  it('builds the compact fee-waiver banner when only a waived fee is available', () => {
+    const outcome = buildWaitAndSaveOutcome({
+      buyToken: USDC_MAINNET,
+      fiatAmount: null,
+      gain: undefined,
+      volumeFeeSavedFiat: WAIT_AND_SAVE_HARDCODED_VOLUME_FEE_SAVED_FIAT,
+    })
+
+    expect(outcome).toEqual({
+      variant: 'withWaivedFee',
+      volumeFeeSavedFiat: WAIT_AND_SAVE_HARDCODED_VOLUME_FEE_SAVED_FIAT,
+    })
+  })
+
+  it('returns undefined when neither a gain nor a waived fee is available', () => {
+    expect(
+      buildWaitAndSaveOutcome({
+        buyToken: USDC_MAINNET,
+        fiatAmount: null,
+        gain: undefined,
+      }),
+    ).toBeUndefined()
   })
 })
