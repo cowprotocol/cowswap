@@ -17,32 +17,20 @@ beforeEach(() => {
 })
 
 describe('useSolanaFlowOptions', () => {
-  it('defaults every option to false when LaunchDarkly resolved no flags', () => {
+  it('does not sponsor when LaunchDarkly resolved no flags', () => {
     mockUseFeatureFlags.mockReturnValue({})
 
     const { result } = renderHook(() => useSolanaFlowOptions())
 
-    expect(result.current).toEqual({
-      isSponsored: false,
-      isAtaCreationDisabled: false,
-      isSolanaAppDataEnabled: false,
-    })
+    expect(result.current).toEqual({ isSponsored: false })
   })
 
-  it('maps each flag onto its option for a surface that can sponsor', () => {
-    mockUseFeatureFlags.mockReturnValue({
-      isSolanaSponsoredOrdersEnabled: true,
-      isAtaCreationDisabled: true,
-      isSolanaAppDataEnabled: true,
-    })
+  it('sponsors a surface that can, with the flag on', () => {
+    mockUseFeatureFlags.mockReturnValue({ isSolanaSponsoredOrdersEnabled: true })
 
     const { result } = renderHook(() => useSolanaFlowOptions({ canSponsor: true }))
 
-    expect(result.current).toEqual({
-      isSponsored: true,
-      isAtaCreationDisabled: true,
-      isSolanaAppDataEnabled: true,
-    })
+    expect(result.current).toEqual({ isSponsored: true })
   })
 
   // Only the swap flow reaches `planCreateOrderStep`, which is what consumes the sponsor; a sponsored
@@ -58,7 +46,7 @@ describe('useSolanaFlowOptions', () => {
   // The options object is a dependency of the trade callbacks: a new identity per render would
   // rebuild them on every render of the widget.
   it('keeps the same object across renders while the flags do not change', () => {
-    mockUseFeatureFlags.mockReturnValue({ isSolanaAppDataEnabled: true })
+    mockUseFeatureFlags.mockReturnValue({ isSolanaSponsoredOrdersEnabled: true })
 
     const { result, rerender } = renderHook(() => useSolanaFlowOptions({ canSponsor: true }))
     const first = result.current

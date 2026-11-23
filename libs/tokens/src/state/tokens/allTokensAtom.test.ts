@@ -3,7 +3,7 @@ import { createStore } from 'jotai'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { areAddressesEqual, SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { allActiveTokensAtom, tokensByAddressAtom, tokensBySymbolAtom } from './allTokensAtom'
+import { allActiveTokensAtom, tokensByAddressAtom, tokensBySymbolAtom, userAddedTokensListAtom } from './allTokensAtom'
 import { favoriteTokensAtom } from './favoriteTokensAtom'
 import { addUserTokenAtom, userAddedTokensAtom } from './userAddedTokensAtom'
 
@@ -74,6 +74,53 @@ describe('allActiveTokensAtom', () => {
     const { tokens } = await store.get(allActiveTokensAtom)
 
     expect(tokens.find((token) => areAddressesEqual(token.address, TOKEN_ADDRESS))?.extensions).toEqual({ rank: 1 })
+  })
+})
+
+describe('user-added token that an active list ships', () => {
+  const LIST_SOURCE = 'https://example.com/list.json'
+
+  function setup(): ReturnType<typeof createStore> {
+    const store = createStore()
+    const chainId = SupportedChainId.MAINNET
+    store.set(addUserTokenAtom, [new TokenWithLogo(undefined, chainId, TOKEN_ADDRESS, 18, 'TEST', 'Imported')])
+    store.set(virtualListsStateAtom, {
+      [LIST_SOURCE]: {
+        source: LIST_SOURCE,
+        isEnabled: true,
+        list: {
+          name: 'List',
+          timestamp: '2026-11-17T00:00:00Z',
+          version: { major: 1, minor: 0, patch: 0 },
+          tokens: [{ chainId, address: TOKEN_ADDRESS, decimals: 18, symbol: 'TEST', name: 'Listed' }],
+        },
+      },
+    })
+
+    return store
+  }
+
+  it('is active with the list metadata and hidden from the user-added list', async () => {
+    const store = setup()
+
+    const { tokens } = await store.get(allActiveTokensAtom)
+
+    expect(tokens.filter((token) => areAddressesEqual(token.address, TOKEN_ADDRESS))).toMatchObject([
+      { name: 'Listed' },
+    ])
+    expect(await store.get(userAddedTokensListAtom)).toEqual([])
+  })
+
+  it('stays imported once the list is no longer active', async () => {
+    const store = setup()
+    await store.get(allActiveTokensAtom)
+
+    store.set(virtualListsStateAtom, {})
+
+    const { tokens } = await store.get(allActiveTokensAtom)
+
+    expect(tokens.find((token) => areAddressesEqual(token.address, TOKEN_ADDRESS))?.name).toBe('Imported')
+    expect((await store.get(userAddedTokensListAtom)).map((token) => token.name)).toEqual(['Imported'])
   })
 })
 

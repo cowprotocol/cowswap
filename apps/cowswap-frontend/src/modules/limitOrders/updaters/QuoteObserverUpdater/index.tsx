@@ -11,6 +11,8 @@ import { getPercentageRate, useDerivedTradeState } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { useUsdPrice } from 'modules/usdAmount/hooks/useUsdPrice'
 
+import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useSafeEffect } from 'common/hooks/useSafeMemo'
 
 import { useUpdateActiveRate } from '../../hooks/useUpdateActiveRate'
@@ -37,8 +39,11 @@ export function QuoteObserverUpdater(): null {
 
   useSafeEffect(() => {
     if (!percentageSelection || isLoading || !state?.inputCurrencyAmount) return
+
     const rate = getPercentageRate(price, percentageSelection.value, percentageSelection.isInverted)
+
     if (!rate || activeRate?.equalTo(rate)) return
+
     updateRate({
       activeRate: rate,
       percentageSelection,
@@ -68,19 +73,30 @@ function useSpotPrice(
 } {
   const inputUsdPrice = useUsdPrice(inputCurrency)
   const outputUsdPrice = useUsdPrice(outputCurrency)
+  const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
 
-  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   return useMemo(() => {
-    const isLoading = !!inputUsdPrice?.isLoading || !!outputUsdPrice?.isLoading
+    const pricesUnavailable = isProviderNetworkUnsupported || isProviderNetworkDeprecated
+    // Valid token with no atom entry yet is still in-flight (queue has not marked loading).
+    const awaitingPriceState =
+      !pricesUnavailable && Boolean((inputCurrency && !inputUsdPrice) || (outputCurrency && !outputUsdPrice))
+    const isLoading = awaitingPriceState || Boolean(inputUsdPrice?.isLoading || outputUsdPrice?.isLoading)
 
     if (!inputUsdPrice?.price || !outputUsdPrice?.price) {
       return { price: null, isLoading }
     }
+
     const inputFraction = FractionUtils.fromPrice(inputUsdPrice.price)
     const outputFraction = FractionUtils.fromPrice(outputUsdPrice.price)
 
-    const price = inputFraction.divide(outputFraction)
-
-    return { price, isLoading }
-  }, [inputUsdPrice?.price, inputUsdPrice?.isLoading, outputUsdPrice?.price, outputUsdPrice?.isLoading])
+    return { price: inputFraction.divide(outputFraction), isLoading }
+  }, [
+    inputUsdPrice,
+    outputUsdPrice,
+    inputCurrency,
+    outputCurrency,
+    isProviderNetworkUnsupported,
+    isProviderNetworkDeprecated,
+  ])
 }

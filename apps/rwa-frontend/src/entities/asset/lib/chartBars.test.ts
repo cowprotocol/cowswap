@@ -1,4 +1,4 @@
-import { alignCandles, pointsToCandles, withLatestPrice } from './chartBars'
+import { alignCandles, CHART_RESOLUTIONS, pointsToCandles, withLatestPrice } from './chartBars'
 
 describe('pointsToCandles', () => {
   it('turns every point into a flat candle', () => {
@@ -73,5 +73,18 @@ describe('withLatestPrice', () => {
   it('keeps the candles without a price or candles', () => {
     expect(withLatestPrice(CANDLES, null, AT_1800)).toBe(CANDLES)
     expect(withLatestPrice([], 14, AT_1800)).toEqual([])
+  })
+})
+
+describe('chart series end', () => {
+  it('ends the drawn series at the shown price, as the header shows it', () => {
+    const points = [
+      { time: 1_800_000_000, value: 107.1 },
+      { time: 1_800_000_300, value: 107.02 },
+    ]
+    const updatedAt = new Date((1_800_000_300 + 120) * 1000).toISOString()
+    const bars = alignCandles(withLatestPrice(pointsToCandles(points), 107.34, updatedAt), CHART_RESOLUTIONS.line['1D'])
+
+    expect(bars[bars.length - 1].close).toBe(107.34)
   })
 })

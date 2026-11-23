@@ -22,6 +22,8 @@ import {
   isGraffitiTheme,
 } from 'modules/graffitiWall'
 
+import { isViceTheme, viceThemeBackground, viceThemeCardCss, viceThemeFooterCss } from './viceTheme.styled'
+
 import type { PageBackgroundVariant } from '../../contexts/PageBackgroundContext'
 
 export function isChristmasTheme(theme?: CowSwapTheme): boolean {
@@ -106,6 +108,7 @@ export const FooterSlot = styled.div<{ customTheme?: CowSwapTheme }>`
   gap: 0;
 
   ${({ customTheme }) => graffitiWallFooterCss(customTheme)}
+  ${({ customTheme }) => viceThemeFooterCss(customTheme)}
 `
 
 export const BodyWrapper = styled.div<{
@@ -138,6 +141,10 @@ export const BodyWrapper = styled.div<{
         return 'transparent'
       }
 
+      if (isViceTheme(customTheme)) {
+        return viceThemeBackground(backgroundVariant !== 'nocows')
+      }
+
       const backgroundColor = theme.darkMode ? '#0E0F2D' : `var(${UI.COLOR_BLUE_300_PRIMARY})`
 
       return `${backgroundColor} ${sceneLayer(theme.darkMode, customTheme, backgroundVariant)}`
@@ -147,6 +154,8 @@ export const BodyWrapper = styled.div<{
 
   ${({ theme, customTheme, $fullBleed }) =>
     graffitiWallCardVeilCss({ customTheme, fullBleed: $fullBleed, paper: theme.paper })}
+
+  ${({ customTheme }) => viceThemeCardCss(customTheme)}
 
   ${Media.upToMedium()} {
     padding: ${({ theme, $hasActiveSpeechBubbleNotification }) =>

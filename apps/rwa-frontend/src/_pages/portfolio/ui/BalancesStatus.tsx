@@ -2,9 +2,9 @@ import type { ReactNode } from 'react'
 
 import styles from './Portfolio.module.css'
 
-import { formatUtcTime } from '../lib/formatUtcTime'
-
 import type { BalancesProgress } from '../model/usePortfolio'
+
+import { formatLocalTime } from '@/shared/lib/format'
 
 interface BalancesStatusProps {
   progress: BalancesProgress
@@ -33,7 +33,7 @@ export function BalancesStatus({ progress, onRefresh }: BalancesStatusProps): Re
           </span>
         </>
       ) : (
-        updatedAt !== null && <span className={styles.secondary}>Balances updated {formatUtcTime(updatedAt)}</span>
+        updatedAt !== null && <span className={styles.secondary}>Balances updated {formatLocalTime(updatedAt)}</span>
       )}
       <button
         type="button"

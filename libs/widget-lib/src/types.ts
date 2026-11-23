@@ -190,6 +190,7 @@ export enum WidgetMethodsListen {
   PROVIDER_RPC_RESPONSE = 'PROVIDER_RPC_RESPONSE',
   PROVIDER_ON_EVENT = 'PROVIDER_ON_EVENT',
   HOOK_RESULT = 'HOOK_RESULT',
+  CLOSE_ALL_MODALS = 'CLOSE_ALL_MODALS',
 }
 
 /**
@@ -743,6 +744,7 @@ export interface WidgetMethodsListenPayloadMap {
   [WidgetMethodsListen.PROVIDER_RPC_RESPONSE]: ProviderRpcResponsePayload
   [WidgetMethodsListen.PROVIDER_ON_EVENT]: ProviderOnEventPayload
   [WidgetMethodsListen.HOOK_RESULT]: WidgetHookResultPayload
+  [WidgetMethodsListen.CLOSE_ALL_MODALS]: void
 }
 
 export type WidgetMethodsListenPayloads = WidgetMethodsListenPayloadMap[WidgetMethodsListen]

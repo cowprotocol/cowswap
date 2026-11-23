@@ -33,7 +33,6 @@ Point the frontend at it with an absolute URL (the API allows any origin unless
 ```bash
 REACT_APP_GRAFFITI_API=http://localhost:3199/v1 \
 REACT_APP_SOLANA_CLUSTER=devnet \
-REACT_APP_BOOT_FEATURE_FLAGS='{"isSolanaEnabled":true}' \
 pnpm start:cowswap
 ```
 

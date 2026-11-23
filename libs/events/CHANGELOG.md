@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.19.0](https://github.com/cowprotocol/cowswap/compare/events-v4.18.1...events-v4.19.0) (2026-11-18)
+
+### Minor Changes
+
+- feat: update SDK versions with updated near token lists (#8660)
+
+- feat(solana): support custom recipients (#8592)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.16.0
+
 ## [4.18.1](https://github.com/cowprotocol/cowswap/compare/events-v4.18.0...events-v4.18.1) (2026-11-11)
 
 ### Patch Changes

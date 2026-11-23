@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { CowAnalyticsProvider, initGtm, useAnalyticsReporter } from '@cowprotocol/analytics'
+import { CowAnalyticsProvider, initGtmWithConsent, useAnalyticsReporter } from '@cowprotocol/analytics'
 import { CHAIN_INFO_ARRAY } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
@@ -23,7 +23,7 @@ import { NetworkUpdater } from '../state/network/NetworkUpdater'
 import { environmentName } from '../utils/env'
 
 // Initialize analytics instances
-const cowAnalytics = initGtm()
+const cowAnalytics = initGtmWithConsent()
 
 const SENTRY_DSN = process.env.REACT_APP_EXPLORER_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE
@@ -118,6 +118,8 @@ const TwapDetailsPage = React.lazy(() =>
   import('../modules/twap/pure/TwapDetails.container').then(({ TwapDetailsPage: Page }) => ({ default: Page })),
 )
 
+const SolverLogoToolPage = React.lazy(() => import('./pages/SolverLogoTool'))
+
 /**
  * Update the global state
  */
@@ -148,6 +150,7 @@ const AppContent = (): React.ReactNode => {
     <GenericLayout header={<Header />}>
       <React.Suspense fallback={null}>
         <Routes>
+          <Route path="/solver-logo-tool" element={<SolverLogoToolPage />} />
           <Route path={pathPrefix + '/'} element={<Home />} />
           <Route path={pathPrefix + '/address/'} element={<Navigate to={pathPrefix + '/search/'} />} />
           <Route path={pathPrefix + '/orders/'} element={<Navigate to={pathPrefix + '/search/'} />} />

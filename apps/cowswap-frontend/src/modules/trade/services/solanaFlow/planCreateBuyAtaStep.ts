@@ -3,7 +3,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { deriveAta, type SolanaQuote } from '@cowprotocol/sdk-trading-solana'
 
 import { t } from '@lingui/core/macro'
-import { createAssociatedTokenAccountIdempotentInstruction, TOKEN_PROGRAM_ID } from '@solana/spl-token'
+import { createAssociatedTokenAccountIdempotentInstruction } from '@solana/spl-token'
 import { PublicKey } from '@solana/web3.js'
 
 import { SolanaFlowStep, SolanaFundedAccount } from './types'
@@ -16,8 +16,6 @@ export interface IsBuyAtaCreationSkippedParams {
   /** The wallet the order names to the order book as its receiver, when that is not the owner. Only a
    * sponsored order posts one, so a self-paid order leaves it out. */
   receiver?: PublicKey
-  /** LaunchDarkly `isAtaCreationDisabled`. */
-  isAtaCreationDisabled: boolean
 }
 
 export interface PlanCreateBuyAtaStepParams {
@@ -45,9 +43,8 @@ export function getCreateBuyAtaFundedAccounts(quote: BuyAtaQuote, isCreationSkip
     {
       address: intent.buyTokenAccount,
       // A Token-2022 mint's extensions decide how large its accounts are, so the size is resolved from
-      // the mint rather than assumed. A quote without a program id means the classic SPL token program,
-      // matching the default `createAssociatedTokenAccountIdempotentInstruction` applies below.
-      size: { mint: intent.buyMint, tokenProgramId: buyTokenProgramId ?? TOKEN_PROGRAM_ID },
+      // the mint rather than assumed.
+      size: { mint: intent.buyMint, tokenProgramId: buyTokenProgramId },
     },
   ]
 }
@@ -60,16 +57,7 @@ export function getCreateBuyAtaFundedAccounts(quote: BuyAtaQuote, isCreationSkip
  * creates the associated token account of that wallet and nothing else, so an account belonging to a
  * wallet it was never told about stays the bundle's own to create.
  */
-export function getIsBuyAtaCreationSkipped({
-  quote,
-  owner,
-  receiver,
-  isAtaCreationDisabled,
-}: IsBuyAtaCreationSkippedParams): boolean {
-  if (!isAtaCreationDisabled) {
-    return false
-  }
-
+export function getIsBuyAtaCreationSkipped({ quote, owner, receiver }: IsBuyAtaCreationSkippedParams): boolean {
   const { intent, buyTokenProgramId } = quote
   const namedAta = deriveAta(intent.buyMint, receiver ?? owner, buyTokenProgramId)
 

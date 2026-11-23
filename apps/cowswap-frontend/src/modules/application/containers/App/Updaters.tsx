@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import {
-  RestrictedTokensListUpdater,
+  RwaTokensListsUpdater,
   TokensListsTagsUpdater,
   TokensListsUpdater,
   UnsupportedTokensUpdater,
@@ -70,7 +70,7 @@ export function Updaters(): ReactNode {
   useAtomValue(eoaTwapOrdersEffectAtom)
   useAtomValue(twapAppziSurveyEffectAtom)
 
-  const { isYieldEnabled, isRwaGeoblockEnabled } = useFeatureFlags()
+  const { isYieldEnabled } = useFeatureFlags()
   const tradeTypeInfo = useTradeTypeInfo()
   const isYieldWidget = tradeTypeInfo?.tradeType === TradeType.YIELD
   const { chainId: sourceChainId } = useSourceChainId()
@@ -125,7 +125,7 @@ export function Updaters(): ReactNode {
         isYieldEnabled={isYieldEnabled}
         bridgeNetworkInfo={bridgeNetworkInfo?.data}
       />
-      <RestrictedTokensListUpdater isRwaGeoblockEnabled={!!isRwaGeoblockEnabled} />
+      <RwaTokensListsUpdater />
       <RecentTokensStorageUpdater />
       <GeoDataUpdater />
       <TokensListsTagsUpdater />

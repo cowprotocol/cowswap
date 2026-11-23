@@ -1,7 +1,6 @@
 import { JSX, useEffect } from 'react'
 
 import { useTokenSelectorConsentFlow } from 'modules/rwa'
-import { SolanaAlphaRiskModalContainer } from 'modules/solanaAlpha'
 import { SelectTokenWidget, useSelectTokenWidgetState } from 'modules/tokensList'
 import { useSetShouldUseAutoSlippage } from 'modules/tradeSlippage'
 
@@ -14,7 +13,7 @@ import { TradeWidgetProps } from './types'
 import { useIsTokenSelectWide } from '../../hooks/useIsTokenSelectWide'
 
 export function TradeWidget(props: TradeWidgetProps): JSX.Element {
-  const { id, slots, params, confirmModal, genericModal } = props
+  const { id, slots, params, confirmModal, genericModal, onGenericModalDismiss, isGenericModalPending } = props
   const {
     disableQuotePolling = false,
     disableNativeSelling = false,
@@ -39,6 +38,8 @@ export function TradeWidget(props: TradeWidgetProps): JSX.Element {
     <TradeWidgetModals
       confirmModal={confirmModal}
       genericModal={genericModal}
+      onGenericModalDismiss={onGenericModalDismiss}
+      isGenericModalPending={isGenericModalPending}
       renderFallback={() => <TradeWidgetForm {...props} />}
     />
   )
@@ -60,7 +61,6 @@ export function TradeWidget(props: TradeWidgetProps): JSX.Element {
         {modals}
       </styledEl.Container>
 
-      <SolanaAlphaRiskModalContainer />
       {selectTokenWidgetNode}
     </>
   )

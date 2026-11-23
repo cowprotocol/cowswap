@@ -9,9 +9,10 @@ import { AssetAbout } from './AssetAbout'
 import styles from './AssetAccount.module.css'
 import { AssetNews } from './AssetNews'
 import { PositionsTab } from './PositionsTab'
+import { RelatedAssets } from './RelatedAssets'
 import { StockTokens } from './StockTokens'
 
-import { assetQueryAtomFamily, type RwaAsset, type RwaTokenSummary } from '@/entities/asset'
+import { assetQueryAtomFamily, type RwaAsset, type RwaRelatedAsset, type RwaTokenSummary } from '@/entities/asset'
 import {
   type AccountQueryParams,
   type AccountTab,
@@ -32,7 +33,12 @@ const CONNECT_HINTS: Record<Exclude<AssetAccountTab, 'overview'>, string> = {
   activity: 'see your activity',
 }
 
-export function AssetAccount({ asset }: { asset: RwaAsset }): ReactNode {
+interface AssetAccountProps {
+  asset: RwaAsset
+  relatedAssets: RwaRelatedAsset[]
+}
+
+export function AssetAccount({ asset, relatedAssets }: AssetAccountProps): ReactNode {
   const { address } = useConnection()
   const [activeTab, setActiveTab] = useState<AssetAccountTab>('overview')
   // Kept here rather than in the tab so switching tabs doesn't reopen the balance streams
@@ -52,6 +58,7 @@ export function AssetAccount({ asset }: { asset: RwaAsset }): ReactNode {
           <div className={styles.overview}>
             <AssetAbout asset={asset} />
             <AssetNews asset={asset} />
+            <RelatedAssets assets={relatedAssets} />
           </div>
         </>
       ) : !address ? (

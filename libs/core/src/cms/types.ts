@@ -16,14 +16,6 @@ export type CmsSolversInfo = components['schemas']['SolverListResponseDataItem']
 
 export type NotificationLocation = 'default' | 'speechBubble'
 
-export type RestrictedTokenList = {
-  name: string
-  tokenListUrl: string
-  restrictedCountries: string[]
-}
-
-export type RestrictedTokenLists = RestrictedTokenList[]
-
 export type SolverInfo = {
   solverId: string
   displayName: string

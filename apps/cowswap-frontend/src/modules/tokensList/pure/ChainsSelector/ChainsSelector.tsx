@@ -53,7 +53,6 @@ export function ChainsSelector({
       isDarkMode={darkMode}
       buildClickEvent={buildClickEvent}
       isSwapMode={isSwapMode}
-      sourceChainId={field === Field.OUTPUT ? counterChainId : undefined}
     />
   )
 }

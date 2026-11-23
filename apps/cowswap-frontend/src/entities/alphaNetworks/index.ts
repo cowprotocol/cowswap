@@ -1,2 +1,3 @@
+export { ARE_ALPHA_NETWORKS_OFFERED } from './const'
 export { alphaNetworksEnabledAtom } from './state/alphaNetworksEnabledAtom'
-export { useIsSolanaVisible } from './useIsSolanaVisible'
+export { useVisibleChains } from './useVisibleChains'

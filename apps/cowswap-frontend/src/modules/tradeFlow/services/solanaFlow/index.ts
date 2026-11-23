@@ -1,3 +1,4 @@
+import type { TokenWithLogo } from '@cowprotocol/common-const'
 import { getCurrencyAddress, normalizeError } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { OrderClass, OrderKind, OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -40,6 +41,7 @@ import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
+import { getSolanaTokenProgramId } from 'common/utils/getSolanaTokenProgramId'
 import {
   getSwapErrorMessage,
   isBlockhashExpiredError,
@@ -49,7 +51,6 @@ import {
 import { assertSignedAppData } from './assertSignedAppData'
 import { getSolanaErrorLogs } from './getSolanaErrorLogs'
 import { isSquadsSetupError } from './isSquadsSetupError'
-import { LEGACY_SOLANA_LIMIT_APP_DATA_HASH, LEGACY_SOLANA_SWAP_APP_DATA } from './legacySolanaAppData'
 import { isSolanaOrderSubmitted, reportSolanaOrderError, SolanaOrderPhase } from './reportSolanaOrderError'
 
 import { SolanaTradeFlowContext } from '../../types/TradeFlowContext'
@@ -65,17 +66,13 @@ let hasFailedAttempt = false
 
 export interface SolanaFlowOptions {
   isSponsored?: boolean
-  /** LaunchDarkly `isAtaCreationDisabled`: the driver creates the buy token account at settle instead. */
-  isAtaCreationDisabled?: boolean
-  /** LaunchDarkly `isSolanaAppDataEnabled`: off until the order book serves appData for Solana. */
-  isSolanaAppDataEnabled?: boolean
 }
 
 // eslint-disable-next-line max-lines-per-function,complexity
 export async function solanaFlow(
   input: SolanaTradeFlowContext,
   analytics: TradeFlowAnalytics,
-  { isSponsored = false, isAtaCreationDisabled = false, isSolanaAppDataEnabled = false }: SolanaFlowOptions = {},
+  { isSponsored = false }: SolanaFlowOptions = {},
 ): Promise<boolean | void> {
   const {
     tradeConfirmActions,
@@ -130,6 +127,14 @@ export async function solanaFlow(
     const buySymbol = outputAmount.currency.symbol ?? 'token'
     const { owner, connection, provider } = solana
 
+    // Read off the selected token rather than the quote: the quote resolves its program ids through a
+    // token-list lookup that answers "classic SPL" for any mint the list has not loaded yet, and that
+    // names an associated token account which cannot exist for a Token-2022 mint. A native buy is paid
+    // out as lamports, so it has no token account and the program is never used.
+    const buyTokenProgramId = getSolanaTokenProgramId(
+      outputAmount.currency.isToken ? (outputAmount.currency as TokenWithLogo) : undefined,
+    )
+
     // Whose wallet the created intent's `buyTokenAccount` is the associated token account of: a limit
     // order rebuilds the intent against the form's receiver, a swap keeps the one the quote derived it
     // from. It must stay in step with `createdIntent` below — the associated token program rejects a
@@ -171,7 +176,12 @@ export async function solanaFlow(
           kind: orderKind,
           validTo,
           partiallyFillable,
-          appDataHash: isSolanaAppDataEnabled ? appData.appDataKeccak256 : LEGACY_SOLANA_LIMIT_APP_DATA_HASH,
+          // Both of the intent's token accounts are derived from these. Left unset, the SDK derives them
+          // with the classic SPL Token program, which on a Token-2022 mint names an account neither the
+          // delegate step nor the buy-ATA creation below agrees with.
+          sellTokenProgramId: getSolanaTokenProgramId(sellToken),
+          buyTokenProgramId,
+          appDataHash: appData.appDataKeccak256,
           sellSymbol,
           buySymbol,
         })
@@ -182,14 +192,10 @@ export async function solanaFlow(
           buySymbol,
           validTo,
           sponsor,
-          appDataDoc: isSolanaAppDataEnabled ? appData.doc : LEGACY_SOLANA_SWAP_APP_DATA,
+          appDataDoc: appData.doc,
         })
 
-    const fullAppData = !isSolanaAppDataEnabled
-      ? undefined
-      : orderClass === OrderClass.LIMIT
-        ? appData.fullAppData
-        : signedFullAppData
+    const fullAppData = orderClass === OrderClass.LIMIT ? appData.fullAppData : signedFullAppData
 
     if (fullAppData !== undefined) {
       assertSignedAppData(signedAppData, fullAppData)
@@ -208,9 +214,13 @@ export async function solanaFlow(
     }
 
     // The account the order actually credits, not the quoted one: a limit order rebuilds the intent
-    // against its own receiver. `buyTokenProgramId` still comes from the quote — it is a property of the
-    // buy mint, which no rebuild changes.
-    const buyAtaQuote = { intent: createdIntent, buyTokenProgramId: solanaQuote.buyTokenProgramId }
+    // against its own receiver. The program id has to be the one that derived `createdIntent`'s buy
+    // account — the quote's for a swap, the resolved one for a limit rebuild — because the associated
+    // token program rejects a create whose address came from the other one.
+    const buyAtaQuote = {
+      intent: createdIntent,
+      buyTokenProgramId: orderClass === OrderClass.LIMIT ? buyTokenProgramId : solanaQuote.buyTokenProgramId,
+    }
 
     // Wrap only applies to a native SOL sell and delegate only when the existing delegation is short —
     // both plan functions return null otherwise, so the transaction carries the minimum instructions.
@@ -225,12 +235,7 @@ export async function solanaFlow(
         receiver: buyAtaReceiver,
         quote: buyAtaQuote,
         buySymbol,
-        isCreationSkipped: getIsBuyAtaCreationSkipped({
-          quote: buyAtaQuote,
-          owner,
-          receiver: namedReceiver,
-          isAtaCreationDisabled,
-        }),
+        isCreationSkipped: getIsBuyAtaCreationSkipped({ quote: buyAtaQuote, owner, receiver: namedReceiver }),
       }),
       createOrderStep,
     ].filter((step): step is SolanaFlowStep => step !== null)

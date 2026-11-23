@@ -6,6 +6,7 @@ export interface EthFlowActionContext {
   isNeeded: boolean
   txStatus: ActivityStatus | null
   txHash: string | null
+  inProgress: boolean
 }
 
 export interface EthFlowContext {
@@ -23,15 +24,23 @@ export const defaultEthFlowContext: EthFlowContext = {
     isNeeded: false,
     txStatus: null,
     txHash: null,
+    inProgress: false,
   },
   wrap: {
     isNeeded: false,
     txStatus: null,
     txHash: null,
+    inProgress: false,
   },
 }
 
 export const ethFlowContextAtom = atom<EthFlowContext>(defaultEthFlowContext)
+
+export const isEthFlowWalletActionPendingAtom = atom((get) => {
+  const { approve, wrap } = get(ethFlowContextAtom)
+
+  return approve.inProgress || wrap.inProgress
+})
 
 export const updateEthFlowContextAtom = atom(null, (get, set, nextState: PartialEthFlowContext) => {
   set(ethFlowContextAtom, () => {

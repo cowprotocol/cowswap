@@ -46,7 +46,7 @@ jest.mock('modules/injectedWidget', () => {
 // whose import chain circularly re-imports `modules/tradeFlow` while this factory is still resolving,
 // producing a second, disconnected `solanaFlow` mock this file's `beforeEach` never configures. This hook
 // only consumes `solanaFlow` from that module, so mock just that export instead of spreading the barrel.
-const SOLANA_FLOW_OPTIONS = { isSponsored: false, isAtaCreationDisabled: false, isSolanaAppDataEnabled: false }
+const SOLANA_FLOW_OPTIONS = { isSponsored: false }
 
 jest.mock('modules/tradeFlow', () => ({
   solanaFlow: jest.fn(),

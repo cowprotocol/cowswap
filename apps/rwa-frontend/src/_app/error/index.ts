@@ -1,0 +1,1 @@
+export { GlobalError } from './GlobalError'

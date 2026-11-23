@@ -10,7 +10,15 @@ import { PricePercentageShortcuts } from './PricePercentageShortcuts.pure'
 i18n.load('en-US', {})
 i18n.activate('en-US')
 
-function ControlledHarness({ isInverted, focus }: { isInverted: boolean; focus?: boolean }): ReactNode {
+function ControlledHarness({
+  isInverted,
+  focus,
+  onBlur,
+}: {
+  isInverted: boolean
+  focus?: boolean
+  onBlur?: () => void
+}): ReactNode {
   const [selectedPreset, setSelectedPreset] = useState<string | undefined>('5')
   const [customValue, setCustomValue] = useState('')
 
@@ -32,6 +40,7 @@ function ControlledHarness({ isInverted, focus }: { isInverted: boolean; focus?:
           setSelectedPreset(undefined)
           setCustomValue(value)
         },
+        onBlur,
       }}
     />
   )
@@ -43,10 +52,10 @@ function getCustomInput(isInverted: boolean): HTMLInputElement {
   ) as HTMLInputElement
 }
 
-function renderShortcuts(isInverted: boolean, focus?: boolean): void {
+function renderShortcuts(isInverted: boolean, focus?: boolean, onBlur?: () => void): void {
   render(
     <I18nProvider i18n={i18n}>
-      <ControlledHarness isInverted={isInverted} focus={focus} />
+      <ControlledHarness isInverted={isInverted} focus={focus} onBlur={onBlur} />
     </I18nProvider>,
   )
 }
@@ -81,5 +90,13 @@ describe('PricePercentageShortcuts', () => {
     await waitFor(() => {
       expect(document.activeElement).toBe(getCustomInput(false))
     })
+  })
+
+  it('notifies on blur of the custom percentage input', () => {
+    const onBlur = jest.fn()
+    renderShortcuts(false, undefined, onBlur)
+
+    fireEvent.blur(getCustomInput(false))
+    expect(onBlur).toHaveBeenCalledTimes(1)
   })
 })

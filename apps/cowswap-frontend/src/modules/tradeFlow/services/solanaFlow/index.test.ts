@@ -1,4 +1,4 @@
-import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
+import { NATIVE_CURRENCIES, TOKEN_2022_TAG, TokenWithLogo } from '@cowprotocol/common-const'
 import { captureError, ERROR_TYPES } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import {
@@ -13,6 +13,7 @@ import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { postSolanaSponsoredOrder } from '@cowprotocol/sdk-trading-solana'
 import { UiOrderType } from '@cowprotocol/types'
 
+import { TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { Connection, PublicKey } from '@solana/web3.js'
 import {
   solanaOrderNotPlacedAtom,
@@ -44,8 +45,6 @@ import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
 import { USER_SWAP_REJECTED_ERROR } from 'common/utils/getSwapErrorMessage'
 import { toKeccak256 } from 'common/utils/toKeccak256'
-
-import { LEGACY_SOLANA_LIMIT_APP_DATA_HASH, LEGACY_SOLANA_SWAP_APP_DATA } from './legacySolanaAppData'
 
 import { SolanaTradeFlowContext } from '../../types/TradeFlowContext'
 
@@ -155,6 +154,15 @@ const wsol = new TokenWithLogo(
   'Wrapped SOL',
 )
 const usdc = new Token(SOLANA_CHAIN_ID, 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', 6, 'USDC')
+const token2022Sell = new TokenWithLogo(
+  undefined,
+  SOLANA_CHAIN_ID,
+  '9Pq7aLAbhDG2tTnS22cm6kuysZVcZpLFE368HWuypump',
+  6,
+  'JOB',
+  'DogWifJob',
+  [TOKEN_2022_TAG],
+)
 
 const APP_DATA: AppDataInfo = {
   doc: { version: LATEST_APP_DATA_VERSION, appCode: 'CoW Swap', metadata: {} },
@@ -193,6 +201,8 @@ function buildContext({
   quoteBuyToken = usdc.address,
   quoteReceiver = RECEIVER_ADDRESS,
   owner = new PublicKey(SOLANA_ACCOUNT),
+  sellToken = wsol,
+  buyTokenProgramId = TOKEN_PROGRAM_ID,
 }: {
   isNativeSell?: boolean
   delegationAmount?: bigint
@@ -201,6 +211,8 @@ function buildContext({
   quoteBuyToken?: string
   quoteReceiver?: string
   owner?: PublicKey
+  sellToken?: TokenWithLogo
+  buyTokenProgramId?: PublicKey
 } = {}): SolanaTradeFlowContext {
   return {
     account: owner.toBase58(),
@@ -209,7 +221,6 @@ function buildContext({
       uid: new Uint8Array(32).fill(7),
       orderPda: new PublicKey(new Uint8Array(32).fill(4)),
       programId: new PublicKey(new Uint8Array(32).fill(5)),
-      funder: new PublicKey(new Uint8Array(32).fill(9)),
       // Post-slippage amounts: these are what gets signed on chain, and what the stored order must carry.
       intent: {
         owner: new PublicKey(SOLANA_ACCOUNT),
@@ -217,6 +228,7 @@ function buildContext({
         buyAmount: 1_900_000n,
         buyTokenAccount: QUOTED_BUY_TOKEN_ACCOUNT,
       },
+      buyTokenProgramId,
       funder: FUNDER_ADDRESS,
     } as unknown as SolanaTradeFlowContext['solanaQuote'],
     solana: {
@@ -224,7 +236,7 @@ function buildContext({
       provider: {} as SolanaProvider,
       owner,
     },
-    sellToken: wsol,
+    sellToken,
     sellAmount: SELL_AMOUNT,
     currentDelegation: 0n,
     delegationAmount,
@@ -771,8 +783,6 @@ describe('solanaFlow', () => {
 })
 
 describe('solanaFlow · appData', () => {
-  const APP_DATA_ON = { isSolanaAppDataEnabled: true }
-
   const signMismatchedAppData = (): void => {
     const planned = {
       step: ORDER_STEP,
@@ -790,13 +800,13 @@ describe('solanaFlow · appData', () => {
   }
 
   it("signs the app's appData doc into a swap", async () => {
-    await solanaFlow(buildContext({ orderClass: OrderClass.MARKET }), buildAnalytics(), APP_DATA_ON)
+    await solanaFlow(buildContext({ orderClass: OrderClass.MARKET }), buildAnalytics())
 
     expect(mockPlanCreateOrderStep).toHaveBeenCalledWith(expect.objectContaining({ appDataDoc: APP_DATA.doc }))
   })
 
   it("signs the app's appData hash into a limit order", async () => {
-    await solanaFlow(buildContext({ orderClass: OrderClass.LIMIT }), buildAnalytics(), APP_DATA_ON)
+    await solanaFlow(buildContext({ orderClass: OrderClass.LIMIT }), buildAnalytics())
 
     expect(mockPlanCreateLimitOrderStep).toHaveBeenCalledWith(
       expect.objectContaining({ appDataHash: APP_DATA.appDataKeccak256 }),
@@ -804,7 +814,7 @@ describe('solanaFlow · appData', () => {
   })
 
   it('registers the full appData under the signed hash before sending the transaction', async () => {
-    await solanaFlow(buildContext({ orderClass: OrderClass.LIMIT }), buildAnalytics(), APP_DATA_ON)
+    await solanaFlow(buildContext({ orderClass: OrderClass.LIMIT }), buildAnalytics())
 
     expect(mockUploadAppData).toHaveBeenCalledWith({
       appDataKeccak256: LIMIT_APP_DATA_HEX,
@@ -815,7 +825,7 @@ describe('solanaFlow · appData', () => {
   })
 
   it("registers and records the SDK's merged doc for a swap, which is what it signed", async () => {
-    await solanaFlow(buildContext({ orderClass: OrderClass.MARKET }), buildAnalytics(), APP_DATA_ON)
+    await solanaFlow(buildContext({ orderClass: OrderClass.MARKET }), buildAnalytics())
 
     expect(mockUploadAppData).toHaveBeenCalledWith({
       appDataKeccak256: MARKET_APP_DATA_HEX,
@@ -839,10 +849,10 @@ describe('solanaFlow · appData', () => {
           }),
       )
       const staleContext = buildContext()
-      const staleRun = solanaFlow(staleContext, buildAnalytics(), { isSponsored, ...APP_DATA_ON })
+      const staleRun = solanaFlow(staleContext, buildAnalytics(), { isSponsored })
       await tick()
 
-      await solanaFlow(buildContext(), buildAnalytics(), { isSponsored, ...APP_DATA_ON })
+      await solanaFlow(buildContext(), buildAnalytics(), { isSponsored })
       finishStaleUpload()
       await staleRun
 
@@ -858,7 +868,7 @@ describe('solanaFlow · appData', () => {
     mockUploadAppData.mockRejectedValue(new Error('AppDataHashMismatch'))
     const context = buildContext()
 
-    await solanaFlow(context, buildAnalytics(), APP_DATA_ON)
+    await solanaFlow(context, buildAnalytics())
 
     expect(mockSendSolanaFlow).not.toHaveBeenCalled()
     expect(addPendingOrderStepModule.addPendingOrderStep).not.toHaveBeenCalled()
@@ -872,7 +882,7 @@ describe('solanaFlow · appData', () => {
       signMismatchedAppData()
       const context = buildContext({ orderClass })
 
-      await solanaFlow(context, buildAnalytics(), APP_DATA_ON)
+      await solanaFlow(context, buildAnalytics())
 
       expect(mockUploadAppData).not.toHaveBeenCalled()
       expect(mockSendSolanaFlow).not.toHaveBeenCalled()
@@ -885,7 +895,7 @@ describe('solanaFlow · appData', () => {
   it('reports a signed appData mismatch to Sentry with the doc that failed to hash', async () => {
     signMismatchedAppData()
 
-    await solanaFlow(buildContext({ orderClass: OrderClass.MARKET }), buildAnalytics(), APP_DATA_ON)
+    await solanaFlow(buildContext({ orderClass: OrderClass.MARKET }), buildAnalytics())
 
     expect(mockCaptureError).toHaveBeenCalledWith(
       expect.objectContaining({ name: 'SolanaOrderSubmissionError' }),
@@ -898,7 +908,7 @@ describe('solanaFlow · appData', () => {
 
   it('tags a failure that follows an earlier one, and forgets it after a success', async () => {
     const run = (): Promise<boolean | void> =>
-      solanaFlow(buildContext({ orderClass: OrderClass.MARKET }), buildAnalytics(), APP_DATA_ON)
+      solanaFlow(buildContext({ orderClass: OrderClass.MARKET }), buildAnalytics())
     const lastFollowsFailure = (): string | undefined => {
       const { calls } = mockCaptureError.mock
 
@@ -923,7 +933,7 @@ describe('solanaFlow · appData', () => {
   })
 
   it('records the full appData on the local order, so its type is read from it', async () => {
-    await solanaFlow(buildContext({ orderClass: OrderClass.LIMIT }), buildAnalytics(), APP_DATA_ON)
+    await solanaFlow(buildContext({ orderClass: OrderClass.LIMIT }), buildAnalytics())
 
     expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
       expect.objectContaining({ order: expect.objectContaining({ fullAppData: APP_DATA.fullAppData }) }),
@@ -931,83 +941,84 @@ describe('solanaFlow · appData', () => {
     )
   })
 })
-describe('solanaFlow · appData (isSolanaAppDataEnabled off)', () => {
-  it("signs the legacy constant doc into a swap, not the app's", async () => {
-    await solanaFlow(buildContext({ orderClass: OrderClass.MARKET }), buildAnalytics())
-
-    expect(mockPlanCreateOrderStep).toHaveBeenCalledWith(
-      expect.objectContaining({ appDataDoc: LEGACY_SOLANA_SWAP_APP_DATA }),
-    )
-  })
-
-  it("signs the legacy constant hash into a limit order, not the app's", async () => {
-    await solanaFlow(buildContext({ orderClass: OrderClass.LIMIT }), buildAnalytics())
-
-    expect(mockPlanCreateLimitOrderStep).toHaveBeenCalledWith(
-      expect.objectContaining({ appDataHash: LEGACY_SOLANA_LIMIT_APP_DATA_HASH }),
-    )
-  })
-
-  // The order book has no appData endpoint for Solana yet: calling it fails the whole placement.
-  it.each([OrderClass.MARKET, OrderClass.LIMIT])(
-    'registers no appData and still places the order (%s)',
-    async (orderClass) => {
-      const context = buildContext({ orderClass })
-
-      await solanaFlow(context, buildAnalytics())
-
-      expect(mockUploadAppData).not.toHaveBeenCalled()
-      expect(mockSendSolanaFlow).toHaveBeenCalled()
-      expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalled()
-      expect(context.tradeConfirmActions.onError).not.toHaveBeenCalled()
-    },
-  )
-
-  // Nothing was registered, so a doc on the order would claim a hash the backend cannot resolve.
-  it('records no full appData on the local order', async () => {
-    await solanaFlow(buildContext({ orderClass: OrderClass.LIMIT }), buildAnalytics())
-
-    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
-      expect.objectContaining({ order: expect.objectContaining({ fullAppData: undefined }) }),
-      expect.anything(),
-    )
-  })
-
-  // The mismatch check guards the upload; with nothing uploaded there is nothing to guard against.
-  it('places the order even when the signed appData does not match the app doc', async () => {
-    const context = buildContext({ orderClass: OrderClass.MARKET })
+// Both of the intent's associated token accounts have to be derived with the mint's own token program:
+// a Token-2022 mint derived as classic SPL names an address the associated token program rejects
+// ("Provided seeds do not result in a valid address"), and the delegate step approves a different account.
+describe('solanaFlow · token programs', () => {
+  it.each([
+    ['a Token-2022 sell mint', token2022Sell, TOKEN_2022_PROGRAM_ID],
+    ['a classic SPL sell mint', wsol, TOKEN_PROGRAM_ID],
+  ])("passes %s's token program to the limit planner", async (_label, sellToken, expectedProgramId) => {
+    const context = buildContext({ orderClass: OrderClass.LIMIT, sellToken })
 
     await solanaFlow(context, buildAnalytics())
 
-    expect(mockSendSolanaFlow).toHaveBeenCalled()
-    expect(context.tradeConfirmActions.onError).not.toHaveBeenCalled()
+    expect(mockPlanCreateLimitOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ sellTokenProgramId: expectedProgramId }),
+    )
+  })
+
+  it.each([
+    ['a Token-2022 buy mint', token2022Sell, TOKEN_2022_PROGRAM_ID],
+    ['a classic SPL buy mint', usdc, TOKEN_PROGRAM_ID],
+  ])("derives %s's buy account with the selected token's program", async (_label, buyToken, expectedProgramId) => {
+    const context = buildContext({
+      orderClass: OrderClass.LIMIT,
+      buyAmount: CurrencyAmount.fromRawAmount(buyToken, '150000000'),
+      // The quote disagrees on purpose: its ids come from a token-list lookup that answers "classic SPL"
+      // for a mint the list has not loaded yet, and the intent must not inherit that.
+      buyTokenProgramId: TOKEN_PROGRAM_ID,
+    })
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(mockPlanCreateLimitOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ buyTokenProgramId: expectedProgramId }),
+    )
+    // The same value the buy-ATA step creates the account with, so the two can never disagree.
+    expect(mockPlanCreateBuyAtaStep).toHaveBeenCalledWith(
+      expect.objectContaining({ quote: expect.objectContaining({ buyTokenProgramId: expectedProgramId }) }),
+    )
+  })
+
+  // A swap keeps the quote's intent, whose buy account the SDK already derived with the quote's program.
+  // Creating that account with any other program names a different address, which the ATA program rejects.
+  it("creates a swap's buy account with the program that derived the quoted intent", async () => {
+    const context = buildContext({
+      orderClass: OrderClass.MARKET,
+      buyAmount: CurrencyAmount.fromRawAmount(token2022Sell, '150000000'),
+      buyTokenProgramId: TOKEN_PROGRAM_ID,
+    })
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(mockPlanCreateBuyAtaStep).toHaveBeenCalledWith(
+      expect.objectContaining({ quote: expect.objectContaining({ buyTokenProgramId: TOKEN_PROGRAM_ID }) }),
+    )
   })
 })
 
 describe('solanaFlow · buy account creation', () => {
-  it('leaves the account to the driver when the flag disables the creation', async () => {
+  it('leaves the account to the driver when it creates it at settle', async () => {
     mockGetIsBuyAtaCreationSkipped.mockReturnValue(true)
     mockPlanCreateBuyAtaStep.mockReturnValue(null)
 
     const context = buildContext()
 
-    await solanaFlow(context, buildAnalytics(), { isAtaCreationDisabled: true })
+    await solanaFlow(context, buildAnalytics())
 
     expect(mockGetIsBuyAtaCreationSkipped).toHaveBeenCalledWith({
-      quote: { intent: { buyTokenAccount: QUOTED_BUY_TOKEN_ACCOUNT }, buyTokenProgramId: undefined },
+      quote: { intent: { buyTokenAccount: QUOTED_BUY_TOKEN_ACCOUNT }, buyTokenProgramId: TOKEN_PROGRAM_ID },
       owner: context.solana.owner,
-      isAtaCreationDisabled: true,
+      receiver: undefined,
     })
     expect(mockPlanCreateBuyAtaStep).toHaveBeenCalledWith(expect.objectContaining({ isCreationSkipped: true }))
     expect(sentSteps()).toEqual([WRAP_STEP, DELEGATE_STEP, ORDER_STEP])
   })
 
-  it('keeps the creation step while the flag is off', async () => {
+  it('keeps the creation step when the account is the bundle’s own to create', async () => {
     await solanaFlow(buildContext(), buildAnalytics())
 
-    expect(mockGetIsBuyAtaCreationSkipped).toHaveBeenCalledWith(
-      expect.objectContaining({ isAtaCreationDisabled: false }),
-    )
     expect(mockPlanCreateBuyAtaStep).toHaveBeenCalledWith(expect.objectContaining({ isCreationSkipped: false }))
   })
 })
