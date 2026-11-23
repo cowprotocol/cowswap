@@ -35,8 +35,8 @@ export type SolanaSigningCountdownProps = NewModalProps & {
 export function SolanaSigningCountdown(props: SolanaSigningCountdownProps): ReactNode {
   const { expiresAt, durationMs, inputAmount, outputAmount, recipient, onExpiredDismiss, ...rest } = props
 
-  const targetEpochSec = Math.floor(expiresAt / 1000)
-  const [isExpired, setIsExpired] = useState(() => targetEpochSec <= Date.now() / 1000)
+  const targetEpochSec = expiresAt / 1000
+  const [isExpired, setIsExpired] = useState(() => expiresAt <= Date.now())
 
   const onRemainingChange = useCallback((remainingSec: number) => {
     if (remainingSec <= 0) {
