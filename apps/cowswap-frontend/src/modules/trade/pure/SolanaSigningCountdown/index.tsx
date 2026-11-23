@@ -1,7 +1,5 @@
 import { ReactNode, useCallback, useState } from 'react'
 
-import { useLocalTimeOffset } from '@cowprotocol/common-hooks'
-import { getServerNowSec } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { ButtonPrimary, Media, UI } from '@cowprotocol/ui'
 
@@ -37,9 +35,8 @@ export type SolanaSigningCountdownProps = NewModalProps & {
 export function SolanaSigningCountdown(props: SolanaSigningCountdownProps): ReactNode {
   const { expiresAt, durationMs, inputAmount, outputAmount, recipient, onExpiredDismiss, ...rest } = props
 
-  const timeOffsetSec = useLocalTimeOffset() ?? 0
   const targetEpochSec = Math.floor(expiresAt / 1000)
-  const [isExpired, setIsExpired] = useState(() => targetEpochSec <= getServerNowSec(timeOffsetSec))
+  const [isExpired, setIsExpired] = useState(() => targetEpochSec <= Date.now() / 1000)
 
   const onRemainingChange = useCallback((remainingSec: number) => {
     if (remainingSec <= 0) {
@@ -77,6 +74,7 @@ export function SolanaSigningCountdown(props: SolanaSigningCountdownProps): Reac
             <MilkGlassCountdown
               targetEpochSec={targetEpochSec}
               durationMs={durationMs}
+              useLocalClock
               onRemainingChange={onRemainingChange}
               label={<Trans>To sign the transaction in your wallet</Trans>}
             />

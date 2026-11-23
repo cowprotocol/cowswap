@@ -15,6 +15,8 @@ export interface MilkGlassCountdownProps {
   /** Full window length in ms, used for the milk fill level. */
   durationMs: number
   label: ReactNode
+  /** Count with `Date.now()`. Default applies the quote clock offset. */
+  useLocalClock?: boolean
   /** Called when the displayed remaining second changes (including the first write). */
   onRemainingChange?: (remainingSec: number) => void
 }
@@ -23,11 +25,13 @@ export function MilkGlassCountdown({
   targetEpochSec,
   durationMs,
   label,
+  useLocalClock = false,
   onRemainingChange,
 }: MilkGlassCountdownProps): ReactNode {
   const milkRef = useRef<MilkGlassHandle>(null)
   const rootRef = useRef<HTMLDivElement>(null)
-  const timeOffsetSec = useLocalTimeOffset() ?? 0
+  const quoteTimeOffsetSec = useLocalTimeOffset() ?? 0
+  const timeOffsetSec = useLocalClock ? 0 : quoteTimeOffsetSec
   const onRemainingChangeRef = useLatestRef(onRemainingChange)
   const durationMsRef = useLatestRef(durationMs)
   const [remainingSec, setRemainingSec] = useState(() => Math.max(0, targetEpochSec - getServerNowSec(timeOffsetSec)))
