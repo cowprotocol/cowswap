@@ -1,8 +1,14 @@
+import { i18n } from '@lingui/core'
+
 import {
   formatApproximateBatchCountdown,
   formatAuctionCountdown,
   formatBatchCountdown,
 } from './formatCowBatchCountdown'
+
+beforeAll(() => {
+  i18n.loadAndActivate({ locale: 'en-US', messages: {} })
+})
 
 describe('formatAuctionCountdown', () => {
   it('pads MM:SS', () => {

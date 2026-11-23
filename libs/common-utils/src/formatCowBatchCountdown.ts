@@ -1,3 +1,5 @@
+import { plural, t } from '@lingui/core/macro'
+
 /**
  * Formats remaining time as `MM:SS` for the post-submit auction countdown.
  */
@@ -18,10 +20,21 @@ export function formatBatchCountdown(totalSeconds: number): string {
   const remSeconds = seconds % 60
 
   if (minutes <= 0) {
-    return `${remSeconds}s`
+    return formatCountdownSeconds(remSeconds)
   }
 
-  return `${minutes}m ${remSeconds}s`
+  // eslint-disable-next-line lingui/no-single-variables-to-translate -- plural() inlines into one ICU message; the rule only sees the joining space
+  return t`${plural(minutes, {
+    one: '#m',
+    few: '#m',
+    many: '#m',
+    other: '#m',
+  })} ${plural(remSeconds, {
+    one: '#s',
+    few: '#s',
+    many: '#s',
+    other: '#s',
+  })}`
 }
 
 const LAST_MINUTE_BUCKET_SEC = 15
@@ -34,12 +47,28 @@ export function formatApproximateBatchCountdown(totalSeconds: number): string {
   const seconds = Math.max(0, Math.floor(totalSeconds))
 
   if (seconds <= 0) {
-    return '0s'
+    return formatCountdownSeconds(0)
   }
 
   if (seconds >= 60) {
-    return `${Math.ceil(seconds / 60)} min`
+    const minutes = Math.ceil(seconds / 60)
+
+    return plural(minutes, {
+      one: '# min',
+      few: '# min',
+      many: '# min',
+      other: '# min',
+    })
   }
 
-  return `${Math.ceil(seconds / LAST_MINUTE_BUCKET_SEC) * LAST_MINUTE_BUCKET_SEC}s`
+  return formatCountdownSeconds(Math.ceil(seconds / LAST_MINUTE_BUCKET_SEC) * LAST_MINUTE_BUCKET_SEC)
+}
+
+function formatCountdownSeconds(seconds: number): string {
+  return plural(seconds, {
+    one: '#s',
+    few: '#s',
+    many: '#s',
+    other: '#s',
+  })
 }
