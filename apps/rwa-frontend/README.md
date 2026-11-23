@@ -291,11 +291,12 @@ by hand only when it can't wait for that, and check after the next `update-regis
 
    ```bash
    pnpm --filter @cowprotocol/rwa-frontend validate-registry
-   pnpx nx run rwa-frontend:test --testPathPattern=validateRegistry
+   pnpx nx run rwa-frontend:test --testPathPatterns=validateRegistry
    ```
 
 7. **Check it in the app** (`pnpm start:rwa`): the asset shows up in the home table and search,
    `/rwa/asset/ACME` shows its price and tokens, and the trade widget offers its tokens.
 
 Geoblocking is not set in this app: the CoW Swap widget enforces it from its restricted token lists in
-`libs/core/src/cms`, so tokens of a new issuer must be added there too (see the `rwa-token-list-onboarding` skill).
+`libs/core/src/cms`, so tokens of a new issuer must be added there too (see the
+[`rwa-token-list-onboarding`](https://github.com/cowprotocol/skills/tree/main/rwa-token-list-onboarding) skill).
