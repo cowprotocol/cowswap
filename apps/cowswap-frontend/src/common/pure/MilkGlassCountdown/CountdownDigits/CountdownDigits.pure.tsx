@@ -31,12 +31,14 @@ export function CountdownDigits({ remainingSec }: CountdownDigitsProps): ReactNo
     <>
       <styledEl.VisuallyHidden role="timer">
         {minutes > 0 ? (
-          <>
-            <Plural value={minutes} one="# minute" other="# minutes" />{' '}
-            <Plural value={seconds} one="# second" other="# seconds" /> <Trans>remaining</Trans>
-          </>
+          <Trans>
+            <Plural value={minutes} one="# minute" few="# minutes" many="# minutes" other="# minutes" />{' '}
+            <Plural value={seconds} one="# second" few="# seconds" many="# seconds" other="# seconds" /> remaining
+          </Trans>
         ) : (
-          <Plural value={seconds} one="# second remaining" other="# seconds remaining" />
+          <Trans>
+            <Plural value={seconds} one="# second" few="# seconds" many="# seconds" other="# seconds" /> remaining
+          </Trans>
         )}
       </styledEl.VisuallyHidden>
       <styledEl.DigitsRow aria-hidden="true">
