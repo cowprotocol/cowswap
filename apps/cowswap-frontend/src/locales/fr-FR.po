@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-11-24 16:57\n"
+"PO-Revision-Date: 2026-11-24 18:42\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -916,7 +916,7 @@ msgstr "Les trades provenant du parcours d’un intégrateur sont exclus des ré
 
 #: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
 msgid "<0><1>fee</1> · Joins</0> batch in{joinsBatchGap}<2/>"
-msgstr ""
+msgstr "<0><1>de volume</1> · Rejoint</0> le lot dans{joinsBatchGap}<2/>"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationsList/index.tsx
 #~ msgid "Nothing new yet"
@@ -1295,7 +1295,7 @@ msgstr "Aucun ordre à signer"
 #. placeholder {0}: visibleAmount ? null : tooltip
 #: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
 msgid "Wait & <0>save {0}</0>"
-msgstr ""
+msgstr "Attendre et <0>économiser {0}</0>"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Import intermediate token"
@@ -1385,7 +1385,7 @@ msgstr "Connectez votre wallet pour l’activer et commencer à gagner des réco
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/WaitAndSaveOutcome/components/OutcomeWithWaivedFeeAndCow/OutcomeWithWaivedFeeAndCow.pure.tsx
 msgid "Wait & save · You saved"
-msgstr ""
+msgstr "Attendre et économiser · Vous avez économisé"
 
 #: apps/cowswap-frontend/src/common/hooks/useCrossChainFamilySwitch.tsx
 #~ msgid "You're switching between EVM and non-EVM networks. This requires connecting a different wallet. Your current wallet will be disconnected."
@@ -3303,7 +3303,7 @@ msgstr "Approuver {wrappedSymbol}"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveTooltipContent.pure.tsx
 msgid "The countdown isn’t a guaranteed fill time. Price-improvement fees still apply."
-msgstr ""
+msgstr "Le compte à rebours ne garantit pas le moment de l’exécution. Les frais liés à l’amélioration du prix restent applicables."
 
 #: apps/cowswap-frontend/src/modules/twap/pure/CustomDeadlineSelector/CustomDeadlineSelector.pure.tsx
 msgid "TWAP total duration"
@@ -3625,7 +3625,7 @@ msgstr "Vérifier l’ordre limite"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ContextMenu/OrderContextMenu.pure.tsx
 msgid "Reclaim rent"
-msgstr ""
+msgstr "Récupérer le dépôt"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
 msgid "Trade Smart, Save More!"
@@ -3685,7 +3685,7 @@ msgstr "Aux prix actuels du gas, votre solde de {nativeSymbol} restant après co
 
 #: apps/cowswap-frontend/src/modules/ordersTable/hooks/useSolanaReclaimRent.ts
 msgid "There is no rent left to reclaim"
-msgstr ""
+msgstr "Il n’y a plus de dépôt à récupérer"
 
 #: apps/cowswap-frontend/src/legacy/components/Badge/RangeBadge.tsx
 msgid "The price of this pool is outside of your selected range. Your position is not currently earning fees."
@@ -4727,7 +4727,7 @@ msgstr "Montant estimé que vous recevrez pour chaque tranche de l’ordre."
 
 #: apps/cowswap-frontend/src/common/pure/MilkGlassCountdown/CountdownDigits/CountdownDigits.pure.tsx
 msgid "{seconds, plural, one {# second} few {# seconds} many {# seconds} other {# seconds}} remaining"
-msgstr ""
+msgstr "Il reste {seconds, plural, one {# seconde} few {# secondes} many {# secondes} other {# secondes}}"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "The swap adapter contracts integrate Aave Flash Loans and CoW Swap to facilitate advanced actions like repaying borrow positions using collateral. Learn more at https://aave.com/docs/developers/smart-contracts/swap-features.msg"
@@ -5624,7 +5624,7 @@ msgstr "Il y a plusieurs tokens avec le symbole {doubledSymbol} dans la liste.\n
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/WaitAndSaveOutcome/components/OutcomeWithWaivedFee/OutcomeWithWaivedFee.pure.tsx
 msgid "Wait & save: <0>{volumeFeeSavedFiat}</0> saved on the volume fee"
-msgstr ""
+msgstr "Attendre et économiser : <0>{volumeFeeSavedFiat}</0> d’économie sur les frais de volume"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "saved"
@@ -5660,7 +5660,7 @@ msgstr "La solide compétition entre les solvers de CoW Swap empêche les bots M
 
 #: libs/common-utils/src/formatCowBatchCountdown.ts
 msgid "{minutes, plural, one {#m} few {#m} many {#m} other {#m}} {remSeconds, plural, one {#s} few {#s} many {#s} other {#s}}"
-msgstr ""
+msgstr "{minutes, plural, one {# min} few {# min} many {# min} other {# min}} {remSeconds, plural, one {# s} few {# s} many {# s} other {# s}}"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Aave Debt Swap Flashloan"
@@ -5815,7 +5815,7 @@ msgstr "Connecter le wallet"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveTooltipContent.pure.tsx
 msgid "How Wait & save works"
-msgstr ""
+msgstr "Fonctionnement de « Attendre et économiser »"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/ProtocolFeeRow/index.tsx
 msgid "This {protocolFeeBps} BPS fee incentivizes solvers to find better prices for users. It is only applied if the trade is executed."
@@ -5957,7 +5957,7 @@ msgstr "L'ordre reste ouvert. L'exécution nécessite un solde suffisant en <0><
 
 #: apps/cowswap-frontend/src/modules/ordersTable/hooks/useSolanaReclaimRent.ts
 msgid "The reclaim transaction failed on-chain"
-msgstr ""
+msgstr "La transaction de récupération a échoué on-chain"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
 #~ msgid "Joins"
@@ -7394,11 +7394,11 @@ msgstr "annulation"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/WaitAndSaveOutcome/components/OutcomeWithCow/OutcomeWithCow.pure.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/WaitAndSaveOutcome/components/OutcomeWithWaivedFeeAndCow/OutcomeWithWaivedFeeAndCow.pure.tsx
 msgid "Better price than trading <0>alone <1/></0>"
-msgstr ""
+msgstr "Meilleur prix qu’avec un ordre <0>seul <1/></0>"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/WaitAndSaveOutcome/components/OutcomeWithWaivedFeeAndCow/OutcomeWithWaivedFeeAndCow.pure.tsx
 msgid "No volume fee"
-msgstr ""
+msgstr "Sans frais de volume"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 #~ msgid "tip"
@@ -7684,7 +7684,7 @@ msgstr "{TOKEN_SYMBOL} restants : {left}"
 
 #: libs/common-utils/src/formatCowBatchCountdown.ts
 msgid "{seconds, plural, one {#s} few {#s} many {#s} other {#s}}"
-msgstr ""
+msgstr "{seconds, plural, one {# s} few {# s} many {# s} other {# s}}"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderRewardsRow.tsx
 msgid "Your referral code is saved. It will link after your first eligible trade."
@@ -7976,7 +7976,7 @@ msgstr "Sur CoW Swap, les ordres peuvent être soit des ordres au marché (qui s
 
 #: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
 msgid "Wait & save "
-msgstr ""
+msgstr "Attendre et économiser "
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #~ msgid "at least"
@@ -9140,7 +9140,7 @@ msgstr "Message CoW du jour"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
 msgid "Couldn’t load the next batch <0>time · <1>Try again</1></0>"
-msgstr ""
+msgstr "Impossible de charger l’heure du <0>prochain lot · <1>Réessayer</1></0>"
 
 #: apps/cowswap-frontend/src/common/containers/CookieConsentBanner/CookieConsentBanner.container.tsx
 msgid "You want privacy. We want to know if our ads work. Nothing tracks you until you pick."
@@ -10003,7 +10003,7 @@ msgstr "Récupérer les fonds"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/hooks/useSolanaReclaimRent.ts
 msgid "Reclaim rent of cancelled orders"
-msgstr ""
+msgstr "Récupération du dépôt des ordres annulés"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerCodeInfo.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
@@ -10168,7 +10168,7 @@ msgstr "plus élevé"
 
 #: libs/common-utils/src/formatCowBatchCountdown.ts
 msgid "{minutes, plural, one {# min} few {# min} many {# min} other {# min}}"
-msgstr ""
+msgstr "{minutes, plural, one {# min} few {# min} many {# min} other {# min}}"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSettings.tsx
 msgid "Only trade alerts are sent. No marketing messages."
@@ -10216,7 +10216,7 @@ msgstr "Bridge réussi"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveTooltipContent.pure.tsx
 msgid "Join the next batch and pay no volume fee."
-msgstr ""
+msgstr "Rejoignez le prochain lot sans payer de frais de volume."
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
 msgid "Tokens must be different"
@@ -10260,7 +10260,7 @@ msgstr "Transaction de destination"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveTooltipContent.pure.tsx
 msgid "Matching with other orders can get you a better price too. That’s not guaranteed, and prices can change while you wait."
-msgstr ""
+msgstr "Être associé à d’autres ordres peut aussi vous faire obtenir un meilleur prix. Ce n’est pas garanti, et les prix peuvent évoluer pendant l’attente."
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/pure/NetworkCostsTooltipSuffix.tsx
 msgid "Because you are using a smart contract wallet"
@@ -10268,7 +10268,7 @@ msgstr "Comme vous utilisez un wallet smart contract"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveTooltipContent.pure.tsx
 msgid "Join the next batch and pay no volume fee. That’s {saveAmount} less on this swap."
-msgstr ""
+msgstr "Rejoignez le prochain lot sans payer de frais de volume. Cela représente {saveAmount} de moins sur ce swap."
 
 #: apps/cowswap-frontend/src/pages/graffiti/ClaimScreens.pure.tsx
 msgid "This code is worth"
@@ -10417,7 +10417,7 @@ msgstr "Paramètres invalides"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
 msgid "Joins batch in{joinsBatchGap}<0/>"
-msgstr ""
+msgstr "Rejoint le lot dans{joinsBatchGap}<0/>"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "You received"
@@ -10678,7 +10678,7 @@ msgstr "Utilisez des stratégies avancées pour une croissance optimale"
 
 #: apps/cowswap-frontend/src/common/pure/MilkGlassCountdown/CountdownDigits/CountdownDigits.pure.tsx
 msgid "{minutes, plural, one {# minute} few {# minutes} many {# minutes} other {# minutes}} {seconds, plural, one {# second} few {# seconds} many {# seconds} other {# seconds}} remaining"
-msgstr ""
+msgstr "Il reste {minutes, plural, one {# minute} few {# minutes} many {# minutes} other {# minutes}} {seconds, plural, one {# seconde} few {# secondes} many {# secondes} other {# secondes}}"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ListItem/index.tsx
 msgid "View List"
@@ -10865,7 +10865,7 @@ msgstr "Compte Base"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
 msgid "No volume"
-msgstr ""
+msgstr "Sans frais"
 
 #: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
 msgid "Cancel throws this drawing away. Nothing has been burned yet."
