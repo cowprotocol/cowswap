@@ -13,7 +13,7 @@ import useSWR from 'swr'
 import { AppDispatch } from 'legacy/state'
 import { useCloseModals } from 'legacy/state/application/hooks'
 
-import { useAppData, useAppDataHooks, useWaitAndSaveValidTo } from 'modules/appData'
+import { useAppData, useAppDataHooks, useEnableWaitForCow, useWaitAndSaveValidTo } from 'modules/appData'
 import { useBridgeQuoteAmounts } from 'modules/bridge'
 import { useGetAmountToSignApprove } from 'modules/erc20Approve'
 import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'modules/permit'
@@ -26,7 +26,6 @@ import {
   useTradeConfirmActions,
   useTradeTypeInfo,
   waitAndSaveComparisonQuoteAtom,
-  waitAndSaveEnabledAtom,
 } from 'modules/trade'
 import { getIsFinalQuote, getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 
@@ -95,12 +94,12 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const waitAndSaveValidTo = useWaitAndSaveValidTo()
   const validTo = getOrderValidTo(deadline, tradeQuote, waitAndSaveValidTo)
   const comparisonQuote = useAtomValue(waitAndSaveComparisonQuoteAtom)
-  const isWaitAndSaveEnabled = useAtomValue(waitAndSaveEnabledAtom)
+  const userQuoteWithWaitAndSave = useEnableWaitForCow()
   const waitAndSaveWaivedFeeAmount = waitAndSaveValidTo
     ? getWaitAndSaveWaivedFeeRawAmount({
         comparison: comparisonQuote,
-        isEnabled: isWaitAndSaveEnabled,
         mainBuyAmount: tradeQuote.quote?.quoteResults.quoteResponse.quote.buyAmount,
+        userQuoteWithWaitAndSave,
       })?.toString()
     : undefined
 

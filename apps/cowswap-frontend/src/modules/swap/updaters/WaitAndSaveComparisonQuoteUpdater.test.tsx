@@ -11,7 +11,6 @@ import {
   isCanonicalBatchScheduleErrorAtom,
   useIsHooksTradeType,
   useIsWaitAndSaveAvailable,
-  waitAndSaveEnabledAtom,
 } from 'modules/trade'
 import { useQuoteParams, useTradeQuote } from 'modules/tradeQuote'
 
@@ -44,7 +43,6 @@ jest.mock('modules/trade', () => ({
   useIsHooksTradeType: jest.fn(),
   useIsWaitAndSaveAvailable: jest.fn(),
   waitAndSaveComparisonQuoteAtom: Symbol('waitAndSaveComparisonQuoteAtom'),
-  waitAndSaveEnabledAtom: Symbol('waitAndSaveEnabledAtom'),
 }))
 
 jest.mock('modules/tradeQuote', () => ({
@@ -86,19 +84,29 @@ describe('WaitAndSaveComparisonQuoteUpdater', () => {
       isLoading: false,
       quote: { quoteResults: { quoteResponse: { quote: { buyAmount: '100' } } } },
     } as ReturnType<typeof useTradeQuote>)
-    jest.mocked(useAppDataBuildParams).mockReturnValue(appDataParams as ReturnType<typeof useAppDataBuildParams>)
-    jest.mocked(buildWaitAndSaveComparisonRequest).mockImplementation(async (params) => ({
-      advancedSettings: { appData: { metadata: { enableWaitForCow: params.isOnQuote } } },
-      isOnQuote: params.isOnQuote,
-      quoteParams: params.quoteParams,
-    }))
+    jest.mocked(useAppDataBuildParams).mockImplementation(
+      (params) =>
+        ({
+          ...appDataParams,
+          ...params,
+        }) as ReturnType<typeof useAppDataBuildParams>,
+    )
+    jest.mocked(buildWaitAndSaveComparisonRequest).mockImplementation(async (params) => {
+      const enableWaitForCow = params.appDataParams.enableWaitForCow
+      if (enableWaitForCow === undefined) return undefined
+
+      return {
+        advancedSettings: { appData: { metadata: { enableWaitForCow } } },
+        enableWaitForCow,
+        quoteParams: params.quoteParams,
+      }
+    })
     jest.mocked(bridgingSdk.getQuote).mockResolvedValue({
       quoteResults: { quoteResponse: { quote: { buyAmount: '130' } } },
     } as never)
     useAtomValueMock.mockImplementation((atom) => {
       if (atom === canonicalBatchScheduleAtom) return schedule
       if (atom === isCanonicalBatchScheduleErrorAtom) return false
-      if (atom === waitAndSaveEnabledAtom) return jest.mocked(useEnableWaitForCow).getMockImplementation()?.() ?? false
 
       throw new Error('unexpected atom')
     })
@@ -107,17 +115,25 @@ describe('WaitAndSaveComparisonQuoteUpdater', () => {
   it('fetches the on-quote when Wait & Save is off', async () => {
     jest.mocked(useEnableWaitForCow).mockReturnValue(false)
 
-    render(<WaitAndSaveComparisonQuoteUpdater slippageBips={50} />)
+    render(<WaitAndSaveComparisonQuoteUpdater orderClass="market" slippageBips={50} />)
 
     await waitFor(() => {
+      expect(useAppDataBuildParams).toHaveBeenCalledWith(
+        expect.objectContaining({ enableWaitForCow: true, orderClass: 'market', slippageBips: 50 }),
+      )
+    })
+    await waitFor(() => {
       expect(buildWaitAndSaveComparisonRequest).toHaveBeenCalledWith(
-        expect.objectContaining({ isOnQuote: true, quoteParams }),
+        expect.objectContaining({
+          appDataParams: expect.objectContaining({ enableWaitForCow: true }),
+          quoteParams,
+        }),
       )
     })
     await waitFor(() => {
       expect(setComparison).toHaveBeenCalledWith({
         buyAmount: '130',
-        isOnQuote: true,
+        enableWaitForCow: true,
         mainBuyAmount: '100',
       })
     })
@@ -126,19 +142,35 @@ describe('WaitAndSaveComparisonQuoteUpdater', () => {
 
   it('fetches the off-quote when Wait & Save is on', async () => {
     jest.mocked(useEnableWaitForCow).mockReturnValue(true)
-    useAtomValueMock.mockImplementation((atom) => {
-      if (atom === canonicalBatchScheduleAtom) return schedule
-      if (atom === isCanonicalBatchScheduleErrorAtom) return false
-      if (atom === waitAndSaveEnabledAtom) return true
 
-      throw new Error('unexpected atom')
-    })
-
-    render(<WaitAndSaveComparisonQuoteUpdater slippageBips={50} />)
+    render(<WaitAndSaveComparisonQuoteUpdater orderClass="market" slippageBips={50} />)
 
     await waitFor(() => {
-      expect(buildWaitAndSaveComparisonRequest).toHaveBeenCalledWith(expect.objectContaining({ isOnQuote: false }))
+      expect(useAppDataBuildParams).toHaveBeenCalledWith(
+        expect.objectContaining({ enableWaitForCow: false, orderClass: 'market' }),
+      )
+    })
+    await waitFor(() => {
+      expect(buildWaitAndSaveComparisonRequest).toHaveBeenCalledWith(
+        expect.objectContaining({ appDataParams: expect.objectContaining({ enableWaitForCow: false }) }),
+      )
     })
     expect(jest.mocked(bridgingSdk.getQuote).mock.calls[0]?.[0]).toEqual(expect.objectContaining({ validFor: 1_800 }))
+  })
+
+  it('does not fetch a comparison for a non-market order', async () => {
+    jest.mocked(useEnableWaitForCow).mockReturnValue(false)
+
+    render(<WaitAndSaveComparisonQuoteUpdater orderClass="limit" slippageBips={50} />)
+
+    await waitFor(() => {
+      expect(useAppDataBuildParams).toHaveBeenCalledWith(
+        expect.objectContaining({ enableWaitForCow: undefined, orderClass: 'limit' }),
+      )
+    })
+    await waitFor(() => {
+      expect(setComparison).toHaveBeenCalledWith(null)
+    })
+    expect(buildWaitAndSaveComparisonRequest).not.toHaveBeenCalled()
   })
 })

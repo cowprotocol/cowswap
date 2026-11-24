@@ -8,7 +8,7 @@ import { isBridgeQuoteAndPost } from '@cowprotocol/sdk-bridging'
 
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
-import { useAppDataBuildParams, useEnableWaitForCow } from 'modules/appData'
+import { useAppDataBuildParams, useEnableWaitForCow, type AppDataUpdaterProps } from 'modules/appData'
 import {
   canonicalBatchScheduleAtom,
   formatPositiveFiat,
@@ -16,12 +16,15 @@ import {
   useIsHooksTradeType,
   useIsWaitAndSaveAvailable,
   waitAndSaveComparisonQuoteAtom,
-  waitAndSaveEnabledAtom,
+  type WaitAndSaveComparisonQuote,
 } from 'modules/trade'
 import { useQuoteParams, useTradeQuote } from 'modules/tradeQuote'
 import { useUsdPrice } from 'modules/usdAmount'
 
-import { buildWaitAndSaveComparisonRequest } from './buildWaitAndSaveComparisonRequest'
+import {
+  buildWaitAndSaveComparisonRequest,
+  type WaitAndSaveComparisonRequest,
+} from './buildWaitAndSaveComparisonRequest'
 
 import { useSwapDerivedState } from '../hooks/useSwapDerivedState'
 
@@ -47,17 +50,20 @@ interface QuotePairParams {
   comparison: LoggedQuote
   comparisonQuotedAtSec: number
   diff: DiffContext
-  isOnQuote: boolean
+  enableWaitForCow: boolean
   main: LoggedQuote
   mainQuotedAtSec: number | null
   requestedAmount: string
 }
 
-export function WaitAndSaveComparisonQuoteUpdater(props: { isSmartSlippage?: boolean; slippageBips: number }): null {
-  const { isSmartSlippage, slippageBips } = props
+export function WaitAndSaveComparisonQuoteUpdater({
+  isSmartSlippage,
+  orderClass,
+  slippageBips,
+}: AppDataUpdaterProps): null {
   const isAvailable = useIsWaitAndSaveAvailable()
-  const isEnabled = useAtomValue(waitAndSaveEnabledAtom)
-  const isWaitAndSaveQuote = useEnableWaitForCow()
+  const userQuoteWithWaitAndSave = useEnableWaitForCow()
+  const enableWaitForCow = orderClass === 'market' ? !userQuoteWithWaitAndSave : undefined
   const schedule = useAtomValue(canonicalBatchScheduleAtom)
   const hasScheduleError = useAtomValue(isCanonicalBatchScheduleErrorAtom)
   const { inputCurrencyAmount, orderKind, outputCurrencyAmount } = useSwapDerivedState()
@@ -73,14 +79,20 @@ export function WaitAndSaveComparisonQuoteUpdater(props: { isSmartSlippage?: boo
   const mainLoggedQuote = readMainQuote(quote?.quoteResults.quoteResponse.quote)
   const { buyAmount: mainBuyAmount, feeAmount: mainFeeAmount, sellAmount: mainSellAmount } = mainLoggedQuote
   const appDataParams = useAppDataBuildParams({
-    enableWaitForCow: !isEnabled,
+    enableWaitForCow,
     isSmartSlippage,
-    orderClass: 'market',
+    orderClass,
     slippageBips,
   })
   const setComparison = useSetAtom(waitAndSaveComparisonQuoteAtom)
   const canCompare = Boolean(
-    isAvailable && !hasScheduleError && schedule && quoteParams && mainBuyAmount && !quoteError,
+    enableWaitForCow !== undefined &&
+      isAvailable &&
+      !hasScheduleError &&
+      schedule &&
+      quoteParams &&
+      mainBuyAmount &&
+      !quoteError,
   )
 
   useEffect(() => {
@@ -94,7 +106,6 @@ export function WaitAndSaveComparisonQuoteUpdater(props: { isSmartSlippage?: boo
     return startComparisonFetch({
       appDataParams,
       diff: diffContextRef.current,
-      isOnQuote: !isWaitAndSaveQuote,
       mainBuyAmount,
       mainFeeAmount,
       mainQuotedAtSec: localQuoteTimestamp,
@@ -105,8 +116,8 @@ export function WaitAndSaveComparisonQuoteUpdater(props: { isSmartSlippage?: boo
   }, [
     appDataParams,
     canCompare,
+    enableWaitForCow,
     isLoading,
-    isWaitAndSaveQuote,
     localQuoteTimestamp,
     mainBuyAmount,
     mainFeeAmount,
@@ -182,10 +193,10 @@ function publishComparison(params: {
   mainQuotedAtSec: number | null
   mainSellAmount: string | undefined
   result: {
-    request: { isOnQuote: boolean; quoteParams: { amount?: { toString(): string } } }
+    request: WaitAndSaveComparisonRequest
     response: { cancelled: boolean; data: CrossChainQuoteAndPost | undefined }
   }
-  setComparison: (next: { buyAmount: string; isOnQuote: boolean; mainBuyAmount: string } | null) => void
+  setComparison: (next: WaitAndSaveComparisonQuote | null) => void
 }): void {
   const { request, response } = params.result
   if (response.cancelled) return
@@ -200,7 +211,7 @@ function publishComparison(params: {
     comparison,
     comparisonQuotedAtSec: Math.floor(Date.now() / 1000),
     diff: params.diff,
-    isOnQuote: request.isOnQuote,
+    enableWaitForCow: request.enableWaitForCow,
     main: {
       buyAmount: params.mainBuyAmount,
       feeAmount: params.mainFeeAmount,
@@ -211,7 +222,7 @@ function publishComparison(params: {
   })
   params.setComparison({
     buyAmount: comparison.buyAmount,
-    isOnQuote: request.isOnQuote,
+    enableWaitForCow: request.enableWaitForCow,
     mainBuyAmount: params.mainBuyAmount,
   })
 }
@@ -278,7 +289,7 @@ function readQuoteReport(params: QuotePairParams): {
       buyGapBps: buyGap?.toString(),
       comparisonQuote: {
         ...params.comparison,
-        isOnQuote: params.isOnQuote,
+        enableWaitForCow: params.enableWaitForCow,
         quotedAtSec: params.comparisonQuotedAtSec,
         quotedSellAmount: params.requestedAmount,
       },
@@ -311,19 +322,17 @@ function sellAmountsDiffer(
 function startComparisonFetch(params: {
   appDataParams: Parameters<typeof buildWaitAndSaveComparisonRequest>[0]['appDataParams']
   diff: DiffContext
-  isOnQuote: boolean
   mainBuyAmount: string
   mainFeeAmount: string | undefined
   mainQuotedAtSec: number | null
   mainSellAmount: string | undefined
   quoteParams: Parameters<typeof buildWaitAndSaveComparisonRequest>[0]['quoteParams']
-  setComparison: (next: { buyAmount: string; isOnQuote: boolean; mainBuyAmount: string } | null) => void
+  setComparison: (next: WaitAndSaveComparisonQuote | null) => void
 }): () => void {
   let cancelled = false
 
   buildWaitAndSaveComparisonRequest({
     appDataParams: params.appDataParams,
-    isOnQuote: params.isOnQuote,
     quoteParams: params.quoteParams,
   })
     .then((request) => {

@@ -47,6 +47,7 @@ export function SwapUpdaters(): ReactNode {
             isSmartSlippage={isSmartSlippageApplied}
           />
           <WaitAndSaveComparisonQuoteUpdater
+            orderClass="market"
             slippageBips={percentToBps(slippage)}
             isSmartSlippage={isSmartSlippageApplied}
           />

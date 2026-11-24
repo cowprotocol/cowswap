@@ -4,7 +4,7 @@ import type { WaitAndSaveComparisonQuote } from '../state/waitAndSaveComparisonQ
 
 const comparison = (overrides: Partial<WaitAndSaveComparisonQuote> = {}): WaitAndSaveComparisonQuote => ({
   buyAmount: '110',
-  isOnQuote: true,
+  enableWaitForCow: true,
   mainBuyAmount: '100',
   ...overrides,
 })
@@ -14,8 +14,8 @@ describe('getWaitAndSaveWaivedFeeRawAmount', () => {
     expect(
       getWaitAndSaveWaivedFeeRawAmount({
         comparison: comparison(),
-        isEnabled: false,
         mainBuyAmount: '100',
+        userQuoteWithWaitAndSave: false,
       }),
     ).toBe(10n)
   })
@@ -23,16 +23,16 @@ describe('getWaitAndSaveWaivedFeeRawAmount', () => {
   it('uses the main quote as the on-quote when Wait & Save is on', () => {
     expect(
       getWaitAndSaveWaivedFeeRawAmount({
-        comparison: comparison({ buyAmount: '100', isOnQuote: false, mainBuyAmount: '115' }),
-        isEnabled: true,
+        comparison: comparison({ buyAmount: '100', enableWaitForCow: false, mainBuyAmount: '115' }),
         mainBuyAmount: '115',
+        userQuoteWithWaitAndSave: true,
       }),
     ).toBe(15n)
   })
 
   it('omits a missing comparison', () => {
     expect(
-      getWaitAndSaveWaivedFeeRawAmount({ comparison: null, isEnabled: false, mainBuyAmount: '100' }),
+      getWaitAndSaveWaivedFeeRawAmount({ comparison: null, mainBuyAmount: '100', userQuoteWithWaitAndSave: false }),
     ).toBeUndefined()
   })
 
@@ -40,8 +40,8 @@ describe('getWaitAndSaveWaivedFeeRawAmount', () => {
     expect(
       getWaitAndSaveWaivedFeeRawAmount({
         comparison: comparison({ mainBuyAmount: '90' }),
-        isEnabled: false,
         mainBuyAmount: '100',
+        userQuoteWithWaitAndSave: false,
       }),
     ).toBeUndefined()
   })
@@ -49,9 +49,9 @@ describe('getWaitAndSaveWaivedFeeRawAmount', () => {
   it('omits a comparison requested for the same mode', () => {
     expect(
       getWaitAndSaveWaivedFeeRawAmount({
-        comparison: comparison({ isOnQuote: false }),
-        isEnabled: false,
+        comparison: comparison({ enableWaitForCow: false }),
         mainBuyAmount: '100',
+        userQuoteWithWaitAndSave: false,
       }),
     ).toBeUndefined()
   })
@@ -60,15 +60,15 @@ describe('getWaitAndSaveWaivedFeeRawAmount', () => {
     expect(
       getWaitAndSaveWaivedFeeRawAmount({
         comparison: comparison({ buyAmount: '100' }),
-        isEnabled: false,
         mainBuyAmount: '100',
+        userQuoteWithWaitAndSave: false,
       }),
     ).toBeUndefined()
     expect(
       getWaitAndSaveWaivedFeeRawAmount({
         comparison: comparison({ buyAmount: '80' }),
-        isEnabled: false,
         mainBuyAmount: '100',
+        userQuoteWithWaitAndSave: false,
       }),
     ).toBeUndefined()
   })

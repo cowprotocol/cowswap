@@ -35,6 +35,7 @@ const appDataParams = {
 
 describe('buildWaitAndSaveComparisonRequest', () => {
   beforeEach(() => {
+    jest.clearAllMocks()
     buildAppDataMock.mockImplementation(async (params) => ({
       appDataKeccak256: '0xhash',
       doc: { metadata: { enableWaitForCow: params.enableWaitForCow } } as Awaited<
@@ -46,25 +47,35 @@ describe('buildWaitAndSaveComparisonRequest', () => {
 
   it('requests the on-quote with enableWaitForCow and the swap quote lifetime', async () => {
     const request = await buildWaitAndSaveComparisonRequest({
-      appDataParams,
-      isOnQuote: true,
+      appDataParams: { ...appDataParams, enableWaitForCow: true },
       quoteParams,
     })
 
     expect(buildAppDataMock).toHaveBeenCalledWith(expect.objectContaining({ enableWaitForCow: true }))
+    expect(request?.enableWaitForCow).toBe(true)
     expect(request?.quoteParams.validFor).toBe(quoteParams.validFor)
     expect(request?.advancedSettings.appData).toEqual({ metadata: { enableWaitForCow: true } })
   })
 
   it('requests the off-quote without enableWaitForCow and with the swap quote lifetime', async () => {
     const request = await buildWaitAndSaveComparisonRequest({
-      appDataParams,
-      isOnQuote: false,
+      appDataParams: { ...appDataParams, enableWaitForCow: false },
       quoteParams,
     })
 
     expect(buildAppDataMock).toHaveBeenCalledWith(expect.objectContaining({ enableWaitForCow: false }))
+    expect(request?.enableWaitForCow).toBe(false)
     expect(request?.quoteParams.validFor).toBe(quoteParams.validFor)
     expect(request?.advancedSettings.appData).toEqual({ metadata: { enableWaitForCow: false } })
+  })
+
+  it('does not build a request when enableWaitForCow is unset', async () => {
+    const request = await buildWaitAndSaveComparisonRequest({
+      appDataParams,
+      quoteParams,
+    })
+
+    expect(request).toBeUndefined()
+    expect(buildAppDataMock).not.toHaveBeenCalled()
   })
 })

@@ -1,21 +1,23 @@
 import type { WaitAndSaveComparisonQuote } from '../state/waitAndSaveComparisonQuoteAtom'
 
+export interface GetWaitAndSaveWaivedFeeParams {
+  comparison: WaitAndSaveComparisonQuote | null
+  mainBuyAmount: string | undefined
+  userQuoteWithWaitAndSave: boolean
+}
+
 /**
  * On-quote buy amount minus off-quote buy amount, in buy-token atoms.
  * Missing, stale, or non-positive deltas are omitted.
  */
-export function getWaitAndSaveWaivedFeeRawAmount(params: {
-  isEnabled: boolean
-  mainBuyAmount: string | undefined
-  comparison: WaitAndSaveComparisonQuote | null
-}): bigint | undefined {
-  const { comparison, isEnabled, mainBuyAmount } = params
+export function getWaitAndSaveWaivedFeeRawAmount(params: GetWaitAndSaveWaivedFeeParams): bigint | undefined {
+  const { comparison, mainBuyAmount, userQuoteWithWaitAndSave } = params
 
   if (!comparison || !mainBuyAmount || comparison.mainBuyAmount !== mainBuyAmount) return undefined
-  if (comparison.isOnQuote === isEnabled) return undefined
+  if (comparison.enableWaitForCow === userQuoteWithWaitAndSave) return undefined
 
-  const onBuy = parseBuyAmount(isEnabled ? mainBuyAmount : comparison.buyAmount)
-  const offBuy = parseBuyAmount(isEnabled ? comparison.buyAmount : mainBuyAmount)
+  const onBuy = parseBuyAmount(userQuoteWithWaitAndSave ? mainBuyAmount : comparison.buyAmount)
+  const offBuy = parseBuyAmount(userQuoteWithWaitAndSave ? comparison.buyAmount : mainBuyAmount)
   if (onBuy === undefined || offBuy === undefined) return undefined
 
   const delta = onBuy - offBuy

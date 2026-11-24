@@ -7,19 +7,19 @@ import { buildAppData, toBuildAppDataParams, type UseAppDataParams } from 'modul
 
 export interface WaitAndSaveComparisonRequest {
   advancedSettings: SwapAdvancedSettings
-  isOnQuote: boolean
+  enableWaitForCow: boolean
   quoteParams: QuoteBridgeRequest
 }
 
 export async function buildWaitAndSaveComparisonRequest(params: {
   appDataParams: UseAppDataParams
-  isOnQuote: boolean
   quoteParams: QuoteBridgeRequest
 }): Promise<WaitAndSaveComparisonRequest | undefined> {
-  const buildParams = toBuildAppDataParams({
-    ...params.appDataParams,
-    enableWaitForCow: params.isOnQuote,
-  })
+  const { enableWaitForCow } = params.appDataParams
+
+  if (enableWaitForCow === undefined) return undefined
+
+  const buildParams = toBuildAppDataParams(params.appDataParams)
 
   if (!buildParams) return undefined
 
@@ -27,7 +27,7 @@ export async function buildWaitAndSaveComparisonRequest(params: {
 
   return {
     advancedSettings: { ...QUOTE_SETTINGS, appData: appData.doc },
-    isOnQuote: params.isOnQuote,
+    enableWaitForCow,
     quoteParams: params.quoteParams,
   }
 }

@@ -5,12 +5,12 @@ import { CurrencyAmount } from '@cowprotocol/currency'
 
 import { renderHook } from '@testing-library/react'
 
+import { useEnableWaitForCow } from 'modules/appData'
 import {
   formatPositiveFiat,
   isCanonicalBatchScheduleErrorAtom,
   useDerivedTradeState,
   waitAndSaveComparisonQuoteAtom,
-  waitAndSaveEnabledAtom,
   type WaitAndSaveComparisonQuote,
 } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
@@ -23,6 +23,10 @@ jest.mock('jotai', () => ({
   useAtomValue: jest.fn(),
 }))
 
+jest.mock('modules/appData', () => ({
+  useEnableWaitForCow: jest.fn(),
+}))
+
 jest.mock('modules/trade', () => {
   const fee = jest.requireActual('modules/trade/utils/waitAndSaveWaivedFee')
   const fiat = jest.requireActual('modules/trade/utils/formatPositiveFiat')
@@ -33,7 +37,6 @@ jest.mock('modules/trade', () => {
     isCanonicalBatchScheduleErrorAtom: Symbol('isCanonicalBatchScheduleErrorAtom'),
     useDerivedTradeState: jest.fn(),
     waitAndSaveComparisonQuoteAtom: Symbol('waitAndSaveComparisonQuoteAtom'),
-    waitAndSaveEnabledAtom: Symbol('waitAndSaveEnabledAtom'),
   }
 })
 
@@ -55,23 +58,23 @@ const FEE_FIAT = CurrencyAmount.fromRawAmount(USDC_MAINNET, 2_500000n)
 describe('useWaitAndSaveSaveAmount', () => {
   const state: {
     comparison: WaitAndSaveComparisonQuote | null
-    enabled: boolean
     hasScheduleError: boolean
     mainBuyAmount: string
+    userQuoteWithWaitAndSave: boolean
   } = {
-    comparison: { buyAmount: '110', isOnQuote: true, mainBuyAmount: '100' },
-    enabled: false,
+    comparison: { buyAmount: '110', enableWaitForCow: true, mainBuyAmount: '100' },
     hasScheduleError: false,
     mainBuyAmount: '100',
+    userQuoteWithWaitAndSave: false,
   }
 
   beforeEach(() => {
-    state.comparison = { buyAmount: '110', isOnQuote: true, mainBuyAmount: '100' }
-    state.enabled = false
+    state.comparison = { buyAmount: '110', enableWaitForCow: true, mainBuyAmount: '100' }
     state.hasScheduleError = false
     state.mainBuyAmount = '100'
+    state.userQuoteWithWaitAndSave = false
+    jest.mocked(useEnableWaitForCow).mockImplementation(() => state.userQuoteWithWaitAndSave)
     useAtomValueMock.mockImplementation((atom) => {
-      if (atom === waitAndSaveEnabledAtom) return state.enabled
       if (atom === isCanonicalBatchScheduleErrorAtom) return state.hasScheduleError
       if (atom === waitAndSaveComparisonQuoteAtom) return state.comparison
 
@@ -102,10 +105,10 @@ describe('useWaitAndSaveSaveAmount', () => {
     state.comparison = null
     expect(renderHook(() => useWaitAndSaveSaveAmount()).result.current).toBeUndefined()
 
-    state.comparison = { buyAmount: '100', isOnQuote: true, mainBuyAmount: '100' }
+    state.comparison = { buyAmount: '100', enableWaitForCow: true, mainBuyAmount: '100' }
     expect(renderHook(() => useWaitAndSaveSaveAmount()).result.current).toBeUndefined()
 
-    state.comparison = { buyAmount: '90', isOnQuote: true, mainBuyAmount: '100' }
+    state.comparison = { buyAmount: '90', enableWaitForCow: true, mainBuyAmount: '100' }
     expect(renderHook(() => useWaitAndSaveSaveAmount()).result.current).toBeUndefined()
   })
 

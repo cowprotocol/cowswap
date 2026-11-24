@@ -9,7 +9,7 @@ import { useAppDataBuildParams } from '../hooks/useAppDataBuildParams'
 import { useEnableWaitForCow } from '../hooks/useEnableWaitForCow'
 import { AppDataOrderClass } from '../types'
 
-interface AppDataUpdaterProps {
+export interface AppDataUpdaterProps {
   slippageBips: number
   isSmartSlippage?: boolean
   orderClass: AppDataOrderClass
