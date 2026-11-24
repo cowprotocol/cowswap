@@ -1,6 +1,7 @@
-import { WAIT_AND_SAVE_HARDCODED_VOLUME_FEE_SAVED_FIAT } from './waitAndSaveOutcome.constants'
-
 import type { WaitAndSaveOutcomeProps } from './WaitAndSaveOutcome.pure'
+
+/** Demo fixture. Live savings come from the stored quote delta. */
+export const WAIT_AND_SAVE_HARDCODED_VOLUME_FEE_SAVED_FIAT = '$0.30'
 
 export const WAIT_AND_SAVE_WITH_COW_DEMO: Extract<WaitAndSaveOutcomeProps, { variant: 'withCow' }> = {
   variant: 'withCow',

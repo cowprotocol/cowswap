@@ -27,25 +27,6 @@ import { useSwapDerivedState } from '../hooks/useSwapDerivedState'
 
 const getQuote = bridgingSdk.getQuote.bind(bridgingSdk)
 const getQuoteOnlyResolveLast = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
-let comparisonEffectSeq = 0
-
-function debugQuoteLog(message: string, hypothesisId: string, data: Record<string, unknown>): void {
-  // #region agent log
-  fetch('http://127.0.0.1:7359/ingest/16e6d0c0-c5ba-4a42-bd11-fdec2c9f7d3d', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': 'f58adb' },
-    body: JSON.stringify({
-      sessionId: 'f58adb',
-      runId: 'pre-fix',
-      hypothesisId,
-      location: 'WaitAndSaveComparisonQuoteUpdater.tsx',
-      message,
-      data,
-      timestamp: Date.now(),
-    }),
-  }).catch(() => {})
-  // #endregion
-}
 
 /** Volume-fee waivers are a fraction of a percent. A wider buy-amount gap is two different prices. */
 const DISCONNECT_GAP_BPS = 100n
@@ -108,10 +89,7 @@ export function WaitAndSaveComparisonQuoteUpdater(props: { isSmartSlippage?: boo
       return
     }
 
-    if (isLoading) {
-      debugQuoteLog('effect skip loading', 'A', { mainBuyAmount })
-      return
-    }
+    if (isLoading) return
 
     return startComparisonFetch({
       appDataParams,
@@ -341,19 +319,7 @@ function startComparisonFetch(params: {
   quoteParams: Parameters<typeof buildWaitAndSaveComparisonRequest>[0]['quoteParams']
   setComparison: (next: { buyAmount: string; isOnQuote: boolean; mainBuyAmount: string } | null) => void
 }): () => void {
-  const effectId = ++comparisonEffectSeq
-  const startedAt = Date.now()
   let cancelled = false
-  debugQuoteLog('effect start', 'A', {
-    effectId,
-    isOnQuote: params.isOnQuote,
-    mainBuyAmount: params.mainBuyAmount,
-    mainFeeAmount: params.mainFeeAmount,
-    mainSellAmount: params.mainSellAmount,
-    quotedAtSec: params.mainQuotedAtSec,
-    requestedAmount: params.quoteParams.amount?.toString(),
-    startedAt,
-  })
 
   buildWaitAndSaveComparisonRequest({
     appDataParams: params.appDataParams,
@@ -361,17 +327,7 @@ function startComparisonFetch(params: {
     quoteParams: params.quoteParams,
   })
     .then((request) => {
-      if (cancelled || !request) {
-        debugQuoteLog('request dropped', 'E', { cancelled, effectId, hasRequest: Boolean(request) })
-        return undefined
-      }
-      debugQuoteLog('request sent', 'A', {
-        effectId,
-        isOnQuote: request.isOnQuote,
-        requestedAmount: request.quoteParams.amount?.toString(),
-        sentAt: Date.now(),
-        validFor: request.quoteParams.validFor,
-      })
+      if (cancelled || !request) return undefined
 
       return getQuoteOnlyResolveLast(request.quoteParams, request.advancedSettings).then((response) => ({
         request,
@@ -379,22 +335,7 @@ function startComparisonFetch(params: {
       }))
     })
     .then((result) => {
-      if (cancelled || !result) {
-        debugQuoteLog('response ignored', 'E', { cancelled, effectId, hasResult: Boolean(result) })
-        return
-      }
-
-      const responseQuote = readQuoteAmounts(result.response.cancelled ? undefined : result.response.data)
-      debugQuoteLog('response received', 'B', {
-        effectId,
-        elapsedMs: Date.now() - startedAt,
-        requestAmount: result.request.quoteParams.amount?.toString(),
-        responseBuy: responseQuote?.buyAmount,
-        responseCancelled: result.response.cancelled,
-        responseFee: responseQuote?.feeAmount,
-        responseSell: responseQuote?.sellAmount,
-        stampedMainBuy: params.mainBuyAmount,
-      })
+      if (cancelled || !result) return
 
       publishComparison({
         diff: params.diff,
@@ -414,7 +355,6 @@ function startComparisonFetch(params: {
 
   return () => {
     cancelled = true
-    debugQuoteLog('effect cleanup', 'E', { effectId, elapsedMs: Date.now() - startedAt })
   }
 }
 
