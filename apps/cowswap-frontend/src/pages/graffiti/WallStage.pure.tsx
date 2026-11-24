@@ -87,7 +87,11 @@ export function WallStage({ wall }: WallStageProps): ReactNode {
       <CanvasControls
         hidden={viewport.isFullscreen}
         tool={brush.tool}
-        onTool={brush.setTool}
+        onTool={(tool) => {
+          brush.setTool(tool)
+          // The text goes in through the tools panel, which a phone starts with hidden.
+          if (tool === 'text') layout.setToolsVisible(true)
+        }}
         onZoomIn={() => viewport.zoomBy(ZOOM_IN)}
         onZoomOut={() => viewport.zoomBy(ZOOM_OUT)}
         onFit={viewport.resetView}

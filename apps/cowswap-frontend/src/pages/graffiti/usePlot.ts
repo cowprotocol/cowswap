@@ -16,7 +16,7 @@ export interface PlotState {
   maxBoxHeight: number
 }
 
-/** Auto-placed at the first free spot once the wall has loaded. */
+/** Auto-placed at a free spot once the wall has loaded. */
 export function usePlot(refs: WallRefs, info: CanvasInfo | null, loaded: boolean): PlotState {
   const { freeSpotRef, pixelsRef } = refs
   const maxBoxWidth = info?.maxBoxWidth ?? DEFAULT_PLOT_WIDTH

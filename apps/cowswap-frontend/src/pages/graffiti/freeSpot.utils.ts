@@ -33,12 +33,21 @@ interface Area {
 }
 
 /**
- * First spot (scanning left to right, top to bottom) where a `box`-sized frame lands on untouched
- * wall, preferring the area the swap page's backdrop never crops and spilling outside it only once
- * that is full. Falls back to the centre when the whole wall is full. Reads the pixel buffer
- * directly, so it never depends on render timing.
+ * A spot where a `box`-sized frame lands on untouched wall, preferring the area the swap page's
+ * backdrop never crops and spilling outside it only once that is full. Drawn at random from the
+ * free spots rather than the first of them: everyone who opened the wall at once used to be framed
+ * on the same cells, and the first to commit took them from the rest. Falls back to the centre
+ * when the whole wall is full. Reads the pixel buffer directly, so it never depends on render
+ * timing.
+ *
+ * `random` draws a unit in [0, 1) like `Math.random`, which it defaults to.
  */
-export function findFreeSpot(pixels: Uint8ClampedArray, wall: Size, box: Size): Spot {
+export function findFreeSpot(
+  pixels: Uint8ClampedArray,
+  wall: Size,
+  box: Size,
+  random: () => number = Math.random,
+): Spot {
   const insetX = Math.round(wall.w * SAFE_AREA_INSET)
   const insetY = Math.round(wall.h * SAFE_AREA_INSET)
 
@@ -46,8 +55,8 @@ export function findFreeSpot(pixels: Uint8ClampedArray, wall: Size, box: Size): 
   const wholeWall: Area = { minX: SCAN_MARGIN, minY: SCAN_MARGIN, maxX: wall.w, maxY: wall.h }
 
   return (
-    scanArea(pixels, wall, box, safeArea) ??
-    scanArea(pixels, wall, box, wholeWall) ?? { x: (wall.w - box.w) / 2, y: (wall.h - box.h) / 2 }
+    pickFreeSpot(pixels, wall, box, safeArea, random) ??
+    pickFreeSpot(pixels, wall, box, wholeWall, random) ?? { x: (wall.w - box.w) / 2, y: (wall.h - box.h) / 2 }
   )
 }
 
@@ -68,13 +77,30 @@ function isPainted(pixels: Uint8ClampedArray, width: number, x: number, y: numbe
   return pixels[i] !== 0 || pixels[i + 1] !== 0 || pixels[i + 2] !== 0
 }
 
-/** First free spot within `area`, or `undefined` when every frame it can hold is already painted. */
-function scanArea(pixels: Uint8ClampedArray, wall: Size, box: Size, area: Area): Spot | undefined {
+/** One of the free spots within `area` at random, or `undefined` when every frame it can hold is already painted. */
+function pickFreeSpot(
+  pixels: Uint8ClampedArray,
+  wall: Size,
+  box: Size,
+  area: Area,
+  random: () => number,
+): Spot | undefined {
+  const spots = scanArea(pixels, wall, box, area)
+
+  if (spots.length === 0) return undefined
+
+  return spots[Math.min(spots.length - 1, Math.floor(random() * spots.length))]
+}
+
+/** Every spot within `area` (scanning left to right, top to bottom) where the box lands on unpainted wall. */
+function scanArea(pixels: Uint8ClampedArray, wall: Size, box: Size, area: Area): Spot[] {
+  const spots: Spot[] = []
+
   for (let y = area.minY; y + box.h < area.maxY; y += SCAN_STEP) {
     for (let x = area.minX; x + box.w < area.maxX; x += SCAN_STEP) {
-      if (isBoxFree(pixels, wall, box, x, y)) return { x, y }
+      if (isBoxFree(pixels, wall, box, x, y)) spots.push({ x, y })
     }
   }
 
-  return undefined
+  return spots
 }

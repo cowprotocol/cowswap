@@ -298,17 +298,20 @@ export function TextLabelSection({ label, brushSize, onLabel }: TextLabelSection
   return (
     <div>
       <styledEl.SectionTitle>
-        <Trans>Label</Trans>
+        <Trans>Text</Trans>
       </styledEl.SectionTitle>
       <styledEl.TextInput
         type="text"
         value={label}
         maxLength={24}
         placeholder={t`type text…`}
+        autoFocus
         onChange={(e) => onLabel(e.target.value)}
       />
       <styledEl.Muted>
-        <Trans>size follows the brush ({fontSize}px) — tap the wall to stamp, tap again to re-stamp</Trans>
+        <Trans>1. type your text here · 2. tap the wall where it should go · tap again to re-stamp</Trans>
+        <br />
+        <Trans>size follows the brush ({fontSize}px)</Trans>
       </styledEl.Muted>
     </div>
   )
