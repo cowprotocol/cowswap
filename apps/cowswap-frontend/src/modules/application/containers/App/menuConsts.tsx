@@ -120,7 +120,7 @@ const MORE_ITEM = ({ isSolversEnabled, isGraffitiWallEnabled }: NavItemsFlags): 
             href: Routes.GRAFFITI,
             label: msg`Graffiti Wall`,
             badge: msg`NEW`,
-            badgeType: BadgeTypes.ALERT,
+            badgeType: BadgeTypes.ALERT2,
           },
         ]
       : []),

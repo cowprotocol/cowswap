@@ -96,6 +96,7 @@ export default function GraffitiPage(): ReactNode {
     ...draft,
     ...session,
     setPlot: plot.setPlot,
+    placePlot: plot.placeAtFreeSpot,
     plotDims: plot.plotDims,
     zoomToPlot: viewport.zoomToPlot,
     resetPhase: paint.resetPhase,
