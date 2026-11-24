@@ -118,11 +118,11 @@ function compareAppDataWithoutQuoteData(
 }
 
 /**
- * Compares slippage values only if they are set in both current and next params
- *
+ * The SDK signs the bridge hook with the quote's slippage.
+ * A stale quote can make the hook require more than the order guarantees.
  */
 function compareSlippage(currentSlippage: number | undefined, nextSlippage: number | undefined): boolean {
-  return !nextSlippage || !currentSlippage || currentSlippage === nextSlippage
+  return nextSlippage === undefined || currentSlippage === nextSlippage
 }
 
 // Do not compare slippage if the request contains smart slippage.

@@ -89,6 +89,37 @@ describe('quoteUsingSameParameters() slippage', () => {
         true,
       )
     })
+
+    it('requotes when the slippage switches from auto to explicit', () => {
+      expect(quoteUsingSameParameters(quoteState(undefined, false), nextParams(50), undefined, undefined, false)).toBe(
+        false,
+      )
+    })
+  })
+
+  describe('bridge quote', () => {
+    const bridgeQuoteState = (slippageBps: number): TradeQuoteState =>
+      ({
+        ...quoteState(slippageBps, false),
+        bridgeQuote: {
+          tradeParameters: {
+            validFor: 1800,
+            receiver: 'owner',
+            sellTokenChainId: 1,
+            buyTokenAddress: BUY_TOKEN,
+            buyTokenChainId: 8453,
+          },
+        },
+      }) as unknown as TradeQuoteState
+
+    const bridgeNextParams = (swapSlippageBps: number): QuoteBridgeRequest =>
+      ({ ...nextParams(swapSlippageBps), sellTokenChainId: 1, buyTokenChainId: 8453 }) as QuoteBridgeRequest
+
+    it('requotes when the slippage changes from 0', () => {
+      expect(quoteUsingSameParameters(bridgeQuoteState(0), bridgeNextParams(2), undefined, undefined, false)).toBe(
+        false,
+      )
+    })
   })
 })
 
