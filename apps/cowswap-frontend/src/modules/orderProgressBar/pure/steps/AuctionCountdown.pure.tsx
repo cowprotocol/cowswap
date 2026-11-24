@@ -1,11 +1,10 @@
-import { ReactNode, useRef } from 'react'
+import { ReactNode } from 'react'
 
-import { useCountdown } from '@cowprotocol/common-hooks'
-import { formatAuctionCountdown } from '@cowprotocol/common-utils'
+import { COW_BATCH_TIME_SECONDS } from '@cowprotocol/common-const'
 
 import { Trans } from '@lingui/react/macro'
 
-import * as styledEl from './AuctionCountdown.styled'
+import { MilkGlassCountdown } from 'common/pure/MilkGlassCountdown/MilkGlassCountdown.pure'
 
 export interface AuctionCountdownProps {
   targetEpochSec: number
@@ -13,21 +12,12 @@ export interface AuctionCountdownProps {
 }
 
 export function AuctionCountdown({ targetEpochSec, onRemainingChange }: AuctionCountdownProps): ReactNode {
-  const timerRef = useRef<HTMLDivElement>(null)
-
-  useCountdown({
-    targetRef: timerRef,
-    targetEpochSec,
-    format: formatAuctionCountdown,
-    onRemainingChange,
-  })
-
   return (
-    <styledEl.Wrapper>
-      <styledEl.Timer ref={timerRef} />
-      <styledEl.Caption>
-        <Trans>Until your order enters the auction</Trans>
-      </styledEl.Caption>
-    </styledEl.Wrapper>
+    <MilkGlassCountdown
+      targetEpochSec={targetEpochSec}
+      durationMs={COW_BATCH_TIME_SECONDS * 1000}
+      onRemainingChange={onRemainingChange}
+      label={<Trans>Until your order enters the auction</Trans>}
+    />
   )
 }
