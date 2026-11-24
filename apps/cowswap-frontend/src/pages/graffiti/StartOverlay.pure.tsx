@@ -294,12 +294,7 @@ function ClaimView({ onBack }: { onBack: () => void }): ReactNode {
       <ClaimSteps>
         <li>
           <Trans>
-            🐮 At Solana Breakpoint? Find us at the CoW Protocol booth and ask for the {TOKEN_SYMBOL} airdrop.
-          </Trans>
-        </li>
-        <li>
-          <Trans>
-            🐦 Not at Breakpoint? Follow{' '}
+            🐦 Follow{' '}
             <TwitterLink href={TWITTER_LINK} target="_blank" rel="noopener noreferrer">
               {TWITTER_HANDLE}
             </TwitterLink>{' '}
