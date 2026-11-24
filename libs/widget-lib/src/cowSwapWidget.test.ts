@@ -499,11 +499,24 @@ describe('createCowSwapWidget Solana in dapp mode', () => {
     expect(iframe.src).not.toContain('solanaEnabled')
   })
 
-  it('keeps the iframe when the host swaps one wallet for another', () => {
+  it('reloads the iframe when the host swaps one wallet for another, so the account cannot go stale', () => {
     const handler = createDappModeWidget(createHostSolanaProvider())
-    const srcBefore = handler.iframe.src
+    const iframe = handler.iframe
 
     handler.updateSolanaProvider(createHostSolanaProvider())
+
+    expect(iframe.src).toBe('about:blank')
+    finishIframeReload(iframe)
+
+    expect(iframe.src).toContain('solanaEnabled=true')
+  })
+
+  it('keeps the iframe when the host passes the same wallet again', () => {
+    const solanaProvider = createHostSolanaProvider()
+    const handler = createDappModeWidget(solanaProvider)
+    const srcBefore = handler.iframe.src
+
+    handler.updateSolanaProvider(solanaProvider)
 
     expect(handler.iframe.src).toBe(srcBefore)
   })

@@ -234,6 +234,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
     updateSolanaProvider: (newSolanaProvider) => {
       if (!iframeWindow) return
 
+      const previousSolanaProvider = solanaProvider
       solanaProvider = newSolanaProvider
       iframeSolanaProviderBridge = updateSolanaProvider(
         iframeWindow,
@@ -242,9 +243,10 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
         newSolanaProvider,
       )
 
-      // Gaining or losing the host wallet flips Solana availability, and the widget's Reown
-      // adapters are decided from the URL at boot — only a reload can honour that.
-      if (requiresIframeReload(iframe, currentParams, !!newSolanaProvider)) {
+      // The widget derives its Solana account and its Reown adapters once, while the bundle loads,
+      // so any change of host wallet leaves it stale: gaining or losing one flips availability,
+      // and swapping one for another silently keeps the old account on screen. Reload either way.
+      if (previousSolanaProvider !== newSolanaProvider) {
         reloadIframe(iframe, currentParams, !!newSolanaProvider)
       }
     },
@@ -531,17 +533,21 @@ function updateProvider(
   return providerBridge
 }
 
+/**
+ * Swaps the Solana bridge over to a new host wallet.
+ *
+ * A disconnected bridge has given up its message listener for good, so this builds a fresh one
+ * rather than reusing it — a reused bridge would stop answering the widget entirely.
+ */
 function updateSolanaProvider(
   iframe: Window,
   iframeOrigin: string,
   iframeSolanaProviderBridge: IframeSolanaProviderBridge | null,
   newSolanaProvider?: SolanaProvider,
 ): IframeSolanaProviderBridge {
-  if (iframeSolanaProviderBridge) {
-    iframeSolanaProviderBridge.disconnect()
-  }
+  iframeSolanaProviderBridge?.disconnect()
 
-  const providerBridge = iframeSolanaProviderBridge || new IframeSolanaProviderBridge(iframe, iframeOrigin)
+  const providerBridge = new IframeSolanaProviderBridge(iframe, iframeOrigin)
 
   if (newSolanaProvider) {
     providerBridge.onConnect(newSolanaProvider)

@@ -119,6 +119,20 @@ describe('Solana iframe provider', () => {
     expect(provider.connectedAccounts).toEqual([])
   })
 
+  it('serves again through a fresh bridge after the old one was disconnected', async () => {
+    bridge.onConnect(createHostWallet())
+    bridge.disconnect()
+
+    const nextWallet = createHostWallet()
+    const nextBridge = new IframeSolanaProviderBridge(window, TRUSTED_ORIGIN)
+    nextBridge.onConnect(nextWallet)
+
+    await expect(provider.connect()).resolves.toEqual([ACCOUNT])
+    expect(nextWallet.connect).toHaveBeenCalled()
+
+    nextBridge.disconnect()
+  })
+
   it('stops serving requests once the bridge is disconnected', async () => {
     bridge.onConnect(createHostWallet())
     await provider.connect()

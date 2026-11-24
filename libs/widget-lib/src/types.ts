@@ -23,7 +23,8 @@ export interface CowSwapWidgetProps {
    * connects its own wallet.
    *
    * Wrap a Wallet Standard wallet with {@link solanaProviderFromStandardWallet}, or implement
-   * {@link SolanaProvider} directly.
+   * {@link SolanaProvider} directly. Keep the reference stable: handing over a different object
+   * reloads the iframe, because the widget reads the wallet once while its bundle loads.
    */
   solanaProvider?: SolanaProvider
   listeners?: CowWidgetEventListeners
