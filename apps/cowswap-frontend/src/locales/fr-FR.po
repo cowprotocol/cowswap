@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-11-24 11:18\n"
+"PO-Revision-Date: 2026-11-24 15:16\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -20,6 +20,7 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/common/hooks/useCancelMultipleOrders.ts
 #: apps/cowswap-frontend/src/common/hooks/useCancelOrder/useSolanaCancelMultipleOrders.ts
+#: apps/cowswap-frontend/src/modules/ordersTable/hooks/useSolanaReclaimRent.ts
 #: apps/cowswap-frontend/src/modules/twap/hooks/useCancelTwapOrder.ts
 msgid "Wallet not connected"
 msgstr "Wallet non connecté"
@@ -3622,6 +3623,10 @@ msgstr "Ces frais contribuent à la maintenance et à l’amélioration de l’e
 msgid "Review limit order"
 msgstr "Vérifier l’ordre limite"
 
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/ContextMenu/OrderContextMenu.pure.tsx
+msgid "Reclaim rent"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
 msgid "Trade Smart, Save More!"
 msgstr "Tradez intelligemment, économisez davantage !"
@@ -3677,6 +3682,10 @@ msgstr "Approuver {symbol} (montant illimité)"
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/EthFlowModalTopContent.tsx
 msgid "At current gas prices, your remaining {nativeSymbol} balance after confirmation may be only sufficient for<0>up to {txsRemaining} wrapping, unwrapping, or approval operation(s).</0>"
 msgstr "Aux prix actuels du gas, votre solde de {nativeSymbol} restant après confirmation pourrait uniquement suffire pour<0>effectuer jusqu’à {txsRemaining} opération(s) de wrapping, de déwrapping ou d’approbation.</0>"
+
+#: apps/cowswap-frontend/src/modules/ordersTable/hooks/useSolanaReclaimRent.ts
+msgid "There is no rent left to reclaim"
+msgstr ""
 
 #: apps/cowswap-frontend/src/legacy/components/Badge/RangeBadge.tsx
 msgid "The price of this pool is outside of your selected range. Your position is not currently earning fees."
@@ -5945,6 +5954,10 @@ msgstr "L'ordre reste ouvert. L'exécution nécessite un solde suffisant en <0><
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Morpho Borrow"
 #~ msgstr "Morpho Borrow"
+
+#: apps/cowswap-frontend/src/modules/ordersTable/hooks/useSolanaReclaimRent.ts
+msgid "The reclaim transaction failed on-chain"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
 #~ msgid "Joins"
@@ -9987,6 +10000,10 @@ msgstr "Votre ordre sera exécuté lorsque le prix du marché sera plus favorabl
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/WidgetPageTitle/WidgetPageTitle.container.tsx
 msgid "Recover funds"
 msgstr "Récupérer les fonds"
+
+#: apps/cowswap-frontend/src/modules/ordersTable/hooks/useSolanaReclaimRent.ts
+msgid "Reclaim rent of cancelled orders"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerCodeInfo.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
