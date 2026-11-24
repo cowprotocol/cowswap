@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-11-23 17:58\n"
+"PO-Revision-Date: 2026-11-24 11:18\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -4716,6 +4716,10 @@ msgstr "Voir toutes les offres"
 msgid "Estimated amount that you will receive from each part of the order."
 msgstr "Montant estimé que vous recevrez pour chaque tranche de l’ordre."
 
+#: apps/cowswap-frontend/src/common/pure/MilkGlassCountdown/CountdownDigits/CountdownDigits.pure.tsx
+msgid "{seconds, plural, one {# second} few {# seconds} many {# seconds} other {# seconds}} remaining"
+msgstr ""
+
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "The swap adapter contracts integrate Aave Flash Loans and CoW Swap to facilitate advanced actions like repaying borrow positions using collateral. Learn more at https://aave.com/docs/developers/smart-contracts/swap-features.msg"
 #~ msgstr "The swap adapter contracts integrate Aave Flash Loans and CoW Swap to facilitate advanced actions like repaying borrow positions using collateral. Learn more at https://aave.com/docs/developers/smart-contracts/swap-features.msg"
@@ -4869,9 +4873,17 @@ msgstr "Un mur de {width}×{height} pixels partagé par tous, peint en direct su
 msgid "Add post-hook"
 msgstr "Ajouter un post-hook"
 
+#: apps/cowswap-frontend/src/common/pure/MilkGlassCountdown/CountdownDigits/CountdownDigits.pure.tsx
+#~ msgid "{seconds, plural, one {# second remaining} other {# seconds remaining}}"
+#~ msgstr "{seconds, plural, one {# second remaining} other {# seconds remaining}}"
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "CoW Swap is the only exchange that matches Coincidences of Wants (CoWs): peer-to-peer swaps that save on settlement costs."
 msgstr "CoW Swap est la seule plateforme d’échange qui associe les Coincidences of Wants (CoWs) : des swaps pair-à-pair qui réduisent les frais de règlement."
+
+#: apps/cowswap-frontend/src/common/pure/MilkGlassCountdown/CountdownDigits/CountdownDigits.pure.tsx
+#~ msgid "{minutes, plural, one {# minute} other {# minutes}}"
+#~ msgstr "{minutes, plural, one {# minute} other {# minutes}}"
 
 #: apps/cowswap-frontend/src/modules/twap/hooks/useCancelTwapOrder.ts
 #~ msgid "EOA TWAP cancellation is not implemented"
@@ -8214,6 +8226,10 @@ msgstr "Vous recevez exactement"
 msgid "Checking"
 msgstr "Vérification en cours"
 
+#: apps/cowswap-frontend/src/common/pure/MilkGlassCountdown/CountdownDigits/CountdownDigits.pure.tsx
+#~ msgid "{seconds, plural, one {# second} other {# seconds}}"
+#~ msgstr "{seconds, plural, one {# second} other {# seconds}}"
+
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Enter an amount"
 msgstr "Saisir un montant"
@@ -10108,6 +10124,10 @@ msgstr "Échec de la transaction"
 msgid "Approve spending <0/> <1/> on CoW Swap"
 msgstr "Autoriser CoW Swap à dépenser <0/> <1/>"
 
+#: apps/cowswap-frontend/src/common/pure/MilkGlassCountdown/CountdownDigits/CountdownDigits.pure.tsx
+#~ msgid "remaining"
+#~ msgstr "remaining"
+
 #: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartSettingsDropdown.tsx
 msgid "Refresh chart data every 30 seconds."
 msgstr "Actualiser les données du graphique toutes les 30 secondes."
@@ -10638,6 +10658,10 @@ msgstr "Utilisez des stratégies avancées pour une croissance optimale"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
 #~ msgid "Try adjusting your search term or clearing the filter"
 #~ msgstr "Try adjusting your search term or clearing the filter"
+
+#: apps/cowswap-frontend/src/common/pure/MilkGlassCountdown/CountdownDigits/CountdownDigits.pure.tsx
+msgid "{minutes, plural, one {# minute} few {# minutes} many {# minutes} other {# minutes}} {seconds, plural, one {# second} few {# seconds} many {# seconds} other {# seconds}} remaining"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ListItem/index.tsx
 msgid "View List"
