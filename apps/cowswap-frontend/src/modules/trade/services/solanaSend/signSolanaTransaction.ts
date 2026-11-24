@@ -1,5 +1,7 @@
 import { VersionedTransaction } from '@solana/web3.js'
 
+import { mapSolanaSigningError } from './mapSolanaSigningError'
+
 import type { Provider as SolanaProvider } from '@reown/appkit-adapter-solana/react'
 
 /**
@@ -10,7 +12,9 @@ export async function signSolanaTransaction(
   provider: SolanaProvider,
   transaction: VersionedTransaction,
 ): Promise<string> {
-  const signed = await provider.signTransaction(transaction)
+  const signed = await provider.signTransaction(transaction).catch((err: unknown) => {
+    throw mapSolanaSigningError(err)
+  })
 
   return Buffer.from(signed.serialize()).toString('base64')
 }

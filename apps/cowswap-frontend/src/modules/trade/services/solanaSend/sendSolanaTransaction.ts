@@ -1,6 +1,7 @@
 import { Connection, PublicKey, TransactionInstruction } from '@solana/web3.js'
 
 import { buildSolanaTransaction } from './buildSolanaTransaction'
+import { mapSolanaSigningError } from './mapSolanaSigningError'
 
 import type { Provider as SolanaProvider } from '@reown/appkit-adapter-solana/react'
 
@@ -33,7 +34,8 @@ export async function sendSolanaTransaction(
     const hash = await provider.sendTransaction(transaction, connection)
 
     return { hash, lastValidBlockHeight, blockhash }
-  } catch (error) {
+  } catch (err: unknown) {
+    const error = mapSolanaSigningError(err)
     if (attemptsLeft <= 1 || !isBlockhashExpiredError(error)) throw error
 
     return sendSolanaTransaction(connection, provider, owner, instructions, attemptsLeft - 1)

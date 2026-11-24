@@ -2,6 +2,8 @@
  * PublicKey.isOnCurve misreports every point as on-curve under jsdom, exhausting findProgramAddressSync's bumps.
  * @jest-environment node
  */
+import { isRejectRequestProviderError } from '@cowprotocol/common-utils'
+
 import { Keypair, PublicKey, TransactionInstruction, TransactionMessage, VersionedTransaction } from '@solana/web3.js'
 
 import { signSolanaTransaction } from './signSolanaTransaction'
@@ -92,5 +94,17 @@ describe('signSolanaTransaction', () => {
     expect(provider.signTransaction).toHaveBeenCalledTimes(1)
     expect(provider.sendTransaction).not.toHaveBeenCalled()
     expect(provider.signAndSendTransaction).not.toHaveBeenCalled()
+  })
+
+  // Trust Wallet's in-app browser reports a dismissed prompt as a TypeError from its own shim.
+  it('reports a swallowed rejection as one', async () => {
+    const provider = createProvider()
+    ;(provider.signTransaction as jest.Mock).mockRejectedValue(
+      new TypeError(`t is not an Object. (evaluating '"version"in t')`),
+    )
+
+    const error = await signSolanaTransaction(provider, sponsoredTransaction()).catch((err: unknown) => err)
+
+    expect(isRejectRequestProviderError(error)).toBe(true)
   })
 })
