@@ -95,7 +95,7 @@ function SnapshotSection(): React.ReactNode {
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 allow="clipboard-write"
-                sandbox="allow-scripts allow-same-origin"
+                sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
                 onError={(): void => setIsSnapshotAvailable(false)}
               />
             </ChartWrapper>
