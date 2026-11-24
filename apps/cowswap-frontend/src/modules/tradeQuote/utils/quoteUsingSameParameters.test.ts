@@ -89,12 +89,6 @@ describe('quoteUsingSameParameters() slippage', () => {
         true,
       )
     })
-
-    it('requotes when the slippage switches from auto to explicit', () => {
-      expect(quoteUsingSameParameters(quoteState(undefined, false), nextParams(50), undefined, undefined, false)).toBe(
-        false,
-      )
-    })
   })
 
   describe('bridge quote', () => {
@@ -112,13 +106,20 @@ describe('quoteUsingSameParameters() slippage', () => {
         },
       }) as unknown as TradeQuoteState
 
-    const bridgeNextParams = (swapSlippageBps: number): QuoteBridgeRequest =>
+    const bridgeNextParams = (swapSlippageBps: number | undefined): QuoteBridgeRequest =>
       ({ ...nextParams(swapSlippageBps), sellTokenChainId: 1, buyTokenChainId: 8453 }) as QuoteBridgeRequest
 
-    it('requotes when the slippage changes from 0', () => {
-      expect(quoteUsingSameParameters(bridgeQuoteState(0), bridgeNextParams(2), undefined, undefined, false)).toBe(
-        false,
-      )
+    it.each([
+      ['requotes when the slippage changes from 0', 0, 2, 2, false],
+      ['requotes when switching to auto raises the signed slippage', 10, undefined, 50, false],
+      ['keeps the quote when the signed slippage is lower', 50, undefined, 30, true],
+    ])('%s', (_, quoteBps, nextBps, signedBps, isSame) => {
+      const appData = appDataDoc('market', signedBps)
+      const isAuto = nextBps === undefined
+
+      expect(
+        quoteUsingSameParameters(bridgeQuoteState(quoteBps), bridgeNextParams(nextBps), appData, appData, isAuto),
+      ).toBe(isSame)
     })
   })
 })
