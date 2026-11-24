@@ -46,6 +46,7 @@ export function OrderSubmittedContent({ onDismiss, successTitle }: OrderSubmitte
     chainId,
     enabled: loadSolverCompetition,
     orderUid: order?.id,
+    waivedFeeAmount: order?.waitAndSaveWaivedFeeAmount,
   })
 
   let solverCompetition = orderProgressBarProps.solverCompetition

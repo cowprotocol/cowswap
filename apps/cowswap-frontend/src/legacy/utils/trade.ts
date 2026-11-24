@@ -58,6 +58,8 @@ export type PostOrderParams = {
   partiallyFillable: boolean
   quoteId?: number
   isSafeWallet: boolean
+  /** Positive buy-token atom delta between the Wait & Save quote and the immediate quote. */
+  waitAndSaveWaivedFeeAmount?: string
 }
 
 export type SignOrderParams = {
@@ -212,6 +214,9 @@ export function mapUnsignedOrderToOrder({ unsignedOrder, additionalParams }: Map
 
     // sell amount BEFORE fee - necessary for later calculations (unfilled orders)
     sellAmountBeforeFee: sellAmountBeforeFee.quotient.toString(),
+    ...(additionalParams.waitAndSaveWaivedFeeAmount
+      ? { waitAndSaveWaivedFeeAmount: additionalParams.waitAndSaveWaivedFeeAmount }
+      : undefined),
   }
 }
 

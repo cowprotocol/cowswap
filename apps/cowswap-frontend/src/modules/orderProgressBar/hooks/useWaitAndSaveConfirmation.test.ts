@@ -11,6 +11,8 @@ import { useSolversInfoByAddress } from 'common/hooks/useSolversInfoByAddress'
 import { useWaitAndSaveConfirmation, type WaitAndSaveConfirmation } from './useWaitAndSaveConfirmation'
 import { useWaitAndSaveSolverCompetition } from './useWaitAndSaveSolverCompetition'
 
+import { formatGainFiat } from '../pure/WaitAndSaveOutcome/buildWaitAndSaveOutcome.utils'
+
 jest.mock('./useWaitAndSaveSolverCompetition', () => ({
   useWaitAndSaveSolverCompetition: jest.fn(),
 }))
@@ -30,6 +32,9 @@ const useUsdAmountMock = useUsdAmount as jest.MockedFunction<typeof useUsdAmount
 const useSolversInfoByAddressMock = useSolversInfoByAddress as jest.MockedFunction<typeof useSolversInfoByAddress>
 
 const ORDER_UID = '0xabc'
+const WAIVED_FEE_RAW = '250000'
+const GAIN_FIAT = CurrencyAmount.fromRawAmount(USDC_MAINNET, 4_500000n)
+const FEE_FIAT = CurrencyAmount.fromRawAmount(USDC_MAINNET, 300000n)
 const WINNER = '0x1111111111111111111111111111111111111111'
 const ALONE = '0x2222222222222222222222222222222222222222'
 
@@ -52,22 +57,28 @@ const COMPETITION = {
   ],
 } as SolverCompetitionResponse
 
-function renderConfirmation(enabled = true): RenderHookResult<WaitAndSaveConfirmation, unknown> {
+function renderConfirmation(
+  enabled = true,
+  waivedFeeAmount?: string,
+): RenderHookResult<WaitAndSaveConfirmation, unknown> {
   return renderHook(() =>
     useWaitAndSaveConfirmation({
       buyToken: USDC_MAINNET,
       chainId: SupportedChainId.MAINNET,
       enabled,
       orderUid: ORDER_UID,
+      waivedFeeAmount,
     }),
   )
 }
 
 describe('useWaitAndSaveConfirmation', () => {
   beforeEach(() => {
-    useUsdAmountMock.mockReturnValue({
-      isLoading: false,
-      value: CurrencyAmount.fromRawAmount(USDC_MAINNET, 4_500000n),
+    useUsdAmountMock.mockImplementation((amount) => {
+      if (!amount || !amount.greaterThan(0)) return { isLoading: false, value: null }
+      if (amount.quotient.toString() === WAIVED_FEE_RAW) return { isLoading: false, value: FEE_FIAT }
+
+      return { isLoading: false, value: GAIN_FIAT }
     })
     useSolversInfoByAddressMock.mockReturnValue({})
   })
@@ -95,32 +106,63 @@ describe('useWaitAndSaveConfirmation', () => {
     expect(result.current.outcome).toBeUndefined()
   })
 
-  it('returns the CoW strip, combined savings summary, and winner-first solvers', () => {
+  it('returns the CoW strip without a waived fee when no quote delta was stored', () => {
     useWaitAndSaveSolverCompetitionMock.mockReturnValue({ competition: COMPETITION, pending: false })
 
     const { result } = renderConfirmation()
 
     expect(result.current.pending).toBe(false)
     expect(result.current.strip).toEqual({ hasAloneBid: true, kind: 'cow' })
-    expect(result.current.outcome).toMatchObject({
-      variant: 'withWaivedFeeAndCow',
-      volumeFeeSaved: '$0.30',
-    })
-    if (result.current.outcome?.variant === 'withWaivedFeeAndCow') {
-      expect(result.current.outcome.priceImprovement.startsWith('$')).toBe(true)
-      expect(result.current.outcome.totalSaved.startsWith('$')).toBe(true)
-    }
+    expect(result.current.outcome).toMatchObject({ variant: 'withCow', tokenSymbol: 'USDC' })
+    expect(result.current.outcome).not.toHaveProperty('volumeFeeSaved')
     expect(result.current.solvers?.[0]?.solver).toBeTruthy()
     expect(result.current.solvers?.[0]?.executedAmounts?.buy).toBe('1500000')
   })
 
-  it('falls back to fee-waiver-only and joined strip when the lookup times out', () => {
+  it('prices the stored quote delta separately from the solver-competition gain', () => {
+    useWaitAndSaveSolverCompetitionMock.mockReturnValue({ competition: COMPETITION, pending: false })
+
+    const { result } = renderConfirmation(true, WAIVED_FEE_RAW)
+
+    expect(result.current.outcome).toMatchObject({
+      variant: 'withWaivedFeeAndCow',
+      priceImprovement: formatGainFiat(GAIN_FIAT),
+      volumeFeeSaved: formatGainFiat(FEE_FIAT),
+    })
+    if (result.current.outcome?.variant === 'withWaivedFeeAndCow') {
+      expect(result.current.outcome.volumeFeeSaved).not.toBe(result.current.outcome.priceImprovement)
+    }
+  })
+
+  it('omits a stored delta that is not positive', () => {
+    useWaitAndSaveSolverCompetitionMock.mockReturnValue({ competition: COMPETITION, pending: false })
+
+    const { result } = renderConfirmation(true, '0')
+
+    expect(result.current.outcome).toMatchObject({ variant: 'withCow' })
+    expect(result.current.outcome).not.toHaveProperty('volumeFeeSaved')
+  })
+
+  it('falls back to the joined strip without a fee when the lookup times out and no delta was stored', () => {
     useWaitAndSaveSolverCompetitionMock.mockReturnValue({ competition: undefined, pending: false })
 
     const { result } = renderConfirmation()
 
     expect(result.current).toEqual({
-      outcome: { variant: 'withWaivedFee', volumeFeeSavedFiat: '$0.30' },
+      outcome: undefined,
+      pending: false,
+      solvers: undefined,
+      strip: { comparisonUnavailable: true, hasAloneBid: false, kind: 'joined' },
+    })
+  })
+
+  it('keeps the stored waived fee when the solver competition never arrives', () => {
+    useWaitAndSaveSolverCompetitionMock.mockReturnValue({ competition: undefined, pending: false })
+
+    const { result } = renderConfirmation(true, WAIVED_FEE_RAW)
+
+    expect(result.current).toEqual({
+      outcome: { variant: 'withWaivedFee', volumeFeeSavedFiat: formatGainFiat(FEE_FIAT) },
       pending: false,
       solvers: undefined,
       strip: { comparisonUnavailable: true, hasAloneBid: false, kind: 'joined' },

@@ -19,11 +19,14 @@ import { useGetAmountToSignApprove } from 'modules/erc20Approve'
 import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'modules/permit'
 import {
   TradeTypeToUiOrderType,
+  getWaitAndSaveWaivedFeeRawAmount,
   useDerivedTradeState,
   useGetReceiveAmountInfo,
   useIsHooksTradeType,
   useTradeConfirmActions,
   useTradeTypeInfo,
+  waitAndSaveComparisonQuoteAtom,
+  waitAndSaveEnabledAtom,
 } from 'modules/trade'
 import { getIsFinalQuote, getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 
@@ -91,6 +94,15 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
 
   const waitAndSaveValidTo = useWaitAndSaveValidTo()
   const validTo = getOrderValidTo(deadline, tradeQuote, waitAndSaveValidTo)
+  const comparisonQuote = useAtomValue(waitAndSaveComparisonQuoteAtom)
+  const isWaitAndSaveEnabled = useAtomValue(waitAndSaveEnabledAtom)
+  const waitAndSaveWaivedFeeAmount = waitAndSaveValidTo
+    ? getWaitAndSaveWaivedFeeRawAmount({
+        comparison: comparisonQuote,
+        isEnabled: isWaitAndSaveEnabled,
+        mainBuyAmount: tradeQuote.quote?.quoteResults.quoteResponse.quote.buyAmount,
+      })?.toString()
+    : undefined
 
   const settlementChainId = settlementContract.chainId
 
@@ -143,6 +155,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             setSigningStep,
             walletClient,
             config,
+            waitAndSaveWaivedFeeAmount,
           ]
         : null,
       // TODO: Break down this large function into smaller functions
@@ -179,6 +192,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         setSigningStep,
         walletClient,
         config,
+        waitAndSaveWaivedFeeAmount,
       ]) => {
         void settlementContract // in deps for memo stability
         return {
@@ -235,6 +249,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             partiallyFillable: isHooksTradeType,
             quoteId: tradeQuote.quoteResults.quoteResponse.id,
             isSafeWallet,
+            waitAndSaveWaivedFeeAmount,
           },
           config,
         }

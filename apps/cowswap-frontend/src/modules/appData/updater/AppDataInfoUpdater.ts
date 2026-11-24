@@ -1,30 +1,15 @@
 import { useSetAtom } from 'jotai'
 
 import { useAsyncEffect } from '@cowprotocol/common-hooks'
-import { UtmParams } from '@cowprotocol/common-utils'
+import { normalizeError } from '@cowprotocol/common-utils'
 import { CowEnv } from '@cowprotocol/cow-sdk'
 
-import { AppCodeWithWidgetMetadata } from 'modules/injectedWidget/hooks/useAppCodeWidgetAware'
-
-import { UserConsentsMetadata } from '../hooks/useRwaConsentForAppData'
 import { appDataInfoAtom } from '../state/atoms'
-import { AppDataOrderClass, AppDataPartnerFee, TypedAppDataHooks } from '../types'
-import { buildAppData, BuildAppDataParams } from '../utils/buildAppData'
+import { buildAppData } from '../utils/buildAppData'
 import { getAppData } from '../utils/fullAppData'
+import { toBuildAppDataParams, type UseAppDataParams } from '../utils/toBuildAppDataParams'
 
-export interface UseAppDataParams {
-  appCodeWithWidgetMetadata: AppCodeWithWidgetMetadata | null
-  slippageBips: number
-  isSmartSlippage?: boolean
-  orderClass: AppDataOrderClass
-  utm: UtmParams | undefined
-  typedHooks?: TypedAppDataHooks
-  volumeFee?: AppDataPartnerFee
-  replacedOrderUid?: string
-  userConsent?: UserConsentsMetadata
-  refCode?: string
-  enableWaitForCow?: boolean
-}
+export type { UseAppDataParams } from '../utils/toBuildAppDataParams'
 
 /**
  * Fetches and updates appDataInfo whenever a dependency changes
@@ -50,37 +35,33 @@ export function AppDataInfoUpdater({
   const setAppDataInfo = useSetAtom(appDataInfoAtom)
 
   useAsyncEffect(async () => {
-    if (!appCodeWithWidgetMetadata) {
-      // reset values when there is no price estimation or network changes
-      setAppDataInfo(null)
-      return
-    }
-
-    const { appCode, environment, widget } = appCodeWithWidgetMetadata
-    const params: BuildAppDataParams = {
+    const params = toBuildAppDataParams({
+      appCodeWithWidgetMetadata,
       slippageBips,
       isSmartSlippage,
-      appCode,
-      environment,
       orderClass,
       utm,
       typedHooks,
-      partnerFee: volumeFee,
-      widget,
+      volumeFee,
       replacedOrderUid,
       userConsent,
       refCode,
       enableWaitForCow,
+    })
+
+    if (!params) {
+      // reset values when there is no price estimation or network changes
+      setAppDataInfo(null)
+      return
     }
 
     try {
       const { doc, fullAppData, appDataKeccak256 } = await buildAppData(params)
 
       setAppDataInfo({ doc, fullAppData, appDataKeccak256, env: getEnvByClass(orderClass) })
-      // TODO: Replace any with proper type definitions
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
-      console.error(`[useAppData] failed to build appData, falling back to default`, params, e)
+    } catch (err: unknown) {
+      const error = normalizeError(err)
+      console.error(`[useAppData] failed to build appData, falling back to default`, params, error)
       setAppDataInfo(getAppData())
     }
   }, [

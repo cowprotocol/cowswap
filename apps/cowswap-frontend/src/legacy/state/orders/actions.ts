@@ -82,6 +82,9 @@ export interface BaseOrder extends OrderCreation {
   // For tracking how long an order has been pending
   openSince?: number
 
+  /** Positive on-quote minus off-quote buy amount, in buy-token atoms, captured at placement. */
+  waitAndSaveWaivedFeeAmount?: string
+
   /**
    * Whether the order should be hidden in the UI
    *
