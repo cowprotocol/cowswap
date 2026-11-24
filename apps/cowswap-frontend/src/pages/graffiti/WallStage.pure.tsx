@@ -89,7 +89,6 @@ export function WallStage({ wall }: WallStageProps): ReactNode {
         tool={brush.tool}
         onTool={(tool) => {
           brush.setTool(tool)
-          // The text goes in through the tools panel, which a phone starts with hidden.
           if (tool === 'text') layout.setToolsVisible(true)
         }}
         onZoomIn={() => viewport.zoomBy(ZOOM_IN)}

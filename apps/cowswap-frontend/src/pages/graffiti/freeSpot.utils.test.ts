@@ -46,6 +46,25 @@ describe('findFreeSpot', () => {
     expect(spot.y).toBeGreaterThanOrEqual(SAFE_AREA.minY)
   })
 
+  it('leaves the safe area rather than reuse the avoided spot', () => {
+    const pixels = new Uint8ClampedArray(WALL.w * WALL.h * 4).fill(255)
+    const clear = ({ x, y }: { x: number; y: number }): void => {
+      for (let cy = y; cy <= y + BOX.h; cy++) {
+        for (let cx = x; cx <= x + BOX.w; cx++) {
+          const i = (cy * WALL.w + cx) * 4
+
+          pixels[i] = pixels[i + 1] = pixels[i + 2] = 0
+        }
+      }
+    }
+    const outside = { x: 8, y: 232 }
+
+    clear(SAFE_ORIGIN)
+    clear(outside)
+
+    expect(findFreeSpot(pixels, WALL, BOX, { avoid: SAFE_ORIGIN })).toEqual(outside)
+  })
+
   it('returns the avoided spot when it is the only free one', () => {
     const wall = { w: 300, h: 200 }
     const pixels = new Uint8ClampedArray(wall.w * wall.h * 4).fill(255)

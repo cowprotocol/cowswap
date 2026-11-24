@@ -70,7 +70,6 @@ export function WallScreen({ wall }: WallScreenProps): ReactNode {
   )
 }
 
-/** What to do next with the tool in hand, where that is not obvious from the cursor. */
 function ToolHint({ tool, label }: ToolHintProps): ReactNode {
   if (tool !== 'text') return <Trans>draw on the wall — cost updates live</Trans>
 

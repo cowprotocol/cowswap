@@ -21,6 +21,7 @@ export interface UseSessionActionsParams {
   setDraft: Dispatch<SetStateAction<Draft>>
   pushHistory: () => void
   popHistory: () => Draft | undefined
+  clearHistory: () => void
   setPlot: Dispatch<SetStateAction<Plot | null>>
   placePlot: () => void
   plotDims: PlotDims
@@ -31,15 +32,16 @@ export interface UseSessionActionsParams {
 }
 
 export function useSessionActions(refs: WallRefs, params: UseSessionActionsParams): SessionActions {
-  const { setDraft, pushHistory, popHistory, setPlot, placePlot, plotDims } = params
+  const { setDraft, pushHistory, popHistory, clearHistory, setPlot, placePlot, plotDims } = params
   const { setSession, setPlotConfirmed, zoomToPlot, resetPhase } = params
   const { snapshotRef } = refs
   const resetToStart = useCallback((): void => {
     setDraft(new Map())
+    clearHistory()
     setPlotConfirmed(false)
     setSession('start')
     resetPhase()
-  }, [resetPhase, setDraft, setPlotConfirmed, setSession])
+  }, [clearHistory, resetPhase, setDraft, setPlotConfirmed, setSession])
 
   const undo = useCallback((): void => {
     const previous = popHistory()

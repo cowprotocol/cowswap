@@ -5,11 +5,7 @@ import { getIsSafeAppIframe } from '@cowprotocol/common-utils'
 const isEnabledInDevelopment =
   process.env.NODE_ENV === 'development' && process.env.REACT_APP_GRAFFITI_WALL_ENABLED !== 'false'
 
-/**
- * Off inside a Safe app whatever the flag says: painting burns a Solana token, and a Safe cannot
- * hold a Solana wallet, so every way into the wall there ends at a connect prompt that cannot be
- * answered.
- */
+/** A Safe cannot hold the Solana wallet the wall burns from, so no wall inside a Safe app. */
 export function useIsGraffitiWallEnabled(): boolean {
   const { isGraffitiWallEnabled } = useFeatureFlags()
 

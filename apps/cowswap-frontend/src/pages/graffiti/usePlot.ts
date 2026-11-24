@@ -18,11 +18,7 @@ export interface PlotState {
   maxBoxHeight: number
 }
 
-/**
- * Auto-placed at a free spot once the wall has loaded, and moved to a fresh one at the start of
- * every drawing session: the wall has changed since the last one, not least by what that session
- * painted, and the frame should not come back to the cells it just filled.
- */
+/** Auto-placed at a free spot once the wall has loaded; `placeAtFreeSpot` moves it to another one. */
 export function usePlot(refs: WallRefs, info: CanvasInfo | null, loaded: boolean): PlotState {
   const { freeSpotRef, pixelsRef } = refs
   const maxBoxWidth = info?.maxBoxWidth ?? DEFAULT_PLOT_WIDTH
