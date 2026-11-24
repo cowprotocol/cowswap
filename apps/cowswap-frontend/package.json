@@ -10,7 +10,7 @@
     "patch-package": "npx patch-package",
     "cosmos:clear": "rm -rf ./public/cosmos",
     "cosmos:run": "pnpm run _cosmos:run",
-    "build:cosmos": "npx cross-env NODE_ENV=development npx cosmos-export",
+    "build:cosmos": "npx cross-env NODE_ENV=development NODE_OPTIONS=--max-old-space-size=6144 npx cosmos-export",
     "_cosmos:run": "pnpm run cosmos:clear && npx cosmos",
     "postinstall": "npx patch-package"
   },
@@ -55,7 +55,7 @@
     "@cowprotocol/sdk-cow-shed": "0.6.9",
     "@cowprotocol/sdk-order-book": "4.7.0",
     "@cowprotocol/sdk-trading": "2.8.3",
-    "@cowprotocol/sdk-trading-solana": "2.1.0",
+    "@cowprotocol/sdk-trading-solana": "2.2.0",
     "@cowprotocol/sdk-viem-adapter": "0.3.39",
     "@cowprotocol/sdk-composable": "1.8.16",
     "@cowprotocol/snackbars": "workspace:*",

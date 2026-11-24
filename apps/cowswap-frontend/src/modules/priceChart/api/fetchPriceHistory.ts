@@ -1,5 +1,5 @@
 import { BFF_BASE_URL } from '@cowprotocol/common-const'
-import { fetchWithTimeout } from '@cowprotocol/common-utils'
+import { bffFetch } from '@cowprotocol/common-utils'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { CANDLE_INTERVALS, PRICE_CHART_TIMEOUT } from '../config/priceChart.constants'
@@ -44,7 +44,7 @@ export async function fetchPriceHistory(params: PriceHistoryQuery): Promise<Cand
   })
 
   try {
-    const response = await fetchWithTimeout(url, {
+    const response = await bffFetch(url, {
       headers: { Accept: 'application/json' },
       timeout: PRICE_CHART_TIMEOUT,
       timeoutMessage: 'Price chart request timed out',

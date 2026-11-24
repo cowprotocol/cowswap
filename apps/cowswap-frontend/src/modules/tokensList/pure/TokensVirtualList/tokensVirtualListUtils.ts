@@ -103,34 +103,35 @@ export function buildVirtualRows(params: BuildVirtualRowsParams): TokensVirtualR
   return [...composedRows, ...tokenRows]
 }
 
-export function sortTokensByBalance(tokens: TokenWithLogo[], balances: BalancesMap): TokenWithLogo[] {
+export function sortTokensByBalance(
+  tokens: TokenWithLogo[],
+  balances: BalancesMap,
+  prioritizedTokenKeys: string[] = [],
+): TokenWithLogo[] {
   const hasRanks = tokens.some((token) => getSolanaTokenRank(token) !== Infinity)
 
-  if (!balances && !hasRanks) {
+  if (!balances && !hasRanks && !prioritizedTokenKeys.length) {
     return tokens
   }
 
-  const prioritized: TokenWithLogo[] = []
-  const remainder: TokenWithLogo[] = []
-
-  for (const token of tokens) {
-    const hasBalance = Boolean(balances?.[getAddressKey(token.address)])
-    if (hasBalance || getIsNativeToken(token)) {
-      prioritized.push(token)
-    } else {
-      remainder.push(token)
-    }
-  }
+  const prioritizedPositions = new Map(prioritizedTokenKeys.map((key, index) => [key, index]))
+  const { held, prioritized, remainder } = splitTokens(tokens, balances, prioritizedPositions)
 
   if (balances) {
-    prioritized.sort(tokensListSorter(balances))
+    held.sort(tokensListSorter(balances))
   }
+
+  prioritized.sort(
+    (a, b) =>
+      (prioritizedPositions.get(getAddressKey(a.address)) ?? 0) -
+      (prioritizedPositions.get(getAddressKey(b.address)) ?? 0),
+  )
 
   if (hasRanks) {
     remainder.sort(compareSolanaTokenRank)
   }
 
-  return [...prioritized, ...remainder]
+  return [...held, ...prioritized, ...remainder]
 }
 
 function compareSolanaTokenRank(a: TokenWithLogo, b: TokenWithLogo): number {
@@ -152,4 +153,28 @@ function getSolanaTokenRank(token: TokenWithLogo): number {
   return token.chainId === SupportedChainId.SOLANA && typeof rank === 'number' && Number.isSafeInteger(rank) && rank > 0
     ? rank
     : Infinity
+}
+
+function splitTokens(
+  tokens: TokenWithLogo[],
+  balances: BalancesMap,
+  prioritizedPositions: Map<string, number>,
+): { held: TokenWithLogo[]; prioritized: TokenWithLogo[]; remainder: TokenWithLogo[] } {
+  const held: TokenWithLogo[] = []
+  const prioritized: TokenWithLogo[] = []
+  const remainder: TokenWithLogo[] = []
+
+  for (const token of tokens) {
+    const addressKey = getAddressKey(token.address)
+
+    if (Boolean(balances?.[addressKey]) || getIsNativeToken(token)) {
+      held.push(token)
+    } else if (prioritizedPositions.has(addressKey)) {
+      prioritized.push(token)
+    } else {
+      remainder.push(token)
+    }
+  }
+
+  return { held, prioritized, remainder }
 }

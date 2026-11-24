@@ -27,3 +27,6 @@ export const TOKEN_LIST_SELECT_CONFIG: { label: string; scope: TokenListScope }[
   { label: 'Sell Token Lists', scope: 'enabledForSell' },
   { label: 'Buy Token Lists', scope: 'enabledForBuy' },
 ]
+
+export const PRIORITIZED_TOKENS_HELPER_TEXT =
+  'Shown right after the native token and the tokens the wallet holds, in this order, even with a zero balance. Only the order changes. One address per line, for the selected network. Tokens missing from the active lists are ignored: add them with "Add Custom List".'

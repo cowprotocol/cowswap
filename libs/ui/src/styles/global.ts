@@ -60,4 +60,8 @@ export const baseGlobalStyles = css`
   a {
     color: inherit;
   }
+
+  .noBreak {
+    white-space: nowrap;
+  }
 `

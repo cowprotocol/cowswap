@@ -1,5 +1,5 @@
 import { BFF_BASE_URL } from '@cowprotocol/common-const'
-import { fetchWithTimeout } from '@cowprotocol/common-utils'
+import { bffFetch } from '@cowprotocol/common-utils'
 
 export type TokenRestriction = { restricted: true; tokenList: string } | { restricted: false }
 
@@ -11,14 +11,11 @@ export async function fetchTokenRestriction(
   countryCode: string,
 ): Promise<TokenRestriction> {
   const query = new URLSearchParams({ countryCode })
-  const response = await fetchWithTimeout(
-    `${BFF_BASE_URL}/get-token-restrictions/${chainId}/${tokenAddress}?${query}`,
-    {
-      headers: { Accept: 'application/json' },
-      timeout: TOKEN_RESTRICTION_TIMEOUT_MS,
-      timeoutMessage: 'Token restrictions request timed out',
-    },
-  )
+  const response = await bffFetch(`${BFF_BASE_URL}/get-token-restrictions/${chainId}/${tokenAddress}?${query}`, {
+    headers: { Accept: 'application/json' },
+    timeout: TOKEN_RESTRICTION_TIMEOUT_MS,
+    timeoutMessage: 'Token restrictions request timed out',
+  })
 
   if (!response.ok) {
     throw new Error(`Token restrictions request failed with status ${response.status}`)
