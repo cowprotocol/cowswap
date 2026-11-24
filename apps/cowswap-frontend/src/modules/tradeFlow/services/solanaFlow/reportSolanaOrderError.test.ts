@@ -30,6 +30,7 @@ function report(params: Partial<ReportSolanaOrderErrorParams> = {}): boolean {
     followsFailure: false,
     isSponsored: false,
     isRejection: false,
+    isSwallowedRejection: false,
     isWindowExpiryFailure: false,
     swapErrorMessage: 'Something went wrong',
     ...params,
@@ -74,6 +75,13 @@ describe('reportSolanaOrderError', () => {
   it('does not report a rejected wallet prompt', () => {
     expect(report({ isRejection: true })).toBe(false)
     expect(captureErrorMock).not.toHaveBeenCalled()
+  })
+
+  // A wallet that ends the prompt without saying why is shown to the user as a rejection, but it
+  // may just as well be unable to sign at all — the one case the team has no other way to see.
+  it('reports a rejection the wallet never explained', () => {
+    expect(report({ isRejection: true, isSwallowedRejection: true })).toBe(true)
+    expect(lastCall()[4]).toEqual(['SolanaOrder', 'wallet-no-signature'])
   })
 
   it('does not report a signing window that ran out', () => {

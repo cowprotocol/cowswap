@@ -120,6 +120,7 @@ export { sendSolanaTransaction } from './services/solanaSend/sendSolanaTransacti
 export { buildSolanaTransaction } from './services/solanaSend/buildSolanaTransaction'
 export type { BuildSolanaTransactionParams, BuiltSolanaTransaction } from './services/solanaSend/buildSolanaTransaction'
 export { signSolanaTransaction } from './services/solanaSend/signSolanaTransaction'
+export { isSwallowedWalletRejection } from './services/solanaSend/mapSolanaSigningError'
 export { estimateSolanaSigningDeadline } from './services/solanaSend/estimateSolanaSigningDeadline'
 export type { SolanaSigningDeadline } from './services/solanaSend/estimateSolanaSigningDeadline'
 export { SOLANA_MAX_APPROVE_AMOUNT } from './services/solanaApprove/const'

@@ -12,9 +12,13 @@ export async function signSolanaTransaction(
   provider: SolanaProvider,
   transaction: VersionedTransaction,
 ): Promise<string> {
-  const signed = await provider.signTransaction(transaction).catch((err: unknown) => {
+  let signed: VersionedTransaction
+
+  try {
+    signed = await provider.signTransaction(transaction)
+  } catch (err: unknown) {
     throw mapSolanaSigningError(err)
-  })
+  }
 
   return Buffer.from(signed.serialize()).toString('base64')
 }
