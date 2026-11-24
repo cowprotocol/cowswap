@@ -13,6 +13,7 @@ import { sendSolanaTransaction } from 'modules/trade'
 import { useSolanaReclaimRent } from './useSolanaReclaimRent'
 
 import type { Provider as SolanaProvider } from '@reown/appkit-adapter-solana/react'
+import type { SolanaOrderToReclaim } from 'tradingSdk/solana/buildSolanaReclaimOrderParams'
 
 const SOLANA_ACCOUNT = '11111111111111111111111111111111'
 const chainId = 7565164
@@ -49,6 +50,14 @@ const connection = { confirmTransaction } as unknown as Connection
 const orderPda = new PublicKey('So11111111111111111111111111111111111111112')
 const instruction = { keys: [], programId: orderPda, data: Buffer.from([5]) } as TransactionInstruction
 
+function renderReclaimRent(): (orders: SolanaOrderToReclaim[]) => Promise<void> {
+  const { result } = renderHook(() => useSolanaReclaimRent())
+
+  if (!result.current) throw new Error('expected a reclaim callback')
+
+  return result.current
+}
+
 describe('useSolanaReclaimRent', () => {
   beforeEach(() => {
     jest.clearAllMocks()
@@ -66,10 +75,10 @@ describe('useSolanaReclaimRent', () => {
   })
 
   it('sends the reclaim instructions and records the transaction', async () => {
-    const { result } = renderHook(() => useSolanaReclaimRent())
+    const reclaimRent = renderReclaimRent()
 
     await act(async () => {
-      await result.current([orderToReclaim])
+      await reclaimRent([orderToReclaim])
     })
 
     expect(mockBuildSolanaReclaimOrderParams).toHaveBeenCalledWith(
@@ -91,26 +100,29 @@ describe('useSolanaReclaimRent', () => {
   it('rejects when the reclaim lands but reverts, so the caller can put the entry back', async () => {
     confirmTransaction.mockResolvedValue({ value: { err: { InstructionError: [0, 'Custom'] } } })
 
-    const { result } = renderHook(() => useSolanaReclaimRent())
-
-    await expect(result.current([orderToReclaim])).rejects.toThrow('failed on-chain')
+    await expect(renderReclaimRent()([orderToReclaim])).rejects.toThrow('failed on-chain')
   })
 
   it('throws without sending when the rent is already gone', async () => {
     mockBuildSolanaReclaimOrderParams.mockResolvedValue([])
 
-    const { result } = renderHook(() => useSolanaReclaimRent())
-
-    await expect(result.current([orderToReclaim])).rejects.toThrow('There is no rent left to reclaim')
+    await expect(renderReclaimRent()([orderToReclaim])).rejects.toThrow('There is no rent left to reclaim')
     expect(mockSendSolanaTransaction).not.toHaveBeenCalled()
   })
 
-  it('throws without a connected Solana wallet', async () => {
+  it('offers nothing without a connected Solana wallet', () => {
     mockUseSolanaWalletProvider.mockReturnValue(undefined)
 
     const { result } = renderHook(() => useSolanaReclaimRent())
 
-    await expect(result.current([orderToReclaim])).rejects.toThrow('Wallet not connected')
-    expect(mockSendSolanaTransaction).not.toHaveBeenCalled()
+    expect(result.current).toBeNull()
+  })
+
+  it('offers nothing while AppKit has no connection, since the read-only fallback cannot sign', () => {
+    mockUseAppKitConnection.mockReturnValue({ connection: undefined } as ReturnType<typeof useAppKitConnection>)
+
+    const { result } = renderHook(() => useSolanaReclaimRent())
+
+    expect(result.current).toBeNull()
   })
 })

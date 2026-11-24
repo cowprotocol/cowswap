@@ -65,7 +65,7 @@ export function useOrderActions(): OrderActions {
 
   const getReclaimRent = useCallback(
     (order: ParsedOrder) => {
-      if (!reclaimableRent.orderIds.has(order.id)) return null
+      if (!reclaimRent || !reclaimableRent.orderIds.has(order.id)) return null
 
       return () => {
         reclaimRent([{ id: order.id, placedAt: order.creationTime.getTime() }])

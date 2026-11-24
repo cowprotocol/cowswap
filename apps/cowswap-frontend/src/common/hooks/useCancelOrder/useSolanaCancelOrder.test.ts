@@ -70,7 +70,7 @@ describe('useSolanaCancelOrder', () => {
     mockUseWalletInfo.mockReturnValue({ account: SOLANA_ACCOUNT, chainId } as ReturnType<typeof useWalletInfo>)
     mockUseSolanaWalletProvider.mockReturnValue(provider)
     mockUseAppKitConnection.mockReturnValue({ connection } as ReturnType<typeof useAppKitConnection>)
-    mockSendSolanaTransaction.mockResolvedValue({ hash: txHash, lastValidBlockHeight: 100 })
+    mockSendSolanaTransaction.mockResolvedValue({ hash: txHash, lastValidBlockHeight: 100, blockhash: 'blockhash' })
     mockBuildSolanaCancelOrderParams.mockImplementation(async (_connection, ownerAddress) => ({
       cancelParams: [{ ownerAddress, orderPda, intent: undefined }],
       reclaimParams: [{ ownerAddress, orderPda }],

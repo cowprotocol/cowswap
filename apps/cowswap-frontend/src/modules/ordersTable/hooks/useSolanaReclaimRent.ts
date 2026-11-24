@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { backendEnv } from '@cowprotocol/common-utils'
 import { isSolanaAddress } from '@cowprotocol/cow-sdk'
@@ -14,23 +14,35 @@ import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
 import { sendSolanaTransaction } from 'modules/trade'
 
+type ReclaimRentCallback = (orders: SolanaOrderToReclaim[]) => Promise<void>
+
 /**
  * Closes the on-chain accounts of orders that were cancelled before they expired, which returns the rent
  * their owner paid to create them. The reclaim cron only reaches an order once it has expired, so until
  * then the owner's own signature is the only way to get that rent back.
+ *
+ * Null until the wallet can sign one: the caller offers the action on exactly that condition, rather
+ * than restating it and drifting from what the callback actually requires.
  */
-export function useSolanaReclaimRent(): (orders: SolanaOrderToReclaim[]) => Promise<void> {
+export function useSolanaReclaimRent(): ReclaimRentCallback | null {
   const { account } = useWalletInfo()
   const provider = useSolanaWalletProvider()
+  // Sending needs AppKit's own connection; the read-only fallback cannot sign.
   const { connection } = useAppKitConnection()
   const addTransaction = useTransactionAdder()
 
-  return useCallback(
+  const signer = useMemo(
+    () => (provider && connection && isSolanaAddress(account) ? { provider, connection, account } : null),
+    [provider, connection, account],
+  )
+
+  const reclaimRent = useCallback<ReclaimRentCallback>(
     async (orders: SolanaOrderToReclaim[]) => {
-      if (!provider || !connection || !isSolanaAddress(account)) {
+      if (!signer) {
         throw new Error(t`Wallet not connected`)
       }
 
+      const { connection, provider, account } = signer
       const owner = new PublicKey(account)
       const reclaimable = await buildSolanaReclaimOrderParams(connection, owner, orders, backendEnv)
 
@@ -56,6 +68,8 @@ export function useSolanaReclaimRent(): (orders: SolanaOrderToReclaim[]) => Prom
         throw new Error(t`The reclaim transaction failed on-chain`)
       }
     },
-    [account, provider, connection, addTransaction],
+    [signer, addTransaction],
   )
+
+  return signer && reclaimRent
 }

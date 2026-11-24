@@ -61,12 +61,16 @@ export function useSolanaReclaimableRent(): SolanaReclaimableRent {
       ? [chainId, account, cancelledOrders, 'useSolanaReclaimableRent']
       : null,
     async ([, owner, orders]): Promise<ReclaimableRentState> => {
+      // Read before the lookup, which re-reads the clock after its RPC round trip: an earlier reading
+      // can only be more inclusive, so an order the lookup drops for being too young still counts here.
+      const checkedAt = Date.now()
+
       try {
         const reclaimable = await buildSolanaReclaimOrderParams(connection, new PublicKey(owner), orders, backendEnv)
 
         return {
           orderIds: new Set(reclaimable.map(({ id }) => id)),
-          hasWaitingOrder: orders.some(({ placedAt }) => Date.now() - placedAt <= SAFE_TO_RECLAIM_AFTER),
+          hasWaitingOrder: orders.some(({ placedAt }) => checkedAt - placedAt <= SAFE_TO_RECLAIM_AFTER),
         }
       } catch (err: unknown) {
         // Swallowing this would hide the entry with no trace of why, and the table has no error surface
