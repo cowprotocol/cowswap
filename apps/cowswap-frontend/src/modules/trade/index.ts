@@ -7,6 +7,7 @@ export {
   canonicalBatchScheduleQueryAtom,
   canonicalBatchScheduleAtom,
   canonicalBatchNextBatchAtom,
+  canonicalBatchIntervalSecondsAtom,
   isCanonicalBatchScheduleErrorAtom,
 } from './state/canonicalBatchScheduleAtom'
 export { useIsWaitAndSaveAvailable } from './hooks/useIsWaitAndSaveAvailable'

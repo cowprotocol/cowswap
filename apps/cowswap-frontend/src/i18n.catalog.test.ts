@@ -38,6 +38,7 @@ describe('en-US catalog', () => {
       '{competedCount, plural, one {# solver competed} few {# solvers competed} many {# solvers competed} other {# solvers competed}}',
       '{solversLength, plural, one {# solver competed for your order} few {# solvers competed for your order} many {# solvers competed for your order} other {# solvers competed for your order}}',
       '{total, plural, one {# solver} few {# solvers} many {# solvers} other {# solvers}}',
+      '{minutes, plural, one {#m} few {#m} many {#m} other {#m}} {remSeconds, plural, one {#s} few {#s} many {#s} other {#s}}',
     ]
 
     expect(expected.filter((msgId) => !liveMsgIds.includes(msgId))).toEqual([])

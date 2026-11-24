@@ -1,4 +1,4 @@
-import { Toggle, UI, font } from '@cowprotocol/ui'
+import { ExternalLink, Toggle, UI, font } from '@cowprotocol/ui'
 
 import styled, { css, keyframes } from 'styled-components/macro'
 
@@ -48,7 +48,7 @@ export const Wrapper = styled.div<{ $hasError?: boolean }>`
       ? css`
           background: var(${UI.COLOR_DANGER_BG});
           color: var(${UI.COLOR_DANGER_TEXT});
-          border-color: var(${UI.COLOR_DANGER});
+          border-color: transparent;
         `
       : undefined}
 `
@@ -101,30 +101,31 @@ export const TextColumn = styled.div`
 `
 
 export const TitleRow = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 4px;
   ${font('FONT_MEDIUM', 600)}
+`
+
+export const TitleAmount = styled.span`
+  color: var(${UI.COLOR_SUCCESS_TEXT});
+`
+
+export const TitleTooltip = styled.span`
+  vertical-align: middle;
 `
 
 export const DescriptionRow = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
-
-  strong {
-    font-weight: var(${UI.FONT_WEIGHT_BOLD});
-    color: var(${UI.COLOR_GREEN});
-  }
-`
-
-export const SaveAmount = styled.span`
-  ${font('FONT_SMALL_PLUS', 600)}
 `
 
 export const NextBatch = styled.span`
   ${font('FONT_SMALL_PLUS', 400)}
   color: var(${UI.COLOR_TEXT_SECONDARY});
+`
+
+export const NoVolumeFee = styled.span<{ $active: boolean }>`
+  ${({ $active }) => font('FONT_SMALL_PLUS', $active ? 600 : 400)}
+  color: ${({ $active }) => ($active ? `var(${UI.COLOR_SUCCESS_TEXT})` : `var(${UI.COLOR_TEXT_SECONDARY})`)};
 `
 
 export const BatchTimeSkeleton = styled.span`
@@ -148,13 +149,6 @@ export const BatchTimeSkeleton = styled.span`
   }
 `
 
-export const ErrorColumn = styled.span`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
-`
-
 export const ScheduleError = styled.span`
   ${font('FONT_SMALL_PLUS', 400)}
   color: var(${UI.COLOR_DANGER_TEXT});
@@ -168,6 +162,10 @@ export const RetryButton = styled.button`
   color: var(${UI.COLOR_DANGER_TEXT});
   cursor: pointer;
   text-decoration: underline;
+
+  &:hover {
+    text-decoration-style: dotted;
+  }
 `
 
 export const FetchingBatchTime = styled.span`
@@ -177,4 +175,29 @@ export const FetchingBatchTime = styled.span`
 
 export const WaitAndSaveToggle = styled(Toggle)`
   flex: 0 0 auto;
+`
+
+export const TooltipContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  > p {
+    margin: 0;
+  }
+`
+
+export const DocsLink = styled(ExternalLink)`
+  font-size: inherit;
+  line-height: inherit;
+  font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
+  color: var(${UI.COLOR_TEXT});
+  text-decoration: underline;
+  text-decoration-skip-ink: auto;
+
+  &:hover,
+  &:focus,
+  &:active {
+    text-decoration: underline;
+  }
 `

@@ -74,6 +74,7 @@ export { getTokenListViewLink } from './utils/getTokenListViewLink'
 export { getTokenLogoUrls } from './utils/getTokenLogoUrls'
 export { fetchTokenFromBlockchain } from './utils/fetchTokenFromBlockchain'
 export { getTokenSearchFilter } from './utils/getTokenSearchFilter'
+export { getPrioritizedTokenKeys } from './utils/getPrioritizedTokenKeys'
 export { excludeAlreadyActiveTokens } from './utils/tokenIdentity'
 export { getChainCurrencySymbols } from './utils/getChainCurrencySymbols'
 

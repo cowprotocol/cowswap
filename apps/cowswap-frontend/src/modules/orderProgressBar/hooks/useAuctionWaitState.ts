@@ -15,7 +15,7 @@ export interface AuctionWaitState {
 
 /**
  * Tracks whether a Wait for CoWs order is still waiting for `validFrom`.
- * Display ticking is owned by `useCountdown` in `AuctionCountdown`; this only gates UI.
+ * Display ticking is owned by `MilkGlassCountdown` in `AuctionCountdown`; this only gates UI.
  */
 export function useAuctionWaitState(order: Order | undefined): AuctionWaitState {
   const validFrom = useOrderValidFrom(order)

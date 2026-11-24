@@ -2,7 +2,7 @@ import { useAtom, useAtomValue } from 'jotai'
 import { ReactNode, useCallback, useEffect, useRef } from 'react'
 
 import { useCountdown } from '@cowprotocol/common-hooks'
-import { formatBatchCountdown } from '@cowprotocol/common-utils'
+import { formatApproximateBatchCountdown, formatBatchCountdown } from '@cowprotocol/common-utils'
 
 import {
   canonicalBatchNextBatchAtom,
@@ -16,28 +16,44 @@ import { WaitAndSaveRow } from '../../pure/WaitAndSaveRow/WaitAndSaveRow.pure'
 export function WaitAndSaveRowContainer(): ReactNode {
   const [isEnabled, setEnabled] = useAtom(waitAndSaveEnabledAtom)
   const joinsBatchInRef = useRef<HTMLElement | null>(null)
+  const remainingSecRef = useRef<number | undefined>(undefined)
   const countdownTargetEpochSec = useAtomValue(canonicalBatchNextBatchAtom)
-  const isScheduleError = useAtomValue(isCanonicalBatchScheduleErrorAtom)
+  const hasError = useAtomValue(isCanonicalBatchScheduleErrorAtom)
   const { refetch, isFetching } = useAtomValue(canonicalBatchScheduleQueryAtom)
-  const isScheduleLoading = !isScheduleError && countdownTargetEpochSec === undefined
+  const isLoading = !hasError && countdownTargetEpochSec === undefined
+  const format = isEnabled ? formatBatchCountdown : formatApproximateBatchCountdown
 
   useEffect(() => {
-    if (isScheduleError && isEnabled) {
+    if (hasError && isEnabled) {
       setEnabled(false)
     }
-  }, [isEnabled, isScheduleError, setEnabled])
+  }, [isEnabled, hasError, setEnabled])
 
   useCountdown({
     targetRef: joinsBatchInRef,
-    targetEpochSec: isScheduleError || isScheduleLoading ? undefined : countdownTargetEpochSec,
-    format: formatBatchCountdown,
+    targetEpochSec: hasError || isLoading ? undefined : countdownTargetEpochSec,
+    format,
+    onRemainingChange: (remainingSec) => {
+      remainingSecRef.current = remainingSec
+    },
   })
+
+  useEffect(() => {
+    const element = joinsBatchInRef.current
+    const remainingSec = remainingSecRef.current
+
+    if (!element || remainingSec === undefined) {
+      return
+    }
+
+    element.textContent = format(remainingSec)
+  }, [format])
 
   const toggle = useCallback(() => {
     setEnabled(!isEnabled)
   }, [isEnabled, setEnabled])
 
-  const retry = useCallback(() => {
+  const onRetry = useCallback(() => {
     void refetch()
   }, [refetch])
 
@@ -46,10 +62,10 @@ export function WaitAndSaveRowContainer(): ReactNode {
       isEnabled={isEnabled}
       toggle={toggle}
       joinsBatchInRef={joinsBatchInRef}
-      isScheduleError={isScheduleError}
-      isScheduleLoading={isScheduleLoading}
-      isScheduleFetching={isFetching}
-      onRetry={retry}
+      hasError={hasError}
+      isLoading={isLoading}
+      isFetching={isFetching}
+      onRetry={onRetry}
     />
   )
 }

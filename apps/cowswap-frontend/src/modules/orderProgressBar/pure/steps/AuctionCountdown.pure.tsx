@@ -1,33 +1,22 @@
-import { ReactNode, useRef } from 'react'
-
-import { useCountdown } from '@cowprotocol/common-hooks'
-import { formatAuctionCountdown } from '@cowprotocol/common-utils'
+import { ReactNode } from 'react'
 
 import { Trans } from '@lingui/react/macro'
 
-import * as styledEl from './AuctionCountdown.styled'
+import { MilkGlassCountdown } from 'common/pure/MilkGlassCountdown/MilkGlassCountdown.pure'
 
 export interface AuctionCountdownProps {
   targetEpochSec: number
+  durationMs: number
   onRemainingChange?: (remainingSec: number) => void
 }
 
-export function AuctionCountdown({ targetEpochSec, onRemainingChange }: AuctionCountdownProps): ReactNode {
-  const timerRef = useRef<HTMLDivElement>(null)
-
-  useCountdown({
-    targetRef: timerRef,
-    targetEpochSec,
-    format: formatAuctionCountdown,
-    onRemainingChange,
-  })
-
+export function AuctionCountdown({ targetEpochSec, durationMs, onRemainingChange }: AuctionCountdownProps): ReactNode {
   return (
-    <styledEl.Wrapper>
-      <styledEl.Timer ref={timerRef} />
-      <styledEl.Caption>
-        <Trans>Until your order enters the auction</Trans>
-      </styledEl.Caption>
-    </styledEl.Wrapper>
+    <MilkGlassCountdown
+      targetEpochSec={targetEpochSec}
+      durationMs={durationMs}
+      onRemainingChange={onRemainingChange}
+      label={<Trans>Until your order enters the auction</Trans>}
+    />
   )
 }

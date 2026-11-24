@@ -17,10 +17,10 @@ import { PROCESS_IMAGE_WRAPPER_BG_COLOR } from './constants'
 import { FullSizeLottie } from './LottieContainer'
 import { ProgressImageWrapper } from './ProgressImageWrapper'
 import { AnimatedTokens } from './steps/AnimatedToken'
-import { AuctionCountdown } from './steps/AuctionCountdown.pure'
 import { CircularCountdown } from './steps/CircularCountdown'
 import * as styledEl from './styled'
 
+import { AuctionCountdown } from '../containers/AuctionCountdown/AuctionCountdown.container'
 import { OrderProgressBarProps } from '../types'
 
 interface BaseTopSectionProps {
@@ -166,12 +166,18 @@ export function InitialTopSection({
   auctionValidFrom,
   onAuctionRemainingChange,
 }: InitialTopSectionProps): ReactNode {
+  const tokens = <AnimatedTokens sellToken={order?.inputToken} buyToken={order?.outputToken} />
+
   return (
     <ProgressImageWrapper stepName={stepName}>
       {auctionValidFrom !== undefined ? (
-        <AuctionCountdown targetEpochSec={auctionValidFrom} onRemainingChange={onAuctionRemainingChange} />
+        <AuctionCountdown
+          targetEpochSec={auctionValidFrom}
+          onRemainingChange={onAuctionRemainingChange}
+          fallback={tokens}
+        />
       ) : (
-        <AnimatedTokens sellToken={order?.inputToken} buyToken={order?.outputToken} />
+        tokens
       )}
     </ProgressImageWrapper>
   )

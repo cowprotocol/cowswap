@@ -57,6 +57,10 @@ export const canonicalBatchNextBatchAtom = atom((get): number | undefined => {
   return get(canonicalBatchScheduleAtom)?.nextBatch
 })
 
+export const canonicalBatchIntervalSecondsAtom = atom((get): number | undefined => {
+  return get(canonicalBatchScheduleAtom)?.intervalSeconds
+})
+
 export const isCanonicalBatchScheduleErrorAtom = atom((get): boolean => {
   const query = get(canonicalBatchScheduleQueryAtom)
 
