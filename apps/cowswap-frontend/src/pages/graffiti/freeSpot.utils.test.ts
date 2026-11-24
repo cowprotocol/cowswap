@@ -22,11 +22,11 @@ function paint(pixels: Uint8ClampedArray, x: number, y: number, wall = WALL): vo
 
 describe('findFreeSpot', () => {
   it('starts at the safe-area corner on an empty wall', () => {
-    expect(findFreeSpot(blankWall(), WALL, BOX, first)).toEqual(SAFE_ORIGIN)
+    expect(findFreeSpot(blankWall(), WALL, BOX, { random: first })).toEqual(SAFE_ORIGIN)
   })
 
   it('spreads claims over the free spots of the safe area', () => {
-    const spots = [0, 0.33, 0.66, 0.999].map((draw) => findFreeSpot(blankWall(), WALL, BOX, () => draw))
+    const spots = [0, 0.33, 0.66, 0.999].map((draw) => findFreeSpot(blankWall(), WALL, BOX, { random: () => draw }))
 
     expect(new Set(spots.map(({ x, y }) => `${x},${y}`)).size).toBe(spots.length)
 
@@ -36,6 +36,30 @@ describe('findFreeSpot', () => {
       expect(spot.x + BOX.w).toBeLessThanOrEqual(SAFE_AREA.maxX)
       expect(spot.y + BOX.h).toBeLessThanOrEqual(SAFE_AREA.maxY)
     }
+  })
+
+  it('skips the spot the frame already sits on', () => {
+    const spot = findFreeSpot(blankWall(), WALL, BOX, { random: first, avoid: SAFE_ORIGIN })
+
+    expect(spot).not.toEqual(SAFE_ORIGIN)
+    expect(spot.x).toBeGreaterThanOrEqual(SAFE_AREA.minX)
+    expect(spot.y).toBeGreaterThanOrEqual(SAFE_AREA.minY)
+  })
+
+  it('returns the avoided spot when it is the only free one', () => {
+    const wall = { w: 300, h: 200 }
+    const pixels = new Uint8ClampedArray(wall.w * wall.h * 4).fill(255)
+    const only = { x: 8, y: 8 }
+
+    for (let y = only.y; y <= only.y + BOX.h; y++) {
+      for (let x = only.x; x <= only.x + BOX.w; x++) {
+        const i = (y * wall.w + x) * 4
+
+        pixels[i] = pixels[i + 1] = pixels[i + 2] = 0
+      }
+    }
+
+    expect(findFreeSpot(pixels, wall, BOX, { avoid: only })).toEqual(only)
   })
 
   it('draws with Math.random by default', () => {
@@ -70,7 +94,7 @@ describe('findFreeSpot', () => {
       for (let x = inset.x; x < wall.w - inset.x; x++) paint(pixels, x, y, wall)
     }
 
-    const spot = findFreeSpot(pixels, wall, BOX, first)
+    const spot = findFreeSpot(pixels, wall, BOX, { random: first })
 
     expect(spot).toEqual({ x: 8, y: 8 })
   })
@@ -82,11 +106,11 @@ describe('findFreeSpot', () => {
   })
 
   it('treats pure black as unpainted', () => {
-    expect(findFreeSpot(blankWall(), WALL, BOX, first)).toEqual(SAFE_ORIGIN)
+    expect(findFreeSpot(blankWall(), WALL, BOX, { random: first })).toEqual(SAFE_ORIGIN)
   })
 
   it('respects a portrait box', () => {
-    const spot = findFreeSpot(blankWall(), WALL, { w: 128, h: 256 }, first)
+    const spot = findFreeSpot(blankWall(), WALL, { w: 128, h: 256 }, { random: first })
 
     expect(spot).toEqual(SAFE_ORIGIN)
   })

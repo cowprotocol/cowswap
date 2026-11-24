@@ -5,7 +5,7 @@ import { CANVAS } from './raster.utils'
 import type { Draft, Plot, PlotDims, Session, WallRefs } from './wall.types'
 
 export interface SessionActions {
-  /** Start → place: make the frame movable and bring it into view. */
+  /** Start → place: put the frame on a fresh free spot, make it movable and bring it into view. */
   startDrawing: () => void
   /** Place → paint: lock the frame where it is. */
   confirmPlot: () => void
@@ -22,6 +22,7 @@ export interface UseSessionActionsParams {
   pushHistory: () => void
   popHistory: () => Draft | undefined
   setPlot: Dispatch<SetStateAction<Plot | null>>
+  placePlot: () => void
   plotDims: PlotDims
   setSession: Dispatch<SetStateAction<Session>>
   setPlotConfirmed: Dispatch<SetStateAction<boolean>>
@@ -30,7 +31,7 @@ export interface UseSessionActionsParams {
 }
 
 export function useSessionActions(refs: WallRefs, params: UseSessionActionsParams): SessionActions {
-  const { setDraft, pushHistory, popHistory, setPlot, plotDims } = params
+  const { setDraft, pushHistory, popHistory, setPlot, placePlot, plotDims } = params
   const { setSession, setPlotConfirmed, zoomToPlot, resetPhase } = params
   const { snapshotRef } = refs
   const resetToStart = useCallback((): void => {
@@ -64,9 +65,11 @@ export function useSessionActions(refs: WallRefs, params: UseSessionActionsParam
   }, [pushHistory, setDraft, setPlotConfirmed, setSession, zoomToPlot])
 
   const startDrawing = useCallback((): void => {
+    placePlot()
     setSession('place')
+    // Frames the spot the plot held before this render; the viewport re-frames the new one once it lands.
     zoomToPlot()
-  }, [setSession, zoomToPlot])
+  }, [placePlot, setSession, zoomToPlot])
 
   const confirmPlot = useCallback((): void => {
     setPlotConfirmed(true)

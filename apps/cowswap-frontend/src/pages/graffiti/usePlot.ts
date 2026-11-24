@@ -10,13 +10,19 @@ import type { Plot, PlotDims, WallRefs } from './wall.types'
 export interface PlotState {
   plot: Plot | null
   setPlot: Dispatch<SetStateAction<Plot | null>>
+  /** Move the frame to a free spot other than where it is, keeping its orientation. */
+  placeAtFreeSpot: () => void
   plotDims: PlotDims
   /** The backend's per-draw bounding box: long side, short side. */
   maxBoxWidth: number
   maxBoxHeight: number
 }
 
-/** Auto-placed at a free spot once the wall has loaded. */
+/**
+ * Auto-placed at a free spot once the wall has loaded, and moved to a fresh one at the start of
+ * every drawing session: the wall has changed since the last one, not least by what that session
+ * painted, and the frame should not come back to the cells it just filled.
+ */
 export function usePlot(refs: WallRefs, info: CanvasInfo | null, loaded: boolean): PlotState {
   const { freeSpotRef, pixelsRef } = refs
   const maxBoxWidth = info?.maxBoxWidth ?? DEFAULT_PLOT_WIDTH
@@ -37,5 +43,14 @@ export function usePlot(refs: WallRefs, info: CanvasInfo | null, loaded: boolean
     setPlot((current) => current ?? { ...spot, vertical: false })
   }, [freeSpotRef, loaded, maxBoxHeight, maxBoxWidth, pixelsRef])
 
-  return { plot, setPlot, plotDims, maxBoxWidth, maxBoxHeight }
+  const placeAtFreeSpot = useCallback((): void => {
+    setPlot((current) => {
+      const vertical = current?.vertical ?? false
+      const [w, h] = plotDims({ vertical })
+
+      return { ...findFreeSpot(pixelsRef.current, CANVAS, { w, h }, { avoid: current ?? undefined }), vertical }
+    })
+  }, [pixelsRef, plotDims])
+
+  return { plot, setPlot, placeAtFreeSpot, plotDims, maxBoxWidth, maxBoxHeight }
 }

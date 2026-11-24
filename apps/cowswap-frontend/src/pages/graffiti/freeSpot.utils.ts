@@ -15,6 +15,13 @@ const SCAN_MARGIN = 8
  */
 const SAFE_AREA_INSET = 0.125
 
+export interface FreeSpotOptions {
+  /** Draws a unit in [0, 1) like `Math.random`, which it defaults to. */
+  random?: () => number
+  /** A spot not to return again while any other free one exists: where the frame already is. */
+  avoid?: Spot
+}
+
 export interface Size {
   w: number
   h: number
@@ -39,15 +46,8 @@ interface Area {
  * on the same cells, and the first to commit took them from the rest. Falls back to the centre
  * when the whole wall is full. Reads the pixel buffer directly, so it never depends on render
  * timing.
- *
- * `random` draws a unit in [0, 1) like `Math.random`, which it defaults to.
  */
-export function findFreeSpot(
-  pixels: Uint8ClampedArray,
-  wall: Size,
-  box: Size,
-  random: () => number = Math.random,
-): Spot {
+export function findFreeSpot(pixels: Uint8ClampedArray, wall: Size, box: Size, options: FreeSpotOptions = {}): Spot {
   const insetX = Math.round(wall.w * SAFE_AREA_INSET)
   const insetY = Math.round(wall.h * SAFE_AREA_INSET)
 
@@ -55,8 +55,8 @@ export function findFreeSpot(
   const wholeWall: Area = { minX: SCAN_MARGIN, minY: SCAN_MARGIN, maxX: wall.w, maxY: wall.h }
 
   return (
-    pickFreeSpot(pixels, wall, box, safeArea, random) ??
-    pickFreeSpot(pixels, wall, box, wholeWall, random) ?? { x: (wall.w - box.w) / 2, y: (wall.h - box.h) / 2 }
+    pickFreeSpot(pixels, wall, box, safeArea, options) ??
+    pickFreeSpot(pixels, wall, box, wholeWall, options) ?? { x: (wall.w - box.w) / 2, y: (wall.h - box.h) / 2 }
   )
 }
 
@@ -83,13 +83,15 @@ function pickFreeSpot(
   wall: Size,
   box: Size,
   area: Area,
-  random: () => number,
+  { random = Math.random, avoid }: FreeSpotOptions,
 ): Spot | undefined {
   const spots = scanArea(pixels, wall, box, area)
+  const others = avoid ? spots.filter((spot) => spot.x !== avoid.x || spot.y !== avoid.y) : spots
+  const candidates = others.length > 0 ? others : spots
 
-  if (spots.length === 0) return undefined
+  if (candidates.length === 0) return undefined
 
-  return spots[Math.min(spots.length - 1, Math.floor(random() * spots.length))]
+  return candidates[Math.min(candidates.length - 1, Math.floor(random() * candidates.length))]
 }
 
 /** Every spot within `area` (scanning left to right, top to bottom) where the box lands on unpainted wall. */
