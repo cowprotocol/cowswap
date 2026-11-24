@@ -23,6 +23,7 @@ import {
   WIDGET_PREVIEW_READY_FALLBACK_MS,
 } from '../../configurator.constants'
 import { ConfiguratorState } from '../../configurator.types'
+import { useHostSolanaWallet } from '../../hooks/useHostSolanaWallet'
 import { useProvider } from '../../hooks/useProvider'
 import { useResizableDrawerWidth } from '../../hooks/useResizableDrawerWidth'
 import { useToastsManager } from '../../hooks/useToastsManager'
@@ -49,6 +50,7 @@ export function Configurator(): ReactNode {
   const configuratorRef = useRef<HTMLDivElement | null>(null)
   const { isConnected } = useConnection()
   const provider = useProvider()
+  const { solanaProvider } = useHostSolanaWallet()
   const cowAnalytics = useCowAnalytics()
 
   // Widget Configurator UI:
@@ -194,6 +196,7 @@ export function Configurator(): ReactNode {
               sdkVersion={configuratorState.sdkVersion}
               params={params}
               provider={configuratorState.widgetMode === 'standalone' ? undefined : provider}
+              solanaProvider={configuratorState.widgetMode === 'standalone' ? undefined : solanaProvider}
               listeners={listeners}
               onReady={handlePreviewReady}
               onLoadingError={onLoadingError}

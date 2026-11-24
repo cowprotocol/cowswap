@@ -21,14 +21,17 @@ export function buildWidgetPath(params: Partial<CowSwapWidgetParams>): string {
   return `/${chainId}/widget/${tradeType}/${assetsPath}`
 }
 
-export function buildWidgetUrl(params: Partial<CowSwapWidgetParams>): string {
+export function buildWidgetUrl(params: Partial<CowSwapWidgetParams>, hasSolanaProvider?: boolean): string {
   const host = sanitizeWidgetBaseUrl(params.baseUrl)
   const path = buildWidgetPath(params)
 
-  return host + '/#' + path + '?' + buildWidgetUrlQuery(params)
+  return host + '/#' + path + '?' + buildWidgetUrlQuery(params, hasSolanaProvider)
 }
 
-export function buildWidgetUrlQuery(params: Partial<CowSwapWidgetParams>): URLSearchParams {
+export function buildWidgetUrlQuery(
+  params: Partial<CowSwapWidgetParams>,
+  hasSolanaProvider?: boolean,
+): URLSearchParams {
   const query = new URLSearchParams()
 
   return addSolanaEnabledToQuery(
@@ -40,6 +43,7 @@ export function buildWidgetUrlQuery(params: Partial<CowSwapWidgetParams>): URLSe
       params,
     ),
     params,
+    hasSolanaProvider,
   )
 }
 
@@ -107,8 +111,12 @@ function addLocaleToQuery(query: URLSearchParams, params: Partial<CowSwapWidgetP
   return query
 }
 
-function addSolanaEnabledToQuery(query: URLSearchParams, params: Partial<CowSwapWidgetParams>): URLSearchParams {
-  if (isSolanaEnabledForWidget(params)) {
+function addSolanaEnabledToQuery(
+  query: URLSearchParams,
+  params: Partial<CowSwapWidgetParams>,
+  hasSolanaProvider?: boolean,
+): URLSearchParams {
+  if (isSolanaEnabledForWidget(params, hasSolanaProvider)) {
     query.append('solanaEnabled', 'true')
   }
 

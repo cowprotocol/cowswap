@@ -60,12 +60,13 @@ export function getDefaultCustomColorsByTheme(): Record<PaletteMode, ColorPalett
   }
 }
 
-export function getSolanaBlockedReason({ widgetMode }: ConfiguratorFormValues): string | undefined {
-  if (widgetMode !== 'standalone') {
-    return 'Solana needs standalone mode: a dapp-provided EIP-1193 provider cannot sign Solana transactions.'
-  }
+export function getSolanaDappModeNotice(
+  { enableSolana, widgetMode }: ConfiguratorFormValues,
+  hasSolanaProvider: boolean,
+): string | undefined {
+  if (!enableSolana || widgetMode === 'standalone' || hasSolanaProvider) return undefined
 
-  return undefined
+  return 'In dapp mode the host app owns the wallet. Connect a Solana wallet below to lend it to the widget.'
 }
 
 export function getSolanaFeeNotice({ enableSolana, partnerFeeBps }: ConfiguratorFormValues): string | undefined {
@@ -74,8 +75,11 @@ export function getSolanaFeeNotice({ enableSolana, partnerFeeBps }: Configurator
   return 'Partner fees are not charged on Solana yet, so Solana trades earn no fee.'
 }
 
-export function isSolanaSelectable({ enableSolana, widgetMode }: ConfiguratorFormValues): boolean {
-  return isSolanaEnabledForWidget({ enableSolana, standaloneMode: widgetMode === 'standalone' })
+export function isSolanaSelectable(
+  { enableSolana, widgetMode }: ConfiguratorFormValues,
+  hasSolanaProvider: boolean = false,
+): boolean {
+  return isSolanaEnabledForWidget({ enableSolana, standaloneMode: widgetMode === 'standalone' }, hasSolanaProvider)
 }
 
 export function resolveConfiguratorCustomColorsByTheme(persistedValue: unknown): Record<PaletteMode, ColorPalette> {

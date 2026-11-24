@@ -1,5 +1,10 @@
 import { CowWidgetEventListeners } from '@cowprotocol/events'
-import { getParentOrigin, IframeRpcProviderBridge } from '@cowprotocol/iframe-transport'
+import {
+  getParentOrigin,
+  IframeRpcProviderBridge,
+  IframeSolanaProviderBridge,
+  SolanaProvider,
+} from '@cowprotocol/iframe-transport'
 
 import { isAllowedWindowOpenUrl } from './allowedWindowOpenUrl'
 import { assignElementStyles } from './applyElementStyles'
@@ -37,6 +42,7 @@ const noopHandler: CowSwapWidgetHandler = {
   updateParams: () => void 0,
   updateListeners: () => void 0,
   updateProvider: () => void 0,
+  updateSolanaProvider: () => void 0,
   destroy: () => void 0,
 }
 
@@ -48,6 +54,7 @@ export interface CowSwapWidgetHandler {
   updateParams: (params: CowSwapWidgetParams) => void
   updateListeners: (newListeners?: CowWidgetEventListeners) => void
   updateProvider: (newProvider?: EthereumProvider) => void
+  updateSolanaProvider: (newSolanaProvider?: SolanaProvider) => void
   destroy: () => void
 }
 
@@ -60,16 +67,24 @@ export interface CowSwapWidgetHandler {
 
 // eslint-disable-next-line max-lines-per-function
 export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidgetProps): CowSwapWidgetHandler {
-  const { params, provider: providerAux, listeners, onReady, enableSafeSdkBridge = true } = props
+  const {
+    params,
+    provider: providerAux,
+    solanaProvider: solanaProviderAux,
+    listeners,
+    onReady,
+    enableSafeSdkBridge = true,
+  } = props
 
   let provider = providerAux
-  let currentParams: CowSwapWidgetParams = resolveWidgetParams(params)
+  let solanaProvider = solanaProviderAux
+  let currentParams: CowSwapWidgetParams = resolveWidgetParams(params, !!solanaProvider)
   let lastDynamicHeight: string = ''
 
   if (typeof window === 'undefined') return noopHandler
 
   // 1. Create a brand new iframe
-  const iframe = createIframe(currentParams)
+  const iframe = createIframe(currentParams, !!solanaProvider)
   const iframeOrigin = getIframeOrigin(iframe)
   logWidget('Resolved trusted iframe origin', { iframeOrigin })
   const windowListeners: WindowListener[] = []
@@ -88,6 +103,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
 
   let iFrameCowEventEmitter: IframeCowEventEmitter | null = null
   let iframeRpcProviderBridge: IframeRpcProviderBridge | null = null
+  let iframeSolanaProviderBridge: IframeSolanaProviderBridge | null = null
   let iframeSafeSdkBridge: IframeSafeSdkBridge | null = null
 
   let heightChangeListeners: WindowListener[] = []
@@ -151,6 +167,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
 
     // 8. Wire up the iframeRpcProviderBridge with the provider (so RPC calls flow back and forth)
     iframeRpcProviderBridge = updateProvider(iframeWindow, iframeOrigin, null, provider)
+    iframeSolanaProviderBridge = updateSolanaProvider(iframeWindow, iframeOrigin, null, solanaProvider)
 
     // 9. Schedule the uploading of the params, once the iframe is loaded
     iframe.addEventListener('load', () => {
@@ -168,8 +185,8 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   }
 
   function destroy(skipIframeDestroy = false): void {
-    // Disconnect rpc provider and unsubscribe to events
-    iframeRpcProviderBridge?.disconnect()
+    // Disconnect the provider bridges and unsubscribe to events
+    ;[iframeRpcProviderBridge, iframeSolanaProviderBridge].forEach((bridge) => bridge?.disconnect())
     // Stop listening for cow events
     iFrameCowEventEmitter?.stopListeningIframe()
 
@@ -196,11 +213,11 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
     iframe,
     updateParams: (newParams: CowSwapWidgetParams) => {
       if (!iframeWindow) return
-      currentParams = resolveWidgetParams(newParams)
+      currentParams = resolveWidgetParams(newParams, !!solanaProvider)
 
       applyContainerStyles(container, currentParams, lastDynamicHeight)
-      if (requiresIframeReload(iframe, currentParams)) {
-        reloadIframe(iframe, currentParams)
+      if (requiresIframeReload(iframe, currentParams, !!solanaProvider)) {
+        reloadIframe(iframe, currentParams, !!solanaProvider)
       } else {
         updateParams(iframeWindow, iframeOrigin, currentParams, provider)
       }
@@ -213,6 +230,23 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
 
       provider = newProvider
       iframeRpcProviderBridge = updateProvider(iframeWindow, iframeOrigin, iframeRpcProviderBridge, newProvider)
+    },
+    updateSolanaProvider: (newSolanaProvider) => {
+      if (!iframeWindow) return
+
+      solanaProvider = newSolanaProvider
+      iframeSolanaProviderBridge = updateSolanaProvider(
+        iframeWindow,
+        iframeOrigin,
+        iframeSolanaProviderBridge,
+        newSolanaProvider,
+      )
+
+      // Gaining or losing the host wallet flips Solana availability, and the widget's Reown
+      // adapters are decided from the URL at boot — only a reload can honour that.
+      if (requiresIframeReload(iframe, currentParams, !!newSolanaProvider)) {
+        reloadIframe(iframe, currentParams, !!newSolanaProvider)
+      }
     },
 
     destroy,
@@ -270,11 +304,11 @@ function applyContainerStyles(container: HTMLElement, params: CowSwapWidgetParam
  * @param params - Parameters for the widget.
  * @returns The generated HTMLIFrameElement.
  */
-function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
+function createIframe(params: CowSwapWidgetParams, hasSolanaProvider: boolean): HTMLIFrameElement {
   const iframe = document.createElement('iframe')
 
   iframe.id = WIDGET_IFRAME_ID
-  iframe.src = buildWidgetUrl(params)
+  iframe.src = buildWidgetUrl(params, hasSolanaProvider)
   iframe.setAttribute('sandbox', getIframeSandbox(params))
   iframe.referrerPolicy = WIDGET_IFRAME_REFERRER_POLICY
   iframe.allow = WIDGET_IFRAME_ALLOW
@@ -345,10 +379,10 @@ function listenToReady(contentWindow: Window, iframeOrigin: string, onReady: () 
   )
 }
 
-function reloadIframe(iframe: HTMLIFrameElement, params: CowSwapWidgetParams): void {
+function reloadIframe(iframe: HTMLIFrameElement, params: CowSwapWidgetParams, hasSolanaProvider: boolean): void {
   const sandbox = getIframeSandbox(params)
 
-  const nextSrc = buildWidgetUrl(params)
+  const nextSrc = buildWidgetUrl(params, hasSolanaProvider)
 
   iframe.addEventListener(
     'load',
@@ -361,17 +395,21 @@ function reloadIframe(iframe: HTMLIFrameElement, params: CowSwapWidgetParams): v
   iframe.src = 'about:blank'
 }
 
-function requiresIframeReload(iframe: HTMLIFrameElement, params: CowSwapWidgetParams): boolean {
+function requiresIframeReload(
+  iframe: HTMLIFrameElement,
+  params: CowSwapWidgetParams,
+  hasSolanaProvider: boolean,
+): boolean {
   const sandbox = getIframeSandbox(params)
 
   if (iframe.getAttribute('sandbox') !== sandbox) return true
 
   // `updateParams` only posts the new params to a bundle that already decided its wallet adapters
   // from the URL, so a change to the Solana opt-in is only honoured by reloading the iframe.
-  return isSolanaEnabledInWidgetSrc(iframe.src) !== isSolanaEnabledForWidget(params)
+  return isSolanaEnabledInWidgetSrc(iframe.src) !== isSolanaEnabledForWidget(params, hasSolanaProvider)
 }
 
-function resolveWidgetParams(params: CowSwapWidgetParams): CowSwapWidgetParams {
+function resolveWidgetParams(params: CowSwapWidgetParams, hasSolanaProvider: boolean): CowSwapWidgetParams {
   const currentParams = { ...DEFAULT_WIDGET_PARAMS, ...params }
 
   if (typeof currentParams.appCode !== 'string' || currentParams.appCode.trim().length === 0) {
@@ -380,6 +418,10 @@ function resolveWidgetParams(params: CowSwapWidgetParams): CowSwapWidgetParams {
 
   if (currentParams.disableWindowOpen && currentParams.standaloneMode !== false) {
     throw new Error('`disableWindowOpen: true` requires `standaloneMode: false`')
+  }
+
+  if (currentParams.enableSolana && currentParams.standaloneMode === false && !hasSolanaProvider) {
+    logWidget('`enableSolana` is ignored in dapp mode until a `solanaProvider` is passed.')
   }
 
   return currentParams
@@ -484,6 +526,25 @@ function updateProvider(
   // Connect to the new provider
   if (newProvider) {
     providerBridge.onConnect(newProvider)
+  }
+
+  return providerBridge
+}
+
+function updateSolanaProvider(
+  iframe: Window,
+  iframeOrigin: string,
+  iframeSolanaProviderBridge: IframeSolanaProviderBridge | null,
+  newSolanaProvider?: SolanaProvider,
+): IframeSolanaProviderBridge {
+  if (iframeSolanaProviderBridge) {
+    iframeSolanaProviderBridge.disconnect()
+  }
+
+  const providerBridge = iframeSolanaProviderBridge || new IframeSolanaProviderBridge(iframe, iframeOrigin)
+
+  if (newSolanaProvider) {
+    providerBridge.onConnect(newSolanaProvider)
   }
 
   return providerBridge

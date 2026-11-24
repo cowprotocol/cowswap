@@ -29,6 +29,7 @@ import {
 } from '../../configurator.utils'
 import { useColorPaletteManager } from '../../hooks/useColorPaletteManager'
 import { useExpandedSectionHash } from '../../hooks/useExpandedSectionHash'
+import { useHostSolanaWallet } from '../../hooks/useHostSolanaWallet'
 import { useSyncWidgetNetwork } from '../../hooks/useSyncWidgetNetwork'
 import { UseToastsManagerReturn } from '../../hooks/useToastsManager'
 import { useColorMode } from '../../theme/context/hooks/useColorMode'
@@ -143,6 +144,7 @@ export function Sidebar({
   const { colorPalette, defaultPalette } = paletteManager
 
   const { chainId: walletChainId, isConnected } = useConnection()
+  const { solanaProvider } = useHostSolanaWallet()
 
   const isWalletChainEffective = configuratorFormValues.widgetMode === 'dapp' && isConnected && !!walletChainId
   const effectiveChainId = isWalletChainEffective ? walletChainId : configuratorFormValues.chainId
@@ -185,7 +187,7 @@ export function Sidebar({
     configuratorFormValues.chainId,
     setNetworkControlState,
     configuratorFormValues.widgetMode,
-    isSolanaSelectable(configuratorFormValues),
+    isSolanaSelectable(configuratorFormValues, !!solanaProvider),
   )
 
   return (

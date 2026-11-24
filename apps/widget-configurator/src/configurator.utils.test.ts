@@ -4,7 +4,7 @@ import { DEFAULT_CONFIGURATOR_FORM_VALUES, DEFAULT_DARK_PALETTE, DEFAULT_LIGHT_P
 import {
   buildConfiguratorState,
   getDefaultCustomColorsByTheme,
-  getSolanaBlockedReason,
+  getSolanaDappModeNotice,
   getSolanaFeeNotice,
   isSolanaSelectable,
   resolveConfiguratorCustomColorsByTheme,
@@ -98,9 +98,11 @@ describe('Solana availability', () => {
     partnerFeeBps: 0,
   } as const
 
+  const OPTED_IN_DAPP = { ...OPTED_IN, widgetMode: 'dapp' } as const
+
   it('is selectable once a standalone widget opts in', () => {
     expect(isSolanaSelectable(OPTED_IN)).toBe(true)
-    expect(getSolanaBlockedReason(OPTED_IN)).toBeUndefined()
+    expect(getSolanaDappModeNotice(OPTED_IN, false)).toBeUndefined()
     expect(getSolanaFeeNotice(OPTED_IN)).toBeUndefined()
   })
 
@@ -108,21 +110,24 @@ describe('Solana availability', () => {
     const values = { ...OPTED_IN, enableSolana: false }
 
     expect(isSolanaSelectable(values)).toBe(false)
-    expect(getSolanaBlockedReason(values)).toBeUndefined()
+    expect(getSolanaDappModeNotice(values, false)).toBeUndefined()
   })
 
   it('stays selectable with a partner fee set, and warns that Solana earns none', () => {
     const values = { ...OPTED_IN, partnerFeeBps: 50 }
 
     expect(isSolanaSelectable(values)).toBe(true)
-    expect(getSolanaBlockedReason(values)).toBeUndefined()
+    expect(getSolanaDappModeNotice(values, false)).toBeUndefined()
     expect(getSolanaFeeNotice(values)).toEqual(expect.any(String))
   })
 
-  it('blocks the opt-in in dapp mode', () => {
-    const values = { ...OPTED_IN, widgetMode: 'dapp' } as const
+  it('tells a dapp-mode integrator to connect a Solana wallet, and hides Solana meanwhile', () => {
+    expect(getSolanaDappModeNotice(OPTED_IN_DAPP, false)).toEqual(expect.any(String))
+    expect(isSolanaSelectable(OPTED_IN_DAPP, false)).toBe(false)
+  })
 
-    expect(getSolanaBlockedReason(values)).toEqual(expect.any(String))
-    expect(isSolanaSelectable(values)).toBe(false)
+  it('is selectable in dapp mode once the host wallet is connected', () => {
+    expect(getSolanaDappModeNotice(OPTED_IN_DAPP, true)).toBeUndefined()
+    expect(isSolanaSelectable(OPTED_IN_DAPP, true)).toBe(true)
   })
 })

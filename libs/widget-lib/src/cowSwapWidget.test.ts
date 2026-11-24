@@ -2,6 +2,8 @@
  * @jest-environment jsdom
  */
 
+import type { SolanaProvider } from '@cowprotocol/iframe-transport'
+
 import { CowSwapWidgetHandler, createCowSwapWidget } from './cowSwapWidget'
 import { WIDGET_IFRAME_SANDBOX, WIDGET_IFRAME_SANDBOX_WITHOUT_POPUPS } from './cowSwapWidget.constants'
 import { CowSwapWidgetParams, TradeType, WidgetMethodsEmit } from './types'
@@ -423,6 +425,99 @@ describe('createCowSwapWidget Solana opt-in', () => {
     })
 
     expect(iframe.src).toBe(srcBefore)
+  })
+})
+
+describe('createCowSwapWidget Solana in dapp mode', () => {
+  const DAPP_MODE_PARAMS: CowSwapWidgetParams = {
+    appCode: 'test-app',
+    chainId: 1,
+    tradeType: TradeType.SWAP,
+    enableSolana: true,
+    standaloneMode: false,
+  }
+
+  function createDappModeWidget(solanaProvider?: SolanaProvider): CowSwapWidgetHandler {
+    const container = document.createElement('div')
+    document.body.appendChild(container)
+
+    const handler = createCowSwapWidget(container, { params: DAPP_MODE_PARAMS, solanaProvider })
+    widgetHandlers.push(handler)
+
+    return handler
+  }
+
+  function createHostSolanaProvider(): SolanaProvider {
+    return {
+      connect: jest.fn(async () => []),
+      disconnect: jest.fn(async () => void 0),
+      signTransactions: jest.fn(async () => []),
+    }
+  }
+
+  function finishIframeReload(iframe: HTMLIFrameElement): void {
+    const postMessageSpy = jest.spyOn(widgetIframeTransport, 'postMessageToWindow').mockImplementation(() => void 0)
+    iframe.dispatchEvent(new Event('load'))
+    postMessageSpy.mockRestore()
+  }
+
+  afterEach(() => {
+    widgetHandlers.splice(0).forEach((handler) => handler.destroy())
+    document.body.innerHTML = ''
+    jest.restoreAllMocks()
+  })
+
+  it('hides Solana while the host has lent no wallet', () => {
+    expect(createDappModeWidget().iframe.src).not.toContain('solanaEnabled')
+  })
+
+  it('enables Solana when the host lends a wallet at creation', () => {
+    expect(createDappModeWidget(createHostSolanaProvider()).iframe.src).toContain('solanaEnabled=true')
+  })
+
+  it('reloads the iframe when the host lends a wallet later', () => {
+    const handler = createDappModeWidget()
+    const iframe = handler.iframe
+
+    handler.updateSolanaProvider(createHostSolanaProvider())
+
+    expect(iframe.src).toBe('about:blank')
+    finishIframeReload(iframe)
+
+    expect(iframe.src).toContain('solanaEnabled=true')
+  })
+
+  it('reloads the iframe when the host takes its wallet back', () => {
+    const handler = createDappModeWidget(createHostSolanaProvider())
+    const iframe = handler.iframe
+
+    handler.updateSolanaProvider(undefined)
+
+    expect(iframe.src).toBe('about:blank')
+    finishIframeReload(iframe)
+
+    expect(iframe.src).not.toContain('solanaEnabled')
+  })
+
+  it('keeps the iframe when the host swaps one wallet for another', () => {
+    const handler = createDappModeWidget(createHostSolanaProvider())
+    const srcBefore = handler.iframe.src
+
+    handler.updateSolanaProvider(createHostSolanaProvider())
+
+    expect(handler.iframe.src).toBe(srcBefore)
+  })
+
+  it('ignores the host wallet in standalone mode, where the widget connects its own', () => {
+    const container = document.createElement('div')
+    document.body.appendChild(container)
+
+    const handler = createCowSwapWidget(container, {
+      params: { ...DAPP_MODE_PARAMS, standaloneMode: true },
+    })
+    widgetHandlers.push(handler)
+
+    expect(handler.iframe.src).toContain('solanaEnabled=true')
   })
 })
 

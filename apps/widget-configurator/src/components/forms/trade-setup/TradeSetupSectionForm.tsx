@@ -5,8 +5,11 @@ import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { useAvailableChains } from '@cowprotocol/common-hooks'
 import { isChainDeprecated, type SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { HostSolanaWalletControl } from './HostSolanaWalletControl'
+
 import { TRADE_MODES_OPTIONS, TRADE_TYPE_OPTIONS } from '../../../configurator.constants'
-import { getSolanaBlockedReason, getSolanaFeeNotice, isSolanaSelectable } from '../../../configurator.utils'
+import { getSolanaDappModeNotice, getSolanaFeeNotice, isSolanaSelectable } from '../../../configurator.utils'
+import { useHostSolanaWallet } from '../../../hooks/useHostSolanaWallet'
 import { MultiSelectInput } from '../../ui/inputs/Select/multi/MultiSelectInput.component'
 import { SelectInput } from '../../ui/inputs/Select/single/SelectInput.component'
 import { SwitchInput } from '../../ui/inputs/SwitchInput/SwitchInput'
@@ -15,9 +18,10 @@ import type { SelectInputOption } from '../../ui/inputs/Select/base/BaseSelectIn
 import type { SidebarSectionFormProps } from '../forms.types'
 
 export function TradeSetupSectionForm({ values, onChange }: SidebarSectionFormProps): ReactNode {
-  const availableChains = useAvailableChains({ excludeSolana: !isSolanaSelectable(values) })
-  const solanaBlockedReason = getSolanaBlockedReason(values)
-  const solanaHelperText = solanaBlockedReason ?? getSolanaFeeNotice(values)
+  const { solanaProvider } = useHostSolanaWallet()
+  const isDappMode = values.widgetMode !== 'standalone'
+  const availableChains = useAvailableChains({ excludeSolana: !isSolanaSelectable(values, !!solanaProvider) })
+  const solanaHelperText = getSolanaDappModeNotice(values, !!solanaProvider) ?? getSolanaFeeNotice(values)
 
   const chainOptions: SelectInputOption<SupportedChainId>[] = useMemo(() => {
     const availableChainsSet = new Set(availableChains)
@@ -65,11 +69,12 @@ export function TradeSetupSectionForm({ values, onChange }: SidebarSectionFormPr
 
       <SwitchInput
         checked={values.enableSolana}
-        disabled={!!solanaBlockedReason}
         label="Enable Solana"
         helperText={solanaHelperText}
         onChange={(enabled) => onChange('enableSolana', enabled)}
       />
+
+      {values.enableSolana && isDappMode ? <HostSolanaWalletControl /> : null}
     </>
   )
 }
