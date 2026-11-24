@@ -2,6 +2,7 @@ import { APRILS_FOOLS_FLAG_KEY, CustomTheme, resolveCustomThemeForContext } from
 import type { FeatureFlags } from '@cowprotocol/common-const'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
+import { areAddressesEqual, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 
 import { injectedWidgetParamsAtom } from 'entities/injectedWidget'
@@ -9,6 +10,11 @@ import { injectedWidgetParamsAtom } from 'entities/injectedWidget'
 import { cowSwapStore } from 'legacy/state'
 
 import { featureFlagsAtom } from 'common/state/featureFlagsState'
+
+export interface SoundBuyToken {
+  chainId: number
+  address: string
+}
 
 type Sounds = Record<SoundType, string>
 type SoundType = 'SEND' | 'SUCCESS' | 'ERROR'
@@ -30,6 +36,15 @@ const HALLOWEEN_SOUNDS: Partial<Sounds> = {
   SUCCESS: '/audio/halloween.mp3',
 }
 
+const FARTCOIN_SOUNDS: Partial<Sounds> = {
+  SEND: '/audio/send-fartcoin.m4a',
+  SUCCESS: '/audio/success-fartcoin.m4a',
+}
+
+const FARTCOIN_ADDRESSES: Partial<Record<number, string>> = {
+  [SupportedChainId.SOLANA]: '9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump',
+}
+
 const COW_SOUND_TO_WIDGET_KEY: Record<SoundType, WidgetSounds> = {
   SEND: 'postOrder',
   SUCCESS: 'orderExecuted',
@@ -45,6 +60,10 @@ const APRIL_FOOL_SOUND_SEND = [
   '/audio/cowswap-aprils2025-bubba.mp3',
 ]
 
+export function isFartcoin(token: SoundBuyToken | undefined): boolean {
+  return !!token && areAddressesEqual(FARTCOIN_ADDRESSES[token.chainId], token.address)
+}
+
 function getSeasonalSounds(featureFlags?: FeatureFlags): Partial<Sounds> {
   const darkModeEnabled = isDarkMode()
   const activeSeasonalTheme = resolveCustomThemeForContext(featureFlags, { darkModeEnabled })
@@ -55,7 +74,13 @@ function getSeasonalSounds(featureFlags?: FeatureFlags): Partial<Sounds> {
   return {}
 }
 
-function getThemeBasedSound(type: SoundType): string {
+function getThemeBasedSound(type: SoundType, buyToken?: SoundBuyToken): string {
+  const fartcoinSound = FARTCOIN_SOUNDS[type]
+
+  if (fartcoinSound && isFartcoin(buyToken)) {
+    return fartcoinSound
+  }
+
   const featureFlags = jotaiStore.get(featureFlagsAtom) as FeatureFlags
   const isAprilsFoolsEnabled = Boolean(featureFlags?.[APRILS_FOOLS_FLAG_KEY])
 
@@ -114,19 +139,19 @@ export function getCowSoundError(): HTMLAudioElement {
   return getAudio('ERROR')
 }
 
-export function getCowSoundSend(): HTMLAudioElement {
-  return getAudio('SEND')
+export function getCowSoundSend(buyToken?: SoundBuyToken): HTMLAudioElement {
+  return getAudio('SEND', buyToken)
 }
 
-export function getCowSoundSuccess(): HTMLAudioElement {
-  return getAudio('SUCCESS')
+export function getCowSoundSuccess(buyToken?: SoundBuyToken): HTMLAudioElement {
+  return getAudio('SUCCESS', buyToken)
 }
 
 function createAudioOrEmpty(src: string): HTMLAudioElement {
   return typeof Audio !== 'undefined' ? new Audio(src) : getEmptySound()
 }
 
-function getAudio(type: SoundType): HTMLAudioElement {
+function getAudio(type: SoundType, buyToken?: SoundBuyToken): HTMLAudioElement {
   const widgetSound = getWidgetSoundUrl(type)
   const isWidgetMode = isInjectedWidget()
 
@@ -147,7 +172,7 @@ function getAudio(type: SoundType): HTMLAudioElement {
   }
 
   // If not in widget mode, use theme-based sound
-  const soundPath = getThemeBasedSound(type)
+  const soundPath = getThemeBasedSound(type, buyToken)
   let sound = SOUND_CACHE[soundPath]
 
   if (!sound) {
