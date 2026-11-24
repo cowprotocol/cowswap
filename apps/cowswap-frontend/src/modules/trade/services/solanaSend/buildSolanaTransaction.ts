@@ -17,6 +17,7 @@ export interface BuiltSolanaTransaction {
   transaction: VersionedTransaction
   /** The block height past which the transaction can no longer be included. */
   lastValidBlockHeight: number
+  blockhash: string
 }
 
 /**
@@ -41,5 +42,5 @@ export async function buildSolanaTransaction({
     instructions,
   }).compileToV0Message()
 
-  return { transaction: new VersionedTransaction(message), lastValidBlockHeight }
+  return { transaction: new VersionedTransaction(message), lastValidBlockHeight, blockhash }
 }
