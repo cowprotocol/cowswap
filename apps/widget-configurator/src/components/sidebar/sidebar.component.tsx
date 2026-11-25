@@ -144,7 +144,7 @@ export function Sidebar({
   const { colorPalette, defaultPalette } = paletteManager
 
   const { chainId: walletChainId, isConnected } = useConnection()
-  const { solanaProvider } = useHostSolanaWallet()
+  const { address: solanaAddress, solanaProvider } = useHostSolanaWallet()
 
   // The EVM wallet's chain must not override a Solana selection: Solana reaches the widget through
   // its own namespace, and wagmi has no chain to report for it.
@@ -194,6 +194,7 @@ export function Sidebar({
     setNetworkControlState,
     configuratorFormValues.widgetMode,
     isSolanaSelectable(configuratorFormValues, !!solanaProvider),
+    solanaAddress,
   )
 
   return (

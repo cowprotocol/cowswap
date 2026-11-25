@@ -12,12 +12,14 @@ export function useSyncWidgetNetwork(
   setNetworkControlState: (chainId: SupportedChainId) => void,
   widgetMode: WidgetMode,
   isSolanaEnabled: boolean,
+  solanaAddress?: string | null,
 ): void {
   const { chainId: walletChainId, isConnected } = useConnection()
   const { mutate: switchChain } = useSwitchChain()
   const availableChains = useAvailableChains({ excludeSolana: !isSolanaEnabled })
   const walletChainIdRef = useRef(walletChainId)
   const currentChainIdRef = useRef(chainId)
+  const previousSolanaAddressRef = useRef(solanaAddress)
   // eslint-disable-next-line react-hooks/refs
   walletChainIdRef.current = walletChainId
   // eslint-disable-next-line react-hooks/refs
@@ -37,6 +39,19 @@ export function useSyncWidgetNetwork(
     currentChainIdRef.current = walletSupportedChainId
     setNetworkControlState(walletSupportedChainId)
   }, [availableChains, isConnected, walletChainId, setNetworkControlState, widgetMode])
+
+  // Counterpart of the binding above for the Solana namespace, which has no wallet chain to report.
+  // Keyed on the connect itself rather than on staying connected, so picking an EVM chain afterwards
+  // is not pulled back to Solana.
+  useEffect(() => {
+    const justConnected = !previousSolanaAddressRef.current && !!solanaAddress
+    previousSolanaAddressRef.current = solanaAddress
+
+    if (!justConnected || widgetMode === 'standalone' || !isSolanaEnabled) return
+
+    currentChainIdRef.current = SupportedChainId.SOLANA
+    setNetworkControlState(SupportedChainId.SOLANA)
+  }, [solanaAddress, widgetMode, isSolanaEnabled, setNetworkControlState])
 
   // Persisted configurator state may still hold a chain that is no longer available (e.g. Solana)
   useEffect(() => {
