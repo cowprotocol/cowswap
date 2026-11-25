@@ -1,16 +1,17 @@
-import { useAtom, useSetAtom } from 'jotai'
-import { ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { CSSProperties, ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 import { createCowTracker } from '@cowprotocol/analytics'
 import { DEFAULT_LOCALE } from '@cowprotocol/common-const'
 import { useFeatureFlags, useTheme } from '@cowprotocol/common-hooks'
 import { getJwtTtl, normalizeError } from '@cowprotocol/common-utils'
 
-import { Turnstile, type TurnstileInstance } from '@marsidev/react-turnstile'
+import { DEFAULT_SCRIPT_ID, Turnstile, type TurnstileInstance } from '@marsidev/react-turnstile'
 import { setBearerToken } from 'cowSdk'
 import { captchaErrorAtom } from 'entities/captcha/state/captchaErrorAtom'
 import { captchaInteractionRequiredAtom } from 'entities/captcha/state/captchaInteractionRequiredAtom'
 import { captchaJwtAtom } from 'entities/captcha/state/captchaJwtAtom'
+import { createPortal } from 'react-dom'
 
 import { useActiveLocale } from 'legacy/hooks/useActiveLocale'
 
@@ -19,10 +20,15 @@ import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { exchangeTurnstileToken } from '../api/captchaApi'
 import { TURNSTILE_DEMO_INTERACTIVE_SITE_KEY, TURNSTILE_SITE_KEY } from '../config/captcha.const'
 import { useCaptchaDebugControls } from '../hooks/useCaptchaDebugControls'
+import { useCaptchaRetry } from '../hooks/useCaptchaRetry'
 import { logCaptcha } from '../logger'
+import { captchaSlotAtom } from '../state/captchaSlot.atoms'
 
 const trackCaptchaEvent = createCowTracker(CowSwapAnalyticsCategory.CAPTCHA)
 const ignoreCaptchaEvent: typeof trackCaptchaEvent = () => undefined
+
+// Turnstile needs a laid-out container to run its check, so off trade pages it sits off-screen instead of hidden.
+const OFFSCREEN_STYLE = { position: 'fixed', top: 0, left: '-10000px', width: '300px' } as const satisfies CSSProperties
 
 /* eslint-disable max-lines-per-function */
 export function CaptchaWidget(): ReactNode {
@@ -35,6 +41,10 @@ export function CaptchaWidget(): ReactNode {
   const [siteKey, setSiteKey] = useState(TURNSTILE_SITE_KEY)
   const theme = useTheme()
   const locale = useActiveLocale()
+  const [isUnsupported, setIsUnsupported] = useState(false)
+  const [scriptMountKey, setScriptMountKey] = useState(0)
+  const { scheduleRetry, resetRetries } = useCaptchaRetry()
+  const slot = useAtomValue(captchaSlotAtom)
 
   const trackCaptcha = siteKey === TURNSTILE_DEMO_INTERACTIVE_SITE_KEY ? ignoreCaptchaEvent : trackCaptchaEvent
 
@@ -58,12 +68,14 @@ export function CaptchaWidget(): ReactNode {
 
     if (captchaJwt?.token) {
       setBearerToken(captchaJwt.token)
+      setCaptchaError(null)
+      resetRetries()
       logCaptcha.info('JWT applied to orderbook context', { expiresAt: captchaJwt.expiresAt })
     } else {
       setBearerToken(null)
       logCaptcha.info('JWT cleared from orderbook context')
     }
-  }, [captchaJwt, isCaptchaEnabled, siteKey])
+  }, [captchaJwt, isCaptchaEnabled, resetRetries, setCaptchaError, siteKey])
 
   useEffect(() => {
     if (isCaptchaEnabled !== false) return
@@ -87,11 +99,11 @@ export function CaptchaWidget(): ReactNode {
 
   useCaptchaDebugControls({ exchangeRequestIdRef, setCaptchaJwt, setSiteKey })
 
-  if (!isCaptchaEnabled || !siteKey || captchaJwt || captchaError) return null
+  if (!isCaptchaEnabled || !siteKey || captchaJwt || isUnsupported) return null
 
-  return (
+  const turnstile = (
     <Turnstile
-      key={siteKey}
+      key={`${siteKey}:${scriptMountKey}`}
       ref={captchaRef}
       siteKey={siteKey}
       style={{ width: '100%', display: 'block' }}
@@ -145,6 +157,7 @@ export function CaptchaWidget(): ReactNode {
           logCaptcha.error(new Error('JWT exchange failed', { cause: error }), undefined, { requestId })
           trackCaptcha({ action: 'captcha_challenge_failed', reason: 'jwtExchangeFailed' })
           setCaptchaJwt(null)
+          scheduleRetry(() => captchaRef.current?.reset())
         }
       }}
       onExpire={() => {
@@ -173,6 +186,7 @@ export function CaptchaWidget(): ReactNode {
         logCaptcha.error(error)
         setCaptchaError(error)
         trackCaptcha({ action: 'captcha_challenge_failed', reason: 'browserUnsupported' })
+        setIsUnsupported(true)
       }}
       scriptOptions={{
         onError: () => {
@@ -180,8 +194,22 @@ export function CaptchaWidget(): ReactNode {
           const error = new Error('Turnstile script failed to load')
           logCaptcha.error(error)
           setCaptchaError(error)
+          // react-turnstile keeps the failed <script> (so it won't inject another) and its onload global
+          // (so a fresh script still resolves its loader): drop the tag and remount to load it again.
+          scheduleRetry(() => {
+            document.getElementById(DEFAULT_SCRIPT_ID)?.remove()
+            setScriptMountKey((key) => key + 1)
+          })
         },
       }}
     />
+  )
+
+  return slot ? (
+    createPortal(turnstile, slot)
+  ) : (
+    <div style={OFFSCREEN_STYLE} aria-hidden>
+      {turnstile}
+    </div>
   )
 }
