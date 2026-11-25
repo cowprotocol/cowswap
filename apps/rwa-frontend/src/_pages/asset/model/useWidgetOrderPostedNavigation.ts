@@ -9,6 +9,8 @@ import { assetAccountTabAtomFamily } from './assetAccountTabAtom'
 
 import { RWA_QUERY_KEY_ROOT } from '@/shared/api'
 
+const OPEN_ORDER_TYPES: ReadonlySet<string> = new Set(['LIMIT', 'TWAP'])
+
 export function useWidgetOrderPostedNavigation(ticker: string): CowWidgetEventListeners {
   const store = useStore()
 
@@ -16,7 +18,9 @@ export function useWidgetOrderPostedNavigation(ticker: string): CowWidgetEventLi
     () => [
       {
         event: CowWidgetEvents.ON_POSTED_ORDER,
-        handler: () => {
+        handler: ({ orderType }) => {
+          if (!OPEN_ORDER_TYPES.has(orderType)) return
+
           store.set(assetAccountTabAtomFamily(ticker), 'orders')
           void store.get(queryClientAtom).invalidateQueries({ queryKey: [RWA_QUERY_KEY_ROOT, 'open-orders'] })
         },
