@@ -7,6 +7,7 @@ import { isPortfolioFiltered, NO_PORTFOLIO_FILTER, type PortfolioFilter } from '
 import type { RwaAssetSummary } from '@/entities/asset'
 
 import { useNetworkOptions } from '@/shared/ui/network-logos'
+import { ResetFiltersButton } from '@/shared/ui/reset-filters-button'
 import { Select } from '@/shared/ui/select'
 
 interface PortfolioFiltersProps {
@@ -38,11 +39,7 @@ export function PortfolioFilters({ assets, filter, onChange }: PortfolioFiltersP
         options={[{ value: null, label: 'All networks' }, ...networkOptions]}
         onChange={(chainId) => onChange({ ...filter, chainId })}
       />
-      {isPortfolioFiltered(filter) && (
-        <button type="button" className={styles.resetFilters} onClick={() => onChange(NO_PORTFOLIO_FILTER)}>
-          Reset filters
-        </button>
-      )}
+      {isPortfolioFiltered(filter) && <ResetFiltersButton onClick={() => onChange(NO_PORTFOLIO_FILTER)} />}
     </div>
   )
 }

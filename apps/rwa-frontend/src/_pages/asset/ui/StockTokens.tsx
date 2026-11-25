@@ -28,6 +28,7 @@ import { getChainLabel, getExplorerAddressUrl } from '@/shared/lib/chain'
 import { formatPercent, formatUsd, shortenAddress } from '@/shared/lib/format'
 import { InfoIcon } from '@/shared/ui/icons'
 import { useNetworkOptions } from '@/shared/ui/network-logos'
+import { ResetFiltersButton } from '@/shared/ui/reset-filters-button'
 import { Select } from '@/shared/ui/select'
 import { StatusMessage } from '@/shared/ui/status-message'
 import { TokenLogo } from '@/shared/ui/token-logo'
@@ -117,6 +118,15 @@ export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
             options={[{ value: null, label: 'All networks' }, ...networkOptions]}
             onChange={setNetwork}
           />
+          {(issuer !== null || network !== null) && (
+            <ResetFiltersButton
+              variant="small"
+              onClick={() => {
+                setIssuer(null)
+                setNetwork(null)
+              }}
+            />
+          )}
         </div>
       </div>
       {areDividendNotesShown && (
@@ -125,19 +135,7 @@ export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
       {tokens.length ? (
         <div className={tableStyles.scroll}>
           <table className={tableStyles.table}>
-            <thead>
-              <tr>
-                <th>Stock token / issuer</th>
-                <th className={tableStyles.numeric}>Token price / share</th>
-                <th className={tableStyles.numeric}>24h DEX volume</th>
-                <th className={`${tableStyles.numeric} ${tableStyles.sorted}`} aria-sort="descending">
-                  <span aria-hidden="true">↓</span> Tokenized market cap
-                </th>
-                <th>
-                  <span className={styles.visuallyHidden}>Trade</span>
-                </th>
-              </tr>
-            </thead>
+            <StockTokensTableHead />
             <tbody>
               {tokens.map((token) => (
                 <StockTokenRow
@@ -278,6 +276,24 @@ function StockTokenRow({
         </div>
       </td>
     </tr>
+  )
+}
+
+function StockTokensTableHead(): ReactNode {
+  return (
+    <thead>
+      <tr>
+        <th>Stock token / issuer</th>
+        <th className={tableStyles.numeric}>Token price / share</th>
+        <th className={tableStyles.numeric}>24h DEX volume</th>
+        <th className={`${tableStyles.numeric} ${tableStyles.sorted}`} aria-sort="descending">
+          <span aria-hidden="true">↓</span> Tokenized market cap
+        </th>
+        <th>
+          <span className={styles.visuallyHidden}>Trade</span>
+        </th>
+      </tr>
+    </thead>
   )
 }
 
