@@ -5,7 +5,7 @@ import { createPublicClient, http } from 'viem'
 import { usePublicClient, useWalletClient } from 'wagmi'
 
 import { RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
-import { getCurrentChainIdFromUrl, isBarnBackendEnv } from '@cowprotocol/common-utils'
+import { getCurrentChainIdFromUrl, isBarnBackendEnv, setBffBearerToken } from '@cowprotocol/common-utils'
 import {
   AbstractProviderAdapter,
   DEFAULT_BACKOFF_OPTIONS,
@@ -88,6 +88,8 @@ export function CowSdkUpdater(): null {
 }
 
 export function setBearerToken(token: string | null): void {
+  setBffBearerToken(token)
+
   if (token) {
     orderBookApi.context.bearerToken = token
   } else {

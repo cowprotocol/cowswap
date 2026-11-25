@@ -16,7 +16,6 @@ import { environmentAtom, updateEnvironmentAtom } from '../../state/environmentA
 import { upsertListsAtom } from '../../state/tokenLists/tokenListsActionsAtom'
 import { allListsSourcesAtom, tokenListsUpdatingAtom } from '../../state/tokenLists/tokenListsStateAtom'
 import { ListState } from '../../types'
-import { UserAddedTokensUpdater } from '../UserAddedTokensUpdater'
 
 const LAST_UPDATE_TIME_DEFAULT = 0
 
@@ -94,5 +93,5 @@ export function TokensListsUpdater({
     upsertLists(chainId, listsStates)
   }, [listsStates, isLoading, chainId, upsertLists, setTokenListsUpdating, updateLastUpdateTime])
 
-  return <UserAddedTokensUpdater />
+  return null
 }

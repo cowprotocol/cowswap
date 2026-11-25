@@ -10,6 +10,7 @@ import svgDiscordSrc from 'assets/img/discord.svg'
 import svgDocSrc from 'assets/img/doc.svg'
 import svgPieSrc from 'assets/img/pie.svg'
 import { MenuTree, MenuTreeProps } from 'components/common/MenuDropdown/MenuTree'
+import { PiImageSquareFill } from 'react-icons/pi'
 import { GlobalStyles, ThemeToggler, Router } from 'storybook/decorators'
 
 import { MenuItemKind, MenuTreeItem } from './types'
@@ -81,6 +82,12 @@ const DropdownMenu: MenuTreeItem[] = [
       {
         sectionTitle: 'OTHER',
         links: [
+          {
+            title: 'Solver logos',
+            url: Routes.SOLVER_LOGOS,
+            iconComponent: PiImageSquareFill,
+            noPrefix: true,
+          },
           {
             title: 'AppData',
             url: Routes.APPDATA,

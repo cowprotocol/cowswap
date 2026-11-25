@@ -1,13 +1,17 @@
-import { atomWithStorage } from 'jotai/utils'
+import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 
-import type { RwaSortField, RwaSortOrder } from '@/entities/asset'
+import { type AssetsSortState, DEFAULT_ASSETS_SORT } from './assetsPageQuery'
 
-export interface AssetsSortState {
-  sort: RwaSortField
-  order: RwaSortOrder
+const ASSETS_SORT_STORAGE_KEY = 'rwaAssetsSort:v3'
+
+const sortStorage = createJSONStorage<AssetsSortState>()
+
+export const assetsSortAtom = atomWithStorage<AssetsSortState>(
+  ASSETS_SORT_STORAGE_KEY,
+  DEFAULT_ASSETS_SORT,
+  sortStorage,
+)
+
+export function readStoredAssetsSort(): AssetsSortState {
+  return sortStorage.getItem(ASSETS_SORT_STORAGE_KEY, DEFAULT_ASSETS_SORT)
 }
-
-export const assetsSortAtom = atomWithStorage<AssetsSortState>('rwaAssetsSort:v3', {
-  sort: 'volume24h',
-  order: 'desc',
-})

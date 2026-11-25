@@ -1,5 +1,5 @@
 import { BFF_BASE_URL } from '@cowprotocol/common-const'
-import { fetchWithTimeout, getCurrencyAddress, normalizeError } from '@cowprotocol/common-utils'
+import { bffFetch, getCurrencyAddress, normalizeError } from '@cowprotocol/common-utils'
 import { getAddressKey, isSupportedChain } from '@cowprotocol/cow-sdk'
 import type { Currency } from '@cowprotocol/currency'
 
@@ -19,7 +19,7 @@ export async function fetchTokenSupply(currency: Currency): Promise<TokenSupplyR
   logPriceChart.debug('Fetching token supply', { address, chainId })
 
   try {
-    const response = await fetchWithTimeout(`${BFF_BASE_URL}/${chainId}/tokens/${address}/supply`, {
+    const response = await bffFetch(`${BFF_BASE_URL}/${chainId}/tokens/${address}/supply`, {
       headers: { Accept: 'application/json' },
       timeout: PRICE_CHART_TIMEOUT,
       timeoutMessage: 'Token supply request timed out',

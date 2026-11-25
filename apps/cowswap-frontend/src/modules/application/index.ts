@@ -7,6 +7,7 @@ export {
 } from './lib/react310Recovery'
 export { React310RecoveryErrorBoundary } from './containers/React310RecoveryErrorBoundary/React310RecoveryErrorBoundary.container'
 export { WithLDProvider } from './containers/WithLDProvider'
+export { CustomThemeProvider } from './containers/CustomThemeProvider/CustomThemeProvider.container'
 export { PageTitle } from './containers/PageTitle'
 export { NetworkSelector } from './containers/NetworkSelector/NetworkSelector.container'
 export { Page, PageWrapper, Title, SectionTitle, Content, BackToTopStyle, GdocsListStyle } from './pure/Page'

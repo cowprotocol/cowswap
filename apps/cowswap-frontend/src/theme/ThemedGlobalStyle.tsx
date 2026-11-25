@@ -1,4 +1,4 @@
-import { baseGlobalStyles, Media, ThemeColorVars, UI } from '@cowprotocol/ui'
+import { baseGlobalStyles, Media, ThemeColorVars, ThemeColorVarsOverride, UI } from '@cowprotocol/ui'
 
 import { createGlobalStyle } from 'styled-components/macro'
 
@@ -76,4 +76,8 @@ export const ThemedGlobalStyle = createGlobalStyle`
       }
     }
   }
+`
+
+export const CustomThemeColorVars = createGlobalStyle`
+  ${ThemeColorVarsOverride}
 `

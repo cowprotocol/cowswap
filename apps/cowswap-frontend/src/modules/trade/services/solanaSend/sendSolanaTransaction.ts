@@ -22,8 +22,8 @@ export async function sendSolanaTransaction(
   owner: PublicKey,
   instructions: TransactionInstruction[],
   attemptsLeft = MAX_SEND_ATTEMPTS,
-): Promise<{ hash: string; lastValidBlockHeight: number }> {
-  const { transaction, lastValidBlockHeight } = await buildSolanaTransaction({
+): Promise<{ hash: string; lastValidBlockHeight: number; blockhash: string }> {
+  const { transaction, lastValidBlockHeight, blockhash } = await buildSolanaTransaction({
     connection,
     instructions,
     feePayer: owner,
@@ -32,7 +32,7 @@ export async function sendSolanaTransaction(
   try {
     const hash = await provider.sendTransaction(transaction, connection)
 
-    return { hash, lastValidBlockHeight }
+    return { hash, lastValidBlockHeight, blockhash }
   } catch (error) {
     if (attemptsLeft <= 1 || !isBlockhashExpiredError(error)) throw error
 

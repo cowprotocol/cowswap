@@ -14,7 +14,6 @@ export interface ChainsListProps {
   loadingChainIds?: Set<number>
   buildClickEvent?: (chain: ChainInfo) => string
   isSwapMode?: boolean
-  sourceChainId?: ChainInfo['id']
 }
 
 export function ChainsList({
@@ -26,7 +25,6 @@ export function ChainsList({
   loadingChainIds,
   buildClickEvent,
   isSwapMode = false,
-  sourceChainId,
 }: ChainsListProps): ReactNode {
   return (
     <styledEl.List>
@@ -45,7 +43,6 @@ export function ChainsList({
             isDarkMode={isDarkMode}
             isDisabled={isDisabled}
             isLoading={isLoading}
-            showStatusBadge={sourceChainId === undefined || sourceChainId === chain.id}
             clickEvent={clickEvent}
           />
         )

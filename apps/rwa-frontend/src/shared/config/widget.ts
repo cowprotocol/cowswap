@@ -17,6 +17,16 @@ export function getRelatedSwapPreviewUrl(relatedProjects: string | undefined): s
   }
 }
 
-// `pnpm start:cowswap` serves CoW Swap locally; `undefined` is the production widget
-export const WIDGET_BASE_URL =
-  process.env.NODE_ENV === 'development' ? LOCAL_WIDGET_BASE_URL : process.env.NEXT_PUBLIC_SWAP_PREVIEW_URL || undefined
+/** `swap.cow.fi` and its environments, e.g. `dev.swap.cow.fi` and `staging.swap.cow.fi` */
+const COW_SWAP_HOST = /^(?:[a-z0-9-]+\.)?swap\.cow\.fi$/
+
+/**
+ * The CoW Swap of the environment serving the page: each one rewrites `/rwa` to its own deployment of this app.
+ * `pnpm start:cowswap` serves CoW Swap locally; `undefined` is the production widget.
+ */
+export function getWidgetBaseUrl(location: Pick<Location, 'hostname' | 'origin'> | undefined): string | undefined {
+  if (process.env.NODE_ENV === 'development') return LOCAL_WIDGET_BASE_URL
+  if (location && COW_SWAP_HOST.test(location.hostname)) return location.origin
+
+  return process.env.NEXT_PUBLIC_SWAP_PREVIEW_URL || undefined
+}

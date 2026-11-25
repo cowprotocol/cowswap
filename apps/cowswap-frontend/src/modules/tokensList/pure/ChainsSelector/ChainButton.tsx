@@ -6,8 +6,6 @@ import { ChainInfo } from '@cowprotocol/cow-sdk'
 import { useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
-import { ChainStatusBadge } from 'common/pure/ChainStatusBadge/ChainStatusBadge.pure'
-
 import { getChainAccent } from './getChainAccent'
 import * as styledEl from './styled'
 
@@ -18,7 +16,6 @@ export interface ChainButtonProps {
   onSelectChain(chain: ChainInfo): void
   isDisabled: boolean
   isLoading: boolean
-  showStatusBadge: boolean
   clickEvent?: string
 }
 
@@ -29,7 +26,6 @@ export function ChainButton({
   onSelectChain,
   isDisabled,
   isLoading,
-  showStatusBadge,
   clickEvent,
 }: ChainButtonProps): ReactNode {
   const { t } = useLingui()
@@ -65,7 +61,6 @@ export function ChainButton({
         <styledEl.ChainText disabled$={isDisabled} loading$={isLoading}>
           {chain.label}
         </styledEl.ChainText>
-        {showStatusBadge && <ChainStatusBadge chainId={chain.id} />}
       </styledEl.ChainInfo>
       {isActive && !isLoading && (
         <styledEl.ActiveIcon aria-hidden accent$={accent} color$={chain.color}>

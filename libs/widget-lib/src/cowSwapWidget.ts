@@ -37,6 +37,7 @@ const noopHandler: CowSwapWidgetHandler = {
   updateParams: () => void 0,
   updateListeners: () => void 0,
   updateProvider: () => void 0,
+  closeAllModals: () => void 0,
   destroy: () => void 0,
 }
 
@@ -48,6 +49,8 @@ export interface CowSwapWidgetHandler {
   updateParams: (params: CowSwapWidgetParams) => void
   updateListeners: (newListeners?: CowWidgetEventListeners) => void
   updateProvider: (newProvider?: EthereumProvider) => void
+  /** Closes the modals and drawers open in the widget, e.g. the orders table, so it shows the trade form */
+  closeAllModals: () => void
   destroy: () => void
 }
 
@@ -196,10 +199,15 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
     iframe,
     updateParams: (newParams: CowSwapWidgetParams) => {
       if (!iframeWindow) return
-      currentParams = resolveWidgetParams(newParams)
+      const nextParams = resolveWidgetParams(newParams)
+      const shouldReloadIframe = requiresIframeReload(iframe, nextParams)
+
+      if (shouldReloadIframe) assertSameIframeOrigin(nextParams, iframeOrigin)
+
+      currentParams = nextParams
 
       applyContainerStyles(container, currentParams, lastDynamicHeight)
-      if (requiresIframeReload(iframe, currentParams)) {
+      if (shouldReloadIframe) {
         reloadIframe(iframe, currentParams)
       } else {
         updateParams(iframeWindow, iframeOrigin, currentParams, provider)
@@ -213,6 +221,16 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
 
       provider = newProvider
       iframeRpcProviderBridge = updateProvider(iframeWindow, iframeOrigin, iframeRpcProviderBridge, newProvider)
+    },
+    closeAllModals: () => {
+      if (!iframeWindow) return
+
+      widgetIframeTransport.postMessageToWindow(
+        iframeWindow,
+        WidgetMethodsListen.CLOSE_ALL_MODALS,
+        void 0,
+        iframeOrigin,
+      )
     },
 
     destroy,
@@ -263,6 +281,16 @@ function applyContainerStyles(container: HTMLElement, params: CowSwapWidgetParam
   })
 
   if (lastDynamicHeight) container.style.setProperty(DYNAMIC_HEIGHT_CSS_VAR, lastDynamicHeight)
+}
+
+/**
+ * Every message to and from the widget is bound to the origin it was created with,
+ * so reloading the iframe on another origin would leave the widget unable to talk to the page.
+ */
+function assertSameIframeOrigin(params: CowSwapWidgetParams, iframeOrigin: string): void {
+  if (new URL(buildWidgetUrl(params)).origin !== iframeOrigin) {
+    throw new Error('Changing `baseUrl` to another origin requires creating a new widget')
+  }
 }
 
 /**

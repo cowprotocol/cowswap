@@ -27,7 +27,7 @@ export interface WallPaint extends PaintFlow {
 export function useWallPaint(params: UseWallPaintParams): WallPaint {
   const { solanaAccount, connected, info, draft, session, markSeq } = params
   const { setSession, setPlotConfirmed } = session
-  const { setDraft } = draft
+  const { setDraft, clearHistory } = draft
 
   const onApplied = useCallback(
     (seq: number): void => {
@@ -35,8 +35,9 @@ export function useWallPaint(params: UseWallPaintParams): WallPaint {
       setPlotConfirmed(false)
       markSeq(seq)
       setDraft(new Map())
+      clearHistory()
     },
-    [markSeq, setDraft, setPlotConfirmed, setSession],
+    [clearHistory, markSeq, setDraft, setPlotConfirmed, setSession],
   )
 
   const flow = usePaintFlow({ draft: draft.draft, solanaAccount, info, onApplied })

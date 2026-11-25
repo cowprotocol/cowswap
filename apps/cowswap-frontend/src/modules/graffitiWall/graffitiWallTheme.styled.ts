@@ -154,11 +154,13 @@ export function graffitiWallCardVeilCss({
       ${UI.COLOR_PAPER_DARKER}: ${transparentize(darken(paper, 0.07), WALL_VEIL_DARKER_ALPHA)};
 
       /*
-       * Menus here open inside the card (portal={false}), so they inherit its veil and show
-       * both the wall and the card's own rows through their text. Anything that opens over the
-       * card takes the opaque theme back.
+       * Menus here open inside the card (portal={false}), as does the trading mode picker a
+       * narrow screen lays over the form, so they inherit its veil and show both the wall and
+       * the card's own rows through their text. Anything that opens over the card takes the
+       * opaque theme back.
        */
-      [data-reach-menu-popover] {
+      [data-reach-menu-popover],
+      #trading-mode-select-menu {
         ${UI.COLOR_PAPER}: ${paper};
         ${UI.COLOR_PAPER_DARKER}: ${darken(paper, 0.07)};
       }

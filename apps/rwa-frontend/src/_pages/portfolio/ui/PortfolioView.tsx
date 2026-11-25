@@ -10,7 +10,6 @@ import styles from './Portfolio.module.css'
 import { PortfolioFilters } from './PortfolioFilters'
 import { PortfolioSummary } from './PortfolioSummary'
 
-import { formatUtcTime } from '../lib/formatUtcTime'
 import { isEmptyWallet } from '../lib/holdings'
 import { isPortfolioFiltered, NO_PORTFOLIO_FILTER, type PortfolioFilter } from '../lib/portfolioFilter'
 import { type Portfolio, usePortfolio } from '../model/usePortfolio'
@@ -19,6 +18,7 @@ import type { RwaAssetSummary } from '@/entities/asset'
 
 import { ConnectButton } from '@/features/connect-wallet'
 import { trackEvent } from '@/shared/lib/analytics'
+import { formatLocalTime } from '@/shared/lib/format'
 import { StatusMessage } from '@/shared/ui/status-message'
 import { type AccountTab, AccountTabs, ActivityTable, OpenOrdersTable } from '@/widgets/account'
 
@@ -144,7 +144,7 @@ function Positions({ portfolio, isWalletEmpty, isFiltered }: PositionsProps): Re
             {pricesUpdatedAt && (
               <>
                 {' · Prices updated '}
-                <time dateTime={pricesUpdatedAt}>{formatUtcTime(Date.parse(pricesUpdatedAt))}</time>
+                <time dateTime={pricesUpdatedAt}>{formatLocalTime(Date.parse(pricesUpdatedAt))}</time>
               </>
             )}
           </p>

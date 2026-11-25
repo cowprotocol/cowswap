@@ -14,6 +14,8 @@ export interface DraftState {
   pushHistory: () => void
   /** Take back the latest snapshot, or undefined when there is none. */
   popHistory: () => Draft | undefined
+  /** Drop every snapshot: undo must not bring a finished session's cells back under a new frame. */
+  clearHistory: () => void
   canUndo: boolean
 }
 
@@ -47,5 +49,10 @@ export function useDraft({ snapshotRef }: WallRefs, maxBoxWidth: number, maxBoxH
     return previous
   }, [])
 
-  return { draft, setDraft, draftBox, boxTooBig, pushHistory, popHistory, canUndo: historySize > 0 }
+  const clearHistory = useCallback((): void => {
+    historyRef.current = []
+    setHistorySize(0)
+  }, [])
+
+  return { draft, setDraft, draftBox, boxTooBig, pushHistory, popHistory, clearHistory, canUndo: historySize > 0 }
 }

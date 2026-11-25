@@ -41,13 +41,16 @@ export function useSolanaCancelMultipleOrders(): (orders: CancellableOrder[]) =>
       }
 
       const owner = new PublicKey(account)
-      const cancelParams = await buildSolanaCancelOrderParams(
+      const { cancelParams, reclaimParams } = await buildSolanaCancelOrderParams(
         connection,
         owner,
         ordersToCancel.map(({ id }) => ({ id, order: allOrders[id]?.order })),
         backendEnv,
       )
-      const instructions = solanaTradingSdk.cancelOrders(cancelParams)
+      const instructions = [
+        ...solanaTradingSdk.cancelOrders(cancelParams),
+        ...solanaTradingSdk.reclaimOrders(reclaimParams),
+      ]
 
       const { hash } = await sendSolanaTransaction(connection, provider, owner, instructions)
 

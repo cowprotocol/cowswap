@@ -3,9 +3,12 @@ import type { ReactNode } from 'react'
 
 import { useConnection } from 'wagmi'
 
+import type { CowSwapWidgetHandler } from '@cowprotocol/widget-lib'
+
 import { act, renderHook } from '@testing-library/react'
 
 import { tradeSideAtom } from './tradeSelectionAtoms'
+import { tradeWidgetHandlerRefAtom } from './tradeWidgetHandlerRefAtom'
 import { TRADE_WIDGET_ID, useIsWalletOffTradeNetwork, useJumpToTrade } from './useSelectTradeToken'
 
 import type { RwaQuoteSide } from '@/entities/asset'
@@ -36,8 +39,7 @@ describe('useJumpToTrade', () => {
     jest.restoreAllMocks()
   })
 
-  function jumpToTrade(side: RwaQuoteSide): ReturnType<typeof createStore> {
-    const store = createStore()
+  function jumpToTrade(side: RwaQuoteSide, store = createStore()): ReturnType<typeof createStore> {
     const wrapper = ({ children }: { children: ReactNode }): ReactNode => <Provider store={store}>{children}</Provider>
     const { result } = renderHook(() => useJumpToTrade(), { wrapper })
 
@@ -55,6 +57,16 @@ describe('useJumpToTrade', () => {
     expect(scrollIntoView.mock.contexts).toEqual([document.getElementById(TRADE_WIDGET_ID)])
     expect(scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth', block: 'start' })
     expect(document.activeElement?.textContent).toBe('Sell')
+  })
+
+  it('closes the widget modals, so the trade form shows', () => {
+    const store = createStore()
+    const closeAllModals = jest.fn()
+    store.get(tradeWidgetHandlerRefAtom).current = { closeAllModals } as unknown as CowSwapWidgetHandler
+
+    jumpToTrade('buy', store)
+
+    expect(closeAllModals).toHaveBeenCalledTimes(1)
   })
 
   it('only brings the widget beside the chart into view, without motion when it is reduced', () => {
