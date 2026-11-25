@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.16.2](https://github.com/cowprotocol/cowswap/compare/core-v3.16.1...core-v3.16.2) (2026-11-25)
+
+### Patch Changes
+
+- fix(rwa): apply geo restrictions to all RWA tokens via BFF (#8636)
+
+- fix(cowswap): resolve solver names regardless of the CMS active flag (#8657)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.23.2
+  - @cowprotocol/common-const@3.26.0
+
 ## [3.16.1](https://github.com/cowprotocol/cowswap/compare/core-v3.16.0...core-v3.16.1) (2026-11-19)
 
 ### Patch Changes

@@ -1,5 +1,20 @@
 # Changelog
 
+## [3.21.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.20.1...analytics-v3.21.0) (2026-11-25)
+
+### Minor Changes
+
+- feat: extend cookie consent to CoW Swap, Explorer and RWA (#8555)
+
+### Patch Changes
+
+- fix(analytics): clear X tracker cookies on rejection (#8696)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.23.2
+  - @cowprotocol/common-hooks@3.22.2
+  - @cowprotocol/common-const@3.26.0
+
 ## [3.20.1](https://github.com/cowprotocol/cowswap/compare/analytics-v3.20.0...analytics-v3.20.1) (2026-11-19)
 
 ### Patch Changes

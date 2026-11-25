@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.26.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.25.0...ui-v3.26.0) (2026-11-25)
+
+### Minor Changes
+
+- feat(theme): add Vice sunset theme behind a feature flag (#8678)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.23.2
+  - @cowprotocol/common-hooks@3.22.2
+  - @cowprotocol/analytics@3.21.0
+  - @cowprotocol/assets@2.14.0
+  - @cowprotocol/common-const@3.26.0
+  - @cowprotocol/core@3.16.2
+
 ## [3.25.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.24.0...ui-v3.25.0) (2026-11-19)
 
 ### Minor Changes

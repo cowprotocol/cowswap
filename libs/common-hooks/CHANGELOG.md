@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.22.2](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.22.1...common-hooks-v3.22.2) (2026-11-25)
+
+### Patch Changes
+
+- fix(cow-fi): server-render pages by isolating UTM useSearchParams (#8548)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.23.2
+  - @cowprotocol/common-const@3.26.0
+
 ## [3.22.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.22.0...common-hooks-v3.22.1) (2026-11-19)
 
 ### Patch Changes
