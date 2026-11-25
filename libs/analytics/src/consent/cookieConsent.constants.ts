@@ -15,6 +15,8 @@ export const TRACKER_COOKIE_PREFIXES = [
   '_gcl_',
   '_rdt_',
   '_twclid',
+  '_twpid',
+  '_twsid',
   '_clck',
   '_clsk',
   'spdl_',

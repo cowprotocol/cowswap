@@ -1,5 +1,57 @@
 # Changelog
 
+## [3.41.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.40.0...cowswap-v3.41.0) (2026-11-25)
+
+### Minor Changes
+
+- feat: extend cookie consent to CoW Swap, Explorer and RWA (#8555)
+
+- feat(widget): add priority tokens setting to the widget (#8687)
+
+- feat(theme): add Vice sunset theme behind a feature flag (#8678)
+
+- feat(solana): set the compute budget on sponsored creation transactions (#8615)
+
+- feat(solana): return order rent when an order is cancelled (#8692)
+
+### Patch Changes
+
+- fix(solana): remove breakpoint mention from graffiti page (#8704)
+
+- fix: fix take profit shortcuts when price data is still loading (#8593)
+
+- fix(rwa): hide RWA menu item on Solana (#8679)
+
+- fix(orders-table): skip price difference for prices from different markets (#8656)
+
+- fix(rwa): apply geo restrictions to all RWA tokens via BFF (#8636)
+
+- fix(rwa): do not reset widget on theme change (#8681)
+
+- fix(rwa): medium bugs of the RWA UI backlog (#8661)
+
+- fix(rwa): show market hours in the user's local time zone (#8685)
+
+- fix(bridge): prevent stale bridge slippage (#8701)
+
+- fix(cowswap): resolve solver names regardless of the CMS active flag (#8657)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.23.2
+  - @cowprotocol/common-hooks@3.22.2
+  - @cowprotocol/analytics@3.21.0
+  - @cowprotocol/tokens@3.21.0
+  - @cowprotocol/widget-lib@4.17.0
+  - @cowprotocol/assets@2.14.0
+  - @cowprotocol/common-const@3.26.0
+  - @cowprotocol/ui@3.26.0
+  - @cowprotocol/balances-and-allowances@3.21.0
+  - @cowprotocol/core@3.16.2
+  - @cowprotocol/wallet@3.23.2
+  - @cowprotocol/ens@3.13.2
+  - @cowprotocol/snackbars@2.3.23
+  - @cowprotocol/multicall@3.13.2
+
 ## [3.40.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.39.0...cowswap-v3.40.0) (2026-11-19)
 
 ### Minor Changes
