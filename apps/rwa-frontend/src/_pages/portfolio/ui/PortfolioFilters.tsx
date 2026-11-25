@@ -23,11 +23,6 @@ export function PortfolioFilters({ assets, filter, onChange }: PortfolioFiltersP
 
   return (
     <div className={styles.filters}>
-      {isPortfolioFiltered(filter) && (
-        <button type="button" className={styles.resetFilters} onClick={() => onChange(NO_PORTFOLIO_FILTER)}>
-          Reset filters
-        </button>
-      )}
       <Select
         aria-label="Issuer"
         value={filter.issuer}
@@ -43,6 +38,11 @@ export function PortfolioFilters({ assets, filter, onChange }: PortfolioFiltersP
         options={[{ value: null, label: 'All networks' }, ...networkOptions]}
         onChange={(chainId) => onChange({ ...filter, chainId })}
       />
+      {isPortfolioFiltered(filter) && (
+        <button type="button" className={styles.resetFilters} onClick={() => onChange(NO_PORTFOLIO_FILTER)}>
+          Reset filters
+        </button>
+      )}
     </div>
   )
 }
