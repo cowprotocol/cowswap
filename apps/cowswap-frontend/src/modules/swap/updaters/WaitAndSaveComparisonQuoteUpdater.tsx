@@ -31,7 +31,7 @@ import { useSwapDerivedState } from '../hooks/useSwapDerivedState'
 const getQuote = bridgingSdk.getQuote.bind(bridgingSdk)
 const getQuoteOnlyResolveLast = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
 
-/** Volume-fee waivers are a fraction of a percent. A wider buy-amount gap is two different prices. */
+/** Volume-fee waivers are a fraction of a percent. A wider gap on the varying side is two different prices. */
 const DISCONNECT_GAP_BPS = 100n
 
 interface DiffContext {
@@ -92,11 +92,12 @@ export function WaitAndSaveComparisonQuoteUpdater({
       schedule &&
       quoteParams &&
       mainBuyAmount &&
+      mainSellAmount &&
       !quoteError,
   )
 
   useEffect(() => {
-    if (!canCompare || !schedule || !quoteParams || !mainBuyAmount) {
+    if (!canCompare || !schedule || !quoteParams || !mainBuyAmount || !mainSellAmount) {
       setComparison(null)
       return
     }
@@ -129,6 +130,14 @@ export function WaitAndSaveComparisonQuoteUpdater({
   ])
 
   return null
+}
+
+function amountsDiffer(left: string | undefined, right: string | undefined): boolean {
+  const leftAtoms = parseAtoms(left)
+  const rightAtoms = parseAtoms(right)
+  if (leftAtoms === undefined || rightAtoms === undefined) return false
+
+  return gapBps(leftAtoms, rightAtoms) > DISCONNECT_GAP_BPS
 }
 
 function formatDiffUsd(diff: DiffContext, atoms: bigint | undefined): string | undefined {
@@ -191,7 +200,7 @@ function publishComparison(params: {
   mainBuyAmount: string
   mainFeeAmount: string | undefined
   mainQuotedAtSec: number | null
-  mainSellAmount: string | undefined
+  mainSellAmount: string
   result: {
     request: WaitAndSaveComparisonRequest
     response: { cancelled: boolean; data: CrossChainQuoteAndPost | undefined }
@@ -202,7 +211,7 @@ function publishComparison(params: {
   if (response.cancelled) return
 
   const comparison = readQuoteAmounts(response.data)
-  if (!comparison?.buyAmount) {
+  if (!comparison?.buyAmount || !comparison.sellAmount) {
     params.setComparison(null)
     return
   }
@@ -223,8 +232,20 @@ function publishComparison(params: {
   params.setComparison({
     buyAmount: comparison.buyAmount,
     enableWaitForCow: request.enableWaitForCow,
+    feeAmount: comparison.feeAmount ?? '0',
     mainBuyAmount: params.mainBuyAmount,
+    mainFeeAmount: params.mainFeeAmount ?? '0',
+    mainSellAmount: params.mainSellAmount,
+    sellAmount: comparison.sellAmount,
   })
+}
+
+function quotedAmountDiffers(params: QuotePairParams): boolean {
+  if (params.diff.isSell) {
+    return sellAmountsDiffer(params.main.sellAmount, params.main.feeAmount, params.requestedAmount)
+  }
+
+  return amountsDiffer(params.main.buyAmount, params.requestedAmount)
 }
 
 function quoteDiff(params: {
@@ -241,13 +262,21 @@ function quoteDiff(params: {
   return { diffSell: diff?.toString(), diffSellUsd: formatDiffUsd(params.diff, diff) }
 }
 
-function quoteReason(sellAmountDiffers: boolean, withinFee: boolean): string {
-  if (sellAmountDiffers) {
-    return 'Side quote was requested for a different sell amount than the swap quote now on screen.'
+function quoteReason(isSell: boolean, requestedAmountDiffers: boolean, withinFee: boolean): string {
+  if (requestedAmountDiffers) {
+    return isSell
+      ? 'Side quote was requested for a different sell amount than the swap quote now on screen.'
+      : 'Side quote was requested for a different buy amount than the swap quote now on screen.'
   }
-  if (withinFee) return 'Same trade, and the buy-amount gap is within a volume fee.'
+  if (withinFee) {
+    return isSell
+      ? 'Same trade, and the buy-amount gap is within a volume fee.'
+      : 'Same trade, and the sell-amount gap is within a volume fee.'
+  }
 
-  return 'Same sell amount, but the side quote buy amount is a different price than the swap quote. The two requests settle independently, so one can still be the earlier worse price.'
+  return isSell
+    ? 'Same sell amount, but the side quote buy amount is a different price than the swap quote. The two requests settle independently, so one can still be the earlier worse price.'
+    : 'Same buy amount, but the side quote sell amount is a different price than the swap quote. The two requests settle independently, so one can still be the earlier worse price.'
 }
 
 function readMainQuote(
@@ -277,16 +306,16 @@ function readQuoteReport(params: QuotePairParams): {
   entry: Record<string, unknown>
   reliable: boolean
 } {
-  const sellAmountDiffers = sellAmountsDiffer(params.main.sellAmount, params.main.feeAmount, params.requestedAmount)
-  const buyGap = gapBetween(params.main.buyAmount, params.comparison.buyAmount)
-  const withinFee = buyGap !== undefined && buyGap <= DISCONNECT_GAP_BPS
+  const requestedAmountDiffers = quotedAmountDiffers(params)
+  const sideGap = varyingSideGap(params)
+  const withinFee = sideGap !== undefined && sideGap <= DISCONNECT_GAP_BPS
 
   return {
-    disconnected: sellAmountDiffers || (buyGap !== undefined && buyGap > DISCONNECT_GAP_BPS),
-    reliable: !sellAmountDiffers && withinFee,
+    disconnected: requestedAmountDiffers || (sideGap !== undefined && sideGap > DISCONNECT_GAP_BPS),
+    reliable: !requestedAmountDiffers && withinFee,
     entry: {
-      reason: quoteReason(sellAmountDiffers, withinFee),
-      buyGapBps: buyGap?.toString(),
+      reason: quoteReason(params.diff.isSell, requestedAmountDiffers, withinFee),
+      ...(params.diff.isSell ? { buyGapBps: sideGap?.toString() } : { sellGapBps: sideGap?.toString() }),
       comparisonQuote: {
         ...params.comparison,
         enableWaitForCow: params.enableWaitForCow,
@@ -312,11 +341,7 @@ function sellAmountsDiffer(
   mainFeeAmount: string | undefined,
   quotedSellAmount: string,
 ): boolean {
-  const gross = parseAtoms(grossSell({ feeAmount: mainFeeAmount, sellAmount: mainSellAmount }))
-  const quotedSell = parseAtoms(quotedSellAmount)
-  if (gross === undefined || quotedSell === undefined) return false
-
-  return gapBps(gross, quotedSell) > DISCONNECT_GAP_BPS
+  return amountsDiffer(grossSell({ feeAmount: mainFeeAmount, sellAmount: mainSellAmount }), quotedSellAmount)
 }
 
 function startComparisonFetch(params: {
@@ -325,7 +350,7 @@ function startComparisonFetch(params: {
   mainBuyAmount: string
   mainFeeAmount: string | undefined
   mainQuotedAtSec: number | null
-  mainSellAmount: string | undefined
+  mainSellAmount: string
   quoteParams: Parameters<typeof buildWaitAndSaveComparisonRequest>[0]['quoteParams']
   setComparison: (next: WaitAndSaveComparisonQuote | null) => void
 }): () => void {
@@ -401,4 +426,10 @@ function useDiffContext(
   }
 
   return { isSell, ref }
+}
+
+function varyingSideGap(params: QuotePairParams): bigint | undefined {
+  if (params.diff.isSell) return gapBetween(params.main.buyAmount, params.comparison.buyAmount)
+
+  return gapBetween(grossSell(params.main), grossSell(params.comparison))
 }

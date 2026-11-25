@@ -2,9 +2,11 @@ import { Provider, createStore } from 'jotai'
 
 import { usePublicClient, useWalletClient } from 'wagmi'
 
+import { OrderQuoteRequest, SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { render } from '@testing-library/react'
 
-import { CowSdkUpdater, appSignerAccountAtom, appSignerAtom } from './cowSdk'
+import { CowSdkUpdater, appSignerAccountAtom, appSignerAtom, orderBookApi } from './cowSdk'
 
 jest.mock('wagmi', () => ({ usePublicClient: jest.fn(), useWalletClient: jest.fn() }))
 jest.mock('@cowprotocol/sdk-viem-adapter', () => ({
@@ -31,6 +33,52 @@ function setWalletClient(walletClient: unknown): void {
 beforeEach(() => {
   jest.clearAllMocks()
   mockUsePublicClient.mockReturnValue({} as ReturnType<typeof usePublicClient>)
+})
+
+const quoteRequest = {} as OrderQuoteRequest
+
+function rejectedQuoteResponse(): Response {
+  return {
+    ok: false,
+    status: 400,
+    statusText: 'Bad Request',
+    headers: { get: () => 'application/json' },
+    json: async () => ({ errorType: 'NoLiquidity', description: 'no' }),
+    text: async () => '',
+  } as unknown as Response
+}
+
+describe('orderBookApi.getQuote', () => {
+  const previousChainId = orderBookApi.context.chainId
+  const previousEnv = orderBookApi.context.env
+
+  beforeEach(() => {
+    jest.spyOn(globalThis, 'fetch').mockResolvedValue(rejectedQuoteResponse())
+  })
+
+  afterEach(() => {
+    orderBookApi.context.chainId = previousChainId
+    orderBookApi.context.env = previousEnv
+    jest.restoreAllMocks()
+  })
+
+  it('keeps a non-Linea quote on the env-resolved orderbook', async () => {
+    orderBookApi.context.chainId = SupportedChainId.MAINNET
+    orderBookApi.context.env = 'prod'
+
+    await orderBookApi.getQuote(quoteRequest).catch((err: unknown) => err)
+
+    expect(String(jest.mocked(globalThis.fetch).mock.calls[0]?.[0])).toBe('https://api.cow.fi/mainnet/api/v1/quote')
+  })
+
+  it('sends a Linea quote to barn', async () => {
+    orderBookApi.context.chainId = SupportedChainId.LINEA
+    orderBookApi.context.env = 'prod'
+
+    await orderBookApi.getQuote(quoteRequest).catch((err: unknown) => err)
+
+    expect(String(jest.mocked(globalThis.fetch).mock.calls[0]?.[0])).toBe('https://barn.api.cow.fi/linea/api/v1/quote')
+  })
 })
 
 describe('CowSdkUpdater', () => {

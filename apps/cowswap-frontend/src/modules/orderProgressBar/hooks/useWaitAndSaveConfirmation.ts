@@ -29,7 +29,9 @@ import type { WaitAndSaveOutcomeProps } from '../pure/WaitAndSaveOutcome/WaitAnd
 
 export interface UseWaitAndSaveConfirmationParams extends UseWaitAndSaveSolverCompetitionParams {
   buyToken: Currency | undefined
-  /** Raw buy-token atoms stored on the order at placement. */
+  /** Token the stored waived fee is priced in. The surplus stays in `buyToken`. */
+  feeToken?: Currency
+  /** Raw atoms stored on the order at placement, in `feeToken`. */
   waivedFeeAmount?: string
 }
 
@@ -48,15 +50,18 @@ const IDLE_CONFIRMATION: WaitAndSaveConfirmation = {
 }
 
 export function useWaitAndSaveConfirmation(params: UseWaitAndSaveConfirmationParams): WaitAndSaveConfirmation {
-  const { buyToken, chainId, enabled, orderUid, waivedFeeAmount } = params
+  const { buyToken, chainId, enabled, feeToken, orderUid, waivedFeeAmount } = params
   const { competition, pending } = useWaitAndSaveSolverCompetition({ chainId, enabled, orderUid })
   const solversInfoByAddress = useSolversInfoByAddress(chainId)
   const derivation = useMemo(() => deriveCompetition(competition, orderUid), [competition, orderUid])
   const waivedFeeRaw = parsePositiveBuyAmount(waivedFeeAmount)
   const gainAmount = useMemo(() => toGainAmount(buyToken, derivation?.positiveGain?.gainAmount), [buyToken, derivation])
-  const waivedFeeBuyAmount = useMemo(() => toGainAmount(buyToken, waivedFeeRaw), [buyToken, waivedFeeRaw])
+  const waivedFeeCurrencyAmount = useMemo(
+    () => toGainAmount(feeToken ?? buyToken, waivedFeeRaw),
+    [buyToken, feeToken, waivedFeeRaw],
+  )
   const gainFiat = useUsdAmount(gainAmount).value
-  const waivedFeeFiat = useUsdAmount(waivedFeeBuyAmount).value
+  const waivedFeeFiat = useUsdAmount(waivedFeeCurrencyAmount).value
 
   return useMemo(() => {
     if (!enabled || !orderUid) return IDLE_CONFIRMATION
@@ -67,9 +72,22 @@ export function useWaitAndSaveConfirmation(params: UseWaitAndSaveConfirmationPar
       derivation,
       gainFiat,
       solversInfoByAddress,
-      volumeFee: waivedFeeRaw === undefined ? undefined : { buyAmount: waivedFeeRaw, fiatAmount: waivedFeeFiat },
+      volumeFee:
+        waivedFeeCurrencyAmount === undefined
+          ? undefined
+          : { amount: waivedFeeCurrencyAmount, fiatAmount: waivedFeeFiat },
     })
-  }, [buyToken, derivation, enabled, gainFiat, orderUid, pending, solversInfoByAddress, waivedFeeFiat, waivedFeeRaw])
+  }, [
+    buyToken,
+    derivation,
+    enabled,
+    gainFiat,
+    orderUid,
+    pending,
+    solversInfoByAddress,
+    waivedFeeCurrencyAmount,
+    waivedFeeFiat,
+  ])
 }
 
 function deriveCompetition(

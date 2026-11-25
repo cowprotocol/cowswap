@@ -1,6 +1,6 @@
 import { USDC_MAINNET, WETH_MAINNET } from '@cowprotocol/common-const'
 import { formatFiatAmount, formatTokenAmount } from '@cowprotocol/common-utils'
-import { CurrencyAmount } from '@cowprotocol/currency'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { getTokenAmountTitle } from '@cowprotocol/ui'
 
 import { buildWaitAndSaveOutcome, formatGainFiat } from './buildWaitAndSaveOutcome.utils'
@@ -21,19 +21,18 @@ const GAIN_FIAT_RAW = 4_500_000n
 function fiatTitles(
   token: typeof USDC_MAINNET,
   gainAmountRaw: bigint,
-  feeBuyRaw: bigint,
+  feeAmount: CurrencyAmount<Currency>,
 ): {
   priceImprovementTitle: string
   totalSavedTitle: string
   volumeFeeSavedTitle: string
 } {
   const gainAmount = CurrencyAmount.fromRawAmount(token, gainAmountRaw.toString())
-  const feeAmount = CurrencyAmount.fromRawAmount(token, feeBuyRaw.toString())
 
   return {
     priceImprovementTitle: getTokenAmountTitle({ amount: gainAmount, tokenSymbol: token }),
     totalSavedTitle: getTokenAmountTitle({ amount: gainAmount.add(feeAmount), tokenSymbol: token }),
-    volumeFeeSavedTitle: getTokenAmountTitle({ amount: feeAmount, tokenSymbol: token }),
+    volumeFeeSavedTitle: getTokenAmountTitle({ amount: feeAmount, tokenSymbol: feeAmount.currency }),
   }
 }
 
@@ -56,7 +55,8 @@ describe('formatGainFiat', () => {
 
 describe('buildWaitAndSaveOutcome', () => {
   const feeFiat = CurrencyAmount.fromRawAmount(USDC_MAINNET, FEE_FIAT_RAW)
-  const volumeFee = { buyAmount: FEE_BUY_AMOUNT, fiatAmount: feeFiat }
+  const feeAmount = CurrencyAmount.fromRawAmount(USDC_MAINNET, FEE_BUY_AMOUNT)
+  const volumeFee = { amount: feeAmount, fiatAmount: feeFiat }
 
   it('builds the comparison card from the quote delta, separate from the CoW gain', () => {
     const outcome = buildWaitAndSaveOutcome({
@@ -65,7 +65,7 @@ describe('buildWaitAndSaveOutcome', () => {
       gain: GAIN,
       volumeFee,
     })
-    const titles = fiatTitles(USDC_MAINNET, GAIN.gainAmount, FEE_BUY_AMOUNT)
+    const titles = fiatTitles(USDC_MAINNET, GAIN.gainAmount, feeAmount)
 
     expect(outcome).toEqual({
       variant: 'withWaivedFeeAndCow',
@@ -128,13 +128,37 @@ describe('buildWaitAndSaveOutcome', () => {
     })
   })
 
-  it('omits the waived fee when the buy-amount delta is not positive', () => {
+  it('adds the surplus and the waived fee in USD when they are different tokens', () => {
+    const sellFee = CurrencyAmount.fromRawAmount(WETH_MAINNET, FEE_BUY_AMOUNT)
+    const gainFiat = CurrencyAmount.fromRawAmount(USDC_MAINNET, GAIN_FIAT_RAW)
+    const outcome = buildWaitAndSaveOutcome({
+      buyToken: USDC_MAINNET,
+      fiatAmount: gainFiat,
+      gain: GAIN,
+      volumeFee: { amount: sellFee, fiatAmount: feeFiat },
+    })
+
+    expect(outcome).toMatchObject({
+      variant: 'withWaivedFeeAndCow',
+      priceImprovement: `$${formatFiatAmount(gainFiat)}`,
+      priceImprovementTitle: getTokenAmountTitle({
+        amount: CurrencyAmount.fromRawAmount(USDC_MAINNET, GAIN.gainAmount),
+        tokenSymbol: USDC_MAINNET,
+      }),
+      totalSaved: `$${formatFiatAmount(CurrencyAmount.fromRawAmount(USDC_MAINNET, GAIN_FIAT_RAW + FEE_FIAT_RAW))}`,
+      volumeFeeSaved: formatGainFiat(feeFiat),
+      volumeFeeSavedTitle: getTokenAmountTitle({ amount: sellFee, tokenSymbol: WETH_MAINNET }),
+    })
+    expect(outcome && 'totalSavedTitle' in outcome ? outcome.totalSavedTitle : undefined).toBeUndefined()
+  })
+
+  it('omits the waived fee when the amount is not positive', () => {
     expect(
       buildWaitAndSaveOutcome({
         buyToken: USDC_MAINNET,
         fiatAmount: CurrencyAmount.fromRawAmount(USDC_MAINNET, GAIN_FIAT_RAW),
         gain: GAIN,
-        volumeFee: { buyAmount: 0n, fiatAmount: feeFiat },
+        volumeFee: { amount: CurrencyAmount.fromRawAmount(USDC_MAINNET, 0n), fiatAmount: feeFiat },
       }),
     ).toEqual({
       variant: 'withCow',
@@ -156,7 +180,7 @@ describe('buildWaitAndSaveOutcome', () => {
         buyToken: USDC_MAINNET,
         fiatAmount: null,
         gain: undefined,
-        volumeFee: { buyAmount: FEE_BUY_AMOUNT, fiatAmount: null },
+        volumeFee: { amount: feeAmount, fiatAmount: null },
       }),
     ).toBeUndefined()
   })

@@ -95,13 +95,22 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const validTo = getOrderValidTo(deadline, tradeQuote, waitAndSaveValidTo)
   const comparisonQuote = useAtomValue(waitAndSaveComparisonQuoteAtom)
   const userQuoteWithWaitAndSave = useEnableWaitForCow()
-  const waitAndSaveWaivedFeeAmount = waitAndSaveValidTo
-    ? getWaitAndSaveWaivedFeeRawAmount({
-        comparison: comparisonQuote,
-        mainBuyAmount: tradeQuote.quote?.quoteResults.quoteResponse.quote.buyAmount,
-        userQuoteWithWaitAndSave,
-      })?.toString()
-    : undefined
+  const mainQuote = tradeQuote.quote?.quoteResults.quoteResponse.quote
+  const waivedFee =
+    waitAndSaveValidTo && orderKind
+      ? getWaitAndSaveWaivedFeeRawAmount({
+          comparison: comparisonQuote,
+          mainQuote: {
+            buyAmount: mainQuote?.buyAmount,
+            feeAmount: mainQuote?.feeAmount == null ? undefined : String(mainQuote.feeAmount),
+            sellAmount: mainQuote?.sellAmount == null ? undefined : String(mainQuote.sellAmount),
+          },
+          orderKind,
+          userQuoteWithWaitAndSave,
+        })
+      : undefined
+  const waitAndSaveWaivedFeeAmount = waivedFee?.amount.toString()
+  const waitAndSaveWaivedFeeSide = waivedFee?.currency
 
   const settlementChainId = settlementContract.chainId
 
@@ -155,6 +164,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             walletClient,
             config,
             waitAndSaveWaivedFeeAmount,
+            waitAndSaveWaivedFeeSide,
           ]
         : null,
       // TODO: Break down this large function into smaller functions
@@ -192,6 +202,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         walletClient,
         config,
         waitAndSaveWaivedFeeAmount,
+        waitAndSaveWaivedFeeSide,
       ]) => {
         void settlementContract // in deps for memo stability
         return {
@@ -249,6 +260,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             quoteId: tradeQuote.quoteResults.quoteResponse.id,
             isSafeWallet,
             waitAndSaveWaivedFeeAmount,
+            waitAndSaveWaivedFeeSide,
           },
           config,
         }

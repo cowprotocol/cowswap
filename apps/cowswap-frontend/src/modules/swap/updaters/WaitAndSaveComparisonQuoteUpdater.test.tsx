@@ -82,7 +82,9 @@ describe('WaitAndSaveComparisonQuoteUpdater', () => {
     jest.mocked(useTradeQuote).mockReturnValue({
       error: null,
       isLoading: false,
-      quote: { quoteResults: { quoteResponse: { quote: { buyAmount: '100' } } } },
+      quote: {
+        quoteResults: { quoteResponse: { quote: { buyAmount: '100', feeAmount: '5', sellAmount: '1000' } } },
+      },
     } as ReturnType<typeof useTradeQuote>)
     jest.mocked(useAppDataBuildParams).mockImplementation(
       (params) =>
@@ -102,7 +104,7 @@ describe('WaitAndSaveComparisonQuoteUpdater', () => {
       }
     })
     jest.mocked(bridgingSdk.getQuote).mockResolvedValue({
-      quoteResults: { quoteResponse: { quote: { buyAmount: '130' } } },
+      quoteResults: { quoteResponse: { quote: { buyAmount: '130', feeAmount: '5', sellAmount: '1000' } } },
     } as never)
     useAtomValueMock.mockImplementation((atom) => {
       if (atom === canonicalBatchScheduleAtom) return schedule
@@ -134,7 +136,11 @@ describe('WaitAndSaveComparisonQuoteUpdater', () => {
       expect(setComparison).toHaveBeenCalledWith({
         buyAmount: '130',
         enableWaitForCow: true,
+        feeAmount: '5',
         mainBuyAmount: '100',
+        mainFeeAmount: '5',
+        mainSellAmount: '1000',
+        sellAmount: '1000',
       })
     })
     expect(jest.mocked(bridgingSdk.getQuote).mock.calls[0]?.[0]).toEqual(expect.objectContaining({ validFor: 1_800 }))

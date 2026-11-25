@@ -1,4 +1,4 @@
-import { USDC_MAINNET } from '@cowprotocol/common-const'
+import { USDC_MAINNET, WETH_MAINNET } from '@cowprotocol/common-const'
 import { SolverCompetitionResponse, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@cowprotocol/currency'
 
@@ -154,6 +154,27 @@ describe('useWaitAndSaveConfirmation', () => {
       solvers: undefined,
       strip: { comparisonUnavailable: true, hasAloneBid: false, kind: 'joined' },
     })
+  })
+
+  it('prices a buy-order waived fee in the sell token', () => {
+    useWaitAndSaveSolverCompetitionMock.mockReturnValue({ competition: undefined, pending: false })
+
+    renderHook(() =>
+      useWaitAndSaveConfirmation({
+        buyToken: USDC_MAINNET,
+        chainId: SupportedChainId.MAINNET,
+        enabled: true,
+        feeToken: WETH_MAINNET,
+        orderUid: ORDER_UID,
+        waivedFeeAmount: WAIVED_FEE_RAW,
+      }),
+    )
+
+    const pricedFee = useUsdAmountMock.mock.calls
+      .map(([amount]) => amount)
+      .find((amount) => amount?.currency.equals(WETH_MAINNET))
+
+    expect(pricedFee?.quotient.toString()).toBe(WAIVED_FEE_RAW)
   })
 
   it('keeps the stored waived fee when the solver competition never arrives', () => {

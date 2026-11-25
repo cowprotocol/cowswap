@@ -41,10 +41,12 @@ export function OrderSubmittedContent({ onDismiss, successTitle }: OrderSubmitte
   // Wait & Save only. The order-status solver list is already enough to draw the auction bars.
   // This request loads the settlement, including every other order in each solution, so we can tell
   // whether batching this order paid more than the best bid that contained only this order.
+  const feeToken = order?.waitAndSaveWaivedFeeSide === 'sell' ? order.inputToken : order?.outputToken
   const waitAndSave = useWaitAndSaveConfirmation({
     buyToken: order?.outputToken,
     chainId,
     enabled: loadSolverCompetition,
+    feeToken,
     orderUid: order?.id,
     waivedFeeAmount: order?.waitAndSaveWaivedFeeAmount,
   })

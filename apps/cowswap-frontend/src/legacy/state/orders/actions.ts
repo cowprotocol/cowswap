@@ -82,8 +82,10 @@ export interface BaseOrder extends OrderCreation {
   // For tracking how long an order has been pending
   openSince?: number
 
-  /** Positive on-quote minus off-quote buy amount, in buy-token atoms, captured at placement. */
+  /** Local display state. Positive waived-fee atoms in the token named by `waitAndSaveWaivedFeeSide`. */
   waitAndSaveWaivedFeeAmount?: string
+  /** `buy` for a sell order, `sell` for a buy order. */
+  waitAndSaveWaivedFeeSide?: 'buy' | 'sell'
 
   /**
    * Whether the order should be hidden in the UI
