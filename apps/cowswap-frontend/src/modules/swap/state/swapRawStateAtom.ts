@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
-import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
+import { atomWithPartialUpdate, isInjectedWidget } from '@cowprotocol/common-utils'
 import { getJotaiIsolatedStorage } from '@cowprotocol/core'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -35,4 +35,7 @@ export const { atom: swapRawStateAtom, updateAtom: updateSwapRawStateAtom } = at
   atomWithStorage<SwapRawState>('swapStateAtom:v1', getDefaultSwapState(null), getJotaiIsolatedStorage()),
 )
 
-export const swapDerivedStateAtom = atom<SwapDerivedState>(DEFAULT_SWAP_DERIVED_STATE)
+export const swapDerivedStateAtom = atom<SwapDerivedState>({
+  ...DEFAULT_SWAP_DERIVED_STATE,
+  isUnlocked: isInjectedWidget(),
+})
