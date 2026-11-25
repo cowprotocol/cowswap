@@ -6,7 +6,9 @@ import { RELEASED_SUPPORTED_CHAIN_IDS, VIEM_CHAINS } from '@cowprotocol/common-c
 import { getIsSafeAppIframe } from '@cowprotocol/common-utils'
 import { EvmChains, isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { solana } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit/react'
+import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { ConnectorController } from '@reown/appkit-controllers'
 import { coinbaseWallet, safe } from '@wagmi/connectors'
@@ -52,10 +54,12 @@ const metadata = {
 // AppKit ships its own AppKit-shaped networks (re-exporting viem/chains under the hood,
 // plus the metadata its UI layer needs). Cast to AppKitNetwork to bridge the nominal
 // type difference between this project's pinned viem and AppKit's peer.
-const networks = EVM_SUPPORTED_CHAIN_IDS.map((chainId) => VIEM_CHAINS[chainId] as unknown as AppKitNetwork) as [
+const evmNetworks = EVM_SUPPORTED_CHAIN_IDS.map((chainId) => VIEM_CHAINS[chainId] as unknown as AppKitNetwork) as [
   AppKitNetwork,
   ...AppKitNetwork[],
 ]
+
+const networks: [AppKitNetwork, ...AppKitNetwork[]] = [...evmNetworks, solana]
 
 const transports = EVM_SUPPORTED_CHAIN_IDS.reduce(
   (acc, chainId) => {
@@ -109,11 +113,15 @@ export const wagmiAdapter = new WagmiAdapter({
   // wallet extension (e.g. Rabby) and adds it as a connector, whose provider then emits `connect`
   // via `eth_accounts` — swapping the active connector from `safe` after Safe SDK connected.
   multiInjectedProviderDiscovery: !IS_SAFE_APP_IFRAME,
-  networks,
+  networks: evmNetworks,
   projectId,
   storage: wagmiStorage,
   transports,
 })
+
+// Dapp mode means this page owns the wallet, so it has to be able to connect a Solana one and lend
+// it to the widget as `solanaProvider` — see `useHostSolanaWallet`.
+const solanaAdapter = new SolanaAdapter({ connectionSettings: 'confirmed' })
 
 export const wagmiConfig = wagmiAdapter.wagmiConfig
 
@@ -139,7 +147,7 @@ if (typeof window !== 'undefined') {
 }
 
 export const reownAppKit = createAppKit({
-  adapters: [wagmiAdapter],
+  adapters: [wagmiAdapter, solanaAdapter],
   allowUnsupportedChain: true,
   customRpcUrls,
   defaultNetwork: networks.find((n) => n.id === SupportedChainId.MAINNET),

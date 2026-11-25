@@ -1,12 +1,8 @@
 import { useCallback, useState, type ReactNode } from 'react'
 
-import { Alert, Box, Button, Stack, Typography } from '@mui/material'
+import { Alert, Box, Button, Typography } from '@mui/material'
 
-import {
-  useHostSolanaWallet,
-  useHostSolanaWalletControls,
-  type NamedStandardWallet,
-} from '../../../hooks/useHostSolanaWallet'
+import { useHostSolanaWallet, useHostSolanaWalletControls } from '../../../hooks/useHostSolanaWallet'
 
 /**
  * Stands in for the partner's own Solana connect button.
@@ -15,45 +11,14 @@ import {
  * hand it to the widget as `solanaProvider` — exactly what an integrator would do.
  */
 export function HostSolanaWalletControl(): ReactNode {
-  const { address, name } = useHostSolanaWallet()
-  const { connect, disconnect, wallets } = useHostSolanaWalletControls()
+  const { address } = useHostSolanaWallet()
+  const { openConnectModal, disconnect } = useHostSolanaWalletControls()
   const [error, setError] = useState<string | null>(null)
-
-  const handleConnect = useCallback(
-    (wallet: NamedStandardWallet) => {
-      setError(null)
-      connect(wallet).catch((err: unknown) => {
-        setError(err instanceof Error ? err.message : `Could not connect ${wallet.name}.`)
-      })
-    },
-    [connect],
-  )
 
   const handleDisconnect = useCallback(() => {
     setError(null)
     disconnect().catch(() => setError('Could not disconnect the Solana wallet.'))
   }, [disconnect])
-
-  if (address) {
-    return (
-      <Box>
-        <Typography variant="caption" display="block" sx={{ mb: 0.5 }}>
-          Host Solana wallet: {name} ({shortenAddress(address)})
-        </Typography>
-        <Button size="small" variant="outlined" onClick={handleDisconnect}>
-          Disconnect Solana wallet
-        </Button>
-      </Box>
-    )
-  }
-
-  if (wallets.length === 0) {
-    return (
-      <Alert severity="info">
-        No Solana wallet detected in this browser. Install one (Phantom, Solflare, …) and reload to test dapp mode.
-      </Alert>
-    )
-  }
 
   return (
     <Box>
@@ -62,13 +27,21 @@ export function HostSolanaWalletControl(): ReactNode {
           {error}
         </Alert>
       ) : null}
-      <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-        {wallets.map((wallet) => (
-          <Button key={wallet.name} size="small" variant="outlined" onClick={() => handleConnect(wallet)}>
-            Connect {wallet.name}
+
+      {address ? (
+        <>
+          <Typography variant="caption" display="block" sx={{ mb: 0.5 }}>
+            Host Solana wallet: {shortenAddress(address)}
+          </Typography>
+          <Button size="small" variant="outlined" onClick={handleDisconnect}>
+            Disconnect Solana wallet
           </Button>
-        ))}
-      </Stack>
+        </>
+      ) : (
+        <Button size="small" variant="outlined" onClick={openConnectModal}>
+          Connect Solana wallet
+        </Button>
+      )}
     </Box>
   )
 }

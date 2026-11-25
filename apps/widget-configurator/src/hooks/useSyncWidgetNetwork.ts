@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react'
 import { useConnection, useSwitchChain } from 'wagmi'
 
 import { useAvailableChains } from '@cowprotocol/common-hooks'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { WidgetMode } from '../configurator.types'
 
@@ -26,6 +26,9 @@ export function useSyncWidgetNetwork(
   // Bind network control to wallet network
   useEffect(() => {
     if (widgetMode === 'standalone' || !isConnected || !walletChainId) return
+    // Solana is lent to the widget by a separate namespace, so the EVM wallet must not pull the
+    // selection back to its own chain.
+    if (isSolanaChain(currentChainIdRef.current)) return
 
     const walletSupportedChainId = walletChainId as SupportedChainId
 
@@ -52,6 +55,7 @@ export function useSyncWidgetNetwork(
       !switchChain ||
       !isConnected ||
       widgetMode === 'standalone' ||
+      isSolanaChain(chainId) ||
       !availableChains.includes(chainId) ||
       walletChainIdRef.current === chainId ||
       currentChainIdRef.current === walletChainIdRef.current
