@@ -13,6 +13,7 @@ jest.mock('legacy/state', () => ({
 import type { FeatureFlags } from '@cowprotocol/common-const'
 import { APRILS_FOOLS_FLAG_KEY, CustomTheme, resolveCustomThemeForContext } from '@cowprotocol/common-const'
 import { jotaiStore } from '@cowprotocol/core'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { cowSwapStore } from 'legacy/state'
 
@@ -129,6 +130,36 @@ describe('getThemeBasedSound', () => {
     getState.mockReturnValue({ user: { userDarkMode: true, matchesDarkMode: true } })
 
     expect(getThemeBasedSound('SEND')).toBe('/audio/halloween.mp3')
+  })
+
+  it('returns the Fartcoin sound when the buy token is Fartcoin', () => {
+    const fartcoin = { chainId: SupportedChainId.SOLANA, address: '9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump' }
+
+    expect(getThemeBasedSound('SEND', fartcoin)).toBe('/audio/send-fartcoin.m4a')
+    expect(getThemeBasedSound('SUCCESS', fartcoin)).toBe('/audio/success-fartcoin.m4a')
+    expect(getThemeBasedSound('ERROR', fartcoin)).toBe('/audio/error.mp3')
+  })
+
+  it('prefers the Fartcoin sound over seasonal sounds', () => {
+    jotaiGet.mockReturnValue({ isChristmasEnabled: true, [APRILS_FOOLS_FLAG_KEY]: true })
+
+    expect(
+      getThemeBasedSound('SEND', {
+        chainId: SupportedChainId.SOLANA,
+        address: '9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump',
+      }),
+    ).toBe('/audio/send-fartcoin.m4a')
+  })
+
+  it('keeps the default sound for other buy tokens', () => {
+    const usdc = { chainId: SupportedChainId.SOLANA, address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v' }
+    const sameAddressOtherChain = {
+      chainId: SupportedChainId.MAINNET,
+      address: '9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump',
+    }
+
+    expect(getThemeBasedSound('SEND', usdc)).toBe('/audio/send.mp3')
+    expect(getThemeBasedSound('SUCCESS', sameAddressOtherChain)).toBe('/audio/success.mp3')
   })
 
   it('falls back to default sound when Halloween flag is enabled but dark mode is off', () => {

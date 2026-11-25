@@ -137,7 +137,7 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps):
       </styledEl.MenuItem>
 
       {isDropdownVisible && (
-        <styledEl.SelectMenu>
+        <styledEl.SelectMenu id="trading-mode-select-menu">
           <Modal.Header onBack={handleMenuItemClick}>
             <Trans>Trading mode</Trans>
           </Modal.Header>

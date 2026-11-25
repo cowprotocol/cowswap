@@ -1,7 +1,7 @@
 import { encodeFunctionData } from 'viem'
 
 import { BFF_BASE_URL } from '@cowprotocol/common-const'
-import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS } from '@cowprotocol/common-utils'
+import { bffFetch, COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Erc20Abi } from '@cowprotocol/cowswap-abis'
 import { CowHookDetails } from '@cowprotocol/hook-dapp-lib'
@@ -49,7 +49,7 @@ export const hooksBundleSimulation = async (
 }
 
 const simulateBundle = async (input: SimulationInput[], chainId: SupportedChainId): Promise<SimulationData[]> => {
-  const response = await fetch(`${BFF_BASE_URL}/${chainId}/simulation/simulateBundle`, {
+  const response = await bffFetch(`${BFF_BASE_URL}/${chainId}/simulation/simulateBundle`, {
     method: 'POST',
     body: JSON.stringify(input),
     headers: {

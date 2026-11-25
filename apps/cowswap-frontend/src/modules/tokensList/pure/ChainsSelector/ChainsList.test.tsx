@@ -14,29 +14,17 @@ i18n.activate('en-US')
 
 const solana = { id: SupportedChainId.SOLANA, label: 'Solana', logo: { dark: '', light: '' } } as ChainInfo
 
-function renderList(sourceChainId?: SupportedChainId): void {
-  const list: ReactElement = (
-    <ChainsList chains={[solana]} onSelectChain={jest.fn()} isDarkMode={false} sourceChainId={sourceChainId} />
-  )
+function renderList(): void {
+  const list: ReactElement = <ChainsList chains={[solana]} onSelectChain={jest.fn()} isDarkMode={false} />
 
   render(<I18nProvider i18n={i18n}>{list}</I18nProvider>)
 }
 
-describe('ChainsList status badge', () => {
-  it('shows the badge when picking the sell network', () => {
+describe('ChainsList', () => {
+  // The badge pushed the active checkmark out of place, so the token list carries no chain status
+  // badge at all — the network selector and the networks list still do.
+  it('shows no chain status badge', () => {
     renderList()
-
-    expect(screen.queryByText('NEW')).not.toBeNull()
-  })
-
-  it('shows the badge for a same-chain buy', () => {
-    renderList(SupportedChainId.SOLANA)
-
-    expect(screen.queryByText('NEW')).not.toBeNull()
-  })
-
-  it('hides the badge for a cross-chain buy destination', () => {
-    renderList(SupportedChainId.MAINNET)
 
     expect(screen.queryByText('NEW')).toBeNull()
   })

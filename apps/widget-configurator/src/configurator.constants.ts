@@ -164,6 +164,7 @@ export const DEFAULT_CONFIGURATOR_FORM_VALUES: ConfiguratorFormValues = {
   buyTokenAmount: DEFAULT_STATE.buyAmount,
   tokenListUrls: DEFAULT_TOKEN_LISTS,
   customTokens: [],
+  prioritizedTokensText: {},
 
   // Theme Colors:
 

@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.13.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.12.0...assets-v2.13.0) (2026-11-19)
+
+### Minor Changes
+
+- feat(theme): cherry pick #8678 (vice theme)
+
+## [2.12.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.11.0...assets-v2.12.0) (2026-11-18)
+
+### Minor Changes
+
+- feat(cow-fi): add CoW Protocol on Solana landing page (#8470)
+
+- feat(cow-fi): gate GTM on cookie consent (#8606)
+
+- feat(graffiti): collaborative graffiti wall (consolidated) (#8560)
+
 ## [2.11.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.10.0...assets-v2.11.0) (2026-11-13)
 
 ### Minor Changes

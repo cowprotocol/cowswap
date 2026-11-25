@@ -75,6 +75,11 @@ export function getSelectedPreset(
   )
 }
 
+export function matchesPresetPercentage(value: string): boolean {
+  if (!value) return false
+  return (PRICE_PERCENTAGE_PRESETS as readonly string[]).includes(String(Number(value)))
+}
+
 export function matchesRate(
   rate: Fraction | null,
   activeRate: Fraction | null | undefined,

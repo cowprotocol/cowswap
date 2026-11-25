@@ -16,7 +16,7 @@ import { OrderProgressBarProps } from '../types'
 export function NoSurplus({ randomBenefit }: { randomBenefit: string }): ReactNode {
   const isSmallScreen = useMediaQuery(Media.upToSmall(false))
 
-  const benefitRef = useAutoFitText<HTMLDivElement>({
+  const { ref: benefitRef } = useAutoFitText<HTMLDivElement>({
     min: 12,
     max: isSmallScreen ? 28 : 36,
     deps: [randomBenefit, isSmallScreen],
@@ -44,9 +44,14 @@ export function ShowSurplus({
   surplusPercentValue: string
 }): ReactNode {
   const surplusText = shouldShowSurplus && surplusPercentValue !== 'N/A' ? `+${surplusPercentValue}%` : t`N/A`
-  const surplusRef = useAutoFitText<HTMLSpanElement>({ min: 14, max: 50, mode: 'single', deps: [surplusText] })
-  const taglineRef = useAutoFitText<HTMLSpanElement>({ min: 16, max: 22, mode: 'single' })
-  const pairRef = useAutoFitText<HTMLSpanElement>({ min: 14, max: 22, mode: 'multi' })
+  const { ref: surplusRef } = useAutoFitText<HTMLSpanElement>({
+    min: 14,
+    max: 50,
+    mode: 'single',
+    deps: [surplusText],
+  })
+  const { ref: taglineRef } = useAutoFitText<HTMLSpanElement>({ min: 16, max: 22, mode: 'single' })
+  const { ref: pairRef } = useAutoFitText<HTMLSpanElement>({ min: 14, max: 22, mode: 'multi' })
 
   return (
     <styledEl.BenefitSurplusContainer>

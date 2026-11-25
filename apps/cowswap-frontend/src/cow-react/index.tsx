@@ -30,6 +30,7 @@ import { cowSwapStore } from 'legacy/state'
 
 import {
   App,
+  CustomThemeProvider,
   React310RecoveryErrorBoundary,
   resetReact310RecoveryOnDocumentLoad,
   Updaters,
@@ -97,11 +98,13 @@ export function Main({ localeMessages }: MainProps): ReactNode {
                               <React310RecoveryErrorBoundary>
                                 <Web3Provider>
                                   <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
-                                    <WalletUnsupportedNetworkBanner />
-                                    <Updaters />
-                                    <Toasts />
-                                    <App />
-                                    {!isAnalyticsDisabled && <CookieConsentBanner />}
+                                    <CustomThemeProvider>
+                                      <WalletUnsupportedNetworkBanner />
+                                      <Updaters />
+                                      <Toasts />
+                                      <App />
+                                      {!isAnalyticsDisabled && <CookieConsentBanner />}
+                                    </CustomThemeProvider>
                                   </CowAnalyticsProvider>
                                 </Web3Provider>
                               </React310RecoveryErrorBoundary>

@@ -1,6 +1,6 @@
 import { createStore } from 'jotai'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 jest.mock('@cowprotocol/common-const', () => ({
   ...jest.requireActual('@cowprotocol/common-const'),
@@ -29,10 +29,11 @@ import {
   allListsSourcesAtom,
   listsStatesByChainAtom,
   listsStatesMapAtom,
+  userAddedListsSourcesAtom,
   virtualListsStateAtom,
 } from './tokenListsStateAtom'
 
-import { DEFAULT_TOKENS_LISTS, ONDO_TOKENS_LIST_SOURCE, XSTOCKS_TOKENS_LIST_SOURCE } from '../../const/tokensLists'
+import { DEFAULT_TOKENS_LISTS } from '../../const/tokensLists'
 import { ListState, TokenListsByChainState } from '../../types'
 import { environmentAtom } from '../environmentAtom'
 
@@ -185,21 +186,18 @@ describe('listsStatesByChainAtom - token lists state', () => {
     it('surfaces only the shipped URL when a list was re-pinned', async () => {
       const store = createStore()
 
-      const shipped = DEFAULT_TOKENS_LISTS[MOCK_CHAIN_ID].find((list) => list.source.includes('ondoprotocol'))?.source
-
-      if (!shipped) throw new Error('No SHA-pinned Ondo list configured for mainnet')
-
+      const base = 'https://raw.githubusercontent.com/acme/tokenlist'
+      const shipped = `${base}/${'a'.repeat(40)}/tokenlist.json`
       // What a returning user still has stored from before the re-pin
-      const repinned = shipped.replace(
-        /^(https:\/\/raw\.githubusercontent\.com\/[^/]+\/[^/]+\/)[^/]+\//,
-        '$1refs/heads/main/',
-      )
-
-      expect(repinned).not.toBe(shipped)
+      const repinned = `${base}/refs/heads/main/tokenlist.json`
 
       store.set(environmentAtom, {
         chainId: MOCK_CHAIN_ID,
         isYieldEnabled: false,
+      })
+      store.set(userAddedListsSourcesAtom, {
+        ...mapSupportedNetworks([]),
+        [MOCK_CHAIN_ID]: [{ source: shipped, priority: 1 }],
       })
       store.set(listsStatesByChainAtom, {
         ...DEFAULT_LISTS_STATE,
@@ -270,20 +268,21 @@ describe('listsStatesByChainAtom - token lists state', () => {
     })
 
     describe('RWA lists', () => {
-      const ondoListState: ListState = { ...MOCK_LIST_STATE, source: ONDO_TOKENS_LIST_SOURCE }
-      const repinnedXstocksSource = XSTOCKS_TOKENS_LIST_SOURCE.replace(/\/[0-9a-f]{40}\//, `/${'b'.repeat(40)}/`)
-      const xstocksListState: ListState = { ...MOCK_LIST_STATE_2, source: repinnedXstocksSource }
+      const rwaSource = (DEFAULT_TOKENS_LISTS[MOCK_CHAIN_ID] || []).filter((list) => list.category === 'RWA')[0].source
+      const rwaListState: ListState = { ...MOCK_LIST_STATE, source: rwaSource }
+      const repinnedSource = `https://raw.githubusercontent.com/acme/rwa-list/${'b'.repeat(40)}/tokenlist.json`
+      const repinnedListState: ListState = { ...MOCK_LIST_STATE_2, source: repinnedSource }
 
       const stateWithRwaLists: TokenListsByChainState = {
         ...DEFAULT_LISTS_STATE,
         [MOCK_CHAIN_ID]: {
           [MOCK_LIST_STATE.source]: MOCK_LIST_STATE,
-          [ondoListState.source]: ondoListState,
-          [xstocksListState.source]: xstocksListState,
+          [rwaListState.source]: rwaListState,
+          [repinnedListState.source]: repinnedListState,
         },
       }
 
-      it('keeps stored RWA lists, including re-pinned ones, whatever the country', async () => {
+      it('keeps stored RWA lists, and lists pinned to a commit', async () => {
         const store = createStore()
 
         store.set(environmentAtom, { chainId: MOCK_CHAIN_ID })
@@ -292,7 +291,7 @@ describe('listsStatesByChainAtom - token lists state', () => {
         const listsStatesMap = await store.get(listsStatesMapAtom)
 
         expect(Object.keys(listsStatesMap).sort()).toEqual(
-          [MOCK_LIST_STATE.source, ondoListState.source, xstocksListState.source].sort(),
+          [MOCK_LIST_STATE.source, rwaListState.source, repinnedListState.source].sort(),
         )
       })
     })
@@ -306,8 +305,7 @@ describe('listsStatesByChainAtom - token lists state', () => {
 
       const sources = store.get(allListsSourcesAtom).map((list) => list.source)
 
-      expect(sources).toContain(ONDO_TOKENS_LIST_SOURCE)
-      expect(sources).toContain(XSTOCKS_TOKENS_LIST_SOURCE)
+      expect(sources).toContain('https://files.cow.fi/token-lists/CoinGeckoRwa.1.json')
       expect(sources).toEqual((DEFAULT_TOKENS_LISTS[MOCK_CHAIN_ID] || []).map((list) => list.source))
     })
   })

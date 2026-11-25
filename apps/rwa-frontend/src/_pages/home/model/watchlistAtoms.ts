@@ -1,10 +1,18 @@
 import { atom } from 'jotai'
-import { atomWithStorage } from 'jotai/utils'
+import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 
 import { trackEvent } from '@/shared/lib/analytics'
 
+const WATCHLIST_STORAGE_KEY = 'rwaWatchlist:v1'
+
+const watchlistStorage = createJSONStorage<string[]>()
+
 /** Tickers */
-export const watchlistAtom = atomWithStorage<string[]>('rwaWatchlist:v1', [])
+export const watchlistAtom = atomWithStorage<string[]>(WATCHLIST_STORAGE_KEY, [], watchlistStorage)
+
+export function readStoredWatchlist(): string[] {
+  return watchlistStorage.getItem(WATCHLIST_STORAGE_KEY, [])
+}
 
 export const toggleWatchlistAtom = atom(null, (get, set, ticker: string) => {
   const watchlist = get(watchlistAtom)

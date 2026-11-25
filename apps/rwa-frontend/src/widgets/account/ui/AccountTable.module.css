@@ -60,6 +60,23 @@
   width: 100%;
 }
 
+/* The Activity table widths add up to 100%: past it, auto table layout drops the later columns to their content */
+.activityColumn {
+  width: 52%;
+}
+
+.activityAmountColumn {
+  width: 21%;
+}
+
+.activityDateColumn {
+  width: 15%;
+}
+
+.activityStatusColumn {
+  width: 12%;
+}
+
 .menuColumn {
   width: 32px;
 }

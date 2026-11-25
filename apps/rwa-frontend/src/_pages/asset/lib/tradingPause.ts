@@ -1,19 +1,27 @@
 import type { RwaTradingPause } from '@/entities/asset'
 
-const dateFormatter = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' })
-const timeFormatter = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' })
+import { getLocalTimeParts } from '@/shared/lib/format'
 
-/** `null` once the pause is over */
-export function getTradingPauseMessage(pause: RwaTradingPause | null | undefined, now: Date): string | null {
+/** `null` once the pause is over. `timeZone` is the user's by default */
+export function getTradingPauseMessage(
+  pause: RwaTradingPause | null | undefined,
+  now: Date,
+  timeZone?: string,
+): string | null {
   if (!pause) return null
 
   const start = Date.parse(pause.start)
   const end = Date.parse(pause.end)
 
   if (now.getTime() >= end) return null
+
+  const endParts = getLocalTimeParts(end, timeZone)
+
   if (now.getTime() >= start) {
-    return `${pause.issuer} tokens are paused until ${timeFormatter.format(end)} UTC while their balances update.`
+    return `${pause.issuer} tokens are paused until ${endParts.time} while their balances update.`
   }
 
-  return `${pause.issuer} tokens pause trading on ${dateFormatter.format(start)}, ${timeFormatter.format(start)}–${timeFormatter.format(end)} UTC, while their balances update.`
+  const startParts = getLocalTimeParts(start, timeZone)
+
+  return `${pause.issuer} tokens pause trading on ${startParts.month} ${startParts.day}, ${startParts.time}–${endParts.time}, while their balances update.`
 }

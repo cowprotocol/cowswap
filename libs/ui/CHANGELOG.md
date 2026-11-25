@@ -1,5 +1,49 @@
 # Changelog
 
+## [3.25.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.24.0...ui-v3.25.0) (2026-11-19)
+
+### Minor Changes
+
+- feat(theme): cherry pick #8678 (vice theme)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/assets@2.13.0
+  - @cowprotocol/common-const@3.25.0
+  - @cowprotocol/analytics@3.20.1
+  - @cowprotocol/common-hooks@3.22.1
+  - @cowprotocol/common-utils@3.23.1
+  - @cowprotocol/core@3.16.1
+
+## [3.24.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.23.2...ui-v3.24.0) (2026-11-18)
+
+### Minor Changes
+
+- feat: update SDK versions with updated near token lists (#8660)
+
+- feat(cow-fi): add CoW Protocol on Solana landing page (#8470)
+
+- feat(cow-fi): gate GTM on cookie consent (#8606)
+
+- feat(graffiti): collaborative graffiti wall (consolidated) (#8560)
+
+- feat(solana): support custom recipients (#8592)
+
+### Patch Changes
+
+- fix(header): keep the selected network when clicking the logo (#8614)
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.20.0
+  - @cowprotocol/common-const@3.24.0
+  - @cowprotocol/common-hooks@3.22.0
+  - @cowprotocol/common-utils@3.23.0
+  - @cowprotocol/core@3.16.0
+  - @cowprotocol/currency@1.11.0
+  - @cowprotocol/types@4.16.0
+  - @cowprotocol/assets@2.12.0
+
 ## [3.23.2](https://github.com/cowprotocol/cowswap/compare/ui-v3.23.1...ui-v3.23.2) (2026-11-16)
 
 ### Patch Changes

@@ -31,15 +31,18 @@ export function useSolanaCancelOrder(): (order: Order) => Promise<void> {
       }
 
       const owner = new PublicKey(account)
-      const [cancelParams] = await buildSolanaCancelOrderParams(
+      const { cancelParams, reclaimParams } = await buildSolanaCancelOrderParams(
         connection,
         owner,
         [{ id: order.id, order }],
         backendEnv,
       )
-      const instruction = solanaTradingSdk.cancelOrder(cancelParams)
+      const instructions = [
+        ...solanaTradingSdk.cancelOrders(cancelParams),
+        ...solanaTradingSdk.reclaimOrders(reclaimParams),
+      ]
 
-      const { hash } = await sendSolanaTransaction(connection, provider, owner, [instruction])
+      const { hash } = await sendSolanaTransaction(connection, provider, owner, instructions)
 
       cancelPendingOrder({ id: order.id, chainId })
       setOrderCancellationHash({ chainId, id: order.id, hash })

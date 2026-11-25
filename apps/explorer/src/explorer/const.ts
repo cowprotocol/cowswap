@@ -24,6 +24,7 @@ export const TOKEN_SYMBOL_UNKNOWN = 'UNKNOWN'
 export enum Routes {
   HOME = '/',
   SOLVERS = '/solvers',
+  SOLVER_LOGOS = '/solver-logo-tool',
   APPDATA = '/appdata',
 }
 

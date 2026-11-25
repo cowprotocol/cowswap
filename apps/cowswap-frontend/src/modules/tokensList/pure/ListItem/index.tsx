@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { getTokenListViewLink, ListState } from '@cowprotocol/tokens'
+import { getTokenListViewLink, isRwaTokenListSource, ListState } from '@cowprotocol/tokens'
 import {
   ContextMenuTooltip,
   ContextMenuExternalLink,
@@ -53,6 +53,7 @@ export function ListItem(props: TokenListItemProps): ReactNode {
   }
 
   const { major, minor, patch } = list.list.version
+  const isRemovalBlocked = isRwaTokenListSource(list.source)
 
   return (
     <styledEl.Wrapper $enabled={isActive}>
@@ -72,20 +73,22 @@ export function ListItem(props: TokenListItemProps): ReactNode {
                   label: list.source,
                 })}
               />
-              <ContextMenuItemButton
-                variant="danger"
-                onClick={handleRemove}
-                data-click-event={toCowSwapGtmEvent({
-                  category: CowSwapAnalyticsCategory.LIST,
-                  action: 'Remove List',
-                  label: list.source,
-                })}
-              >
-                <Trash2 size={16} />
-                <span>
-                  <Trans>Remove list</Trans>
-                </span>
-              </ContextMenuItemButton>
+              {!isRemovalBlocked && (
+                <ContextMenuItemButton
+                  variant="danger"
+                  onClick={handleRemove}
+                  data-click-event={toCowSwapGtmEvent({
+                    category: CowSwapAnalyticsCategory.LIST,
+                    action: 'Remove List',
+                    label: list.source,
+                  })}
+                >
+                  <Trash2 size={16} />
+                  <span>
+                    <Trans>Remove list</Trans>
+                  </span>
+                </ContextMenuItemButton>
+              )}
             </>
           }
         >

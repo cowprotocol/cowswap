@@ -72,12 +72,9 @@
   line-height: 16px;
 }
 
-.tokenTitle {
-  margin-right: auto;
-}
-
 .quoteTitle {
   display: inline-flex;
+  margin-left: auto;
   align-items: center;
   gap: 6px;
 }

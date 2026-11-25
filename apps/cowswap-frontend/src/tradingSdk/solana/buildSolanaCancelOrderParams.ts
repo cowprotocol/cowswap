@@ -1,11 +1,22 @@
-import { hexToBytes } from 'viem'
-
 import { CowEnv } from '@cowprotocol/cow-sdk'
-import { CancelOrderParams, findOrderPda, getSolanaSettlementProgramId } from '@cowprotocol/sdk-trading-solana'
+import { CancelOrderParams, ReclaimOrderParams } from '@cowprotocol/sdk-trading-solana'
 
 import { Connection, PublicKey } from '@solana/web3.js'
 
 import { buildSolanaOrderIntent, SolanaIntentOrder } from './buildSolanaOrderIntent'
+import { fetchSolanaOrderAccounts } from './fetchSolanaOrderAccounts'
+
+export interface SolanaCancellationParams {
+  cancelParams: CancelOrderParams[]
+  /**
+   * Closing the order PDA is a separate instruction, so a cancellation that doesn't carry one leaves the
+   * rent locked until the order expires. Only live orders are reclaimed — on-chain and not yet
+   * cancelled. A PDA that already reads as cancelled may be one an earlier attempt created just to
+   * record the cancellation, and that must stay until `validTo` or a creation still in flight could
+   * bring the order back; the orders table offers those separately, once they are old enough to be safe.
+   */
+  reclaimParams: ReclaimOrderParams[]
+}
 
 export interface SolanaOrderToCancel {
   id: string
@@ -22,18 +33,25 @@ export async function buildSolanaCancelOrderParams(
   owner: PublicKey,
   orders: SolanaOrderToCancel[],
   env: CowEnv,
-): Promise<CancelOrderParams[]> {
-  const programId = getSolanaSettlementProgramId(env)
-  const orderPdas = orders.map(({ id }) => findOrderPda(programId, hexToBytes(id as `0x${string}`), env)[0])
-  const orderAccounts = await connection.getMultipleAccountsInfo(orderPdas)
+): Promise<SolanaCancellationParams> {
+  const entries = await fetchSolanaOrderAccounts(
+    connection,
+    orders.map(({ id }) => id),
+    env,
+  )
 
-  return Promise.all(
+  const cancelParams = await Promise.all(
     orders.map(async ({ order }, index) => {
-      const orderPda = orderPdas[index]
-      const isOnChain = !!orderAccounts[index]
-      const intent = !isOnChain && order ? await buildSolanaOrderIntent(order) : undefined
+      const { orderPda, exists } = entries[index]
+      const intent = !exists && order ? await buildSolanaOrderIntent(order) : undefined
 
       return { ownerAddress: owner, orderPda, intent }
     }),
   )
+
+  const reclaimParams = entries
+    .filter(({ account }) => account && !account.cancelled && account.createdBy.equals(owner))
+    .map(({ orderPda }) => ({ ownerAddress: owner, orderPda }))
+
+  return { cancelParams, reclaimParams }
 }

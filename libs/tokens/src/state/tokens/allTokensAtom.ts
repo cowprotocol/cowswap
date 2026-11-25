@@ -88,13 +88,35 @@ export const activeTokensMapAtom = atom(async (get) => {
 })
 
 /**
+ * Listed tokens are hidden here instead of being deleted from storage: user-added tokens are shared by
+ * every tab while enabled lists are per tab, so deleting by this tab's lists also drops a token that a
+ * tab without the list has just imported.
+ */
+const unlistedUserAddedTokensAtom = atom(async (get) => {
+  const { chainId } = get(environmentAtom)
+  const userAddedTokens = normalizeTokensMapKeys(get(userAddedTokensAtom)[chainId] || {})
+  const activeTokens = await get(activeTokensMapAtom)
+
+  return Object.keys(userAddedTokens).reduce<TokensMap>((acc, key) => {
+    if (!activeTokens[key]) acc[key] = userAddedTokens[key]
+
+    return acc
+  }, {})
+})
+
+export const userAddedTokensListAtom = atom(async (get) => {
+  const tokens = await get(unlistedUserAddedTokensAtom)
+
+  return Object.values(tokens).map((token) => TokenWithLogo.fromToken(token, token.logoURI))
+})
+
+/**
  * Returns a list of tokens that are active and sorted alphabetically
  * The list includes: native token, user added tokens, optional favorite tokens and tokens from active lists
  * Native token is always the first element in the list
  */
 export const allActiveTokensAtom = atom(async (get) => {
   const { chainId, enableLpTokensByDefault, hideFavoriteTokens } = get(environmentAtom)
-  const userAddedTokens = get(userAddedTokensAtom)
   const favoriteTokensState = get(favoriteTokensAtom)
   const isTokenListsUpdating = get(tokenListsUpdatingAtom)
 
@@ -131,7 +153,7 @@ export const allActiveTokensAtom = atom(async (get) => {
     tokenSources.push(normalizeTokensMapKeys(favoriteTokensState[chainId]))
   }
 
-  tokenSources.push(normalizeTokensMapKeys(userAddedTokens[chainId] || {}), tokensMap.activeTokens)
+  tokenSources.push(await get(unlistedUserAddedTokensAtom), tokensMap.activeTokens)
 
   if (nativeToken) {
     tokenSources.push({ [getAddressKey(nativeToken.address)]: nativeToken as TokenInfo })

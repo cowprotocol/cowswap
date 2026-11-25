@@ -6,7 +6,7 @@ import type { SolanaProvider } from '@cowprotocol/iframe-transport'
 
 import { CowSwapWidgetHandler, createCowSwapWidget } from './cowSwapWidget'
 import { WIDGET_IFRAME_SANDBOX, WIDGET_IFRAME_SANDBOX_WITHOUT_POPUPS } from './cowSwapWidget.constants'
-import { CowSwapWidgetParams, TradeType, WidgetMethodsEmit } from './types'
+import { CowSwapWidgetParams, TradeType, WidgetMethodsEmit, WidgetMethodsListen } from './types'
 import { buildWidgetUrl } from './urlUtils'
 import { widgetIframeTransport } from './widgetIframeTransport'
 
@@ -378,6 +378,53 @@ describe('createCowSwapWidget', () => {
     const { updateParams } = createWidget()
 
     expect(() => updateParams({ appCode: '   ' } as CowSwapWidgetParams)).toThrow('Required param `appCode` is missing')
+  })
+})
+
+describe('createCowSwapWidget baseUrl origin', () => {
+  afterEach(() => {
+    widgetHandlers.splice(0).forEach((handler) => handler.destroy())
+    document.body.innerHTML = ''
+  })
+
+  it('rejects reloading the iframe on another origin, keeping the loaded widget', () => {
+    const handler = createWidget('https://swap.cow.fi')
+    const iframe = handler.iframe
+    const srcBefore = iframe.src
+
+    expect(() =>
+      handler.updateParams({
+        appCode: 'test-app',
+        baseUrl: 'https://other.example',
+        disableWindowOpen: true,
+        standaloneMode: false,
+      }),
+    ).toThrow('Changing `baseUrl` to another origin requires creating a new widget')
+
+    expect(iframe.src).toBe(srcBefore)
+    expect(iframe.getAttribute('sandbox')).toBe(WIDGET_IFRAME_SANDBOX)
+  })
+})
+
+describe('createCowSwapWidget closeAllModals', () => {
+  afterEach(() => {
+    widgetHandlers.splice(0).forEach((handler) => handler.destroy())
+    document.body.innerHTML = ''
+    jest.restoreAllMocks()
+  })
+
+  it('asks the widget to close its modals', () => {
+    const { iframe, closeAllModals } = createWidget()
+    const postMessageSpy = jest.spyOn(widgetIframeTransport, 'postMessageToWindow').mockImplementation(() => void 0)
+
+    closeAllModals()
+
+    expect(postMessageSpy).toHaveBeenCalledWith(
+      iframe.contentWindow,
+      WidgetMethodsListen.CLOSE_ALL_MODALS,
+      undefined,
+      new URL(iframe.src).origin,
+    )
   })
 })
 
