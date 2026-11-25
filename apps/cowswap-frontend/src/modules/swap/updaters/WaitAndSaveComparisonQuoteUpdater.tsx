@@ -26,13 +26,11 @@ import {
   type WaitAndSaveComparisonRequest,
 } from './buildWaitAndSaveComparisonRequest'
 
+import { WAIT_AND_SAVE_DISCONNECT_GAP_BPS } from '../consts'
 import { useSwapDerivedState } from '../hooks/useSwapDerivedState'
 
 const getQuote = bridgingSdk.getQuote.bind(bridgingSdk)
 const getQuoteOnlyResolveLast = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
-
-/** Volume-fee waivers are a fraction of a percent. A wider gap on the varying side is two different prices. */
-const DISCONNECT_GAP_BPS = 2n
 
 interface DiffContext {
   currency: Currency | undefined
@@ -137,7 +135,7 @@ function amountsDiffer(left: string | undefined, right: string | undefined): boo
   const rightAtoms = parseAtoms(right)
   if (leftAtoms === undefined || rightAtoms === undefined) return false
 
-  return gapBps(leftAtoms, rightAtoms) > DISCONNECT_GAP_BPS
+  return gapBps(leftAtoms, rightAtoms) > WAIT_AND_SAVE_DISCONNECT_GAP_BPS
 }
 
 function formatDiffUsd(diff: DiffContext, atoms: bigint | undefined): string | undefined {
@@ -308,10 +306,10 @@ function readQuoteReport(params: QuotePairParams): {
 } {
   const requestedAmountDiffers = quotedAmountDiffers(params)
   const sideGap = varyingSideGap(params)
-  const withinFee = sideGap !== undefined && sideGap <= DISCONNECT_GAP_BPS
+  const withinFee = sideGap !== undefined && sideGap <= WAIT_AND_SAVE_DISCONNECT_GAP_BPS
 
   return {
-    disconnected: requestedAmountDiffers || (sideGap !== undefined && sideGap > DISCONNECT_GAP_BPS),
+    disconnected: requestedAmountDiffers || (sideGap !== undefined && sideGap > WAIT_AND_SAVE_DISCONNECT_GAP_BPS),
     reliable: !requestedAmountDiffers && withinFee,
     entry: {
       reason: quoteReason(params.diff.isSell, requestedAmountDiffers, withinFee),

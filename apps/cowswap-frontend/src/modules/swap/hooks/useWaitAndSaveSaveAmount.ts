@@ -17,7 +17,32 @@ import {
 import { useTradeQuote } from 'modules/tradeQuote'
 import { useUsdAmount } from 'modules/usdAmount'
 
+import { WAIT_AND_SAVE_DISCONNECT_GAP_BPS } from '../consts'
+
 let lastDisconnectLogKey = ''
+
+interface DisplayedGap {
+  currency: WaitAndSaveWaivedFeeRawAmount['currency']
+  off: string
+  on: string
+}
+
+interface LogDisplayedDisconnectParams {
+  comparison: WaitAndSaveComparisonQuote | null
+  currency: WaitAndSaveWaivedFeeRawAmount['currency'] | undefined
+  mainQuote: WaitAndSaveMainQuote
+  rawAmount: bigint | undefined
+  symbol: string | undefined
+  userQuoteWithWaitAndSave: boolean
+}
+
+interface SelectWaivedFeeParams {
+  comparison: WaitAndSaveComparisonQuote | null
+  hasScheduleError: boolean
+  mainQuote: WaitAndSaveMainQuote
+  orderKind: OrderKind | undefined
+  userQuoteWithWaitAndSave: boolean
+}
 
 export function useWaitAndSaveSaveAmount(): string | undefined {
   const userQuoteWithWaitAndSave = useEnableWaitForCow()
@@ -48,41 +73,6 @@ export function useWaitAndSaveSaveAmount(): string | undefined {
   return label
 }
 
-function toCurrencyAmount(
-  token: Currency | null | undefined,
-  rawAmount: bigint | undefined,
-): CurrencyAmount<Currency> | undefined {
-  if (!token || rawAmount === undefined) return undefined
-
-  return CurrencyAmount.fromRawAmount(token, rawAmount.toString())
-}
-
-/** Volume-fee waivers are a fraction of a percent. A wider gap is two different prices. */
-const DISCONNECT_GAP_BPS = 100n
-
-interface DisplayedGap {
-  currency: WaitAndSaveWaivedFeeRawAmount['currency']
-  off: string
-  on: string
-}
-
-interface LogDisplayedDisconnectParams {
-  comparison: WaitAndSaveComparisonQuote | null
-  currency: WaitAndSaveWaivedFeeRawAmount['currency'] | undefined
-  mainQuote: WaitAndSaveMainQuote
-  rawAmount: bigint | undefined
-  symbol: string | undefined
-  userQuoteWithWaitAndSave: boolean
-}
-
-interface SelectWaivedFeeParams {
-  comparison: WaitAndSaveComparisonQuote | null
-  hasScheduleError: boolean
-  mainQuote: WaitAndSaveMainQuote
-  orderKind: OrderKind | undefined
-  userQuoteWithWaitAndSave: boolean
-}
-
 function amountString(value: string | null | undefined): string | undefined {
   if (value == null) return undefined
 
@@ -109,7 +99,7 @@ function isWideGap(onAtoms: bigint | undefined, offAtoms: bigint | undefined, ra
   if (onAtoms === undefined || offAtoms === undefined) return false
 
   const smaller = onAtoms < offAtoms ? onAtoms : offAtoms
-  return smaller > 0n && (rawAmount * 10000n) / smaller > DISCONNECT_GAP_BPS
+  return smaller > 0n && (rawAmount * 10000n) / smaller > WAIT_AND_SAVE_DISCONNECT_GAP_BPS
 }
 
 function logDisplayedDisconnect(params: LogDisplayedDisconnectParams): void {
@@ -190,4 +180,13 @@ function selectWaivedFee(params: SelectWaivedFeeParams): WaitAndSaveWaivedFeeRaw
   if (params.hasScheduleError) return undefined
 
   return getWaitAndSaveWaivedFeeRawAmount(params)
+}
+
+function toCurrencyAmount(
+  token: Currency | null | undefined,
+  rawAmount: bigint | undefined,
+): CurrencyAmount<Currency> | undefined {
+  if (!token || rawAmount === undefined) return undefined
+
+  return CurrencyAmount.fromRawAmount(token, rawAmount.toString())
 }
