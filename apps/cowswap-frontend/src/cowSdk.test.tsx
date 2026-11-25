@@ -2,7 +2,7 @@ import { Provider, createStore } from 'jotai'
 
 import { usePublicClient, useWalletClient } from 'wagmi'
 
-import { OrderQuoteRequest, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { OrderCreation, OrderQuoteRequest, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { render } from '@testing-library/react'
 
@@ -37,6 +37,10 @@ beforeEach(() => {
 
 const quoteRequest = {} as OrderQuoteRequest
 
+function fetchUrl(callIndex: number): string {
+  return String(jest.mocked(globalThis.fetch).mock.calls[callIndex]?.[0])
+}
+
 function rejectedQuoteResponse(): Response {
   return {
     ok: false,
@@ -48,9 +52,10 @@ function rejectedQuoteResponse(): Response {
   } as unknown as Response
 }
 
-describe('orderBookApi.getQuote', () => {
+describe('orderBookApi Linea barn host', () => {
   const previousChainId = orderBookApi.context.chainId
   const previousEnv = orderBookApi.context.env
+  const order = {} as OrderCreation
 
   beforeEach(() => {
     jest.spyOn(globalThis, 'fetch').mockResolvedValue(rejectedQuoteResponse())
@@ -62,22 +67,31 @@ describe('orderBookApi.getQuote', () => {
     jest.restoreAllMocks()
   })
 
-  it('keeps a non-Linea quote on the env-resolved orderbook', async () => {
+  it('keeps a non-Linea quote and order on the env-resolved orderbook', async () => {
     orderBookApi.context.chainId = SupportedChainId.MAINNET
     orderBookApi.context.env = 'prod'
 
     await orderBookApi.getQuote(quoteRequest).catch((err: unknown) => err)
+    await orderBookApi.sendOrder(order).catch((err: unknown) => err)
 
-    expect(String(jest.mocked(globalThis.fetch).mock.calls[0]?.[0])).toBe('https://api.cow.fi/mainnet/api/v1/quote')
+    expect(fetchUrl(0)).toBe('https://api.cow.fi/mainnet/api/v1/quote')
+    expect(fetchUrl(1)).toBe('https://api.cow.fi/mainnet/api/v1/orders')
   })
 
-  it('sends a Linea quote to barn', async () => {
+  it('sends a prod-env Linea order to the same barn host as the quote', async () => {
     orderBookApi.context.chainId = SupportedChainId.LINEA
     orderBookApi.context.env = 'prod'
 
     await orderBookApi.getQuote(quoteRequest).catch((err: unknown) => err)
+    await orderBookApi.sendOrder(order).catch((err: unknown) => err)
+    await orderBookApi.uploadAppData('0xabc', '{}').catch((err: unknown) => err)
+    await orderBookApi.getOrder('0xorder').catch((err: unknown) => err)
 
-    expect(String(jest.mocked(globalThis.fetch).mock.calls[0]?.[0])).toBe('https://barn.api.cow.fi/linea/api/v1/quote')
+    expect(fetchUrl(0)).toBe('https://barn.api.cow.fi/linea/api/v1/quote')
+    expect(fetchUrl(1)).toBe('https://barn.api.cow.fi/linea/api/v1/orders')
+    expect(fetchUrl(2)).toBe('https://barn.api.cow.fi/linea/api/v1/app_data/0xabc')
+    expect(fetchUrl(3)).toBe('https://barn.api.cow.fi/linea/api/v1/orders/0xorder')
+    expect(new URL(fetchUrl(1)).host).toBe(new URL(fetchUrl(0)).host)
   })
 })
 
