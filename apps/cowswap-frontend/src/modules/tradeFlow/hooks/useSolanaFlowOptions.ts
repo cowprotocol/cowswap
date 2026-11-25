@@ -16,21 +16,13 @@ interface Params {
 }
 
 export function useSolanaFlowOptions({ canSponsor = false }: Params = {}): SolanaFlowOptions {
-  const { isSolanaSponsoredOrdersEnabled, isAtaCreationDisabled, isSolanaAppDataEnabled } = useFeatureFlags()
+  const { isSolanaSponsoredOrdersEnabled } = useFeatureFlags()
   const walletAcceptsForeignFeePayer = useWalletAcceptsForeignFeePayer()
 
   return useMemo(
     () => ({
       isSponsored: canSponsor && walletAcceptsForeignFeePayer && Boolean(isSolanaSponsoredOrdersEnabled),
-      isAtaCreationDisabled: Boolean(isAtaCreationDisabled),
-      isSolanaAppDataEnabled: Boolean(isSolanaAppDataEnabled),
     }),
-    [
-      canSponsor,
-      walletAcceptsForeignFeePayer,
-      isSolanaSponsoredOrdersEnabled,
-      isAtaCreationDisabled,
-      isSolanaAppDataEnabled,
-    ],
+    [canSponsor, walletAcceptsForeignFeePayer, isSolanaSponsoredOrdersEnabled],
   )
 }

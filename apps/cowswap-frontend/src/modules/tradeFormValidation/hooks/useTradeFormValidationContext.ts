@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { useIsOnline, useIsSolanaPublicLaunched } from '@cowprotocol/common-hooks'
+import { useIsOnline } from '@cowprotocol/common-hooks'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { Nullish } from '@cowprotocol/cow-sdk'
 import { Currency, Token } from '@cowprotocol/currency'
@@ -112,7 +112,6 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const isRestrictedForCountry = rwaStatus === RwaTokenStatus.Restricted
 
   const solanaNativeShortfall = useSolanaNativeShortfall()
-  const isSolanaPublicLaunched = useIsSolanaPublicLaunched()
 
   return useMemo(() => {
     if (!derivedTradeState) return null
@@ -138,7 +137,6 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
       isProxySetupValid,
       customTokenError,
       isRestrictedForCountry,
-      isSolanaPublicLaunched,
       isBalancesLoading: !hasFirstLoad || isBalancesLoading,
       balancesError,
       injectedWidgetParams,
@@ -169,7 +167,6 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     isProviderNetworkUnsupported,
     isProviderNetworkDeprecated,
     isRestrictedForCountry,
-    isSolanaPublicLaunched,
     isSafeReadonlyUser,
     isSupportedWallet,
     isBalancesLoading,

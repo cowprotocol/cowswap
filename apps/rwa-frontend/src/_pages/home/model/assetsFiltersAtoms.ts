@@ -2,28 +2,35 @@ import { atom } from 'jotai'
 import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 
 import { assetsPageAtom } from './assetsPageAtom'
+import { DEFAULT_ASSETS_FILTERS, NO_PANEL_FILTERS, type PanelFilters } from './assetsPageQuery'
 
 import { type AssetsFilters, parseAssetsFilters } from '../lib/parseAssetsFilters'
 
 import { trackEvent } from '@/shared/lib/analytics'
 import { debouncedTextAtoms } from '@/shared/lib/debounced-text'
 
+export { NO_PANEL_FILTERS, type PanelFilters }
+
 const FILTER_DEBOUNCE_MS = 300
 
-export type PanelFilters = Pick<AssetsFilters, 'issuers' | 'chainIds' | 'minMarketCap' | 'minVolume24h'>
-
-export const NO_PANEL_FILTERS: PanelFilters = { issuers: [], chainIds: [], minMarketCap: null, minVolume24h: null }
+const ASSETS_FILTERS_STORAGE_KEY = 'rwaAssetsFilters:v1'
 
 const jsonStorage = createJSONStorage<AssetsFilters>()
 
+const filtersStorage: typeof jsonStorage = {
+  ...jsonStorage,
+  getItem: (key, initialValue) => parseAssetsFilters(jsonStorage.getItem(key, initialValue), initialValue),
+}
+
 export const assetsFiltersAtom = atomWithStorage<AssetsFilters>(
-  'rwaAssetsFilters:v1',
-  { type: null, ...NO_PANEL_FILTERS, watchlistOnly: false },
-  {
-    ...jsonStorage,
-    getItem: (key, initialValue) => parseAssetsFilters(jsonStorage.getItem(key, initialValue), initialValue),
-  },
+  ASSETS_FILTERS_STORAGE_KEY,
+  DEFAULT_ASSETS_FILTERS,
+  filtersStorage,
 )
+
+export function readStoredAssetsFilters(): AssetsFilters {
+  return filtersStorage.getItem(ASSETS_FILTERS_STORAGE_KEY, DEFAULT_ASSETS_FILTERS)
+}
 
 /** Filters of the panel that are set, one per kind */
 export const activePanelFiltersCountAtom = atom((get) => {

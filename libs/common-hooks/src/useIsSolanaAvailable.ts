@@ -1,11 +1,9 @@
-import { useFeatureFlags } from './useFeatureFlags'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 
 /**
- * Whether Solana's wallet connector, chain and quotes are loaded. Ignores the user's alpha networks opt-in,
- * which only decides whether Solana is listed, so direct Solana links keep working without it.
+ * Whether Solana's wallet connector, chain and quotes are loaded. Solana is not supported in the
+ * widget yet (e.g. partner fees), which is the only place it stays off.
  */
 export function useIsSolanaAvailable(): boolean {
-  const { isSolanaEnabled, isAlphaNetworksOptionVisible, isSolanaPublicLaunched } = useFeatureFlags()
-
-  return !!isSolanaEnabled || !!isAlphaNetworksOptionVisible || !!isSolanaPublicLaunched
+  return !isInjectedWidget()
 }

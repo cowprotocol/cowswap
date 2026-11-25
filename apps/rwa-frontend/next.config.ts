@@ -1,3 +1,5 @@
+import { withSentryConfig } from '@sentry/nextjs/config'
+
 import path from 'node:path'
 
 import { BASE_PATH } from './src/shared/config/basePath'
@@ -44,6 +46,7 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_APP_VERSION: appVersion,
     NEXT_PUBLIC_SWAP_PREVIEW_URL: swapPreviewUrl ?? '',
+    NEXT_PUBLIC_SENTRY_ENVIRONMENT: process.env.VERCEL_ENV ?? 'development',
   },
   agentRules: false,
   outputFileTracingRoot: workspaceRoot,
@@ -53,4 +56,12 @@ const nextConfig: NextConfig = {
   },
 }
 
-export default nextConfig
+export default withSentryConfig(nextConfig, {
+  org: process.env.SENTRY_ORG || 'cowprotocol',
+  project: process.env.SENTRY_PROJECT || 'rwa',
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+  release: { name: appVersion },
+  sourcemaps: { disable: !process.env.SENTRY_AUTH_TOKEN, deleteSourcemapsAfterUpload: true },
+  silent: !process.env.CI,
+  telemetry: false,
+})

@@ -52,6 +52,7 @@ export function AffectedPermitOrderWithActions({ order }: AffectedPermitOrderPro
           openReceipt={() => orderActions?.selectReceiptOrder(parsedOrder)}
           activityUrl={activityUrl}
           showCancellationModal={() => cancelOrder?.()}
+          reclaimRent={null}
           alternativeOrderModalContext={null}
         ></OrderContextMenu>
       </styledEl.OrderActionsWrapper>

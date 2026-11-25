@@ -10,11 +10,6 @@ import { useSwitchNetwork } from './useSwitchNetwork'
 import { useSolanaAccount } from '../../api/hooks/useSolanaAccount'
 import { reownAppKit } from '../config'
 
-jest.mock('@cowprotocol/common-const', () => ({
-  ...jest.requireActual('@cowprotocol/common-const'),
-  IS_SOLANA_ENABLED: true,
-}))
-
 jest.mock('@reown/appkit/networks', () => ({
   solana: { id: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', chainNamespace: 'solana' },
 }))

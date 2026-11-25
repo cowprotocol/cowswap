@@ -155,6 +155,32 @@ describe('createSolanaRpcFetch', () => {
       expect(fetchFn).toHaveBeenCalledTimes(1)
     })
 
+    it('reports a send whose fallback never settles', async () => {
+      const sendInit: RequestInit = { method: 'POST', body: '{"method":"sendTransaction","params":["tx"]}' }
+      const fetchFn = jest.fn((url: RequestInfo | URL, init?: RequestInit) =>
+        url === PRIMARY_URL ? Promise.resolve(response(503)) : hangingUntilAborted(init),
+      )
+      const rpcFetch = createSolanaRpcFetch({ primaryUrl: PRIMARY_URL, fallbackUrl: FALLBACK_URL, fetchFn })
+
+      rpcFetch(PRIMARY_URL, sendInit).catch(() => undefined)
+      await jest.advanceTimersByTimeAsync(30_000)
+
+      expect(captureErrorMock.mock.calls[0][3]).toMatchObject({ recovered: 'false' })
+      expect(captureErrorMock.mock.calls[0][4]).toEqual(['SolanaRpc', 'SolanaRpcError', 'unresolved'])
+    })
+
+    it('does not report a send as unresolved once the fallback answers', async () => {
+      const sendInit: RequestInit = { method: 'POST', body: '{"method":"sendTransaction","params":["tx"]}' }
+      const fetchFn = jest.fn((url: RequestInfo | URL) => Promise.resolve(response(url === PRIMARY_URL ? 503 : 200)))
+      const rpcFetch = createSolanaRpcFetch({ primaryUrl: PRIMARY_URL, fallbackUrl: FALLBACK_URL, fetchFn })
+
+      await rpcFetch(PRIMARY_URL, sendInit)
+      await jest.advanceTimersByTimeAsync(60_000)
+
+      expect(captureErrorMock).toHaveBeenCalledTimes(1)
+      expect(captureErrorMock.mock.calls[0][4]).toEqual(['SolanaRpc', 'SolanaRpcError', 'recovered'])
+    })
+
     it('does not time out sendTransaction on the fallback', async () => {
       const sendInit: RequestInit = { method: 'POST', body: '{"method":"sendTransaction","params":["tx"]}' }
       let resolveFallback: (value: Response) => void = () => undefined
@@ -233,6 +259,79 @@ describe('createSolanaRpcFetch', () => {
     now = 60_000
     await rpcFetch(PRIMARY_URL, INIT)
     expect(captureErrorMock).toHaveBeenCalledTimes(2)
+  })
+
+  it('tags a primary failure the fallback covered as recovered', async () => {
+    const fetchFn = jest.fn((url: RequestInfo | URL) => Promise.resolve(response(url === PRIMARY_URL ? 503 : 200)))
+    const rpcFetch = createSolanaRpcFetch({ primaryUrl: PRIMARY_URL, fallbackUrl: FALLBACK_URL, fetchFn })
+
+    await rpcFetch(PRIMARY_URL, INIT)
+
+    expect(captureErrorMock.mock.calls[0][3]).toMatchObject({ recovered: 'true' })
+    expect(captureErrorMock.mock.calls[0][4]).toEqual(['SolanaRpc', 'SolanaRpcError', 'recovered'])
+  })
+
+  it('does not tag a request as recovered when the fallback also refuses it', async () => {
+    const fetchFn = jest.fn().mockResolvedValue(response(429))
+    const rpcFetch = createSolanaRpcFetch({ primaryUrl: PRIMARY_URL, fallbackUrl: FALLBACK_URL, fetchFn })
+
+    expect((await rpcFetch(PRIMARY_URL, INIT)).status).toBe(429)
+
+    expect(captureErrorMock.mock.calls[0][2]).toMatchObject({
+      fallbackMessage: 'Solana RPC fallback responded with HTTP 429',
+    })
+    expect(captureErrorMock.mock.calls[0][3]).toMatchObject({ recovered: 'false' })
+    expect(captureErrorMock.mock.calls[0][4]).toEqual(['SolanaRpc', 'SolanaRpcRateLimitError', 'failed'])
+  })
+
+  it('reports the fallback failure when neither endpoint serves the request', async () => {
+    const fetchFn = jest
+      .fn()
+      .mockResolvedValueOnce(response(503))
+      .mockRejectedValueOnce(new TypeError('Failed to fetch'))
+    const rpcFetch = createSolanaRpcFetch({ primaryUrl: PRIMARY_URL, fallbackUrl: FALLBACK_URL, fetchFn })
+
+    await expect(rpcFetch(PRIMARY_URL, INIT)).rejects.toThrow('Failed to fetch')
+
+    expect(captureErrorMock.mock.calls[0][2]).toMatchObject({ fallbackMessage: 'Failed to fetch' })
+    expect(captureErrorMock.mock.calls[0][3]).toMatchObject({ recovered: 'false' })
+    expect(captureErrorMock.mock.calls[0][4]).toEqual(['SolanaRpc', 'SolanaRpcError', 'failed'])
+  })
+
+  it('does not let a recovered report throttle one that failed outright', async () => {
+    const fetchFn = jest
+      .fn()
+      .mockResolvedValueOnce(response(503))
+      .mockResolvedValueOnce(response(200))
+      .mockResolvedValueOnce(response(503))
+      .mockRejectedValueOnce(new TypeError('Failed to fetch'))
+    const rpcFetch = createSolanaRpcFetch({
+      primaryUrl: PRIMARY_URL,
+      fallbackUrl: FALLBACK_URL,
+      fetchFn,
+      now: () => 0,
+    })
+
+    await rpcFetch(PRIMARY_URL, INIT)
+    await expect(rpcFetch(PRIMARY_URL, INIT)).rejects.toThrow('Failed to fetch')
+
+    expect(captureErrorMock).toHaveBeenCalledTimes(2)
+    expect(captureErrorMock.mock.calls[1][3]).toMatchObject({ recovered: 'false' })
+  })
+
+  it('does not report when the caller aborts while the fallback is in flight', async () => {
+    const controller = new AbortController()
+    const fetchFn = jest.fn((url: RequestInfo | URL) => {
+      if (url === PRIMARY_URL) return Promise.resolve(response(503))
+
+      controller.abort()
+
+      return Promise.reject(new Error('aborted'))
+    })
+    const rpcFetch = createSolanaRpcFetch({ primaryUrl: PRIMARY_URL, fallbackUrl: FALLBACK_URL, fetchFn })
+
+    await expect(rpcFetch(PRIMARY_URL, { ...INIT, signal: controller.signal })).rejects.toThrow()
+    expect(captureErrorMock).not.toHaveBeenCalled()
   })
 
   it('passes through requests to other URLs and when primary equals fallback', async () => {

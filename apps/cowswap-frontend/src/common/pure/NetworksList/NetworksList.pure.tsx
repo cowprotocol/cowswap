@@ -6,15 +6,13 @@ import { Badge, BadgeTypes } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 
-import { ChainStatusBadgeContainer } from 'common/containers/ChainStatusBadge/ChainStatusBadge.container'
+import { ChainStatusBadge } from 'common/pure/ChainStatusBadge/ChainStatusBadge.pure'
 
 import { ActiveRowLinks } from './ActiveRowLinks/ActiveRowLinks.pure'
 import * as styledEl from './NetworksList.styled'
 import { getLogo } from './NetworksList.utils'
 
 import { useDeprecatedChains } from '../../hooks/useDeprecatedChains'
-
-const NEW_NETWORK_IDS: Set<TargetChainId> = new Set([SupportedChainId.ROBINHOOD])
 
 export interface NetworksListProps {
   currentChainId: SupportedChainId | null
@@ -39,7 +37,6 @@ export function NetworksList({
 
         const isActive = targetChainId === currentChainId
         const logoUrl = getLogo(isDarkMode, isActive, logo.dark, logo.light)
-        const isNewNetwork = NEW_NETWORK_IDS.has(targetChainId)
         const isDeprecatedNetwork = deprecatedChains.has(targetChainId)
 
         const rowContent = (
@@ -61,17 +58,8 @@ export function NetworksList({
               </Badge>
             )}
 
-            {isNewNetwork && !isDeprecatedNetwork && (
-              <Badge type={BadgeTypes.ALERT2} style={isActive ? { marginRight: '10px' } : undefined}>
-                <Trans>NEW</Trans>
-              </Badge>
-            )}
-
             {!isDeprecatedNetwork && (
-              <ChainStatusBadgeContainer
-                chainId={targetChainId}
-                style={isActive ? { marginRight: '10px' } : undefined}
-              />
+              <ChainStatusBadge chainId={targetChainId} style={isActive ? { marginRight: '10px' } : undefined} />
             )}
 
             {isActive && <styledEl.FlyoutRowActiveIndicator $active />}

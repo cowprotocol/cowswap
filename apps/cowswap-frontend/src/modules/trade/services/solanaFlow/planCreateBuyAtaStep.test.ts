@@ -128,20 +128,9 @@ describe('getIsBuyAtaCreationSkipped', () => {
     const isSkipped = getIsBuyAtaCreationSkipped({
       quote: quoteForOwner(PAYER),
       owner: PAYER,
-      isAtaCreationDisabled: true,
     })
 
     expect(isSkipped).toBe(true)
-  })
-
-  it('keeps the creation while the flag is off', () => {
-    const isSkipped = getIsBuyAtaCreationSkipped({
-      quote: quoteForOwner(PAYER),
-      owner: PAYER,
-      isAtaCreationDisabled: false,
-    })
-
-    expect(isSkipped).toBe(false)
   })
 
   // A self-paid order never reaches placement, so it names no receiver and the driver knows only the
@@ -150,7 +139,6 @@ describe('getIsBuyAtaCreationSkipped', () => {
     const isSkipped = getIsBuyAtaCreationSkipped({
       quote: quoteForOwner(RECEIVER),
       owner: PAYER,
-      isAtaCreationDisabled: true,
     })
 
     expect(isSkipped).toBe(false)
@@ -161,7 +149,6 @@ describe('getIsBuyAtaCreationSkipped', () => {
       quote: quoteForOwner(RECEIVER),
       owner: PAYER,
       receiver: RECEIVER,
-      isAtaCreationDisabled: true,
     })
 
     expect(isSkipped).toBe(true)
@@ -174,7 +161,6 @@ describe('getIsBuyAtaCreationSkipped', () => {
       quote: quoteForOwner(RECEIVER),
       owner: PAYER,
       receiver: PAYER,
-      isAtaCreationDisabled: true,
     })
 
     expect(isSkipped).toBe(false)
@@ -184,7 +170,6 @@ describe('getIsBuyAtaCreationSkipped', () => {
     const isSkipped = getIsBuyAtaCreationSkipped({
       quote: { ...quoteForOwner(PAYER, TOKEN_2022_PROGRAM_ID), buyTokenProgramId: TOKEN_PROGRAM_ID } as PlanQuote,
       owner: PAYER,
-      isAtaCreationDisabled: true,
     })
 
     expect(isSkipped).toBe(false)

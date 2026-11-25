@@ -155,8 +155,26 @@
 }
 
 .copyright {
+  display: flex;
+  align-items: center;
+  gap: 16px;
   margin: 0;
   white-space: nowrap;
+}
+
+.cookieSettings {
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.cookieSettings:hover,
+.cookieSettings:focus-visible {
+  color: var(--footer-title);
 }
 
 .products {

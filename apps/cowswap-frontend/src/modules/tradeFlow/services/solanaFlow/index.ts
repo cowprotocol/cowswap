@@ -51,7 +51,6 @@ import {
 import { assertSignedAppData } from './assertSignedAppData'
 import { getSolanaErrorLogs } from './getSolanaErrorLogs'
 import { isSquadsSetupError } from './isSquadsSetupError'
-import { LEGACY_SOLANA_LIMIT_APP_DATA_HASH, LEGACY_SOLANA_SWAP_APP_DATA } from './legacySolanaAppData'
 import { isSolanaOrderSubmitted, reportSolanaOrderError, SolanaOrderPhase } from './reportSolanaOrderError'
 
 import { SolanaTradeFlowContext } from '../../types/TradeFlowContext'
@@ -67,17 +66,13 @@ let hasFailedAttempt = false
 
 export interface SolanaFlowOptions {
   isSponsored?: boolean
-  /** LaunchDarkly `isAtaCreationDisabled`: the driver creates the buy token account at settle instead. */
-  isAtaCreationDisabled?: boolean
-  /** LaunchDarkly `isSolanaAppDataEnabled`: off until the order book serves appData for Solana. */
-  isSolanaAppDataEnabled?: boolean
 }
 
 // eslint-disable-next-line max-lines-per-function,complexity
 export async function solanaFlow(
   input: SolanaTradeFlowContext,
   analytics: TradeFlowAnalytics,
-  { isSponsored = false, isAtaCreationDisabled = false, isSolanaAppDataEnabled = false }: SolanaFlowOptions = {},
+  { isSponsored = false }: SolanaFlowOptions = {},
 ): Promise<boolean | void> {
   const {
     tradeConfirmActions,
@@ -186,7 +181,7 @@ export async function solanaFlow(
           // delegate step nor the buy-ATA creation below agrees with.
           sellTokenProgramId: getSolanaTokenProgramId(sellToken),
           buyTokenProgramId,
-          appDataHash: isSolanaAppDataEnabled ? appData.appDataKeccak256 : LEGACY_SOLANA_LIMIT_APP_DATA_HASH,
+          appDataHash: appData.appDataKeccak256,
           sellSymbol,
           buySymbol,
         })
@@ -197,14 +192,10 @@ export async function solanaFlow(
           buySymbol,
           validTo,
           sponsor,
-          appDataDoc: isSolanaAppDataEnabled ? appData.doc : LEGACY_SOLANA_SWAP_APP_DATA,
+          appDataDoc: appData.doc,
         })
 
-    const fullAppData = !isSolanaAppDataEnabled
-      ? undefined
-      : orderClass === OrderClass.LIMIT
-        ? appData.fullAppData
-        : signedFullAppData
+    const fullAppData = orderClass === OrderClass.LIMIT ? appData.fullAppData : signedFullAppData
 
     if (fullAppData !== undefined) {
       assertSignedAppData(signedAppData, fullAppData)
@@ -244,12 +235,7 @@ export async function solanaFlow(
         receiver: buyAtaReceiver,
         quote: buyAtaQuote,
         buySymbol,
-        isCreationSkipped: getIsBuyAtaCreationSkipped({
-          quote: buyAtaQuote,
-          owner,
-          receiver: namedReceiver,
-          isAtaCreationDisabled,
-        }),
+        isCreationSkipped: getIsBuyAtaCreationSkipped({ quote: buyAtaQuote, owner, receiver: namedReceiver }),
       }),
       createOrderStep,
     ].filter((step): step is SolanaFlowStep => step !== null)

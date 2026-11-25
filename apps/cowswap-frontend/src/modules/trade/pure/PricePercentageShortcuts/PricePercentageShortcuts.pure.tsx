@@ -11,17 +11,19 @@ export interface PricePercentageShortcutsProps {
   disabled: boolean
   selectedPreset?: string
   onSelect: (percentage: string | null) => void
+  getClickEvent?: (percentage: string | null) => string
   customInput?: {
     value: string
     selected: boolean
     invalid: boolean
     focus?: boolean
     onChange: (percentage: string) => void
+    onBlur?: () => void
   }
 }
 
 export function PricePercentageShortcuts(props: PricePercentageShortcutsProps): ReactNode {
-  const { isInverted, disabled, selectedPreset, onSelect, customInput } = props
+  const { isInverted, disabled, selectedPreset, onSelect, getClickEvent, customInput } = props
 
   const customField = useRef<HTMLDivElement>(null)
   const didFocusCustom = useRef(false)
@@ -59,8 +61,9 @@ export function PricePercentageShortcuts(props: PricePercentageShortcutsProps): 
           key={percentage}
           type="button"
           disabled={disabled}
-          aria-pressed={!disabled && selectedPreset === percentage}
+          aria-pressed={selectedPreset === percentage}
           title={isInverted ? t`${percentage}% below market` : t`${percentage}% above market`}
+          data-click-event={getClickEvent?.(percentage)}
           onClick={() => onSelect(percentage)}
         >
           {isInverted ? '-' : '+'}
@@ -68,16 +71,13 @@ export function PricePercentageShortcuts(props: PricePercentageShortcutsProps): 
         </styledEl.Shortcut>
       ))}
       {customInput ? (
-        <styledEl.CustomPercentage
-          ref={customField}
-          $selected={!disabled && customInput.selected}
-          $invalid={customInput.invalid}
-        >
+        <styledEl.CustomPercentage ref={customField} $selected={customInput.selected} $invalid={customInput.invalid}>
           <styledEl.CustomInput
             value={customInput.value}
             onUserInput={(value) => {
               if (isValidPercentageInput(value)) customInput.onChange(value)
             }}
+            onBlur={customInput.onBlur}
             disabled={disabled}
             autoFocus={focusCustom && !disabled}
             placeholder={t`Custom %`}
@@ -87,7 +87,12 @@ export function PricePercentageShortcuts(props: PricePercentageShortcutsProps): 
           {customInput.value && <span aria-hidden="true">%</span>}
         </styledEl.CustomPercentage>
       ) : (
-        <styledEl.Shortcut type="button" disabled={disabled} onClick={() => onSelect(null)}>
+        <styledEl.Shortcut
+          type="button"
+          disabled={disabled}
+          data-click-event={getClickEvent?.(null)}
+          onClick={() => onSelect(null)}
+        >
           {t`Custom %`}
         </styledEl.Shortcut>
       )}

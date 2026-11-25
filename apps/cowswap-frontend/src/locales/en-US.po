@@ -15,6 +15,7 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/common/hooks/useCancelMultipleOrders.ts
 #: apps/cowswap-frontend/src/common/hooks/useCancelOrder/useSolanaCancelMultipleOrders.ts
+#: apps/cowswap-frontend/src/modules/ordersTable/hooks/useSolanaReclaimRent.ts
 #: apps/cowswap-frontend/src/modules/twap/hooks/useCancelTwapOrder.ts
 msgid "Wallet not connected"
 msgstr "Wallet not connected"
@@ -309,6 +310,10 @@ msgstr "Total earned"
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 #~ msgid "day"
 #~ msgstr "day"
+
+#: apps/cowswap-frontend/src/common/containers/CookieConsentBanner/CookieConsentBanner.container.tsx
+msgid "Accept All"
+msgstr "Accept All"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 #~ msgid "For instance, your order consists of <0>{parts, plural, one {# part} few {# parts} many {# parts} other {# parts}}</0> placed every <1>{partDurationDisplay}</1>, the total time to complete the order is <2>{totalDurationDisplay}</2>. Each limit order remains open for <3>{partDurationDisplay}</3> until the next part becomes active."
@@ -1294,7 +1299,6 @@ msgid "Language {locale} not found"
 msgstr "Language {locale} not found"
 
 #: apps/cowswap-frontend/src/common/pure/ExternalSourceAlert/index.tsx
-#: apps/cowswap-frontend/src/modules/solanaAlpha/pure/SolanaAlphaRiskModal/index.tsx
 msgid "I understand"
 msgstr "I understand"
 
@@ -1453,8 +1457,8 @@ msgstr "Sit tight! We're getting your order ready"
 #~ msgstr "Cancelling order with id {shortId}:<0/><1>{summary}</1>"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
-msgid "Trade limit exceeded"
-msgstr "Trade limit exceeded"
+#~ msgid "Trade limit exceeded"
+#~ msgstr "Trade limit exceeded"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/TxCostRow/index.tsx
 msgid "You need no SOL of your own to place this order."
@@ -1501,8 +1505,8 @@ msgid "Delegate (v)COW"
 msgstr "Delegate (v)COW"
 
 #: apps/cowswap-frontend/src/modules/solanaAlpha/containers/SolanaAlphaBanner/index.tsx
-msgid "This deployment has not been independently audited. Bugs, vulnerabilities or unexpected behaviour could cause failed transactions or partial or total loss of assets."
-msgstr "This deployment has not been independently audited. Bugs, vulnerabilities or unexpected behaviour could cause failed transactions or partial or total loss of assets."
+#~ msgid "This deployment has not been independently audited. Bugs, vulnerabilities or unexpected behaviour could cause failed transactions or partial or total loss of assets."
+#~ msgstr "This deployment has not been independently audited. Bugs, vulnerabilities or unexpected behaviour could cause failed transactions or partial or total loss of assets."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/SolverAuctionResult/SolverAuctionResult.pure.tsx
 msgid "Show less"
@@ -1804,6 +1808,10 @@ msgstr "Something went wrong. But don't worry! <0>CoW Swap solvers</0> are searc
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Content/NoOrders/OrdersTableNoOrdersContent.utils.tsx
 msgid "your orders"
 msgstr "your orders"
+
+#: apps/cowswap-frontend/src/common/containers/CookieConsentBanner/CookieConsentBanner.container.tsx
+msgid "Reject All"
+msgstr "Reject All"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/LpTokenPage/index.tsx
 msgid "Symbol"
@@ -2112,6 +2120,10 @@ msgstr "Create Order"
 msgid "Want to try out limit orders?"
 msgstr "Want to try out limit orders?"
 
+#: apps/cowswap-frontend/src/common/containers/CookieConsentBanner/CookieConsentBanner.container.tsx
+msgid "Cookies? Your mooove."
+msgstr "Cookies? Your mooove."
+
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappDetails/index.tsx
 msgid "smart contracts (e.g. Safe)"
 msgstr "smart contracts (e.g. Safe)"
@@ -2133,8 +2145,8 @@ msgstr "Quote refresh in"
 #~ msgstr "⌄ hide tools"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
-msgid "Price impact unknown"
-msgstr "Price impact unknown"
+#~ msgid "Price impact unknown"
+#~ msgstr "Price impact unknown"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/UnsupportedWalletWarning.tsx
 msgid "Want TWAP with this wallet? Let us know"
@@ -2212,8 +2224,8 @@ msgstr "No results found"
 #~ msgstr "accepted. Too many order placements"
 
 #: apps/cowswap-frontend/src/modules/solanaAlpha/pure/SolanaAlphaRiskModal/index.tsx
-msgid "Maximum trade size: ${SOLANA_ALPHA_MAX_TRADE_SIZE_USD_DISPLAY} per order."
-msgstr "Maximum trade size: ${SOLANA_ALPHA_MAX_TRADE_SIZE_USD_DISPLAY} per order."
+#~ msgid "Maximum trade size: ${SOLANA_ALPHA_MAX_TRADE_SIZE_USD_DISPLAY} per order."
+#~ msgstr "Maximum trade size: ${SOLANA_ALPHA_MAX_TRADE_SIZE_USD_DISPLAY} per order."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
@@ -2404,6 +2416,10 @@ msgstr "A minimum of <0>{time}</0> between parts is required. Decrease the numbe
 msgid "Remove list"
 msgstr "Remove list"
 
+#: apps/cowswap-frontend/src/common/containers/CookieConsentBanner/CookieConsentBanner.container.tsx
+#~ msgid "Accept All Cookies"
+#~ msgstr "Accept All Cookies"
+
 #: apps/cowswap-frontend/src/common/pure/NetworksList/ActiveRowLinks/ActiveRowLinks.pure.tsx
 msgid "Help Center"
 msgstr "Help Center"
@@ -2461,7 +2477,6 @@ msgid "Checking code..."
 msgstr "Checking code..."
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderModalIneligible.tsx
-#: apps/cowswap-frontend/src/modules/solanaAlpha/pure/SolanaAlphaRiskModal/index.tsx
 msgid "Go back"
 msgstr "Go back"
 
@@ -3420,6 +3435,10 @@ msgstr "Order validity is too long"
 msgid "so we can investigate the problem."
 msgstr "so we can investigate the problem."
 
+#: apps/cowswap-frontend/src/common/containers/CookieConsentBanner/CookieConsentBanner.container.tsx
+msgid "Cookie policy"
+msgstr "Cookie policy"
+
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/index.tsx
 msgid "(via WalletConnect)"
 msgstr "(via WalletConnect)"
@@ -3574,8 +3593,8 @@ msgid "This fee helps pay for maintenance & improvements to the trade experience
 msgstr "This fee helps pay for maintenance & improvements to the trade experience.<0/><1/>The fee is {partnerFeeBps} BPS ({feeAsPercent}%), applied only if the trade is executed."
 
 #: apps/cowswap-frontend/src/modules/solanaAlpha/containers/SolanaAlphaBanner/index.tsx
-msgid "Maximum trade size: <0>${SOLANA_ALPHA_MAX_TRADE_SIZE_USD_DISPLAY}</0> per order."
-msgstr "Maximum trade size: <0>${SOLANA_ALPHA_MAX_TRADE_SIZE_USD_DISPLAY}</0> per order."
+#~ msgid "Maximum trade size: <0>${SOLANA_ALPHA_MAX_TRADE_SIZE_USD_DISPLAY}</0> per order."
+#~ msgstr "Maximum trade size: <0>${SOLANA_ALPHA_MAX_TRADE_SIZE_USD_DISPLAY}</0> per order."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 #~ msgid "Share this"
@@ -3584,6 +3603,10 @@ msgstr "Maximum trade size: <0>${SOLANA_ALPHA_MAX_TRADE_SIZE_USD_DISPLAY}</0> pe
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/TradeButtons/index.tsx
 msgid "Review limit order"
 msgstr "Review limit order"
+
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/ContextMenu/OrderContextMenu.pure.tsx
+msgid "Reclaim rent"
+msgstr "Reclaim rent"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
 msgid "Trade Smart, Save More!"
@@ -3640,6 +3663,10 @@ msgstr "Approve {symbol} (unlimited)"
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/EthFlowModalTopContent.tsx
 msgid "At current gas prices, your remaining {nativeSymbol} balance after confirmation may be only sufficient for<0>up to {txsRemaining} wrapping, unwrapping, or approval operation(s).</0>"
 msgstr "At current gas prices, your remaining {nativeSymbol} balance after confirmation may be only sufficient for<0>up to {txsRemaining} wrapping, unwrapping, or approval operation(s).</0>"
+
+#: apps/cowswap-frontend/src/modules/ordersTable/hooks/useSolanaReclaimRent.ts
+msgid "There is no rent left to reclaim"
+msgstr "There is no rent left to reclaim"
 
 #: apps/cowswap-frontend/src/legacy/components/Badge/RangeBadge.tsx
 msgid "The price of this pool is outside of your selected range. Your position is not currently earning fees."
@@ -4271,8 +4298,8 @@ msgstr "How the auction works"
 #~ msgstr "No failed orders found"
 
 #: apps/cowswap-frontend/src/pages/graffiti/StartOverlay.pure.tsx
-msgid "🐮 At Solana Breakpoint? Find us at the CoW Protocol booth and ask for the {TOKEN_SYMBOL} airdrop."
-msgstr "🐮 At Solana Breakpoint? Find us at the CoW Protocol booth and ask for the {TOKEN_SYMBOL} airdrop."
+#~ msgid "🐮 At Solana Breakpoint? Find us at the CoW Protocol booth and ask for the {TOKEN_SYMBOL} airdrop."
+#~ msgstr "🐮 At Solana Breakpoint? Find us at the CoW Protocol booth and ask for the {TOKEN_SYMBOL} airdrop."
 
 #: apps/cowswap-frontend/src/modules/application/containers/AppMenu/index.tsx
 msgid "Enable Alpha Networks"
@@ -4508,8 +4535,8 @@ msgstr "on-chain"
 #~ msgstr "Updates every 6 hours"
 
 #: apps/cowswap-frontend/src/modules/solanaAlpha/pure/SolanaAlphaRiskModal/index.tsx
-msgid "This is an Alpha version of CoW Swap on Solana. This deployment has not yet been independently audited and may contain bugs, vulnerabilities or unexpected behaviour that could result in failed transactions or partial or total loss of assets."
-msgstr "This is an Alpha version of CoW Swap on Solana. This deployment has not yet been independently audited and may contain bugs, vulnerabilities or unexpected behaviour that could result in failed transactions or partial or total loss of assets."
+#~ msgid "This is an Alpha version of CoW Swap on Solana. This deployment has not yet been independently audited and may contain bugs, vulnerabilities or unexpected behaviour that could result in failed transactions or partial or total loss of assets."
+#~ msgstr "This is an Alpha version of CoW Swap on Solana. This deployment has not yet been independently audited and may contain bugs, vulnerabilities or unexpected behaviour that could result in failed transactions or partial or total loss of assets."
 
 #: apps/cowswap-frontend/src/common/hooks/useCrossChainFamilySwitch.tsx
 #~ msgid "This requires connecting a different wallet, and your current wallet will be disconnected."
@@ -4629,16 +4656,16 @@ msgid "No fee for order placement!"
 msgstr "No fee for order placement!"
 
 #: apps/cowswap-frontend/src/modules/solanaAlpha/containers/SolanaAlphaBanner/index.tsx
-msgid "Solana Alpha · Unaudited"
-msgstr "Solana Alpha · Unaudited"
+#~ msgid "Solana Alpha · Unaudited"
+#~ msgstr "Solana Alpha · Unaudited"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/RecipientRow/index.tsx
 msgid "The tokens received from this order will automatically be sent to this address. No need to do a second transaction!"
 msgstr "The tokens received from this order will automatically be sent to this address. No need to do a second transaction!"
 
 #: apps/cowswap-frontend/src/modules/solanaAlpha/pure/SolanaAlphaRiskModal/index.tsx
-msgid "CoW Swap on Solana is in Alpha"
-msgstr "CoW Swap on Solana is in Alpha"
+#~ msgid "CoW Swap on Solana is in Alpha"
+#~ msgstr "CoW Swap on Solana is in Alpha"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsDropdown/SettingsDropdown.container.tsx
 msgid "Swap Settings"
@@ -5385,6 +5412,10 @@ msgstr "Select a token"
 #~ msgid "Found 1 open order in the {limit} most recent ones."
 #~ msgstr "Found 1 open order in the {limit} most recent ones."
 
+#: apps/cowswap-frontend/src/common/containers/CookieConsentBanner/CookieConsentBanner.container.tsx
+msgid "Cookie consent"
+msgstr "Cookie consent"
+
 #: apps/cowswap-frontend/src/legacy/components/swap/UnsupportedCurrencyFooter/index.tsx
 msgid "Read more about unsupported tokens"
 msgstr "Read more about unsupported tokens"
@@ -5876,6 +5907,10 @@ msgstr "The order remains open. Execution requires sufficient <0><1/></0> balanc
 #~ msgid "Morpho Borrow"
 #~ msgstr "Morpho Borrow"
 
+#: apps/cowswap-frontend/src/modules/ordersTable/hooks/useSolanaReclaimRent.ts
+msgid "The reclaim transaction failed on-chain"
+msgstr "The reclaim transaction failed on-chain"
+
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 #~ msgid "Sign the setup in your wallet. This registers just-in-time funding and creates the TWAP."
 #~ msgstr "Sign the setup in your wallet. This registers just-in-time funding and creates the TWAP."
@@ -6174,8 +6209,8 @@ msgid "Couldn't load balances"
 msgstr "Couldn't load balances"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ImportTokenListItem/index.tsx
-msgid "Not available in your region"
-msgstr "Not available in your region"
+#~ msgid "Not available in your region"
+#~ msgstr "Not available in your region"
 
 #: apps/cowswap-frontend/src/pages/Account/Delegate.tsx
 msgid "Delegate"
@@ -6759,6 +6794,10 @@ msgstr "Set approval"
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/CustomDeadlineDialog/CustomDeadlineDialog.pure.tsx
 msgid "Must be before {maxDateStr} {timeZone}"
 msgstr "Must be before {maxDateStr} {timeZone}"
+
+#: apps/cowswap-frontend/src/pages/graffiti/StartOverlay.pure.tsx
+msgid "🐦 Follow <0>{TWITTER_HANDLE}</0> and send us a love message. We will share some with you."
+msgstr "🐦 Follow <0>{TWITTER_HANDLE}</0> and send us a love message. We will share some with you."
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 #~ msgid "Complete the CAPTCHA"
@@ -7948,8 +7987,8 @@ msgstr "No expired orders found"
 #~ msgstr "Use a referral code to earn a flat fee for<0/>the eligible volume done through the app.<1/>New wallets only."
 
 #: apps/cowswap-frontend/src/modules/solanaAlpha/containers/SolanaAlphaBanner/index.tsx
-msgid "View risks"
-msgstr "View risks"
+#~ msgid "View risks"
+#~ msgstr "View risks"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeWidget/TradeWidgetForm.tsx
 msgid "You cannot edit this field when selling"
@@ -8580,6 +8619,10 @@ msgstr "more than trading alone"
 msgid "Confirm swap"
 msgstr "Confirm swap"
 
+#: apps/cowswap-frontend/src/common/containers/CookieConsentBanner/CookieConsentBanner.container.tsx
+#~ msgid "By clicking “Accept All Cookies”, you agree to the storing of cookies on your device to enhance site navigation, analyze site usage, and assist in our marketing efforts."
+#~ msgstr "By clicking “Accept All Cookies”, you agree to the storing of cookies on your device to enhance site navigation, analyze site usage, and assist in our marketing efforts."
+
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookDappIframeReview.pure.tsx
 msgid "Confirm hook"
 msgstr "Confirm hook"
@@ -9006,6 +9049,10 @@ msgstr "Set approval amount"
 msgid "CoW Fortune of the day"
 msgstr "CoW Fortune of the day"
 
+#: apps/cowswap-frontend/src/common/containers/CookieConsentBanner/CookieConsentBanner.container.tsx
+msgid "You want privacy. We want to know if our ads work. Nothing tracks you until you pick."
+msgstr "You want privacy. We want to know if our ads work. Nothing tracks you until you pick."
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 msgid ""
 "Hey, I just got an extra {surplus} on @CoWSwap! 🐮💸\n"
@@ -9118,7 +9165,6 @@ msgstr "Learn more about <0>{orderType} orders ↗</0>"
 #~ msgstr "Only trade alerts are sent. No marketing messages. Swap and bridge orders aren't supported yet."
 
 #: apps/cowswap-frontend/src/common/pure/ChainStatusBadge/ChainStatusBadge.pure.tsx
-#: apps/cowswap-frontend/src/common/pure/NetworksList/NetworksList.pure.tsx
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "NEW"
 msgstr "NEW"
@@ -9527,8 +9573,8 @@ msgstr "There was an error trying to load claimable tokens"
 #~ "Please try again in a moo-ment! 🐮"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
-msgid "While CoW Swap on Solana is in Alpha and unaudited, trades are limited to ${SOLANA_ALPHA_MAX_TRADE_SIZE_USD_DISPLAY} per order. Reduce the amount to continue."
-msgstr "While CoW Swap on Solana is in Alpha and unaudited, trades are limited to ${SOLANA_ALPHA_MAX_TRADE_SIZE_USD_DISPLAY} per order. Reduce the amount to continue."
+#~ msgid "While CoW Swap on Solana is in Alpha and unaudited, trades are limited to ${SOLANA_ALPHA_MAX_TRADE_SIZE_USD_DISPLAY} per order. Reduce the amount to continue."
+#~ msgstr "While CoW Swap on Solana is in Alpha and unaudited, trades are limited to ${SOLANA_ALPHA_MAX_TRADE_SIZE_USD_DISPLAY} per order. Reduce the amount to continue."
 
 #: apps/cowswap-frontend/src/pages/graffiti/StartOverlay.pure.tsx
 msgid "ON THE WALL 🎉"
@@ -9597,8 +9643,8 @@ msgid "{seconds, plural, one {# second} few {# seconds} many {# seconds} other {
 msgstr "{seconds, plural, one {# second} few {# seconds} many {# seconds} other {# seconds}}"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
-msgid "While CoW Swap on Solana is in Alpha and unaudited, trades without a USD estimate are disabled as a precautionary measure."
-msgstr "While CoW Swap on Solana is in Alpha and unaudited, trades without a USD estimate are disabled as a precautionary measure."
+#~ msgid "While CoW Swap on Solana is in Alpha and unaudited, trades without a USD estimate are disabled as a precautionary measure."
+#~ msgstr "While CoW Swap on Solana is in Alpha and unaudited, trades without a USD estimate are disabled as a precautionary measure."
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 #~ msgid "Approve and swap"
@@ -9869,6 +9915,10 @@ msgstr "Your order will execute when the market price is {displayedPercent}% bet
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/WidgetPageTitle/WidgetPageTitle.container.tsx
 msgid "Recover funds"
 msgstr "Recover funds"
+
+#: apps/cowswap-frontend/src/modules/ordersTable/hooks/useSolanaReclaimRent.ts
+msgid "Reclaim rent of cancelled orders"
+msgstr "Reclaim rent of cancelled orders"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerCodeInfo.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
@@ -10342,8 +10392,8 @@ msgstr "Total referrals"
 
 #: apps/cowswap-frontend/src/common/pure/ChainStatusBadge/ChainStatusBadge.pure.tsx
 #: apps/cowswap-frontend/src/modules/solanaAlpha/pure/SolanaAlphaRiskModal/index.tsx
-msgid "ALPHA"
-msgstr "ALPHA"
+#~ msgid "ALPHA"
+#~ msgstr "ALPHA"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/common.tsx
 msgid "Loading {accountProxyLabel}"
@@ -10433,8 +10483,8 @@ msgid "Simulate"
 msgstr "Simulate"
 
 #: apps/cowswap-frontend/src/pages/graffiti/StartOverlay.pure.tsx
-msgid "🐦 Not at Breakpoint? Follow <0>{TWITTER_HANDLE}</0> and send us a love message. We will share some with you."
-msgstr "🐦 Not at Breakpoint? Follow <0>{TWITTER_HANDLE}</0> and send us a love message. We will share some with you."
+#~ msgid "🐦 Not at Breakpoint? Follow <0>{TWITTER_HANDLE}</0> and send us a love message. We will share some with you."
+#~ msgstr "🐦 Not at Breakpoint? Follow <0>{TWITTER_HANDLE}</0> and send us a love message. We will share some with you."
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Start time"
@@ -10842,13 +10892,13 @@ msgstr "High"
 msgid "Refund started"
 msgstr "Refund started"
 
+#: apps/cowswap-frontend/src/common/containers/CookieConsentBanner/CookieConsentBanner.container.tsx
 #: apps/cowswap-frontend/src/common/pure/OrderSubmittedContent/TrackOrderBanner.pure.tsx
 #: apps/cowswap-frontend/src/common/pure/ToggleArrow/ToggleArrow.tsx
 #: apps/cowswap-frontend/src/modules/application/containers/NetworkSelector/NetworkSelector.container.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx
 #: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartTooltip.tsx
-#: apps/cowswap-frontend/src/modules/solanaAlpha/pure/SolanaAlphaRiskModal/index.tsx
 #: libs/ui/src/pure/IconButton/close/CloseIconButton.pure.tsx
 msgid "Close"
 msgstr "Close"
@@ -10972,6 +11022,10 @@ msgstr "Order Filled"
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/CustomDappLoader/index.tsx
 msgid "Invalid content type: Expected JSON but received {errorContentType}. Make sure the URL points to a valid manifest file."
 msgstr "Invalid content type: Expected JSON but received {errorContentType}. Make sure the URL points to a valid manifest file."
+
+#: apps/cowswap-frontend/src/common/containers/CookieConsentBanner/CookieConsentBanner.container.tsx
+#~ msgid "A Coincidence of Wants"
+#~ msgstr "A Coincidence of Wants"
 
 #: apps/cowswap-frontend/src/common/hooks/useOnSelectNetwork.tsx
 msgid "Failed to switch networks from the CoW Swap Interface. In order to use CoW Swap on {chainInfoLabel}, you must change the network in your wallet."

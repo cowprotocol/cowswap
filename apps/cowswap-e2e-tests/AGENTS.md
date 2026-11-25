@@ -499,14 +499,11 @@ never a logic bug in the test — check infrastructure contention first.
   `Min. to receive` — assert presence instead. For Near Intents specifically, both the quote's `sellAmount`
   and `buyAmount` come from the same static signed fixture, so its bridge-stop `Min. to receive` is an
   absolute number from that fixture, unrelated to whatever amount the test actually trades.
-- **Solana availability needs two independent flags, Bitcoin needs only one.** `isSolBridgeEnabled` /
+- **Solana as a bridge destination needs one flag, like Bitcoin.** `isSolBridgeEnabled` /
   `isBtcBridgeEnabled` (the LD-bypass flags above) gate chain *availability* in
-  `useSupportedTargetChains`, but Solana additionally needs `isSolanaEnabled` for `CHAIN_INFO` to have a
-  Solana entry to look up at all (`libs/common-const/src/featureFlags.ts` exports the resolved
-  `IS_SOLANA_ENABLED` boot flag, read once at module load — before LaunchDarkly's client exists — so it
-  honors the same `window.__COWSWAP_E2E_FEATURE_FLAGS__` override the other LD-bypass flags above use).
-  Set it via the `installLaunchDarkly` mock's `setFlag('isSolanaEnabled', true)`, applied via
-  `context.addInitScript` before navigating — same mechanism as `isSolBridgeEnabled`/`isBtcBridgeEnabled`.
+  `useSupportedTargetChains`, and that is all Solana needs — `CHAIN_INFO` always carries its entry.
+  Solana as a *source* chain is not flagged at all: `useIsSolanaAvailable` only turns it off inside the
+  injected widget, so it is on for every ordinary test run.
 - **Near Intents' real dest-tokens fixture has no usable exact-"BTC" entry.** Its one `blockchain: "btc"`
   token with `symbol: "BTC"` (`nep141:btc.omft.near`) is on the SDK's own hardcoded deprecated-asset-id
   list and gets filtered out client-side; the only Bitcoin-chain token that survives is

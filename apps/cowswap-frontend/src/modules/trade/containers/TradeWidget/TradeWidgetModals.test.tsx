@@ -61,6 +61,7 @@ jest.mock('modules/zeroApproval', () => ({
   ZeroApprovalModal: () => null,
   useZeroApproveModalState: () => mockClosedModalState,
 }))
+jest.mock('../../hooks/useCloseModalsOnWidgetRequest', () => ({ useCloseModalsOnWidgetRequest: () => undefined }))
 jest.mock('../../hooks/useAutoImportTokensState', () => ({
   useAutoImportTokensState: () => mockAutoImportState,
 }))

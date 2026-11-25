@@ -96,7 +96,6 @@ export function TradeTokenSelector({ asset, selection }: TradeTokenSelectorProps
         <NetworkSelect asset={asset} chainId={chainId} />
       </div>
       <div className={styles.tableHeader}>
-        <span className={styles.tokenTitle}>Stock token</span>
         {!isAutoSelected && (
           <Tooltip className={styles.autoTrigger} content={`Trade the token with the ${bestQuoteLabel.toLowerCase()}`}>
             <button type="button" className={styles.auto} onClick={() => setTokenKey(null)}>

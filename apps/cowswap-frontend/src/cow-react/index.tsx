@@ -6,8 +6,8 @@ import './sentry'
 import { Messages } from '@lingui/core'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
-import { CowAnalyticsProvider, createNoopCowAnalytics, initGtm } from '@cowprotocol/analytics'
-import { isInjectedWidget, nodeRemoveChildFix } from '@cowprotocol/common-utils'
+import { CowAnalyticsProvider, createNoopCowAnalytics, initGtmWithConsent } from '@cowprotocol/analytics'
+import { nodeRemoveChildFix } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { SnackbarsWidget } from '@cowprotocol/snackbars'
 import { WalletProvider, Web3Provider } from '@cowprotocol/wallet'
@@ -39,12 +39,15 @@ import {
 import { installRestrictedAddressesGuard } from 'modules/restrictedAddresses'
 
 import { hashHistory } from 'common/constants/routes'
+import { isMarketingTrackingDisabled } from 'common/utils/marketingTracking.utils'
 import { loadActiveLocaleMessages } from 'lib/localeMessages'
 
 import { APP_HEADER_ELEMENT_ID } from '../common/constants/common'
+import { CookieConsentBanner } from '../common/containers/CookieConsentBanner'
 import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsupportedNetworkBanner'
 
-const cowAnalytics = isInjectedWidget() || window.__COWSWAP_E2E__ ? createNoopCowAnalytics() : initGtm()
+const isAnalyticsDisabled = isMarketingTrackingDisabled()
+const cowAnalytics = isAnalyticsDisabled ? createNoopCowAnalytics() : initGtmWithConsent()
 const helmetContext = {}
 
 const queryClient = new QueryClient({
@@ -100,6 +103,7 @@ export function Main({ localeMessages }: MainProps): ReactNode {
                                       <Updaters />
                                       <Toasts />
                                       <App />
+                                      {!isAnalyticsDisabled && <CookieConsentBanner />}
                                     </CustomThemeProvider>
                                   </CowAnalyticsProvider>
                                 </Web3Provider>

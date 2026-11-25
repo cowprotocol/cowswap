@@ -28,6 +28,12 @@
       "import": "./src/errors.ts",
       "require": "./src/errors.ts",
       "default": "./src/errors.ts"
+    },
+    "./tradingViewTimezone": {
+      "types": "./src/tradingViewTimezone.ts",
+      "import": "./src/tradingViewTimezone.ts",
+      "require": "./src/tradingViewTimezone.ts",
+      "default": "./src/tradingViewTimezone.ts"
     }
   },
   "publishConfig": {
@@ -53,6 +59,11 @@
         "types": "./errors.d.ts",
         "import": "./errors.mjs",
         "require": "./errors.js"
+      },
+      "./tradingViewTimezone": {
+        "types": "./tradingViewTimezone.d.ts",
+        "import": "./tradingViewTimezone.mjs",
+        "require": "./tradingViewTimezone.js"
       }
     }
   },

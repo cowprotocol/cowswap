@@ -100,12 +100,14 @@ function Custom() {
     isNeeded: false,
     txStatus: txStatusMap[approveState] || null,
     txHash: getApproveHash(approveState),
+    inProgress: false,
   }
 
   const wrapAction: EthFlowActionContext = {
     isNeeded: false,
     txStatus: txStatusMap[wrapState] || null,
     txHash: getWrapHash(wrapState),
+    inProgress: false,
   }
 
   const modalProps = getEthFlowModalContentProps({

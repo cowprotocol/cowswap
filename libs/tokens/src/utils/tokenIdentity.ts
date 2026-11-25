@@ -10,7 +10,7 @@ import { TokensByAddress, TokensBySymbol } from '../state/tokens/allTokensAtom'
  * tokens and returns the first match. A token is therefore unreachable by symbol when it is not active
  * yet, or when its address is active under a *different* symbol - the Coinbase RWA list ships `AAPL` at
  * an address the CoinGecko list already ships as `AAPLC`. Referring to such a token by symbol produces
- * a reference that stops resolving as soon as the user-added copy is pruned, which re-triggers the
+ * a reference that stops resolving as soon as the user-added copy is hidden, which re-triggers the
  * import prompt in a loop.
  */
 export function doesSymbolResolveToAddress(

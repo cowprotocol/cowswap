@@ -16,20 +16,14 @@ export type CmsSolversInfo = components['schemas']['SolverListResponseDataItem']
 
 export type NotificationLocation = 'default' | 'speechBubble'
 
-export type RestrictedTokenList = {
-  name: string
-  tokenListUrl: string
-  restrictedCountries: string[]
-}
-
-export type RestrictedTokenLists = RestrictedTokenList[]
-
 export type SolverInfo = {
   solverId: string
   displayName: string
   solverNetworks: SolverNetwork[]
   description?: string
   image?: string
+  /** Whether the CMS still counts the solver as competing. Absent in previously persisted data; read it as `!== false`. */
+  isActive?: boolean
 }
 
 export type SolverNetwork = {

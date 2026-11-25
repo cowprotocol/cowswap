@@ -14,6 +14,7 @@
   "dependencies": {
     "@base-ui/react": "1.7.0",
     "@cowprotocol/analytics": "workspace:*",
+    "@cowprotocol/assets": "workspace:*",
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
     "@cowprotocol/cow-sdk": "9.3.5",
@@ -25,6 +26,7 @@
     "@reown/appkit": "1.8.19",
     "@reown/appkit-adapter-wagmi": "1.8.19",
     "@reown/appkit-controllers": "1.8.19",
+    "@sentry/nextjs": "11.10.0",
     "@tanstack/query-core": "5.90.20",
     "@tanstack/react-query": "5.90.20",
     "jotai": "2.16.2",
