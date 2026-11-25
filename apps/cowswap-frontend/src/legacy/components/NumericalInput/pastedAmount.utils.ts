@@ -1,17 +1,20 @@
+const SEPARATORS = /[.,]/g
+
 export function normalizePastedAmount(pastedText: string): string {
   const text = pastedText.replace(/[^\d.,]/g, '')
-  const lastSeparatorIndex = Math.max(text.lastIndexOf('.'), text.lastIndexOf(','))
+  const body = text.replace(/[.,]+$/, '')
+  const trailingSeparator = text.charAt(body.length)
+  const decimalIndex = Math.max(body.lastIndexOf('.'), body.lastIndexOf(','))
 
-  if (lastSeparatorIndex === -1) return text
+  if (decimalIndex === -1 || (trailingSeparator && !body.includes(trailingSeparator))) {
+    return body.replace(SEPARATORS, '')
+  }
 
-  const separator = text[lastSeparatorIndex]
-  const hasOtherSeparator = text.includes(separator === '.' ? ',' : '.')
-  const isRepeated = text.indexOf(separator) !== lastSeparatorIndex
+  const separator = body[decimalIndex]
+  const isRepeated = body.indexOf(separator) !== decimalIndex
+  const hasOtherSeparator = body.includes(separator === '.' ? ',' : '.')
 
-  if (isRepeated && !hasOtherSeparator) return text.replace(/[.,]/g, '')
+  if (isRepeated && !hasOtherSeparator) return body.replace(SEPARATORS, '')
 
-  const integerPart = text.slice(0, lastSeparatorIndex).replace(/[.,]/g, '')
-  const fractionPart = text.slice(lastSeparatorIndex + 1)
-
-  return fractionPart ? `${integerPart}.${fractionPart}` : integerPart
+  return `${body.slice(0, decimalIndex).replace(SEPARATORS, '')}.${body.slice(decimalIndex + 1)}`
 }
