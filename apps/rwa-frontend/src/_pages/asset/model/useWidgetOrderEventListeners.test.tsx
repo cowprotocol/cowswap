@@ -76,10 +76,24 @@ describe('useWidgetOrderEventListeners', () => {
     const { store, invalidateQueries, emit } = renderListeners()
     store.set(assetAccountTabAtomFamily(TICKER), 'activity')
 
-    emit(event, {})
+    emit(event, { order: { uid: 'other' } })
 
     expect(store.get(assetAccountTabAtomFamily(TICKER))).toBe('activity')
     expect(invalidateQueries).toHaveBeenCalledWith({ queryKey: [RWA_QUERY_KEY_ROOT, 'open-orders'] })
     expect(invalidateQueries).toHaveBeenCalledWith({ queryKey: [RWA_QUERY_KEY_ROOT, 'activity'] })
   })
+
+  it.each([CowWidgetEvents.ON_FULFILLED_ORDER, CowWidgetEvents.ON_CANCELLED_ORDER, CowWidgetEvents.ON_EXPIRED_ORDER])(
+    'stops awaiting the posted order on %s',
+    (event) => {
+      const { store, emit } = renderListeners()
+      emit(CowWidgetEvents.ON_POSTED_ORDER, { orderUid: ORDER_UID })
+
+      emit(event, { order: { uid: 'other' } })
+      expect(store.get(awaitedOpenOrderAtom)).not.toBeNull()
+
+      emit(event, { order: { uid: ORDER_UID } })
+      expect(store.get(awaitedOpenOrderAtom)).toBeNull()
+    },
+  )
 })

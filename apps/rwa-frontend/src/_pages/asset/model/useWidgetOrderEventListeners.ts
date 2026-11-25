@@ -12,11 +12,10 @@ import { awaitedOpenOrderAtom } from '@/widgets/account'
 
 const AWAIT_POSTED_ORDER_MS = 60_000
 
-const ORDER_STATUS_EVENTS = [
+const ORDER_CLOSED_EVENTS = [
   CowWidgetEvents.ON_FULFILLED_ORDER,
   CowWidgetEvents.ON_CANCELLED_ORDER,
   CowWidgetEvents.ON_EXPIRED_ORDER,
-  CowWidgetEvents.ON_PRESIGNED_ORDER,
 ] as const
 
 export function useWidgetOrderEventListeners(ticker: string): CowWidgetEventListeners {
@@ -39,7 +38,14 @@ export function useWidgetOrderEventListeners(ticker: string): CowWidgetEventList
           refreshAccount()
         },
       },
-      ...ORDER_STATUS_EVENTS.map((event) => ({ event, handler: refreshAccount })),
+      ...ORDER_CLOSED_EVENTS.map((event) => ({
+        event,
+        handler: ({ order }: { order: { uid: string } }) => {
+          store.set(awaitedOpenOrderAtom, (awaited) => (awaited?.id === order.uid ? null : awaited))
+          refreshAccount()
+        },
+      })),
+      { event: CowWidgetEvents.ON_PRESIGNED_ORDER, handler: refreshAccount },
     ]
   }, [store, ticker])
 }
