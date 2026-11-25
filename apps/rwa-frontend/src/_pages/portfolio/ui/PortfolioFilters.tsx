@@ -2,7 +2,8 @@ import { type ReactNode, useMemo } from 'react'
 
 import styles from './Portfolio.module.css'
 
-import type { PortfolioFilter } from '../lib/portfolioFilter'
+import { isPortfolioFiltered, NO_PORTFOLIO_FILTER, type PortfolioFilter } from '../lib/portfolioFilter'
+
 import type { RwaAssetSummary } from '@/entities/asset'
 
 import { useNetworkOptions } from '@/shared/ui/network-logos'
@@ -22,6 +23,11 @@ export function PortfolioFilters({ assets, filter, onChange }: PortfolioFiltersP
 
   return (
     <div className={styles.filters}>
+      {isPortfolioFiltered(filter) && (
+        <button type="button" className={styles.resetFilters} onClick={() => onChange(NO_PORTFOLIO_FILTER)}>
+          Reset filters
+        </button>
+      )}
       <Select
         aria-label="Issuer"
         value={filter.issuer}
