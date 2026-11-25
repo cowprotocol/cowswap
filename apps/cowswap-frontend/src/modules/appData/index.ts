@@ -1,7 +1,7 @@
 export * from './updater/AppDataUpdater'
 
 export { useAppData, useAppDataHooks } from './hooks'
-export { useWaitAndSaveValidTo } from './hooks/useWaitAndSaveValidTo'
+export { useWaitAndSaveBatchData, type WaitAndSaveBatchData } from './hooks/useWaitAndSaveBatchData'
 export { useEnableWaitForCow } from './hooks/useEnableWaitForCow'
 export { uploadAppDataDocOrderbookApi } from './services'
 

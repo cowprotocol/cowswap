@@ -2,6 +2,8 @@ import { MAX_VALID_TO_EPOCH } from '@cowprotocol/common-utils'
 
 import ms from 'ms.macro'
 
+import type { WaitAndSaveBatchData } from 'modules/appData'
+
 import { getIsFastQuote } from './getIsFastQuote'
 
 import { TradeQuoteState } from '../state/tradeQuoteAtom'
@@ -12,15 +14,6 @@ const MAX_EXPIRATION_TIME = ms`1min`
 const WAIT_AND_SAVE_VALID_TO_ENTROPY_SECONDS = 30
 
 /**
- * Schedule anchors for a Wait for CoWs order.
- */
-export interface WaitAndSaveValidToAnchor {
-  nextBatch: number
-  /** Earliest signed `validTo` that still clears the next canonical batch, including a skipped one and accounting for min validity. */
-  nextBatchValidTo: number
-}
-
-/**
  * Calculate the validTo timestamp for the order.
  * Wait for CoWs: expiration still runs from `nextBatch`, but never earlier than `nextBatchValidTo`,
  * so missing the current batch does not expire the order before the following one.
@@ -28,7 +21,7 @@ export interface WaitAndSaveValidToAnchor {
 export function getOrderValidTo(
   deadline: number,
   state: TradeQuoteState,
-  waitAndSave?: WaitAndSaveValidToAnchor,
+  waitAndSaveBatchData?: WaitAndSaveBatchData,
 ): number {
   const timeOffset = getQuoteTimeOffset(state)
 
@@ -39,8 +32,10 @@ export function getOrderValidTo(
   // Work around orderbook soft-cancel: identical Wait for CoWs params rebuild the same UID and
   // post as DuplicatedOrder. Mix wall-clock seconds into validTo so cancel+resubmit is unique.
   const waitAndSaveEntropy = serverNowSec % WAIT_AND_SAVE_VALID_TO_ENTROPY_SECONDS
-  const validTo = waitAndSave
-    ? Math.floor(Math.max(waitAndSave.nextBatchValidTo, waitAndSave.nextBatch + deadline) + waitAndSaveEntropy)
+  const validTo = waitAndSaveBatchData
+    ? Math.floor(
+        Math.max(waitAndSaveBatchData.nextBatchValidTo, waitAndSaveBatchData.nextBatch + deadline) + waitAndSaveEntropy,
+      )
     : Math.floor(deadline + serverNowSec)
 
   // Should not be greater than what the contract supports
