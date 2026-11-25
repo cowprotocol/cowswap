@@ -3,7 +3,7 @@ import { ReactNode, useCallback, useEffect } from 'react'
 import { useConnection } from 'wagmi'
 
 import { useLocalStorageState, useThrottledCallback } from '@cowprotocol/common-hooks'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { PaletteMode } from '@mui/material'
 import Box from '@mui/material/Box'
@@ -146,7 +146,13 @@ export function Sidebar({
   const { chainId: walletChainId, isConnected } = useConnection()
   const { solanaProvider } = useHostSolanaWallet()
 
-  const isWalletChainEffective = configuratorFormValues.widgetMode === 'dapp' && isConnected && !!walletChainId
+  // The EVM wallet's chain must not override a Solana selection: Solana reaches the widget through
+  // its own namespace, and wagmi has no chain to report for it.
+  const isWalletChainEffective =
+    configuratorFormValues.widgetMode === 'dapp' &&
+    isConnected &&
+    !!walletChainId &&
+    !isSolanaChain(configuratorFormValues.chainId)
   const effectiveChainId = isWalletChainEffective ? walletChainId : configuratorFormValues.chainId
 
   // Building the resolved state (including parsing JSON fields) is only done when we
