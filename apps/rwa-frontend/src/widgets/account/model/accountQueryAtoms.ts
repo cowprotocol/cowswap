@@ -1,8 +1,11 @@
+import type { Query } from '@tanstack/react-query'
+
 import { areAddressesEqual, getAddressKey } from '@cowprotocol/cow-sdk'
 
 import { atomFamily } from 'jotai-family'
 import { atomWithQuery } from 'jotai-tanstack-query'
 
+import { awaitedOpenOrderAtom, isAwaitingOpenOrder } from './awaitedOpenOrder'
 import { orderCancellationsAtom } from './orderCancellations'
 
 import { activityProvider } from '../api/activity'
@@ -20,6 +23,7 @@ export interface AccountQueryParams {
 }
 
 const OPEN_ORDERS_REFRESH_INTERVAL_MS = 15_000
+const AWAITED_OPEN_ORDER_REFRESH_INTERVAL_MS = 2_000
 const ACTIVITY_REFRESH_INTERVAL_MS = 60_000
 const ACTIVITY_LIMIT = 50
 
@@ -31,13 +35,17 @@ export const openOrdersQueryAtomFamily = atomFamily(
   ({ owner, scope, tokens }: AccountQueryParams) =>
     atomWithQuery((get) => {
       const cancellations = get(orderCancellationsAtom)
+      const awaited = get(awaitedOpenOrderAtom)
 
       return {
         queryKey: [RWA_QUERY_KEY_ROOT, 'open-orders', getAddressKey(owner), scope],
         queryFn: () => getOpenOrders({ owner, tokens }),
         // The TWAP indexer notices a cancellation up to 100 blocks late: ComposableCoW.remove() emits no event
         select: (orders: OpenOrder[]) => orders.filter(({ uid }) => cancellations[uid]?.status !== 'cancelled'),
-        refetchInterval: OPEN_ORDERS_REFRESH_INTERVAL_MS,
+        refetchInterval: ({ state }: Query<OpenOrder[], Error>) =>
+          isAwaitingOpenOrder(awaited, state.data)
+            ? AWAITED_OPEN_ORDER_REFRESH_INTERVAL_MS
+            : OPEN_ORDERS_REFRESH_INTERVAL_MS,
       }
     }),
   areParamsEqual,

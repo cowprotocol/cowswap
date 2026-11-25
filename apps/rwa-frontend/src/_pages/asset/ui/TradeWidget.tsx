@@ -21,7 +21,7 @@ import { tradeWidgetHandlerRefAtom } from '../model/tradeWidgetHandlerRefAtom'
 import { TRADE_WIDGET_ID, useIsWalletOffTradeNetwork } from '../model/useSelectTradeToken'
 import { useTradeSelection } from '../model/useTradeSelection'
 import { useWidgetOrderAnalytics } from '../model/useWidgetOrderAnalytics'
-import { useWidgetOrderPostedNavigation } from '../model/useWidgetOrderPostedNavigation'
+import { useWidgetOrderEventListeners } from '../model/useWidgetOrderEventListeners'
 import { useWidgetParamsTradeType } from '../model/useWidgetParamsTradeType'
 import { useWidgetTradeTokenSync } from '../model/useWidgetTradeTokenSync'
 import { useWidgetTradeTypeSync } from '../model/useWidgetTradeTypeSync'
@@ -51,10 +51,10 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
   const tradeTokenSyncListeners = useWidgetTradeTokenSync(asset, selection)
   const tradeTypeSyncListeners = useWidgetTradeTypeSync()
   const orderAnalyticsListeners = useWidgetOrderAnalytics(asset)
-  const orderPostedListeners = useWidgetOrderPostedNavigation(asset.ticker)
+  const orderEventListeners = useWidgetOrderEventListeners(asset.ticker)
   const listeners = useMemo(
-    () => [...tradeTokenSyncListeners, ...tradeTypeSyncListeners, ...orderAnalyticsListeners, ...orderPostedListeners],
-    [tradeTokenSyncListeners, tradeTypeSyncListeners, orderAnalyticsListeners, orderPostedListeners],
+    () => [...tradeTokenSyncListeners, ...tradeTypeSyncListeners, ...orderAnalyticsListeners, ...orderEventListeners],
+    [tradeTokenSyncListeners, tradeTypeSyncListeners, orderAnalyticsListeners, orderEventListeners],
   )
   const assetToken = selection?.assetToken
   const { tradingPause, market } = useAtomValue(assetQueryAtomFamily(asset.ticker)).data ?? {}
