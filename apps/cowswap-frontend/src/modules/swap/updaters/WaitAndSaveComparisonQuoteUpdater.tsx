@@ -32,7 +32,7 @@ const getQuote = bridgingSdk.getQuote.bind(bridgingSdk)
 const getQuoteOnlyResolveLast = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
 
 /** Volume-fee waivers are a fraction of a percent. A wider gap on the varying side is two different prices. */
-const DISCONNECT_GAP_BPS = 100n
+const DISCONNECT_GAP_BPS = 2n
 
 interface DiffContext {
   currency: Currency | undefined
