@@ -53,6 +53,22 @@ export function useSyncWidgetNetwork(
     setNetworkControlState(SupportedChainId.SOLANA)
   }, [solanaAddress, widgetMode, isSolanaEnabled, setNetworkControlState])
 
+  // The widget now offers Solana whether or not a wallet is lent, so losing the host's Solana wallet
+  // no longer makes the chain unavailable inside the iframe — nothing there would move the widget off
+  // a chain it can no longer sign for. The host has to do it.
+  useEffect(() => {
+    if (widgetMode === 'standalone' || !isSolanaChain(chainId) || solanaAddress) return
+
+    const walletSupportedChainId = walletChainId as SupportedChainId
+    const fallbackChainId =
+      isConnected && availableChains.includes(walletSupportedChainId)
+        ? walletSupportedChainId
+        : SupportedChainId.MAINNET
+
+    currentChainIdRef.current = fallbackChainId
+    setNetworkControlState(fallbackChainId)
+  }, [availableChains, chainId, isConnected, setNetworkControlState, solanaAddress, walletChainId, widgetMode])
+
   // Persisted configurator state may still hold a chain that is no longer available (e.g. Solana)
   useEffect(() => {
     if (availableChains.includes(chainId)) return
