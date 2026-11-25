@@ -18,6 +18,8 @@ import {
 } from '@cowprotocol/cow-sdk'
 import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
 
+import { lineaBarnQuoteContext } from 'api/cowProtocol/lineaBarnQuote.utils'
+
 const prodBaseUrls = process.env.REACT_APP_ORDER_BOOK_URLS
   ? JSON.parse(process.env.REACT_APP_ORDER_BOOK_URLS)
   : undefined
@@ -47,6 +49,12 @@ export const orderBookApi = new OrderBookApi({
   ...(prodBaseUrls ? { baseUrls: prodBaseUrls } : undefined),
   backoffOpts: DEFAULT_BACKOFF_OPTIONS,
 })
+
+const getOrderBookQuote = orderBookApi.getQuote.bind(orderBookApi)
+
+// TODO: remove once Linea quoting is on the env-resolved orderbook host.
+orderBookApi.getQuote = (requestBody, contextOverride) =>
+  getOrderBookQuote(requestBody, lineaBarnQuoteContext(orderBookApi.context, contextOverride))
 
 export const prodOrderBookApi = isBarnBackendEnv
   ? new OrderBookApi({
