@@ -12,4 +12,8 @@ describe('formatSurplusPercent', () => {
     expect(formatSurplusPercent(new BigNumber('0.00000123'))).toBe('<0.01%')
     expect(formatSurplusPercent(new BigNumber('0.000099'))).toBe('<0.01%')
   })
+
+  it('shows <0.01% when a positive surplus fraction rounded down to zero', () => {
+    expect(formatSurplusPercent(new BigNumber(0))).toBe('<0.01%')
+  })
 })
