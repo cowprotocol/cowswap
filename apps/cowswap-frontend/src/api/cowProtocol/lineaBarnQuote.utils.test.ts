@@ -1,23 +1,23 @@
 import { ORDER_BOOK_PROD_CONFIG, SupportedChainId, type ApiContext } from '@cowprotocol/cow-sdk'
 
-import { lineaBarnQuoteContext } from './lineaBarnQuote.utils'
+import { lineaBarnOrderBookContext } from './lineaBarnQuote.utils'
 
 const prodContext: Pick<ApiContext, 'baseUrls' | 'chainId' | 'env'> = {
   chainId: SupportedChainId.MAINNET,
   env: 'prod',
 }
 
-describe('lineaBarnQuoteContext', () => {
-  it('leaves a non-Linea quote on the caller context', () => {
+describe('lineaBarnOrderBookContext', () => {
+  it('leaves a non-Linea call on the caller context', () => {
     const contextOverride = { chainId: SupportedChainId.MAINNET, env: 'prod' as const }
 
-    expect(lineaBarnQuoteContext(prodContext, contextOverride)).toBe(contextOverride)
-    expect(lineaBarnQuoteContext(prodContext)).toBeUndefined()
+    expect(lineaBarnOrderBookContext(prodContext, contextOverride)).toBe(contextOverride)
+    expect(lineaBarnOrderBookContext(prodContext)).toBeUndefined()
   })
 
-  it('points a Linea quote at barn while the orderbook env is prod', () => {
+  it('points a Linea call at barn while the orderbook env is prod', () => {
     expect(
-      lineaBarnQuoteContext({
+      lineaBarnOrderBookContext({
         chainId: SupportedChainId.LINEA,
         env: 'prod',
       }),
@@ -35,7 +35,7 @@ describe('lineaBarnQuoteContext', () => {
       [SupportedChainId.MAINNET]: 'https://example.test/mainnet',
     }
 
-    const context = lineaBarnQuoteContext(prodContext, {
+    const context = lineaBarnOrderBookContext(prodContext, {
       chainId: SupportedChainId.LINEA,
       baseUrls,
     })

@@ -6,10 +6,10 @@ import {
   type PartialApiContext,
 } from '@cowprotocol/cow-sdk'
 
-/** TODO: temporary until Linea quoting is on the env-resolved orderbook host. */
+/** Temporary: Linea orderbook calls use barn until that chain is on the env-resolved host. */
 const LINEA_BARN_ORDER_BOOK_URL = 'https://barn.api.cow.fi/linea'
 
-export function lineaBarnQuoteContext(
+export function lineaBarnOrderBookContext(
   context: Pick<ApiContext, 'baseUrls' | 'chainId' | 'env'>,
   contextOverride?: PartialApiContext,
 ): PartialApiContext | undefined {
