@@ -1,5 +1,20 @@
 # Changelog
 
+## [3.23.2](https://github.com/cowprotocol/cowswap/compare/wallet-v3.23.1...wallet-v3.23.2) (2026-11-25)
+
+### Patch Changes
+
+- fix(wallet): report solana rpc failures by outcome (#8690)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.23.2
+  - @cowprotocol/common-hooks@3.22.2
+  - @cowprotocol/assets@2.14.0
+  - @cowprotocol/common-const@3.26.0
+  - @cowprotocol/ui@3.26.0
+  - @cowprotocol/core@3.16.2
+  - @cowprotocol/ens@3.13.2
+
 ## [3.23.1](https://github.com/cowprotocol/cowswap/compare/wallet-v3.23.0...wallet-v3.23.1) (2026-11-19)
 
 ### Patch Changes

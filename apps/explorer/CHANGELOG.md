@@ -1,5 +1,23 @@
 # Changelog
 
+## [4.21.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.20.1...explorer-v4.21.0) (2026-11-25)
+
+### Minor Changes
+
+- feat: extend cookie consent to CoW Swap, Explorer and RWA (#8555)
+
+- feat(explorer): add solver logo preparation page (#8607)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.23.2
+  - @cowprotocol/common-hooks@3.22.2
+  - @cowprotocol/analytics@3.21.0
+  - @cowprotocol/common-const@3.26.0
+  - @cowprotocol/ui@3.26.0
+  - @cowprotocol/core@3.16.2
+
 ## [4.20.1](https://github.com/cowprotocol/cowswap/compare/explorer-v4.20.0...explorer-v4.20.1) (2026-11-19)
 
 ### Patch Changes

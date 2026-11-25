@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.14.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.13.0...assets-v2.14.0) (2026-11-25)
+
+### Minor Changes
+
+- feat(theme): add Vice sunset theme behind a feature flag (#8678)
+
 ## [2.13.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.12.0...assets-v2.13.0) (2026-11-19)
 
 ### Minor Changes

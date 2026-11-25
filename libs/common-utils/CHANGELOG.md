@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.23.2](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.23.1...common-utils-v3.23.2) (2026-11-25)
+
+### Patch Changes
+
+- fix(utm): emit utm_source instead of utm\_\_source on cow.fi links (#8543)
+
+- fix(rwa): medium bugs of the RWA UI backlog (#8661)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.26.0
+
 ## [3.23.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.23.0...common-utils-v3.23.1) (2026-11-19)
 
 ### Patch Changes
