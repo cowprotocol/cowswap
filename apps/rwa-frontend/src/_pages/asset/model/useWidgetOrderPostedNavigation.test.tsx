@@ -40,22 +40,13 @@ function renderNavigation(): RenderedNavigation {
 }
 
 describe('useWidgetOrderPostedNavigation', () => {
-  it.each(['LIMIT', 'TWAP'])('opens the Open orders tab with fresh orders after a %s order is posted', (orderType) => {
+  it.each(['SWAP', 'LIMIT', 'TWAP'])('opens the Open orders tab after a %s order is posted', (orderType) => {
     const { store, invalidateQueries, post } = renderNavigation()
+    store.set(assetAccountTabAtomFamily(TICKER), 'activity')
 
     post(orderType)
 
     expect(store.get(assetAccountTabAtomFamily(TICKER))).toBe('orders')
     expect(invalidateQueries).toHaveBeenCalledWith({ queryKey: [RWA_QUERY_KEY_ROOT, 'open-orders'] })
-  })
-
-  it('keeps the current tab after a swap order is posted', () => {
-    const { store, invalidateQueries, post } = renderNavigation()
-    store.set(assetAccountTabAtomFamily(TICKER), 'activity')
-
-    post('SWAP')
-
-    expect(store.get(assetAccountTabAtomFamily(TICKER))).toBe('activity')
-    expect(invalidateQueries).not.toHaveBeenCalled()
   })
 })

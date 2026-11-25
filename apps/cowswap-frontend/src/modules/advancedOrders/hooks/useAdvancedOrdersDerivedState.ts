@@ -1,6 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { Percent } from '@cowprotocol/currency'
 
 import { useBuildTradeDerivedState } from 'modules/trade/hooks/useBuildTradeDerivedState'
@@ -21,7 +22,7 @@ export function useAdvancedOrdersDerivedStateToFill(slippage: Percent): Advanced
   const rawState = useAtomValue(advancedOrdersAtom)
 
   const derivedState = useBuildTradeDerivedState(advancedOrdersAtom, false)
-  const isUnlocked = rawState.isUnlocked
+  const isUnlocked = rawState.isUnlocked || isInjectedWidget()
 
   return useMemo(() => {
     return { ...derivedState, isUnlocked, slippage, tradeType: TradeType.ADVANCED_ORDERS }
