@@ -46,6 +46,7 @@ export function quoteUsingSameParameters(
       [bridgeTradeParams.bridgeRecipient === nextParams.bridgeRecipient, 'bridgeRecipient'],
       // Use currentParams.slippageBps since bridgeTradeParams doesn't preserve slippageBps when auto-slippage is enabled
       [slippageCheck, 'slippageBps', currentParams.slippageBps, nextParams.swapSlippageBps],
+      [isSignedSlippageWithinQuote(currentParams.slippageBps, appData), 'signedSlippageBps'],
       [areAddressesEqual(currentParams.sellToken, nextParams.sellTokenAddress), 'sellToken'],
       [bridgeTradeParams.sellTokenChainId === nextParams.sellTokenChainId, 'sellTokenChainId'],
       [areAddressesEqual(bridgeTradeParams.buyTokenAddress, nextParams.buyTokenAddress), 'buyTokenAddress'],
@@ -138,6 +139,14 @@ function isSameSlippage(
   if (isSolanaQuoteAndPost(currentQuote.quote)) return currentSlippageBps === nextParams.swapSlippageBps
 
   return !!hasSmartSlippage || compareSlippage(currentSlippageBps, nextParams.swapSlippageBps)
+}
+
+// The SDK signs the bridge hook with the quote's slippage, so the order must not allow more
+function isSignedSlippageWithinQuote(
+  quoteSlippageBps: number | undefined,
+  appData: AppDataInfo['doc'] | undefined,
+): boolean {
+  return (appData?.metadata.quote?.slippageBips ?? 0) <= (quoteSlippageBps ?? 0)
 }
 
 function removeBridgePostHook(
