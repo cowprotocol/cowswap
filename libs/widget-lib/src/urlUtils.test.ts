@@ -234,8 +234,8 @@ describe('buildWidgetUrlQuery', () => {
     expect(buildWidgetUrlQuery({ enableSolana: true }).get('solanaEnabled')).toBe('true')
   })
 
-  it('does not serialize solanaEnabled in dapp mode', () => {
-    expect(buildWidgetUrlQuery({ enableSolana: true, standaloneMode: false }).get('solanaEnabled')).toBeNull()
+  it('serializes solanaEnabled in dapp mode too, where the host lends the wallet', () => {
+    expect(buildWidgetUrlQuery({ enableSolana: true, standaloneMode: false }).get('solanaEnabled')).toBe('true')
   })
 
   it('still serializes solanaEnabled when a partner fee is set', () => {

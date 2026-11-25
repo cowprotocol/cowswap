@@ -514,8 +514,8 @@ describe('createCowSwapWidget Solana in dapp mode', () => {
     jest.restoreAllMocks()
   })
 
-  it('hides Solana while the host has lent no wallet', () => {
-    expect(createDappModeWidget().iframe.src).not.toContain('solanaEnabled')
+  it('offers Solana while the host has lent no wallet yet, as it does the EVM chains', () => {
+    expect(createDappModeWidget().iframe.src).toContain('solanaEnabled=true')
   })
 
   it('enables Solana when the host lends a wallet at creation', () => {
@@ -534,7 +534,7 @@ describe('createCowSwapWidget Solana in dapp mode', () => {
     expect(iframe.src).toContain('solanaEnabled=true')
   })
 
-  it('reloads the iframe when the host takes its wallet back', () => {
+  it('reloads the iframe when the host takes its wallet back, keeping Solana on offer', () => {
     const handler = createDappModeWidget(createHostSolanaProvider())
     const iframe = handler.iframe
 
@@ -543,7 +543,7 @@ describe('createCowSwapWidget Solana in dapp mode', () => {
     expect(iframe.src).toBe('about:blank')
     finishIframeReload(iframe)
 
-    expect(iframe.src).not.toContain('solanaEnabled')
+    expect(iframe.src).toContain('solanaEnabled=true')
   })
 
   it('reloads the iframe when the host swaps one wallet for another, so the account cannot go stale', () => {

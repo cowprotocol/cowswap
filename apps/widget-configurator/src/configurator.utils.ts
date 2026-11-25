@@ -75,11 +75,8 @@ export function getSolanaFeeNotice({ enableSolana, partnerFeeBps }: Configurator
   return 'Partner fees are not charged on Solana yet, so Solana trades earn no fee.'
 }
 
-export function isSolanaSelectable(
-  { enableSolana, widgetMode }: ConfiguratorFormValues,
-  hasSolanaProvider: boolean = false,
-): boolean {
-  return isSolanaEnabledForWidget({ enableSolana, standaloneMode: widgetMode === 'standalone' }, hasSolanaProvider)
+export function isSolanaSelectable({ enableSolana, widgetMode }: ConfiguratorFormValues): boolean {
+  return isSolanaEnabledForWidget({ enableSolana, standaloneMode: widgetMode === 'standalone' })
 }
 
 export function resolveConfiguratorCustomColorsByTheme(persistedValue: unknown): Record<PaletteMode, ColorPalette> {

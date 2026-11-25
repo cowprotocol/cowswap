@@ -20,7 +20,7 @@ import type { SidebarSectionFormProps } from '../forms.types'
 export function TradeSetupSectionForm({ values, onChange }: SidebarSectionFormProps): ReactNode {
   const { solanaProvider } = useHostSolanaWallet()
   const isDappMode = values.widgetMode !== 'standalone'
-  const availableChains = useAvailableChains({ excludeSolana: !isSolanaSelectable(values, !!solanaProvider) })
+  const availableChains = useAvailableChains({ excludeSolana: !isSolanaSelectable(values) })
   const solanaHelperText = getSolanaDappModeNotice(values, !!solanaProvider) ?? getSolanaFeeNotice(values)
 
   const chainOptions: SelectInputOption<SupportedChainId>[] = useMemo(() => {

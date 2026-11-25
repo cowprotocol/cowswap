@@ -87,7 +87,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   if (typeof window === 'undefined') return noopHandler
 
   // 1. Create a brand new iframe
-  const iframe = createIframe(currentParams, !!solanaProvider)
+  const iframe = createIframe(currentParams)
   const iframeOrigin = getIframeOrigin(iframe)
   logWidget('Resolved trusted iframe origin', { iframeOrigin })
   const windowListeners: WindowListener[] = []
@@ -217,7 +217,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
     updateParams: (newParams: CowSwapWidgetParams) => {
       if (!iframeWindow) return
       const nextParams = resolveWidgetParams(newParams, !!solanaProvider)
-      const shouldReloadIframe = requiresIframeReload(iframe, nextParams, !!solanaProvider)
+      const shouldReloadIframe = requiresIframeReload(iframe, nextParams)
 
       if (shouldReloadIframe) assertSameIframeOrigin(nextParams, iframeOrigin)
 
@@ -225,7 +225,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
 
       applyContainerStyles(container, currentParams, lastDynamicHeight)
       if (shouldReloadIframe) {
-        reloadIframe(iframe, currentParams, !!solanaProvider)
+        reloadIframe(iframe, currentParams)
       } else {
         updateParams(iframeWindow, iframeOrigin, currentParams, provider)
       }
@@ -251,11 +251,11 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
         newSolanaProvider,
       )
 
-      // The widget derives its Solana account and its Reown adapters once, while the bundle loads,
-      // so any change of host wallet leaves it stale: gaining or losing one flips availability,
-      // and swapping one for another silently keeps the old account on screen. Reload either way.
+      // The widget reads its Solana account once, while the bundle loads, and this provider has no
+      // way to announce a later one unless the host implemented `on`. Reload so the new account
+      // cannot stay stale on screen.
       if (previousSolanaProvider !== newSolanaProvider) {
-        reloadIframe(iframe, currentParams, !!newSolanaProvider)
+        reloadIframe(iframe, currentParams)
       }
     },
     closeAllModals: () => {
@@ -334,11 +334,11 @@ function assertSameIframeOrigin(params: CowSwapWidgetParams, iframeOrigin: strin
  * @param params - Parameters for the widget.
  * @returns The generated HTMLIFrameElement.
  */
-function createIframe(params: CowSwapWidgetParams, hasSolanaProvider: boolean): HTMLIFrameElement {
+function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
   const iframe = document.createElement('iframe')
 
   iframe.id = WIDGET_IFRAME_ID
-  iframe.src = buildWidgetUrl(params, hasSolanaProvider)
+  iframe.src = buildWidgetUrl(params)
   iframe.setAttribute('sandbox', getIframeSandbox(params))
   iframe.referrerPolicy = WIDGET_IFRAME_REFERRER_POLICY
   iframe.allow = WIDGET_IFRAME_ALLOW
@@ -409,10 +409,10 @@ function listenToReady(contentWindow: Window, iframeOrigin: string, onReady: () 
   )
 }
 
-function reloadIframe(iframe: HTMLIFrameElement, params: CowSwapWidgetParams, hasSolanaProvider: boolean): void {
+function reloadIframe(iframe: HTMLIFrameElement, params: CowSwapWidgetParams): void {
   const sandbox = getIframeSandbox(params)
 
-  const nextSrc = buildWidgetUrl(params, hasSolanaProvider)
+  const nextSrc = buildWidgetUrl(params)
 
   iframe.addEventListener(
     'load',
@@ -425,18 +425,14 @@ function reloadIframe(iframe: HTMLIFrameElement, params: CowSwapWidgetParams, ha
   iframe.src = 'about:blank'
 }
 
-function requiresIframeReload(
-  iframe: HTMLIFrameElement,
-  params: CowSwapWidgetParams,
-  hasSolanaProvider: boolean,
-): boolean {
+function requiresIframeReload(iframe: HTMLIFrameElement, params: CowSwapWidgetParams): boolean {
   const sandbox = getIframeSandbox(params)
 
   if (iframe.getAttribute('sandbox') !== sandbox) return true
 
   // `updateParams` only posts the new params to a bundle that already decided its wallet adapters
   // from the URL, so a change to the Solana opt-in is only honoured by reloading the iframe.
-  return isSolanaEnabledInWidgetSrc(iframe.src) !== isSolanaEnabledForWidget(params, hasSolanaProvider)
+  return isSolanaEnabledInWidgetSrc(iframe.src) !== isSolanaEnabledForWidget(params)
 }
 
 function resolveWidgetParams(params: CowSwapWidgetParams, hasSolanaProvider: boolean): CowSwapWidgetParams {
@@ -451,7 +447,7 @@ function resolveWidgetParams(params: CowSwapWidgetParams, hasSolanaProvider: boo
   }
 
   if (currentParams.enableSolana && currentParams.standaloneMode === false && !hasSolanaProvider) {
-    logWidget('`enableSolana` is ignored in dapp mode until a `solanaProvider` is passed.')
+    logWidget('Solana is offered in dapp mode but cannot be traded until a `solanaProvider` is passed.')
   }
 
   return currentParams

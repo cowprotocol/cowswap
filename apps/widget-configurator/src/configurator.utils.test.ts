@@ -121,13 +121,12 @@ describe('Solana availability', () => {
     expect(getSolanaFeeNotice(values)).toEqual(expect.any(String))
   })
 
-  it('tells a dapp-mode integrator to connect a Solana wallet, and hides Solana meanwhile', () => {
+  it('tells a dapp-mode integrator to connect a Solana wallet, while Solana stays selectable', () => {
     expect(getSolanaDappModeNotice(OPTED_IN_DAPP, false)).toEqual(expect.any(String))
-    expect(isSolanaSelectable(OPTED_IN_DAPP, false)).toBe(false)
+    expect(isSolanaSelectable(OPTED_IN_DAPP)).toBe(true)
   })
 
-  it('is selectable in dapp mode once the host wallet is connected', () => {
+  it('drops the notice in dapp mode once the host wallet is connected', () => {
     expect(getSolanaDappModeNotice(OPTED_IN_DAPP, true)).toBeUndefined()
-    expect(isSolanaSelectable(OPTED_IN_DAPP, true)).toBe(true)
   })
 })
