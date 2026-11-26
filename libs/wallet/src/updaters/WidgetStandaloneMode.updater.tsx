@@ -32,8 +32,8 @@ interface WidgetStandaloneModeUpdaterProps {
  * 2. On entering standalone mode: disconnect the "cow-widget" connector and remove it from the
  *    Reown wallet connection modal so users can't pick it.
  * 3. Continuously (for injected widgets): disconnect any connector that is not allowed for the current mode -
- *    a non-widget connector in dapp mode, or the widget connector in standalone mode. The Safe App
- *    connection is left untouched.
+ *    a non-widget connector in dapp mode, which is then replaced by the "cow-widget" connector, or the widget
+ *    connector in standalone mode. The Safe App connection is left untouched.
  *
  * Renders nothing.
  */
@@ -71,18 +71,7 @@ export function WidgetStandaloneModeUpdater({ standaloneMode }: WidgetStandalone
         console.debug('[WidgetStandaloneModeUpdater] connect widget connector')
 
         await reownAppKit.disconnect()
-
-        try {
-          await connectWalletById(COW_WIDGET_CONNECTOR_ID, 'injected')
-        } catch (err: unknown) {
-          const error = normalizeError(err)
-
-          // Auto-reconnect or the bridged provider's own connect event can beat us to it -
-          // wagmi is already connected to this connector, nothing left to do.
-          if (error instanceof ConnectorAlreadyConnectedError) return
-
-          logWallet.error(new Error('Failed to connect widget connector', { cause: error }))
-        }
+        await connectWidgetConnector()
       })()
     }
   }, [isDappMode, isSafeApp])
@@ -131,13 +120,34 @@ export function WidgetStandaloneModeUpdater({ standaloneMode }: WidgetStandalone
 
       isDisconnectInProgress.current = true
 
-      disconnect().finally(() => {
-        isDisconnectInProgress.current = false
-      })
+      disconnect()
+        .catch((err: unknown) => {
+          logWallet.error(
+            new Error('Failed to disconnect a connector not allowed in widget mode', { cause: normalizeError(err) }),
+          )
+        })
+        .then(() => (inDappMode ? connectWidgetConnector() : undefined))
+        .finally(() => {
+          isDisconnectInProgress.current = false
+        })
     }
   }, [isWidgetConnector, isDappMode, isStandaloneMode, disconnect, connector, isSafeApp, isSafeConnector])
 
   return null
+}
+
+async function connectWidgetConnector(): Promise<void> {
+  try {
+    await connectWalletById(COW_WIDGET_CONNECTOR_ID, 'injected')
+  } catch (err: unknown) {
+    const error = normalizeError(err)
+
+    // Auto-reconnect or the bridged provider's own connect event can beat us to it -
+    // wagmi is already connected to this connector, nothing left to do.
+    if (error instanceof ConnectorAlreadyConnectedError) return
+
+    logWallet.error(new Error('Failed to connect widget connector', { cause: error }))
+  }
 }
 
 /**
