@@ -54,6 +54,17 @@ describe('useTradeTokenFromUrl', () => {
     expect(store.get(tradeChainIdAtom)).toBe(null)
   })
 
+  it('keeps a token picked while the switch was pending', () => {
+    const { store, switchChain } = renderAtPath(BASE_TOKEN_PATH, { status: 'connected', chainId: 1 })
+
+    store.set(tradeChainIdAtom, 1)
+    store.set(tradeTokenKeyAtom, getTokenKey(MAINNET_TOKEN))
+    switchChain.mock.calls[0][1].onError(new Error('User rejected the request'))
+
+    expect(store.get(tradeTokenKeyAtom)).toBe(getTokenKey(MAINNET_TOKEN))
+    expect(store.get(tradeChainIdAtom)).toBe(1)
+  })
+
   it('selects the token without a switch for a disconnected wallet', () => {
     const { store, switchChain } = renderAtPath(BASE_TOKEN_PATH, { status: 'disconnected' })
 

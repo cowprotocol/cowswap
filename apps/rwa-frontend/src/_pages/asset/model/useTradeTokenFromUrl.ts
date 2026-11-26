@@ -1,4 +1,4 @@
-import { useSetAtom } from 'jotai'
+import { useStore } from 'jotai'
 import { useEffect, useRef } from 'react'
 
 import { useConnection, useSwitchChain } from 'wagmi'
@@ -10,13 +10,12 @@ import { ASSET_TOKEN_SEARCH_PARAM, getTokenKey, type RwaToken } from '@/entities
 /**
  * Selects the token of the `ASSET_TOKEN_SEARCH_PARAM` search param once the wallet connection settles, and switches
  * the wallet to its network. A token the asset page doesn't list, or a network the wallet can't switch to, leaves
- * the default selection.
+ * the default selection, unless the user picked another token meanwhile.
  */
 export function useTradeTokenFromUrl(tokens: RwaToken[]): void {
   const { status, chainId: walletChainId } = useConnection()
   const { mutate: switchChain } = useSwitchChain()
-  const setChainId = useSetAtom(tradeChainIdAtom)
-  const setTokenKey = useSetAtom(tradeTokenKeyAtom)
+  const store = useStore()
   const appliedTokenKeyRef = useRef<string | null>(null)
 
   useEffect(() => {
@@ -27,9 +26,10 @@ export function useTradeTokenFromUrl(tokens: RwaToken[]): void {
 
     if (!token || appliedTokenKeyRef.current === tokenKey) return
 
-    appliedTokenKeyRef.current = tokenKey
-    setChainId(token.chainId)
-    setTokenKey(getTokenKey(token))
+    const urlTokenKey = getTokenKey(token)
+    appliedTokenKeyRef.current = urlTokenKey
+    store.set(tradeChainIdAtom, token.chainId)
+    store.set(tradeTokenKeyAtom, urlTokenKey)
 
     if (status !== 'connected' || walletChainId === token.chainId) return
 
@@ -37,10 +37,12 @@ export function useTradeTokenFromUrl(tokens: RwaToken[]): void {
       { chainId: token.chainId },
       {
         onError: () => {
-          setChainId(null)
-          setTokenKey(null)
+          if (store.get(tradeTokenKeyAtom) !== urlTokenKey) return
+
+          store.set(tradeChainIdAtom, null)
+          store.set(tradeTokenKeyAtom, null)
         },
       },
     )
-  }, [tokens, status, walletChainId, switchChain, setChainId, setTokenKey])
+  }, [tokens, status, walletChainId, switchChain, store])
 }
