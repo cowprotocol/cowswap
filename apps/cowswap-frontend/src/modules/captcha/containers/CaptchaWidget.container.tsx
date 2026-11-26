@@ -97,7 +97,8 @@ export function CaptchaWidget(): ReactNode {
       style={{ width: '100%', display: 'block' }}
       options={{
         theme: theme.darkMode ? 'dark' : 'light',
-        language: locale === 'pseudo' ? DEFAULT_LOCALE : locale,
+        // Turnstile matches language codes in lowercase (`en-us`) and warns on the app's `en-US`.
+        language: (locale === 'pseudo' ? DEFAULT_LOCALE : locale).toLowerCase(),
         size: 'flexible',
         appearance: 'interaction-only',
         // execution: 'execute',
