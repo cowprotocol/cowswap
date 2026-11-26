@@ -39,10 +39,10 @@ describe('OrderActionsCell', () => {
     openMenu(order({}))
 
     expect(screen.getByRole('menuitem', { name: /Cancel order/ }).textContent).toContain(
-      'Off-chain cancellations require a signature and are free. Keep in mind a solver might already have included',
+      'Requires a signature and is free.\nKeep in mind a solver might already have included',
     )
     expect(screen.getByRole('menuitem', { name: /Cancel on-chain/ }).textContent).toContain(
-      'On-chain cancellations require a regular on-chain transaction and cost gas. Keep in mind a solver might',
+      'Requires an on-chain transaction and costs gas.\nKeep in mind a solver might',
     )
   })
 

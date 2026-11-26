@@ -17,8 +17,8 @@ import { Tooltip } from '@/shared/ui/tooltip'
 const SOLVER_CAVEAT =
   'Keep in mind a solver might already have included the order in a solution even if this cancellation is successful.'
 const CANCELLATION_DESCRIPTIONS: Record<CancellationType, string> = {
-  soft: `Off-chain cancellations require a signature and are free. ${SOLVER_CAVEAT}`,
-  hard: `On-chain cancellations require a regular on-chain transaction and cost gas. ${SOLVER_CAVEAT}`,
+  soft: `Requires a signature and is free.\n${SOLVER_CAVEAT}`,
+  hard: `Requires an on-chain transaction and costs gas.\n${SOLVER_CAVEAT}`,
 }
 
 export function OrderActionsCell({ order }: { order: OpenOrder }): ReactNode {
