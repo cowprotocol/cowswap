@@ -33,7 +33,8 @@ jest.mock('./getSolanaQuote.service', () => ({
 }))
 
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
-import { OrderKind, PriceQuality, SupportedChainId, QuoteAndPost } from '@cowprotocol/cow-sdk'
+import { jotaiStore } from '@cowprotocol/core'
+import { OrderBookApiError, OrderKind, PriceQuality, SupportedChainId, QuoteAndPost } from '@cowprotocol/cow-sdk'
 import {
   BridgeProviderError,
   BridgeProviderQuoteError,
@@ -44,6 +45,7 @@ import {
   QuoteBridgeRequest,
 } from '@cowprotocol/sdk-bridging'
 
+import { quoteRateLimitedUntilAtom } from 'entities/captcha/state/quoteRateLimitedUntilAtom'
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
@@ -348,6 +350,30 @@ describe('fetchAndProcessQuote', () => {
       expect(mockTradeQuoteManager.onResponse).not.toHaveBeenCalled()
       expect(mockTradeQuoteManager.onError).not.toHaveBeenCalled()
       expect(mockTradeQuoteManager.onSettled).toHaveBeenCalledWith(mockFetchParams)
+    })
+
+    it('maps an order book 429 to TooManyRequests and pauses quotes until Retry-After', async () => {
+      const now = Date.now()
+      const nowSpy = jest.spyOn(Date, 'now').mockReturnValue(now)
+      const response = { status: 429, statusText: '', headers: new Headers({ 'Retry-After': '30' }) }
+      mockBridgingSdk.getQuote.mockRejectedValue(new OrderBookApiError(response as Response, ''))
+
+      await fetchAndProcessQuote(
+        mockFetchParams,
+        mockQuoteParams,
+        tradeQuotePollingParameters,
+        mockAppData,
+        mockTradeQuoteManager,
+      )
+
+      expect(mockTradeQuoteManager.onError).toHaveBeenCalledWith(
+        expect.objectContaining({ type: QuoteApiErrorCodes.TooManyRequests }),
+        SupportedChainId.MAINNET,
+        mockQuoteParams,
+        mockFetchParams,
+      )
+      expect(jotaiStore.get(quoteRateLimitedUntilAtom)).toBe(now + 30_000)
+      nowSpy.mockRestore()
     })
 
     it('should handle QuoteApiError', async () => {

@@ -36,6 +36,7 @@ export function getQuoteErrorTexts(): Partial<Record<QuoteApiErrorCodes, string>
     [QuoteApiErrorCodes.SellAmountDoesNotCoverFee]: t`Sell amount is too small`,
     [QuoteApiErrorCodes.SameBuyAndSellToken]: t`Tokens must be different`,
     [QuoteApiErrorCodes.TokenTemporarilySuspended]: t`Token is temporarily suspended from trading`,
+    [QuoteApiErrorCodes.TooManyRequests]: t`Prices temporarily unavailable`,
     [QuoteApiErrorCodes.TradingOutsideAllowedWindow]: t`Token can only be traded during specific time windows`,
   }
 }

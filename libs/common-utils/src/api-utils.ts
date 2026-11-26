@@ -2,6 +2,7 @@ import { tryParseJson } from './json-utils'
 import { getTimeoutAbortController } from './request'
 
 export const TIMEOUT_ERROR_MESSAGE = 'Request timed out. Please try again.'
+const DEFAULT_RETRY_AFTER_MS = 60_000
 export const JSON_HEADERS = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
@@ -75,6 +76,21 @@ export async function parseJsonResponse<T>(response: Response): Promise<FetchJso
   const data = text ? tryParseJson<T>(text) : undefined
 
   return { response, data, text }
+}
+
+/**
+ * Milliseconds to wait after a 429, from `Retry-After` (seconds or an HTTP date). 60s when the header is
+ * missing or unreadable, which is the default cross-origin unless the server lists it in `Access-Control-Expose-Headers`.
+ */
+export function parseRetryAfter(response: Pick<Response, 'headers'>): number {
+  const value = response.headers.get('Retry-After')
+  const seconds = Number(value)
+
+  if (value && Number.isFinite(seconds)) return Math.max(0, seconds * 1000)
+
+  const date = value ? Date.parse(value) : NaN
+
+  return Number.isNaN(date) ? DEFAULT_RETRY_AFTER_MS : Math.max(0, date - Date.now())
 }
 
 export function unwrapOk<T>(result: FetchJsonResponse<T>, missingMessage: string): T {

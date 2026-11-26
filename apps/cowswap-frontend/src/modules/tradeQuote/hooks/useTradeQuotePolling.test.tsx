@@ -7,6 +7,7 @@ import { CurrencyAmount } from '@cowprotocol/currency'
 import { WalletInfo, walletInfoAtom } from '@cowprotocol/wallet'
 
 import { act, renderHook, waitFor } from '@testing-library/react'
+import { quoteRateLimitedUntilAtom } from 'entities/captcha/state/quoteRateLimitedUntilAtom'
 import { JotaiTestProvider, WithMockedWeb3 } from 'test-utils'
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
@@ -190,6 +191,25 @@ describe('useTradeQuotePolling()', () => {
       else process.env.REACT_APP_TURNSTILE_SITE_KEY = previousSiteKey
       jest.useRealTimers()
     }
+  })
+
+  it('does not request quotes while the order book rate limit pause is active', async () => {
+    const mocks = [...jotaiMock, [walletInfoAtom, walletInfoMock], [quoteRateLimitedUntilAtom, Date.now() + 60_000]]
+
+    renderHook(
+      () =>
+        useTradeQuotePolling({
+          isConfirmOpen: false,
+          isQuoteUpdatePossible: true,
+          useSuggestedSlippageApi: false,
+          hasPendingTrade: false,
+        }),
+      { wrapper: Wrapper(mocks) },
+    )
+
+    await act(() => new Promise((resolve) => setTimeout(resolve, 1_000)))
+
+    expect(bridgingSdkMock.getQuote).not.toHaveBeenCalled()
   })
 
   describe('When wallet is NOT connected', () => {

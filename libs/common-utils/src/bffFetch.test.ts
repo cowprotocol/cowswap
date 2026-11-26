@@ -46,4 +46,36 @@ describe('bffFetch', () => {
     expect(authOf(0)).toBe('Bearer expired')
     expect(authOf(1)).toBeNull()
   })
+
+  describe('after a 429', () => {
+    // One clock for the block: the pause is module state, so each test must start after the previous one expired.
+    beforeAll(() => jest.useFakeTimers())
+    afterAll(() => jest.useRealTimers())
+    beforeEach(() => {
+      mockFetch.mockResolvedValueOnce({ status: 429, headers: new Headers({ 'Retry-After': '30' }) })
+    })
+
+    it('answers 429 without calling the BFF until Retry-After passes', async () => {
+      await bffFetch(URL)
+      const paused = await bffFetch(URL)
+
+      expect(paused.status).toBe(429)
+      expect(mockFetch).toHaveBeenCalledTimes(1)
+
+      jest.advanceTimersByTime(30_000)
+      mockFetch.mockResolvedValueOnce({ status: 200 })
+
+      expect((await bffFetch(URL)).status).toBe(200)
+      expect(mockFetch).toHaveBeenCalledTimes(2)
+    })
+
+    it('calls the BFF again as soon as a new token is set', async () => {
+      await bffFetch(URL)
+      setBffBearerToken('jwt')
+      mockFetch.mockResolvedValueOnce({ status: 200 })
+
+      expect((await bffFetch(URL)).status).toBe(200)
+      expect(authOf(1)).toBe('Bearer jwt')
+    })
+  })
 })

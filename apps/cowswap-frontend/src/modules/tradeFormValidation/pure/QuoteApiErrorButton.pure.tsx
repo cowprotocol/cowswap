@@ -36,7 +36,8 @@ export function QuoteApiErrorButton(props: TradeFormButtonContext): ReactNode {
 
   const errorText = quoteErrorTexts[errorType] ?? DEFAULT_ERROR_TEXT
 
-  const errorTooltipText = errorText === DEFAULT_ERROR_TEXT ? errorDescription : null
+  const errorTooltipText =
+    errorText === DEFAULT_ERROR_TEXT || errorType === QuoteApiErrorCodes.TooManyRequests ? errorDescription : null
 
   return (
     <TradeFormBlankButton disabled>

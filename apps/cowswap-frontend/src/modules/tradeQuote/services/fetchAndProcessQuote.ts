@@ -9,11 +9,13 @@ import {
   QuoteBridgeRequest,
 } from '@cowprotocol/sdk-bridging'
 
+import { t } from '@lingui/core/macro'
+import { pauseQuotesOnRateLimit } from 'entities/captcha/state/quoteRateLimitedUntilAtom'
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
 import { AppDataInfo } from 'modules/appData'
 
-import { QuoteApiError } from 'api/cowProtocol/errors/QuoteError'
+import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 import { getIsQuoteApiTypedError } from 'api/cowProtocol/getIsOrderBookTypedError'
 import { coWBFFClient } from 'common/services/bff'
 
@@ -60,7 +62,7 @@ export async function fetchAndProcessQuote(
   }
 
   const processQuoteError = (errorLocation: string, error: unknown): void => {
-    const parsedError = parseError(errorLocation, error)
+    const parsedError = pauseQuotesOnRateLimit(error) ? getTooManyRequestsError() : parseError(errorLocation, error)
 
     console.error(`[fetchAndProcessQuote]:: ${errorLocation} error`, parsedError)
 
@@ -180,6 +182,13 @@ async function fetchSwapQuote(
   } catch (error) {
     processQuoteError('fetchSwapQuote', error)
   }
+}
+
+function getTooManyRequestsError(): QuoteApiError {
+  return new QuoteApiError({
+    errorType: QuoteApiErrorCodes.TooManyRequests,
+    description: t`Too many price requests from your browser or network. Prices will refresh automatically.`,
+  })
 }
 
 function parseError(errorLocation: string, error: unknown): QuoteApiError | BridgeProviderQuoteError {

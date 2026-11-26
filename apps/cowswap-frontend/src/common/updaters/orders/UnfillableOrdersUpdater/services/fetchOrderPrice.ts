@@ -2,6 +2,11 @@ import { jotaiStore } from '@cowprotocol/core'
 import { AccountAddress, PriceQuality, QuoteResults, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { captchaCanQuoteAtom } from 'entities/captcha/state/captchaCanQuoteAtom'
+import {
+  isQuoteRateLimited,
+  pauseQuotesOnRateLimit,
+  quoteRateLimitedUntilAtom,
+} from 'entities/captcha/state/quoteRateLimitedUntilAtom'
 import { tradingSdk } from 'tradingSdk/tradingSdk'
 
 import { getRemainderAmount } from 'legacy/state/orders/utils'
@@ -15,7 +20,7 @@ import { GenericOrder } from 'common/types'
 const ADVANCED_SETTINGS = { quoteRequest: { priceQuality: PriceQuality.OPTIMAL } }
 
 export async function fetchOrderPrice(chainId: SupportedChainId, order: GenericOrder): Promise<QuoteResults | null> {
-  if (!jotaiStore.get(captchaCanQuoteAtom)) return null
+  if (!jotaiStore.get(captchaCanQuoteAtom) || isQuoteRateLimited(jotaiStore.get(quoteRateLimitedUntilAtom))) return null
 
   const amount = getRemainderAmount(order.kind, order)
 
@@ -37,7 +42,8 @@ export async function fetchOrderPrice(chainId: SupportedChainId, order: GenericO
     )
 
     return quote.quoteResults
-  } catch {
+  } catch (error: unknown) {
+    pauseQuotesOnRateLimit(error)
     return null
   }
 }

@@ -11,6 +11,7 @@ import { setBearerToken } from 'cowSdk'
 import { captchaErrorAtom } from 'entities/captcha/state/captchaErrorAtom'
 import { captchaInteractionRequiredAtom } from 'entities/captcha/state/captchaInteractionRequiredAtom'
 import { captchaJwtAtom } from 'entities/captcha/state/captchaJwtAtom'
+import { quoteRateLimitedUntilAtom } from 'entities/captcha/state/quoteRateLimitedUntilAtom'
 import { createPortal } from 'react-dom'
 
 import { useActiveLocale } from 'legacy/hooks/useActiveLocale'
@@ -35,6 +36,7 @@ export function CaptchaWidget(): ReactNode {
   const [captchaJwt, setCaptchaJwt] = useAtom(captchaJwtAtom)
   const [captchaError, setCaptchaError] = useAtom(captchaErrorAtom)
   const setCaptchaInteractionRequired = useSetAtom(captchaInteractionRequiredAtom)
+  const setQuoteRateLimitedUntil = useSetAtom(quoteRateLimitedUntilAtom)
   const { isCaptchaEnabled } = useFeatureFlags()
   const captchaRef = useRef<TurnstileInstance | undefined>(undefined)
   const exchangeRequestIdRef = useRef(0)
@@ -71,13 +73,15 @@ export function CaptchaWidget(): ReactNode {
       setBearerToken(captchaJwt.token)
       setCaptchaError(null)
       setIsScriptRetryPending(false)
+      // A new JWT has its own rate-limit budget.
+      setQuoteRateLimitedUntil(null)
       resetRetries()
       logCaptcha.info('JWT applied to orderbook context', { expiresAt: captchaJwt.expiresAt })
     } else {
       setBearerToken(null)
       logCaptcha.info('JWT cleared from orderbook context')
     }
-  }, [captchaJwt, isCaptchaEnabled, resetRetries, setCaptchaError, siteKey])
+  }, [captchaJwt, isCaptchaEnabled, resetRetries, setCaptchaError, setQuoteRateLimitedUntil, siteKey])
 
   useEffect(() => {
     if (isCaptchaEnabled !== false) return
