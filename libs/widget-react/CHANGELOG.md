@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.3.7](https://github.com/cowprotocol/cowswap/compare/widget-react-v3.3.6...widget-react-v3.3.7) (2026-11-25)
+
+### Patch Changes
+
+- fix(rwa): medium bugs of the RWA UI backlog (#8661)
+
+- Updated dependencies []:
+  - @cowprotocol/widget-lib@4.17.0
+
 ## [3.3.6](https://github.com/cowprotocol/cowswap/compare/widget-react-v3.3.5...widget-react-v3.3.6) (2026-11-18)
 
 ### Patch Changes

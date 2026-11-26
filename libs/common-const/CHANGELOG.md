@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.26.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.25.0...common-const-v3.26.0) (2026-11-25)
+
+### Minor Changes
+
+- feat(theme): add Vice sunset theme behind a feature flag (#8678)
+
+### Patch Changes
+
+- fix(rwa): apply geo restrictions to all RWA tokens via BFF (#8636)
+
 ## [3.25.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.24.0...common-const-v3.25.0) (2026-11-19)
 
 ### Minor Changes

@@ -1,5 +1,25 @@
 # Changelog
 
+## [3.23.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.22.1...widget-configurator-v3.23.0) (2026-11-25)
+
+### Minor Changes
+
+- feat: extend cookie consent to CoW Swap, Explorer and RWA (#8555)
+
+- feat(widget): add priority tokens setting to the widget (#8687)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.23.2
+  - @cowprotocol/common-hooks@3.22.2
+  - @cowprotocol/analytics@3.21.0
+  - @cowprotocol/widget-lib@4.17.0
+  - @cowprotocol/assets@2.14.0
+  - @cowprotocol/common-const@3.26.0
+  - @cowprotocol/ui@3.26.0
+  - @cowprotocol/widget-react@3.3.7
+
 ## [3.22.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.22.0...widget-configurator-v3.22.1) (2026-11-19)
 
 ### Patch Changes

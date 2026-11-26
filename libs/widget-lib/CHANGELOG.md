@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.17.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.16.0...widget-lib-v4.17.0) (2026-11-25)
+
+### Minor Changes
+
+- feat(widget): add priority tokens setting to the widget (#8687)
+
+### Patch Changes
+
+- fix(rwa): medium bugs of the RWA UI backlog (#8661)
+
 ## [4.16.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.15.0...widget-lib-v4.16.0) (2026-11-18)
 
 ### Minor Changes
