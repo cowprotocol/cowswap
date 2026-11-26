@@ -77,5 +77,21 @@ describe('bffFetch', () => {
       expect((await bffFetch(URL)).status).toBe(200)
       expect(authOf(1)).toBe('Bearer jwt')
     })
+
+    it('does not pause for a 429 that answers a token replaced in the meantime', async () => {
+      const pending = bffFetch(URL)
+      setBffBearerToken('jwt')
+      await pending
+      mockFetch.mockResolvedValueOnce({ status: 200 })
+
+      expect((await bffFetch(URL)).status).toBe(200)
+    })
+
+    it('does not pause for a 429 passed through from a proxied upstream', async () => {
+      await bffFetch('https://bff.test/proxies/token-search')
+      mockFetch.mockResolvedValueOnce({ status: 200 })
+
+      expect((await bffFetch(URL)).status).toBe(200)
+    })
   })
 })

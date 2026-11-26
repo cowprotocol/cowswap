@@ -9,9 +9,13 @@ export async function bffFetch(input: string, init: BffFetchInit = {}): Promise<
   // Retrying while rate limited only spends the budget, and can turn a 429 into a longer block.
   if (Date.now() < pausedUntil) return new Response(null, { status: 429 })
 
+  const token = bffBearerToken
   const response = await fetchWithBearer(input, init)
 
-  if (response.status === 429) pausedUntil = Date.now() + parseRetryAfter(response)
+  // A 429 for a token replaced meanwhile, or passed through from a proxied upstream, doesn't limit the current token.
+  if (response.status === 429 && token === bffBearerToken && !input.includes('/proxies/')) {
+    pausedUntil = Date.now() + parseRetryAfter(response)
+  }
 
   return response
 }
