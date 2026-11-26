@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-11-24 15:16\n"
+"PO-Revision-Date: 2026-11-26 08:35\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -536,6 +536,10 @@ msgstr "токен"
 #~ msgid "Please, top up {symbol} balance or cancel the order."
 #~ msgstr "Please, top up {symbol} balance or cancel the order."
 
+#: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
+msgid "1. type your text here · 2. tap the wall where it should go · tap again to re-stamp"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
 #~ msgid "Easily set and manage your orders in USD"
 #~ msgstr "Easily set and manage your orders in USD"
@@ -916,6 +920,10 @@ msgstr "Сделки, совершенные через интеграторов
 
 #: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
 msgid "<0><1>fee</1> · Joins</0> batch in{joinsBatchGap}<2/>"
+msgstr ""
+
+#: apps/cowswap-frontend/src/pages/graffiti/WallScreen.pure.tsx
+msgid "text tool: type your text in the tools panel, then tap the wall"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationsList/index.tsx
@@ -1785,8 +1793,8 @@ msgid "Review and confirm in your wallet to continue."
 msgstr "Проверьте и подтвердите действие в кошельке, чтобы продолжить."
 
 #: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
-msgid "Label"
-msgstr "Ярлык"
+#~ msgid "Label"
+#~ msgstr "Label"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApprovalTooltip/index.tsx
 msgid "You must give the CoW Protocol smart contracts permission to use your <0/>."
@@ -3404,6 +3412,10 @@ msgstr "Перейти в «Ордера»"
 msgid "{typeLabel} hooks are externally hosted code which needs to be independently verified by the user."
 msgstr "{typeLabel} хуки — это код на внешнем хостинге, который должен быть самостоятельно проверен пользователем."
 
+#: apps/cowswap-frontend/src/pages/graffiti/WallScreen.pure.tsx
+msgid "tap the wall where your text should go — tap again to re-stamp"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure.tsx
 msgid "The order remains open. Execution requires sufficient balance."
 msgstr "Ордер остается открытым. Для исполнения требуется достаточный баланс."
@@ -4321,8 +4333,8 @@ msgstr "Принцип работы аукциона"
 #~ msgstr "No failed orders found"
 
 #: apps/cowswap-frontend/src/pages/graffiti/StartOverlay.pure.tsx
-msgid "🐮 At Solana Breakpoint? Find us at the CoW Protocol booth and ask for the {TOKEN_SYMBOL} airdrop."
-msgstr "🐮 Вы на Solana Breakpoint? Найдите нас на стенде CoW Protocol и получите бесплатную раздачу {TOKEN_SYMBOL}."
+#~ msgid "🐮 At Solana Breakpoint? Find us at the CoW Protocol booth and ask for the {TOKEN_SYMBOL} airdrop."
+#~ msgstr "🐮 At Solana Breakpoint? Find us at the CoW Protocol booth and ask for the {TOKEN_SYMBOL} airdrop."
 
 #: apps/cowswap-frontend/src/modules/application/containers/AppMenu/index.tsx
 msgid "Enable Alpha Networks"
@@ -6847,6 +6859,10 @@ msgstr "Установить одобрение"
 msgid "Must be before {maxDateStr} {timeZone}"
 msgstr "Должно быть до {maxDateStr} {timeZone}"
 
+#: apps/cowswap-frontend/src/pages/graffiti/StartOverlay.pure.tsx
+msgid "🐦 Follow <0>{TWITTER_HANDLE}</0> and send us a love message. We will share some with you."
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 #~ msgid "Complete the CAPTCHA"
 #~ msgstr "Complete the CAPTCHA"
@@ -7080,8 +7096,8 @@ msgstr "Обменять на"
 #~ msgstr "Buy {formattedBuyAmount} {0}"
 
 #: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
-msgid "size follows the brush ({fontSize}px) — tap the wall to stamp, tap again to re-stamp"
-msgstr "размер подстраивается под кисть ({fontSize}px) — коснитесь стены, чтобы поставить штамп, и ещё раз, чтобы переставить"
+#~ msgid "size follows the brush ({fontSize}px) — tap the wall to stamp, tap again to re-stamp"
+#~ msgstr "size follows the brush ({fontSize}px) — tap the wall to stamp, tap again to re-stamp"
 
 #: libs/ui/src/pure/TooltipIcon/TooltipIcon.pure.tsx
 msgid "Help"
@@ -8178,6 +8194,10 @@ msgstr "Срок ордера истек"
 #: apps/cowswap-frontend/src/common/pure/CurrencySelectButton/index.tsx
 #~ msgid "Selected token:"
 #~ msgstr "Selected token:"
+
+#: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
+msgid "size follows the brush ({fontSize}px)"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/trade/pure/SolanaSigningCountdown/index.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/SolanaSigningCountdown/index.tsx
@@ -10593,8 +10613,8 @@ msgid "Simulate"
 msgstr "Симулировать"
 
 #: apps/cowswap-frontend/src/pages/graffiti/StartOverlay.pure.tsx
-msgid "🐦 Not at Breakpoint? Follow <0>{TWITTER_HANDLE}</0> and send us a love message. We will share some with you."
-msgstr "🐦 Не на Breakpoint? Подпишитесь на <0>{TWITTER_HANDLE}</0> и напишите нам пару тёплых слов. Мы тоже поделимся с вами!"
+#~ msgid "🐦 Not at Breakpoint? Follow <0>{TWITTER_HANDLE}</0> and send us a love message. We will share some with you."
+#~ msgstr "🐦 Not at Breakpoint? Follow <0>{TWITTER_HANDLE}</0> and send us a love message. We will share some with you."
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Start time"
@@ -10704,6 +10724,10 @@ msgstr "онлайн · художников: {painters}"
 #: apps/cowswap-frontend/src/pages/graffiti/StartOverlay.pure.tsx
 msgid "painted, and {paintedCount} {TOKEN_SYMBOL} burned for good. Everyone looking at the wall right now can see them."
 msgstr "нанесено на стену, а {paintedCount} {TOKEN_SYMBOL} безвозвратно сожжены. Все, кто сейчас на стене, сразу их увидят."
+
+#: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
+msgid "Text"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/trade/pure/SolanaOrderNotPlaced/index.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/SolanaOrderNotPlaced/index.tsx
