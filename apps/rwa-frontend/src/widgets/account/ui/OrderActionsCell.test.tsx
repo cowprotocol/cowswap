@@ -47,8 +47,30 @@ describe('OrderActionsCell', () => {
   })
 
   it('links a Safe TWAP, which is cancelled in the widget, without cancel actions', () => {
+    const open = jest.spyOn(window, 'open').mockReturnValue(null)
     openMenu(order({ type: 'twap', uid: TWAP_EVENT_ID }))
 
     expect(screen.getAllByRole('menuitem').map(({ textContent }) => textContent)).toEqual(['View order details'])
+
+    fireEvent.click(screen.getByRole('menuitem', { name: 'View order details' }))
+
+    expect(open).toHaveBeenCalledWith(
+      `https://explorer.cow.fi/base/twap/${TWAP_EVENT_ID}`,
+      '_blank',
+      'noopener,noreferrer',
+    )
+  })
+
+  it('links a TWAP part, listed when the TWAPs fail to load, to its order', () => {
+    const open = jest.spyOn(window, 'open').mockReturnValue(null)
+    openMenu(order({ type: 'twap', uid: ORDER_UID }))
+
+    fireEvent.click(screen.getByRole('menuitem', { name: 'View order details' }))
+
+    expect(open).toHaveBeenCalledWith(
+      `https://explorer.cow.fi/base/orders/${ORDER_UID}`,
+      '_blank',
+      'noopener,noreferrer',
+    )
   })
 })

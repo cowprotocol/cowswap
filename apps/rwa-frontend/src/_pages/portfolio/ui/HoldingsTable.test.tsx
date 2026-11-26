@@ -75,10 +75,18 @@ describe('HoldingsTable', () => {
       />,
     )
 
-    expect(screen.getByRole('link', { name: 'NVIDIA' }).getAttribute('href')).toBe('/asset/NVDA')
+    expect(screen.getByRole('link', { name: 'NVIDIA' }).getAttribute('href')).toBe('/asset/NVDA?from=portfolio')
     expect(screen.getByText('Sunrun')).toBeTruthy()
     expect(screen.queryByRole('link', { name: 'Sunrun' })).toBeNull()
     expect(screen.queryByRole('button', { name: 'Sunrun actions' })).toBeNull()
+  })
+
+  it('links each token to its asset page with the token selected', () => {
+    render(<HoldingsTable holdings={HOLDINGS} getLogoUrl={() => null} isWalletEmpty={false} isFiltered={false} />)
+
+    expect(screen.getByRole('link', { name: 'NVDAon · Ondo' }).getAttribute('href')).toBe(
+      '/asset/NVDA?token=56%3A0x0000000000000000000000000000000000000002&from=portfolio',
+    )
   })
 
   it('invites an empty wallet to explore assets', () => {

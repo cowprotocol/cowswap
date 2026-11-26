@@ -118,7 +118,7 @@ function HoldingRows({ holding, getLogoUrl }: HoldingRowsProps): ReactNode {
   const router = useRouter()
   const [isExpanded, setIsExpanded] = useState(tokens.length > 1)
   const tokensLabel = `${tokens.length} stock token${tokens.length === 1 ? '' : 's'}`
-  const hasPage = isListedAsset(asset)
+  const assetPath = isListedAsset(asset) ? getAssetPath(asset.ticker, { from: 'portfolio' }) : null
 
   return (
     <tbody className={styles.group}>
@@ -136,8 +136,8 @@ function HoldingRows({ holding, getLogoUrl }: HoldingRowsProps): ReactNode {
             </button>
             <TokenLogo symbol={asset.ticker} logoUrl={getLogoUrl(asset)} />
             <div className={styles.holdingIdentity}>
-              {hasPage ? (
-                <Link className={styles.holdingTitle} href={getAssetPath(asset.ticker)}>
+              {assetPath ? (
+                <Link className={styles.holdingTitle} href={assetPath}>
                   {asset.title}
                 </Link>
               ) : (
@@ -152,10 +152,10 @@ function HoldingRows({ holding, getLogoUrl }: HoldingRowsProps): ReactNode {
         <td className={`${styles.numeric} ${styles.strong}`}>{formatShares(shares)}</td>
         <td className={`${styles.numeric} ${styles.strong}`}>{formatValue(value)}</td>
         <td className={styles.menuColumn}>
-          {hasPage && (
+          {assetPath && (
             <RowMenu
               label={`${asset.title} actions`}
-              items={[{ label: `Open ${asset.title}`, onSelect: () => router.push(getAssetPath(asset.ticker)) }]}
+              items={[{ label: `Open ${asset.title}`, onSelect: () => router.push(assetPath) }]}
             />
           )}
         </td>
@@ -178,7 +178,7 @@ function TokenRow({ holding: { asset }, tokenHolding, getLogoUrl, className }: T
   const { token, balance, shares, value } = tokenHolding
   const router = useRouter()
   const explorerUrl = getExplorerAddressUrl(token.chainId, token.address)
-  const assetPath = isListedAsset(asset) ? getAssetPath(asset.ticker, token) : null
+  const assetPath = isListedAsset(asset) ? getAssetPath(asset.ticker, { token, from: 'portfolio' }) : null
   const amount =
     token.decimals === null ? EMPTY_VALUE : tokenAmountFormatter.format(toTokenUnits(balance, token.decimals))
 

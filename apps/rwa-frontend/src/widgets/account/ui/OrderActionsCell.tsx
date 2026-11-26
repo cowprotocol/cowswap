@@ -79,5 +79,5 @@ function getCancelItems(order: OpenOrder, cancel: (type: CancellationType) => vo
 }
 
 function getOrderExplorerUrl({ type, chainId, uid }: OpenOrder): string | null {
-  return type === 'twap' ? getCowExplorerTwapUrl(chainId, uid) : getCowExplorerOrderUrl(chainId, uid)
+  return (type === 'twap' && getCowExplorerTwapUrl(chainId, uid)) || getCowExplorerOrderUrl(chainId, uid)
 }
