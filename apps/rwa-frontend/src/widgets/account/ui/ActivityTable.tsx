@@ -15,7 +15,7 @@ import type { Activity } from '../api/activity'
 import type { RwaTokenSummary } from '@/entities/asset'
 
 import { getCowExplorerOrderUrl, getExplorerTxUrl } from '@/shared/lib/chain'
-import { ArrowUpRightIcon } from '@/shared/ui/icons'
+import { ArrowUpRightIcon, LinkIcon } from '@/shared/ui/icons'
 import { StatusMessage } from '@/shared/ui/status-message'
 import { TokenLogo } from '@/shared/ui/token-logo'
 
@@ -101,6 +101,7 @@ function ActivityRow({ item, logoUrl }: { item: Activity; logoUrl: string | null
             items={[
               {
                 label: explorerUrl.label,
+                icon: <LinkIcon />,
                 onSelect: () => window.open(explorerUrl.url, '_blank', 'noopener,noreferrer'),
               },
             ]}
@@ -113,7 +114,7 @@ function ActivityRow({ item, logoUrl }: { item: Activity; logoUrl: string | null
 
 function getActivityExplorerUrl({ chainId, orderUid, txHash }: Activity): { label: string; url: string } | null {
   const orderUrl = orderUid ? getCowExplorerOrderUrl(chainId, orderUid) : null
-  if (orderUrl) return { label: 'View on CoW Explorer', url: orderUrl }
+  if (orderUrl) return { label: 'View on explorer', url: orderUrl }
 
   const txUrl = txHash ? getExplorerTxUrl(chainId, txHash) : null
 

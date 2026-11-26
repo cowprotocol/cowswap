@@ -13,7 +13,7 @@ import type { Portfolio } from '../model/usePortfolio'
 import { DividendNotes, getAssetPath, getTokenKey, isListedAsset, RWA_ASSET_TYPE_LABELS } from '@/entities/asset'
 import { getChainLabel, getExplorerAddressUrl } from '@/shared/lib/chain'
 import { EMPTY_VALUE, formatUsd, toTokenUnits } from '@/shared/lib/format'
-import { ChevronDownIcon } from '@/shared/ui/icons'
+import { ArrowRightIcon, ChevronDownIcon, LinkIcon } from '@/shared/ui/icons'
 import { StatusMessage } from '@/shared/ui/status-message'
 import { TokenLogo } from '@/shared/ui/token-logo'
 import { RowMenu } from '@/widgets/account'
@@ -155,7 +155,9 @@ function HoldingRows({ holding, getLogoUrl }: HoldingRowsProps): ReactNode {
           {assetPath && (
             <RowMenu
               label={`${asset.title} actions`}
-              items={[{ label: `Open ${asset.title}`, onSelect: () => router.push(assetPath) }]}
+              items={[
+                { label: `Open ${asset.title}`, icon: <ArrowRightIcon />, onSelect: () => router.push(assetPath) },
+              ]}
             />
           )}
         </td>
@@ -211,12 +213,19 @@ function TokenRow({ holding: { asset }, tokenHolding, getLogoUrl, className }: T
           label={`${token.symbol} on ${getChainLabel(token.chainId)} actions`}
           items={[
             ...(assetPath
-              ? [{ label: `Open ${token.symbol} · ${token.issuer}`, onSelect: () => router.push(assetPath) }]
+              ? [
+                  {
+                    label: `Open ${token.symbol} · ${token.issuer}`,
+                    icon: <ArrowRightIcon />,
+                    onSelect: () => router.push(assetPath),
+                  },
+                ]
               : []),
             ...(explorerUrl
               ? [
                   {
                     label: 'View token on explorer',
+                    icon: <LinkIcon />,
                     onSelect: () => window.open(explorerUrl, '_blank', 'noopener,noreferrer'),
                   },
                 ]

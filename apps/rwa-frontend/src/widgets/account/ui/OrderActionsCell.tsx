@@ -11,6 +11,7 @@ import type { CancellationType } from '../api/cancelOrder'
 import type { OpenOrder } from '../api/openOrders'
 
 import { getCowExplorerOrderUrl, getCowExplorerTwapUrl, getExplorerTxUrl } from '@/shared/lib/chain'
+import { LinkIcon, TrashIcon } from '@/shared/ui/icons'
 import { Tooltip } from '@/shared/ui/tooltip'
 
 const SOLVER_CAVEAT =
@@ -43,7 +44,13 @@ export function OrderActionsCell({ order }: { order: OpenOrder }): ReactNode {
   const explorerUrl = getOrderExplorerUrl(order)
   const items: RowMenuItem[] = [
     ...(explorerUrl
-      ? [{ label: 'View order details', onSelect: () => window.open(explorerUrl, '_blank', 'noopener,noreferrer') }]
+      ? [
+          {
+            label: 'View on explorer',
+            icon: <LinkIcon />,
+            onSelect: () => window.open(explorerUrl, '_blank', 'noopener,noreferrer'),
+          },
+        ]
       : []),
     ...getCancelItems(order, (type) => cancel(order, type)),
   ]
@@ -62,19 +69,23 @@ export function OrderActionsCell({ order }: { order: OpenOrder }): ReactNode {
   )
 }
 
+function cancelItem(label: string, type: CancellationType, cancel: (type: CancellationType) => void): RowMenuItem {
+  return {
+    label,
+    icon: <TrashIcon />,
+    description: CANCELLATION_DESCRIPTIONS[type],
+    variant: 'danger',
+    onSelect: () => cancel(type),
+  }
+}
+
 function getCancelItems(order: OpenOrder, cancel: (type: CancellationType) => void): RowMenuItem[] {
   // The UID cancellations don't stop a TWAP. A Safe's TWAP is cancelled in the trade widget
-  if (order.type === 'twap') {
-    return order.cowShedTwap
-      ? [{ label: 'Cancel TWAP on-chain', description: CANCELLATION_DESCRIPTIONS.hard, onSelect: () => cancel('hard') }]
-      : []
-  }
+  if (order.type === 'twap') return order.cowShedTwap ? [cancelItem('Cancel TWAP on-chain', 'hard', cancel)] : []
 
   return [
-    ...(order.isSoftCancellable
-      ? [{ label: 'Cancel order', description: CANCELLATION_DESCRIPTIONS.soft, onSelect: () => cancel('soft') }]
-      : []),
-    { label: 'Cancel on-chain', description: CANCELLATION_DESCRIPTIONS.hard, onSelect: () => cancel('hard') },
+    ...(order.isSoftCancellable ? [cancelItem('Cancel order', 'soft', cancel)] : []),
+    cancelItem('Cancel on-chain', 'hard', cancel),
   ]
 }
 

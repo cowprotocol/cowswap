@@ -26,7 +26,7 @@ describe('OrderActionsCell', () => {
     const open = jest.spyOn(window, 'open').mockReturnValue(null)
     openMenu(order({}))
 
-    fireEvent.click(screen.getByRole('menuitem', { name: /View order details/ }))
+    fireEvent.click(screen.getByRole('menuitem', { name: /View on explorer/ }))
 
     expect(open).toHaveBeenCalledWith(
       `https://explorer.cow.fi/base/orders/${ORDER_UID}`,
@@ -50,9 +50,9 @@ describe('OrderActionsCell', () => {
     const open = jest.spyOn(window, 'open').mockReturnValue(null)
     openMenu(order({ type: 'twap', uid: TWAP_EVENT_ID }))
 
-    expect(screen.getAllByRole('menuitem').map(({ textContent }) => textContent)).toEqual(['View order details'])
+    expect(screen.getAllByRole('menuitem').map(({ textContent }) => textContent)).toEqual(['View on explorer'])
 
-    fireEvent.click(screen.getByRole('menuitem', { name: 'View order details' }))
+    fireEvent.click(screen.getByRole('menuitem', { name: 'View on explorer' }))
 
     expect(open).toHaveBeenCalledWith(
       `https://explorer.cow.fi/base/twap/${TWAP_EVENT_ID}`,
@@ -65,7 +65,7 @@ describe('OrderActionsCell', () => {
     const open = jest.spyOn(window, 'open').mockReturnValue(null)
     openMenu(order({ type: 'twap', uid: ORDER_UID }))
 
-    fireEvent.click(screen.getByRole('menuitem', { name: 'View order details' }))
+    fireEvent.click(screen.getByRole('menuitem', { name: 'View on explorer' }))
 
     expect(open).toHaveBeenCalledWith(
       `https://explorer.cow.fi/base/orders/${ORDER_UID}`,
