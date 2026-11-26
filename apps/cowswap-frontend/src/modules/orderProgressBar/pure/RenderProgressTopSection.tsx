@@ -27,7 +27,6 @@ interface ProgressContentProps {
   randomBenefit: string
   shouldShowSurplus: boolean
   auctionValidFrom?: number
-  onAuctionRemainingChange?: (remainingSec: number) => void
 }
 
 const AnimatePresence = lazy(() => import('framer-motion').then((r) => ({ default: r.AnimatePresence })))
@@ -42,12 +41,10 @@ export function RenderProgressTopSection({
   debugForceShowSurplus = false,
   randomBenefit = '',
   auctionValidFrom,
-  onAuctionRemainingChange,
 }: Pick<OrderProgressBarProps, 'stepName' | 'order' | 'countdown' | 'chainId' | 'surplusData'> & {
   debugForceShowSurplus?: boolean
   randomBenefit?: string
   auctionValidFrom?: number
-  onAuctionRemainingChange?: (remainingSec: number) => void
 }): ReactNode {
   const { t } = useLingui()
   const { disablePostTradeTips } = useInjectedWidgetParams()
@@ -75,7 +72,6 @@ export function RenderProgressTopSection({
     randomBenefit,
     shouldShowSurplus,
     auctionValidFrom: stepName === OrderProgressBarStepName.INITIAL ? auctionValidFrom : undefined,
-    onAuctionRemainingChange,
   }
 
   return (
@@ -106,7 +102,6 @@ function ProgressContent({
   randomBenefit,
   shouldShowSurplus,
   auctionValidFrom,
-  onAuctionRemainingChange,
 }: ProgressContentProps): ReactNode {
   const skipLayoutGate =
     stepName === OrderProgressBarStepName.FINISHED || stepName === OrderProgressBarStepName.CANCELLATION_FAILED
@@ -122,7 +117,6 @@ function ProgressContent({
       randomBenefit={randomBenefit}
       shouldShowSurplus={shouldShowSurplus}
       auctionValidFrom={auctionValidFrom}
-      onAuctionRemainingChange={onAuctionRemainingChange}
     />
   ) : null
 

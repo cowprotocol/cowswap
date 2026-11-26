@@ -23,7 +23,6 @@ export interface ProgressTopSectionProps {
   surplusPercentValue: string
   randomBenefit: string
   auctionValidFrom?: number
-  onAuctionRemainingChange?: (remainingSec: number) => void
 }
 
 const finalSteps = ['delayed', 'submissionFailed', 'solved']
@@ -42,17 +41,9 @@ export function ProgressTopSection({
   shouldShowSurplus,
   surplusPercentValue,
   auctionValidFrom,
-  onAuctionRemainingChange,
 }: ProgressTopSectionProps) {
   if (stepName === 'initial') {
-    return (
-      <InitialTopSection
-        stepName={stepName}
-        order={order}
-        auctionValidFrom={auctionValidFrom}
-        onAuctionRemainingChange={onAuctionRemainingChange}
-      />
-    )
+    return <InitialTopSection stepName={stepName} order={order} auctionValidFrom={auctionValidFrom} />
   }
 
   if (stepName === 'unfillable') {
