@@ -8,10 +8,16 @@ import * as styledEl from './wall.styled'
 import { WallHeader } from './WallHeader.pure'
 import { WallStage } from './WallStage.pure'
 
+import type { Tool } from './wall.types'
 import type { WallModel } from './wallModel.types'
 
 export interface WallScreenProps {
   wall: WallModel
+}
+
+interface ToolHintProps {
+  tool: Tool
+  label: string
 }
 
 export function WallScreen({ wall }: WallScreenProps): ReactNode {
@@ -57,9 +63,17 @@ export function WallScreen({ wall }: WallScreenProps): ReactNode {
 
       {(layout.toolsVisible || paint.busy || settled) && (
         <styledEl.Footer>
-          <span>{PHASE_LABEL[paint.phase] || <Trans>draw on the wall — cost updates live</Trans>}</span>
+          <span>{PHASE_LABEL[paint.phase] || <ToolHint tool={brush.tool} label={brush.label} />}</span>
         </styledEl.Footer>
       )}
     </styledEl.Page>
   )
+}
+
+function ToolHint({ tool, label }: ToolHintProps): ReactNode {
+  if (tool !== 'text') return <Trans>draw on the wall — cost updates live</Trans>
+
+  if (!label.trim()) return <Trans>text tool: type your text in the tools panel, then tap the wall</Trans>
+
+  return <Trans>tap the wall where your text should go — tap again to re-stamp</Trans>
 }

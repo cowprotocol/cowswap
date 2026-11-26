@@ -17,7 +17,7 @@ import { Nullish } from 'types'
 import { Field } from 'legacy/state/types'
 
 import { useToggleAccountModal } from 'modules/account'
-import { CaptchaWidget } from 'modules/captcha'
+import { CaptchaSlot } from 'modules/captcha'
 import { useOpenTokenSelectWidget } from 'modules/tokensList'
 import { TradeFormValidation, useGetTradeFormValidation, useSolanaTradeOverhead } from 'modules/tradeFormValidation'
 import { WalletStatusButton } from 'modules/wallet'
@@ -333,7 +333,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                     isTradePriceUpdating={isTradePriceUpdating}
                   />
                 ),
-                <CaptchaWidget />,
+                <CaptchaSlot />,
               )
             )}
           </>

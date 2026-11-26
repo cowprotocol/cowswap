@@ -1,5 +1,23 @@
 # Changelog
 
+## [3.21.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.20.1...balances-and-allowances-v3.21.0) (2026-11-25)
+
+### Minor Changes
+
+- feat(solana): set the compute budget on sponsored creation transactions (#8615)
+
+- feat(solana): return order rent when an order is cancelled (#8692)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.23.2
+  - @cowprotocol/common-hooks@3.22.2
+  - @cowprotocol/tokens@3.21.0
+  - @cowprotocol/common-const@3.26.0
+  - @cowprotocol/core@3.16.2
+  - @cowprotocol/wallet@3.23.2
+
 ## [3.20.1](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.20.0...balances-and-allowances-v3.20.1) (2026-11-19)
 
 ### Patch Changes

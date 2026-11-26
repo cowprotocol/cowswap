@@ -15,6 +15,7 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/common/hooks/useCancelMultipleOrders.ts
 #: apps/cowswap-frontend/src/common/hooks/useCancelOrder/useSolanaCancelMultipleOrders.ts
+#: apps/cowswap-frontend/src/modules/ordersTable/hooks/useSolanaReclaimRent.ts
 #: apps/cowswap-frontend/src/modules/twap/hooks/useCancelTwapOrder.ts
 msgid "Wallet not connected"
 msgstr "Wallet not connected"
@@ -534,6 +535,10 @@ msgstr "token"
 #~ msgid "Please, top up {symbol} balance or cancel the order."
 #~ msgstr "Please, top up {symbol} balance or cancel the order."
 
+#: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
+msgid "1. type your text here · 2. tap the wall where it should go · tap again to re-stamp"
+msgstr "1. type your text here · 2. tap the wall where it should go · tap again to re-stamp"
+
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
 #~ msgid "Easily set and manage your orders in USD"
 #~ msgstr "Easily set and manage your orders in USD"
@@ -919,6 +924,10 @@ msgstr "Trades coming from integrator flow are excluded from affiliate rewards."
 #: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
 msgid "<0><1>fee</1> · Joins</0> batch in{joinsBatchGap}<2/>"
 msgstr "<0><1>fee</1> · Joins</0> batch in{joinsBatchGap}<2/>"
+
+#: apps/cowswap-frontend/src/pages/graffiti/WallScreen.pure.tsx
+msgid "text tool: type your text in the tools panel, then tap the wall"
+msgstr "text tool: type your text in the tools panel, then tap the wall"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationsList/index.tsx
 #~ msgid "Nothing new yet"
@@ -1787,8 +1796,8 @@ msgid "Review and confirm in your wallet to continue."
 msgstr "Review and confirm in your wallet to continue."
 
 #: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
-msgid "Label"
-msgstr "Label"
+#~ msgid "Label"
+#~ msgstr "Label"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApprovalTooltip/index.tsx
 msgid "You must give the CoW Protocol smart contracts permission to use your <0/>."
@@ -3414,6 +3423,10 @@ msgstr "View in Orders"
 msgid "{typeLabel} hooks are externally hosted code which needs to be independently verified by the user."
 msgstr "{typeLabel} hooks are externally hosted code which needs to be independently verified by the user."
 
+#: apps/cowswap-frontend/src/pages/graffiti/WallScreen.pure.tsx
+msgid "tap the wall where your text should go — tap again to re-stamp"
+msgstr "tap the wall where your text should go — tap again to re-stamp"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure.tsx
 msgid "The order remains open. Execution requires sufficient balance."
 msgstr "The order remains open. Execution requires sufficient balance."
@@ -3633,6 +3646,10 @@ msgstr "This fee helps pay for maintenance & improvements to the trade experienc
 msgid "Review limit order"
 msgstr "Review limit order"
 
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/ContextMenu/OrderContextMenu.pure.tsx
+msgid "Reclaim rent"
+msgstr "Reclaim rent"
+
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
 msgid "Trade Smart, Save More!"
 msgstr "Trade Smart, Save More!"
@@ -3688,6 +3705,10 @@ msgstr "Approve {symbol} (unlimited)"
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/EthFlowModalTopContent.tsx
 msgid "At current gas prices, your remaining {nativeSymbol} balance after confirmation may be only sufficient for<0>up to {txsRemaining} wrapping, unwrapping, or approval operation(s).</0>"
 msgstr "At current gas prices, your remaining {nativeSymbol} balance after confirmation may be only sufficient for<0>up to {txsRemaining} wrapping, unwrapping, or approval operation(s).</0>"
+
+#: apps/cowswap-frontend/src/modules/ordersTable/hooks/useSolanaReclaimRent.ts
+msgid "There is no rent left to reclaim"
+msgstr "There is no rent left to reclaim"
 
 #: apps/cowswap-frontend/src/legacy/components/Badge/RangeBadge.tsx
 msgid "The price of this pool is outside of your selected range. Your position is not currently earning fees."
@@ -4323,8 +4344,8 @@ msgstr "How the auction works"
 #~ msgstr "No failed orders found"
 
 #: apps/cowswap-frontend/src/pages/graffiti/StartOverlay.pure.tsx
-msgid "🐮 At Solana Breakpoint? Find us at the CoW Protocol booth and ask for the {TOKEN_SYMBOL} airdrop."
-msgstr "🐮 At Solana Breakpoint? Find us at the CoW Protocol booth and ask for the {TOKEN_SYMBOL} airdrop."
+#~ msgid "🐮 At Solana Breakpoint? Find us at the CoW Protocol booth and ask for the {TOKEN_SYMBOL} airdrop."
+#~ msgstr "🐮 At Solana Breakpoint? Find us at the CoW Protocol booth and ask for the {TOKEN_SYMBOL} airdrop."
 
 #: apps/cowswap-frontend/src/modules/application/containers/AppMenu/index.tsx
 msgid "Enable Alpha Networks"
@@ -5961,6 +5982,10 @@ msgstr "The order remains open. Execution requires sufficient <0><1/></0> balanc
 #~ msgid "Morpho Borrow"
 #~ msgstr "Morpho Borrow"
 
+#: apps/cowswap-frontend/src/modules/ordersTable/hooks/useSolanaReclaimRent.ts
+msgid "The reclaim transaction failed on-chain"
+msgstr "The reclaim transaction failed on-chain"
+
 #: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
 #~ msgid "Joins"
 #~ msgstr "Joins"
@@ -6853,6 +6878,10 @@ msgstr "Set approval"
 msgid "Must be before {maxDateStr} {timeZone}"
 msgstr "Must be before {maxDateStr} {timeZone}"
 
+#: apps/cowswap-frontend/src/pages/graffiti/StartOverlay.pure.tsx
+msgid "🐦 Follow <0>{TWITTER_HANDLE}</0> and send us a love message. We will share some with you."
+msgstr "🐦 Follow <0>{TWITTER_HANDLE}</0> and send us a love message. We will share some with you."
+
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 #~ msgid "Complete the CAPTCHA"
 #~ msgstr "Complete the CAPTCHA"
@@ -7086,8 +7115,8 @@ msgstr "Swap with"
 #~ msgstr "Buy {formattedBuyAmount} {0}"
 
 #: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
-msgid "size follows the brush ({fontSize}px) — tap the wall to stamp, tap again to re-stamp"
-msgstr "size follows the brush ({fontSize}px) — tap the wall to stamp, tap again to re-stamp"
+#~ msgid "size follows the brush ({fontSize}px) — tap the wall to stamp, tap again to re-stamp"
+#~ msgstr "size follows the brush ({fontSize}px) — tap the wall to stamp, tap again to re-stamp"
 
 #: libs/ui/src/pure/TooltipIcon/TooltipIcon.pure.tsx
 msgid "Help"
@@ -8184,6 +8213,10 @@ msgstr "Order Expired"
 #: apps/cowswap-frontend/src/common/pure/CurrencySelectButton/index.tsx
 #~ msgid "Selected token:"
 #~ msgstr "Selected token:"
+
+#: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
+msgid "size follows the brush ({fontSize}px)"
+msgstr "size follows the brush ({fontSize}px)"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/SolanaSigningCountdown/index.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/SolanaSigningCountdown/index.tsx
@@ -10019,6 +10052,10 @@ msgstr "Your order will execute when the market price is {displayedPercent}% bet
 msgid "Recover funds"
 msgstr "Recover funds"
 
+#: apps/cowswap-frontend/src/modules/ordersTable/hooks/useSolanaReclaimRent.ts
+msgid "Reclaim rent of cancelled orders"
+msgstr "Reclaim rent of cancelled orders"
+
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerCodeInfo.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
 msgid "Your referral code"
@@ -10607,8 +10644,8 @@ msgid "Simulate"
 msgstr "Simulate"
 
 #: apps/cowswap-frontend/src/pages/graffiti/StartOverlay.pure.tsx
-msgid "🐦 Not at Breakpoint? Follow <0>{TWITTER_HANDLE}</0> and send us a love message. We will share some with you."
-msgstr "🐦 Not at Breakpoint? Follow <0>{TWITTER_HANDLE}</0> and send us a love message. We will share some with you."
+#~ msgid "🐦 Not at Breakpoint? Follow <0>{TWITTER_HANDLE}</0> and send us a love message. We will share some with you."
+#~ msgstr "🐦 Not at Breakpoint? Follow <0>{TWITTER_HANDLE}</0> and send us a love message. We will share some with you."
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Start time"
@@ -10718,6 +10755,10 @@ msgstr "live · {painters} painting"
 #: apps/cowswap-frontend/src/pages/graffiti/StartOverlay.pure.tsx
 msgid "painted, and {paintedCount} {TOKEN_SYMBOL} burned for good. Everyone looking at the wall right now can see them."
 msgstr "painted, and {paintedCount} {TOKEN_SYMBOL} burned for good. Everyone looking at the wall right now can see them."
+
+#: apps/cowswap-frontend/src/pages/graffiti/SidebarSections.pure.tsx
+msgid "Text"
+msgstr "Text"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/SolanaOrderNotPlaced/index.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/SolanaOrderNotPlaced/index.tsx

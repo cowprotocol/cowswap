@@ -5,8 +5,13 @@
 {
   "schemaVersion": 2,
   "apps": {
+<<<<<<< HEAD
     "@cowprotocol/cow-fi": 5.4,
     "@cowprotocol/cowswap": 12.2,
+=======
+    "@cowprotocol/cow-fi": 5.3,
+    "@cowprotocol/cowswap": 12.1,
+>>>>>>> develop
     "@cowprotocol/explorer": 11.9,
     "@cowprotocol/rwa-frontend": 5.8,
     "@cowprotocol/sdk-tools": 10.1,

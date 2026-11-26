@@ -22,6 +22,7 @@ import { TradingSdkUpdater } from 'tradingSdk/TradingSdkUpdater'
 
 import { BalancesDevtools, CommonPriorityBalancesAndAllowancesUpdater } from 'modules/balancesAndAllowances'
 import { PendingBridgeOrdersUpdater, BridgingEnabledUpdater } from 'modules/bridge'
+import { CaptchaWidget } from 'modules/captcha'
 import { BalancesCombinedUpdater } from 'modules/combinedBalances'
 import { InFlightOrderFinalizeUpdater } from 'modules/ethFlow'
 import { CowEventsUpdater, InjectedWidgetUpdater } from 'modules/injectedWidget'
@@ -83,6 +84,7 @@ export function Updaters(): ReactNode {
       <CowSdkUpdater />
       <BlockNumberUpdater />
       <FeatureFlagsUpdater />
+      <CaptchaWidget />
       <BridgeProvidersUpdater />
       <ThemeConfigUpdater />
       <ThemeFromUrlUpdater />
