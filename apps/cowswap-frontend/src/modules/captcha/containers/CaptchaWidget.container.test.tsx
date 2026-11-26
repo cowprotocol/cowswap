@@ -15,6 +15,7 @@ import { useActiveLocale } from 'legacy/hooks/useActiveLocale'
 import { CaptchaWidget } from './CaptchaWidget.container'
 
 import { exchangeTurnstileToken } from '../api/captchaApi'
+import { logCaptcha } from '../logger'
 import { captchaSlotAtom } from '../state/captchaSlot.atoms'
 
 jest.mock('@cowprotocol/common-hooks', () => {
@@ -140,8 +141,9 @@ describe('CaptchaWidget', () => {
     expect(store.get(captchaErrorAtom)).not.toBeNull()
   })
 
-  it('resets Turnstile after a backoff delay when the JWT exchange fails', async () => {
+  it('resets Turnstile after a backoff delay when the JWT exchange fails, reporting the failure once', async () => {
     jest.useFakeTimers()
+    const logErrorSpy = jest.spyOn(logCaptcha, 'error').mockImplementation(() => undefined)
     useFeatureFlagsMock.mockReturnValue({ isCaptchaEnabled: true })
     exchangeTurnstileTokenMock.mockRejectedValue(new Error('exchange failed'))
 
@@ -151,6 +153,10 @@ describe('CaptchaWidget', () => {
     expect(mockReset).not.toHaveBeenCalled()
     act(() => jest.advanceTimersByTime(1000))
     expect(mockReset).toHaveBeenCalledTimes(1)
+
+    await act(async () => fireEvent.click(screen.getByTestId('success')))
+    expect(logErrorSpy).toHaveBeenCalledTimes(1)
+    logErrorSpy.mockRestore()
   })
 
   it('clears the captcha error once a JWT arrives', async () => {

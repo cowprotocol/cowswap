@@ -101,6 +101,19 @@ export function CaptchaWidget(): ReactNode {
 
   if (!isCaptchaEnabled || !siteKey || captchaJwt || isUnsupported) return null
 
+  // captchaError stays set until a JWT arrives, so retries that keep failing are reported once.
+  const handleFailure = (error: Error, reason?: string, context?: Record<string, string | number>): void => {
+    setCaptchaError(error)
+
+    if (captchaError) {
+      logCaptcha.warn(`${error.message} again`, context)
+      return
+    }
+
+    logCaptcha.error(error, undefined, context)
+    if (reason) trackCaptcha({ action: 'captcha_challenge_failed', reason })
+  }
+
   const turnstile = (
     <Turnstile
       key={`${siteKey}:${scriptMountKey}`}
@@ -151,11 +164,9 @@ export function CaptchaWidget(): ReactNode {
         } catch (err: unknown) {
           if (exchangeRequestIdRef.current !== requestId) return
 
-          const error = normalizeError(err)
-          setCaptchaError(error)
-
-          logCaptcha.error(new Error('JWT exchange failed', { cause: error }), undefined, { requestId })
-          trackCaptcha({ action: 'captcha_challenge_failed', reason: 'jwtExchangeFailed' })
+          handleFailure(new Error('JWT exchange failed', { cause: normalizeError(err) }), 'jwtExchangeFailed', {
+            requestId,
+          })
           setCaptchaJwt(null)
           scheduleRetry(() => captchaRef.current?.reset())
         }
@@ -174,10 +185,10 @@ export function CaptchaWidget(): ReactNode {
         setCaptchaInteractionRequired(false)
         exchangeRequestIdRef.current += 1
 
-        const error = new Error('Challenge errored')
-        logCaptcha.error(error, undefined, { errorCode, hostname: window.location.hostname })
-        setCaptchaError(error)
-        trackCaptcha({ action: 'captcha_challenge_failed', reason: 'turnstileError' })
+        handleFailure(new Error('Challenge errored'), 'turnstileError', {
+          errorCode,
+          hostname: window.location.hostname,
+        })
         setCaptchaJwt(null)
       }}
       onUnsupported={() => {
@@ -191,9 +202,7 @@ export function CaptchaWidget(): ReactNode {
       scriptOptions={{
         onError: () => {
           setCaptchaInteractionRequired(false)
-          const error = new Error('Turnstile script failed to load')
-          logCaptcha.error(error)
-          setCaptchaError(error)
+          handleFailure(new Error('Turnstile script failed to load'))
           // react-turnstile keeps the failed <script> (so it won't inject another) and its onload global
           // (so a fresh script still resolves its loader): drop the tag and remount to load it again.
           scheduleRetry(() => {
@@ -208,7 +217,7 @@ export function CaptchaWidget(): ReactNode {
   return slot ? (
     createPortal(turnstile, slot)
   ) : (
-    <div style={OFFSCREEN_STYLE} aria-hidden>
+    <div style={OFFSCREEN_STYLE} inert>
       {turnstile}
     </div>
   )
