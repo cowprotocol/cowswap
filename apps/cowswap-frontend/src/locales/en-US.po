@@ -922,8 +922,8 @@ msgid "Trades coming from integrator flow are excluded from affiliate rewards."
 msgstr "Trades coming from integrator flow are excluded from affiliate rewards."
 
 #: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
-msgid "<0><1>fee</1> · Joins</0> batch in{joinsBatchGap}<2/>"
-msgstr "<0><1>fee</1> · Joins</0> batch in{joinsBatchGap}<2/>"
+#~ msgid "<0><1>fee</1> · Joins</0> batch in{joinsBatchGap}<2/>"
+#~ msgstr "<0><1>fee</1> · Joins</0> batch in{joinsBatchGap}<2/>"
 
 #: apps/cowswap-frontend/src/pages/graffiti/WallScreen.pure.tsx
 msgid "text tool: type your text in the tools panel, then tap the wall"
@@ -9082,6 +9082,10 @@ msgstr "{percentage}% below market"
 msgid "Valid"
 msgstr "Valid"
 
+#: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
+msgid "<0><1>fee</1> · Joins</0> batch in <2/>"
+msgstr "<0><1>fee</1> · Joins</0> batch in <2/>"
+
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 #~ msgid "Resetting approval..."
 #~ msgstr "Resetting approval..."
@@ -10467,8 +10471,8 @@ msgid "Invalid parameters"
 msgstr "Invalid parameters"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
-msgid "Joins batch in{joinsBatchGap}<0/>"
-msgstr "Joins batch in{joinsBatchGap}<0/>"
+#~ msgid "Joins batch in{joinsBatchGap}<0/>"
+#~ msgstr "Joins batch in{joinsBatchGap}<0/>"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "You received"
@@ -10595,6 +10599,10 @@ msgstr "Delegate Now"
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
 #~ msgid "Try new limit orders now"
 #~ msgstr "Try new limit orders now"
+
+#: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
+msgid "Joins batch in <0/>"
+msgstr "Joins batch in <0/>"
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "Affiliate code created."
