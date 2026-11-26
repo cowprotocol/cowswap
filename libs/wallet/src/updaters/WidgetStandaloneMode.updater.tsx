@@ -48,6 +48,11 @@ export function WidgetStandaloneModeUpdater({ standaloneMode }: WidgetStandalone
   const isDappMode = standaloneMode === false
   const isStandaloneMode = standaloneMode === true
   const isDisconnectInProgress = useRef(false)
+  const isDappModeRef = useRef(isDappMode)
+
+  useEffect(() => {
+    isDappModeRef.current = isDappMode
+  }, [isDappMode])
 
   useEffect(() => {
     setAppWalletContext((state) => ({ ...state, standaloneMode }))
@@ -126,7 +131,7 @@ export function WidgetStandaloneModeUpdater({ standaloneMode }: WidgetStandalone
             new Error('Failed to disconnect a connector not allowed in widget mode', { cause: normalizeError(err) }),
           )
         })
-        .then(() => (inDappMode ? connectWidgetConnector() : undefined))
+        .then(() => (inDappMode && isDappModeRef.current ? connectWidgetConnector() : undefined))
         .finally(() => {
           isDisconnectInProgress.current = false
         })
