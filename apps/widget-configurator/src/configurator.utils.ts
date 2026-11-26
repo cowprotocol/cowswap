@@ -6,8 +6,13 @@ import type { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
 import { PaletteMode } from '@mui/material'
 
-import { DEFAULT_CONFIGURATOR_FORM_VALUES, DEFAULT_DARK_PALETTE, DEFAULT_LIGHT_PALETTE } from './configurator.constants'
-import { ColorPalette, ConfiguratorFormValues, ConfiguratorState } from './configurator.types'
+import {
+  DEFAULT_CONFIGURATOR_FORM_VALUES,
+  DEFAULT_DARK_PALETTE,
+  DEFAULT_LIGHT_PALETTE,
+  DEFAULT_TOKEN_LISTS,
+} from './configurator.constants'
+import { ColorPalette, ConfiguratorFormValues, ConfiguratorState, TokenListItem } from './configurator.types'
 import { parseJsonOrFallback } from './utils/json-field-parsing/jsonFieldParsing'
 import { normalizeWidgetSdkVersion } from './utils/widget-sdk-versions/widget-sdk-versions.utils'
 
@@ -115,6 +120,7 @@ export function resolveConfiguratorFormValues(persistedValue: unknown): Configur
   return {
     ...merged,
     sdkVersion: normalizeWidgetSdkVersion(merged.sdkVersion),
+    tokenListUrls: withMissingDefaultTokenLists(merged.tokenListUrls),
   }
 }
 
@@ -142,4 +148,20 @@ function parseCustomColorsByTheme(value: unknown): Record<PaletteMode, ColorPale
   if (!light || !dark) return null
 
   return { light, dark }
+}
+
+/**
+ * A persisted `tokenListUrls` replaces the default array wholesale, so a list added to the defaults
+ * later would never reach anyone who has already used the configurator. Appended rather than merged
+ * by position: the persisted entries carry the user's own enabled flags and must survive untouched.
+ */
+function withMissingDefaultTokenLists(tokenListUrls: TokenListItem[]): TokenListItem[] {
+  if (!Array.isArray(tokenListUrls)) return DEFAULT_TOKEN_LISTS
+
+  const knownUrls = new Set(
+    tokenListUrls.map((list) => (isRecord(list) && typeof list.url === 'string' ? list.url.toLowerCase() : '')),
+  )
+  const missing = DEFAULT_TOKEN_LISTS.filter((list) => !knownUrls.has(list.url.toLowerCase()))
+
+  return missing.length ? [...tokenListUrls, ...missing] : tokenListUrls
 }

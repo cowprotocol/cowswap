@@ -1,7 +1,13 @@
+import { SOLANA_TOKEN_LIST_URL } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TradeType } from '@cowprotocol/widget-lib'
 
-import { DEFAULT_CONFIGURATOR_FORM_VALUES, DEFAULT_DARK_PALETTE, DEFAULT_LIGHT_PALETTE } from './configurator.constants'
+import {
+  DEFAULT_CONFIGURATOR_FORM_VALUES,
+  DEFAULT_DARK_PALETTE,
+  DEFAULT_LIGHT_PALETTE,
+  DEFAULT_TOKEN_LISTS,
+} from './configurator.constants'
 import {
   buildConfiguratorState,
   getDefaultCustomColorsByTheme,
@@ -50,6 +56,30 @@ describe('configurator.utils', () => {
     for (const tradeType of Object.values(TradeType)) {
       expect(isTradeTypeAvailableOnChain(tradeType, SupportedChainId.MAINNET)).toBe(true)
     }
+  })
+
+  it('ships the Solana token list enabled, which the widget needs to show any token there', () => {
+    const solanaList = DEFAULT_TOKEN_LISTS.find((list) => list.url === SOLANA_TOKEN_LIST_URL)
+
+    expect(solanaList?.enabled).toBe(true)
+  })
+
+  it('adds token lists introduced after a config was persisted', () => {
+    const staleTokenLists = [{ url: 'https://app.tryroll.com/tokens.json', enabled: true }]
+
+    const { tokenListUrls } = resolveConfiguratorFormValues({ tokenListUrls: staleTokenLists })
+
+    expect(tokenListUrls.map(({ url }) => url)).toContain(SOLANA_TOKEN_LIST_URL)
+  })
+
+  it('leaves the flags a user already chose untouched when adding new lists', () => {
+    const staleTokenLists = [
+      { url: 'https://app.tryroll.com/tokens.json', enabled: true, enabledForSell: true, enabledForBuy: false },
+    ]
+
+    const { tokenListUrls } = resolveConfiguratorFormValues({ tokenListUrls: staleTokenLists })
+
+    expect(tokenListUrls[0]).toEqual(staleTokenLists[0])
   })
 
   it('returns defaults when no value is persisted', () => {

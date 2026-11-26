@@ -2,6 +2,7 @@ import {
   COW_CDN,
   SupportedLocale,
   LOCALE_DISPLAY_NAMES,
+  SOLANA_TOKEN_LIST_URL,
   SUPPORTED_LOCALES,
   DEFAULT_DEADLINE_FROM_NOW,
 } from '@cowprotocol/common-const'
@@ -111,6 +112,11 @@ export const DEFAULT_TOKEN_LISTS: TokenListItem[] = [
     enabledForBuy: false,
   },
   { url: 'https://app.tryroll.com/tokens.json', enabled: false, enabledForSell: false, enabledForBuy: false },
+  // The widget reads `tokenLists` as "show only these", so leaving Solana's out means Solana has no
+  // list at all. On an EVM chain the widget imports it as a widget-specific list and shows the entry
+  // in its list settings, but `parseTokenInfo` drops every token whose chainId is not the active
+  // one, so no Solana token reaches an EVM token selector.
+  { url: SOLANA_TOKEN_LIST_URL, enabled: true, enabledForSell: false, enabledForBuy: false },
 ]
 
 export const DEFAULT_CUSTOM_TOKENS: TokenInfo[] = [
