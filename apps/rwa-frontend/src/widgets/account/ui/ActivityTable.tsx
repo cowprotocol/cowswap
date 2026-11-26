@@ -14,7 +14,7 @@ import { ORDER_TYPE_LABELS } from '../lib/orderType'
 import type { Activity } from '../api/activity'
 import type { RwaTokenSummary } from '@/entities/asset'
 
-import { getExplorerTxUrl } from '@/shared/lib/chain'
+import { getCowExplorerOrderUrl, getExplorerTxUrl } from '@/shared/lib/chain'
 import { ArrowUpRightIcon } from '@/shared/ui/icons'
 import { StatusMessage } from '@/shared/ui/status-message'
 import { TokenLogo } from '@/shared/ui/token-logo'
@@ -62,7 +62,7 @@ export function ActivityTable({ activity, error, emptyText, getLogoUrl }: Activi
 
 function ActivityRow({ item, logoUrl }: { item: Activity; logoUrl: string | null }): ReactNode {
   const { assetToken, side } = item
-  const txUrl = item.txHash ? getExplorerTxUrl(item.chainId, item.txHash) : null
+  const explorerUrl = getActivityExplorerUrl(item)
   const sideLabel = side === 'buy' ? 'Buy' : 'Sell'
 
   return (
@@ -95,15 +95,29 @@ function ActivityRow({ item, logoUrl }: { item: Activity; logoUrl: string | null
         <StatusBadge tone="positive">Completed</StatusBadge>
       </td>
       <td className={styles.menuColumn}>
-        {txUrl && (
+        {explorerUrl && (
           <RowMenu
             label={`${sideLabel} ${assetToken.symbol} actions`}
-            items={[{ label: 'View transaction', onSelect: () => window.open(txUrl, '_blank', 'noopener,noreferrer') }]}
+            items={[
+              {
+                label: explorerUrl.label,
+                onSelect: () => window.open(explorerUrl.url, '_blank', 'noopener,noreferrer'),
+              },
+            ]}
           />
         )}
       </td>
     </tr>
   )
+}
+
+function getActivityExplorerUrl({ chainId, orderUid, txHash }: Activity): { label: string; url: string } | null {
+  const orderUrl = orderUid ? getCowExplorerOrderUrl(chainId, orderUid) : null
+  if (orderUrl) return { label: 'View on CoW Explorer', url: orderUrl }
+
+  const txUrl = txHash ? getExplorerTxUrl(chainId, txHash) : null
+
+  return txUrl ? { label: 'View transaction', url: txUrl } : null
 }
 
 function getOrderTypeLabel({ orderType, twapPart }: Activity): string {

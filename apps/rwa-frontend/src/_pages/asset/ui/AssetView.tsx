@@ -15,6 +15,7 @@ import { getTradingPauseMessage } from '../lib/tradingPause'
 import { useAssetMarket } from '../model/useAssetMarket'
 import { useAssetPriceStats } from '../model/useAssetPriceStats'
 import { useFitStickyTop } from '../model/useFitStickyTop'
+import { useTradeTokenFromUrl } from '../model/useTradeTokenFromUrl'
 
 import { AssetStats, type RwaAsset, type RwaRelatedAsset } from '@/entities/asset'
 import { useIsHydrated } from '@/shared/lib/hydrated'
@@ -36,6 +37,7 @@ export function AssetView({ asset, relatedAssets }: AssetViewProps): ReactNode {
   const tradingPauseMessage = isHydrated ? getTradingPauseMessage(data?.tradingPause, new Date()) : null
 
   useFitStickyTop(sideRef, SIDE_STICKY_GAP)
+  useTradeTokenFromUrl(asset.tokens)
 
   return (
     <div className={styles.layout}>

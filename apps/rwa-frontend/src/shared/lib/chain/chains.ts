@@ -1,8 +1,8 @@
 import { type Chain, createPublicClient, defineChain, fallback, http, type PublicClient } from 'viem'
 
-import { type EvmChainInfo, getChainInfo, isEvmChainInfo } from '@cowprotocol/cow-sdk'
+import { type EvmChainInfo, getChainInfo, isEvmChainInfo, SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { WALLET_CONNECT_PROJECT_ID } from '@/shared/config'
+import { getPageExplorerBaseUrl, WALLET_CONNECT_PROJECT_ID } from '@/shared/config'
 
 const RPC_TIMEOUT_MS = 5_000
 
@@ -36,6 +36,33 @@ export function getExplorerTxUrl(chainId: number, txHash: string): string | null
   const chain = getChainInfo(chainId)
 
   return chain ? `${chain.blockExplorer.url}/tx/${txHash}` : null
+}
+
+/** CoW Explorer path prefix of each network, as `explorer.ts` of `@cowprotocol/common-utils` */
+const COW_EXPLORER_CHAIN_PATHS: Partial<Record<number, string>> = {
+  [SupportedChainId.MAINNET]: '',
+  [SupportedChainId.GNOSIS_CHAIN]: '/gc',
+  [SupportedChainId.ARBITRUM_ONE]: '/arb1',
+  [SupportedChainId.BASE]: '/base',
+  [SupportedChainId.SEPOLIA]: '/sepolia',
+  [SupportedChainId.POLYGON]: '/pol',
+  [SupportedChainId.AVALANCHE]: '/avax',
+  [SupportedChainId.BNB]: '/bnb',
+  [SupportedChainId.LINEA]: '/linea',
+  [SupportedChainId.PLASMA]: '/plasma',
+  [SupportedChainId.INK]: '/ink',
+  [SupportedChainId.ROBINHOOD]: '/robinhood',
+}
+const TWAP_EVENT_ID = /^\d{60,78}$/
+
+/** The order on the CoW Explorer of the widget's environment */
+export function getCowExplorerOrderUrl(chainId: number, orderUid: string): string | null {
+  return getCowExplorerUrl(chainId, `/orders/${orderUid}`)
+}
+
+/** The TWAP on the CoW Explorer of the widget's environment, `null` unless `eventId` is a TWAP creation event ID */
+export function getCowExplorerTwapUrl(chainId: number, eventId: string): string | null {
+  return TWAP_EVENT_ID.test(eventId) ? getCowExplorerUrl(chainId, `/twap/${eventId}`) : null
 }
 
 export function getPublicClient(chainId: number): PublicClient | null {
@@ -73,6 +100,12 @@ export function toViemChain(chain: EvmChainInfo): Chain {
     testnet: chain.isTestnet,
     contracts: chain.contracts.multicall3 ? { multicall3: chain.contracts.multicall3 } : undefined,
   })
+}
+
+function getCowExplorerUrl(chainId: number, path: string): string | null {
+  const chainPath = COW_EXPLORER_CHAIN_PATHS[chainId]
+
+  return chainPath === undefined ? null : `${getPageExplorerBaseUrl()}${chainPath}${path}`
 }
 
 function getReownRpcUrl(chainId: number): string {

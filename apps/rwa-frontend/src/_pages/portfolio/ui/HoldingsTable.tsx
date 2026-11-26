@@ -10,7 +10,7 @@ import styles from './Portfolio.module.css'
 import type { Holding, TokenHolding } from '../lib/holdings'
 import type { Portfolio } from '../model/usePortfolio'
 
-import { DividendNotes, getTokenKey, isListedAsset, RWA_ASSET_TYPE_LABELS } from '@/entities/asset'
+import { DividendNotes, getAssetPath, getTokenKey, isListedAsset, RWA_ASSET_TYPE_LABELS } from '@/entities/asset'
 import { getChainLabel, getExplorerAddressUrl } from '@/shared/lib/chain'
 import { EMPTY_VALUE, formatUsd, toTokenUnits } from '@/shared/lib/format'
 import { ChevronDownIcon } from '@/shared/ui/icons'
@@ -137,7 +137,7 @@ function HoldingRows({ holding, getLogoUrl }: HoldingRowsProps): ReactNode {
             <TokenLogo symbol={asset.ticker} logoUrl={getLogoUrl(asset)} />
             <div className={styles.holdingIdentity}>
               {hasPage ? (
-                <Link className={styles.holdingTitle} href={`/asset/${asset.ticker}`}>
+                <Link className={styles.holdingTitle} href={getAssetPath(asset.ticker)}>
                   {asset.title}
                 </Link>
               ) : (
@@ -155,7 +155,7 @@ function HoldingRows({ holding, getLogoUrl }: HoldingRowsProps): ReactNode {
           {hasPage && (
             <RowMenu
               label={`${asset.title} actions`}
-              items={[{ label: `Open ${asset.title}`, onSelect: () => router.push(`/asset/${asset.ticker}`) }]}
+              items={[{ label: `Open ${asset.title}`, onSelect: () => router.push(getAssetPath(asset.ticker)) }]}
             />
           )}
         </td>
@@ -178,6 +178,7 @@ function TokenRow({ holding: { asset }, tokenHolding, getLogoUrl, className }: T
   const { token, balance, shares, value } = tokenHolding
   const router = useRouter()
   const explorerUrl = getExplorerAddressUrl(token.chainId, token.address)
+  const assetPath = isListedAsset(asset) ? getAssetPath(asset.ticker, token) : null
   const amount =
     token.decimals === null ? EMPTY_VALUE : tokenAmountFormatter.format(toTokenUnits(balance, token.decimals))
 
@@ -187,9 +188,15 @@ function TokenRow({ holding: { asset }, tokenHolding, getLogoUrl, className }: T
         <div className={styles.holding}>
           <TokenLogo symbol={token.symbol} logoUrl={getLogoUrl(asset, token)} chainId={token.chainId} />
           <div className={styles.holdingIdentity}>
-            <span className={styles.tokenTitle}>
-              {token.symbol} · {token.issuer}
-            </span>
+            {assetPath ? (
+              <Link className={styles.tokenTitle} href={assetPath}>
+                {token.symbol} · {token.issuer}
+              </Link>
+            ) : (
+              <span className={styles.tokenTitle}>
+                {token.symbol} · {token.issuer}
+              </span>
+            )}
             <span className={styles.secondary}>{getChainLabel(token.chainId)}</span>
           </div>
         </div>
@@ -203,8 +210,8 @@ function TokenRow({ holding: { asset }, tokenHolding, getLogoUrl, className }: T
         <RowMenu
           label={`${token.symbol} on ${getChainLabel(token.chainId)} actions`}
           items={[
-            ...(isListedAsset(asset)
-              ? [{ label: `Open ${asset.title}`, onSelect: () => router.push(`/asset/${asset.ticker}`) }]
+            ...(assetPath
+              ? [{ label: `Open ${token.symbol} · ${token.issuer}`, onSelect: () => router.push(assetPath) }]
               : []),
             ...(explorerUrl
               ? [

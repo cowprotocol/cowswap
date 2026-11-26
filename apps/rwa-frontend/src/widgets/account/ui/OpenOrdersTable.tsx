@@ -3,7 +3,7 @@
 import type { ReactNode } from 'react'
 
 import styles from './AccountTable.module.css'
-import { CancelOrderCell } from './CancelOrderCell'
+import { OrderActionsCell } from './OrderActionsCell'
 import { StatusBadge } from './StatusBadge'
 import { TokenCell } from './TokenCell'
 
@@ -106,7 +106,7 @@ function OpenOrderRow({ order, logoUrl, now }: OpenOrderRowProps): ReactNode {
         </span>
       </td>
       <td className={styles.menuColumn}>
-        <CancelOrderCell order={order} />
+        <OrderActionsCell order={order} />
       </td>
     </tr>
   )
