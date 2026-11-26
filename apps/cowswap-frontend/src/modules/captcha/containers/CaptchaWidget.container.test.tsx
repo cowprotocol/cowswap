@@ -174,17 +174,23 @@ describe('CaptchaWidget', () => {
     const slot = document.createElement('div')
     document.body.appendChild(slot)
     useFeatureFlagsMock.mockReturnValue({ isCaptchaEnabled: true })
-    exchangeTurnstileTokenMock.mockRejectedValue(new Error('exchange failed'))
+    let rejectExchange: (error: Error) => void = () => undefined
+    exchangeTurnstileTokenMock.mockReturnValue(
+      new Promise<never>((_, reject) => {
+        rejectExchange = reject
+      }),
+    )
 
     renderWithStore(store)
     fireEvent.click(screen.getByTestId('widget-load'))
-    await act(async () => fireEvent.click(screen.getByTestId('success')))
+    fireEvent.click(screen.getByTestId('success'))
     fireEvent.click(screen.getByTestId('before-interactive'))
 
     act(() => store.set(captchaSlotAtom, slot))
     expect(store.get(captchaInteractionRequiredAtom)).toBe(false)
 
     fireEvent.click(screen.getByTestId('widget-load'))
+    await act(async () => rejectExchange(new Error('exchange failed')))
     act(() => jest.advanceTimersByTime(30_000))
     expect(mockReset).not.toHaveBeenCalled()
     slot.remove()

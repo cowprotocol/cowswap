@@ -150,6 +150,7 @@ export function CaptchaWidget(): ReactNode {
       onSuccess={async (token: string) => {
         setCaptchaInteractionRequired(false)
         const requestId = exchangeRequestIdRef.current + 1
+        const widgetId = widgetIdRef.current
 
         exchangeRequestIdRef.current = requestId
 
@@ -171,7 +172,6 @@ export function CaptchaWidget(): ReactNode {
             requestId,
           })
           setCaptchaJwt(null)
-          const widgetId = widgetIdRef.current
           // A remount in the meantime (portal move, site key switch) already started a fresh challenge.
           scheduleRetry(() => {
             if (widgetIdRef.current === widgetId) captchaRef.current?.reset()
