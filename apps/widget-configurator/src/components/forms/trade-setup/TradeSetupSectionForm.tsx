@@ -8,6 +8,7 @@ import { TradeType } from '@cowprotocol/widget-lib'
 
 import { TRADE_MODES_OPTIONS, TRADE_TYPE_OPTIONS } from '../../../configurator.constants'
 import {
+  getCrossChainBlockedReason,
   getSolanaBlockedReason,
   getSolanaFeeNotice,
   isSolanaSelectable,
@@ -23,6 +24,7 @@ import type { SidebarSectionFormProps } from '../forms.types'
 export function TradeSetupSectionForm({ values, onChange }: SidebarSectionFormProps): ReactNode {
   const availableChains = useAvailableChains({ excludeSolana: !isSolanaSelectable(values) })
   const solanaBlockedReason = getSolanaBlockedReason(values)
+  const crossChainBlockedReason = getCrossChainBlockedReason(values)
   const solanaHelperText = solanaBlockedReason ?? getSolanaFeeNotice(values)
 
   const tradeTypeOptions = useMemo(() => withChainAvailability(TRADE_TYPE_OPTIONS, values.chainId), [values.chainId])
@@ -86,8 +88,10 @@ export function TradeSetupSectionForm({ values, onChange }: SidebarSectionFormPr
       />
 
       <SwitchInput
-        checked={!values.disableCrossChainSwap}
+        checked={!crossChainBlockedReason && !values.disableCrossChainSwap}
+        disabled={!!crossChainBlockedReason}
         label="Allow cross-chain swaps"
+        helperText={crossChainBlockedReason}
         onChange={(enabled) => onChange('disableCrossChainSwap', !enabled)}
       />
 

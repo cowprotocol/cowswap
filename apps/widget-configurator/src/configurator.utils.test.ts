@@ -10,6 +10,7 @@ import {
 } from './configurator.constants'
 import {
   buildConfiguratorState,
+  getCrossChainBlockedReason,
   getDefaultCustomColorsByTheme,
   isTradeTypeAvailableOnChain,
   getSolanaBlockedReason,
@@ -80,6 +81,18 @@ describe('configurator.utils', () => {
     const { tokenListUrls } = resolveConfiguratorFormValues({ tokenListUrls: staleTokenLists })
 
     expect(tokenListUrls[0]).toEqual(staleTokenLists[0])
+  })
+
+  it('blocks cross-chain swaps while Solana is the selected network', () => {
+    const values = { ...DEFAULT_CONFIGURATOR_FORM_VALUES, chainId: SupportedChainId.SOLANA }
+
+    expect(getCrossChainBlockedReason(values)).toEqual(expect.any(String))
+  })
+
+  it('leaves cross-chain swaps alone on EVM chains', () => {
+    const values = { ...DEFAULT_CONFIGURATOR_FORM_VALUES, chainId: SupportedChainId.MAINNET }
+
+    expect(getCrossChainBlockedReason(values)).toBeUndefined()
   })
 
   it('returns defaults when no value is persisted', () => {

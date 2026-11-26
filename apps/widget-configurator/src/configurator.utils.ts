@@ -67,6 +67,14 @@ export function buildConfiguratorState({
   }
 }
 
+export function getCrossChainBlockedReason({ chainId }: ConfiguratorFormValues): string | undefined {
+  // Solana is a bridge destination only (`useSupportedTargetChains` treats it as bridge-only), so a
+  // trade that sells on Solana has no cross-chain route to offer.
+  if (!isSolanaChain(chainId)) return undefined
+
+  return 'Solana can only be a bridge destination, so a trade selling on Solana has no cross-chain route.'
+}
+
 export function getDefaultCustomColorsByTheme(): Record<PaletteMode, ColorPalette> {
   return {
     light: { ...DEFAULT_LIGHT_PALETTE },
