@@ -108,7 +108,6 @@ export function CaptchaWidget(): ReactNode {
         setCaptchaInteractionRequired(false)
         logCaptcha.debug('Challenge starting', { widgetId })
         trackCaptcha({ action: 'captcha_challenge_started' })
-        captchaRef.current?.execute()
       }}
       onBeforeInteractive={() => {
         setCaptchaInteractionRequired(true)
