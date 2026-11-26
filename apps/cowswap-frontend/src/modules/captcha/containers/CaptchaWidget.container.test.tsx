@@ -15,7 +15,6 @@ import { useActiveLocale } from 'legacy/hooks/useActiveLocale'
 import { CaptchaWidget } from './CaptchaWidget.container'
 
 import { exchangeTurnstileToken } from '../api/captchaApi'
-import { logCaptcha } from '../logger'
 import { captchaSlotAtom } from '../state/captchaSlot.atoms'
 
 jest.mock('@cowprotocol/common-hooks', () => {
@@ -30,9 +29,17 @@ jest.mock('@cowprotocol/common-hooks', () => {
 
 const mockReset = jest.fn()
 const mockMount = jest.fn()
+const mockTrack = jest.fn()
+
+jest.mock('@cowprotocol/analytics', () => ({
+  __esModule: true,
+  __resetGtmInstance: jest.fn(),
+  createCowTracker: () => (event: unknown) => mockTrack(event),
+}))
 
 interface TurnstileMockProps {
-  ref?: Ref<{ reset(): void }>
+  ref?: Ref<{ reset(): void; execute(): void }>
+  onWidgetLoad(widgetId: string): void
   onBeforeInteractive(): void
   onAfterInteractive(): void
   onSuccess(token: string): void
@@ -48,11 +55,15 @@ jest.mock('@marsidev/react-turnstile', () => {
     __esModule: true,
     DEFAULT_SCRIPT_ID: 'cf-turnstile-script',
     Turnstile: (props: TurnstileMockProps) => {
-      useImperativeHandle(props.ref, () => ({ reset: mockReset }))
+      useImperativeHandle(props.ref, () => ({ reset: mockReset, execute: () => undefined }))
       useEffect(() => mockMount(), [])
 
       return (
         <div data-testid="turnstile" data-language={props.options.language}>
+          <button
+            data-testid="widget-load"
+            onClick={() => props.onWidgetLoad(`widget-${mockMount.mock.calls.length}`)}
+          />
           <button data-testid="before-interactive" onClick={props.onBeforeInteractive} />
           <button data-testid="after-interactive" onClick={props.onAfterInteractive} />
           <button data-testid="success" onClick={() => props.onSuccess('turnstile-token')} />
@@ -141,9 +152,8 @@ describe('CaptchaWidget', () => {
     expect(store.get(captchaErrorAtom)).not.toBeNull()
   })
 
-  it('resets Turnstile after a backoff delay when the JWT exchange fails, reporting the failure once', async () => {
+  it('resets Turnstile after a backoff delay when the JWT exchange fails, tracking the failure once', async () => {
     jest.useFakeTimers()
-    const logErrorSpy = jest.spyOn(logCaptcha, 'error').mockImplementation(() => undefined)
     useFeatureFlagsMock.mockReturnValue({ isCaptchaEnabled: true })
     exchangeTurnstileTokenMock.mockRejectedValue(new Error('exchange failed'))
 
@@ -155,8 +165,29 @@ describe('CaptchaWidget', () => {
     expect(mockReset).toHaveBeenCalledTimes(1)
 
     await act(async () => fireEvent.click(screen.getByTestId('success')))
-    expect(logErrorSpy).toHaveBeenCalledTimes(1)
-    logErrorSpy.mockRestore()
+    expect(mockTrack.mock.calls.filter(([event]) => event.reason === 'jwtExchangeFailed')).toHaveLength(1)
+  })
+
+  it('resets the interaction flag and drops a pending exchange retry when Turnstile moves into the trade form', async () => {
+    jest.useFakeTimers()
+    const store = createStore()
+    const slot = document.createElement('div')
+    document.body.appendChild(slot)
+    useFeatureFlagsMock.mockReturnValue({ isCaptchaEnabled: true })
+    exchangeTurnstileTokenMock.mockRejectedValue(new Error('exchange failed'))
+
+    renderWithStore(store)
+    fireEvent.click(screen.getByTestId('widget-load'))
+    await act(async () => fireEvent.click(screen.getByTestId('success')))
+    fireEvent.click(screen.getByTestId('before-interactive'))
+
+    act(() => store.set(captchaSlotAtom, slot))
+    expect(store.get(captchaInteractionRequiredAtom)).toBe(false)
+
+    fireEvent.click(screen.getByTestId('widget-load'))
+    act(() => jest.advanceTimersByTime(30_000))
+    expect(mockReset).not.toHaveBeenCalled()
+    slot.remove()
   })
 
   it('clears the captcha error once a JWT arrives', async () => {
@@ -172,7 +203,7 @@ describe('CaptchaWidget', () => {
     await waitFor(() => expect(store.get(captchaErrorAtom)).toBeNull())
   })
 
-  it('reloads the Turnstile script after a backoff delay when it fails to load', () => {
+  it('drops a failed Turnstile script at once and remounts Turnstile after a backoff delay', () => {
     jest.useFakeTimers()
     useFeatureFlagsMock.mockReturnValue({ isCaptchaEnabled: true })
     const script = document.createElement('script')
@@ -181,10 +212,24 @@ describe('CaptchaWidget', () => {
 
     renderWithStore()
     fireEvent.click(screen.getByTestId('script-error'))
-    act(() => jest.advanceTimersByTime(1000))
 
     expect(document.getElementById('cf-turnstile-script')).toBeNull()
+    expect(screen.queryByTestId('turnstile')).toBeNull()
+
+    act(() => jest.advanceTimersByTime(1000))
     expect(mockMount).toHaveBeenCalledTimes(2)
+  })
+
+  it('remounts Turnstile when a JWT from another tab arrives and expires during a script retry', () => {
+    const store = createStore()
+    useFeatureFlagsMock.mockReturnValue({ isCaptchaEnabled: true })
+
+    renderWithStore(store)
+    fireEvent.click(screen.getByTestId('script-error'))
+    act(() => store.set(captchaJwtAtom, createJwt()))
+    act(() => store.set(captchaJwtAtom, null))
+
+    expect(screen.getByTestId('turnstile')).not.toBeNull()
   })
 
   it('does not clear stored captcha state when the captcha flag is missing', () => {

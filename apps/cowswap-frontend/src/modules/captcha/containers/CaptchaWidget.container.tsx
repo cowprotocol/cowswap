@@ -42,7 +42,8 @@ export function CaptchaWidget(): ReactNode {
   const theme = useTheme()
   const locale = useActiveLocale()
   const [isUnsupported, setIsUnsupported] = useState(false)
-  const [scriptMountKey, setScriptMountKey] = useState(0)
+  const [isScriptRetryPending, setIsScriptRetryPending] = useState(false)
+  const widgetIdRef = useRef<string | undefined>(undefined)
   const { scheduleRetry, resetRetries } = useCaptchaRetry()
   const slot = useAtomValue(captchaSlotAtom)
 
@@ -52,7 +53,7 @@ export function CaptchaWidget(): ReactNode {
     setCaptchaInteractionRequired(false)
 
     return () => setCaptchaInteractionRequired(false)
-  }, [captchaError, captchaJwt, isCaptchaEnabled, setCaptchaInteractionRequired, siteKey])
+  }, [captchaError, captchaJwt, isCaptchaEnabled, setCaptchaInteractionRequired, siteKey, slot])
 
   useEffect(() => {
     if (isCaptchaEnabled === undefined) return
@@ -69,6 +70,7 @@ export function CaptchaWidget(): ReactNode {
     if (captchaJwt?.token) {
       setBearerToken(captchaJwt.token)
       setCaptchaError(null)
+      setIsScriptRetryPending(false)
       resetRetries()
       logCaptcha.info('JWT applied to orderbook context', { expiresAt: captchaJwt.expiresAt })
     } else {
@@ -99,14 +101,14 @@ export function CaptchaWidget(): ReactNode {
 
   useCaptchaDebugControls({ exchangeRequestIdRef, setCaptchaJwt, setSiteKey })
 
-  if (!isCaptchaEnabled || !siteKey || captchaJwt || isUnsupported) return null
+  if (!isCaptchaEnabled || !siteKey || captchaJwt || isUnsupported || isScriptRetryPending) return null
 
   // captchaError stays set until a JWT arrives, so retries that keep failing are reported once.
   const handleFailure = (error: Error, reason?: string, context?: Record<string, string | number>): void => {
     setCaptchaError(error)
 
     if (captchaError) {
-      logCaptcha.warn(`${error.message} again`, context)
+      logCaptcha.warn(`${error.message} again`, ...(context ? [context] : []))
       return
     }
 
@@ -116,7 +118,7 @@ export function CaptchaWidget(): ReactNode {
 
   const turnstile = (
     <Turnstile
-      key={`${siteKey}:${scriptMountKey}`}
+      key={siteKey}
       ref={captchaRef}
       siteKey={siteKey}
       style={{ width: '100%', display: 'block' }}
@@ -129,6 +131,7 @@ export function CaptchaWidget(): ReactNode {
         // refreshExpired: 'manual',
       }}
       onWidgetLoad={(widgetId) => {
+        widgetIdRef.current = widgetId
         setCaptchaInteractionRequired(false)
         logCaptcha.debug('Challenge starting', { widgetId })
         trackCaptcha({ action: 'captcha_challenge_started' })
@@ -168,7 +171,11 @@ export function CaptchaWidget(): ReactNode {
             requestId,
           })
           setCaptchaJwt(null)
-          scheduleRetry(() => captchaRef.current?.reset())
+          const widgetId = widgetIdRef.current
+          // A remount in the meantime (portal move, site key switch) already started a fresh challenge.
+          scheduleRetry(() => {
+            if (widgetIdRef.current === widgetId) captchaRef.current?.reset()
+          })
         }
       }}
       onExpire={() => {
@@ -203,12 +210,13 @@ export function CaptchaWidget(): ReactNode {
         onError: () => {
           setCaptchaInteractionRequired(false)
           handleFailure(new Error('Turnstile script failed to load'))
-          // react-turnstile keeps the failed <script> (so it won't inject another) and its onload global
-          // (so a fresh script still resolves its loader): drop the tag and remount to load it again.
-          scheduleRetry(() => {
-            document.getElementById(DEFAULT_SCRIPT_ID)?.remove()
-            setScriptMountKey((key) => key + 1)
-          })
+          // react-turnstile 1.4.2 never injects a script while `#cf-turnstile-script` exists, and a failed one
+          // doesn't fire again. Drop it now so nothing (a cross-tab JWT, say) can strand it, and keep Turnstile
+          // unmounted until the retry, or it would re-inject right away. On remount the library detects the new
+          // script by polling `window.turnstile`, since it deletes its onload callback when `onError` is set.
+          document.getElementById(DEFAULT_SCRIPT_ID)?.remove()
+          setIsScriptRetryPending(true)
+          scheduleRetry(() => setIsScriptRetryPending(false))
         },
       }}
     />
