@@ -1,7 +1,7 @@
 import { DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK } from '@cowprotocol/common-const'
 import { isRecord } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { isSolanaEnabledForWidget } from '@cowprotocol/widget-lib'
+import { isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isSolanaEnabledForWidget, TradeType } from '@cowprotocol/widget-lib'
 import type { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
 import { PaletteMode } from '@mui/material'
@@ -25,6 +25,15 @@ export interface BuildConfiguratorStateParams {
  * Derives the resolved {@link ConfiguratorState} from the persisted form values.
  * JSON style fields are parsed here on demand instead of being kept as derived state.
  */
+/**
+ * Trade types the widget cannot offer on Solana.
+ *
+ * TWAP ("advanced") is blocked outright — `isTwapSupportedChain` is false there, and the widget
+ * renders the tab disabled. Yield has no Solana LP tokens behind it, so the tab opens on an empty
+ * list rather than failing.
+ */
+const TRADE_TYPES_UNAVAILABLE_ON_SOLANA: readonly TradeType[] = [TradeType.ADVANCED, TradeType.YIELD]
+
 export function buildConfiguratorState({
   formValues,
   effectiveChainId,
@@ -76,6 +85,10 @@ export function getSolanaFeeNotice({ enableSolana, partnerFeeBps }: Configurator
 
 export function isSolanaSelectable({ enableSolana, widgetMode }: ConfiguratorFormValues): boolean {
   return isSolanaEnabledForWidget({ enableSolana, standaloneMode: widgetMode === 'standalone' })
+}
+
+export function isTradeTypeAvailableOnChain(tradeType: TradeType, chainId: SupportedChainId): boolean {
+  return !isSolanaChain(chainId) || !TRADE_TYPES_UNAVAILABLE_ON_SOLANA.includes(tradeType)
 }
 
 export function resolveConfiguratorCustomColorsByTheme(persistedValue: unknown): Record<PaletteMode, ColorPalette> {

@@ -1,9 +1,11 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { TradeType } from '@cowprotocol/widget-lib'
 
 import { DEFAULT_CONFIGURATOR_FORM_VALUES, DEFAULT_DARK_PALETTE, DEFAULT_LIGHT_PALETTE } from './configurator.constants'
 import {
   buildConfiguratorState,
   getDefaultCustomColorsByTheme,
+  isTradeTypeAvailableOnChain,
   getSolanaBlockedReason,
   getSolanaFeeNotice,
   isSolanaSelectable,
@@ -32,6 +34,22 @@ jest.mock('@cowprotocol/common-const', () => {
 describe('configurator.utils', () => {
   beforeEach(() => {
     localStorage.clear()
+  })
+
+  it('blocks advanced and yield on Solana, which cannot run them', () => {
+    expect(isTradeTypeAvailableOnChain(TradeType.ADVANCED, SupportedChainId.SOLANA)).toBe(false)
+    expect(isTradeTypeAvailableOnChain(TradeType.YIELD, SupportedChainId.SOLANA)).toBe(false)
+  })
+
+  it('keeps swap and limit available on Solana', () => {
+    expect(isTradeTypeAvailableOnChain(TradeType.SWAP, SupportedChainId.SOLANA)).toBe(true)
+    expect(isTradeTypeAvailableOnChain(TradeType.LIMIT, SupportedChainId.SOLANA)).toBe(true)
+  })
+
+  it('leaves every trade type available on EVM chains', () => {
+    for (const tradeType of Object.values(TradeType)) {
+      expect(isTradeTypeAvailableOnChain(tradeType, SupportedChainId.MAINNET)).toBe(true)
+    }
   })
 
   it('returns defaults when no value is persisted', () => {
