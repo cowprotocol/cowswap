@@ -15,8 +15,8 @@ const WAIT_AND_SAVE_VALID_TO_ENTROPY_SECONDS = 30
 
 /**
  * Calculate the validTo timestamp for the order.
- * Wait for CoWs: expiration still runs from `nextBatch`, but never earlier than `nextBatchValidTo`,
- * so missing the current batch does not expire the order before the following one.
+ * Wait for CoWs signs the orderbook `nextBatchValidTo`. That value is already after `nextBatch`
+ * and includes min validity, so the local `deadline` does not extend it.
  */
 export function getOrderValidTo(
   deadline: number,
@@ -27,15 +27,14 @@ export function getOrderValidTo(
 
   if (timeOffset === undefined) return 0
 
+  // Identical Wait for CoWs params rebuild the same UID and the API throws a DuplicatedOrder error.
+  // Adding an arbitrary amount of seconds to the validTo makes the order unique:
   const now = Date.now() / 1000
   const serverNowSec = Math.floor(now - timeOffset)
-  // Work around orderbook soft-cancel: identical Wait for CoWs params rebuild the same UID and
-  // post as DuplicatedOrder. Mix wall-clock seconds into validTo so cancel+resubmit is unique.
   const waitAndSaveEntropy = serverNowSec % WAIT_AND_SAVE_VALID_TO_ENTROPY_SECONDS
+
   const validTo = waitAndSaveBatchData
-    ? Math.floor(
-        Math.max(waitAndSaveBatchData.nextBatchValidTo, waitAndSaveBatchData.nextBatch + deadline) + waitAndSaveEntropy,
-      )
+    ? Math.floor(waitAndSaveBatchData.nextBatchValidTo + waitAndSaveEntropy)
     : Math.floor(deadline + serverNowSec)
 
   // Should not be greater than what the contract supports
