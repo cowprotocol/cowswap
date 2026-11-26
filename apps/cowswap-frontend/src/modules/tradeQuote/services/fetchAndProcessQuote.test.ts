@@ -45,6 +45,7 @@ import {
   QuoteBridgeRequest,
 } from '@cowprotocol/sdk-bridging'
 
+import { captchaJwtAtom } from 'entities/captcha/state/captchaJwtAtom'
 import { quoteRateLimitedUntilAtom } from 'entities/captcha/state/quoteRateLimitedUntilAtom'
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
@@ -374,6 +375,33 @@ describe('fetchAndProcessQuote', () => {
       )
       expect(jotaiStore.get(quoteRateLimitedUntilAtom)).toBe(now + 30_000)
       nowSpy.mockRestore()
+    })
+
+    it('does not pause quotes for a 429 that answers a captcha JWT replaced in the meantime', async () => {
+      const exp = Math.floor(Date.now() / 1000) + 3600
+      const response = { status: 429, statusText: '', headers: new Headers({ 'Retry-After': '30' }) }
+      jotaiStore.set(quoteRateLimitedUntilAtom, null)
+      mockBridgingSdk.getQuote.mockImplementation(async () => {
+        jotaiStore.set(captchaJwtAtom, `header.${globalThis.btoa(JSON.stringify({ exp }))}.signature`)
+        throw new OrderBookApiError(response as Response, '')
+      })
+
+      await fetchAndProcessQuote(
+        mockFetchParams,
+        mockQuoteParams,
+        tradeQuotePollingParameters,
+        mockAppData,
+        mockTradeQuoteManager,
+      )
+
+      expect(mockTradeQuoteManager.onError).toHaveBeenCalledWith(
+        expect.objectContaining({ type: QuoteApiErrorCodes.TooManyRequests }),
+        SupportedChainId.MAINNET,
+        mockQuoteParams,
+        mockFetchParams,
+      )
+      expect(jotaiStore.get(quoteRateLimitedUntilAtom)).toBeNull()
+      jotaiStore.set(captchaJwtAtom, null)
     })
 
     it('should handle QuoteApiError', async () => {

@@ -3,6 +3,7 @@ import { AccountAddress, PriceQuality, QuoteResults, SupportedChainId } from '@c
 
 import { captchaCanQuoteAtom } from 'entities/captcha/state/captchaCanQuoteAtom'
 import {
+  getCaptchaToken,
   isQuoteRateLimited,
   pauseQuotesOnRateLimit,
   quoteRateLimitedUntilAtom,
@@ -23,6 +24,7 @@ export async function fetchOrderPrice(chainId: SupportedChainId, order: GenericO
   if (!jotaiStore.get(captchaCanQuoteAtom) || isQuoteRateLimited(jotaiStore.get(quoteRateLimitedUntilAtom))) return null
 
   const amount = getRemainderAmount(order.kind, order)
+  const captchaToken = getCaptchaToken()
 
   try {
     const quote = await tradingSdk.getQuote(
@@ -43,7 +45,7 @@ export async function fetchOrderPrice(chainId: SupportedChainId, order: GenericO
 
     return quote.quoteResults
   } catch (error: unknown) {
-    pauseQuotesOnRateLimit(error)
+    pauseQuotesOnRateLimit(error, captchaToken)
     return null
   }
 }

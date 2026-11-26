@@ -10,7 +10,7 @@ import {
 } from '@cowprotocol/sdk-bridging'
 
 import { t } from '@lingui/core/macro'
-import { pauseQuotesOnRateLimit } from 'entities/captcha/state/quoteRateLimitedUntilAtom'
+import { getCaptchaToken, pauseQuotesOnRateLimit } from 'entities/captcha/state/quoteRateLimitedUntilAtom'
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
 import { AppDataInfo } from 'modules/appData'
@@ -61,8 +61,12 @@ export async function fetchAndProcessQuote(
     allowIntermediateEqSellToken: true,
   }
 
+  const captchaToken = getCaptchaToken()
+
   const processQuoteError = (errorLocation: string, error: unknown): void => {
-    const parsedError = pauseQuotesOnRateLimit(error) ? getTooManyRequestsError() : parseError(errorLocation, error)
+    const parsedError = pauseQuotesOnRateLimit(error, captchaToken)
+      ? getTooManyRequestsError()
+      : parseError(errorLocation, error)
 
     console.error(`[fetchAndProcessQuote]:: ${errorLocation} error`, parsedError)
 
