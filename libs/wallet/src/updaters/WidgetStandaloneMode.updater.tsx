@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { ConnectorAlreadyConnectedError, useConnection } from 'wagmi'
 
@@ -48,6 +48,8 @@ export function WidgetStandaloneModeUpdater({ standaloneMode }: WidgetStandalone
   const isDappMode = standaloneMode === false
   const isStandaloneMode = standaloneMode === true
   const isDisconnectInProgress = useRef(false)
+  const isRecheckNeeded = useRef(false)
+  const [enforcementRun, setEnforcementRun] = useState(0)
   const isDappModeRef = useRef(isDappMode)
 
   useEffect(() => {
@@ -116,7 +118,10 @@ export function WidgetStandaloneModeUpdater({ standaloneMode }: WidgetStandalone
     if (!connector) return
     // Do not disconnect Safe App
     if (isSafeApp && isSafeConnector) return
-    if (isDisconnectInProgress.current) return
+    if (isDisconnectInProgress.current) {
+      isRecheckNeeded.current = true
+      return
+    }
     const inDappMode = isDappMode && !isWidgetConnector
     const inStandaloneMode = isStandaloneMode && isWidgetConnector
 
@@ -134,9 +139,23 @@ export function WidgetStandaloneModeUpdater({ standaloneMode }: WidgetStandalone
         .then(() => (inDappMode && isDappModeRef.current ? connectWidgetConnector() : undefined))
         .finally(() => {
           isDisconnectInProgress.current = false
+
+          if (isRecheckNeeded.current) {
+            isRecheckNeeded.current = false
+            setEnforcementRun((run) => run + 1)
+          }
         })
     }
-  }, [isWidgetConnector, isDappMode, isStandaloneMode, disconnect, connector, isSafeApp, isSafeConnector])
+  }, [
+    isWidgetConnector,
+    isDappMode,
+    isStandaloneMode,
+    disconnect,
+    connector,
+    isSafeApp,
+    isSafeConnector,
+    enforcementRun,
+  ])
 
   return null
 }
