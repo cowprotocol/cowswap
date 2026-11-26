@@ -23,6 +23,7 @@ import { ColorPalette, ConfiguratorFormValues, ConfiguratorState } from '../../c
 import {
   buildConfiguratorState,
   getDefaultCustomColorsByTheme,
+  getDefaultTokenPair,
   isSolanaSelectable,
   resolveConfiguratorCustomColorsByTheme,
   resolveConfiguratorFormValues,
@@ -121,6 +122,12 @@ export function Sidebar({
       setConfiguratorFormValues((prevState) => {
         const shouldKeepNull = name === 'baseUrl' || JSON_FIELD_NAMES.has(name)
         const nextValue = value === null && !shouldKeepNull ? '' : value
+
+        if (name === 'chainId' && nextValue !== prevState.chainId) {
+          const chainId = nextValue as SupportedChainId
+
+          return { ...prevState, chainId, ...getDefaultTokenPair(chainId) }
+        }
 
         return {
           ...prevState,

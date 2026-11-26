@@ -570,6 +570,9 @@ importers:
       '@cowprotocol/test-ids':
         specifier: workspace:*
         version: link:../../libs/test-ids
+      '@solana/web3.js':
+        specifier: 1.98.4
+        version: 1.98.4(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
       viem:
         specifier: 2.55.19
         version: 2.55.19(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)

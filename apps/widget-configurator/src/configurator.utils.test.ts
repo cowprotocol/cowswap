@@ -1,9 +1,11 @@
+import { USDC, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { DEFAULT_CONFIGURATOR_FORM_VALUES, DEFAULT_DARK_PALETTE, DEFAULT_LIGHT_PALETTE } from './configurator.constants'
 import {
   buildConfiguratorState,
   getDefaultCustomColorsByTheme,
+  getDefaultTokenPair,
   getSolanaDappModeNotice,
   getSolanaFeeNotice,
   isSolanaSelectable,
@@ -32,6 +34,35 @@ jest.mock('@cowprotocol/common-const', () => {
 describe('configurator.utils', () => {
   beforeEach(() => {
     localStorage.clear()
+  })
+
+  it('keeps the default pair on a chain where COW is deployed', () => {
+    expect(getDefaultTokenPair(SupportedChainId.MAINNET)).toEqual({
+      sellToken: DEFAULT_CONFIGURATOR_FORM_VALUES.sellToken,
+      buyToken: DEFAULT_CONFIGURATOR_FORM_VALUES.buyToken,
+    })
+  })
+
+  it('falls back to wrapped native / USDC where COW has no deployment', () => {
+    const { sellToken, buyToken } = getDefaultTokenPair(SupportedChainId.SOLANA)
+
+    expect(sellToken).toBe(WRAPPED_NATIVE_CURRENCIES[SupportedChainId.SOLANA].address)
+    expect(buyToken).toBe(USDC[SupportedChainId.SOLANA]?.address)
+    expect(buyToken).not.toBe(DEFAULT_CONFIGURATOR_FORM_VALUES.buyToken)
+  })
+
+  it('covers every chain the configurator can select', () => {
+    const chainIds = Object.values(SupportedChainId).filter((value): value is SupportedChainId =>
+      Number.isInteger(value),
+    )
+
+    const incomplete = chainIds.filter((chainId) => {
+      const { sellToken, buyToken } = getDefaultTokenPair(chainId)
+
+      return !sellToken || !buyToken
+    })
+
+    expect(incomplete).toEqual([])
   })
 
   it('returns defaults when no value is persisted', () => {

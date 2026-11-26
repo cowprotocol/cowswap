@@ -17,4 +17,5 @@ export const NETWORK_SLUG_TO_CHAIN_ID: Readonly<Record<string, number>> = {
   lens: 232,
   plasma: 9745,
   sepolia: 11155111,
+  solana: 1000000001,
 }

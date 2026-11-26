@@ -30,11 +30,16 @@ Required env vars: `INTEGRATION_TEST_PRIVATE_KEY`, `REACT_APP_NETWORK_URL_111551
 
 - Every spec follows the same shape: import `test`/`expect` from a fixtures entrypoint, drive the flow
   through a **page object** (`src/pages/*.ts`), assert through `mocks`.
-- **Two wallet entrypoints — pick deliberately:**
+- **Three wallet entrypoints — pick deliberately:**
   - `../fixtures/mockWallet` — a deterministic viem account derived from `INTEGRATION_TEST_PRIVATE_KEY`,
     injected as an EIP-6963 provider. Signing is instant, in-process, no extension. Use this for
     everything that doesn't need to exercise real wallet-extension UI. This is what every current spec
     in this app uses.
+  - `../fixtures/mockSolanaWallet` — the same idea for Solana: a keypair from
+    `INTEGRATION_TEST_SOLANA_SECRET_KEY`, registered as a Wallet Standard wallet so Reown's
+    `watchStandard()` discovers it. It **extends** `mockWallet`, so a spec using it holds both
+    namespaces — pass `test.use({ mockWalletAutoConnect: false })` for Solana alone. Signing happens in
+    Node over an `exposeBinding`, exactly as the EVM engine does, so the key never enters the page.
   - `../fixtures` (Synpress) — a real MetaMask extension. Slower (~20-25s connect flow alone), needs the
     wallet cache built first. Only reach for this to test the actual connect/approve/network-switch
     popups themselves.

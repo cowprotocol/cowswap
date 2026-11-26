@@ -4,6 +4,9 @@ import { fakeOrderUid, normalizeOrder, normalizeOrderList, normalizeQuote, norma
 import type { CowApiEndpoint, CowApiEnv } from './types'
 
 const HEX_ADDRESS = '0x[a-fA-F0-9]{40}'
+// Solana owners are base58, and its alphabet excludes 0/O/I/l — so this can never match a hex address.
+const BASE58_ADDRESS = '[1-9A-HJ-NP-Za-km-z]{32,44}'
+const ANY_ADDRESS = `(?:${HEX_ADDRESS}|${BASE58_ADDRESS})`
 const HEX_UID = '0x[a-fA-F0-9]{112}'
 const HEX_32 = '0x[a-fA-F0-9]{64}'
 
@@ -11,7 +14,7 @@ export const COW_API_ENDPOINTS: readonly CowApiEndpoint[] = [
   {
     key: 'accountOrders',
     method: 'GET',
-    match: new RegExp(`^/api/v1/account/(?<address>${HEX_ADDRESS})/orders$`),
+    match: new RegExp(`^/api/v1/account/(?<address>${ANY_ADDRESS})/orders$`),
     fixture: 'accountOrders.json',
     normalizeDefault: normalizeOrderList,
   },
