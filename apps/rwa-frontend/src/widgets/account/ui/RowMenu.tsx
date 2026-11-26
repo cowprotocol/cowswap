@@ -14,8 +14,6 @@ export interface RowMenuItem {
   /** 16px icon before the label */
   icon: ReactNode
   description?: string
-  /** `danger` for a destructive action, like cancelling an order */
-  variant?: 'danger'
   onSelect: () => void
 }
 
@@ -111,7 +109,7 @@ export function RowMenu({ label, items }: RowMenuProps): ReactNode {
             {items.map((item) => (
               <button
                 key={item.label}
-                className={item.variant === 'danger' ? `${styles.item} ${styles.danger}` : styles.item}
+                className={styles.item}
                 type="button"
                 role="menuitem"
                 tabIndex={-1}

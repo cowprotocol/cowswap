@@ -74,17 +74,16 @@ function cancelItem(label: string, type: CancellationType, cancel: (type: Cancel
     label,
     icon: <TrashIcon />,
     description: CANCELLATION_DESCRIPTIONS[type],
-    variant: 'danger',
     onSelect: () => cancel(type),
   }
 }
 
 function getCancelItems(order: OpenOrder, cancel: (type: CancellationType) => void): RowMenuItem[] {
   // The UID cancellations don't stop a TWAP. A Safe's TWAP is cancelled in the trade widget
-  if (order.type === 'twap') return order.cowShedTwap ? [cancelItem('Cancel TWAP on-chain', 'hard', cancel)] : []
+  if (order.type === 'twap') return order.cowShedTwap ? [cancelItem('Cancel on-chain', 'hard', cancel)] : []
 
   return [
-    ...(order.isSoftCancellable ? [cancelItem('Cancel order', 'soft', cancel)] : []),
+    ...(order.isSoftCancellable ? [cancelItem('Cancel off-chain', 'soft', cancel)] : []),
     cancelItem('Cancel on-chain', 'hard', cancel),
   ]
 }

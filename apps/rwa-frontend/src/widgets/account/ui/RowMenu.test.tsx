@@ -11,7 +11,7 @@ function renderMenu(): { onSoft: jest.Mock; onHard: jest.Mock } {
       label="Order actions"
       items={[
         { label: 'Cancel order', icon: null, onSelect: onSoft },
-        { label: 'Cancel on-chain', icon: null, description: 'Costs gas', variant: 'danger', onSelect: onHard },
+        { label: 'Cancel on-chain', icon: null, description: 'Costs gas', onSelect: onHard },
       ]}
     />,
   )
@@ -31,8 +31,6 @@ describe('RowMenu', () => {
     expect(trigger.getAttribute('aria-expanded')).toBe('true')
     expect(screen.getByRole('menu').dataset.placement).toBe('below')
     expect(screen.getAllByRole('menuitem')[0]).toBe(document.activeElement)
-    expect(screen.getByRole('menuitem', { name: /Cancel on-chain/ }).className).toContain('danger')
-    expect(screen.getByRole('menuitem', { name: /Cancel order/ }).className).not.toContain('danger')
 
     fireEvent.click(screen.getByRole('menuitem', { name: /Cancel on-chain/ }))
 

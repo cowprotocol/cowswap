@@ -85,10 +85,6 @@
   outline: none;
 }
 
-.danger {
-  color: var(--color-danger);
-}
-
 .icon {
   display: flex;
 }
