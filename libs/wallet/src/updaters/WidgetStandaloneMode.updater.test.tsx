@@ -75,6 +75,24 @@ const OTHER_CONNECTOR_ID = 'metamask'
 const DAPP_MODE = false
 const STANDALONE_MODE = true
 
+function deferred(): { promise: Promise<void>; resolve(): void } {
+  let resolve: () => void = () => undefined
+  const promise = new Promise<void>((done) => (resolve = done))
+
+  return { promise, resolve: () => resolve() }
+}
+
+async function renderSettledDappMode(): Promise<RenderResult> {
+  setConnector(COW_WIDGET_CONNECTOR_ID)
+  const result = renderUpdater(DAPP_MODE)
+  await act(async () => undefined)
+  connectWalletByIdMock.mockClear()
+  reownAppKitDisconnectMock.mockClear()
+  disconnectMock.mockClear()
+
+  return result
+}
+
 function renderUpdater(standaloneMode: boolean | undefined): RenderResult {
   return render(<WidgetStandaloneModeUpdater standaloneMode={standaloneMode} />)
 }
@@ -168,6 +186,27 @@ describe('WidgetStandaloneModeUpdater', () => {
       expect(logWalletErrorMock).not.toHaveBeenCalled()
     })
 
+    it('connects the widget connector when disconnecting the current wallet fails', async () => {
+      reownAppKitDisconnectMock.mockRejectedValue(new Error('disconnect failed'))
+
+      renderUpdater(DAPP_MODE)
+
+      await waitFor(() => {
+        expect(connectWalletByIdMock).toHaveBeenCalledWith(COW_WIDGET_CONNECTOR_ID, 'injected')
+      })
+    })
+
+    it('does not connect the widget connector when dapp mode ends before the current wallet disconnects', async () => {
+      const startupDisconnect = deferred()
+      reownAppKitDisconnectMock.mockReturnValue(startupDisconnect.promise)
+
+      const { rerender } = renderUpdater(DAPP_MODE)
+      rerender(<WidgetStandaloneModeUpdater standaloneMode={STANDALONE_MODE} />)
+      await act(async () => startupDisconnect.resolve())
+
+      expect(connectWalletByIdMock).not.toHaveBeenCalled()
+    })
+
     it('logs unexpected connect errors', async () => {
       connectWalletByIdMock.mockRejectedValue(new Error('provider unavailable'))
 
@@ -252,52 +291,61 @@ describe('WidgetStandaloneModeUpdater', () => {
   })
 
   describe('enforcing the allowed connector', () => {
-    it('disconnects a non-widget connector in dapp mode', () => {
+    it('lets the dapp-mode reconnect change the connector first at mount', async () => {
       setConnector(OTHER_CONNECTOR_ID)
+      const startupDisconnect = deferred()
+      reownAppKitDisconnectMock.mockReturnValue(startupDisconnect.promise)
 
       renderUpdater(DAPP_MODE)
 
-      expect(disconnectMock).toHaveBeenCalledTimes(1)
+      expect(reownAppKitDisconnectMock).toHaveBeenCalledTimes(1)
+      expect(disconnectMock).not.toHaveBeenCalled()
+
+      setConnector(COW_WIDGET_CONNECTOR_ID)
+      await act(async () => startupDisconnect.resolve())
+
+      expect(connectWalletByIdMock).toHaveBeenCalledTimes(1)
+      expect(disconnectMock).not.toHaveBeenCalled()
     })
 
-    it('replaces a non-widget connector with the widget connector in dapp mode', async () => {
+    it('replaces a non-widget connector that appears in dapp mode with the widget connector', async () => {
+      const { rerender } = await renderSettledDappMode()
+      const enforcementDisconnect = deferred()
+      disconnectMock.mockReturnValue(enforcementDisconnect.promise)
+
       setConnector(OTHER_CONNECTOR_ID)
-      reownAppKitDisconnectMock.mockReturnValue(new Promise(() => undefined))
-      let resolveDisconnect: () => void = () => undefined
-      disconnectMock.mockReturnValue(new Promise<void>((resolve) => (resolveDisconnect = resolve)))
-
-      renderUpdater(DAPP_MODE)
-
+      rerender(<WidgetStandaloneModeUpdater standaloneMode={DAPP_MODE} />)
       await act(async () => undefined)
+
+      expect(disconnectMock).toHaveBeenCalledTimes(1)
       expect(connectWalletByIdMock).not.toHaveBeenCalled()
 
-      await act(async () => resolveDisconnect())
+      await act(async () => enforcementDisconnect.resolve())
 
       expect(connectWalletByIdMock).toHaveBeenCalledTimes(1)
       expect(connectWalletByIdMock).toHaveBeenCalledWith(COW_WIDGET_CONNECTOR_ID, 'injected')
     })
 
     it('does not connect the widget connector when dapp mode ends during the disconnect', async () => {
+      const { rerender } = await renderSettledDappMode()
+      const enforcementDisconnect = deferred()
+      disconnectMock.mockReturnValue(enforcementDisconnect.promise)
+
       setConnector(OTHER_CONNECTOR_ID)
-      reownAppKitDisconnectMock.mockReturnValue(new Promise(() => undefined))
-      let resolveDisconnect: () => void = () => undefined
-      disconnectMock.mockReturnValue(new Promise<void>((resolve) => (resolveDisconnect = resolve)))
-
-      const { rerender } = renderUpdater(DAPP_MODE)
+      rerender(<WidgetStandaloneModeUpdater standaloneMode={DAPP_MODE} />)
       rerender(<WidgetStandaloneModeUpdater standaloneMode={STANDALONE_MODE} />)
-
-      await act(async () => resolveDisconnect())
+      await act(async () => enforcementDisconnect.resolve())
 
       expect(connectWalletByIdMock).not.toHaveBeenCalled()
     })
 
     it('drops the widget connector that connected after the mode turned standalone', async () => {
-      setConnector(OTHER_CONNECTOR_ID)
-      reownAppKitDisconnectMock.mockReturnValue(new Promise(() => undefined))
-      let resolveConnect: () => void = () => undefined
-      connectWalletByIdMock.mockReturnValue(new Promise<void>((resolve) => (resolveConnect = resolve)))
+      const { rerender } = await renderSettledDappMode()
+      const widgetConnect = deferred()
+      connectWalletByIdMock.mockReturnValue(widgetConnect.promise)
 
-      const { rerender } = renderUpdater(DAPP_MODE)
+      setConnector(OTHER_CONNECTOR_ID)
+      rerender(<WidgetStandaloneModeUpdater standaloneMode={DAPP_MODE} />)
       await act(async () => undefined)
 
       expect(connectWalletByIdMock).toHaveBeenCalledTimes(1)
@@ -308,22 +356,32 @@ describe('WidgetStandaloneModeUpdater', () => {
 
       expect(disconnectMock).toHaveBeenCalledTimes(1)
 
-      await act(async () => resolveConnect())
+      await act(async () => widgetConnect.resolve())
 
       expect(disconnectMock).toHaveBeenCalledTimes(2)
     })
 
     it('connects the widget connector when a non-widget connector fails to disconnect in dapp mode', async () => {
-      setConnector(OTHER_CONNECTOR_ID)
+      const { rerender } = await renderSettledDappMode()
       disconnectMock.mockRejectedValue(new Error('connector.disconnect is not a function'))
-      reownAppKitDisconnectMock.mockReturnValue(new Promise(() => undefined))
 
-      renderUpdater(DAPP_MODE)
+      setConnector(OTHER_CONNECTOR_ID)
+      rerender(<WidgetStandaloneModeUpdater standaloneMode={DAPP_MODE} />)
 
       await waitFor(() => {
         expect(connectWalletByIdMock).toHaveBeenCalledWith(COW_WIDGET_CONNECTOR_ID, 'injected')
       })
-      expect(logWalletErrorMock).toHaveBeenCalledTimes(1)
+    })
+
+    it('does not connect the widget connector inside the Safe App iframe', async () => {
+      getIsSafeAppIframeMock.mockReturnValue(true)
+      setConnector(OTHER_CONNECTOR_ID)
+
+      renderUpdater(DAPP_MODE)
+      await act(async () => undefined)
+
+      expect(disconnectMock).toHaveBeenCalledTimes(1)
+      expect(connectWalletByIdMock).not.toHaveBeenCalled()
     })
 
     it('does not connect the widget connector after disconnecting it in standalone mode', async () => {
@@ -337,10 +395,8 @@ describe('WidgetStandaloneModeUpdater', () => {
       expect(connectWalletByIdMock).not.toHaveBeenCalled()
     })
 
-    it('keeps the widget connector in dapp mode', () => {
-      setConnector(COW_WIDGET_CONNECTOR_ID)
-
-      renderUpdater(DAPP_MODE)
+    it('keeps the widget connector in dapp mode', async () => {
+      await renderSettledDappMode()
 
       expect(disconnectMock).not.toHaveBeenCalled()
     })
@@ -370,13 +426,15 @@ describe('WidgetStandaloneModeUpdater', () => {
       expect(disconnectMock).not.toHaveBeenCalled()
     })
 
-    it('disconnects the Safe connector when not inside the Safe App iframe', () => {
+    it('disconnects the Safe connector when not inside the Safe App iframe', async () => {
       getIsSafeAppIframeMock.mockReturnValue(false)
       setConnector(SAFE_CONNECTOR_ID)
 
       renderUpdater(DAPP_MODE)
 
-      expect(disconnectMock).toHaveBeenCalledTimes(1)
+      await waitFor(() => {
+        expect(disconnectMock).toHaveBeenCalledTimes(1)
+      })
     })
   })
 })

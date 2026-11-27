@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { ConnectorAlreadyConnectedError, useConnection } from 'wagmi'
 
@@ -32,8 +32,11 @@ interface WidgetStandaloneModeUpdaterProps {
  * 2. On entering standalone mode: disconnect the "cow-widget" connector and remove it from the
  *    Reown wallet connection modal so users can't pick it.
  * 3. Continuously (for injected widgets): disconnect any connector that is not allowed for the current mode -
- *    a non-widget connector in dapp mode, which is then replaced by the "cow-widget" connector, or the widget
- *    connector in standalone mode. The Safe App connection is left untouched.
+ *    a non-widget connector in dapp mode, which is then replaced by the "cow-widget" connector (outside the Safe
+ *    App), or the widget connector in standalone mode. The Safe App connection is left untouched.
+ *
+ * Effects 1 and 3 change the connector one at a time: while one runs, effect 3 waits and checks again once it
+ * settles, and the "cow-widget" connector is only connected if dapp mode is still on by then.
  *
  * Renders nothing.
  */
@@ -56,6 +59,27 @@ export function WidgetStandaloneModeUpdater({ standaloneMode }: WidgetStandalone
     isDappModeRef.current = isDappMode
   }, [isDappMode])
 
+  const replaceConnector = useCallback(
+    (disconnectCurrent: () => Promise<void>, shouldConnectWidget: () => boolean): void => {
+      isDisconnectInProgress.current = true
+
+      disconnectCurrent()
+        .catch((err: unknown) => {
+          logWallet.error(new Error('Failed to disconnect the current connector', { cause: normalizeError(err) }))
+        })
+        .then(() => (shouldConnectWidget() ? connectWidgetConnector() : undefined))
+        .finally(() => {
+          isDisconnectInProgress.current = false
+
+          if (isRecheckNeeded.current) {
+            isRecheckNeeded.current = false
+            setEnforcementRun((run) => run + 1)
+          }
+        })
+    },
+    [],
+  )
+
   useEffect(() => {
     setAppWalletContext((state) => ({ ...state, standaloneMode }))
   }, [setAppWalletContext, standaloneMode])
@@ -74,14 +98,14 @@ export function WidgetStandaloneModeUpdater({ standaloneMode }: WidgetStandalone
     if (isSafeApp) return
 
     if (isDappMode) {
-      ;(async function () {
-        console.debug('[WidgetStandaloneModeUpdater] connect widget connector')
+      console.debug('[WidgetStandaloneModeUpdater] connect widget connector')
 
-        await reownAppKit.disconnect()
-        await connectWidgetConnector()
-      })()
+      replaceConnector(
+        () => reownAppKit.disconnect(),
+        () => isDappModeRef.current,
+      )
     }
-  }, [isDappMode, isSafeApp])
+  }, [isDappMode, isSafeApp, replaceConnector])
 
   /**
    * Once in standalone mode, disconnect widget configurator
@@ -128,23 +152,7 @@ export function WidgetStandaloneModeUpdater({ standaloneMode }: WidgetStandalone
     if (inDappMode || inStandaloneMode) {
       console.debug('[WidgetStandaloneModeUpdater] disconnect connector', { inDappMode, inStandaloneMode })
 
-      isDisconnectInProgress.current = true
-
-      disconnect()
-        .catch((err: unknown) => {
-          logWallet.error(
-            new Error('Failed to disconnect a connector not allowed in widget mode', { cause: normalizeError(err) }),
-          )
-        })
-        .then(() => (inDappMode && isDappModeRef.current ? connectWidgetConnector() : undefined))
-        .finally(() => {
-          isDisconnectInProgress.current = false
-
-          if (isRecheckNeeded.current) {
-            isRecheckNeeded.current = false
-            setEnforcementRun((run) => run + 1)
-          }
-        })
+      replaceConnector(disconnect, () => inDappMode && !isSafeApp && isDappModeRef.current)
     }
   }, [
     isWidgetConnector,
@@ -155,6 +163,7 @@ export function WidgetStandaloneModeUpdater({ standaloneMode }: WidgetStandalone
     isSafeApp,
     isSafeConnector,
     enforcementRun,
+    replaceConnector,
   ])
 
   return null

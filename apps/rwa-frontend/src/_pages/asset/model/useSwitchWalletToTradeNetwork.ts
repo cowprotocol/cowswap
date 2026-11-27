@@ -3,7 +3,8 @@ import { useEffect, useRef } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useConnection, useSwitchChain } from 'wagmi'
 
-const SWITCH_CHAIN_MUTATION_KEY = ['switchChain']
+/** wagmi's `useSwitchChain` mutation key, shared by every switch request on the page */
+export const SWITCH_CHAIN_MUTATION_KEY = ['switchChain']
 
 /**
  * Asks a wallet connected on another network than `tradeChainId` to switch to it, once per asset page, when it first
