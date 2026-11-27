@@ -6,6 +6,8 @@ import styled, { css } from 'styled-components/macro'
 
 import { autofocus } from 'common/utils/autofocus'
 
+import { normalizePastedAmount } from './pastedAmount.utils'
+
 const textStyle = css<{ error?: boolean; fontSize?: string }>`
   color: ${({ error }) => (error ? `var(${UI.COLOR_DANGER})` : 'inherit')};
   font-size: ${({ fontSize }) => fontSize ?? '28px'};
@@ -104,17 +106,8 @@ export const Input = React.memo(function InnerInput({
     }
   }
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handlePaste = (event: React.ClipboardEvent<HTMLInputElement>) => {
-    const pastedText = event.clipboardData.getData('text')
-
-    // Clean up pasted content - only allow numbers and single decimal
-    const cleanedText = pastedText
-      .replace(/,/g, '.') // Convert commas to dots
-      .replace(/[^\d.]/g, '') // Remove non-numeric/dot chars
-      .replace(/(\..*)\./g, '$1') // Keep only the first decimal point
-      .replace(/\.$/, '') // Remove trailing decimal point
+  const handlePaste = (event: React.ClipboardEvent<HTMLInputElement>): void => {
+    const cleanedText = normalizePastedAmount(event.clipboardData.getData('text'))
 
     if (inputRegex.test(cleanedText)) {
       event.preventDefault()
