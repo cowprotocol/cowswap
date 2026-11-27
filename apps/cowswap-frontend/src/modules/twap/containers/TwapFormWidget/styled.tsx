@@ -1,16 +1,13 @@
-import { Media, QuestionTooltipIconWrapper, UI } from '@cowprotocol/ui'
+import { QuestionTooltipIconWrapper, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-export const Row = styled.div`
+import { TWAP_FIELD_ROW_CLASS } from '../twapFieldRowStack.constants'
+
+export const Row = styled.div.attrs({ className: TWAP_FIELD_ROW_CLASS })`
   display: flex;
   gap: 10px;
   width: 100%;
-
-  ${Media.upToSmall()} {
-    flex-direction: column;
-    grid-gap: 6px;
-  }
 
   ${QuestionTooltipIconWrapper} {
     opacity: 0.5;

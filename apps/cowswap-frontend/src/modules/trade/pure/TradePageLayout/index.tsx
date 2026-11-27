@@ -69,7 +69,9 @@ export const PageWrapper = styled.div<{
   }
 `
 
-// Form + banner
+// Form + banner. `trade-form` is the container the TWAP field rows query.
+const TRADE_FORM_CONTAINER_NAME = 'trade-form'
+
 export const PrimaryWrapper = styled.div`
   display: flex;
   flex-flow: column wrap;
@@ -80,6 +82,8 @@ export const PrimaryWrapper = styled.div`
   margin: 0 auto;
   color: inherit;
   grid-area: primary;
+  container-type: inline-size;
+  container-name: ${TRADE_FORM_CONTAINER_NAME};
 `
 
 export const SecondaryColumn = styled.div`
