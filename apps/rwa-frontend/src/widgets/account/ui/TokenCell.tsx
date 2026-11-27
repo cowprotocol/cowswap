@@ -15,7 +15,7 @@ interface TokenCellProps {
 export function TokenCell({ token, logoUrl }: TokenCellProps): ReactNode {
   return (
     <div className={styles.identity}>
-      <TokenLogo symbol={token.symbol} logoUrl={logoUrl} chainId={token.chainId} />
+      <TokenLogo symbol={token.symbol} logoUrl={logoUrl} chainId={token.chainId} token={token} />
       <div className={styles.stack}>
         <span className={styles.strong}>
           {token.symbol} · {token.issuer}

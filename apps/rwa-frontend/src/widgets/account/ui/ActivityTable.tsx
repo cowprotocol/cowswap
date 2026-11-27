@@ -75,7 +75,7 @@ function ActivityRow({ item, logoUrl }: { item: Activity; logoUrl: string | null
           <div className={styles.stack}>
             <span className={`${styles.strong} ${styles.inlineLogo}`}>
               {sideLabel}
-              <TokenLogo symbol={assetToken.symbol} logoUrl={logoUrl} size="small" />
+              <TokenLogo symbol={assetToken.symbol} logoUrl={logoUrl} token={assetToken} size="small" />
               {assetToken.symbol}
             </span>
             <span className={`${styles.secondary} ${styles.inlineLogo}`}>
