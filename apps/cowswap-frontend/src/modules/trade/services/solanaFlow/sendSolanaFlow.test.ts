@@ -2,7 +2,13 @@
  * PublicKey.isOnCurve misreports every point as on-curve under jsdom, exhausting findProgramAddressSync's bumps.
  * @jest-environment node
  */
-import { Connection, PublicKey, Transaction, TransactionInstruction } from '@solana/web3.js'
+import {
+  Connection,
+  PublicKey,
+  TransactionInstruction,
+  TransactionMessage,
+  VersionedTransaction,
+} from '@solana/web3.js'
 
 import { sendSolanaFlow, SolanaFlowContext } from './sendSolanaFlow'
 import { SolanaFlowStep } from './types'
@@ -17,12 +23,12 @@ const ORDER_ID = '0x' + 'ab'.repeat(32)
 
 interface Harness {
   context: SolanaFlowContext
-  sentTransactions: Transaction[]
+  sentTransactions: VersionedTransaction[]
   addTransaction: jest.Mock
 }
 
 function createHarness(): Harness {
-  const sentTransactions: Transaction[] = []
+  const sentTransactions: VersionedTransaction[] = []
 
   const connection = {
     getLatestBlockhash: jest
@@ -31,7 +37,7 @@ function createHarness(): Harness {
   } as unknown as Connection
 
   const provider = {
-    sendTransaction: jest.fn(async (transaction: Transaction) => {
+    sendTransaction: jest.fn(async (transaction: VersionedTransaction) => {
       sentTransactions.push(transaction)
 
       return SIGNATURE
@@ -68,7 +74,7 @@ describe('sendSolanaFlow', () => {
 
     await sendSolanaFlow(context, [step([ixA, ixB], 'Wrap 1 SOL'), step([ixC], 'Approve WSOL')])
 
-    expect(sentTransactions[0].instructions).toEqual([ixA, ixB, ixC])
+    expect(TransactionMessage.decompile(sentTransactions[0].message).instructions).toEqual([ixA, ixB, ixC])
   })
 
   it('records one transaction joining every step summary', async () => {

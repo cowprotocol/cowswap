@@ -1,4 +1,10 @@
-import { Connection, PublicKey, Transaction, TransactionInstruction } from '@solana/web3.js'
+import {
+  Connection,
+  PublicKey,
+  TransactionInstruction,
+  TransactionMessage,
+  VersionedTransaction,
+} from '@solana/web3.js'
 
 export interface BuildSolanaTransactionParams {
   connection: Connection
@@ -8,7 +14,7 @@ export interface BuildSolanaTransactionParams {
 }
 
 export interface BuiltSolanaTransaction {
-  transaction: Transaction
+  transaction: VersionedTransaction
   /** The block height past which the transaction can no longer be included. */
   lastValidBlockHeight: number
   blockhash: string
@@ -25,7 +31,16 @@ export async function buildSolanaTransaction({
   feePayer,
 }: BuildSolanaTransactionParams): Promise<BuiltSolanaTransaction> {
   const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash()
-  const transaction = new Transaction({ feePayer, blockhash, lastValidBlockHeight }).add(...instructions)
 
-  return { transaction, lastValidBlockHeight, blockhash }
+  // v0 rather than legacy: Trust Wallet's in-app browser re-inflates whatever it is handed through
+  // `VersionedTransaction.deserialize`, then calls the legacy-only `serializeMessage()` on the result
+  // when the message reads as legacy (trust-web3-provider `MobileAdapter.legacySign`), which throws.
+  // Compiled without address lookup tables: the order book rejects a creation transaction using them.
+  const message = new TransactionMessage({
+    payerKey: feePayer,
+    recentBlockhash: blockhash,
+    instructions,
+  }).compileToV0Message()
+
+  return { transaction: new VersionedTransaction(message), lastValidBlockHeight, blockhash }
 }

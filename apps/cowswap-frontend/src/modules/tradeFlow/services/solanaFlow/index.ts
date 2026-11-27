@@ -25,6 +25,7 @@ import {
   estimateSolanaSigningDeadline,
   getIsBuyAtaCreationSkipped,
   getSigningWindowClosedError,
+  isSwallowedWalletRejection,
   planCreateBuyAtaStep,
   planCreateLimitOrderStep,
   planCreateOrderStep,
@@ -315,6 +316,9 @@ export async function solanaFlow(
     logTradeFlow('SOLANA FLOW', 'STEP 3: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error, chainId)
     const isRejection = swapErrorMessage === USER_SWAP_REJECTED_ERROR
+    // A wallet that ends the prompt without saying why reads as a rejection here, but it may as
+    // easily have failed to sign at all, so the report still goes out.
+    const isSwallowedRejection = isSwallowedWalletRejection(error)
     // The atom is shared and reset per attempt, so a stale run would read whatever the attempt that
     // replaced it left there and have its own failure filed as an expired window.
     const isSigningWindowClosed = attemptId === latestAttemptId && jotaiStore.get(solanaSigningAbandonedAtom)
@@ -339,6 +343,7 @@ export async function solanaFlow(
       followsFailure,
       isSponsored: sponsor !== undefined,
       isRejection,
+      isSwallowedRejection,
       isWindowExpiryFailure,
       swapErrorMessage,
     })

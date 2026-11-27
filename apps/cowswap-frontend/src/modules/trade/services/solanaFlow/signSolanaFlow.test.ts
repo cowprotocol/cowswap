@@ -4,7 +4,14 @@
  */
 import { buildComputeBudgetInstructions, resolveSolanaComputeBudget } from '@cowprotocol/sdk-trading-solana'
 
-import { Connection, Keypair, PublicKey, Transaction, TransactionInstruction } from '@solana/web3.js'
+import {
+  Connection,
+  Keypair,
+  PublicKey,
+  TransactionInstruction,
+  TransactionMessage,
+  VersionedTransaction,
+} from '@solana/web3.js'
 
 import { signSolanaFlow, SignSolanaFlowContext } from './signSolanaFlow'
 import { SolanaFlowStep } from './types'
@@ -39,8 +46,8 @@ function createContext(): SignSolanaFlowContext & {
 
   const sendTransaction = jest.fn()
   const provider = {
-    signTransaction: jest.fn(async (transaction: Transaction) => {
-      transaction.partialSign(OWNER)
+    signTransaction: jest.fn(async (transaction: VersionedTransaction) => {
+      transaction.sign([OWNER])
 
       return transaction
     }),
@@ -76,12 +83,15 @@ describe('signSolanaFlow', () => {
   it('returns a transaction the owner signed and the sponsor has not', async () => {
     const { transaction } = await signSolanaFlow(createContext(), [step('Swap SOL for USDC')])
 
-    const decoded = Transaction.from(Buffer.from(transaction, 'base64'))
-    const signatureOf = (key: PublicKey): Uint8Array | null =>
-      decoded.signatures.find(({ publicKey }) => publicKey.equals(key))?.signature ?? null
+    const decoded = VersionedTransaction.deserialize(Buffer.from(transaction, 'base64'))
+    const isSignedBy = (key: PublicKey): boolean => {
+      const index = decoded.message.staticAccountKeys.findIndex((accountKey) => accountKey.equals(key))
 
-    expect(signatureOf(OWNER.publicKey)).not.toBeNull()
-    expect(signatureOf(SPONSOR)).toBeNull()
+      return decoded.signatures[index]?.some((byte) => byte !== 0) ?? false
+    }
+
+    expect(isSignedBy(OWNER.publicKey)).toBe(true)
+    expect(isSignedBy(SPONSOR)).toBe(false)
   })
 
   // Broadcasting here would create the order at the owner's expense and defeat the sponsorship.
@@ -100,9 +110,9 @@ describe('signSolanaFlow', () => {
     const order: string[] = []
     context.onDeadline = () => order.push('deadline')
     const signTransaction = context.provider.signTransaction as jest.Mock
-    signTransaction.mockImplementation(async (transaction: Transaction) => {
+    signTransaction.mockImplementation(async (transaction: VersionedTransaction) => {
       order.push('sign')
-      transaction.partialSign(OWNER)
+      transaction.sign([OWNER])
 
       return transaction
     })
@@ -117,10 +127,11 @@ describe('signSolanaFlow', () => {
   it('carries the resolved compute budget ahead of the steps own instructions', async () => {
     const { transaction } = await signSolanaFlow(createContext(), [step('Swap SOL for USDC')])
 
-    const decoded = Transaction.from(Buffer.from(transaction, 'base64'))
+    const decoded = VersionedTransaction.deserialize(Buffer.from(transaction, 'base64'))
+    const { instructions } = TransactionMessage.decompile(decoded.message)
 
-    expect(decoded.instructions).toHaveLength(3)
-    expect(decoded.instructions.slice(0, 2)).toEqual(buildComputeBudgetInstructions(COMPUTE_BUDGET))
+    expect(instructions).toHaveLength(3)
+    expect(instructions.slice(0, 2)).toEqual(buildComputeBudgetInstructions(COMPUTE_BUDGET))
   })
 
   it('prices the bundle it is about to sign, naming the sponsor as the payer', async () => {

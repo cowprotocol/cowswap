@@ -29,6 +29,12 @@ export interface ReportSolanaOrderErrorParams {
   followsFailure: boolean
   isSponsored: boolean
   isRejection: boolean
+  /**
+   * Whether the wallet ended the prompt without saying why. It reads as a rejection to the user,
+   * but the same silence covers a wallet that cannot sign the transaction at all, so it is reported
+   * rather than filed as an expected outcome.
+   */
+  isSwallowedRejection: boolean
   isWindowExpiryFailure: boolean
   /** The message the user was shown, which is not always the message the wallet threw. */
   swapErrorMessage: string
@@ -37,6 +43,8 @@ export interface ReportSolanaOrderErrorParams {
 /**
  * Why the attempt failed, as far as the client can tell:
  * - `user-rejected` — the wallet prompt was declined
+ * - `wallet-no-signature` — the wallet ended the prompt without saying why, so a dismissal and a
+ *   wallet that cannot sign the transaction at all are indistinguishable
  * - `window-expired` — the blockhash died before the signature came back
  * - `squads-setup` — the SquadsX extension is not an active proposer on the Squad
  * - `app-data-mismatch` — the signed hash does not cover the doc being registered
@@ -47,6 +55,7 @@ export interface ReportSolanaOrderErrorParams {
  */
 export type SolanaOrderErrorReason =
   | 'user-rejected'
+  | 'wallet-no-signature'
   | 'window-expired'
   | 'squads-setup'
   | 'app-data-mismatch'
@@ -99,10 +108,11 @@ export function reportSolanaOrderError({
   followsFailure,
   isSponsored,
   isRejection,
+  isSwallowedRejection,
   isWindowExpiryFailure,
   swapErrorMessage,
 }: ReportSolanaOrderErrorParams): boolean {
-  const reason = classifySolanaOrderError({ error, isRejection, isWindowExpiryFailure })
+  const reason = classifySolanaOrderError({ error, isRejection, isSwallowedRejection, isWindowExpiryFailure })
 
   if (EXPECTED_REASONS.has(reason)) return false
 
@@ -154,8 +164,15 @@ export function reportSolanaOrderError({
 function classifySolanaOrderError({
   error,
   isRejection,
+  isSwallowedRejection,
   isWindowExpiryFailure,
-}: Pick<ReportSolanaOrderErrorParams, 'error' | 'isRejection' | 'isWindowExpiryFailure'>): SolanaOrderErrorReason {
+}: Pick<
+  ReportSolanaOrderErrorParams,
+  'error' | 'isRejection' | 'isSwallowedRejection' | 'isWindowExpiryFailure'
+>): SolanaOrderErrorReason {
+  // Ahead of `isRejection`, which a swallowed one deliberately satisfies: the user gets the quiet
+  // rejection path while the report still goes out.
+  if (isSwallowedRejection) return 'wallet-no-signature'
   if (isRejection) return 'user-rejected'
   if (isWindowExpiryFailure) return 'window-expired'
   if (isSquadsSetupError(error)) return 'squads-setup'

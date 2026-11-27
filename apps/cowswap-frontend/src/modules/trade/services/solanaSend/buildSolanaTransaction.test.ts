@@ -2,7 +2,7 @@
  * PublicKey.isOnCurve misreports every point as on-curve under jsdom, exhausting findProgramAddressSync's bumps.
  * @jest-environment node
  */
-import { Connection, PublicKey, TransactionInstruction } from '@solana/web3.js'
+import { Connection, PublicKey, TransactionInstruction, TransactionMessage } from '@solana/web3.js'
 
 import { buildSolanaTransaction } from './buildSolanaTransaction'
 
@@ -33,7 +33,7 @@ describe('buildSolanaTransaction', () => {
       feePayer: OWNER,
     })
 
-    expect(transaction.instructions).toEqual([ixA, ixB, ixC])
+    expect(TransactionMessage.decompile(transaction.message).instructions).toEqual([ixA, ixB, ixC])
   })
 
   it('completes the transaction with the fetched blockhash', async () => {
@@ -43,7 +43,7 @@ describe('buildSolanaTransaction', () => {
       feePayer: OWNER,
     })
 
-    expect(transaction.recentBlockhash).toBe(BLOCKHASH)
+    expect(transaction.message.recentBlockhash).toBe(BLOCKHASH)
     expect(lastValidBlockHeight).toBe(LAST_VALID_BLOCK_HEIGHT)
   })
 
@@ -56,6 +56,19 @@ describe('buildSolanaTransaction', () => {
       feePayer: SPONSOR,
     })
 
-    expect(transaction.feePayer).toEqual(SPONSOR)
+    expect(TransactionMessage.decompile(transaction.message).payerKey).toEqual(SPONSOR)
+  })
+
+  // Trust Wallet's in-app browser breaks on a legacy message: it deserializes every transaction as
+  // versioned, then calls the legacy-only `serializeMessage()` on it.
+  it('compiles a versioned message without lookup tables', async () => {
+    const { transaction } = await buildSolanaTransaction({
+      connection: createConnection(),
+      instructions: [dummyInstruction()],
+      feePayer: SPONSOR,
+    })
+
+    expect(transaction.message.version).toBe(0)
+    expect(transaction.message.addressTableLookups).toEqual([])
   })
 })
