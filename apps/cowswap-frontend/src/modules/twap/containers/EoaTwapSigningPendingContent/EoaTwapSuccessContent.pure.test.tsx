@@ -41,12 +41,20 @@ describe('EoaTwapSuccessContent()', () => {
   })
 
   it('renders the success heading without a token pair', () => {
-    renderSuccessContent(<EoaTwapSuccessHeading />)
+    renderSuccessContent(<EoaTwapSuccessHeading hasOrdersTable />)
 
     const heading = screen.getByTestId('confirmation-success-heading')
     expect(heading.textContent).toContain('Your TWAP is active')
     expect(heading.textContent).toContain('Track its progress in Orders.')
     expect(screen.queryByTestId('trade-token-pair')).toBeNull()
+  })
+
+  it('does not point to the orders when there is no orders table', () => {
+    renderSuccessContent(<EoaTwapSuccessHeading hasOrdersTable={false} />)
+
+    const heading = screen.getByTestId('confirmation-success-heading')
+    expect(heading.textContent).toContain('Your TWAP is active')
+    expect(heading.textContent).not.toContain('Track its progress in Orders.')
   })
 
   it('renders explorer link and action', () => {

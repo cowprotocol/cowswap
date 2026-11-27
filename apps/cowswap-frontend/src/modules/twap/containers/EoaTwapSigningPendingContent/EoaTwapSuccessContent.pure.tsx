@@ -15,6 +15,10 @@ export interface EoaTwapSuccessContentProps {
   onViewOrders?: () => void | Promise<void>
 }
 
+export interface EoaTwapSuccessHeadingProps {
+  hasOrdersTable: boolean
+}
+
 export function EoaTwapSuccessContent({ explorerUrl, onDismiss, onViewOrders }: EoaTwapSuccessContentProps): ReactNode {
   return (
     <>
@@ -34,12 +38,12 @@ export function EoaTwapSuccessContent({ explorerUrl, onDismiss, onViewOrders }: 
   )
 }
 
-export function EoaTwapSuccessHeading(): ReactNode {
+export function EoaTwapSuccessHeading({ hasOrdersTable }: EoaTwapSuccessHeadingProps): ReactNode {
   return (
     <BaseTradeConfirmation
       heading={{
         title: <Trans>Your TWAP is active</Trans>,
-        subtitle: <Trans>Track its progress in Orders.</Trans>,
+        subtitle: hasOrdersTable ? <Trans>Track its progress in Orders.</Trans> : undefined,
       }}
     />
   )

@@ -120,7 +120,7 @@ export function TwapConfirmModal(): ReactNode {
           recipient={recipient}
           hasSigningPlan={hasSigningPlan}
           lockDismiss={lockDismiss}
-          headerContent={isEoaTwapSuccess ? <EoaTwapSuccessHeading /> : null}
+          headerContent={isEoaTwapSuccess ? <EoaTwapSuccessHeading hasOrdersTable={!!dismissSuccessState} /> : null}
         >
           {(restContent) => (
             <>
