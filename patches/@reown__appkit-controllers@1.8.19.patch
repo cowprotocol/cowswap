@@ -2,7 +2,29 @@ diff --git a/dist/esm/src/utils/MobileWallet.js b/dist/esm/src/utils/MobileWalle
 index fd6397e88c9d07fc2fa4baec7c825efb8a933ee7..0dc947de71b62cd919a79540a1c8ed2d5bfc628c 100644
 --- a/dist/esm/src/utils/MobileWallet.js
 +++ b/dist/esm/src/utils/MobileWallet.js
-@@ -120,7 +120,11 @@ export const MobileWalletUtil = {
+@@ -104,12 +104,17 @@
+                 window.location.href = browseUrl;
+             }
+         }
+-        // Solflare only supports Solana
+-        if (id === CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id &&
+-            namespace === ConstantsUtil.CHAIN.SOLANA &&
+-            !('solflare' in window)) {
++        /*
++         * Solflare's browse deeplink is namespace-agnostic. Gating it on an active Solana
++         * namespace strands the wallet on an EVM-default page: the modal shows "Not Detected"
++         * and offers no connection path (reown-com/appkit#4289). Mobile only: on desktop this
++         * navigates away from the WalletConnect QR the extension-less user actually needs.
++         */
++        if (id === CUSTOM_DEEPLINK_WALLETS.SOLFLARE.id &&
++            CoreHelperUtil.isMobile() &&
++            !('solflare' in window)) {
+             window.location.href = `${CUSTOM_DEEPLINK_WALLETS.SOLFLARE.url}/ul/v1/browse/${encodedHref}?ref=${encodedHref}`;
+         }
+         if (namespace === ConstantsUtil.CHAIN.SOLANA) {
+             if (id === CUSTOM_DEEPLINK_WALLETS.COINBASE.id &&
+                 (isCoinbaseDisabled || !('coinbaseSolana' in window))) {
+@@ -120,7 +125,11 @@
           * Coinbase/Base wallet deeplink for EVM chains.
           * Uses cbwallet://miniapp?url={REDIRECT_URL} to open in-app browser.
           */
