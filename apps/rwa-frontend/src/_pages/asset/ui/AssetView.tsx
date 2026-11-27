@@ -2,9 +2,8 @@
 
 import { type ReactNode, useRef } from 'react'
 
-import Link from 'next/link'
-
 import { AssetAccount } from './AssetAccount'
+import { AssetBackLink } from './AssetBackLink'
 import { AssetPriceChart } from './AssetPriceChart'
 import styles from './AssetView.module.css'
 import { IssuersMenu } from './IssuersMenu'
@@ -15,6 +14,7 @@ import { getTradingPauseMessage } from '../lib/tradingPause'
 import { useAssetMarket } from '../model/useAssetMarket'
 import { useAssetPriceStats } from '../model/useAssetPriceStats'
 import { useFitStickyTop } from '../model/useFitStickyTop'
+import { useTradeTokenFromUrl } from '../model/useTradeTokenFromUrl'
 
 import { AssetStats, type RwaAsset, type RwaRelatedAsset } from '@/entities/asset'
 import { useIsHydrated } from '@/shared/lib/hydrated'
@@ -36,14 +36,12 @@ export function AssetView({ asset, relatedAssets }: AssetViewProps): ReactNode {
   const tradingPauseMessage = isHydrated ? getTradingPauseMessage(data?.tradingPause, new Date()) : null
 
   useFitStickyTop(sideRef, SIDE_STICKY_GAP)
+  useTradeTokenFromUrl(asset.tokens)
 
   return (
     <div className={styles.layout}>
       <div className={styles.overview}>
-        <Link className={styles.back} href="/">
-          <ArrowLeftIcon />
-          Explore
-        </Link>
+        <AssetBackLink />
         <AssetIdentity asset={asset} />
         {error && !data && <StatusMessage>Failed to load market data: {error.message}</StatusMessage>}
         {data?.degraded && <StatusMessage>Tokenized stock market data is temporarily unavailable</StatusMessage>}
@@ -59,20 +57,6 @@ export function AssetView({ asset, relatedAssets }: AssetViewProps): ReactNode {
         <AssetAccount asset={asset} relatedAssets={relatedAssets} />
       </div>
     </div>
-  )
-}
-
-function ArrowLeftIcon(): ReactNode {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <path
-        d="M12.667 8H3.333M8 12.667 3.333 8 8 3.333"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
   )
 }
 

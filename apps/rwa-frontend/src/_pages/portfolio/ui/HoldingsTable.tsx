@@ -10,10 +10,17 @@ import styles from './Portfolio.module.css'
 import type { Holding, TokenHolding } from '../lib/holdings'
 import type { Portfolio } from '../model/usePortfolio'
 
-import { DividendNotes, getTokenKey, isListedAsset, RWA_ASSET_TYPE_LABELS } from '@/entities/asset'
+import {
+  DividendNotes,
+  getAssetPath,
+  getTokenKey,
+  isListedAsset,
+  isRwaChain,
+  RWA_ASSET_TYPE_LABELS,
+} from '@/entities/asset'
 import { getChainLabel, getExplorerAddressUrl } from '@/shared/lib/chain'
 import { EMPTY_VALUE, formatUsd, toTokenUnits } from '@/shared/lib/format'
-import { ChevronDownIcon } from '@/shared/ui/icons'
+import { ArrowRightIcon, ChevronDownIcon, LinkIcon } from '@/shared/ui/icons'
 import { StatusMessage } from '@/shared/ui/status-message'
 import { TokenLogo } from '@/shared/ui/token-logo'
 import { RowMenu } from '@/widgets/account'
@@ -118,7 +125,7 @@ function HoldingRows({ holding, getLogoUrl }: HoldingRowsProps): ReactNode {
   const router = useRouter()
   const [isExpanded, setIsExpanded] = useState(tokens.length > 1)
   const tokensLabel = `${tokens.length} stock token${tokens.length === 1 ? '' : 's'}`
-  const hasPage = isListedAsset(asset)
+  const assetPath = isListedAsset(asset) ? getAssetPath(asset.ticker, { from: 'portfolio' }) : null
 
   return (
     <tbody className={styles.group}>
@@ -136,8 +143,8 @@ function HoldingRows({ holding, getLogoUrl }: HoldingRowsProps): ReactNode {
             </button>
             <TokenLogo symbol={asset.ticker} logoUrl={getLogoUrl(asset)} />
             <div className={styles.holdingIdentity}>
-              {hasPage ? (
-                <Link className={styles.holdingTitle} href={`/asset/${asset.ticker}`}>
+              {assetPath ? (
+                <Link className={styles.holdingTitle} href={assetPath}>
                   {asset.title}
                 </Link>
               ) : (
@@ -152,10 +159,12 @@ function HoldingRows({ holding, getLogoUrl }: HoldingRowsProps): ReactNode {
         <td className={`${styles.numeric} ${styles.strong}`}>{formatShares(shares)}</td>
         <td className={`${styles.numeric} ${styles.strong}`}>{formatValue(value)}</td>
         <td className={styles.menuColumn}>
-          {hasPage && (
+          {assetPath && (
             <RowMenu
               label={`${asset.title} actions`}
-              items={[{ label: `Open ${asset.title}`, onSelect: () => router.push(`/asset/${asset.ticker}`) }]}
+              items={[
+                { label: `Open ${asset.title}`, icon: <ArrowRightIcon />, onSelect: () => router.push(assetPath) },
+              ]}
             />
           )}
         </td>
@@ -178,6 +187,7 @@ function TokenRow({ holding: { asset }, tokenHolding, getLogoUrl, className }: T
   const { token, balance, shares, value } = tokenHolding
   const router = useRouter()
   const explorerUrl = getExplorerAddressUrl(token.chainId, token.address)
+  const assetPath = isRwaChain(token.chainId) ? getAssetPath(asset.ticker, { token, from: 'portfolio' }) : null
   const amount =
     token.decimals === null ? EMPTY_VALUE : tokenAmountFormatter.format(toTokenUnits(balance, token.decimals))
 
@@ -187,9 +197,15 @@ function TokenRow({ holding: { asset }, tokenHolding, getLogoUrl, className }: T
         <div className={styles.holding}>
           <TokenLogo symbol={token.symbol} logoUrl={getLogoUrl(asset, token)} chainId={token.chainId} />
           <div className={styles.holdingIdentity}>
-            <span className={styles.tokenTitle}>
-              {token.symbol} · {token.issuer}
-            </span>
+            {assetPath ? (
+              <Link className={styles.tokenTitle} href={assetPath}>
+                {token.symbol} · {token.issuer}
+              </Link>
+            ) : (
+              <span className={styles.tokenTitle}>
+                {token.symbol} · {token.issuer}
+              </span>
+            )}
             <span className={styles.secondary}>{getChainLabel(token.chainId)}</span>
           </div>
         </div>
@@ -203,13 +219,20 @@ function TokenRow({ holding: { asset }, tokenHolding, getLogoUrl, className }: T
         <RowMenu
           label={`${token.symbol} on ${getChainLabel(token.chainId)} actions`}
           items={[
-            ...(isListedAsset(asset)
-              ? [{ label: `Open ${asset.title}`, onSelect: () => router.push(`/asset/${asset.ticker}`) }]
+            ...(assetPath
+              ? [
+                  {
+                    label: `Open ${token.symbol} · ${token.issuer}`,
+                    icon: <ArrowRightIcon />,
+                    onSelect: () => router.push(assetPath),
+                  },
+                ]
               : []),
             ...(explorerUrl
               ? [
                   {
                     label: 'View token on explorer',
+                    icon: <LinkIcon />,
                     onSelect: () => window.open(explorerUrl, '_blank', 'noopener,noreferrer'),
                   },
                 ]

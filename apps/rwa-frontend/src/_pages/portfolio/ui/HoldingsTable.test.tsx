@@ -75,10 +75,34 @@ describe('HoldingsTable', () => {
       />,
     )
 
-    expect(screen.getByRole('link', { name: 'NVIDIA' }).getAttribute('href')).toBe('/asset/NVDA')
+    expect(screen.getByRole('link', { name: 'NVIDIA' }).getAttribute('href')).toBe('/asset/NVDA?from=portfolio')
     expect(screen.getByText('Sunrun')).toBeTruthy()
     expect(screen.queryByRole('link', { name: 'Sunrun' })).toBeNull()
     expect(screen.queryByRole('button', { name: 'Sunrun actions' })).toBeNull()
+  })
+
+  it('links each token to its asset page with the token selected', () => {
+    render(<HoldingsTable holdings={HOLDINGS} getLogoUrl={() => null} isWalletEmpty={false} isFiltered={false} />)
+
+    expect(screen.getByRole('link', { name: 'NVDAon · Ondo' }).getAttribute('href')).toBe(
+      '/asset/NVDA?token=56%3A0x0000000000000000000000000000000000000002&from=portfolio',
+    )
+  })
+
+  it('shows a listed asset token on a network the asset page does not list unlinked', () => {
+    const nvdaRobinhood = token('NVDA', 4663, '0x0000000000000000000000000000000000000006', 'Robinhood')
+    const [nvidia] = HOLDINGS
+    const holding: Holding = {
+      ...nvidia,
+      asset: { ...nvidia.asset, tokens: [...nvidia.asset.tokens, nvdaRobinhood] },
+      tokens: [...nvidia.tokens, { token: nvdaRobinhood, balance: '1000000000000000000', shares: 1, value: null }],
+    }
+
+    render(<HoldingsTable holdings={[holding]} getLogoUrl={() => null} isWalletEmpty={false} isFiltered={false} />)
+
+    expect(screen.getByText('NVDA · Robinhood')).toBeTruthy()
+    expect(screen.queryByRole('link', { name: 'NVDA · Robinhood' })).toBeNull()
+    expect(screen.getByRole('link', { name: 'NVDAon · Ondo' })).toBeTruthy()
   })
 
   it('invites an empty wallet to explore assets', () => {

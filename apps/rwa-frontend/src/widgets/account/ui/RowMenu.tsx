@@ -11,6 +11,8 @@ import { MoreIcon } from '@/shared/ui/icons'
 
 export interface RowMenuItem {
   label: string
+  /** 16px icon before the label */
+  icon: ReactNode
   description?: string
   onSelect: () => void
 }
@@ -21,11 +23,13 @@ interface RowMenuProps {
   items: RowMenuItem[]
 }
 
-const MENU_OFFSET_PX = 4
+const MENU_OFFSET_PX = 10
 
 interface MenuPosition {
   top: number
   right: number
+  /** Side of the trigger the menu opens on, where its arrow points from */
+  placement: 'below' | 'above'
 }
 
 export function RowMenu({ label, items }: RowMenuProps): ReactNode {
@@ -49,7 +53,7 @@ export function RowMenu({ label, items }: RowMenuProps): ReactNode {
     }
 
     const rect = trigger.getBoundingClientRect()
-    setPosition({ top: rect.bottom + MENU_OFFSET_PX, right: window.innerWidth - rect.right })
+    setPosition({ top: rect.bottom + MENU_OFFSET_PX, right: window.innerWidth - rect.right, placement: 'below' })
   }
 
   // The table scrolls inside an `overflow: auto` box that would clip an absolutely positioned menu,
@@ -66,7 +70,7 @@ export function RowMenu({ label, items }: RowMenuProps): ReactNode {
       const triggerRect = trigger.getBoundingClientRect()
       const top = Math.max(MENU_OFFSET_PX, triggerRect.top - menuRect.height - MENU_OFFSET_PX)
 
-      if (top !== menuRect.top) setPosition((current) => current && { ...current, top })
+      if (top !== menuRect.top) setPosition((current) => current && { ...current, top, placement: 'above' })
     }
 
     menu.querySelector<HTMLButtonElement>('[role="menuitem"]')?.focus()
@@ -97,6 +101,7 @@ export function RowMenu({ label, items }: RowMenuProps): ReactNode {
             id={menuId}
             className={styles.menu}
             role="menu"
+            data-placement={position.placement}
             aria-label={label}
             style={{ top: position.top, right: position.right }}
             onKeyDown={(event) => onMenuKeyDown(event, close)}
@@ -113,6 +118,7 @@ export function RowMenu({ label, items }: RowMenuProps): ReactNode {
                   item.onSelect()
                 }}
               >
+                <span className={styles.icon}>{item.icon}</span>
                 {item.label}
                 {item.description && <span className={styles.description}>{item.description}</span>}
               </button>

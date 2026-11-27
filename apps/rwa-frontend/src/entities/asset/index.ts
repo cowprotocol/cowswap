@@ -85,6 +85,7 @@ export {
   type RwaDividendNote,
   type RwaIssuer,
 } from './model/issuers'
+export { ASSET_FROM_SEARCH_PARAM, ASSET_TOKEN_SEARCH_PARAM, type AssetPageOrigin, getAssetPath } from './lib/assetPath'
 export { getDailyStats, type RwaDailyStats } from './lib/dailyStats'
 export { getTokenKey } from './lib/tokenKey'
 export { getTokenUsdPrice } from './lib/tokenUsdPrice'
