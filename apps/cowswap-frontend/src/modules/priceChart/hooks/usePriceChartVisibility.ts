@@ -14,13 +14,13 @@ export function usePriceChartVisibility(): boolean {
   const isPriceChartAvailable = useIsPriceChartAvailable()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
-  const isUpToLarge = useMediaQuery(Media.upToLarge(false))
+  const isUpToMedium = useMediaQuery(Media.upToMedium(false))
   const isVisible = useAtomValue(priceChartVisibleAtom)
 
   return Boolean(
     isPriceChartAvailable &&
       !isProviderNetworkUnsupported &&
       !isProviderNetworkDeprecated &&
-      (isUpToLarge || isVisible),
+      (isUpToMedium || isVisible),
   )
 }

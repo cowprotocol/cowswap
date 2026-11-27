@@ -23,7 +23,7 @@ export function PriceChartSettingsDropdown({ sizeControl }: PriceChartSettingsDr
   const { t } = useLingui()
   const [autoRefresh, setAutoRefresh] = useAtom(priceChartAutoRefreshAtom)
   const [chartMode, setChartMode] = useAtom(priceChartModeAtom)
-  const isUpToLarge = useMediaQuery(Media.upToLarge(false))
+  const isUpToMedium = useMediaQuery(Media.upToMedium(false))
   const [supplyVariant, setSupplyVariant] = useAtom(priceChartSupplyVariantAtom)
 
   return (
@@ -49,7 +49,7 @@ export function PriceChartSettingsDropdown({ sizeControl }: PriceChartSettingsDr
                 checked={autoRefresh}
                 toggle={() => setAutoRefresh((value) => !value)}
               />
-              {!isUpToLarge && (
+              {!isUpToMedium && (
                 <SettingsBox
                   title={t`Maximum width`}
                   tooltip={t`Expand the price chart to use more space.`}

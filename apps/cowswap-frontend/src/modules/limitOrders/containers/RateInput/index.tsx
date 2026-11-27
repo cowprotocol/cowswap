@@ -92,7 +92,7 @@ export function RateInput() {
   const [typedTrailingZeros, setTypedTrailingZeros] = useState('')
   const [isUsdRateMode, setIsUsdRateMode] = useAtom(isLocalUsdRateModeAtom)
   const [isLimitPickerMode, setLimitPickerMode] = useAtom(limitPickerModeAtom)
-  const isUpToLarge = useMediaQuery(Media.upToLarge(false))
+  const isUpToMedium = useMediaQuery(Media.upToMedium(false))
   const isPriceChartAvailable = useIsPriceChartAvailable()
   const setChartModalOpen = useSetAtom(priceChartModalOpenAtom)
   const setChartVisible = useSetAtom(priceChartVisibleAtom)
@@ -450,7 +450,7 @@ export function RateInput() {
                     onClick={() => {
                       if (!isLimitPickerMode) {
                         setIsUsdRateMode(true)
-                        if (isUpToLarge) {
+                        if (isUpToMedium) {
                           setChartModalOpen(true)
                         } else {
                           setChartVisible(true)

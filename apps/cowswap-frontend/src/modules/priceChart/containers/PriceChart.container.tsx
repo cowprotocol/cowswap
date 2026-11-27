@@ -51,7 +51,7 @@ export const PriceChart = memo(function PriceChart({
 }: PriceChartProps): ReactNode {
   const { t } = useLingui()
   const chartMode = useAtomValue(priceChartModeAtom)
-  const isUpToLarge = useMediaQuery(Media.upToLarge(false))
+  const isUpToMedium = useMediaQuery(Media.upToMedium(false))
   const [isModalOpen, setIsModalOpen] = useAtom(priceChartModalOpenAtom)
   const isVisible = usePriceChartVisibility()
   const [isExpanded, setIsExpanded] = useAtom(priceChartExpandedAtom)
@@ -98,19 +98,19 @@ export const PriceChart = memo(function PriceChart({
     metric,
     onSelectMetric: setMetric,
     onSelectCurrency: handleSelectCurrency,
-    onClose: isUpToLarge ? () => setIsModalOpen(false) : undefined,
+    onClose: isUpToMedium ? () => setIsModalOpen(false) : undefined,
     sizeControl:
-      expandable && !isUpToLarge ? { isExpanded, onToggle: () => setIsExpanded((value) => !value) } : undefined,
+      expandable && !isUpToMedium ? { isExpanded, onToggle: () => setIsExpanded((value) => !value) } : undefined,
     currencies,
     supplyVariant,
   }
 
   const chart = (
     <ChartWrapper
-      $isExpanded={!isUpToLarge && (!expandable || isExpanded)}
-      $inDrawer={isUpToLarge}
+      $isExpanded={!isUpToMedium && (!expandable || isExpanded)}
+      $inDrawer={isUpToMedium}
       className="price-chart trade-orders-table"
-      data-expanded={!isUpToLarge && expandable && isExpanded}
+      data-expanded={!isUpToMedium && expandable && isExpanded}
     >
       {currencies.length === 0 ? (
         <OverlayState>
@@ -126,12 +126,12 @@ export const PriceChart = memo(function PriceChart({
 
   return (
     <DialogOrInline
-      isDialog={isUpToLarge}
+      isDialog={isUpToMedium}
       isOpen={isModalOpen}
       onOpenChange={setIsModalOpen}
       a11yTitle={t`Price chart`}
     >
-      {isUpToLarge ? <Modal.Root>{chart}</Modal.Root> : chart}
+      {isUpToMedium ? <Modal.Root>{chart}</Modal.Root> : chart}
     </DialogOrInline>
   )
 })
