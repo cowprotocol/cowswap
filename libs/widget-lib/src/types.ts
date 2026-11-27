@@ -326,6 +326,8 @@ export interface CowSwapWidgetParams {
   /**
    * The token lists (as urls) enabled for the widget.
    * These lists are available to both sell and buy selectors.
+   * Passing any list replaces the built-in defaults rather than adding to them, so a widget that
+   * also sets `enableSolana` needs a Solana list here or its Solana token selectors stay empty.
    */
   tokenLists?: string[]
 
