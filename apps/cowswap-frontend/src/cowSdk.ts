@@ -5,7 +5,13 @@ import { createPublicClient, http } from 'viem'
 import { usePublicClient, useWalletClient } from 'wagmi'
 
 import { RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
-import { getCurrentChainIdFromUrl, isBarnBackendEnv, setBffBearerToken } from '@cowprotocol/common-utils'
+import {
+  getCurrentChainIdFromUrl,
+  isBarnBackendEnv,
+  setBffBearerToken,
+  setOnBffRateLimited,
+} from '@cowprotocol/common-utils'
+import { jotaiStore } from '@cowprotocol/core'
 import {
   AbstractProviderAdapter,
   DEFAULT_BACKOFF_OPTIONS,
@@ -17,6 +23,8 @@ import {
   setGlobalAdapter,
 } from '@cowprotocol/cow-sdk'
 import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
+
+import { bffRateLimitedAtom } from 'entities/captcha/state/bffRateLimitedAtom'
 
 const prodBaseUrls = process.env.REACT_APP_ORDER_BOOK_URLS
   ? JSON.parse(process.env.REACT_APP_ORDER_BOOK_URLS)
@@ -57,6 +65,8 @@ export const prodOrderBookApi = isBarnBackendEnv
   : orderBookApi
 
 export const metadataApiSDK = new MetadataApi()
+
+setOnBffRateLimited(() => jotaiStore.set(bffRateLimitedAtom, true))
 
 export function CowSdkUpdater(): null {
   const publicClient = usePublicClient()

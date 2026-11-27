@@ -4,6 +4,7 @@ type BffFetchInit = Parameters<typeof fetchWithTimeout>[1]
 
 let bffBearerToken: string | null = null
 let pausedUntil = 0
+let onRateLimited: (() => void) | null = null
 
 export async function bffFetch(input: string, init: BffFetchInit = {}): Promise<Response> {
   // Retrying while rate limited only spends the budget, and can turn a 429 into a longer block.
@@ -15,6 +16,7 @@ export async function bffFetch(input: string, init: BffFetchInit = {}): Promise<
   // A 429 for a token replaced meanwhile, or passed through from a proxied upstream, doesn't limit the current token.
   if (response.status === 429 && token === bffBearerToken && !input.includes('/proxies/')) {
     pausedUntil = Date.now() + parseRetryAfter(response)
+    onRateLimited?.()
   }
 
   return response
@@ -24,6 +26,10 @@ export function setBffBearerToken(token: string | null): void {
   bffBearerToken = token
   // A new JWT has its own rate-limit budget.
   if (token) pausedUntil = 0
+}
+
+export function setOnBffRateLimited(callback: (() => void) | null): void {
+  onRateLimited = callback
 }
 
 async function fetchWithBearer(input: string, init: BffFetchInit = {}): Promise<Response> {

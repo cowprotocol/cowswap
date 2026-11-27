@@ -8,6 +8,7 @@ import { getJwtTtl, normalizeError } from '@cowprotocol/common-utils'
 
 import { DEFAULT_SCRIPT_ID, Turnstile, type TurnstileInstance } from '@marsidev/react-turnstile'
 import { setBearerToken } from 'cowSdk'
+import { bffRateLimitedAtom } from 'entities/captcha/state/bffRateLimitedAtom'
 import { captchaErrorAtom } from 'entities/captcha/state/captchaErrorAtom'
 import { captchaInteractionRequiredAtom } from 'entities/captcha/state/captchaInteractionRequiredAtom'
 import { captchaJwtAtom } from 'entities/captcha/state/captchaJwtAtom'
@@ -21,8 +22,10 @@ import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { exchangeTurnstileToken } from '../api/captchaApi'
 import { TURNSTILE_DEMO_INTERACTIVE_SITE_KEY, TURNSTILE_SITE_KEY } from '../config/captcha.const'
 import { useCaptchaDebugControls } from '../hooks/useCaptchaDebugControls'
+import { useCaptchaModal } from '../hooks/useCaptchaModal'
 import { useCaptchaRetry } from '../hooks/useCaptchaRetry'
 import { logCaptcha } from '../logger'
+import { CaptchaModal } from '../pure/CaptchaModal.pure'
 import { captchaSlotAtom } from '../state/captchaSlot.atoms'
 
 const trackCaptchaEvent = createCowTracker(CowSwapAnalyticsCategory.CAPTCHA)
@@ -37,6 +40,7 @@ export function CaptchaWidget(): ReactNode {
   const [captchaError, setCaptchaError] = useAtom(captchaErrorAtom)
   const setCaptchaInteractionRequired = useSetAtom(captchaInteractionRequiredAtom)
   const setQuoteRateLimitedUntil = useSetAtom(quoteRateLimitedUntilAtom)
+  const setBffRateLimited = useSetAtom(bffRateLimitedAtom)
   const { isCaptchaEnabled } = useFeatureFlags()
   const captchaRef = useRef<TurnstileInstance | undefined>(undefined)
   const exchangeRequestIdRef = useRef(0)
@@ -48,6 +52,8 @@ export function CaptchaWidget(): ReactNode {
   const widgetIdRef = useRef<string | undefined>(undefined)
   const { scheduleRetry, resetRetries } = useCaptchaRetry()
   const slot = useAtomValue(captchaSlotAtom)
+  const { isModalOpen, dismissModal } = useCaptchaModal()
+  const [modalTarget, setModalTarget] = useState<HTMLDivElement | null>(null)
 
   const trackCaptcha = siteKey === TURNSTILE_DEMO_INTERACTIVE_SITE_KEY ? ignoreCaptchaEvent : trackCaptchaEvent
 
@@ -75,13 +81,22 @@ export function CaptchaWidget(): ReactNode {
       setIsScriptRetryPending(false)
       // A new JWT has its own rate-limit budget.
       setQuoteRateLimitedUntil(null)
+      setBffRateLimited(false)
       resetRetries()
       logCaptcha.info('JWT applied to orderbook context', { expiresAt: captchaJwt.expiresAt })
     } else {
       setBearerToken(null)
       logCaptcha.info('JWT cleared from orderbook context')
     }
-  }, [captchaJwt, isCaptchaEnabled, resetRetries, setCaptchaError, setQuoteRateLimitedUntil, siteKey])
+  }, [
+    captchaJwt,
+    isCaptchaEnabled,
+    resetRetries,
+    setBffRateLimited,
+    setCaptchaError,
+    setQuoteRateLimitedUntil,
+    siteKey,
+  ])
 
   useEffect(() => {
     if (isCaptchaEnabled !== false) return
@@ -105,7 +120,7 @@ export function CaptchaWidget(): ReactNode {
 
   useCaptchaDebugControls({ exchangeRequestIdRef, setCaptchaJwt, setSiteKey })
 
-  if (!isCaptchaEnabled || !siteKey || captchaJwt || isUnsupported || isScriptRetryPending) return null
+  if (!isCaptchaEnabled || !siteKey || captchaJwt) return null
 
   // captchaError stays set until a JWT arrives, so retries that keep failing are reported once.
   const handleFailure = (error: Error, reason?: string, context?: Record<string, string | number>): void => {
@@ -226,11 +241,24 @@ export function CaptchaWidget(): ReactNode {
     />
   )
 
-  return slot ? (
-    createPortal(turnstile, slot)
+  const target = slot ?? (isModalOpen ? modalTarget : null)
+  const placedTurnstile = target ? (
+    createPortal(turnstile, target)
   ) : (
     <div style={OFFSCREEN_STYLE} inert>
       {turnstile}
     </div>
+  )
+
+  return (
+    <>
+      {!isUnsupported && !isScriptRetryPending && placedTurnstile}
+      <CaptchaModal
+        isOpen={isModalOpen}
+        isError={!!captchaError}
+        onDismiss={dismissModal}
+        turnstileTargetRef={setModalTarget}
+      />
+    </>
   )
 }

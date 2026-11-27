@@ -1,4 +1,4 @@
-import { bffFetch, setBffBearerToken } from './bffFetch'
+import { bffFetch, setBffBearerToken, setOnBffRateLimited } from './bffFetch'
 
 const URL = 'https://bff.test/1/tokens/0x1/usdPrice'
 const mockFetch = jest.fn()
@@ -92,6 +92,17 @@ describe('bffFetch', () => {
       mockFetch.mockResolvedValueOnce({ status: 200 })
 
       expect((await bffFetch(URL)).status).toBe(200)
+    })
+
+    it('reports the pause to the rate-limit callback', async () => {
+      const onRateLimited = jest.fn()
+      setOnBffRateLimited(onRateLimited)
+
+      await bffFetch(URL)
+      setBffBearerToken('jwt')
+      setOnBffRateLimited(null)
+
+      expect(onRateLimited).toHaveBeenCalledTimes(1)
     })
   })
 })

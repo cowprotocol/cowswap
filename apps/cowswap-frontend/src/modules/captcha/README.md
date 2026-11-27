@@ -3,9 +3,17 @@
 Turnstile is mounted once at app level (`App/Updaters.tsx`) through `containers/CaptchaWidget.container.tsx`. Trade forms (swap, limit, yield, twap) render `CaptchaSlot`, and the widget is portaled into it so the checkbox shows there. On other pages it runs off-screen, so BFF requests get a JWT too.
 
 Errors don't turn the captcha off. Quotes go out without a JWT (`captchaErrorAtom`) while the widget keeps retrying:
+
 - Turnstile retries failed challenges itself.
 - Failed JWT exchanges and failed script loads are retried with a backoff of 1s doubling up to 30s (`hooks/useCaptchaRetry.ts`).
 - Unsupported browsers aren't retried.
+
+When a user without a JWT is rate limited (`bffRateLimitedAtom` or `quoteRateLimitedUntilAtom`, both cleared when a JWT arrives), the widget opens `CaptchaModal` (`hooks/useCaptchaModal.ts`):
+
+- after a captcha error, on any page;
+- when the challenge needs interaction off trade pages, with Turnstile moved into the modal. Trade forms already show the checkbox.
+
+Dismissing it lasts until reload.
 
 On success, `api/captchaApi.ts` exchanges the Turnstile token for a JWT, `entities/captcha/state/captchaJwtAtom.ts` stores it, and `CaptchaWidget` applies it through `setBearerToken()` to order book requests and to BFF requests made with `bffFetch` (`@cowprotocol/common-utils`). BFF requests without a JWT are still sent.
 
