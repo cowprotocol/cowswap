@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.3.0](https://github.com/cowprotocol/cowswap/compare/wallet-provider-v2.2.0...wallet-provider-v2.3.0) (2026-11-10)
+
+### Minor Changes
+
+- feat(networks): networks update (#8456)
+
 ## [2.2.0](https://github.com/cowprotocol/cowswap/compare/wallet-provider-v2.1.17...wallet-provider-v2.2.0) (2026-06-08)
 
 ### Minor Changes

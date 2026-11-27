@@ -130,6 +130,7 @@ export enum UI {
 
   // Misc
   MODAL_BACKDROP = '--cow-modal-backdrop',
+  MODAL_BACKDROP_OPACITY = '--cow-modal-backdrop-opacity',
   BORDER_RADIUS_NORMAL = '--cow-border-radius-normal',
   BORDER_RADIUS_LARGE = '--cow-border-radius-large',
   PADDING_NORMAL = '--cow-padding-normal',
@@ -149,6 +150,8 @@ export enum UI {
   COLOR_TEXT1_OPACITY_25 = '--cow-color-text1-opacity-25',
   COLOR_TEXT1_OPACITY_10 = '--cow-color-text1-opacity-10',
   COLOR_TEXT2 = '--cow-color-text2',
+  COLOR_TEXT_SECONDARY = '--color-text-secondary',
+  COLOR_TEXT_SECONDARY_HOVER = '--color-text-secondary-hover',
   COLOR_LINK = '--cow-color-link',
   COLOR_LINK_OPACITY_10 = '--cow-color-link-opacity-10',
 
@@ -163,6 +166,7 @@ export enum UI {
 
   // Font Sizes:
   FONT_SIZE_SMALLER = '--cow-font-size-smaller',
+  FONT_SIZE_OVERLINE = '--cow-font-size-overline',
   FONT_SIZE_SMALL = '--cow-font-size-small',
   FONT_SIZE_SMALL_PLUS = '--cow-font-size-small-plus',
   FONT_SIZE_NORMAL = '--cow-font-size-normal',
@@ -171,11 +175,12 @@ export enum UI {
   FONT_SIZE_LARGE = '--cow-font-size-large',
   FONT_SIZE_LARGER = '--cow-font-size-larger',
   FONT_SIZE_LARGEST = '--cow-font-size-largest',
+  FONT_SIZE_TITLE = '--cow-font-size-title',
 
   // Line Heights:
-  LINE_HEIGHT_SMALL = '--cow-line-height-small',
-  LINE_HEIGHT_NORMAL = '--cow-line-height-normal',
-  LINE_HEIGHT_MEDIUM = '--cow-line-height-medium',
+  // LINE_HEIGHT_SMALL = '--cow-line-height-small',
+  // LINE_HEIGHT_NORMAL = '--cow-line-height-normal',
+  // LINE_HEIGHT_MEDIUM = '--cow-line-height-medium',
 
   // Font Families:
   FONT_FAMILY_PRIMARY = '--cow-font-family-primary',

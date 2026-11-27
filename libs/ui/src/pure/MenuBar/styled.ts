@@ -23,6 +23,8 @@ export const MenuBarWrapper = styled.div<{
   padding?: string
   mobileMode?: boolean
   maxWidth?: number
+  /** Backdrop blur behind the bar. Dial it down where what is behind is worth seeing. */
+  blur?: string
 }>`
   --height: 56px;
   --width: 100%;
@@ -35,7 +37,7 @@ export const MenuBarWrapper = styled.div<{
   --color: ${({ theme, colorLight, colorDark }) =>
     theme.darkMode ? colorDark || `var(${UI.COLOR_NEUTRAL_98})` : colorLight || `var(${UI.COLOR_NEUTRAL_0})`};
   --borderRadius: 28px;
-  --blur: 16px;
+  --blur: ${({ blur }) => blur || '16px'};
 
   // Elements
   --defaultFill: ${({ theme, defaultFillLight, defaultFillDark }) =>

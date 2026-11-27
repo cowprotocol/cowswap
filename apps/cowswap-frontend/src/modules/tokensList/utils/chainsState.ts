@@ -1,12 +1,12 @@
+import { isSupportedChainId } from '@cowprotocol/common-utils'
 import { AdditionalTargetChainId, ChainInfo, SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { isBridgeSourceChainSupported } from 'entities/bridgeProvider'
+
+import { filterChainsForSelector } from './filterTokensForSelector'
 import { sortChainsByDisplayOrder } from './sortChainsByDisplayOrder'
 
 import { ChainsToSelectState } from '../types'
-
-// Solana is a bridge-only destination: you can bridge *to* it, but not *from* it (no source support yet).
-// Treat it as a non-bridgeable source so the destination selector is single-chain, matching Sepolia's behaviour.
-const SOURCE_CHAINS_BRIDGE_DISABLED = new Set<SupportedChainId>([SupportedChainId.SOLANA])
 
 export interface CreateOutputChainsOptions {
   selectedTargetChainId: SupportedChainId | number
@@ -21,6 +21,7 @@ export interface CreateOutputChainsOptions {
     isLoading: boolean
   }
   additionalChainIds?: Set<number>
+  allowedChainIds?: number[]
 }
 
 export function computeDisabledChainIds(
@@ -46,10 +47,14 @@ export function computeDisabledChainIds(
 export function createInputChainsState(
   selectedTargetChainId: SupportedChainId | number,
   supportedChains: ChainInfo[],
+  allowedChainIds?: number[],
 ): ChainsToSelectState {
+  const chains = sortChainsByDisplayOrder(filterChainsForSelector(supportedChains, allowedChainIds))
+  const isSelectedChainListed = !allowedChainIds || chains.some((chain) => chain.id === selectedTargetChainId)
+
   return {
-    defaultChainId: selectedTargetChainId,
-    chains: sortChainsByDisplayOrder(supportedChains),
+    defaultChainId: isSelectedChainListed ? selectedTargetChainId : (chains[0]?.id ?? selectedTargetChainId),
+    chains,
     isLoading: false,
   }
 }
@@ -62,13 +67,14 @@ export function createOutputChainsState({
   supportedChains,
   isLoading,
   routesAvailability,
+  allowedChainIds,
 }: CreateOutputChainsOptions): ChainsToSelectState {
   const chainSet = new Set(supportedChains.map((c) => c.id))
   const chainsWithCurrent = chainSet.has(chainId) ? supportedChains : [...supportedChains, currentChainInfo]
-  const orderedChains = sortChainsByDisplayOrder(chainsWithCurrent)
+  const orderedChains = sortChainsByDisplayOrder(filterChainsForSelector(chainsWithCurrent, allowedChainIds))
 
   const destinationIds = new Set(filterDestinationChains(bridgeSupportedNetworks)?.map((c) => c.id) ?? [])
-  const sourceSupported = !SOURCE_CHAINS_BRIDGE_DISABLED.has(chainId) && destinationIds.has(chainId)
+  const sourceSupported = isBridgeSourceChainSupported(chainId, filterDestinationChains(bridgeSupportedNetworks))
 
   const baseDisabledChainIds = computeDisabledChainIds(
     orderedChains,
@@ -92,7 +98,7 @@ export function createOutputChainsState({
 }
 
 export function filterDestinationChains(bridgeSupportedNetworks: ChainInfo[] | undefined): ChainInfo[] | undefined {
-  return bridgeSupportedNetworks?.filter((chain) => chain.id in SupportedChainId || chain.id in AdditionalTargetChainId)
+  return bridgeSupportedNetworks?.filter((chain) => isSupportedChainId(chain.id) || chain.id in AdditionalTargetChainId)
 }
 
 export function resolveDefaultChainId(

@@ -1,5 +1,259 @@
 # Changelog
 
+## [3.21.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.20.1...analytics-v3.21.0) (2026-11-25)
+
+### Minor Changes
+
+- feat: extend cookie consent to CoW Swap, Explorer and RWA (#8555)
+
+### Patch Changes
+
+- fix(analytics): clear X tracker cookies on rejection (#8696)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.23.2
+  - @cowprotocol/common-hooks@3.22.2
+  - @cowprotocol/common-const@3.26.0
+
+## [3.20.1](https://github.com/cowprotocol/cowswap/compare/analytics-v3.20.0...analytics-v3.20.1) (2026-11-19)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.25.0
+  - @cowprotocol/common-hooks@3.22.1
+  - @cowprotocol/common-utils@3.23.1
+
+## [3.20.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.19.2...analytics-v3.20.0) (2026-11-18)
+
+### Minor Changes
+
+- feat: update SDK versions with updated near token lists (#8660)
+
+- feat(cow-fi): gate GTM on cookie consent (#8606)
+
+- feat(solana): support custom recipients (#8592)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.24.0
+  - @cowprotocol/common-hooks@3.22.0
+  - @cowprotocol/common-utils@3.23.0
+  - @cowprotocol/currency@1.11.0
+  - @cowprotocol/events@4.19.0
+  - @cowprotocol/types@4.16.0
+
+## [3.19.2](https://github.com/cowprotocol/cowswap/compare/analytics-v3.19.1...analytics-v3.19.2) (2026-11-16)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.23.0
+  - @cowprotocol/common-hooks@3.21.1
+  - @cowprotocol/common-utils@3.22.4
+
+## [3.19.1](https://github.com/cowprotocol/cowswap/compare/analytics-v3.19.0...analytics-v3.19.1) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.22.0
+  - @cowprotocol/common-hooks@3.21.0
+  - @cowprotocol/common-utils@3.22.3
+
+## [3.19.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.18.0...analytics-v3.19.0) (2026-11-13)
+
+### Minor Changes
+
+- feat(cow-fi): gate GTM on cookie consent
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.21.0
+  - @cowprotocol/common-hooks@3.20.1
+  - @cowprotocol/common-utils@3.22.2
+
+## [3.18.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.17.0...analytics-v3.18.0) (2026-11-11)
+
+### Minor Changes
+
+- feat(rwa): google analytics (#8542)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.20.0
+  - @cowprotocol/common-const@3.20.0
+  - @cowprotocol/types@4.15.1
+  - @cowprotocol/common-utils@3.22.1
+  - @cowprotocol/events@4.18.1
+
+## [3.17.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.16.4...analytics-v3.17.0) (2026-11-10)
+
+### Minor Changes
+
+- feat(solana): pass appData to quote (#8509)
+
+### Patch Changes
+
+- fix(solana): use SDK for quote costs breakdown (#8522)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.22.0
+  - @cowprotocol/common-const@3.19.0
+  - @cowprotocol/common-hooks@3.19.0
+  - @cowprotocol/currency@1.10.0
+  - @cowprotocol/events@4.18.0
+  - @cowprotocol/types@4.15.0
+
+## [3.16.4](https://github.com/cowprotocol/cowswap/compare/analytics-v3.16.3...analytics-v3.16.4) (2026-11-05)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.18.0
+  - @cowprotocol/common-const@3.18.0
+  - @cowprotocol/common-utils@3.21.2
+  - @cowprotocol/currency@1.9.2
+  - @cowprotocol/events@4.17.2
+  - @cowprotocol/types@4.14.2
+
+## [3.16.3](https://github.com/cowprotocol/cowswap/compare/analytics-v3.16.2...analytics-v3.16.3) (2026-10-28)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.17.1
+  - @cowprotocol/common-hooks@3.17.1
+  - @cowprotocol/common-utils@3.21.1
+
+## [3.16.2](https://github.com/cowprotocol/cowswap/compare/analytics-v3.16.1...analytics-v3.16.2) (2026-10-28)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.17.0
+  - @cowprotocol/common-utils@3.21.0
+  - @cowprotocol/common-hooks@3.17.0
+
+## [3.16.1](https://github.com/cowprotocol/cowswap/compare/analytics-v3.16.0...analytics-v3.16.1) (2026-10-27)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8474)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.16.1
+  - @cowprotocol/common-hooks@3.16.1
+  - @cowprotocol/common-utils@3.20.1
+  - @cowprotocol/currency@1.9.1
+  - @cowprotocol/events@4.17.1
+  - @cowprotocol/types@4.14.1
+
+## [3.16.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.15.0...analytics-v3.16.0) (2026-10-21)
+
+### Minor Changes
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.16.0
+  - @cowprotocol/common-hooks@3.16.0
+  - @cowprotocol/common-utils@3.20.0
+  - @cowprotocol/currency@1.9.0
+  - @cowprotocol/events@4.17.0
+  - @cowprotocol/types@4.14.0
+
+## [3.15.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.14.0...analytics-v3.15.0) (2026-10-14)
+
+### Minor Changes
+
+- feat: bump sdk + support tokens 2022 (#8315)
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+- feat: solana settlement 0.5 (#8345)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.15.0
+  - @cowprotocol/common-hooks@3.15.0
+  - @cowprotocol/common-utils@3.19.0
+  - @cowprotocol/currency@1.8.0
+  - @cowprotocol/events@4.16.0
+  - @cowprotocol/types@4.13.0
+
+## [3.14.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.13.0...analytics-v3.14.0) (2026-10-06)
+
+### Minor Changes
+
+- feat(solana): add sponsored orders (#8200)
+
+- feat(solana): migration to v0.4 (#8188)
+
+- feat(solana): use cow quote API and suggested slippage (#8195)
+
+- feat: bump sdk + rename transaction -> partiallySignedTx (#8267)
+
+### Patch Changes
+
+- fix(solana): add solana native token icon (#8262)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.14.0
+  - @cowprotocol/common-hooks@3.14.0
+  - @cowprotocol/common-utils@3.18.0
+  - @cowprotocol/currency@1.7.0
+  - @cowprotocol/events@4.15.0
+  - @cowprotocol/types@4.12.0
+
+## [3.13.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.12.0...analytics-v3.13.0) (2026-09-29)
+
+### Minor Changes
+
+- feat: add isEoaTwap to analytics event for order cancellation (#8212)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.14.0
+
+## [3.12.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.11.2...analytics-v3.12.0) (2026-09-23)
+
+### Minor Changes
+
+- feat: show twaps in explorer (#8129)
+
+- feat(solana): apply user slippage from settings (#8164)
+
+- feat: add new prop for TWAP for EOA analytics (#8201)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.17.0
+  - @cowprotocol/common-const@3.13.0
+  - @cowprotocol/common-hooks@3.13.0
+  - @cowprotocol/currency@1.6.0
+  - @cowprotocol/events@4.13.0
+  - @cowprotocol/types@4.11.0
+
+## [3.11.2](https://github.com/cowprotocol/cowswap/compare/analytics-v3.11.1...analytics-v3.11.2) (2026-09-15)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.16.0
+  - @cowprotocol/common-const@3.12.0
+  - @cowprotocol/common-hooks@3.12.0
+
 ## [3.11.1](https://github.com/cowprotocol/cowswap/compare/analytics-v3.11.0...analytics-v3.11.1) (2026-09-11)
 
 ### Patch Changes

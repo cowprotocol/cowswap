@@ -14,7 +14,9 @@ import type { TwapPartOrder, TwapPartOrderStatus } from '@cowprotocol/sdk-compos
 
 import useSWR from 'swr'
 
-import { type Order } from 'legacy/state/orders/actions'
+import { useAllTransactionsDetails } from 'legacy/state/enhancedTransactions/hooks'
+import type { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
+import { OrderStatus, type Order } from 'legacy/state/orders/actions'
 
 import { ORDERS_TABLE_PAGE_SIZE } from 'modules/ordersTable'
 
@@ -23,6 +25,7 @@ import { parseOrder, type ParsedOrder } from 'utils/orderUtils/parseOrder'
 import { programmaticOrdersApi } from '../services/programmaticOrdersApi'
 import { TwapOrderStatus, type TwapOrderItem } from '../types'
 import { getPartOrderStatus } from '../utils/getPartOrderStatus'
+import { getTwapPartStartTime } from '../utils/getTwapPartStartTime.utils'
 
 interface EoaTwapPartOrdersResult {
   orders: ParsedOrder[]
@@ -77,6 +80,8 @@ export function useEoaTwapPartOrders(
     },
   )
 
+  const transactions = useAllTransactionsDetails()
+
   return useMemo(() => {
     if (!enabled || !twapOrder || partOrdersCount === 0) return { orders: [], isLoading: false }
     if (
@@ -94,11 +99,11 @@ export function useEoaTwapPartOrders(
     return {
       // Convert API part orders into table orders and mark the final TWAP part.
       orders: partPage.items.map((partOrder, index) =>
-        mapPartOrder(partOrder, twapOrder, parent, offset + index === partPage.totalCount - 1),
+        mapPartOrder(partOrder, twapOrder, parent, offset + index === partPage.totalCount - 1, transactions),
       ),
       isLoading: false,
     }
-  }, [enabled, isLoading, page, parent, partPage, partOrdersCount, twapOrder])
+  }, [enabled, isLoading, page, parent, partPage, partOrdersCount, twapOrder, transactions])
 }
 
 function mapApiAdditionalInfo(
@@ -109,7 +114,7 @@ function mapApiAdditionalInfo(
 ): Omit<EnrichedOrder, 'settlementContract'> {
   const executedSellAmount = (partOrder.executedSellAmount ?? 0n).toString()
   const executedBuyAmount = (partOrder.executedBuyAmount ?? 0n).toString()
-  const executedFeeAmount = (partOrder.executedFeeAmount ?? 0n).toString()
+  const executedFee = (partOrder.executedFee ?? 0n).toString()
   const validTo = partOrder.validTo ?? Math.ceil(parent.expirationTime.getTime() / 1000)
 
   return {
@@ -133,8 +138,9 @@ function mapApiAdditionalInfo(
     executedSellAmount,
     executedSellAmountBeforeFees: executedSellAmount,
     executedBuyAmount,
-    executedFeeAmount,
-    totalFee: executedFeeAmount,
+    executedFeeAmount: '0',
+    executedFee,
+    totalFee: executedFee,
     invalidated: false,
   }
 }
@@ -144,8 +150,11 @@ function mapPartOrder(
   twapOrder: TwapOrderItem,
   parent: ParsedOrder,
   isTheLastPart: boolean,
+  transactions: EnhancedTransactionDetails[],
 ): ParsedOrder {
-  const creationTime = new Date(partOrder.createdAt * 1000).toISOString()
+  const startTime =
+    partOrder.validTo === null ? partOrder.createdAt : getTwapPartStartTime(partOrder.validTo, twapOrder.order)
+  const creationTime = new Date(startTime * 1000).toISOString()
   const apiAdditionalInfo = mapApiAdditionalInfo(partOrder, twapOrder, parent, creationTime)
   const isVirtualPart = partOrder.status === 'unconfirmed'
   const order = {
@@ -168,7 +177,15 @@ function mapPartOrder(
     apiAdditionalInfo,
   } satisfies Order
 
-  return parseOrder(order)
+  const cancellation = transactions.find(
+    (tx) => tx.onChainCancellation?.orderId === partOrder.orderUid && tx.receipt?.status !== 'reverted',
+  )
+  if (cancellation && order.status === OrderStatus.PENDING) {
+    order.status = cancellation.receipt?.status === 'success' ? OrderStatus.CANCELLED : order.status
+    order.isCancelling = !cancellation.receipt
+  }
+
+  return { ...parseOrder(order), cancellationOrder: order }
 }
 
 function mapSdkPartOrderStatus(status: TwapPartOrderStatus): SdkOrderStatus {

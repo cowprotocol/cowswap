@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { faCode, faListUl } from '@fortawesome/free-solid-svg-icons'
+import { faListUl } from '@fortawesome/free-solid-svg-icons'
 import { Helmet } from 'react-helmet'
 
 import { FormProps } from './config'
-import DecodePage from './DecodePage'
 import EncodePage from './EncodePage'
 import { StyledExplorerTabs, Wrapper } from './styled'
 
@@ -18,14 +17,10 @@ export type TabData = {
   // TODO: Replace any with proper type definitions
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   encode: { formData: FormProps; options: any }
-  // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  decode: { formData: FormProps; options: any }
 }
 
 export enum TabView {
   ENCODE = 1,
-  DECODE = 2,
 }
 
 const DEFAULT_TAB = TabView[1]
@@ -46,11 +41,6 @@ const tabItems = (
       tab: <TabIcon title="Encode" iconFontName={faListUl} />,
       content: <EncodePage tabData={tabData} setTabData={setTabData} handleTabChange={onChangeTab} />,
     },
-    {
-      id: TabView.DECODE,
-      tab: <TabIcon title="Decode" iconFontName={faCode} />,
-      content: <DecodePage tabData={tabData} setTabData={setTabData} />,
-    },
   ]
 }
 
@@ -60,7 +50,6 @@ const AppDataPage = () => {
   const tab = useQueryViewParams()
   const [tabData, setTabData] = useState<TabData>({
     encode: { formData: {}, options: {} },
-    decode: { formData: {}, options: {} },
   })
   const [tabViewSelected, setTabViewSelected] = useState<TabView>(TabView[tab] || TabView[DEFAULT_TAB]) // use DEFAULT when URL param is outside the enum
   const updateQueryString = useUpdateQueryString()

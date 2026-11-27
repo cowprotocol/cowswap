@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import { useENSAddress } from '@cowprotocol/ens'
 import { useWalletDetails } from '@cowprotocol/wallet'
 
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
@@ -11,6 +12,7 @@ import { useGetAmountToSignApprove } from 'modules/erc20Approve'
 import { useAmountsToSignFromQuote, useDerivedTradeState, useWrapNativeFlow } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 
+import { useSolanaNativeShortfall } from './useSolanaNativeShortfall'
 import { useTokenCustomTradeError } from './useTokenCustomTradeError'
 
 import { TradeFormButtonContext } from '../types'
@@ -41,7 +43,9 @@ export function useTradeFormButtonContext(
     quote.error,
   )
   const { error: balancesError } = useTokensBalancesCombined()
+  const { address: recipientEnsAddress } = useENSAddress(derivedState?.recipient)
   const widgetPriceImpactThreshold = injectedWidgetParams?.disableTrade?.whenPriceImpactIsHigherThan
+  const solanaNativeShortfall = useSolanaNativeShortfall()
 
   return useMemo(() => {
     if (!derivedState) return null
@@ -50,6 +54,7 @@ export function useTradeFormButtonContext(
       defaultText,
       amountToApprove,
       derivedState,
+      recipientEnsAddress,
       quote,
       isSupportedWallet,
       confirmTrade,
@@ -63,11 +68,13 @@ export function useTradeFormButtonContext(
       confirmClickEvent: analytics?.confirmClickEvent,
       approveClickEvent: analytics?.approveClickEvent,
       widgetPriceImpactThreshold,
+      solanaNativeShortfall,
     } satisfies TradeFormButtonContext
   }, [
     defaultText,
     amountToApprove,
     derivedState,
+    recipientEnsAddress,
     quote,
     isSupportedWallet,
     confirmTrade,
@@ -81,5 +88,6 @@ export function useTradeFormButtonContext(
     analytics?.confirmClickEvent,
     analytics?.approveClickEvent,
     widgetPriceImpactThreshold,
+    solanaNativeShortfall,
   ])
 }

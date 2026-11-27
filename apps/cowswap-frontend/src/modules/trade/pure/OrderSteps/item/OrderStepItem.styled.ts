@@ -1,8 +1,28 @@
-import { font, UI } from '@cowprotocol/ui'
+import { Collapsible, font, UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled, { keyframes } from 'styled-components/macro'
 
 const DETAILS_ROW_GAP = '10px'
+
+const statusBgPulse = keyframes`
+  0%,
+  100% {
+    background: var(${UI.COLOR_INFO_BG});
+  }
+  50% {
+    background: var(${UI.COLOR_PRIMARY_OPACITY_25});
+  }
+`
+
+const statusDotPulse = keyframes`
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.25);
+  }
+`
 
 export const StepItem = styled.li`
   position: relative;
@@ -43,34 +63,6 @@ export const StepsIconWrapper = styled.div`
     --status-color: var(${UI.COLOR_INFO_TEXT});
   }
 
-  &[data-status='loading'] {
-    animation: statusBgPulse 1.4s ease-in-out infinite;
-  }
-
-  &[data-status='loading']::before {
-    animation: statusDotPulse 1.4s ease-in-out infinite;
-  }
-
-  @keyframes statusBgPulse {
-    0%,
-    100% {
-      background: var(${UI.COLOR_INFO_BG});
-    }
-    50% {
-      background: var(${UI.COLOR_PRIMARY_OPACITY_25});
-    }
-  }
-
-  @keyframes statusDotPulse {
-    0%,
-    100% {
-      transform: translate(-50%, -50%) scale(1);
-    }
-    50% {
-      transform: translate(-50%, -50%) scale(1.25);
-    }
-  }
-
   &[data-status='warning'] {
     --status-bg: var(${UI.COLOR_ALERT_BG});
     --status-color: var(${UI.COLOR_ALERT_TEXT});
@@ -104,6 +96,16 @@ export const StepsIconWrapper = styled.div`
     border-width: calc(var(--inner-circle-size) / 2);
   }
 
+  &[data-status='loading'] {
+    --status-bg: var(${UI.COLOR_INFO_BG});
+    animation: ${statusBgPulse} 1.4s ease-in-out infinite;
+  }
+
+  &[data-status='loading']::before {
+    animation: ${statusDotPulse} 1.4s ease-in-out infinite;
+    transition: none;
+  }
+
   &[data-status='success'],
   &[data-status='error'],
   &[data-status='warning'] {
@@ -120,9 +122,21 @@ export const StepsIconWrapper = styled.div`
   }
 `
 
-export const StepHeaderButton = styled.button`
+export const StepHeaderButton = styled(Collapsible.Trigger)`
+  --collapsible-trigger-hover-background: transparent;
+  --collapsible-trigger-open-hover-background: transparent;
+
   position: relative;
+  display: block;
+  width: 100%;
+  min-height: unset;
+  justify-content: unset;
+  gap: 0;
   padding: var(--spacing-around) calc(var(--circle-size) + var(--spacing-around)) 0 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
 
   &::before {
     content: '';
@@ -134,8 +148,9 @@ export const StepHeaderButton = styled.button`
     border-radius: 14px;
   }
 
-  &:disabled {
-    cursor: default;
+  &[data-panel-open] {
+    background: transparent;
+    color: inherit;
   }
 `
 
@@ -147,7 +162,6 @@ export const StepLabel = styled.span`
   text-align: left;
   margin: 0;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
-  font-weight: var(${UI.FONT_WEIGHT_SEMIBOLD});
 
   [data-status='success'] & {
     color: var(${UI.COLOR_TEXT_OPACITY_70});
@@ -164,7 +178,7 @@ export const StepLabel = styled.span`
   }
 `
 
-export const StepExpandIcon = styled.button`
+export const StepExpandIcon = styled.span`
   position: absolute;
   right: 0;
   top: 14px;
@@ -186,7 +200,7 @@ export const StepExpandIcon = styled.button`
     transition: transform 0.2s ease-in-out;
   }
 
-  ${StepHeaderButton}[aria-expanded='true'] & > svg {
+  ${StepHeaderButton}[data-panel-open] & > svg {
     transform: rotate(180deg);
   }
 `
@@ -196,7 +210,6 @@ export const StepDetailsInner = styled.div`
 
   display: flex;
   flex-flow: column nowrap;
-  gap: ${DETAILS_ROW_GAP};
   padding: ${DETAILS_ROW_GAP} 0 0 0;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
 
@@ -211,9 +224,9 @@ export const StepDetailsInner = styled.div`
   }
 `
 
-export const StepDescriptionLabel = styled.span`
+export const StepDescriptionLabel = styled.strong`
   ${font('FONT_SMALL_PLUS', 'semibold')}
-
+  margin-bottom: ${DETAILS_ROW_GAP};
   color: var(${UI.COLOR_ALERT_TEXT});
 
   [data-status='error'] & {

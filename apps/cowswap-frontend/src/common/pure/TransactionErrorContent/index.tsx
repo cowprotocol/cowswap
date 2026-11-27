@@ -33,6 +33,7 @@ const Text = styled.div`
   font-weight: 500;
   font-size: 16px;
   word-break: break-word;
+  white-space: pre-line;
 `
 
 const AlertIcon = styled(AlertTriangle)`

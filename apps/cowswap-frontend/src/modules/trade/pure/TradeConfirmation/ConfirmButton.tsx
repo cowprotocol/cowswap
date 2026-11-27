@@ -1,10 +1,12 @@
 import { ReactNode, useEffect, useRef, useState } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
-import { ButtonPrimary, ButtonSize, CenteredDots, LongLoadText, Media } from '@cowprotocol/ui'
+import { ButtonPrimary, ButtonSize, LongLoadText, Media } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { SigningStepState } from 'entities/trade'
+
+import { ThreeDots } from 'common/pure/ThreeDots/ThreeDots.pure'
 
 import { getPendingText } from './getPendingText'
 
@@ -22,6 +24,7 @@ export function ConfirmButton(props: ConfirmButtonProps): ReactNode {
   const { buttonText, onConfirm, hasPendingTrade, signingStep, clickEvent } = props
 
   const isButtonDisabled = props.isButtonDisabled || isConfirmClicked
+  const isPending = hasPendingTrade || isConfirmClicked
 
   const isUpToMedium = useMediaQuery(Media.upToMedium(false))
 
@@ -60,13 +63,14 @@ export function ConfirmButton(props: ConfirmButtonProps): ReactNode {
     <ButtonPrimary
       onClick={handleConfirmClick}
       disabled={isButtonDisabled}
+      aria-busy={isPending}
       buttonSize={ButtonSize.BIG}
       data-click-event={clickEvent}
     >
-      {hasPendingTrade || isConfirmClicked ? (
-        <LongLoadText fontSize={15} fontWeight={500}>
-          <span>{pendingText}</span>
-          <CenteredDots smaller />
+      {isPending ? (
+        <LongLoadText>
+          {pendingText}
+          <ThreeDots />
         </LongLoadText>
       ) : (
         <>{buttonText}</>

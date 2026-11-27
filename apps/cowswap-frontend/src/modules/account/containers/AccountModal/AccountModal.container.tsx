@@ -1,6 +1,6 @@
 import { ReactNode, useCallback } from 'react'
 
-import { Dialog, Modal, ModalHeader } from '@cowprotocol/ui'
+import { Dialog, Modal } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/react/macro'
@@ -35,7 +35,7 @@ export function AccountModal(): ReactNode {
   return (
     <Dialog onOpenChange={handleOpenChange} isOpen={displayOrdersPanel}>
       <Modal.Root>
-        <ModalHeader sticky title={<Trans>Account</Trans>} titleAs={Dialog.Title} onClose={closeAccountModal} />
+        <Modal.Header sticky title={<Trans>Account</Trans>} titleAs={Dialog.Title} onClose={closeAccountModal} />
 
         <Modal.Content>
           <AccountDetails

@@ -4,6 +4,7 @@ import { isOrderInPendingTooLong, triggerAppziSurvey } from 'appzi'
 import { AnyAction, Dispatch, MiddlewareAPI } from 'redux'
 import { instance, mock, resetCalls, when } from 'ts-mockito'
 
+import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { appziMiddleware } from './appziMiddleware'
@@ -12,6 +13,7 @@ import { AppState } from '../../index'
 import { getOrderByIdFromState } from '../helpers'
 
 jest.mock('appzi')
+jest.mock('common/utils/getIsBridgeOrder')
 jest.mock('../helpers', () => {
   return {
     ...jest.requireActual('../helpers'),
@@ -29,6 +31,7 @@ const isOrderInPendingTooLongMock = jest.mocked(isOrderInPendingTooLong)
 const openNpsAppziSometimesMock = jest.mocked(triggerAppziSurvey)
 const getOrderByOrderIdFromStateMock = jest.mocked(getOrderByIdFromState)
 const getUiOrderTypeMock = jest.mocked(getUiOrderType)
+const getIsBridgeOrderMock = jest.mocked(getIsBridgeOrder)
 
 const mockStore = mock<MiddlewareAPI<Dispatch, AppState>>()
 const nextMock = jest.fn()
@@ -45,6 +48,7 @@ const BASE_ORDER = {
 describe('appziMiddleware', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    getIsBridgeOrderMock.mockReturnValue(false)
 
     resetCalls(actionMock)
     resetCalls(mockStore)
@@ -71,6 +75,64 @@ describe('appziMiddleware', () => {
       appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
 
       expect(openNpsAppziSometimesMock).toHaveBeenCalledTimes(1)
+    })
+
+    it('does not trigger a parent survey for a fulfilled TWAP part', () => {
+      getUiOrderTypeMock.mockReturnValue(UiOrderType.TWAP)
+
+      appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
+
+      expect(openNpsAppziSometimesMock).not.toHaveBeenCalled()
+      expect(nextMock).toHaveBeenCalledTimes(1)
+    })
+
+    it('still triggers for a swap after a TWAP part in the same fulfillment batch', () => {
+      when(actionMock.payload).thenReturn({ chainId: 1, orders: [{ uid: 'twap-part' }, { uid: 'swap' }] })
+      getUiOrderTypeMock.mockReturnValueOnce(UiOrderType.TWAP).mockReturnValue(UiOrderType.SWAP)
+
+      appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
+
+      expect(openNpsAppziSometimesMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          traded: true,
+          orderType: UiOrderType.SWAP,
+          explorerUrl: expect.stringContaining('swap'),
+        }),
+        undefined,
+      )
+    })
+
+    it.each([
+      { name: 'a bridge order', orderIds: ['bridge', 'swap'], includesTwap: false },
+      { name: 'a TWAP part and a bridge order', orderIds: ['twap-part', 'bridge', 'swap'], includesTwap: true },
+    ])('still triggers for a swap after $name in the same fulfillment batch', ({ orderIds, includesTwap }) => {
+      when(actionMock.payload).thenReturn({ chainId: 1, orders: orderIds.map((uid) => ({ uid })) })
+      getIsBridgeOrderMock.mockImplementation((order) => !!order && 'uid' in order && order.uid === 'bridge')
+      if (includesTwap) {
+        getUiOrderTypeMock.mockReturnValueOnce(UiOrderType.TWAP)
+      }
+
+      appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
+
+      expect(openNpsAppziSometimesMock).toHaveBeenCalledTimes(1)
+      expect(openNpsAppziSometimesMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          traded: true,
+          orderType: UiOrderType.SWAP,
+          explorerUrl: expect.stringContaining('swap'),
+        }),
+        undefined,
+      )
+      expect(nextMock).toHaveBeenCalledTimes(1)
+    })
+
+    it('does not trigger a survey when the fulfillment batch contains only bridge orders', () => {
+      getIsBridgeOrderMock.mockReturnValue(true)
+
+      appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
+
+      expect(openNpsAppziSometimesMock).not.toHaveBeenCalled()
+      expect(nextMock).toHaveBeenCalledTimes(1)
     })
 
     it('should not open appzi if limit order is pending too long', () => {
@@ -116,6 +178,31 @@ describe('appziMiddleware', () => {
       appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
 
       expect(openNpsAppziSometimesMock).toHaveBeenCalledTimes(1)
+    })
+
+    it('does not trigger a parent survey for an expired TWAP part', () => {
+      getUiOrderTypeMock.mockReturnValue(UiOrderType.TWAP)
+
+      appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
+
+      expect(openNpsAppziSometimesMock).not.toHaveBeenCalled()
+      expect(nextMock).toHaveBeenCalledTimes(1)
+    })
+
+    it('still triggers for a limit order after a TWAP part in the same expiry batch', () => {
+      when(actionMock.payload).thenReturn({ chainId: 1, ids: ['twap-part', 'limit'] })
+      getUiOrderTypeMock.mockReturnValueOnce(UiOrderType.TWAP).mockReturnValue(UiOrderType.LIMIT)
+
+      appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
+
+      expect(openNpsAppziSometimesMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          expired: true,
+          orderType: UiOrderType.LIMIT,
+          explorerUrl: expect.stringContaining('limit'),
+        }),
+        undefined,
+      )
     })
 
     it('should open appzi if limit order', () => {

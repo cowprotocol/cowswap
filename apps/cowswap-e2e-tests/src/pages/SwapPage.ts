@@ -32,6 +32,11 @@ export class SwapPage implements TradePage {
   readonly tokens: TokenSelector
   readonly unlockButton: Locator
   readonly orderProgressBarModal: Locator
+  /**
+   * `FinishedSuccessHeading` lives on `Modal.Header`, not inside `#order-progress-bar-modal`.
+   * The progress-bar body shows "You sold"/"You received" instead of this title.
+   */
+  readonly confirmationSuccessHeading: Locator
   readonly sellTokenSelect: Locator
   readonly buyTokenSelect: Locator
   readonly sellFiatAmount: Locator
@@ -51,6 +56,7 @@ export class SwapPage implements TradePage {
   readonly recipientConfirmationCheckbox: Locator
   /** `TradeApproveButton`'s toggle between "Partial approval" (a finite, trade-tied amount) and infinite (MaxUint256). */
   readonly approveModeSelector: Locator
+  readonly approvalAmountToggle: Locator
   readonly settingsDialogButton: Locator
   readonly tradeFormActionButton: Locator
   readonly slippageInput: Locator
@@ -65,6 +71,13 @@ export class SwapPage implements TradePage {
    * header has its own, differently-cased "Connect wallet" button, so this is matched `exact`.
    */
   readonly connectWalletButton: Locator
+  /**
+   * The collapsed "Trading mode" dropdown that hides the Swap/Limit/TWAP/Hooks nav links at
+   * viewports where `TradeWidgetForm`'s `showDropdown` is true. `id` set directly on
+   * `TradeWidgetLinks`'s dropdown-trigger `MenuItem` (the element with the real `onClick`, not the
+   * inner `DropdownButton` label wrapper the old class-based selector targeted).
+   */
+  readonly tradingModeDropdown: Locator
 
   constructor(page: Page) {
     this.page = page
@@ -109,6 +122,7 @@ export class SwapPage implements TradePage {
     this.openOrders = page.locator(`[data-testid="${TEST_IDS.openOrdersList}"]`)
     this.unlockButton = page.locator('#unlock-cross-chain-swap-btn')
     this.orderProgressBarModal = page.locator('#order-progress-bar-modal')
+    this.confirmationSuccessHeading = page.locator('[data-testid="confirmation-success-heading"]')
     this.tokens = new TokenSelector(page)
     this.routePanel = new BridgeRoutePanel(page)
     this.recipientPanel = page.locator('#recipient')
@@ -116,12 +130,14 @@ export class SwapPage implements TradePage {
     this.recipientPasteButton = this.recipientPanel.getByText('Paste', { exact: true })
     this.recipientConfirmationCheckbox = page.locator('#receiver-confirmation')
     this.approveModeSelector = page.locator(`[data-testid="${TEST_IDS.approveModeSelector}"]`)
+    this.approvalAmountToggle = page.locator(`[data-testid="${TEST_IDS.approvalAmountToggle}"]`)
     this.settingsDialogButton = page.locator('#open-settings-dialog-button')
     this.tradeFormActionButton = page.locator(`[data-testid="${TEST_IDS.tradeFormBlankButton}"]`)
     this.slippageInput = page.locator('#slippage-input')
     this.wrapButton = page.getByRole('button', { name: 'Wrap', exact: true })
     this.unwrapButton = page.getByRole('button', { name: 'Unwrap', exact: true })
     this.connectWalletButton = page.getByRole('button', { name: 'Connect Wallet', exact: true })
+    this.tradingModeDropdown = page.locator('#trading-mode-dropdown-button')
   }
 
   async goto(opts: { chainId: number; sell?: string; buy?: string }): Promise<void> {
@@ -177,7 +193,6 @@ export class SwapPage implements TradePage {
     await this.page.waitForFunction(
       () => !document.querySelector('#currency-arrow-separator')?.getAttribute('data-isLoading'),
       undefined,
-      { timeout: 30_000 },
     )
   }
 
@@ -214,6 +229,18 @@ export class SwapPage implements TradePage {
   async clickPrimaryAction(): Promise<void> {
     await expect(this.primaryActionButton).toBeEnabled()
     await this.primaryActionButton.click()
+  }
+
+  async expandApprovalAmount(): Promise<void> {
+    if ((await this.approvalAmountToggle.getAttribute('aria-expanded')) !== 'true') {
+      await this.approvalAmountToggle.click()
+    }
+    await expect(this.approveModeSelector).toBeVisible()
+  }
+
+  async dismissOrderProgressModal(): Promise<void> {
+    await this.page.keyboard.press('Escape')
+    await expect(this.orderProgressBarModal).toBeHidden()
   }
 
   /** Opens the settings dropdown, sets a custom slippage percentage, and closes it again. */

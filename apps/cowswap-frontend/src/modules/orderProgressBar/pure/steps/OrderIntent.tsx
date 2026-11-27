@@ -9,6 +9,9 @@ import { Trans } from '@lingui/react/macro'
 
 import type { Order } from 'legacy/state/orders/actions'
 
+import { AddressLink } from 'common/pure/AddressLink'
+import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
+
 import * as styledEl from './styled'
 
 const TOKEN_SIZE = 20
@@ -23,6 +26,8 @@ export function OrderIntent({ order }: { order?: Order }): ReactNode {
   }
 
   const isSell = isSellOrder(kind)
+  const isBridging = !!bridgeOutputAmount || inputToken.chainId !== outputToken.chainId
+  const receiver = !isBridging && getIsCustomRecipient(order) ? order.receiver : null
 
   const sellCurrencyAmount = CurrencyAmount.fromRawAmount(inputToken, sellAmount)
   const buyCurrencyAmount = bridgeOutputAmount
@@ -43,20 +48,28 @@ export function OrderIntent({ order }: { order?: Order }): ReactNode {
     </>
   )
 
+  const recipientPart = receiver ? <AddressLink address={receiver} chainId={outputToken.chainId} /> : null
+
   return (
     <styledEl.OriginalOrderIntent>
       {isSell ? (
-        <>
+        recipientPart ? (
+          <Trans>
+            {sellTokenPart} for at least {buyTokenPart} to {recipientPart}
+          </Trans>
+        ) : (
           <Trans>
             {sellTokenPart} for at least {buyTokenPart}
           </Trans>
-        </>
+        )
+      ) : recipientPart ? (
+        <Trans>
+          {buyTokenPart} for at most {sellTokenPart} to {recipientPart}
+        </Trans>
       ) : (
-        <>
-          <Trans>
-            {buyTokenPart} for at most {sellTokenPart}
-          </Trans>
-        </>
+        <Trans>
+          {buyTokenPart} for at most {sellTokenPart}
+        </Trans>
       )}
     </styledEl.OriginalOrderIntent>
   )

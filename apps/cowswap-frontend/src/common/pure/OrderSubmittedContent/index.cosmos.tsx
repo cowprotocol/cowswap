@@ -12,6 +12,9 @@ const defaultProps = {
   onDismiss() {
     console.log('onDismiss')
   },
+  onViewOrders: () => {
+    console.log('onViewOrders')
+  },
 }
 
 const Wrapper = styled.div`

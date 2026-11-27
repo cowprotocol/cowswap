@@ -2,6 +2,10 @@ import { CurrencyAmount, Token } from '@cowprotocol/currency'
 
 import { render, screen } from '@testing-library/react'
 
+import { usePermitInfo } from 'modules/permit'
+
+import { TradeType } from 'common/modules/tradeNavigation'
+
 import { TradeApproveWithAffectedOrderList } from './TradeApproveWithAffectedOrderList'
 
 import { MAX_APPROVE_AMOUNT } from '../../constants'
@@ -12,10 +16,15 @@ jest.mock('@cowprotocol/wallet', () => ({
   useWalletDetails: jest.fn(() => ({ allowsOffchainSigning: true })),
 }))
 
+jest.mock('modules/permit', () => ({
+  usePermitInfo: jest.fn(),
+}))
+
 const mockUseIsApprovalOrPermitRequired = jest.fn()
 const mockUseIsPartialApprovalModeSelected = jest.fn()
 const mockUseGetPartialAmountToSignApprove = jest.fn()
 const mockUseGetAmountToSignApprove = jest.fn()
+const mockUsePermitInfo = usePermitInfo as jest.MockedFunction<typeof usePermitInfo>
 
 jest.mock('../../hooks', () => ({
   ApproveRequiredReason: {
@@ -41,8 +50,16 @@ jest.mock('../TradeApproveToggle', () => ({
 }))
 
 jest.mock('../ActiveOrdersWithAffectedPermit', () => ({
-  ActiveOrdersWithAffectedPermit: ({ currency }: { currency: { symbol?: string } }) => (
-    <div data-testid="affected-permit-warning">{currency.symbol}</div>
+  ActiveOrdersWithAffectedPermit: ({
+    currency,
+    approvalTarget,
+  }: {
+    currency: { symbol?: string }
+    approvalTarget?: string
+  }) => (
+    <div data-testid="affected-permit-warning">
+      {currency.symbol}:{approvalTarget ?? 'vault-relayer'}
+    </div>
   ),
 }))
 
@@ -60,6 +77,7 @@ describe('TradeApproveWithAffectedOrderList', () => {
       reason: ApproveRequiredReason.NotRequired,
       currentAllowance: 0n,
     })
+    mockUsePermitInfo.mockReturnValue(undefined)
   })
 
   it('shows the affected-permit warning for a partial EIP-2612 permit', () => {
@@ -70,18 +88,31 @@ describe('TradeApproveWithAffectedOrderList', () => {
 
     render(<TradeApproveWithAffectedOrderList />)
 
-    expect(screen.getByTestId('affected-permit-warning').textContent).toBe('COW')
+    expect(screen.getByTestId('affected-permit-warning').textContent).toBe('COW:vault-relayer')
   })
 
-  it('shows the affected-permit warning when forceShowAffectedOrders is set (EOA TWAP)', () => {
+  it('shows the affected-permit warning when approvalTarget is poller (EOA TWAP)', () => {
     mockUseIsApprovalOrPermitRequired.mockReturnValue({
       reason: ApproveRequiredReason.Required,
       currentAllowance: 0n,
     })
 
-    render(<TradeApproveWithAffectedOrderList forceShowAffectedOrders />)
+    render(<TradeApproveWithAffectedOrderList approvalTarget="poller" />)
 
-    expect(screen.getByTestId('affected-permit-warning').textContent).toBe('COW')
+    expect(screen.getByTestId('affected-permit-warning').textContent).toBe('COW:poller')
+  })
+
+  it('hides the approval controls when poller allowance already covers the trade', () => {
+    mockUseIsApprovalOrPermitRequired.mockReturnValue({
+      reason: ApproveRequiredReason.NotRequired,
+      currentAllowance: BigInt(PARTIAL_AMOUNT.quotient.toString()),
+    })
+    mockUseGetAmountToSignApprove.mockReturnValue(CurrencyAmount.fromRawAmount(TOKEN, '0'))
+
+    render(<TradeApproveWithAffectedOrderList approvalTarget="poller" />)
+
+    expect(screen.queryByTestId('trade-approve-toggle')).toBeNull()
+    expect(screen.queryByTestId('affected-permit-warning')).toBeNull()
   })
 
   it('does not show the warning for a partial on-chain approve', () => {
@@ -121,14 +152,14 @@ describe('TradeApproveWithAffectedOrderList', () => {
     expect(screen.queryByTestId('affected-permit-warning')).toBeNull()
   })
 
-  it('does not show the warning for unlimited approval even when forceShowAffectedOrders is set', () => {
+  it('does not show the warning for unlimited approval even when approvalTarget is poller', () => {
     mockUseIsApprovalOrPermitRequired.mockReturnValue({
       reason: ApproveRequiredReason.Required,
       currentAllowance: 0n,
     })
     mockUseGetAmountToSignApprove.mockReturnValue(MAX_AMOUNT)
 
-    render(<TradeApproveWithAffectedOrderList forceShowAffectedOrders />)
+    render(<TradeApproveWithAffectedOrderList approvalTarget="poller" />)
 
     expect(screen.queryByTestId('affected-permit-warning')).toBeNull()
   })
@@ -138,5 +169,18 @@ describe('TradeApproveWithAffectedOrderList', () => {
 
     expect(screen.queryByTestId('affected-permit-warning')).toBeNull()
     expect(screen.queryByTestId('trade-approve-toggle')).toBeNull()
+  })
+
+  it('hides the approve toggle for dai-like tokens even when on-chain approval is required (EOA TWAP)', () => {
+    mockUseIsApprovalOrPermitRequired.mockReturnValue({
+      reason: ApproveRequiredReason.Required,
+      currentAllowance: 0n,
+    })
+    mockUsePermitInfo.mockReturnValue({ type: 'dai-like', name: 'DAI', version: '1' })
+
+    render(<TradeApproveWithAffectedOrderList approvalTarget="poller" />)
+
+    expect(screen.queryByTestId('trade-approve-toggle')).toBeNull()
+    expect(mockUsePermitInfo).toHaveBeenCalledWith(PARTIAL_AMOUNT.currency, TradeType.SWAP)
   })
 })

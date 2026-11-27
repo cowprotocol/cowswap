@@ -1,4 +1,4 @@
-import { UI, RowBetween, HoverTooltip } from '@cowprotocol/ui'
+import { UI, RowBetween, HoverTooltip, font } from '@cowprotocol/ui'
 
 import { Info } from 'react-feather'
 import { Text } from 'rebass'
@@ -19,18 +19,17 @@ export const StyledRowBetween = styled(RowBetween)<RowStyleProps>`
   flex-flow: row nowrap;
   gap: 16px;
   color: inherit;
-
-  // if prop alignContentRight is true, then set justify-content to flex-end
   justify-content: ${({ alignContentRight }) => (alignContentRight ? 'flex-end' : 'space-between')};
 
   ${TextWrapper} {
-    font-size: ${({ fontSize = 13 }) => fontSize}px;
-    font-weight: ${({ fontWeight = 500 }) => fontWeight};
+    ${font('FONT_SMALL_PLUS', 'medium')}
+    ${({ fontSize }) => fontSize !== undefined && `font-size: ${fontSize}px;`}
+    ${({ fontWeight }) => fontWeight !== undefined && `font-weight: ${fontWeight};`}
     transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
     &:first-child {
       opacity: 1;
-      font-weight: 400;
+      color: var(${UI.COLOR_TEXT});
 
       &:hover {
         opacity: 1;
@@ -39,10 +38,7 @@ export const StyledRowBetween = styled(RowBetween)<RowStyleProps>`
 
     &:last-child {
       text-align: right;
-    }
-
-    &:last-child {
-      text-align: right;
+      color: var(${UI.COLOR_TEXT_SECONDARY});
     }
   }
 

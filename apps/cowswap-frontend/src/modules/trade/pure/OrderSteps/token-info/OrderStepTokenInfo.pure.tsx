@@ -17,10 +17,11 @@ import * as styledEl from './OrderStepTokenInfo.styled'
 const TOKEN_LOGO_SIZE = 16
 
 export interface OrderStepTokenInfoProps {
+  className?: string
   token: Currency
 }
 
-export function OrderStepTokenInfo({ token }: OrderStepTokenInfoProps): ReactNode {
+export function OrderStepTokenInfo({ className, token }: OrderStepTokenInfoProps): ReactNode {
   const address = getCurrencyAddress(token)
   const isNative = getIsNativeToken(token)
   const explorerUrl = isNative ? '' : getExplorerLink(token.chainId, address, ExplorerDataType.TOKEN)
@@ -28,7 +29,7 @@ export function OrderStepTokenInfo({ token }: OrderStepTokenInfoProps): ReactNod
   const symbol = token.symbol
 
   return (
-    <styledEl.TokenInfo>
+    <styledEl.TokenInfo className={className}>
       <TokenLogo token={token} size={TOKEN_LOGO_SIZE} hideNetworkBadge />
       <span>
         {symbol ? `${symbol} · ` : null}

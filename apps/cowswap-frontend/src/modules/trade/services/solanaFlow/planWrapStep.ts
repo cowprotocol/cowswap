@@ -4,11 +4,13 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@cowprotocol/currency'
 
 import { t } from '@lingui/core/macro'
+import { ACCOUNT_SIZE } from '@solana/spl-token'
 import { PublicKey } from '@solana/web3.js'
 
-import { SolanaFlowStep } from './types'
+import { SolanaFlowStep, SolanaFundedAccount } from './types'
 
 import { buildWrapSolInstructions } from '../wrapNativeSolana/buildWrapSolInstructions'
+import { getWsolAssociatedTokenAccount } from '../wrapNativeSolana/const'
 
 export interface PlanWrapStepParams {
   owner: PublicKey
@@ -21,6 +23,11 @@ export interface PlanWrapStepParams {
 // regardless of whether the WSOL account already existed. `sellAmount` alone is therefore always
 // the resulting WSOL amount; no adjustment for account creation is needed (contrast with the
 // standalone wrap flow's `getSolanaWrapPreview`, which caps *total spend* at the typed amount instead).
+// WSOL is a classic SPL mint, so its account is always the fixed base size — no extensions to resolve.
+export function getWrapFundedAccounts(owner: PublicKey): SolanaFundedAccount[] {
+  return [{ address: getWsolAssociatedTokenAccount(owner), size: ACCOUNT_SIZE }]
+}
+
 export function planWrapStep({ owner, sellAmount }: PlanWrapStepParams): SolanaFlowStep | null {
   if (sellAmount <= 0n) return null
 
@@ -30,5 +37,6 @@ export function planWrapStep({ owner, sellAmount }: PlanWrapStepParams): SolanaF
   return {
     instructions: buildWrapSolInstructions({ owner, transferLamports: sellAmount }),
     summary: t`Wrap ${sellAmountStr} SOL`,
+    fundedAccounts: getWrapFundedAccounts(owner),
   }
 }

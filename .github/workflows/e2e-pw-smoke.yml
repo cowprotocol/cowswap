@@ -5,6 +5,8 @@ on:
     paths:
       - 'apps/cowswap-frontend/**'
       - 'apps/cowswap-e2e-tests/**'
+      - '!apps/cowswap-e2e-tests/src/rwa/**'
+      - '!apps/cowswap-e2e-tests/playwright.rwa.config.ts'
       - 'libs/**'
       - 'package.json'
       - 'pnpm-lock.yaml'

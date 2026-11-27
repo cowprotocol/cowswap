@@ -1,4 +1,4 @@
-import { initGtm } from '@cowprotocol/analytics'
+import { initGtmWithConsent } from '@cowprotocol/analytics'
 import svgCoinsSrc from '@cowprotocol/assets/images/image-coins.svg'
 import svgCowswapGaslessSrc from '@cowprotocol/assets/images/image-cowswap-gasless.svg'
 import svgCowswapLimitSrc from '@cowprotocol/assets/images/image-cowswap-limit.svg'
@@ -15,7 +15,7 @@ import { CowFiCategory } from 'src/common/analytics/types'
 
 import { Link } from '@/components/Link'
 
-const analytics = initGtm()
+const analytics = initGtmWithConsent()
 
 export const COW_IS_DIFFERENT = [
   {

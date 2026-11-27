@@ -42,13 +42,14 @@ describe.each(PRE_SIGNATURE_METHODS)('useTradeFlowAnalytics.$method', ({ method,
     result.current[method](context)
   }
 
-  it(`includes quoteId and allowsOffchainSigning on the ${action} event when provided`, () => {
+  it(`includes quoteId, allowsOffchainSigning, and isEoaTwap on the ${action} event when provided`, () => {
     call({
       account: '0xaccount',
       orderType: UiOrderType.SWAP,
       marketLabel: 'WETH,COW',
       quoteId: 123,
       allowsOffchainSigning: true,
+      isEoaTwap: true,
     })
 
     expect(sendEvent).toHaveBeenCalledWith({
@@ -58,10 +59,27 @@ describe.each(PRE_SIGNATURE_METHODS)('useTradeFlowAnalytics.$method', ({ method,
       isBridgeOrder: undefined,
       quoteId: 123,
       allowsOffchainSigning: true,
+      isEoaTwap: true,
     })
   })
 
-  it('omits quoteId and allowsOffchainSigning when not provided', () => {
+  it('includes isEoaTwap false when the TWAP route is Safe', () => {
+    call({
+      account: '0xaccount',
+      orderType: UiOrderType.TWAP,
+      marketLabel: 'WETH,COW',
+      isEoaTwap: false,
+    })
+
+    expect(sendEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action,
+        isEoaTwap: false,
+      }),
+    )
+  })
+
+  it('omits quoteId, allowsOffchainSigning, and isEoaTwap when not provided', () => {
     call({
       account: '0xaccount',
       orderType: UiOrderType.SWAP,
@@ -72,5 +90,6 @@ describe.each(PRE_SIGNATURE_METHODS)('useTradeFlowAnalytics.$method', ({ method,
 
     expect(payload).not.toHaveProperty('quoteId')
     expect(payload).not.toHaveProperty('allowsOffchainSigning')
+    expect(payload).not.toHaveProperty('isEoaTwap')
   })
 })

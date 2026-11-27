@@ -27,6 +27,7 @@ export type ListsEnabledState = { [listId: string]: boolean | undefined }
 
 export type ListSourceConfig = {
   widgetAppCode?: string
+  category?: 'RWA'
   priority?: number
   enabledByDefault?: boolean
   lpTokenProvider?: LpTokenProvider
@@ -58,4 +59,4 @@ export type TokensBySymbolState = { tokens: TokensBySymbol; chainId: SupportedCh
 
 export type TokensMap = { [address: string]: TokenInfo }
 
-export type UnsupportedTokensState = { [tokenAddress: string]: { dateAdded: number } }
+export type UnsupportedTokensState = { [tokenAddress: string]: { dateAdded: number; reason?: string } }

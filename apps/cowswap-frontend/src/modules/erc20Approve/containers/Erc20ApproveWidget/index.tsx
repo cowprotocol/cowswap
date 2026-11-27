@@ -3,9 +3,9 @@ import { useEffect } from 'react'
 
 import { isSellOrder } from '@cowprotocol/common-utils'
 
-import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
 import { useDerivedTradeState } from 'modules/trade'
 
+import { useIsInfiniteApproveDisabled } from '../../hooks/useIsInfiniteApproveDisabled'
 import { useSetUserApproveAmountModalState } from '../../state'
 import { isPartialApproveEnabledAtom } from '../../state/isPartialApproveEnabledAtom'
 import { isPartialApproveSelectedByUserAtom } from '../../state/isPartialApproveSelectedByUserAtom'
@@ -17,7 +17,7 @@ interface Erc20ApproveProps {
 export function Erc20ApproveWidget({ isPartialApprovalEnabled }: Erc20ApproveProps): null {
   const setIsPartialApproveEnabled = useSetAtom(isPartialApproveEnabledAtom)
   const setIsPartialApproveSelectedByUser = useSetAtom(isPartialApproveSelectedByUserAtom)
-  const isInfiniteApproveDisabledInWidget = useIsInfiniteApproveDisabledInWidget()
+  const isInfiniteApproveDisabled = useIsInfiniteApproveDisabled()
   const { inputCurrencyAmount, outputCurrencyAmount, orderKind } = useDerivedTradeState() || {}
   const setUserApproveAmountModalState = useSetUserApproveAmountModalState()
 
@@ -34,17 +34,17 @@ export function Erc20ApproveWidget({ isPartialApprovalEnabled }: Erc20ApprovePro
   }, [targetAmountRaw, setUserApproveAmountModalState])
 
   // Store isPartialApprovalEnabled to local state to avoid DIP breach (erc20Approve module should not depend on Swap).
-  // When the widget integrator sets disableInfiniteApprove, partial approval is forced on regardless of settings.
+  // Partial approval is forced on regardless of settings wherever infinite approve is unavailable.
   useEffect(() => {
-    setIsPartialApproveEnabled(isPartialApprovalEnabled || isInfiniteApproveDisabledInWidget)
-  }, [setIsPartialApproveEnabled, isPartialApprovalEnabled, isInfiniteApproveDisabledInWidget])
+    setIsPartialApproveEnabled(isPartialApprovalEnabled || isInfiniteApproveDisabled)
+  }, [setIsPartialApproveEnabled, isPartialApprovalEnabled, isInfiniteApproveDisabled])
 
-  // Same for the per-trade user selection: locked on while the widget integrator disables infinite approve.
+  // Same for the per-trade user selection: locked on while infinite approve is unavailable.
   useEffect(() => {
-    if (isInfiniteApproveDisabledInWidget) {
+    if (isInfiniteApproveDisabled) {
       setIsPartialApproveSelectedByUser(true)
     }
-  }, [isInfiniteApproveDisabledInWidget, setIsPartialApproveSelectedByUser])
+  }, [isInfiniteApproveDisabled, setIsPartialApproveSelectedByUser])
 
   return null
 }

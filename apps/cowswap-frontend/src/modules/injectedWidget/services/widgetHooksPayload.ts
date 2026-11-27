@@ -8,7 +8,7 @@ import { Order } from 'legacy/state/orders/actions'
 
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 
-interface BuildTradeWidgetHookPayloadParams {
+export interface BuildTradeWidgetHookPayloadParams {
   orderType: UiOrderType
   inputAmount?: CurrencyAmount<Currency> | null
   outputAmount?: CurrencyAmount<Currency> | null

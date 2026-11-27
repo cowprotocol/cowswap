@@ -1,0 +1,28 @@
+import { useMemo } from 'react'
+
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
+
+import { useWalletAcceptsForeignFeePayer } from 'modules/trade'
+
+import type { SolanaFlowOptions } from '../services/solanaFlow'
+
+interface Params {
+  /**
+   * Whether this surface can place a sponsored order at all. Only the swap flow can: `solanaFlow`
+   * hands the sponsor to `planCreateOrderStep`, which a limit order never reaches, and a sponsored
+   * bundle is signed and handed over rather than broadcast.
+   */
+  canSponsor?: boolean
+}
+
+export function useSolanaFlowOptions({ canSponsor = false }: Params = {}): SolanaFlowOptions {
+  const { isSolanaSponsoredOrdersEnabled } = useFeatureFlags()
+  const walletAcceptsForeignFeePayer = useWalletAcceptsForeignFeePayer()
+
+  return useMemo(
+    () => ({
+      isSponsored: canSponsor && walletAcceptsForeignFeePayer && Boolean(isSolanaSponsoredOrdersEnabled),
+    }),
+    [canSponsor, walletAcceptsForeignFeePayer, isSolanaSponsoredOrdersEnabled],
+  )
+}

@@ -95,7 +95,7 @@ function successReceipt(): Awaited<ReturnType<typeof waitForEoaTwapTxReceipt>> {
     blockNumber: 1n,
     transactionHash: HASH,
     logs: [],
-  } as Awaited<ReturnType<typeof waitForEoaTwapTxReceipt>>
+  } as unknown as Awaited<ReturnType<typeof waitForEoaTwapTxReceipt>>
 }
 
 describe('getEoaTwapApprovalNeeds()', () => {
@@ -237,7 +237,7 @@ describe('ensureEoaTwapSpenderAllowance()', () => {
     expect(onSigningStep.mock.calls).toEqual([
       [{ step: EoaTwapSigningSteps.ApprovePoller, phase: EoaTwapSigningPhase.Sign }],
       [{ step: EoaTwapSigningSteps.ApprovePoller, phase: EoaTwapSigningPhase.WaitingForTx }],
-      [{ step: EoaTwapSigningSteps.ApprovePoller, phase: EoaTwapSigningPhase.Confirmed }],
+      [{ step: EoaTwapSigningSteps.ApprovePoller, phase: EoaTwapSigningPhase.Confirmed, stepTxHash: HASH }],
     ])
   })
 

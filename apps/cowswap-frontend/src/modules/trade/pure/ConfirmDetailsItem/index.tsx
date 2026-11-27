@@ -15,6 +15,8 @@ export type ConfirmDetailsItemProps = {
   /** Test hook for the whole row — most rows don't need one, only those an e2e test targets. */
   testId?: string
   labelOpacity?: boolean
+  /** Medium (500) label weight — used for Limit form detail rows. */
+  mediumLabel?: boolean
   tooltip?: ReactNode
   withArrow?: boolean
   fiatAmount?: string
@@ -31,6 +33,7 @@ export function ConfirmDetailsItem(props: ConfirmDetailsItemProps): ReactNode {
     testId,
     label,
     labelOpacity = false,
+    mediumLabel = false,
     tooltip,
     withArrow = false,
     withTimelineDot = false,
@@ -45,7 +48,7 @@ export function ConfirmDetailsItem(props: ConfirmDetailsItemProps): ReactNode {
       {label ? (
         <Row>
           {label && (
-            <Label labelOpacity={labelOpacity}>
+            <Label labelOpacity={labelOpacity} mediumLabel={mediumLabel}>
               {label}
               {tooltip && <InfoTooltip className="info-tooltip" content={tooltip} />}
             </Label>

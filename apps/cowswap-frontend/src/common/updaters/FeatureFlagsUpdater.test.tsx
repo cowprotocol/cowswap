@@ -1,7 +1,7 @@
 import { Provider, createStore } from 'jotai'
 import { act } from 'react'
 
-import { syncBootFeatureFlags } from '@cowprotocol/common-const'
+import { readPersistedCustomThemeFlags } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
 import { render } from '@testing-library/react'
@@ -10,11 +10,6 @@ import { useLDClient, useLDClientError } from 'launchdarkly-react-client-sdk'
 import { FeatureFlagsUpdater } from './FeatureFlagsUpdater'
 
 import { featureFlagsAtom, featureFlagsStatusAtom } from '../state/featureFlagsState'
-
-jest.mock('@cowprotocol/common-const', () => ({
-  ...jest.requireActual('@cowprotocol/common-const'),
-  syncBootFeatureFlags: jest.fn(),
-}))
 
 jest.mock('@cowprotocol/common-hooks', () => ({
   ...jest.requireActual('@cowprotocol/common-hooks'),
@@ -27,7 +22,6 @@ jest.mock('launchdarkly-react-client-sdk', () => ({
   useLDClientError: jest.fn(),
 }))
 
-const syncBootFeatureFlagsMock = syncBootFeatureFlags as jest.MockedFunction<typeof syncBootFeatureFlags>
 const useFeatureFlagsMock = useFeatureFlags as jest.MockedFunction<typeof useFeatureFlags>
 const useLDClientMock = useLDClient as jest.MockedFunction<typeof useLDClient>
 const useLDClientErrorMock = useLDClientError as jest.MockedFunction<typeof useLDClientError>
@@ -36,7 +30,6 @@ describe('FeatureFlagsUpdater', () => {
   beforeEach(() => {
     jest.useFakeTimers()
     localStorage.clear()
-    syncBootFeatureFlagsMock.mockClear()
     useFeatureFlagsMock.mockReturnValue({})
     useLDClientMock.mockReturnValue(undefined)
     useLDClientErrorMock.mockReturnValue(undefined)
@@ -74,31 +67,49 @@ describe('FeatureFlagsUpdater', () => {
     expect(store.get(featureFlagsStatusAtom)).toBe('ready')
   })
 
-  it('syncs the boot-critical flags once LaunchDarkly resolves, for the next page load', () => {
-    const store = createStore()
-    const flags = { isSolanaEnabled: true }
-    useFeatureFlagsMock.mockReturnValue(flags)
+  it('persists the custom theme flags once LaunchDarkly resolves', () => {
+    useFeatureFlagsMock.mockReturnValue({ isViceThemeEnabled: true })
     useLDClientMock.mockReturnValue({} as ReturnType<typeof useLDClient>)
 
     render(
-      <Provider store={store}>
+      <Provider store={createStore()}>
         <FeatureFlagsUpdater />
       </Provider>,
     )
 
-    expect(syncBootFeatureFlagsMock).toHaveBeenCalledWith(flags)
+    expect(readPersistedCustomThemeFlags().isViceThemeEnabled).toBe(true)
   })
 
-  it('does not sync boot-critical flags while still waiting on LaunchDarkly', () => {
-    const store = createStore()
+  it('keeps the persisted custom theme flags when LaunchDarkly fails', () => {
+    localStorage.setItem('cowSwap.customThemeFlags', JSON.stringify({ isViceThemeEnabled: true }))
+    useLDClientMock.mockReturnValue({} as ReturnType<typeof useLDClient>)
+    useLDClientErrorMock.mockReturnValue(new Error('LaunchDarkly is down'))
 
     render(
-      <Provider store={store}>
+      <Provider store={createStore()}>
         <FeatureFlagsUpdater />
       </Provider>,
     )
 
-    expect(syncBootFeatureFlagsMock).not.toHaveBeenCalled()
+    expect(readPersistedCustomThemeFlags().isViceThemeEnabled).toBe(true)
+  })
+
+  it('does not persist custom theme flags inside the widget', () => {
+    useFeatureFlagsMock.mockReturnValue({ isViceThemeEnabled: true })
+    useLDClientMock.mockReturnValue({} as ReturnType<typeof useLDClient>)
+    window.location.hash = '#/1/widget/swap'
+
+    try {
+      render(
+        <Provider store={createStore()}>
+          <FeatureFlagsUpdater />
+        </Provider>,
+      )
+    } finally {
+      window.location.hash = ''
+    }
+
+    expect(localStorage.getItem('cowSwap.customThemeFlags')).toBeNull()
   })
 
   it('fails open when LaunchDarkly initialization times out', () => {

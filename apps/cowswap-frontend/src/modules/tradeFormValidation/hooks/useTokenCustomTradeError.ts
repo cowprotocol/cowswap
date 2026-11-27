@@ -1,11 +1,13 @@
 import { useMemo } from 'react'
 
 import { Currency } from '@cowprotocol/currency'
-import { useIsAnyOfTokensRWA } from '@cowprotocol/tokens'
+import { useMarketHoursRwaToken } from '@cowprotocol/tokens'
 
 import { TradeQuoteState } from 'modules/tradeQuote'
 
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
+
+import { formatRwaWeekendEnd } from '../utils/formatRwaWeekendEnd.utils'
 
 export function useTokenCustomTradeError(
   inputCurrency: Currency | undefined | null,
@@ -15,7 +17,7 @@ export function useTokenCustomTradeError(
   const isWeekendDay = isWeekend()
   const inputToken = isWeekendDay && inputCurrency?.isToken ? inputCurrency : undefined
   const outputToken = isWeekendDay && outputCurrent?.isToken ? outputCurrent : undefined
-  const rwaToken = useIsAnyOfTokensRWA(inputToken, outputToken)
+  const rwaToken = useMarketHoursRwaToken(inputToken, outputToken)
 
   return useMemo(() => {
     if (!isWeekendDay) return undefined
@@ -23,7 +25,7 @@ export function useTokenCustomTradeError(
     if (!isValidQuoteError(error)) return undefined
     if (error.type !== QuoteApiErrorCodes.InsufficientLiquidity) return undefined
 
-    return `${rwaToken.symbol} not tradable until Sunday 23:59 UTC`
+    return `${rwaToken.symbol} not tradable until ${formatRwaWeekendEnd(new Date())}`
   }, [isWeekendDay, error, rwaToken])
 }
 

@@ -12,6 +12,7 @@ import {
   limitOrdersSettingsAtom,
   updateLimitOrdersSettingsAtom,
 } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
+import { PriceChartSettings } from 'modules/priceChart'
 import { getOrdersTableSettings } from 'modules/trade/const/common'
 import { SettingsContainer } from 'modules/trade/pure/Settings'
 
@@ -60,6 +61,7 @@ export function AdvancedOrdersSettingsDropdown({ state, onStateChanged }: Settin
           checked={limitOrdersSettings.ordersTableOnLeft}
           toggle={() => updateLimitOrdersSettings({ ordersTableOnLeft: !limitOrdersSettings.ordersTableOnLeft })}
         />
+        <PriceChartSettings />
       </SettingsDropdownSection>
     </SettingsContainer>
   )

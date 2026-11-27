@@ -19,6 +19,14 @@ describe('getCurrentChainIdFromUrl()', () => {
     expect(chainId).toBe(SupportedChainId.MAINNET)
   })
 
+  it('When chainId from the url path is Robinhood, then it should taken as chainId', () => {
+    const chainId = getCurrentChainIdFromUrl({
+      hash: `#/${SupportedChainId.ROBINHOOD}/WETH`,
+    } as Location)
+
+    expect(chainId).toBe(SupportedChainId.ROBINHOOD)
+  })
+
   it('When network name presents in the url query, then it should taken as chainId', () => {
     const chainId = getCurrentChainIdFromUrl({
       hash: '#/WETH?chain=gnosis_chain',

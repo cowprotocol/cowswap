@@ -39,7 +39,7 @@ describe('fetchEoaTwapOrders', () => {
             "confirmedPartsCount": 2,
             "info": {
               "executedBuyAmount": "678620197252801976",
-              "executedFeeAmount": "722702729572645",
+              "executedFee": "722702729572645",
               "executedSellAmount": "200000000000000000",
             },
           },

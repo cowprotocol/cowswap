@@ -1,4 +1,4 @@
-import { ALL_SUPPORTED_CHAIN_IDS } from '@cowprotocol/cow-sdk'
+import { RELEASED_SUPPORTED_CHAIN_IDS } from '@cowprotocol/common-const'
 
 import { Network } from 'types'
 
@@ -28,7 +28,7 @@ type GetOrderParamsApi<T> = {
 export async function tryGetOrderOnAllNetworksAndEnvironments<TypeOrderResult>(
   networkId: Network,
   getOrderApi: GetOrderApi<GetOrderParams, TypeOrderResult> | GetOrderApi<GetTxOrdersParams, TypeOrderResult>,
-  networkIdSearchListRemaining: Network[] = ALL_SUPPORTED_CHAIN_IDS,
+  networkIdSearchListRemaining: Network[] = RELEASED_SUPPORTED_CHAIN_IDS,
 ): Promise<GetOrderResult<TypeOrderResult>> {
   // Get order
   let order: TypeOrderResult | null = null

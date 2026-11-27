@@ -1,12 +1,21 @@
 import type { PropsWithChildren, ReactElement } from 'react'
 
-import { OrderClass, OrderKind, SigningScheme, SupportedChainId, type UID } from '@cowprotocol/cow-sdk'
+import {
+  OrderClass,
+  OrderKind,
+  OrderStatus as SdkOrderStatus,
+  SigningScheme,
+  SupportedChainId,
+  type UID,
+} from '@cowprotocol/cow-sdk'
 import { Token } from '@cowprotocol/currency'
 import type { QueryPage, TwapPartOrder, TwapPartOrderStatus } from '@cowprotocol/sdk-composable'
 
 import { act, renderHook, waitFor } from '@testing-library/react'
 import { SWRConfig } from 'swr'
 
+import { useAllTransactionsDetails } from 'legacy/state/enhancedTransactions/hooks'
+import type { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
 import { OrderStatus, type Order } from 'legacy/state/orders/actions'
 
 import { ORDERS_TABLE_PAGE_SIZE } from 'modules/ordersTable'
@@ -17,8 +26,12 @@ import { useEoaTwapPartOrders } from './useEoaTwapPartOrders'
 
 import { programmaticOrdersApi } from '../services/programmaticOrdersApi'
 import { TwapOrderStatus, type TwapOrderItem } from '../types'
+import { emulatePartAsOrder } from '../utils/emulatePartAsOrder'
 
 jest.mock('modules/ordersTable', () => ({ ORDERS_TABLE_PAGE_SIZE: 10 }))
+jest.mock('legacy/state/enhancedTransactions/hooks', () => ({
+  useAllTransactionsDetails: jest.fn(() => []),
+}))
 jest.mock('../services/programmaticOrdersApi', () => ({
   ...jest.requireActual('../services/programmaticOrdersApi'),
   programmaticOrdersApi: { fetchEoaTwapPartOrders: jest.fn() },
@@ -69,7 +82,8 @@ function makePartPage(uid: string, status: TwapPartOrderStatus = 'fulfilled'): Q
         createdAt: 1_000_000_000,
         executedSellAmount,
         executedBuyAmount: status === 'fulfilled' ? 6n : 0n,
-        executedFeeAmount: status === 'fulfilled' ? 1n : 0n,
+        executedFeeAmount: 0n,
+        executedFee: status === 'fulfilled' ? 1n : 0n,
       },
     ],
   }
@@ -100,7 +114,7 @@ function makeTwapOrder(partOrdersCount = 1, updatedAtBlock = '1'): TwapOrderItem
     },
     executionInfo: {
       confirmedPartsCount: 0,
-      info: { executedSellAmount: '0', executedBuyAmount: '0', executedFeeAmount: '0' },
+      info: { executedSellAmount: '0', executedBuyAmount: '0', executedFee: '0' },
     },
   }
 }
@@ -112,6 +126,7 @@ function SwrTestProvider({ children }: PropsWithChildren): ReactElement {
 describe('useEoaTwapPartOrders', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    jest.mocked(useAllTransactionsDetails).mockReturnValue([])
   })
 
   it.each([
@@ -142,6 +157,88 @@ describe('useEoaTwapPartOrders', () => {
     expect(result.current.orders[0]?.isCancelling).toBe(false)
   })
 
+  it.each([
+    ['unconfirmed', 0, 1_999_999_941],
+    ['fulfilled', 0, 1_999_999_941],
+    ['unconfirmed', 20, 1_999_999_981],
+    ['fulfilled', 20, 1_999_999_981],
+  ] as const)('uses the part start for %s parts with span %s', async (status, span, startTime) => {
+    fetchEoaTwapPartOrdersMock.mockResolvedValue(makePartPage('part', status))
+    const twapOrder = makeTwapOrder()
+    twapOrder.order.span = span
+    const { result } = renderHook(() => useEoaTwapPartOrders(twapOrder, parent, 1, true), {
+      wrapper: SwrTestProvider,
+    })
+    await waitFor(() => expect(result.current.orders).toHaveLength(1))
+    const expectedStart = new Date(startTime * 1000)
+    expect(result.current.orders[0]?.creationTime).toEqual(expectedStart)
+
+    const safePart = emulatePartAsOrder(
+      {
+        uid: 'part',
+        index: 0,
+        chainId: twapOrder.chainId,
+        safeAddress: owner,
+        twapOrderId: twapOrder.id,
+        isCreatedInOrderBook: false,
+        isCancelling: false,
+        order: {
+          sellToken: inputToken.address,
+          buyToken: outputToken.address,
+          receiver: owner,
+          sellAmount: '10',
+          buyAmount: '5',
+          validTo: 2_000_000_000,
+          appData: twapOrder.order.appData,
+          feeAmount: '0',
+          kind: OrderKind.SELL,
+          partiallyFillable: false,
+          signingScheme: SigningScheme.EIP1271,
+          signature: '',
+        },
+      },
+      twapOrder,
+    )
+    expect(safePart.creationDate).toBe(expectedStart.toISOString())
+  })
+
+  it('falls back to the record timestamp when the part expiry is unavailable', async () => {
+    const page = makePartPage('part')
+    page.items[0].validTo = null
+    fetchEoaTwapPartOrdersMock.mockResolvedValue(page)
+    const { result } = renderHook(() => useEoaTwapPartOrders(makeTwapOrder(), parent, 1, true), {
+      wrapper: SwrTestProvider,
+    })
+    await waitFor(() => expect(result.current.orders).toHaveLength(1))
+    expect(result.current.orders[0]?.creationTime).toEqual(new Date(1_000_000_000_000))
+  })
+
+  it.each([
+    [undefined, OrderStatus.PENDING, true],
+    ['success', OrderStatus.CANCELLED, false],
+    ['reverted', OrderStatus.PENDING, false],
+  ])(
+    'reflects a part cancellation receipt %s without changing the parent',
+    async (receiptStatus, expectedStatus, isCancelling) => {
+      fetchEoaTwapPartOrdersMock.mockResolvedValue(makePartPage('part-1', SdkOrderStatus.OPEN))
+      jest.mocked(useAllTransactionsDetails).mockReturnValue([
+        {
+          onChainCancellation: { orderId: 'part-1' },
+          receipt: receiptStatus ? { status: receiptStatus } : undefined,
+        } as EnhancedTransactionDetails,
+      ])
+      const twapOrder = makeTwapOrder()
+      const { result } = renderHook(() => useEoaTwapPartOrders(twapOrder, parent, 1, true), {
+        wrapper: SwrTestProvider,
+      })
+
+      await waitFor(() => expect(result.current.orders[0]?.status).toBe(expectedStatus))
+      expect(result.current.orders[0]?.isCancelling).toBe(isCancelling)
+      expect(result.current.orders[0]?.cancellationOrder?.id).toBe('part-1')
+      expect(twapOrder.status).toBe(TwapOrderStatus.Pending)
+    },
+  )
+
   it('loads candidate-only parents and promotes the same row without changing the count', async () => {
     const page = makePartPage('candidate')
     const candidate = {
@@ -149,7 +246,8 @@ describe('useEoaTwapPartOrders', () => {
       status: 'unconfirmed',
       executedSellAmount: null,
       executedBuyAmount: null,
-      executedFeeAmount: null,
+      executedFeeAmount: 0n,
+      executedFee: null,
     } as TwapPartOrder
     fetchEoaTwapPartOrdersMock
       .mockResolvedValueOnce({ totalCount: 1, items: [candidate] })
@@ -182,7 +280,8 @@ describe('useEoaTwapPartOrders', () => {
         status: 'unconfirmed',
         executedSellAmount: null,
         executedBuyAmount: null,
-        executedFeeAmount: null,
+        executedFeeAmount: 0n,
+        executedFee: null,
       })),
     })
     const { result } = renderHook(() => useEoaTwapPartOrders({ ...makeTwapOrder(), status }, parent, 1, true), {

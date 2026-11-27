@@ -4,6 +4,7 @@ import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 
 import { AdditionalTargetChainId, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { fireEvent, render, screen, RenderResult } from '@testing-library/react'
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
@@ -18,6 +19,10 @@ jest.mock('react-inlinesvg', () => ({
   default: ({ src, ...props }: { src: string; [key: string]: unknown }) => (
     <svg data-testid="inline-svg" data-src={src} {...(props as React.SVGProps<SVGSVGElement>)} />
   ),
+}))
+
+jest.mock('@cowprotocol/wallet', () => ({
+  useWalletInfo: jest.fn(),
 }))
 
 jest.mock('./hooks/useReceiverChainInfo', () => ({
@@ -42,6 +47,11 @@ jest.mock('common/pure/ChainPrefixWarning', () => ({
 
 const mockUseReceiverChainInfo = useReceiverChainInfo as jest.MockedFunction<typeof useReceiverChainInfo>
 const mockUseReceiverValidation = useReceiverValidation as jest.MockedFunction<typeof useReceiverValidation>
+const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
+
+beforeEach(() => {
+  mockUseWalletInfo.mockReturnValue({ chainId: SupportedChainId.MAINNET })
+})
 
 i18n.load('en-US', {})
 i18n.activate('en-US')
@@ -68,6 +78,10 @@ const BTC_CHAIN_INFO = { label: 'Bitcoin' } as ReturnType<typeof useReceiverChai
 
 const VALID_EVM_ADDRESS = '0x1234567890123456789012345678901234567890'
 const VALID_SOL_ADDRESS = 'SolValid1111111111111111111111111111111111111'
+/** A real associated token account: program-derived, so off the ed25519 curve. */
+const SOL_PDA_ADDRESS = 'HGTu6fBshWXJQe59C31RgyGcfhEusg1Y65Upcmd9zvCM'
+/** A real wallet address, on the curve. */
+const SOL_WALLET_ADDRESS = '2c1E71jPXqgM8nJXiQpCEwGhXSVA8GTN4a1qTS1ibyLa'
 const VALID_BTC_ADDRESS = 'bc1qvalid_long_enough'
 
 // --- Mock helpers ---
@@ -213,9 +227,48 @@ describe('ReceiverPanelBody — confirmation row visibility', () => {
     expect(screen.queryByRole('checkbox')).toBeNull()
   })
 
+  it('does NOT show when the wallet is connected to Solana', () => {
+    mockUseWalletInfo.mockReturnValue({ chainId: SupportedChainId.SOLANA })
+    mockSolanaChainInfo()
+    mockValidAddress()
+    renderComponent({ value: VALID_SOL_ADDRESS, targetChainId: SupportedChainId.SOLANA })
+    expect(screen.queryByRole('checkbox')).toBeNull()
+  })
+
   it('does NOT show for EOA when isSmartContractWallet is false (non-bridging mode)', () => {
     mockValidAddress()
     renderComponent({ value: VALID_EVM_ADDRESS, isSmartContractWalletBridging: false })
+    expect(screen.queryByRole('checkbox')).toBeNull()
+  })
+})
+
+describe('ReceiverPanelBody — program-derived recipient', () => {
+  function renderSolanaTrade(value: string): void {
+    mockUseWalletInfo.mockReturnValue({ chainId: SupportedChainId.SOLANA })
+    mockSolanaChainInfo()
+    mockValidAddress()
+    renderComponent({ value, targetChainId: SupportedChainId.SOLANA })
+  }
+
+  it('asks the trader to confirm a recipient no key pair can sign for', () => {
+    renderSolanaTrade(SOL_PDA_ADDRESS)
+
+    expect(screen.getByRole('checkbox')).not.toBeNull()
+    expect(screen.getByText(/program address, not a wallet/)).not.toBeNull()
+  })
+
+  it('asks nothing of a plain wallet recipient', () => {
+    renderSolanaTrade(SOL_WALLET_ADDRESS)
+
+    expect(screen.queryByRole('checkbox')).toBeNull()
+  })
+
+  it('does not ask while the address is still invalid', () => {
+    mockUseWalletInfo.mockReturnValue({ chainId: SupportedChainId.SOLANA })
+    mockSolanaChainInfo()
+    mockInvalidAddress()
+    renderComponent({ value: SOL_PDA_ADDRESS, targetChainId: SupportedChainId.SOLANA })
+
     expect(screen.queryByRole('checkbox')).toBeNull()
   })
 })

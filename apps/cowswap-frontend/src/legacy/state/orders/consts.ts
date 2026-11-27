@@ -15,6 +15,10 @@ export const LIMIT_OPERATOR_API_POLL_INTERVAL = getUpdaterInterval(ms`15s`)
 export const PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL = getUpdaterInterval(ms`30s`)
 export const EXPIRED_ORDERS_CHECK_POLL_INTERVAL = getUpdaterInterval(ms`15s`)
 
+// A creating order's bundle dies with the blockhash it was signed against (~30s), so the order book
+// still not knowing the order this long after it was built means the bundle never landed.
+export const UNWATCHED_CREATING_ORDER_TIMEOUT = ms`3m`
+
 export const OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE = new Percent(1, 100) // 1/100 => 0.01 => 1%
 
 // Clear order's storage

@@ -8,7 +8,7 @@ import { ConfirmationModal as Pure, ConfirmationModalProps } from 'common/pure/C
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ConfirmationModal({ isOpen, onDismiss }: Pick<ConfirmationModalProps, 'isOpen' | 'onDismiss'>) {
-  const { title, callToAction, description, onEnable, warning, confirmWord, action, skipInput, bottomContent } =
+  const { title, callToAction, description, onEnable, confirmWord, action, skipInput, bottomContent } =
     useAtomValue(confirmationModalContextAtom)
 
   return (
@@ -19,7 +19,6 @@ export function ConfirmationModal({ isOpen, onDismiss }: Pick<ConfirmationModalP
       callToAction={callToAction === DEFAULT_CONFIRMATION_MODAL_CONTEXT.callToAction ? t`Confirm` : callToAction}
       description={description}
       onEnable={onEnable}
-      warning={warning}
       confirmWord={confirmWord === DEFAULT_CONFIRMATION_MODAL_CONTEXT.confirmWord ? t`confirm` : confirmWord}
       action={action}
       skipInput={skipInput}

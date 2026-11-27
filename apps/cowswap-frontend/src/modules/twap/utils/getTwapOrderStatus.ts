@@ -1,3 +1,7 @@
+import { deriveTwapStatus, type ProgrammaticOrderStatus } from '@cowprotocol/sdk-composable'
+
+import { mapTwapStatus } from './mapTwapStatus'
+
 import { TwapOrdersExecution, TwapOrderStatus, TWAPOrderStruct } from '../types'
 
 interface GetTwapOrderStatusParams {
@@ -17,16 +21,23 @@ export function getTwapOrderStatus(params: GetTwapOrderStatusParams): TwapOrderS
     isWaitingForSignature,
   } = params
 
-  const isFulfilled = isTwapOrderFulfilled(order, executionInfo.executedSellAmount)
-  const isCompleted = confirmedPartsCount === order.n
-  const isExpired = isCompleted || isTwapOrderExpired(order, executionDate)
+  const now = Math.ceil(Date.now() / 1000)
+  const effectiveStartTime = order.t0 || Math.ceil((executionDate?.getTime() ?? now * 1000) / 1000)
+  const status = getProgrammaticOrderStatus(isCancelled, confirmedPartsCount === order.n)
+  const executionStatus = deriveTwapStatus({
+    lifecycleStatus: status,
+    executedAmounts: { executedSellAmount: BigInt(executionInfo.executedSellAmount) },
+    schedule: {
+      partSellAmount: BigInt(order.partSellAmount),
+      numberOfParts: order.n,
+      effectiveStartTime,
+      timeBetweenParts: order.t,
+    },
+  })
 
-  if (isFulfilled) return TwapOrderStatus.Fulfilled
-  if (isCancelled) return TwapOrderStatus.Cancelled
-  if (isExpired) return TwapOrderStatus.Expired
-  if (isWaitingForSignature) return TwapOrderStatus.WaitSigning
-
-  return TwapOrderStatus.Pending
+  return executionStatus === 'open' && isWaitingForSignature
+    ? TwapOrderStatus.WaitSigning
+    : mapTwapStatus(executionStatus)
 }
 
 export function isTwapOrderExpired(order: TWAPOrderStruct, startDate: Date | null): boolean {
@@ -40,6 +51,8 @@ export function isTwapOrderExpired(order: TWAPOrderStruct, startDate: Date | nul
   return nowTimestamp > endTime
 }
 
-function isTwapOrderFulfilled(order: TWAPOrderStruct, executedSellAmount: string): boolean {
-  return executedSellAmount === (BigInt(order.partSellAmount) * BigInt(order.n)).toString()
+function getProgrammaticOrderStatus(isCancelled: boolean, isCompleted: boolean): ProgrammaticOrderStatus {
+  if (isCancelled) return 'Cancelled'
+  if (isCompleted) return 'Completed'
+  return 'Active'
 }

@@ -1,5 +1,7 @@
 import { EnrichedOrder, getAddressKey, OrderClass, OrderStatus, SigningScheme } from '@cowprotocol/cow-sdk'
 
+import { getTwapPartStartTime } from './getTwapPartStartTime.utils'
+
 import { TwapPartOrderItem } from '../state/twapPartOrdersAtom'
 import { TwapOrderItem, TwapOrderStatus } from '../types'
 
@@ -7,7 +9,7 @@ export function emulatePartAsOrder(
   item: TwapPartOrderItem,
   parent: TwapOrderItem,
 ): Omit<EnrichedOrder, 'settlementContract'> {
-  const creationDate = new Date((item.order.validTo - parent.order.t) * 1000)
+  const creationDate = new Date(getTwapPartStartTime(item.order.validTo, parent.order) * 1000)
   const isCancelling = parent.status === TwapOrderStatus.Cancelling
 
   return {
@@ -32,7 +34,8 @@ export function emulatePartAsOrder(
 
 function getOrderStatus(parent: TwapOrderItem): OrderStatus {
   if (parent.status === TwapOrderStatus.Fulfilled) return OrderStatus.FULFILLED
-  if (parent.status === TwapOrderStatus.Expired) return OrderStatus.EXPIRED
+  if (parent.status === TwapOrderStatus.Expired || parent.status === TwapOrderStatus.PartiallyFilled)
+    return OrderStatus.EXPIRED
   if (parent.status === TwapOrderStatus.Cancelled) return OrderStatus.CANCELLED
 
   return OrderStatus.OPEN

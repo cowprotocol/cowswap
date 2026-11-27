@@ -4,7 +4,7 @@ import { useConfig, useWalletClient } from 'wagmi'
 
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
-import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { isSafeWalletAtom, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useDispatch } from 'react-redux'
 
@@ -25,15 +25,17 @@ import { TradeType } from 'common/modules/tradeNavigation'
 
 import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 
+import { partiallyFillableOverrideAtom } from '../state/partiallyFillableOverride'
+
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+// eslint-disable-next-line max-lines-per-function,complexity
 export function useTradeFlowContext(): TradeFlowContext | null {
   const config = useConfig()
   const { data: walletClient } = useWalletClient()
   const { account } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
   const state = useLimitOrdersDerivedState()
-  const isSafeWallet = useIsSafeWallet()
+  const isSafeWallet = useAtomValue(isSafeWalletAtom)
   const settlementContract = useGP2SettlementContractData()
   const settlementChainId = settlementContract.chainId
   const dispatch = useDispatch<AppDispatch>()
@@ -41,6 +43,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const quoteState = useTradeQuote()
   const rateImpact = useRateImpact()
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
+  const partiallyFillableOverride = useAtomValue(partiallyFillableOverrideAtom)
   const permitInfo = usePermitInfo(state.inputCurrency, TradeType.LIMIT_ORDER)
   const amountToApprove = useGetAmountToSignApprove()
   const permitAmountToSign = amountToApprove ? BigInt(amountToApprove.quotient.toString()) : undefined
@@ -57,7 +60,8 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const buyToken = state.outputCurrency as Token
   const quoteId = quoteState.quote?.quoteResults.quoteResponse.id || undefined
 
-  const partiallyFillable = settingsState.partialFillsEnabled
+  const partiallyFillable =
+    typeof partiallyFillableOverride === 'boolean' ? partiallyFillableOverride : settingsState.partialFillsEnabled
 
   // TODO: Reduce function complexity by extracting logic
   // eslint-disable-next-line complexity

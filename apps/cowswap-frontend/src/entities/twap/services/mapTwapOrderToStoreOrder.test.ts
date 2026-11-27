@@ -41,7 +41,7 @@ const twapOrder = {
   },
   executionInfo: {
     confirmedPartsCount: 0,
-    info: { executedSellAmount: '0', executedBuyAmount: '0', executedFeeAmount: '0' },
+    info: { executedSellAmount: '0', executedBuyAmount: '0', executedFee: '0' },
   },
 } satisfies TwapOrderItem
 

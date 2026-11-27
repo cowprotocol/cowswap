@@ -1,5 +1,122 @@
 # Changelog
 
+## [4.19.0](https://github.com/cowprotocol/cowswap/compare/events-v4.18.1...events-v4.19.0) (2026-11-18)
+
+### Minor Changes
+
+- feat: update SDK versions with updated near token lists (#8660)
+
+- feat(solana): support custom recipients (#8592)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.16.0
+
+## [4.18.1](https://github.com/cowprotocol/cowswap/compare/events-v4.18.0...events-v4.18.1) (2026-11-11)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.15.1
+
+## [4.18.0](https://github.com/cowprotocol/cowswap/compare/events-v4.17.2...events-v4.18.0) (2026-11-10)
+
+### Minor Changes
+
+- feat(solana): pass appData to quote (#8509)
+
+### Patch Changes
+
+- fix(solana): use SDK for quote costs breakdown (#8522)
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.15.0
+
+## [4.17.2](https://github.com/cowprotocol/cowswap/compare/events-v4.17.1...events-v4.17.2) (2026-11-05)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.14.2
+
+## [4.17.1](https://github.com/cowprotocol/cowswap/compare/events-v4.17.0...events-v4.17.1) (2026-10-27)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8474)
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.14.1
+
+## [4.17.0](https://github.com/cowprotocol/cowswap/compare/events-v4.16.0...events-v4.17.0) (2026-10-21)
+
+### Minor Changes
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.14.0
+
+## [4.16.0](https://github.com/cowprotocol/cowswap/compare/events-v4.15.0...events-v4.16.0) (2026-10-14)
+
+### Minor Changes
+
+- feat: bump sdk + support tokens 2022 (#8315)
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+- feat: solana settlement 0.5 (#8345)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.13.0
+
+## [4.15.0](https://github.com/cowprotocol/cowswap/compare/events-v4.14.0...events-v4.15.0) (2026-10-06)
+
+### Minor Changes
+
+- feat(solana): add sponsored orders (#8200)
+
+- feat(solana): migration to v0.4 (#8188)
+
+- feat(solana): use cow quote API and suggested slippage (#8195)
+
+- feat: bump sdk + rename transaction -> partiallySignedTx (#8267)
+
+### Patch Changes
+
+- fix(solana): add solana native token icon (#8262)
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.12.0
+
+## [4.14.0](https://github.com/cowprotocol/cowswap/compare/events-v4.13.0...events-v4.14.0) (2026-09-29)
+
+### Minor Changes
+
+- feat: add isEoaTwap to analytics event for order cancellation (#8212)
+
+## [4.13.0](https://github.com/cowprotocol/cowswap/compare/events-v4.12.0...events-v4.13.0) (2026-09-23)
+
+### Minor Changes
+
+- feat: show twaps in explorer (#8129)
+
+- feat(solana): apply user slippage from settings (#8164)
+
+- feat: add new prop for TWAP for EOA analytics (#8201)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.11.0
+
 ## [4.12.0](https://github.com/cowprotocol/cowswap/compare/events-v4.11.0...events-v4.12.0) (2026-09-09)
 
 ### Minor Changes

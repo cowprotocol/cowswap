@@ -1,6 +1,10 @@
+import { ReactNode } from 'react'
+
 import { MessageDescriptor } from '@lingui/core'
 
 import { UNSUPPORTED_TOKENS_FAQ_URL } from '@cowprotocol/common-const'
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { msg } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -11,13 +15,28 @@ import styled from 'styled-components/macro'
 import UnsupportedCurrencyFooterMod, {
   DetailsFooter,
   UnsupportedCurrencyFooterParams,
-} from './UnsupportedCurrencyFooterMod'
+} from './UnsupportedCurrencyFooter'
 
 const DEFAULT_DETAILS_TEXT: React.ReactNode = (
   <div>
     <Trans>
       CoW Swap does not support all tokens. Some tokens implement similar, but logically different ERC20 contract
       methods which do not operate optimally with CoW Protocol.
+      <p>
+        For more information, please refer to the{' '}
+        <NavLink target="_blank" to={UNSUPPORTED_TOKENS_FAQ_URL}>
+          FAQ
+        </NavLink>
+        .
+      </p>
+    </Trans>
+  </div>
+)
+const SOLANA_DEFAULT_DETAILS_TEXT: React.ReactNode = (
+  <div>
+    <Trans>
+      CoW Swap does not support all tokens. Some tokens use Token-2022 extensions, such as transfer fees, which do not
+      operate optimally with CoW Protocol.
       <p>
         For more information, please refer to the{' '}
         <NavLink target="_blank" to={UNSUPPORTED_TOKENS_FAQ_URL}>
@@ -48,20 +67,21 @@ const Wrapper = styled.div`
   }
 `
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function UnsupportedCurrencyFooter({
-  detailsText = DEFAULT_DETAILS_TEXT,
+  detailsText,
   detailsTitle = DEFAULT_DETAILS_TITLE,
   showDetailsText = DEFAULT_SHOW_DETAILS_TEXT,
   currencies = [],
   ...props
-}: Props) {
+}: Props): ReactNode {
+  const { chainId } = useWalletInfo()
+  const defaultDetailsText = isSolanaChain(chainId) ? SOLANA_DEFAULT_DETAILS_TEXT : DEFAULT_DETAILS_TEXT
+
   return (
     <Wrapper>
       <UnsupportedCurrencyFooterMod
         {...props}
-        detailsText={detailsText}
+        detailsText={detailsText ?? defaultDetailsText}
         detailsTitle={detailsTitle}
         showDetailsText={showDetailsText}
         currencies={currencies}

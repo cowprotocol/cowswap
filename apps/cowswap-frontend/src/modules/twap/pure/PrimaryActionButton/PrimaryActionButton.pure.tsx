@@ -1,0 +1,67 @@
+import { ReactElement } from 'react'
+
+import { ButtonPrimary, ButtonSize } from '@cowprotocol/ui'
+
+import { Trans } from '@lingui/react/macro'
+
+import { XSTOCK_MIN_TRADE_SIZE_USD } from 'modules/tradeFormValidation'
+
+import { TwapFormState } from './getTwapFormState'
+
+export interface PrimaryActionButtonContext {
+  confirmTrade(): void
+}
+
+const sellAmountTooSmallButton = (): ReactElement => (
+  <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
+    <Trans>Sell amount too small</Trans>
+  </ButtonPrimary>
+)
+
+const buttonsMap: Record<TwapFormState, (_context: PrimaryActionButtonContext) => ReactElement> = {
+  [TwapFormState.LOADING_SAFE_INFO]: () => (
+    <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
+      <Trans>Loading...</Trans>
+    </ButtonPrimary>
+  ),
+  [TwapFormState.WALLET_NOT_SUPPORTED]: () => (
+    <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
+      <Trans>Unsupported wallet</Trans>
+    </ButtonPrimary>
+  ),
+  [TwapFormState.TX_BUNDLING_NOT_SUPPORTED]: () => (
+    <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
+      <Trans>Unsupported wallet</Trans>
+    </ButtonPrimary>
+  ),
+  [TwapFormState.SELL_AMOUNT_TOO_SMALL]: sellAmountTooSmallButton,
+  [TwapFormState.RECEIVE_ZERO_FROM_NETWORK_COSTS]: sellAmountTooSmallButton,
+  [TwapFormState.PART_TIME_INTERVAL_TOO_SHORT]: () => (
+    <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
+      <Trans>Interval time too short</Trans>
+    </ButtonPrimary>
+  ),
+  [TwapFormState.PART_TIME_INTERVAL_TOO_LONG]: () => (
+    <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
+      <Trans>Interval time too long</Trans>
+    </ButtonPrimary>
+  ),
+  [TwapFormState.X_STOCK_MIN_TRADE_SIZE]: () => (
+    <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
+      <span style={{ fontSize: '15px' }}>
+        <Trans>Minimum trade size for xStocks tokens is ${XSTOCK_MIN_TRADE_SIZE_USD} per part</Trans>
+      </span>
+    </ButtonPrimary>
+  ),
+}
+
+export interface PrimaryActionButtonProps {
+  state: TwapFormState
+  context: PrimaryActionButtonContext
+}
+
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export function PrimaryActionButton(props: PrimaryActionButtonProps) {
+  return buttonsMap[props.state](props.context)
+}

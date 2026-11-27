@@ -1,4 +1,4 @@
-import type { CSSObject, Theme } from '@mui/material/styles'
+import { alpha, type CSSObject, type Theme } from '@mui/material/styles'
 
 export const globalStyles = (theme: Theme): CSSObject => ({
   'html, input, textarea, button': {
@@ -38,5 +38,7 @@ export const globalStyles = (theme: Theme): CSSObject => ({
   },
   'w3m-modal': {
     zIndex: 1200,
+    '--apkt-tokens-theme-overlay':
+      theme.palette.mode === 'dark' ? 'rgba(0, 0, 0, 0.425)' : alpha(theme.palette.text.primary, 0.4),
   },
 })

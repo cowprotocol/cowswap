@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { bpsToPercent, FractionUtils, trimTrailingZeros } from '@cowprotocol/common-utils'
+import { bpsToPercent, trimTrailingZeros } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { t } from '@lingui/core/macro'
@@ -18,6 +18,7 @@ interface ProtocolFeeRowProps {
   withTimelineDot: boolean
   isLast?: boolean
   loading?: boolean
+  detailRowStyle?: boolean
   testId?: string
 }
 
@@ -28,6 +29,7 @@ export function ProtocolFeeRow({
   withTimelineDot,
   isLast = false,
   loading = false,
+  detailRowStyle = false,
   testId,
 }: ProtocolFeeRowProps): ReactNode {
   const protocolFeeAsPercent = protocolFeeBps
@@ -37,8 +39,6 @@ export function ProtocolFeeRow({
           .toSignificant(),
       )
     : null
-  const minProtocolFeeAmount = FractionUtils.amountToAtLeastOneWei(protocolFeeAmount)
-
   if (!protocolFeeAmount || !protocolFeeBps || protocolFeeAmount.equalTo(0)) {
     return null
   }
@@ -48,7 +48,7 @@ export function ProtocolFeeRow({
   return (
     <ReviewOrderModalAmountRow
       withTimelineDot={withTimelineDot}
-      amount={minProtocolFeeAmount}
+      amount={protocolFeeAmount}
       fiatAmount={protocolFeeUsd}
       tooltip={
         <Trans>
@@ -63,6 +63,7 @@ export function ProtocolFeeRow({
       }
       isLast={isLast}
       loading={loading}
+      detailRowStyle={detailRowStyle}
       testId={testId}
     />
   )

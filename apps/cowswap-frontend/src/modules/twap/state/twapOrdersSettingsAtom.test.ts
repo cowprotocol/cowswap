@@ -18,4 +18,15 @@ describe('twapOrderSlippageAtom', () => {
 
     expect(Number(store.get(twapOrderSlippageAtom).numerator)).toBe(1000)
   })
+
+  it('truncates custom percent input to two decimals', () => {
+    const store = createStore()
+
+    store.set(updateTwapOrdersSettingsAtom, { slippageValue: 10.129 })
+
+    const slippage = store.get(twapOrderSlippageAtom)
+
+    expect(Number(slippage.numerator)).toBe(1012)
+    expect(slippage.toFixed(2)).toBe('10.12')
+  })
 })

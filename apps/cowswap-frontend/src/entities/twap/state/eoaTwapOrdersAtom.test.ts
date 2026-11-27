@@ -40,9 +40,27 @@ describe('eoaTwapOrdersAtom', () => {
     store.set(walletInfoAtom, { account: OWNER_A, chainId: CHAIN_ID })
     store.set(eoaTwapOrdersAtom, { [order.id]: order })
 
-    const persisted = JSON.parse(String(localStorage.getItem('eoa-twap-orders:v1'))) as Record<string, unknown>
+    const persisted = JSON.parse(String(localStorage.getItem('eoa-twap-orders:v2'))) as Record<string, unknown>
     expect(Object.values(persisted)).toEqual([{ [order.id]: order }])
     expect(store.get(eoaTwapOrdersAtom)).toEqual({ [order.id]: order })
+  })
+
+  it('ignores indexed Safe orders already cached and excludes them from future writes', () => {
+    const safeOrder = makeOrder('safe-event', OWNER_A)
+    safeOrder.safeAddress = OWNER_A
+    const eoaOrder = makeOrder('eoa-event', OWNER_A)
+    const storageKey = `${CHAIN_ID}:${OWNER_A}`
+    localStorage.setItem('eoa-twap-orders:v2', JSON.stringify({ [storageKey]: { [safeOrder.id]: safeOrder } }))
+
+    const store = createStore()
+    store.set(walletInfoAtom, { account: OWNER_A, chainId: CHAIN_ID })
+    expect(store.get(eoaTwapOrdersAtom)).toEqual({})
+
+    store.set(eoaTwapOrdersAtom, { [safeOrder.id]: safeOrder, [eoaOrder.id]: eoaOrder })
+    expect(store.get(eoaTwapOrdersAtom)).toEqual({ [eoaOrder.id]: eoaOrder })
+
+    const persisted = JSON.parse(String(localStorage.getItem('eoa-twap-orders:v2')))
+    expect(persisted[storageKey]).toEqual({ [eoaOrder.id]: eoaOrder })
   })
 
   it('caps each persisted bucket at the newest 1000 parents', () => {

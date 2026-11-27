@@ -1,7 +1,8 @@
 import React from 'react'
 
-import { CowAnalyticsProvider, initGtm, useAnalyticsReporter } from '@cowprotocol/analytics'
+import { CowAnalyticsProvider, initGtmWithConsent, useAnalyticsReporter } from '@cowprotocol/analytics'
 import { CHAIN_INFO_ARRAY } from '@cowprotocol/common-const'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
@@ -22,7 +23,7 @@ import { NetworkUpdater } from '../state/network/NetworkUpdater'
 import { environmentName } from '../utils/env'
 
 // Initialize analytics instances
-const cowAnalytics = initGtm()
+const cowAnalytics = initGtmWithConsent()
 
 const SENTRY_DSN = process.env.REACT_APP_EXPLORER_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE
@@ -67,7 +68,7 @@ const SearchNotFound = React.lazy(
   () =>
     import(
       /* webpackChunkName: "SearchNotFound_chunk"*/
-      './pages/SearchNotFound'
+      './pages/SearchNotFound.container'
     ),
 )
 
@@ -111,6 +112,14 @@ const TransactionDetails = React.lazy(
     ),
 )
 
+const TwapDetailsPage = React.lazy(() =>
+  // The direct import keeps this route out of Explorer's main bundle.
+  // eslint-disable-next-line import/no-internal-modules
+  import('../modules/twap/pure/TwapDetails.container').then(({ TwapDetailsPage: Page }) => ({ default: Page })),
+)
+
+const SolverLogoToolPage = React.lazy(() => import('./pages/SolverLogoTool'))
+
 /**
  * Update the global state
  */
@@ -123,8 +132,9 @@ const networkPrefixes = CHAIN_INFO_ARRAY.map((info) => info.urlAlias)
 /** App content */
 
 const AppContent = (): React.ReactNode => {
-  const chainId = useNetworkId()
   const isSolversEnabled = useSolversFeatureFlag()
+  const { isTwapEoaEnabled } = useFeatureFlags()
+  const chainId = useNetworkId()
   useAnalyticsReporter({
     account: undefined, // Explorer doesn't have wallet functionality
     walletName: undefined, // Explorer doesn't have wallet functionality
@@ -140,11 +150,13 @@ const AppContent = (): React.ReactNode => {
     <GenericLayout header={<Header />}>
       <React.Suspense fallback={null}>
         <Routes>
+          <Route path="/solver-logo-tool" element={<SolverLogoToolPage />} />
           <Route path={pathPrefix + '/'} element={<Home />} />
           <Route path={pathPrefix + '/address/'} element={<Navigate to={pathPrefix + '/search/'} />} />
           <Route path={pathPrefix + '/orders/'} element={<Navigate to={pathPrefix + '/search/'} />} />
           <Route path={pathPrefix + '/tx/'} element={<Navigate to={pathPrefix + '/search/'} />} />
           <Route path={pathPrefix + '/orders/:orderId'} element={<Order />} />
+          {isTwapEoaEnabled && <Route path={pathPrefix + '/twap/:eventId'} element={<TwapDetailsPage />} />}
           <Route path={pathPrefix + '/address/:address'} element={<UserDetails />} />
           <Route path={pathPrefix + '/tx/:txHash'} element={<TransactionDetails />} />
           {isSolversEnabled && <Route path={pathPrefix + '/solvers'} element={<Solvers />} />}

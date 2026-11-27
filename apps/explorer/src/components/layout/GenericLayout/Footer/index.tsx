@@ -1,6 +1,12 @@
 import React from 'react'
 
-import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
+import { openCookieSettings } from '@cowprotocol/analytics'
+import {
+  COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
+  COW_PROTOCOL_VAULT_RELAYER_ADDRESS,
+  isBarnBackendEnv,
+} from '@cowprotocol/common-utils'
+import { isSolanaChain, SOLANA_SETTLEMENT_PROGRAM_ID, SOLANA_SETTLEMENT_PROGRAM_ID_STAGING } from '@cowprotocol/cow-sdk'
 import { Color, Media } from '@cowprotocol/ui'
 
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
@@ -107,6 +113,18 @@ const VersionsWrapper = styled.div`
     }
   }
 `
+
+const CookieSettingsButton = styled.button`
+  margin: 0 1rem 0 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+`
+
 export interface FooterType {
   readonly verifiedText?: string
   readonly isBeta?: boolean
@@ -124,23 +142,30 @@ export interface FooterType {
 export const Footer: React.FC<FooterType> = (props) => {
   const { isBeta = footerConfig.isBeta, url = footerConfig.url } = props
   const networkId = useNetworkId() || Network.MAINNET
-  const settlementContractAddress = COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[networkId]
-  const vaultRelayerContractAddress = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[networkId]
+  const isSolana = isSolanaChain(networkId)
+  const solanaSettlementProgramId = isBarnBackendEnv
+    ? SOLANA_SETTLEMENT_PROGRAM_ID_STAGING
+    : SOLANA_SETTLEMENT_PROGRAM_ID
+  const settlementAddress = isSolana ? solanaSettlementProgramId : COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[networkId]
+  const settlementLabel = isSolana ? 'Settlement program↗' : 'Settlement contract↗'
+  const settlementSourceUrl = isSolana ? footerConfig.url.contracts.solanaSettlement : url.contracts.settlement
+  // SPL delegation takes the vault relayer's place on Solana, there is no counterpart to link to.
+  const vaultRelayerContractAddress = !isSolana && COW_PROTOCOL_VAULT_RELAYER_ADDRESS[networkId]
 
   return (
     <FooterStyled>
       {isBeta && <BetaWrapper>This project is in beta. Use at your own risk.</BetaWrapper>}
       <ContractsWrapper>
-        {settlementContractAddress && (
+        {settlementAddress && (
           <ContractContainer>
             <VerifiedButton
               showLogo
               type="contract"
-              identifier={settlementContractAddress}
+              identifier={settlementAddress}
               networkId={networkId}
-              label="Settlement contract"
+              label={settlementLabel}
             />
-            <a target="_blank" rel="noopener noreferrer" href={url.contracts.settlement}>
+            <a target="_blank" rel="noopener noreferrer" href={settlementSourceUrl}>
               <LogoWrapper className="github-logo" src={LOGO_MAP.imgGithubSrc} title="Open it on Github" />
             </a>
           </ContractContainer>
@@ -152,7 +177,7 @@ export const Footer: React.FC<FooterType> = (props) => {
               type="contract"
               identifier={vaultRelayerContractAddress}
               networkId={networkId}
-              label="Vault Relayer contract"
+              label="Vault Relayer contract↗"
             />
             <a target="_blank" rel="noopener noreferrer" href={url.contracts.vaultRelayer}>
               <LogoWrapper className="github-logo" src={LOGO_MAP.imgGithubSrc} title="Open it on Github" />
@@ -161,6 +186,9 @@ export const Footer: React.FC<FooterType> = (props) => {
         )}
       </ContractsWrapper>
       <VersionsWrapper>
+        <CookieSettingsButton type="button" onClick={openCookieSettings}>
+          Cookie settings
+        </CookieSettingsButton>
         {url.web && VERSION && (
           <a target="_blank" rel="noopener noreferrer" href={url.web + VERSION}>
             Web: v{VERSION}{' '}

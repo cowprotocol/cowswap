@@ -1,27 +1,43 @@
-import { getGlobalAdapter, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useAtomValue } from 'jotai'
+
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo, WalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { renderHook } from '@testing-library/react'
+import { POLL_FUNDS_QUOTE_GAS } from 'entities/twap/composable-cow-poller.constants'
 
 import { useAppData } from 'modules/appData'
 import { TradeDerivedState, useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
-import { useTradeSlippageValueAndType } from 'modules/tradeSlippage'
+import { useShouldUseAutoSlippage, useTradeSlippageValueAndType } from 'modules/tradeSlippage'
 import { useVolumeFee } from 'modules/volumeFee'
 
+import { useAppSignerForAccount } from 'common/hooks/useAppSigner'
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { useQuoteParams } from './useQuoteParams'
 import { useQuoteParamsRecipient } from './useQuoteParamsRecipient'
+import { useSmartSlippageFromQuote } from './useSmartSlippageFromQuote'
+import { useTradeQuote } from './useTradeQuote'
 
+import { TradeQuoteState } from '../state/tradeQuoteAtom'
 import { BRIDGE_QUOTE_ACCOUNT } from '../utils/getBridgeQuoteSigner'
 
 // Mock all dependencies
-jest.mock('@cowprotocol/wallet', () => ({ useWalletInfo: jest.fn() }))
+jest.mock('jotai', () => ({
+  ...jest.requireActual('jotai'),
+  useAtomValue: jest.fn(),
+}))
+jest.mock('@cowprotocol/wallet', () => ({
+  useWalletInfo: jest.fn(),
+  isEoaAtom: Symbol('isEoaAtom'),
+}))
 jest.mock('@cowprotocol/wallet-provider', () => ({ useWalletProvider: jest.fn() }))
 jest.mock('@cowprotocol/common-hooks', () => ({
   useDebounce: <T>(value: T) => value,
+  useFeatureFlags: jest.fn(),
 }))
 jest.mock('@cowprotocol/common-utils', () => ({
   COW_PROTOCOL_ETH_FLOW_ADDRESS: { 1: '0xethflow' },
@@ -29,13 +45,17 @@ jest.mock('@cowprotocol/common-utils', () => ({
 }))
 jest.mock('@cowprotocol/common-const', () => ({
   DEFAULT_APP_CODE: 'CoW Swap',
+  ZERO_ADDRESS: '0x0000000000000000000000000000000000000000',
 }))
 jest.mock('modules/appData', () => ({ useAppData: jest.fn() }))
 jest.mock('modules/trade', () => ({
   useDerivedTradeState: jest.fn(),
   useIsWrapOrUnwrap: jest.fn(),
 }))
-jest.mock('modules/tradeSlippage', () => ({ useTradeSlippageValueAndType: jest.fn() }))
+jest.mock('modules/tradeSlippage', () => ({
+  useShouldUseAutoSlippage: jest.fn(),
+  useTradeSlippageValueAndType: jest.fn(),
+}))
 jest.mock('modules/volumeFee', () => ({ useVolumeFee: jest.fn() }))
 jest.mock('common/hooks/useIsProviderNetworkDeprecated', () => ({
   useIsProviderNetworkDeprecated: jest.fn(),
@@ -44,19 +64,26 @@ jest.mock('common/hooks/useIsProviderNetworkUnsupported', () => ({
   useIsProviderNetworkUnsupported: jest.fn(),
 }))
 jest.mock('./useQuoteParamsRecipient', () => ({ useQuoteParamsRecipient: jest.fn() }))
-jest.mock('../utils/getBridgeQuoteSigner', () => ({
-  BRIDGE_QUOTE_ACCOUNT: '0xBridgeQuoteAccount',
-  getBridgeQuoteSigner: jest.fn().mockReturnValue('mock-signer'),
-}))
+jest.mock('./useSmartSlippageFromQuote', () => ({ useSmartSlippageFromQuote: jest.fn() }))
+jest.mock('./useTradeQuote', () => ({ useTradeQuote: jest.fn() }))
+jest.mock('../utils/getBridgeQuoteSigner', () => {
+  const { isSolanaChain } = jest.requireActual('@cowprotocol/cow-sdk')
+  return {
+    BRIDGE_QUOTE_ACCOUNT: '0xBridgeQuoteAccount',
+    getBridgeQuoteSigner: jest.fn().mockReturnValue('mock-signer'),
+    NON_EVM_CHAIN_CONFIG: [
+      { isChain: isSolanaChain, isAddress: () => false, defaultRecipient: 'SolanaOwnerPlaceholder' },
+    ],
+  }
+})
 jest.mock('common/hooks/useSafeMemo', () => ({
-  useSafeMemo: (fn: () => unknown, _deps: unknown[]) => fn(),
+  useSafeMemo: (fn: () => unknown, deps: unknown[]) => jest.requireActual('react').useMemo(fn, deps),
 }))
-jest.mock('@cowprotocol/cow-sdk', () => ({
-  ...jest.requireActual('@cowprotocol/cow-sdk'),
-  getGlobalAdapter: jest.fn(),
-}))
+jest.mock('common/hooks/useAppSigner', () => ({ useAppSignerForAccount: jest.fn() }))
 
 const mockedUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
+const mockedUseAtomValue = useAtomValue as jest.MockedFunction<typeof useAtomValue>
+const mockedUseFeatureFlags = useFeatureFlags as jest.MockedFunction<typeof useFeatureFlags>
 const mockedUseWalletProvider = useWalletProvider as jest.MockedFunction<typeof useWalletProvider>
 const mockedUseAppData = useAppData as jest.MockedFunction<typeof useAppData>
 const mockedUseDerivedTradeState = useDerivedTradeState as jest.MockedFunction<typeof useDerivedTradeState>
@@ -70,6 +97,13 @@ const mockedUseIsProviderNetworkDeprecated = useIsProviderNetworkDeprecated as j
   typeof useIsProviderNetworkDeprecated
 >
 const mockedUseQuoteParamsRecipient = useQuoteParamsRecipient as jest.MockedFunction<typeof useQuoteParamsRecipient>
+const mockedUseSmartSlippageFromQuote = useSmartSlippageFromQuote as jest.MockedFunction<
+  typeof useSmartSlippageFromQuote
+>
+const mockedUseShouldUseAutoSlippage = useShouldUseAutoSlippage as jest.MockedFunction<typeof useShouldUseAutoSlippage>
+const mockedUseTradeQuote = useTradeQuote as jest.MockedFunction<typeof useTradeQuote>
+
+const FINAL_QUOTE_STATE = { quote: {}, hasFinalQuote: true } as unknown as TradeQuoteState
 
 const ACCOUNT_ADDRESS = '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd'
 const SELL_TOKEN = '0x1111111111111111111111111111111111111111'
@@ -97,10 +131,14 @@ const mockOutputCurrency = {
 }
 
 function setupDefaults(): void {
-  mockedUseWalletInfo.mockReturnValue({ account: ACCOUNT_ADDRESS } as unknown as WalletInfo)
+  mockedUseWalletInfo.mockReturnValue({
+    account: ACCOUNT_ADDRESS,
+    chainId: SupportedChainId.MAINNET,
+  } as unknown as WalletInfo)
+  mockedUseAtomValue.mockReturnValue(true)
+  mockedUseFeatureFlags.mockReturnValue({ isTwapEoaEnabled: false } as ReturnType<typeof useFeatureFlags>)
   mockedUseWalletProvider.mockReturnValue(mockProvider as unknown as ReturnType<typeof useWalletProvider>)
-  const mockAdapter = { signerOrNull: jest.fn().mockReturnValue('user-signer') }
-  ;(getGlobalAdapter as jest.Mock).mockReturnValue(mockAdapter)
+  jest.mocked(useAppSignerForAccount).mockImplementation((account) => (account ? 'user-signer' : undefined))
   mockedUseAppData.mockReturnValue({ doc: { appCode: 'CoW Swap' } } as unknown as ReturnType<typeof useAppData>)
   mockedUseDerivedTradeState.mockReturnValue({
     inputCurrency: mockInputCurrency,
@@ -113,6 +151,9 @@ function setupDefaults(): void {
   mockedUseIsProviderNetworkUnsupported.mockReturnValue(false)
   mockedUseIsProviderNetworkDeprecated.mockReturnValue(false)
   mockedUseQuoteParamsRecipient.mockReturnValue({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
+  mockedUseSmartSlippageFromQuote.mockReturnValue(null)
+  mockedUseShouldUseAutoSlippage.mockReturnValue(false)
+  mockedUseTradeQuote.mockReturnValue({ quote: null, fetchParams: null } as unknown as TradeQuoteState)
 }
 
 describe('useQuoteParams', () => {
@@ -229,6 +270,21 @@ describe('useQuoteParams', () => {
       expect(qp.signer).toBe('mock-signer')
     })
 
+    it('should use the Solana placeholder for owner/account when wallet is not connected and sell chain is Solana', () => {
+      mockedUseWalletInfo.mockReturnValue({ account: undefined } as unknown as WalletInfo)
+      mockedUseDerivedTradeState.mockReturnValue({
+        inputCurrency: { ...mockInputCurrency, chainId: SupportedChainId.SOLANA },
+        outputCurrency: mockOutputCurrency,
+        orderKind: OrderKind.SELL,
+      } as unknown as TradeDerivedState)
+
+      const { result } = renderHook(() => useQuoteParams(AMOUNT))
+
+      const qp = result.current!.quoteParams!
+      expect(qp.owner).toBe('SolanaOwnerPlaceholder')
+      expect(qp.account).toBe('SolanaOwnerPlaceholder')
+    })
+
     it('should set partiallyFillable when passed', () => {
       const { result } = renderHook(() => useQuoteParams(AMOUNT, true))
 
@@ -290,6 +346,54 @@ describe('useQuoteParams', () => {
       const { result } = renderHook(() => useQuoteParams(AMOUNT))
 
       expect(result.current!.quoteParams!.swapSlippageBps).toBeUndefined()
+    })
+
+    // Solana signs exactly the tolerance it is handed, so the resolved value has to travel with the
+    // quote params even when the user never opened the setting. Keyed on the sell token's chain — the
+    // wallet stays on an EVM chain here, because that is what `fetchAndProcessQuote` routes on.
+    it.each([
+      ['default', 50],
+      ['user', 100],
+    ])('should include swapSlippageBps for a Solana sell token when slippage type is %s', (type, value) => {
+      mockedUseDerivedTradeState.mockReturnValue({
+        inputCurrency: { ...mockInputCurrency, chainId: SupportedChainId.SOLANA },
+        outputCurrency: mockOutputCurrency,
+        orderKind: OrderKind.SELL,
+      } as unknown as TradeDerivedState)
+      mockedUseTradeSlippage.mockReturnValue({ type: type as 'default' | 'user', value })
+
+      const { result } = renderHook(() => useQuoteParams(AMOUNT))
+
+      expect(result.current!.quoteParams!.sellTokenChainId).toBe(SupportedChainId.SOLANA)
+      expect(result.current!.quoteParams!.swapSlippageBps).toBe(value)
+    })
+
+    it('should not include swapSlippageBps for a Solana sell token when smart slippage is the quote suggestion', () => {
+      mockedUseDerivedTradeState.mockReturnValue({
+        inputCurrency: { ...mockInputCurrency, chainId: SupportedChainId.SOLANA },
+        outputCurrency: mockOutputCurrency,
+        orderKind: OrderKind.SELL,
+      } as unknown as TradeDerivedState)
+      mockedUseTradeSlippage.mockReturnValue({ type: 'smart', value: 120 })
+      mockedUseSmartSlippageFromQuote.mockReturnValue(120)
+
+      const { result } = renderHook(() => useQuoteParams(AMOUNT))
+
+      expect(result.current!.quoteParams!.swapSlippageBps).toBeUndefined()
+    })
+
+    it('should include swapSlippageBps for a Solana sell token when smart slippage is capped', () => {
+      mockedUseDerivedTradeState.mockReturnValue({
+        inputCurrency: { ...mockInputCurrency, chainId: SupportedChainId.SOLANA },
+        outputCurrency: mockOutputCurrency,
+        orderKind: OrderKind.SELL,
+      } as unknown as TradeDerivedState)
+      mockedUseTradeSlippage.mockReturnValue({ type: 'smart', value: 200 })
+      mockedUseSmartSlippageFromQuote.mockReturnValue(900)
+
+      const { result } = renderHook(() => useQuoteParams(AMOUNT))
+
+      expect(result.current!.quoteParams!.swapSlippageBps).toBe(200)
     })
 
     it('should not include swapSlippageBps when slippage type is default', () => {
@@ -383,5 +487,139 @@ describe('useQuoteParams', () => {
 
       expect(result.current!.quoteParams!.appCode).toBe('CoW Swap')
     })
+
+    it('prepends the EOA TWAP quote hook and keeps existing hooks', () => {
+      const existingPreHook = {
+        target: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+        callData: '0xdeadbeef',
+        gasLimit: '100000',
+      }
+      const existingPostHook = {
+        target: '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
+        callData: '0xcafebabe',
+        gasLimit: '50000',
+      }
+      mockedUseFeatureFlags.mockReturnValue({ isTwapEoaEnabled: true } as ReturnType<typeof useFeatureFlags>)
+      mockedUseAppData.mockReturnValue({
+        doc: {
+          appCode: 'CoW Swap',
+          metadata: {
+            orderClass: { orderClass: 'twap' },
+            hooks: { pre: [existingPreHook], post: [existingPostHook] },
+          },
+        },
+      } as unknown as ReturnType<typeof useAppData>)
+
+      const { result } = renderHook(() => useQuoteParams('1000'))
+      const preHooks = result.current!.appData?.metadata.hooks?.pre
+
+      expect(preHooks?.[0]).toEqual({
+        target: '0x0000000000000000000000000000000000000000',
+        callData: '0x',
+        gasLimit: POLL_FUNDS_QUOTE_GAS,
+      })
+      expect(preHooks?.[1]).toEqual(existingPreHook)
+      expect(result.current!.appData?.metadata.hooks?.post).toEqual([existingPostHook])
+    })
+
+    it('leaves app data unchanged for a Safe TWAP', () => {
+      const doc = { appCode: 'CoW Swap', metadata: { orderClass: { orderClass: 'twap' } } }
+      mockedUseFeatureFlags.mockReturnValue({ isTwapEoaEnabled: true } as ReturnType<typeof useFeatureFlags>)
+      mockedUseAtomValue.mockReturnValue(false)
+      mockedUseAppData.mockReturnValue({ doc } as unknown as ReturnType<typeof useAppData>)
+
+      const { result } = renderHook(() => useQuoteParams('1000'))
+
+      expect(result.current!.appData).toBe(doc)
+    })
+
+    it('leaves app data unchanged when the order class is not twap', () => {
+      const doc = { appCode: 'CoW Swap', metadata: { orderClass: { orderClass: 'market' } } }
+      mockedUseFeatureFlags.mockReturnValue({ isTwapEoaEnabled: true } as ReturnType<typeof useFeatureFlags>)
+      mockedUseAppData.mockReturnValue({ doc } as unknown as ReturnType<typeof useAppData>)
+
+      const { result } = renderHook(() => useQuoteParams('1000'))
+
+      expect(result.current!.appData).toBe(doc)
+    })
+
+    it('returns the original app data document when no additional pre-hooks are set', () => {
+      const doc = { appCode: 'CoW Swap', metadata: {} }
+      mockedUseAppData.mockReturnValue({ doc } as unknown as ReturnType<typeof useAppData>)
+
+      const { result } = renderHook(() => useQuoteParams('1000'))
+
+      expect(result.current!.appData).toBe(doc)
+    })
+  })
+})
+
+describe('useQuoteParams account signer', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+    setupDefaults()
+  })
+
+  const AMOUNT = '1000000000000000000'
+
+  it('should use bridgeQuoteSigner while the connected account has no signer yet', () => {
+    jest.mocked(useAppSignerForAccount).mockReturnValue(undefined)
+
+    const { result } = renderHook(() => useQuoteParams(AMOUNT))
+
+    const qp = result.current!.quoteParams!
+    expect(qp.owner).toBe(ACCOUNT_ADDRESS)
+    expect(qp.signer).toBe('mock-signer')
+  })
+
+  it('should rebuild params with the account signer once it is available', () => {
+    jest.mocked(useAppSignerForAccount).mockReturnValue(undefined)
+
+    const { result, rerender } = renderHook(() => useQuoteParams(AMOUNT))
+
+    expect(result.current!.quoteParams!.signer).toBe('mock-signer')
+
+    jest.mocked(useAppSignerForAccount).mockImplementation((account) => (account ? 'user-signer' : undefined))
+    rerender()
+
+    expect(result.current!.quoteParams!.signer).toBe('user-signer')
+  })
+})
+
+describe('useQuoteParams Solana auto slippage', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+    setupDefaults()
+  })
+
+  const AMOUNT = '1000000000000000000'
+
+  it('should not include swapSlippageBps for a Solana sell token while auto slippage awaits the first final quote', () => {
+    mockedUseDerivedTradeState.mockReturnValue({
+      inputCurrency: { ...mockInputCurrency, chainId: SupportedChainId.SOLANA },
+      outputCurrency: mockOutputCurrency,
+      orderKind: OrderKind.SELL,
+    } as unknown as TradeDerivedState)
+    mockedUseShouldUseAutoSlippage.mockReturnValue(true)
+    mockedUseTradeSlippage.mockReturnValue({ type: 'default', value: 50 })
+
+    const { result } = renderHook(() => useQuoteParams(AMOUNT))
+
+    expect(result.current!.quoteParams!.swapSlippageBps).toBeUndefined()
+  })
+
+  it('should include the default swapSlippageBps for a Solana sell token when the final quote suggestion was rejected', () => {
+    mockedUseDerivedTradeState.mockReturnValue({
+      inputCurrency: { ...mockInputCurrency, chainId: SupportedChainId.SOLANA },
+      outputCurrency: mockOutputCurrency,
+      orderKind: OrderKind.SELL,
+    } as unknown as TradeDerivedState)
+    mockedUseShouldUseAutoSlippage.mockReturnValue(true)
+    mockedUseTradeQuote.mockReturnValue(FINAL_QUOTE_STATE)
+    mockedUseTradeSlippage.mockReturnValue({ type: 'default', value: 50 })
+
+    const { result } = renderHook(() => useQuoteParams(AMOUNT))
+
+    expect(result.current!.quoteParams!.swapSlippageBps).toBe(50)
   })
 })

@@ -7,6 +7,9 @@ import { TradeFlowContext } from '../../types/TradeFlowContext'
 
 import { swapFlow } from './index'
 
+jest.mock('modules/appData', () => ({
+  getValidFromFromAppDataDoc: jest.fn().mockReturnValue(undefined),
+}))
 jest.mock('modules/permit', () => ({
   callDataContainsPermitSigner: jest.fn().mockReturnValue(false),
   handlePermit: jest.fn().mockResolvedValue({ fullAppData: '{}', doc: {} }),
@@ -70,7 +73,7 @@ describe('swapFlow - Send analytics payload', () => {
         recipientAddressOrName: '0xaccount',
         validTo: 1700000000,
       },
-      swapFlowAnalyticsContext: {
+      tradeFlowAnalyticsContext: {
         account: '0xaccount',
         marketLabel: 'SELL,BUY',
         orderType: UiOrderType.SWAP,

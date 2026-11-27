@@ -1,13 +1,13 @@
-import { components } from '@cowprotocol/cms'
-import { getCmsClient } from '@cowprotocol/core'
+import { CmsClient, components } from '@cowprotocol/cms'
+import { isRecord } from '@cowprotocol/common-utils/json-utils'
 
 import { PaginationParam } from 'types'
 
 import { isValidCmsSlug, normalizeSearchArticlesInput } from 'util/cmsValidation'
 import { toQueryParams } from 'util/queryParams'
 
-import { DEFAULT_PAGE_SIZE, clientAddons } from './config'
-import { querySerializer, getPopulateConfig } from './helpers'
+import { CMS_BASE_URL, DEFAULT_PAGE_SIZE, clientAddons } from './config'
+import { collectAllPages, getPopulateConfig, querySerializer, toResourceSlugParams } from './helpers'
 
 export type Article = Schemas['ArticleListResponseDataItem']
 export type ArticleListResponse = {
@@ -22,7 +22,30 @@ export type ArticleListResponse = {
   }
 }
 
+export type CampaignSummary = {
+  campaign: string
+  count: number
+}
 export type Category = Schemas['CategoryListResponseDataItem']
+
+export type Resource = Schemas['ResourceListResponseDataItem']
+
+export type ResourceListResponse = {
+  data: Resource[]
+  meta: {
+    pagination: {
+      page: number
+      pageSize: number
+      pageCount: number
+      total: number
+    }
+  }
+}
+
+export type ResourceSlugParam = {
+  campaign: string
+  slug: string
+}
 
 export type SharedRichTextComponent = Schemas['SharedRichTextComponent']
 type Schemas = components['schemas']
@@ -41,51 +64,66 @@ function handleCmsBuildFailure<T>(operation: string, error: unknown, fallback: T
 
 /**
  * Open API Fetch client. See docs for usage https://openapi-ts.pages.dev/openapi-fetch/
+ * Instantiated here (not via @cowprotocol/core) so content pages don't pull trading/wallet code.
  */
-export const client = getCmsClient()
+export const client = CmsClient({
+  url: CMS_BASE_URL,
+})
 
 export type Page = Schemas['PageListResponseDataItem']
 
 /**
- * Returns all article slugs.
- *
- * @returns Slugs
+ * Returns every published resource matching the given filters, across CMS pages.
  */
-export async function getAllArticleSlugs(): Promise<string[]> {
-  try {
-    const { data, error, response } = await client.GET('/articles', {
-      params: {
-        query: {
-          fields: ['slug'],
-          'pagination[pageSize]': DEFAULT_PAGE_SIZE,
-        },
-      },
-      querySerializer,
-      ...clientAddons,
-    })
+export async function getAllResources({
+  filters = {},
+  pageSize = DEFAULT_PAGE_SIZE,
+}: { filters?: Record<string, unknown>; pageSize?: number } = {}): Promise<Resource[]> {
+  return collectAllPages(async (page) => {
+    const result = await getResources({ page, pageSize, filters })
 
-    if (error) {
-      console.error(`Error ${response.status} getting article slugs: ${response.url}`, error)
-      throw error
+    return {
+      items: result.data,
+      page: result.meta.pagination.page,
+      pageCount: result.meta.pagination.pageCount,
     }
-
-    return data.data
-      .filter((article: Article) => article.attributes)
-      .map((article: Article) => article.attributes!.slug)
-  } catch (error) {
-    return handleCmsBuildFailure('getAllArticleSlugs', error, [])
-  }
+  })
 }
 
 /**
- * Returns all category slugs.
- *
- * @returns Slugs
+ * Returns all resource slugs grouped by campaign.
  */
-export async function getAllCategorySlugs(): Promise<string[]> {
-  const categories = await getCategories()
+export async function getAllResourceSlugs(): Promise<ResourceSlugParam[]> {
+  try {
+    const resources = await collectAllPages(async (page) => {
+      const { data, error, response } = await client.GET('/resources', {
+        params: {
+          query: {
+            fields: ['slug', 'campaign'],
+            'pagination[page]': page,
+            'pagination[pageSize]': DEFAULT_PAGE_SIZE,
+          },
+        },
+        querySerializer,
+        ...clientAddons,
+      })
 
-  return categories.map((category) => category.attributes!.slug!)
+      if (error) {
+        console.error(`Error ${response.status} getting resource slugs: ${response.url}`, error)
+        throw error
+      }
+
+      return {
+        items: data.data,
+        page: data.meta.pagination.page,
+        pageCount: data.meta.pagination.pageCount,
+      }
+    })
+
+    return toResourceSlugParams(resources)
+  } catch (error) {
+    return handleCmsBuildFailure('getAllResourceSlugs', error, [])
+  }
 }
 
 /**
@@ -160,6 +198,22 @@ export async function getArticles({
 }
 
 /**
+ * Returns campaign summaries derived from published resources.
+ */
+export async function getCampaignSummaries(): Promise<CampaignSummary[]> {
+  const slugs = await getAllResourceSlugs()
+  const counts = new Map<string, number>()
+
+  for (const { campaign } of slugs) {
+    counts.set(campaign, (counts.get(campaign) ?? 0) + 1)
+  }
+
+  return Array.from(counts.entries())
+    .map(([campaign, count]) => ({ campaign, count }))
+    .sort((a, b) => a.campaign.localeCompare(b.campaign))
+}
+
+/**
  * Get categories with images.
  *
  * @returns Categories with their associated images
@@ -215,6 +269,52 @@ export async function getCategoryBySlug(slug: string): Promise<Category | null> 
  */
 export async function getPageBySlug(slug: string): Promise<Page | null> {
   return getBySlugAux(slug, '/pages')
+}
+
+/**
+ * Get resource by slug.
+ */
+export async function getResourceBySlug(slug: string): Promise<Resource | null> {
+  if (!slug) throw new Error('Resource slug is required')
+
+  try {
+    return await getBySlugAux(slug, '/resources')
+  } catch (error) {
+    console.error(`Error getting resource by slug ${slug}:`, error)
+    throw error
+  }
+}
+
+/**
+ * Get resources sorted by descending published date.
+ */
+export async function getResources({
+  page = 0,
+  pageSize = DEFAULT_PAGE_SIZE,
+  filters = {},
+}: PaginationParam & { filters?: Record<string, unknown> } = {}): Promise<ResourceListResponse> {
+  const { data, error, response } = await client.GET('/resources', {
+    params: {
+      query: {
+        'populate[0]': 'cover',
+        'populate[1]': 'blocks',
+        'populate[2]': 'seo',
+        'pagination[page]': page,
+        'pagination[pageSize]': pageSize,
+        sort: 'publishDate:desc,publishedAt:desc',
+        filters,
+      },
+    },
+    querySerializer,
+    ...clientAddons,
+  })
+
+  if (error) {
+    console.error(`Error ${response.status} getting resources: ${response.url}. Page ${page}`, error)
+    throw error
+  }
+
+  return { data: data.data, meta: data.meta }
 }
 
 /**
@@ -288,7 +388,11 @@ export async function searchArticles({
 async function getBySlugAux(slug: string, endpoint: '/articles'): Promise<Article | null>
 async function getBySlugAux(slug: string, endpoint: '/categories'): Promise<Category | null>
 async function getBySlugAux(slug: string, endpoint: '/pages'): Promise<Page | null>
-async function getBySlugAux(slug: string, endpoint: '/categories' | '/articles' | '/pages'): Promise<unknown | null> {
+async function getBySlugAux(slug: string, endpoint: '/resources'): Promise<Resource | null>
+async function getBySlugAux(
+  slug: string,
+  endpoint: '/categories' | '/articles' | '/pages' | '/resources',
+): Promise<unknown | null> {
   if (!slug) throw new Error('Slug is required') // Fail fast - no silent failures per CMS architecture
   if (!isValidCmsSlug(slug)) return null
 
@@ -313,11 +417,26 @@ async function getBySlugAux(slug: string, endpoint: '/categories' | '/articles' 
     }
 
     const { total } = data.meta.pagination
-    if (total === 0) return null
     if (total > 1) throw new Error(`Multiple ${entity} found with slug ${slug}`)
+    if (endpoint === '/pages') return total === 0 ? null : data.data[0]
 
-    return data.data[0]
+    return readPublishedSlugEntry(data.data, total, slug)
   } catch (error) {
-    return handleCmsBuildFailure(`getBySlugAux(${endpoint}, ${slug})`, error, null)
+    if (endpoint === '/pages') {
+      return handleCmsBuildFailure(`getBySlugAux(${endpoint}, ${slug})`, error, null)
+    }
+
+    throw error
   }
+}
+
+function readPublishedSlugEntry(records: unknown, total: number, slug: string): unknown | null {
+  if (Array.isArray(records) && records.length === total) {
+    if (total === 0) return null
+
+    const record: unknown = records[0]
+    if (isRecord(record) && isRecord(record.attributes)) return record
+  }
+
+  throw new Error(`Invalid CMS response for slug ${slug}`)
 }

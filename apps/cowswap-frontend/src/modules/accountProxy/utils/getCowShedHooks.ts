@@ -1,6 +1,6 @@
 import { FiniteMap } from '@cowprotocol/common-utils'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CowShedHooks } from '@cowprotocol/sdk-cow-shed'
+import { COW_SHED_2_1_0_VERSION, CowShedHooks } from '@cowprotocol/sdk-cow-shed'
 
 import { ACCOUNT_PROXY_CONFIGS, COW_SHED_LATEST_VERSION_ID } from '../accountProxy.constants'
 
@@ -17,12 +17,16 @@ export interface GetCowShedHooksParams {
 }
 
 export function getCowShedHooks({ chainId, accountProxyConfig }: GetCowShedHooksParams): CowShedHooks {
-  const cowShedHooksKey = `${chainId}-${accountProxyConfig?.id || COW_SHED_LATEST_VERSION_ID}`
+  const cowShedHooksKey = `${chainId}-${accountProxyConfig?.id || accountProxyConfig?.version || COW_SHED_LATEST_VERSION_ID}`
 
   let cowShedHooksInstance = cowShedHooksCache.get(cowShedHooksKey)
 
   if (!cowShedHooksInstance) {
-    cowShedHooksInstance = new CowShedHooks(chainId, accountProxyConfig?.factoryOptions, accountProxyConfig?.version)
+    cowShedHooksInstance = new CowShedHooks(
+      chainId,
+      accountProxyConfig?.factoryOptions,
+      accountProxyConfig?.version ?? COW_SHED_2_1_0_VERSION,
+    )
     cowShedHooksCache.set(cowShedHooksKey, cowShedHooksInstance)
   }
 

@@ -2,7 +2,6 @@ import { ReactNode } from 'react'
 
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { useIsRestoringConnection, useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletChainId } from '@cowprotocol/wallet-provider'
 
 import { useLingui } from '@lingui/react/macro'
 
@@ -20,23 +19,24 @@ import {
   TraderWalletStatus,
   getAffiliatePartnerPageState,
   isSupportedPayoutsNetwork,
-  isSupportedTradingNetwork,
+  useAffiliateChainId,
   useAffiliatePartnerInfo,
   useAffiliateStateViewAnalytics,
   useAffiliateTraderWallet,
+  useIsAffiliateSupportedTradingNetwork,
 } from 'modules/affiliate'
 import { PageTitle } from 'modules/application'
 
 export default function AffiliatePartner(): ReactNode {
   const { i18n } = useLingui()
   const { account } = useWalletInfo()
-  const chainId = useWalletChainId()
+  const chainId = useAffiliateChainId()
   const { data: partnerInfo, isLoading: infoLoading } = useAffiliatePartnerInfo(account)
   const walletStatus = useAffiliateTraderWallet()
   const isConnectionRestoring = useIsRestoringConnection()
   const hasAccount = Boolean(account)
   const isSupportedPayoutNetwork = isSupportedPayoutsNetwork(chainId)
-  const isSupportedTradingNetworkValue = isSupportedTradingNetwork(chainId)
+  const isSupportedTradingNetworkValue = useIsAffiliateSupportedTradingNetwork(chainId)
   const hasExistingCode = Boolean(partnerInfo?.code)
   const showLoadingSkeleton = isConnectionRestoring || infoLoading || walletStatus === TraderWalletStatus.PENDING
   const pageState = getAffiliatePartnerPageState({

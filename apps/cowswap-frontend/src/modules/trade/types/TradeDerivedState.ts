@@ -21,7 +21,7 @@ export interface TradeDerivedState {
    * If true, the order amount is based on a quote. Means that the order amount is calculated based on the quote.
    * For now, it's only true for Swap.
    * In Limit order price might be changed by a user.
-   * In TWAP the order price depends on parts count and price protection.
+   * In TWAP the order price depends on parts count and worst acceptable price.
    */
   readonly isQuoteBasedOrder: boolean
 }

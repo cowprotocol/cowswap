@@ -1,5 +1,114 @@
 # Changelog
 
+## [3.3.7](https://github.com/cowprotocol/cowswap/compare/widget-react-v3.3.6...widget-react-v3.3.7) (2026-11-25)
+
+### Patch Changes
+
+- fix(rwa): medium bugs of the RWA UI backlog (#8661)
+
+- Updated dependencies []:
+  - @cowprotocol/widget-lib@4.17.0
+
+## [3.3.6](https://github.com/cowprotocol/cowswap/compare/widget-react-v3.3.5...widget-react-v3.3.6) (2026-11-18)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/widget-lib@4.16.0
+  - @cowprotocol/events@4.19.0
+  - @cowprotocol/types@4.16.0
+
+## [3.3.5](https://github.com/cowprotocol/cowswap/compare/widget-react-v3.3.4...widget-react-v3.3.5) (2026-11-11)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.15.1
+  - @cowprotocol/widget-lib@4.15.0
+  - @cowprotocol/events@4.18.1
+
+## [3.3.4](https://github.com/cowprotocol/cowswap/compare/widget-react-v3.3.3...widget-react-v3.3.4) (2026-11-10)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.18.0
+  - @cowprotocol/types@4.15.0
+  - @cowprotocol/widget-lib@4.14.0
+
+## [3.3.3](https://github.com/cowprotocol/cowswap/compare/widget-react-v3.3.2...widget-react-v3.3.3) (2026-11-05)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/widget-lib@4.13.0
+  - @cowprotocol/events@4.17.2
+  - @cowprotocol/types@4.14.2
+
+## [3.3.2](https://github.com/cowprotocol/cowswap/compare/widget-react-v3.3.1...widget-react-v3.3.2) (2026-10-28)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/widget-lib@4.12.0
+
+## [3.3.1](https://github.com/cowprotocol/cowswap/compare/widget-react-v3.3.0...widget-react-v3.3.1) (2026-10-27)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.17.1
+  - @cowprotocol/types@4.14.1
+  - @cowprotocol/widget-lib@4.11.1
+
+## [3.3.0](https://github.com/cowprotocol/cowswap/compare/widget-react-v3.2.11...widget-react-v3.3.0) (2026-10-21)
+
+### Minor Changes
+
+- feat(rwa): trade widget skeleton and disable chart zoom (#8398)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.17.0
+  - @cowprotocol/types@4.14.0
+  - @cowprotocol/widget-lib@4.11.0
+
+## [3.2.11](https://github.com/cowprotocol/cowswap/compare/widget-react-v3.2.10...widget-react-v3.2.11) (2026-10-14)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.16.0
+  - @cowprotocol/types@4.13.0
+  - @cowprotocol/widget-lib@4.10.0
+
+## [3.2.10](https://github.com/cowprotocol/cowswap/compare/widget-react-v3.2.9...widget-react-v3.2.10) (2026-10-06)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.15.0
+  - @cowprotocol/types@4.12.0
+  - @cowprotocol/widget-lib@4.9.0
+
+## [3.2.9](https://github.com/cowprotocol/cowswap/compare/widget-react-v3.2.8...widget-react-v3.2.9) (2026-09-29)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.14.0
+  - @cowprotocol/widget-lib@4.8.1
+
+## [3.2.8](https://github.com/cowprotocol/cowswap/compare/widget-react-v3.2.7...widget-react-v3.2.8) (2026-09-23)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/widget-lib@4.8.0
+  - @cowprotocol/events@4.13.0
+  - @cowprotocol/types@4.11.0
+
 ## [3.2.7](https://github.com/cowprotocol/cowswap/compare/widget-react-v3.2.6...widget-react-v3.2.7) (2026-09-09)
 
 ### Patch Changes

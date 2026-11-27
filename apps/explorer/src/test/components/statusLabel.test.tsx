@@ -23,6 +23,13 @@ jest.mock('../../components/orders/StatusLabel/StatusIcon', () => ({
 }))
 
 describe('StatusLabel', () => {
+  it('normalizes the SDK TWAP partially filled status', () => {
+    render(<StatusLabel status="partiallyFilled" />)
+
+    expect(screen.getByTestId('status-icon').textContent).toBe(OrderStatus.PartiallyFilled)
+    expect(screen.getByText('PARTIALLY FILLED')).not.toBeNull()
+  })
+
   it('uses the partially filled icon when a cancelled order was partially filled', () => {
     render(<StatusLabel status={OrderStatus.Cancelled} partiallyFilled />)
 

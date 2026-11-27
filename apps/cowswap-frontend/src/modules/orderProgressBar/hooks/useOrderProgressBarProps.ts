@@ -20,6 +20,7 @@ import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { type SwapAndBridgeContext, SwapAndBridgeStatus } from 'modules/bridge'
 
 import { getOrderCompetitionStatus } from 'api/cowProtocol/api'
+import { useActiveSolversCount } from 'common/hooks/useActiveSolversCount'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { useSolversInfoByAddress } from 'common/hooks/useSolversInfoByAddress'
@@ -210,32 +211,14 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
   } = useGetExecutingOrderState(orderId)
 
   const solversInfoByAddress = useSolversInfoByAddress(chainId)
-  // Count distinct solvers, not addresses: the CMS keeps a solver's retired deployments alongside
-  // the live one, so one solver can contribute several addresses for the same chain.
-  const totalSolvers = new Set(Object.values(solversInfoByAddress).map(({ solverId }) => solverId)).size
+  const totalSolvers = useActiveSolversCount(chainId)
 
   const doNotQuery = getDoNotQueryStatusEndpoint(order, apiSolverCompetition, !!disableProgressBar)
 
-  const solverCompetition = useMemo(() => {
-    const solversMap = apiSolverCompetition?.reduce(
-      (acc, entry) => {
-        // If the entry is not a valid or has no executedAmounts, the solution doesn't consider this order, skip it
-        if (!entry || !entry.solver || !entry.executedAmounts) {
-          return acc
-        }
-        // Merge the solver competition data with the info fetched from CMS under the same key, to avoid duplicates
-        acc[entry.solver] = mergeSolverData(entry, solversInfoByAddress)
-        return acc
-      },
-      {} as Record<string, SolverCompetition>,
-    )
-
-    return (
-      Object.values(solversMap || {})
-        // Reverse it since backend returns the solutions ranked ascending. Winner is the last one.
-        .reverse()
-    )
-  }, [apiSolverCompetition, solversInfoByAddress])
+  const solverCompetition = useMemo(
+    () => buildSolverCompetition(apiSolverCompetition, solversInfoByAddress),
+    [apiSolverCompetition, solversInfoByAddress],
+  )
   const { swapAndBridgeContext } = useSwapAndBridgeContext(
     chainId,
     isBridgingTrade ? order : undefined,
@@ -244,7 +227,8 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
   const bridgingStatus = swapAndBridgeContext?.bridgingStatus
 
   // Local updaters of the respective atom
-  useBackendApiStatusUpdater(chainId, orderId, doNotQuery)
+  const solverCompetitionFailed = useBackendApiStatusUpdater(chainId, orderId, doNotQuery)
+  const solverCompetitionReady = apiSolverCompetition !== undefined || solverCompetitionFailed
   useProgressBarStepNameUpdater(
     orderId,
     isUnfillable,
@@ -261,7 +245,7 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
     bridgingStatus,
     isBridgingTrade,
   )
-  useCancellingOrderUpdater(orderId, isCancelling)
+  useCancellingOrderUpdater(orderId, getIsCancellationRequested(order, isCancelling))
   useCountdownStartUpdater(
     orderId,
     countdown,
@@ -279,6 +263,7 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
       countdown,
       totalSolvers,
       solverCompetition,
+      solverCompetitionReady,
       stepName: progressBarStepName || DEFAULT_STEP_NAME,
       showCancellationModal,
       swapAndBridgeContext,
@@ -288,6 +273,7 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
     countdown,
     totalSolvers,
     solverCompetition,
+    solverCompetitionReady,
     progressBarStepName,
     showCancellationModal,
     swapAndBridgeContext,
@@ -295,6 +281,12 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
 }
 
 const DEFAULT_STATE = {}
+
+// A slow cancellation tx approval (e.g. Solana wallet) lets the order fill before `requestOrderCancellation`
+// lands, and the activity never reports `isCancelling` for a non-pending order. The store flag still records it.
+export function getIsCancellationRequested(order: Order | undefined, isCancelling: boolean): boolean {
+  return isCancelling || !!order?.isCancelling
+}
 
 // TODO: Break down this large function into smaller functions
 // TODO: Reduce function complexity by extracting logic
@@ -537,10 +529,15 @@ const BACKEND_TYPE_TO_PROGRESS_BAR_STEP_NAME: Record<CompetitionOrderStatus.type
   [CompetitionOrderStatus.type.CANCELLED]: OrderProgressBarStepName.INITIAL, // TODO: maybe add another state for finished with error?
 }
 
-function useBackendApiStatusUpdater(chainId: SupportedChainId, orderId: string | undefined, doNotQuery: boolean): void {
+function useBackendApiStatusUpdater(
+  chainId: SupportedChainId,
+  orderId: string | undefined,
+  doNotQuery: boolean,
+): boolean {
   const setAtom = useSetAtom(updateOrderProgressBarBackendInfo)
   const [stopQuerying, setStopQuerying] = useState(false)
-  const { type: backendApiStatus, value } = usePendingOrderStatus(chainId, orderId, stopQuerying) || {}
+  const { data: status, error } = usePendingOrderStatus(chainId, orderId, stopQuerying)
+  const { type: backendApiStatus, value } = status || {}
 
   // Once doNotQuery is set to true, keep querying for another 3 seconds to ensure we get the final status and then stop
   useEffect(() => {
@@ -567,10 +564,66 @@ function useBackendApiStatusUpdater(chainId: SupportedChainId, orderId: string |
       setAtom({ orderId, value: { backendApiStatus, solverCompetition } })
     }
   }, [orderId, setAtom, backendApiStatus, value])
+
+  return error !== undefined
 }
 
 const POOLING_SWR_OPTIONS = {
   refreshInterval: ms`1s`,
+}
+
+/**
+ * Builds the displayed solver competition list from the raw orderbook entries.
+ *
+ * Backend returns solutions ranked ascending, so the winner is the last entry. We traverse from
+ * highest to lowest rank and keep the first occurrence of each merged `solverId`. This retains the
+ * highest-ranked entry per solver identity (deduplicating legacy aliases that normalize to the same
+ * `solverId`) and keeps the winner at index 0.
+ */
+export function buildSolverCompetition(
+  apiSolverCompetition: CompetitionOrderStatus['value'] | undefined,
+  solversInfoByAddress: Record<string, SolverInfo>,
+): SolverCompetition[] {
+  const seenSolverIds = new Set<string>()
+
+  return (apiSolverCompetition || []).reduceRight<SolverCompetition[]>((acc, entry) => {
+    // If the entry is not valid or has no executedAmounts, the solution doesn't consider this order, skip it
+    if (!entry || !entry.solver || !entry.executedAmounts) {
+      return acc
+    }
+    // Merge with the info fetched from CMS, then deduplicate on the merged solver identity rather
+    // than the raw backend address, so a solver's retired deployments (several addresses for the
+    // same solverId on one chain) collapse into a single entry.
+    const merged = mergeSolverData(entry, solversInfoByAddress)
+    const { solverId } = merged
+    // solverId is always set by mergeSolverData, but the SolverCompetition type keeps it optional;
+    // entries without one can't be deduplicated by identity, so keep them as-is.
+    if (solverId === undefined) {
+      acc.push(merged)
+      return acc
+    }
+    if (seenSolverIds.has(solverId)) {
+      return acc
+    }
+    seenSolverIds.add(solverId)
+    acc.push(merged)
+    return acc
+  }, [])
+}
+
+// `getOrderCompetitionStatus` swallows every failure and resolves `undefined`, which SWR reports as a
+// successful fetch. Rejecting here is what lets SWR's `error` mark the lookup as settled-and-failed.
+export async function fetchOrderCompetitionStatus(
+  chainId: SupportedChainId,
+  orderId: string,
+): Promise<CompetitionOrderStatus> {
+  const status = await getOrderCompetitionStatus(chainId, orderId)
+
+  if (!status) {
+    throw new Error('Order competition status unavailable')
+  }
+
+  return status
 }
 
 /**
@@ -602,10 +655,12 @@ function usePendingOrderStatus(
   chainId: SupportedChainId,
   orderId: string | undefined,
   doNotQuery?: boolean,
-): CompetitionOrderStatus | undefined {
-  return useSWR(
+): { data: CompetitionOrderStatus | undefined; error: unknown } {
+  const { data, error } = useSWR(
     chainId && orderId && !doNotQuery ? ['getOrderCompetitionStatus', chainId, orderId] : null,
-    async ([, _chainId, _orderId]) => getOrderCompetitionStatus(_chainId, _orderId),
+    async ([, _chainId, _orderId]) => fetchOrderCompetitionStatus(_chainId, _orderId),
     doNotQuery ? SWR_NO_REFRESH_OPTIONS : POOLING_SWR_OPTIONS,
-  ).data
+  )
+
+  return { data, error }
 }

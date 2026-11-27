@@ -37,7 +37,7 @@ export function useLimitOrdersWidgetActions(): TradeWidgetActions {
 
       const value = tryParseCurrencyAmount(typedValue, currency)
 
-      debouncedTradeAmountAnalytics([field, Number(typedValue)])
+      debouncedTradeAmountAnalytics(field, Number(typedValue))
 
       updateCurrencyAmount({
         activeRate,

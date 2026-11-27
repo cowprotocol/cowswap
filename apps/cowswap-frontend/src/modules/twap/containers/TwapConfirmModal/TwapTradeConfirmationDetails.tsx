@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useState } from 'react'
 
 import { Percent } from '@cowprotocol/currency'
-import { Accordion } from '@cowprotocol/ui'
+import { Collapsible } from '@cowprotocol/ui'
 import { useWalletDetails } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
@@ -17,8 +17,6 @@ import { RateInfoParams } from 'common/pure/RateInfo'
 import { TwapConfirmDetails } from './TwapConfirmDetails'
 import * as styledEl from './TwapTradeConfirmationDetails.styled'
 
-const ORDER_DETAILS_ITEM = 'order-details'
-
 const getConfirmModalConfig = (): {
   priceLabel: string
   slippageLabel: string
@@ -28,29 +26,16 @@ const getConfirmModalConfig = (): {
   minReceivedLabel: string
   minReceivedTooltip: string
 } => ({
-  priceLabel: t`Rate`,
-  slippageLabel: t`Price protection`,
+  priceLabel: t`Quoted price`,
+  slippageLabel: t`Worst acceptable price`,
   slippageTooltip: (
-    <>
-      <p>
-        <Trans>
-          Since TWAP orders consist of multiple parts, prices are expected to fluctuate. However, to protect you against
-          bad prices, CoW Swap will not execute your TWAP if the price dips below this percentage.
-        </Trans>
-      </p>
-      <p>
-        <Trans>
-          This percentage only applies to dips; if prices are better than this percentage, CoW Swap will still execute
-          your order.
-        </Trans>
-      </p>
-    </>
+    <Trans>Each part trades at this price or better. If that price can't be met, the part is skipped.</Trans>
   ),
   limitPriceLabel: t`Limit price (incl. fees)`,
   limitPriceTooltip: (
     <Trans>
-      If CoW Swap cannot get this price or better (taking into account fees and price protection tolerance), your TWAP
-      will not execute. CoW Swap will <strong>always</strong> improve on this price if possible.
+      If CoW Swap cannot get this price or better (taking into account fees), your TWAP will not execute. CoW Swap will{' '}
+      <strong>always</strong> improve on this price if possible.
     </Trans>
   ),
   minReceivedLabel: t`Minimum receive`,
@@ -102,22 +87,30 @@ export function TwapTradeConfirmationDetails({
         rateInfoParams={rateInfoParams}
         receiveAmountInfo={receiveAmountInfo}
         slippage={slippage}
+        showSlippagePrice
         recipient={recipient}
         recipientAddress={recipientAddress}
         account={account}
         labelsAndTooltips={{
           ...confirmModalConfig,
-          networkCostsSuffix: !allowsOffchainSigning ? <NetworkCostsSuffix /> : null,
-          networkCostsTooltipSuffix: !allowsOffchainSigning ? (
+          networkCostsSuffix: <NetworkCostsSuffix />,
+          networkCostsTooltipSuffix: (
             <>
               <br />
               <br />
-              <Trans>
-                Because you are using a smart contract wallet, you will pay a separate gas cost for signing the order
-                placement on-chain.
-              </Trans>
+              {allowsOffchainSigning ? (
+                <Trans>
+                  TWAP orders are placed on-chain, so you will pay a separate gas cost for the order placement
+                  transaction.
+                </Trans>
+              ) : (
+                <Trans>
+                  Because you are using a smart contract wallet, you will pay a separate gas cost for signing the order
+                  placement on-chain.
+                </Trans>
+              )}
             </>
-          ) : null,
+          ),
         }}
       />
       {isRewardsRowEnabled && <AffiliateTraderRewardsRow />}
@@ -133,28 +126,25 @@ export function TwapTradeConfirmationDetails({
 
   return (
     <styledEl.Root className={className}>
-      <Accordion.Root
+      <Collapsible.Root
         disabled={!isCollapsible}
-        value={!isCollapsible || isExpanded ? [ORDER_DETAILS_ITEM] : []}
-        onValueChange={(value) => {
+        open={!isCollapsible || isExpanded}
+        onOpenChange={(open) => {
           if (!isCollapsible) return
-          setIsExpanded(value.includes(ORDER_DETAILS_ITEM))
+          setIsExpanded(open)
         }}
+        $isCollapsible={isCollapsible}
       >
-        <Accordion.Item value={ORDER_DETAILS_ITEM} $isCollapsible={isCollapsible}>
-          <styledEl.TriggerSlot $isVisible={isCollapsible} aria-hidden={!isCollapsible}>
-            <Accordion.Header>
-              <Accordion.Trigger>
-                <Trans>Order details</Trans>
-                <Accordion.Chevron aria-hidden />
-              </Accordion.Trigger>
-            </Accordion.Header>
-          </styledEl.TriggerSlot>
-          <Accordion.Panel keepMounted>
-            <styledEl.Body $withTopPadding={isCollapsible}>{details}</styledEl.Body>
-          </Accordion.Panel>
-        </Accordion.Item>
-      </Accordion.Root>
+        <styledEl.TriggerSlot $isVisible={isCollapsible} aria-hidden={!isCollapsible}>
+          <Collapsible.Trigger>
+            <Trans>Order details</Trans>
+            <Collapsible.Chevron aria-hidden />
+          </Collapsible.Trigger>
+        </styledEl.TriggerSlot>
+        <Collapsible.Panel keepMounted>
+          <styledEl.Body $withTopPadding={isCollapsible}>{details}</styledEl.Body>
+        </Collapsible.Panel>
+      </Collapsible.Root>
     </styledEl.Root>
   )
 }

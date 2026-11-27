@@ -14,7 +14,8 @@ import { Order } from 'api/operator'
 
 const Wrapper = styled.div``
 
-export type Props = { order: Order; amountSmartFormatting?: boolean } & React.HTMLAttributes<HTMLDivElement>
+export type Props = { order: SurplusOrder; amountSmartFormatting?: boolean } & React.HTMLAttributes<HTMLDivElement>
+export type SurplusOrder = Pick<Order, 'kind' | 'buyToken' | 'sellToken' | 'surplusAmount' | 'surplusPercentage'>
 type OrderSurplus = { amount: BigNumber; percentage: BigNumber; surplusToken: TokenErc20 }
 
 export function OrderSurplusDisplay(props: Props): React.ReactNode | null {
@@ -29,7 +30,7 @@ export function OrderSurplusDisplay(props: Props): React.ReactNode | null {
   )
 }
 
-function useGetSurplus(order: Order): OrderSurplus | null {
+function useGetSurplus(order: SurplusOrder): OrderSurplus | null {
   const { kind, buyToken, sellToken, surplusAmount, surplusPercentage } = order
 
   const surplusToken = isSellOrder(kind) ? buyToken : sellToken

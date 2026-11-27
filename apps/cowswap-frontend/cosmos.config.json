@@ -11,6 +11,6 @@
     "react-cosmos-plugin-vite"
   ],
   "vite": {
-    "configPath": "./vite.config.mts"
+    "configPath": "./vite.cosmos.config.mts"
   }
 }

@@ -39,14 +39,10 @@ const ACCOUNT_ITEM = (chainId: SupportedChainId): UntranslatedMenuItem => ({
     {
       href: Routes.ACCOUNT_AFFILIATE_PARTNER,
       label: msg`Affiliate`,
-      badge: msg`New`,
-      badgeType: BadgeTypes.ALERT,
     },
     {
       href: Routes.ACCOUNT_AFFILIATE_TRADER,
       label: msg`My Rewards`,
-      badge: msg`New`,
-      badgeType: BadgeTypes.ALERT,
     },
     {
       href: '/account/tokens',
@@ -105,7 +101,7 @@ const LEARN_ITEM_SUBMENU = {
   ],
 }
 
-const MORE_ITEM = (isSolversEnabled: boolean): UntranslatedMenuItem => ({
+const MORE_ITEM = ({ isSolversEnabled, isGraffitiWallEnabled }: NavItemsFlags): UntranslatedMenuItem => ({
   label: msg`More`,
   children: [
     {
@@ -118,6 +114,16 @@ const MORE_ITEM = (isSolversEnabled: boolean): UntranslatedMenuItem => ({
       label: msg`Careers`,
       external: true,
     },
+    ...(isGraffitiWallEnabled
+      ? [
+          {
+            href: Routes.GRAFFITI,
+            label: msg`Graffiti Wall`,
+            badge: msg`NEW`,
+            badgeType: BadgeTypes.ALERT2,
+          },
+        ]
+      : []),
     ...(isSolversEnabled
       ? [
           {
@@ -140,7 +146,12 @@ const MORE_ITEM = (isSolversEnabled: boolean): UntranslatedMenuItem => ({
   ],
 })
 
-export const NAV_ITEMS = (chainId: SupportedChainId, isSolversEnabled: boolean): MenuItem[] => {
+export interface NavItemsFlags {
+  isSolversEnabled: boolean
+  isGraffitiWallEnabled: boolean
+}
+
+export const NAV_ITEMS = (chainId: SupportedChainId, flags: NavItemsFlags): MenuItem[] => {
   const _ACCOUNT_ITEM = ACCOUNT_ITEM(chainId)
   const accountItem: MenuItem = {
     label: i18n._(_ACCOUNT_ITEM.label),
@@ -171,12 +182,14 @@ export const NAV_ITEMS = (chainId: SupportedChainId, isSolversEnabled: boolean):
     ],
   }
 
-  const moreItemConfig = MORE_ITEM(isSolversEnabled)
+  const moreItemConfig = MORE_ITEM(flags)
   const moreItem: MenuItem = {
     label: i18n._(moreItemConfig.label),
-    children: moreItemConfig.children.map(({ href, label, external }) => ({
+    children: moreItemConfig.children.map(({ href, label, badge, badgeType, external }) => ({
       href,
       label: i18n._(label),
+      badge: badge ? i18n._(badge) : undefined,
+      badgeType,
       external,
     })),
   }

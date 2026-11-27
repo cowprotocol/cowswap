@@ -1,6 +1,7 @@
+import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { useIsSmartContractWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { isSmartContractWalletAtom, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { AppDataInfo, useAppData } from 'modules/appData'
 
@@ -10,14 +11,14 @@ export interface CommonTradeConfirmContext {
   account: string | undefined
   ensName: string | undefined
   appData: AppDataInfo | null
-  isSmartContractWallet: boolean | undefined
+  isSmartContractWallet: boolean | null
   isCurrentTradeBridging: boolean
 }
 
 export function useCommonTradeConfirmContext(): CommonTradeConfirmContext {
   const { account } = useWalletInfo()
   const { ensName } = useWalletDetails()
-  const isSmartContractWallet = useIsSmartContractWallet()
+  const isSmartContractWallet = useAtomValue(isSmartContractWalletAtom)
   const appData = useAppData()
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
 

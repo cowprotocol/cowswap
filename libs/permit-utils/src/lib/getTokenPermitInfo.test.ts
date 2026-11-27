@@ -1,0 +1,197 @@
+import type { Address } from 'viem'
+import type { Config } from 'wagmi'
+import { estimateGas } from 'wagmi/actions'
+
+import { getPermitUtilsInstance } from './getPermitUtilsInstance'
+import { getTokenPermitInfo } from './getTokenPermitInfo'
+
+import { buildEip2612PermitCallData } from '../utils/buildPermitCallData'
+import { getEip712Domain } from '../utils/getEip712Domain'
+
+import type { GetTokenPermitInfoParams } from '../types'
+
+jest.mock('../const', () => ({
+  DEFAULT_MIN_GAS_LIMIT: 50000n,
+  DEFAULT_PERMIT_VALUE: 1n,
+  PERMIT_ACCOUNT: {
+    address: '0x0000000000000000000000000000000000000001',
+  },
+}))
+
+jest.mock('./getPermitUtilsInstance', () => ({
+  getPermitUtilsInstance: jest.fn(),
+}))
+
+jest.mock('../utils/getEip712Domain', () => ({
+  getEip712Domain: jest.fn(),
+}))
+
+jest.mock('../utils/buildPermitCallData', () => ({
+  buildEip2612PermitCallData: jest.fn(),
+  buildDaiLikePermitCallData: jest.fn(),
+}))
+
+jest.mock('wagmi/actions', () => ({
+  estimateGas: jest.fn(),
+}))
+
+const mockedEstimateGas = estimateGas as jest.MockedFunction<typeof estimateGas>
+const mockedGetPermitUtilsInstance = getPermitUtilsInstance as jest.MockedFunction<typeof getPermitUtilsInstance>
+const mockedGetEip712Domain = getEip712Domain as jest.MockedFunction<typeof getEip712Domain>
+const mockedBuildEip2612PermitCallData = buildEip2612PermitCallData as jest.MockedFunction<
+  typeof buildEip2612PermitCallData
+>
+
+describe('getTokenPermitInfo request cache', () => {
+  const config = {} as Config
+  const publicClient = {} as GetTokenPermitInfoParams['publicClient']
+  const spender = '0x3333333333333333333333333333333333333333'
+  const otherSpender = '0x4444444444444444444444444444444444444444'
+
+  function createParams(
+    tokenAddress: Address,
+    overrides: Pick<Partial<GetTokenPermitInfoParams>, 'amount' | 'chainId' | 'minGasLimit' | 'spender'> = {},
+  ): GetTokenPermitInfoParams {
+    return {
+      tokenAddress,
+      chainId: 1,
+      spender,
+      config,
+      publicClient,
+      minGasLimit: 50000n,
+      ...overrides,
+    }
+  }
+
+  beforeEach(() => {
+    jest.clearAllMocks()
+
+    mockedGetPermitUtilsInstance.mockResolvedValue({
+      getTokenNonce: jest.fn().mockResolvedValue(7),
+    } as Awaited<ReturnType<typeof getPermitUtilsInstance>>)
+    mockedGetEip712Domain.mockResolvedValue({ name: 'Test Token', version: '1' })
+    mockedBuildEip2612PermitCallData.mockResolvedValue('0xpermit')
+    mockedEstimateGas.mockResolvedValue(60000n)
+  })
+
+  it('reuses the in-flight request when the spender is unchanged', async () => {
+    const tokenAddress = '0x1111111111111111111111111111111111111111' as Address
+
+    await Promise.all([getTokenPermitInfo(createParams(tokenAddress)), getTokenPermitInfo(createParams(tokenAddress))])
+
+    expect(mockedBuildEip2612PermitCallData).toHaveBeenCalledTimes(1)
+    expect(mockedEstimateGas).toHaveBeenCalledTimes(1)
+  })
+
+  it('does not reuse the in-flight request when the spender changes', async () => {
+    const tokenAddress = '0x2222222222222222222222222222222222222222' as Address
+
+    await Promise.all([
+      getTokenPermitInfo(createParams(tokenAddress)),
+      getTokenPermitInfo(createParams(tokenAddress, { spender: otherSpender })),
+    ])
+
+    expect(mockedBuildEip2612PermitCallData).toHaveBeenCalledTimes(2)
+    expect(mockedEstimateGas).toHaveBeenCalledTimes(2)
+  })
+
+  it('reuses cached capability info when the amount changes', async () => {
+    const tokenAddress = '0x6666666666666666666666666666666666666666' as Address
+
+    const result = await getTokenPermitInfo(createParams(tokenAddress, { amount: 2n }))
+    await expect(getTokenPermitInfo(createParams(tokenAddress, { amount: 1n }))).resolves.toEqual(result)
+    await expect(getTokenPermitInfo(createParams(tokenAddress, { amount: 3n }))).resolves.toEqual(result)
+
+    expect(mockedBuildEip2612PermitCallData).toHaveBeenCalledTimes(1)
+    expect(mockedEstimateGas).toHaveBeenCalledTimes(1)
+  })
+
+  it('reuses the in-flight capability check when the minimum gas limit changes', async () => {
+    const tokenAddress = '0x7777777777777777777777777777777777777777' as Address
+
+    const results = await Promise.all([
+      getTokenPermitInfo(createParams(tokenAddress, { minGasLimit: 50000n })),
+      getTokenPermitInfo(createParams(tokenAddress, { minGasLimit: 70000n })),
+    ])
+
+    expect(results).toEqual([
+      { type: 'eip-2612', name: 'Test Token', version: '1' },
+      { type: 'eip-2612', name: 'Test Token', version: '1' },
+    ])
+    expect(mockedBuildEip2612PermitCallData).toHaveBeenCalledTimes(1)
+    expect(mockedEstimateGas).toHaveBeenCalledTimes(1)
+  })
+
+  it('does not reuse capability info across chains', async () => {
+    const tokenAddress = '0x8888888888888888888888888888888888888888' as Address
+
+    await Promise.all([
+      getTokenPermitInfo(createParams(tokenAddress)),
+      getTokenPermitInfo(createParams(tokenAddress, { chainId: 100 })),
+    ])
+
+    expect(mockedBuildEip2612PermitCallData).toHaveBeenCalledTimes(2)
+    expect(mockedEstimateGas).toHaveBeenCalledTimes(2)
+  })
+
+  it('reuses capability info for differently cased token and spender addresses', async () => {
+    await Promise.all([
+      getTokenPermitInfo(
+        createParams('0xabcdefabcdefabcdefabcdefabcdefabcdefabcd', {
+          spender: '0xabcdef0123456789abcdef0123456789abcdef01',
+        }),
+      ),
+      getTokenPermitInfo(
+        createParams('0xABCDEFABCDEFABCDEFABCDEFABCDEFABCDEFABCD', {
+          spender: '0xABCDEF0123456789ABCDEF0123456789ABCDEF01',
+        }),
+      ),
+    ])
+
+    expect(mockedBuildEip2612PermitCallData).toHaveBeenCalledTimes(1)
+    expect(mockedEstimateGas).toHaveBeenCalledTimes(1)
+  })
+
+  it('retries a rejected capability check', async () => {
+    const tokenAddress = '0x9999999999999999999999999999999999999999' as Address
+    const error = new Error('RPC unavailable')
+    mockedGetPermitUtilsInstance.mockRejectedValueOnce(error)
+
+    await expect(getTokenPermitInfo(createParams(tokenAddress))).rejects.toBe(error)
+    await expect(getTokenPermitInfo(createParams(tokenAddress))).resolves.toEqual({
+      type: 'eip-2612',
+      name: 'Test Token',
+      version: '1',
+    })
+
+    expect(mockedGetPermitUtilsInstance).toHaveBeenCalledTimes(2)
+    expect(mockedEstimateGas).toHaveBeenCalledTimes(1)
+  })
+
+  it('does not cache transient error results', async () => {
+    const tokenAddress = '0x5555555555555555555555555555555555555555' as Address
+    const consoleDebugSpy = jest.spyOn(console, 'debug').mockImplementation(() => undefined)
+
+    mockedGetPermitUtilsInstance
+      .mockResolvedValueOnce({
+        getTokenNonce: jest.fn().mockRejectedValue(new Error('RPC timeout')),
+      } as Awaited<ReturnType<typeof getPermitUtilsInstance>>)
+      .mockResolvedValueOnce({
+        getTokenNonce: jest.fn().mockResolvedValue(7),
+      } as Awaited<ReturnType<typeof getPermitUtilsInstance>>)
+
+    try {
+      await expect(getTokenPermitInfo(createParams(tokenAddress))).resolves.toEqual({ error: 'RPC timeout' })
+      await expect(getTokenPermitInfo(createParams(tokenAddress))).resolves.toEqual({
+        type: 'eip-2612',
+        name: 'Test Token',
+        version: '1',
+      })
+
+      expect(mockedGetPermitUtilsInstance).toHaveBeenCalledTimes(2)
+      expect(mockedEstimateGas).toHaveBeenCalledTimes(1)
+    } finally {
+      consoleDebugSpy.mockRestore()
+    }
+  })
+})

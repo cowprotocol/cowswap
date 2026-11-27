@@ -1,13 +1,13 @@
 import '@reach/dialog/styles.css'
 import { Provider as AtomProvider } from 'jotai'
-import { type ReactNode, StrictMode } from 'react'
+import { type ReactNode } from 'react'
 import './sentry'
 
 import { Messages } from '@lingui/core'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
-import { CowAnalyticsProvider, createNoopCowAnalytics, initGtm } from '@cowprotocol/analytics'
-import { isInjectedWidget, nodeRemoveChildFix } from '@cowprotocol/common-utils'
+import { CowAnalyticsProvider, createNoopCowAnalytics, initGtmWithConsent } from '@cowprotocol/analytics'
+import { nodeRemoveChildFix } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { SnackbarsWidget } from '@cowprotocol/snackbars'
 import { WalletProvider, Web3Provider } from '@cowprotocol/wallet'
@@ -30,19 +30,24 @@ import { cowSwapStore } from 'legacy/state'
 
 import {
   App,
+  CustomThemeProvider,
   React310RecoveryErrorBoundary,
   resetReact310RecoveryOnDocumentLoad,
   Updaters,
   WithLDProvider,
 } from 'modules/application'
+import { installRestrictedAddressesGuard } from 'modules/restrictedAddresses'
 
 import { hashHistory } from 'common/constants/routes'
+import { isMarketingTrackingDisabled } from 'common/utils/marketingTracking.utils'
 import { loadActiveLocaleMessages } from 'lib/localeMessages'
 
 import { APP_HEADER_ELEMENT_ID } from '../common/constants/common'
+import { CookieConsentBanner } from '../common/containers/CookieConsentBanner'
 import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsupportedNetworkBanner'
 
-const cowAnalytics = isInjectedWidget() || window.__COWSWAP_E2E__ ? createNoopCowAnalytics() : initGtm()
+const isAnalyticsDisabled = isMarketingTrackingDisabled()
+const cowAnalytics = isAnalyticsDisabled ? createNoopCowAnalytics() : initGtmWithConsent()
 const helmetContext = {}
 
 const queryClient = new QueryClient({
@@ -77,7 +82,7 @@ interface MainProps {
 
 export function Main({ localeMessages }: MainProps): ReactNode {
   return (
-    <StrictMode>
+    <>
       <SvgCacheProvider>
         <HelmetProvider context={helmetContext}>
           <Provider store={cowSwapStore}>
@@ -93,10 +98,13 @@ export function Main({ localeMessages }: MainProps): ReactNode {
                               <React310RecoveryErrorBoundary>
                                 <Web3Provider>
                                   <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
-                                    <WalletUnsupportedNetworkBanner />
-                                    <Updaters />
-                                    <Toasts />
-                                    <App />
+                                    <CustomThemeProvider>
+                                      <WalletUnsupportedNetworkBanner />
+                                      <Updaters />
+                                      <Toasts />
+                                      <App />
+                                      {!isAnalyticsDisabled && <CookieConsentBanner />}
+                                    </CustomThemeProvider>
                                   </CowAnalyticsProvider>
                                 </Web3Provider>
                               </React310RecoveryErrorBoundary>
@@ -112,12 +120,13 @@ export function Main({ localeMessages }: MainProps): ReactNode {
           </Provider>
         </HelmetProvider>
       </SvgCacheProvider>
-    </StrictMode>
+    </>
   )
 }
 
 async function initApp(): Promise<void> {
   resetReact310RecoveryOnDocumentLoad()
+  installRestrictedAddressesGuard()
 
   const container = document.getElementById('root')
   if (container === null) {

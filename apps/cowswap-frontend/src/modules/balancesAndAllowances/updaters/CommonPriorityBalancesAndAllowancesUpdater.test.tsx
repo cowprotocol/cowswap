@@ -15,7 +15,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo, WalletInfo } from '@cowprotocol/wallet'
 
 import { render } from '@testing-library/react'
-import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
+import { useBalancesAccountForChain } from 'entities/balancesContext/useBalancesAccountForChain'
 
 import { Field } from 'legacy/state/types'
 
@@ -25,6 +25,7 @@ import { usePriorityTokenAddresses } from 'modules/trade'
 import { CommonPriorityBalancesAndAllowancesUpdater } from './CommonPriorityBalancesAndAllowancesUpdater'
 
 import { useBridgeCustomTokensForChain } from '../hooks/useBridgeCustomTokensForChain'
+import { useConfirmedTransactionsTrigger } from '../hooks/useConfirmedTransactionsTrigger'
 import { useOrdersFilledEventsTrigger } from '../hooks/useOrdersFilledEventsTrigger'
 
 jest.mock('@cowprotocol/balances-and-allowances', () => ({
@@ -40,8 +41,8 @@ jest.mock('@cowprotocol/wallet', () => ({
   useWalletInfo: jest.fn(),
 }))
 
-jest.mock('entities/balancesContext/useBalancesContext', () => ({
-  useBalancesContext: jest.fn(),
+jest.mock('entities/balancesContext/useBalancesAccountForChain', () => ({
+  useBalancesAccountForChain: jest.fn(),
 }))
 
 jest.mock('modules/tokensList', () => ({
@@ -63,13 +64,19 @@ jest.mock('../hooks/useOrdersFilledEventsTrigger', () => ({
   useOrdersFilledEventsTrigger: jest.fn(),
 }))
 
+jest.mock('../hooks/useConfirmedTransactionsTrigger', () => ({
+  useConfirmedTransactionsTrigger: jest.fn(),
+}))
+
 const mockBalancesWatcherUpdater = BalancesWatcherUpdater as jest.MockedFunction<typeof BalancesWatcherUpdater>
 const mockBalancesAndAllowancesUpdater = BalancesAndAllowancesUpdater as jest.MockedFunction<
   typeof BalancesAndAllowancesUpdater
 >
 const mockPriorityTokensUpdater = PriorityTokensUpdater as jest.MockedFunction<typeof PriorityTokensUpdater>
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
-const mockUseBalancesContext = useBalancesContext as jest.MockedFunction<typeof useBalancesContext>
+const mockUseBalancesAccountForChain = useBalancesAccountForChain as jest.MockedFunction<
+  typeof useBalancesAccountForChain
+>
 const mockUseSelectTokenWidgetState = useSelectTokenWidgetState as jest.MockedFunction<typeof useSelectTokenWidgetState>
 const mockUseSourceChainId = useSourceChainId as jest.MockedFunction<typeof useSourceChainId>
 const mockUsePriorityTokenAddresses = usePriorityTokenAddresses as jest.MockedFunction<typeof usePriorityTokenAddresses>
@@ -78,6 +85,9 @@ const mockUseBridgeCustomTokensForChain = useBridgeCustomTokensForChain as jest.
 >
 const mockUseOrdersFilledEventsTrigger = useOrdersFilledEventsTrigger as jest.MockedFunction<
   typeof useOrdersFilledEventsTrigger
+>
+const mockUseConfirmedTransactionsTrigger = useConfirmedTransactionsTrigger as jest.MockedFunction<
+  typeof useConfirmedTransactionsTrigger
 >
 
 type WidgetState = ReturnType<typeof useSelectTokenWidgetState>
@@ -91,11 +101,11 @@ function HealthHydrator({ health, children }: { health: WatcherHealthState; chil
 }
 
 function healthy(): WatcherHealthState {
-  return { status: BalancesWatcherHealth.Healthy, isRecovering: false }
+  return { status: BalancesWatcherHealth.Healthy, isRecovering: false, recoveringSince: null }
 }
 
 function recovering(status: BalancesWatcherHealth = BalancesWatcherHealth.Fallback): WatcherHealthState {
-  return { status, isRecovering: true }
+  return { status, isRecovering: true, recoveringSince: 0 }
 }
 
 function renderWithHealth(health: WatcherHealthState = DEFAULT_WATCHER_HEALTH_STATE): void {
@@ -116,10 +126,11 @@ describe('CommonPriorityBalancesAndAllowancesUpdater', () => {
       account: '0x0000000000000000000000000000000000000001',
       chainId: SupportedChainId.MAINNET,
     } as WalletInfo)
-    mockUseBalancesContext.mockReturnValue({ account: undefined } as ReturnType<typeof useBalancesContext>)
+    mockUseBalancesAccountForChain.mockReturnValue('0x0000000000000000000000000000000000000001')
     mockUsePriorityTokenAddresses.mockReturnValue(new Set())
     mockUseBridgeCustomTokensForChain.mockReturnValue([])
     mockUseOrdersFilledEventsTrigger.mockReturnValue(0)
+    mockUseConfirmedTransactionsTrigger.mockReturnValue(0)
   })
 
   it('passes isBridgeMode=true when output selector is open on a non-wallet chain', () => {
@@ -158,6 +169,81 @@ describe('CommonPriorityBalancesAndAllowancesUpdater', () => {
     )
   })
 
+  it('ignores the selector chain when the wallet is connected to Solana', () => {
+    mockUseWalletInfo.mockReturnValue({
+      account: 'SoLanaPubKey11111111111111111111111111111',
+      chainId: SupportedChainId.SOLANA,
+    } as WalletInfo)
+    mockUseSourceChainId.mockReturnValue({ chainId: SupportedChainId.BASE, source: 'selector' })
+    mockUseSelectTokenWidgetState.mockReturnValue(createWidgetState({ open: true, field: Field.OUTPUT }))
+
+    renderWithHealth(healthy())
+
+    expect(mockUseBalancesAccountForChain).toHaveBeenCalledWith(SupportedChainId.SOLANA)
+    expect(mockBalancesWatcherUpdater).not.toHaveBeenCalled()
+    expect(mockBalancesAndAllowancesUpdater).toHaveBeenCalledWith(
+      expect.objectContaining({ chainId: SupportedChainId.SOLANA }),
+      undefined,
+    )
+  })
+
+  // FE-929: a self-paid Solana order carries its SPL delegation in the transaction that creates it, so
+  // the snapshot taken before placement reads zero until a confirmation forces a refetch. These cover
+  // the wiring between the trigger hooks and the updater that consumes it, not the hooks themselves.
+  describe('refresh trigger wiring', () => {
+    function renderOnSolana(): void {
+      mockUseWalletInfo.mockReturnValue({
+        account: 'SoLanaPubKey11111111111111111111111111111',
+        chainId: SupportedChainId.SOLANA,
+      } as WalletInfo)
+      mockUseSourceChainId.mockReturnValue({ chainId: SupportedChainId.SOLANA, source: 'wallet' })
+      mockUseSelectTokenWidgetState.mockReturnValue(createWidgetState({ open: false }))
+
+      renderWithHealth(healthy())
+    }
+
+    it('passes a trigger combining both sources', () => {
+      mockUseOrdersFilledEventsTrigger.mockReturnValue(2)
+      mockUseConfirmedTransactionsTrigger.mockReturnValue(3)
+
+      renderOnSolana()
+
+      expect(mockBalancesAndAllowancesUpdater).toHaveBeenLastCalledWith(
+        expect.objectContaining({ refreshTrigger: 5 }),
+        undefined,
+      )
+    })
+
+    it('changes the trigger when a transaction confirms', () => {
+      mockUseOrdersFilledEventsTrigger.mockReturnValue(0)
+      mockUseConfirmedTransactionsTrigger.mockReturnValue(0)
+
+      renderOnSolana()
+
+      const beforeConfirmation = mockBalancesAndAllowancesUpdater.mock.lastCall?.[0].refreshTrigger
+
+      mockUseConfirmedTransactionsTrigger.mockReturnValue(1)
+      renderOnSolana()
+
+      expect(mockBalancesAndAllowancesUpdater.mock.lastCall?.[0].refreshTrigger).not.toBe(beforeConfirmation)
+    })
+
+    // Orders filling must keep forcing a refetch; the confirmation source is additional, not a swap.
+    it('changes the trigger when an order fills', () => {
+      mockUseOrdersFilledEventsTrigger.mockReturnValue(0)
+      mockUseConfirmedTransactionsTrigger.mockReturnValue(0)
+
+      renderOnSolana()
+
+      const beforeFill = mockBalancesAndAllowancesUpdater.mock.lastCall?.[0].refreshTrigger
+
+      mockUseOrdersFilledEventsTrigger.mockReturnValue(1)
+      renderOnSolana()
+
+      expect(mockBalancesAndAllowancesUpdater.mock.lastCall?.[0].refreshTrigger).not.toBe(beforeFill)
+    })
+  })
+
   describe('watcher fallback wiring', () => {
     beforeEach(() => {
       mockUseSourceChainId.mockReturnValue({ chainId: SupportedChainId.MAINNET, source: 'wallet' })
@@ -170,7 +256,7 @@ describe('CommonPriorityBalancesAndAllowancesUpdater', () => {
       BalancesWatcherHealth.Connected,
       BalancesWatcherHealth.Healthy,
     ])('mounts only the watcher (no multicall fallback) when isRecovering=false and status=%s', (status) => {
-      renderWithHealth({ status, isRecovering: false })
+      renderWithHealth({ status, isRecovering: false, recoveringSince: null })
 
       expect(mockBalancesWatcherUpdater).toHaveBeenCalledTimes(1)
       expect(mockBalancesAndAllowancesUpdater).not.toHaveBeenCalled()
@@ -208,6 +294,26 @@ describe('CommonPriorityBalancesAndAllowancesUpdater', () => {
       expect(mockBalancesWatcherUpdater).not.toHaveBeenCalled()
       expect(mockBalancesAndAllowancesUpdater).toHaveBeenCalledTimes(1)
       expect(mockPriorityTokensUpdater).toHaveBeenCalledTimes(1)
+    })
+
+    // Regression guard: account resolution for the multicall stack must go through
+    // useBalancesAccountForChain (not a raw EVM `useWalletInfo().account`/proxy fallback),
+    // since a Solana account can't be derived from the connected EVM wallet.
+    it('passes sourceChainId into useBalancesAccountForChain, and forwards its result to the updaters', () => {
+      mockUseSourceChainId.mockReturnValue({ chainId: SupportedChainId.SOLANA, source: 'selector' })
+      mockUseSelectTokenWidgetState.mockReturnValue(createWidgetState({ open: true, field: Field.OUTPUT }))
+      mockUseBalancesAccountForChain.mockReturnValue('SoLanaPubKey11111111111111111111111111111')
+
+      renderWithHealth(healthy())
+
+      expect(mockUseBalancesAccountForChain).toHaveBeenCalledWith(SupportedChainId.SOLANA)
+      expect(mockBalancesAndAllowancesUpdater).toHaveBeenCalledWith(
+        expect.objectContaining({
+          account: 'SoLanaPubKey11111111111111111111111111111',
+          chainId: SupportedChainId.SOLANA,
+        }),
+        undefined,
+      )
     })
   })
 })

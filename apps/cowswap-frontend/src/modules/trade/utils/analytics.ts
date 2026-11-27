@@ -11,7 +11,7 @@ import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function createDebouncedTradeAmountAnalytics(cowAnalytics: CowAnalytics) {
-  return debounce(([field, amount]: [Field, number]) => {
+  return debounce((field: Field, amount: number) => {
     cowAnalytics.sendEvent({
       category: CowSwapAnalyticsCategory.TRADE,
       action: `Change ${field} amount`,

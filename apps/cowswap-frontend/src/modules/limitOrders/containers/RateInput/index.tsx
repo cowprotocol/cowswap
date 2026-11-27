@@ -1,16 +1,25 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import iconLockedSrc from '@cowprotocol/assets/images/icon-locked.svg'
 import iconUnlockedSrc from '@cowprotocol/assets/images/icon-unlocked.svg'
 import iconUsdSrc from '@cowprotocol/assets/images/icon-USD.svg'
-import { formatInputAmount, getAddress, isFractionFalsy, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
+import { useMediaQuery } from '@cowprotocol/common-hooks'
+import {
+  formatInputAmount,
+  getCurrencyAddress,
+  isFractionFalsy,
+  tryParseCurrencyAmount,
+} from '@cowprotocol/common-utils'
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
+import { Fraction } from '@cowprotocol/currency'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { FiatAmount, HelpTooltip, HoverTooltip, TokenSymbol } from '@cowprotocol/ui'
+import { FiatAmount, HelpTooltip, HoverTooltip, Media, TokenSymbol } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
+import { MousePointer } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
@@ -22,8 +31,11 @@ import {
   limitOrdersSettingsAtom,
   updateLimitOrdersSettingsAtom,
 } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
+import { limitPickerModeAtom } from 'modules/limitOrders/state/limitPickerModeAtom'
 import { limitRateAtom, updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { toFraction } from 'modules/limitOrders/utils/toFraction'
+import { priceChartModalOpenAtom, priceChartVisibleAtom, useIsPriceChartAvailable } from 'modules/priceChart'
+import { getPercentageRate, PRICE_PERCENTAGE_PRESETS, PricePercentageShortcuts } from 'modules/trade'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { useConvertUsdToTokenValue } from 'common/hooks/useConvertUsdToTokenValue'
@@ -36,16 +48,38 @@ import { isLocalUsdRateModeAtom } from './atoms'
 import { useExecutionPriceUsdValue } from './hooks/useExecutionPriceUsdValue'
 import { useRateDisplayedValue } from './hooks/useRateDisplayedValue'
 import * as styledEl from './styled'
+import {
+  CustomPercentageInput,
+  getCustomRate,
+  getCustomValue,
+  getMatchingCustomInput,
+  getPercentageLockedInversion,
+  getSelectedPercentage,
+  getSelectedPreset,
+  matchesPresetPercentage,
+  matchesRate,
+} from './utils/pricePercentage.utils'
+
+const TAKE_PROFIT_MARKET_RATE_WAIT_MS = 3_000
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity, max-lines-per-function
 export function RateInput() {
   const { chainId } = useWalletInfo()
   // Rate state
-  const { isInverted, activeRate, isLoading, marketRate, isLoadingMarketRate, initialRate } =
-    useAtomValue(limitRateAtom)
+  const {
+    isInverted,
+    activeRate,
+    isLoading,
+    marketRate,
+    isLoadingMarketRate,
+    initialRate,
+    focusCustomPercentage,
+    percentageSelection,
+    isRateFromUrl,
+  } = useAtomValue(limitRateAtom)
   const updateRate = useUpdateActiveRate()
   const updateLimitRateState = useSetAtom(updateLimitRateAtom)
   const executionPrice = useAtomValue(executionPriceAtom)
@@ -57,10 +91,16 @@ export function RateInput() {
   const [isQuoteCurrencySet, setIsQuoteCurrencySet] = useState(false)
   const [typedTrailingZeros, setTypedTrailingZeros] = useState('')
   const [isUsdRateMode, setIsUsdRateMode] = useAtom(isLocalUsdRateModeAtom)
+  const [isLimitPickerMode, setLimitPickerMode] = useAtom(limitPickerModeAtom)
+  const isUpToLarge = useMediaQuery(Media.upToLarge(false))
+  const isPriceChartAvailable = useIsPriceChartAvailable()
+  const setChartModalOpen = useSetAtom(priceChartModalOpenAtom)
+  const setChartVisible = useSetAtom(priceChartVisibleAtom)
 
   // Limit order state
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
   const rateImpact = useRateImpact()
+  const priceChangePercent = useRateImpact(isInverted)
   const areBothCurrencies = !!inputCurrency && !!outputCurrency
 
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
@@ -87,6 +127,10 @@ export function RateInput() {
   // Handle rate input
   const handleUserInput = useCallback(
     (typedValue: string) => {
+      if (focusCustomPercentage) {
+        updateLimitRateState({ focusCustomPercentage: false })
+      }
+
       // Always pass through empty string to allow clearing
       if (typedValue === '') {
         setTypedTrailingZeros('')
@@ -141,7 +185,15 @@ export function RateInput() {
         isAlternativeOrderRate: false,
       })
     },
-    [isUsdRateMode, isInverted, updateRate, updateLimitRateState, displayedRate, convertUsdToTokenValue],
+    [
+      focusCustomPercentage,
+      isUsdRateMode,
+      isInverted,
+      updateRate,
+      updateLimitRateState,
+      displayedRate,
+      convertUsdToTokenValue,
+    ],
   )
 
   // Handle set market price
@@ -190,10 +242,25 @@ export function RateInput() {
     }
   }, [activeRate, marketRate, isLoadingMarketRate, initialRate, inputCurrencyId, outputCurrencyId])
 
-  // Apply smart quote selection
-  // use getQuoteCurrencyByStableCoin() first for cases when there are no amounts
+  const hasAlignedPercentageInversion = useRef(false)
+
   useEffect(() => {
-    // Don't set quote currency until amounts are not set
+    const lockedInversion = getPercentageLockedInversion(percentageSelection, focusCustomPercentage)
+
+    if (lockedInversion === null) {
+      hasAlignedPercentageInversion.current = false
+      return
+    }
+
+    if (hasAlignedPercentageInversion.current) return
+
+    hasAlignedPercentageInversion.current = true
+    if (isInverted !== lockedInversion) {
+      updateLimitRateState({ isInverted: lockedInversion })
+    }
+  }, [percentageSelection, focusCustomPercentage, isInverted, updateLimitRateState])
+
+  useEffect(() => {
     if (
       isQuoteCurrencySet ||
       isFractionFalsy(inputCurrencyAmount) ||
@@ -204,12 +271,22 @@ export function RateInput() {
       return
     }
 
+    const lockedInversion = getPercentageLockedInversion(percentageSelection, focusCustomPercentage)
+    if (lockedInversion !== null) {
+      updateLimitRateState({ isInverted: lockedInversion })
+      setIsQuoteCurrencySet(true)
+      return
+    }
+
     const quoteCurrency =
       getQuoteCurrencyByStableCoin(chainId, inputCurrency, outputCurrency) ||
       getQuoteCurrency(chainId, inputCurrencyAmount, outputCurrencyAmount)
-    const [quoteCurrencyAddress, inputCurrencyAddress] = [getAddress(quoteCurrency), getAddress(inputCurrency)]
 
-    updateLimitRateState({ isInverted: quoteCurrencyAddress !== inputCurrencyAddress })
+    if (!quoteCurrency) return
+
+    updateLimitRateState({
+      isInverted: !areAddressesEqual(getCurrencyAddress(quoteCurrency), getCurrencyAddress(inputCurrency)),
+    })
     setIsQuoteCurrencySet(true)
   }, [
     isQuoteCurrencySet,
@@ -218,6 +295,8 @@ export function RateInput() {
     outputCurrency,
     inputCurrencyAmount,
     outputCurrencyAmount,
+    percentageSelection,
+    focusCustomPercentage,
     updateLimitRateState,
   ])
 
@@ -225,6 +304,81 @@ export function RateInput() {
   useEffect(() => {
     setIsQuoteCurrencySet(false)
   }, [inputCurrency, outputCurrency])
+
+  const [customInput, setCustomPercentageDraft] = useState<CustomPercentageInput | null>(null)
+  const selectedPercentage = getSelectedPercentage(percentageSelection, isInverted)
+  const matchedPreset = getSelectedPreset(marketRate, activeRate, isInverted)
+  const pendingPreset =
+    selectedPercentage && (PRICE_PERCENTAGE_PRESETS as readonly string[]).includes(selectedPercentage)
+      ? selectedPercentage
+      : undefined
+  const selectedPreset = matchedPreset ?? pendingPreset
+  const customValue = getCustomValue(customInput, selectedPreset, selectedPercentage)
+  const customRate = getCustomRate(marketRate, customInput, percentageSelection, isInverted)
+
+  useEffect(() => {
+    setCustomPercentageDraft(null)
+  }, [chainId, inputCurrency, outputCurrency, isInverted, focusCustomPercentage])
+
+  useEffect(() => {
+    setCustomPercentageDraft((current) => getMatchingCustomInput(current, selectedPercentage, activeRate))
+  }, [activeRate, selectedPercentage])
+
+  const shortcutsDisabled =
+    isRateInputDisabled || !areBothCurrencies || isLoadingMarketRate || !marketRate?.greaterThan(0)
+
+  // Clear + focus in one rAF: clearing selection re-runs this effect and would cancel a separate focus frame.
+  useEffect(() => {
+    if (!percentageSelection && !focusCustomPercentage) return
+
+    const expectedRate = percentageSelection
+      ? getPercentageRate(marketRate, percentageSelection.value, percentageSelection.isInverted)
+      : null
+    const isApplied =
+      !focusCustomPercentage && matchesRate(expectedRate, activeRate, percentageSelection?.isInverted ?? isInverted)
+    const isPendingTakeProfit = isRateFromUrl || focusCustomPercentage
+
+    // Keep an already-applied selection during background market-rate refreshes.
+    if (isApplied) return
+    // Price failure must not drop a selection the user or QuoteObserver already applied.
+    if (!isPendingTakeProfit) return
+    // Pending with a settled market rate can be applied by QuoteObserver; do not clear yet.
+    if (marketRate?.greaterThan(0) && !isLoadingMarketRate) return
+
+    const focusPriceField = (): void => {
+      updateLimitRateState({ percentageSelection: null, focusCustomPercentage: false })
+      document.getElementById('rate-limit-amount-input')?.focus()
+    }
+
+    if (isLoadingMarketRate) {
+      const timerId = window.setTimeout(focusPriceField, TAKE_PROFIT_MARKET_RATE_WAIT_MS)
+      return () => window.clearTimeout(timerId)
+    }
+
+    const frameId = requestAnimationFrame(focusPriceField)
+    return () => cancelAnimationFrame(frameId)
+  }, [
+    percentageSelection,
+    focusCustomPercentage,
+    isLoadingMarketRate,
+    marketRate,
+    updateLimitRateState,
+    activeRate,
+    isInverted,
+    isRateFromUrl,
+  ])
+
+  const handlePercentageRateChange = (rate: Fraction | null, percentage?: string): void => {
+    setTypedTrailingZeros('')
+    updateLimitRateState({ typedValue: null })
+    updateRate({
+      activeRate: rate ?? toFraction('0'),
+      percentageSelection: rate && percentage ? { value: percentage, isInverted } : null,
+      isTypedValue: rate === null,
+      isRateFromUrl: false,
+      isAlternativeOrderRate: false,
+    })
+  }
 
   return (
     <styledEl.OuterWrapper $disabled={isRateInputDisabled} htmlFor="rate-limit-amount-input">
@@ -234,6 +388,7 @@ export function RateInput() {
             inputCurrency={inputCurrency}
             currency={primaryCurrency}
             rateImpact={rateImpact}
+            priceChangePercent={priceChangePercent}
             toggleIcon={
               <HoverTooltip
                 content={t`When locked, the limit price stays fixed when changing the amounts. When unlocked, the limit price will update based on the amount changes.`}
@@ -252,7 +407,11 @@ export function RateInput() {
               <i>
                 <Trans>Market:</Trans>
               </i>{' '}
-              <styledEl.MarketPriceButton disabled={isDisabledMPrice} onClick={handleSetMarketPrice}>
+              <styledEl.MarketPriceButton
+                title={marketRateDisplay ?? ''}
+                disabled={isDisabledMPrice}
+                onClick={handleSetMarketPrice}
+              >
                 {isLoadingMarketRate ? <styledEl.RateLoader size="14px" /> : marketRateDisplay}
               </styledEl.MarketPriceButton>
             </styledEl.MarketRateWrapper>
@@ -270,19 +429,75 @@ export function RateInput() {
 
           {secondaryCurrency && (
             <styledEl.CurrencyToggleGroup>
-              <styledEl.ActiveCurrency onClick={toggleSwitchUsdDisplay} $active={!isUsdRateMode}>
-                <styledEl.ActiveSymbol $active={!isUsdRateMode}>
-                  <TokenLogo token={secondaryCurrency} size={16} />
-                  <TokenSymbol token={secondaryCurrency} />
-                </styledEl.ActiveSymbol>
-              </styledEl.ActiveCurrency>
+              <styledEl.CurrencyToggle>
+                <styledEl.ActiveCurrency onClick={toggleSwitchUsdDisplay} $active={!isUsdRateMode}>
+                  <styledEl.ActiveSymbol $active={!isUsdRateMode}>
+                    <TokenLogo token={secondaryCurrency} size={16} />
+                    <TokenSymbol token={secondaryCurrency} />
+                  </styledEl.ActiveSymbol>
+                </styledEl.ActiveCurrency>
 
-              <styledEl.UsdButton onClick={() => setIsUsdRateMode((state) => !state)} $active={isUsdRateMode}>
-                <SVG src={iconUsdSrc} />
-              </styledEl.UsdButton>
+                <styledEl.UsdButton onClick={() => setIsUsdRateMode((state) => !state)} $active={isUsdRateMode}>
+                  <SVG src={iconUsdSrc} />
+                </styledEl.UsdButton>
+              </styledEl.CurrencyToggle>
+
+              {isPriceChartAvailable && !isRateInputDisabled && (
+                <HoverTooltip content={t`Pick the limit price from the chart`} wrapInContainer placement="top">
+                  <styledEl.IconButton
+                    aria-label={t`Pick the limit price from the chart`}
+                    aria-pressed={isLimitPickerMode}
+                    onClick={() => {
+                      if (!isLimitPickerMode) {
+                        setIsUsdRateMode(true)
+                        if (isUpToLarge) {
+                          setChartModalOpen(true)
+                        } else {
+                          setChartVisible(true)
+                        }
+                      }
+                      setLimitPickerMode((state) => !state)
+                    }}
+                    $active={isLimitPickerMode}
+                  >
+                    <MousePointer size={14} />
+                  </styledEl.IconButton>
+                </HoverTooltip>
+              )}
             </styledEl.CurrencyToggleGroup>
           )}
         </styledEl.Body>
+        <PricePercentageShortcuts
+          selectedPreset={selectedPreset}
+          onSelect={(percentage) => {
+            setCustomPercentageDraft(null)
+            handlePercentageRateChange(
+              getPercentageRate(marketRate, percentage ?? '', isInverted),
+              percentage ?? undefined,
+            )
+          }}
+          customInput={{
+            value: customValue,
+            selected: focusCustomPercentage || (!selectedPreset && matchesRate(customRate, activeRate, isInverted)),
+            invalid: !!customValue && !customRate,
+            focus: focusCustomPercentage,
+            onChange: (value) => {
+              const rate = getPercentageRate(marketRate, value, isInverted)
+              if (Number(value) > 0 && !rate) return
+              setCustomPercentageDraft({ value, rate })
+              handlePercentageRateChange(rate, value)
+            },
+            onBlur: () => {
+              if (!matchesPresetPercentage(customValue)) return
+              setCustomPercentageDraft(null)
+              if (focusCustomPercentage) {
+                updateLimitRateState({ focusCustomPercentage: false })
+              }
+            },
+          }}
+          isInverted={isInverted}
+          disabled={shortcutsDisabled}
+        />
       </styledEl.Wrapper>
 
       <styledEl.EstimatedRate>

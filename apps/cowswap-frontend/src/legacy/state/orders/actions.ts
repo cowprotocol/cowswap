@@ -58,10 +58,13 @@ export interface BaseOrder extends OrderCreation {
 
   // EthFlow / Solana
   orderCreationHash?: string // EthFlow: order creation tx hash. Solana: order creation transaction signature
+  isSponsored?: boolean
+  isNativeSell?: boolean
   isRefunded?: boolean
   refundHash?: string
 
   cancellationHash?: string // Filled when a hard cancellation is triggered. Be it ethflow or regular order
+  cancellationHashTime?: string // When `cancellationHash` was set. Encoded as ISO 8601 UTC
 
   // Additional information from the order available in the API
   apiAdditionalInfo?: Omit<EnrichedOrder, 'settlementContract'>
@@ -146,6 +149,8 @@ export interface FulfillOrdersBatchParams {
   isSafeWallet: boolean
 }
 
+export type InvalidateAbandonedCreatingOrdersBatchParams = BatchOrdersUpdateParams
+
 export type InvalidateOrdersBatchParams = BatchOrdersUpdateParams
 
 export interface OrderFulfillmentData {
@@ -182,6 +187,16 @@ export const updatePresignGnosisSafeTx = createAction<UpdatePresignGnosisSafeTxP
 export const expireOrdersBatch = createAction<ExpireOrdersBatchParams>('order/expireOrdersBatch')
 
 export const invalidateOrdersBatch = createAction<InvalidateOrdersBatchParams>('order/invalidateOrdersBatch')
+
+/**
+ * Unlike `invalidateOrdersBatch`, this fails an order only while it is still an unwatched creating
+ * one. The ids are collected from a `getOrder` 404 and dispatched a poll later, and `OrdersFromApiUpdater`
+ * writes order statuses from the order book independently in between — so by the time this lands,
+ * the order may already be pending or filled, and must not be failed.
+ */
+export const invalidateAbandonedCreatingOrdersBatch = createAction<InvalidateAbandonedCreatingOrdersBatchParams>(
+  'order/invalidateAbandonedCreatingOrdersBatch',
+)
 
 export const setOrderCancellationHash = createAction<SetOrderCancellationHashParams>('order/setOrderCancellationHash')
 

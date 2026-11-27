@@ -50,11 +50,14 @@ export const Routes = {
   FAQ_ETH_FLOW: '/faq/sell-native',
   PLAY_COWRUNNER: '/play/cow-runner',
   PLAY_MEVSLICER: '/play/mev-slicer',
+  GRAFFITI: '/graffiti',
+  GRAFFITI_CLAIM: '/graffiti/claim',
   ANYSWAP_AFFECTED: '/anyswap-affected-users',
   CHAT: '/chat',
   DOCS: '/docs',
   STATS: '/stats',
   TWITTER: '/twitter',
+  RWA: '/rwa',
 } as const
 
 export interface I18nIMenuItem extends Omit<IMenuItem, 'label' | 'fullLabel' | 'description' | 'badge'> {
@@ -102,6 +105,14 @@ export const HOOKS_STORE_MENU_ITEM: I18nIMenuItem = {
   description: msg`Powerful tool to generate pre/post interaction for CoW Protocol`,
   badgeImage: svgExperimentSrc,
   badgeType: BadgeTypes.INFORMATION,
+}
+
+export const RWA_MENU_ITEM: I18nIMenuItem = {
+  route: Routes.RWA,
+  label: msg`RWA`,
+  description: msg`Trade tokenized real-world assets`,
+  badge: msg`New`,
+  badgeType: BadgeTypes.ALERT,
 }
 
 export const YIELD_MENU_ITEM: I18nIMenuItem = {

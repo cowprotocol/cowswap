@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 
 import { useAddSnackbar } from '@cowprotocol/snackbars'
+import { UiOrderType } from '@cowprotocol/types'
 
 import { ORDERS_NOTIFICATION_HANDLERS } from './handlers'
 
@@ -22,10 +23,18 @@ export function OrdersNotificationsUpdater(): null {
 
           if (!content) return
 
-          const duration =
+          let duration =
             eventTyped === OrderStatusEvents.ON_POSTED_ORDER && 'isEthFlow' in payload && !!payload.isEthFlow
               ? 20_000
               : undefined
+
+          if (
+            eventTyped === OrderStatusEvents.ON_EXPIRED_ORDER &&
+            'orderType' in payload &&
+            payload.orderType === UiOrderType.LIMIT
+          ) {
+            duration = 0
+          }
 
           addSnackbar({
             id: eventTyped,

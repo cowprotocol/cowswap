@@ -16,6 +16,7 @@ const Wrapper = styled.div`
 
 const INPUT_AMOUNT = CurrencyAmount.fromRawAmount(USDC_MAINNET, 500_000 * 10 ** USDC_MAINNET.decimals)
 const OUTPUT_AMOUNT = CurrencyAmount.fromRawAmount(WBTC, 1.2 * 10 ** WBTC.decimals)
+const PARTIAL_APPROVE_AMOUNT = CurrencyAmount.fromRawAmount(USDC_MAINNET, 1_000 * 10 ** USDC_MAINNET.decimals)
 
 const WALLET_ICON = (
   <IconSpinner size={84}>
@@ -51,6 +52,18 @@ const PermitModalFixtures = {
       <PermitModal
         inputAmount={INPUT_AMOUNT}
         outputAmount={OUTPUT_AMOUNT}
+        step="approve"
+        icon={WALLET_ICON}
+        orderType={UiOrderType.LIMIT}
+      />
+    </Wrapper>
+  ),
+  'LIMIT: Pending partial permit signature': (
+    <Wrapper>
+      <PermitModal
+        inputAmount={INPUT_AMOUNT}
+        outputAmount={OUTPUT_AMOUNT}
+        amountToApprove={PARTIAL_APPROVE_AMOUNT}
         step="approve"
         icon={WALLET_ICON}
         orderType={UiOrderType.LIMIT}

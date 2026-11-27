@@ -41,12 +41,12 @@ export function AccountItem({ chainId, account, version, label, iconSize = 28 }:
         <h3>{shortenAddress(account)}</h3>
         <p>
           {label ? (
-            i18n._(label)
-          ) : (
             <>
-              <Trans>Version</Trans>: {version}
+              {i18n._(label)}
+              {' · '}
             </>
-          )}
+          ) : null}
+          <Trans>Version</Trans>: {version}
         </p>
       </styledEl.AccountWrapper>
 

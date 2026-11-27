@@ -1,19 +1,19 @@
 /* eslint-disable @typescript-eslint/no-restricted-imports */ // TODO: Don't use 'modules' import
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { EnrichedOrder, EthflowData, OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { TokensByAddress, useAllActiveTokens } from '@cowprotocol/tokens'
 import { UiOrderType } from '@cowprotocol/types'
-import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { isSafeWalletAtom, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { useAddOrUpdateOrders, useAllOrdersMap, useClearOrdersStorage } from 'legacy/state/orders/hooks'
 import { PartialOrdersMap } from 'legacy/state/orders/reducer'
-import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
+import { classifyOrder, isOrderInvalidated, OrderTransitionStatus } from 'legacy/state/orders/utils'
 import { deserializeOrder } from 'legacy/state/orders/utils/deserializeOrder'
 
 import { getTokensListFromOrders, useTokensForOrdersList } from 'modules/orders'
@@ -65,7 +65,7 @@ export function _getOrdersToQueueForSurplusModal(orders: Order[], allOrdersMap: 
  * - Persist the new tokens and orders on redux
  */
 export function OrdersFromApiUpdater(): null {
-  const isSafeWallet = useIsSafeWallet()
+  const isSafeWallet = useAtomValue(isSafeWalletAtom)
   const clearOrderStorage = useClearOrdersStorage()
 
   const { account, chainId } = useWalletInfo()
@@ -230,7 +230,7 @@ function _transformOrderBookOrderToStoreOrder(
     receiver: receiver || '',
     fullAppData: order.fullAppData,
     apiAdditionalInfo: order,
-    isCancelling: apiStatus === 'pending' && order.invalidated, // already cancelled in the API, not yet in the UI
+    isCancelling: apiStatus === 'pending' && isOrderInvalidated(order), // already cancelled in the API, not yet in the UI
     // EthFlow related
     owner: onchainOrderData?.sender || owner,
     validTo: ethflowData?.userValidTo || order.validTo,

@@ -5,7 +5,7 @@ import { createPublicClient, http } from 'viem'
 import { usePublicClient, useWalletClient } from 'wagmi'
 
 import { RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
-import { getCurrentChainIdFromUrl, isBarnBackendEnv } from '@cowprotocol/common-utils'
+import { getCurrentChainIdFromUrl, isBarnBackendEnv, setBffBearerToken } from '@cowprotocol/common-utils'
 import {
   AbstractProviderAdapter,
   DEFAULT_BACKOFF_OPTIONS,
@@ -16,7 +16,6 @@ import {
   Signer,
   setGlobalAdapter,
 } from '@cowprotocol/cow-sdk'
-import { PERMIT_ACCOUNT } from '@cowprotocol/permit-utils'
 import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
 
 const prodBaseUrls = process.env.REACT_APP_ORDER_BOOK_URLS
@@ -24,6 +23,7 @@ const prodBaseUrls = process.env.REACT_APP_ORDER_BOOK_URLS
   : undefined
 
 export const appSignerAtom = atom<Signer | undefined>(undefined)
+export const appSignerAccountAtom = atom<string | undefined>(undefined)
 
 function getInitialEvmChainId(): EvmChains {
   const urlChainId = getCurrentChainIdFromUrl()
@@ -62,23 +62,34 @@ export function CowSdkUpdater(): null {
   const publicClient = usePublicClient()
   const { data: walletClient } = useWalletClient()
   const setAppSigner = useSetAtom(appSignerAtom)
+  const setAppSignerAccount = useSetAtom(appSignerAccountAtom)
 
   useEffect(() => {
-    if (!publicClient) return
-    let adapter: ViemAdapter
-    if (walletClient) {
-      adapter = new ViemAdapter({ provider: publicClient, walletClient })
-    } else {
-      adapter = new ViemAdapter({ provider: publicClient, signer: PERMIT_ACCOUNT })
+    if (!publicClient || !walletClient) return
+
+    // A WalletConnect session approved for Solana only (Ledger Live) leaves wagmi connected with no
+    // eip155 account; the wallet client it resolves then has none, and ViemAdapter throws on that.
+    // Drop the signer instead of keeping the previous EVM one: `chainId` follows the selected
+    // network rather than the connected namespace, so an EVM chain stays selectable and
+    // `useAppSigner` consumers would otherwise sign with an account that is no longer connected.
+    if (!walletClient.account) {
+      setAppSigner(undefined)
+      setAppSignerAccount(undefined)
+      return
     }
+
+    const adapter = new ViemAdapter({ provider: publicClient, walletClient })
     setGlobalAdapter(adapter as AbstractProviderAdapter)
-    setAppSigner(walletClient ? adapter.signer : undefined)
-  }, [publicClient, walletClient, setAppSigner])
+    setAppSigner(adapter.signer)
+    setAppSignerAccount(walletClient.account.address)
+  }, [publicClient, walletClient, setAppSigner, setAppSignerAccount])
 
   return null
 }
 
 export function setBearerToken(token: string | null): void {
+  setBffBearerToken(token)
+
   if (token) {
     orderBookApi.context.bearerToken = token
   } else {

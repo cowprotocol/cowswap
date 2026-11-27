@@ -1,5 +1,164 @@
 # Changelog
 
+## [4.17.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.16.0...widget-lib-v4.17.0) (2026-11-25)
+
+### Minor Changes
+
+- feat(widget): add priority tokens setting to the widget (#8687)
+
+### Patch Changes
+
+- fix(rwa): medium bugs of the RWA UI backlog (#8661)
+
+## [4.16.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.15.0...widget-lib-v4.16.0) (2026-11-18)
+
+### Minor Changes
+
+- feat(rwa): limit RWA buy networks to the asset's chains (#8605)
+
+- feat: update SDK versions with updated near token lists (#8660)
+
+- feat(solana): support custom recipients (#8592)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.19.0
+  - @cowprotocol/iframe-transport@2.3.16
+
+## [4.15.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.14.0...widget-lib-v4.15.0) (2026-11-11)
+
+### Minor Changes
+
+- feat: take profit (#8460)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.18.1
+  - @cowprotocol/iframe-transport@2.3.15
+
+## [4.14.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.13.0...widget-lib-v4.14.0) (2026-11-10)
+
+### Minor Changes
+
+- feat(rwa): filter widget token selectors to the asset tokens (#8491)
+
+- feat(solana): pass appData to quote (#8509)
+
+### Patch Changes
+
+- fix(solana): use SDK for quote costs breakdown (#8522)
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.18.0
+  - @cowprotocol/iframe-transport@2.3.14
+
+## [4.13.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.12.0...widget-lib-v4.13.0) (2026-11-05)
+
+### Minor Changes
+
+- feat: Wait & save widget toggle (#8473)
+
+- feat(widget): hide eth flow classic banner with hideWrapBanner (#8461)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.17.2
+  - @cowprotocol/iframe-transport@2.3.13
+
+## [4.12.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.11.1...widget-lib-v4.12.0) (2026-10-28)
+
+### Minor Changes
+
+- feat(widget): hide eth flow classic banner with hideWrapBanner
+
+- feat: simple price chart (#8305)
+
+## [4.11.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.11.0...widget-lib-v4.11.1) (2026-10-27)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8474)
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.17.1
+  - @cowprotocol/iframe-transport@2.3.12
+
+## [4.11.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.10.0...widget-lib-v4.11.0) (2026-10-21)
+
+### Minor Changes
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.17.0
+  - @cowprotocol/iframe-transport@2.3.11
+
+## [4.10.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.9.0...widget-lib-v4.10.0) (2026-10-14)
+
+### Minor Changes
+
+- feat: bump sdk + support tokens 2022 (#8315)
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+- feat: solana settlement 0.5 (#8345)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.16.0
+  - @cowprotocol/iframe-transport@2.3.10
+
+## [4.9.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.8.1...widget-lib-v4.9.0) (2026-10-06)
+
+### Minor Changes
+
+- feat(solana): add sponsored orders (#8200)
+
+- feat(solana): migration to v0.4 (#8188)
+
+- feat(solana): use cow quote API and suggested slippage (#8195)
+
+- feat: bump sdk + rename transaction -> partiallySignedTx (#8267)
+
+### Patch Changes
+
+- fix(solana): add solana native token icon (#8262)
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.15.0
+  - @cowprotocol/iframe-transport@2.3.9
+
+## [4.8.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.8.0...widget-lib-v4.8.1) (2026-09-29)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.14.0
+
+## [4.8.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.7.0...widget-lib-v4.8.0) (2026-09-23)
+
+### Minor Changes
+
+- feat: show twaps in explorer (#8129)
+
+- feat(solana): apply user slippage from settings (#8164)
+
+### Patch Changes
+
+- fix(widget): remove integrator typeform links (#8170)
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.13.0
+  - @cowprotocol/iframe-transport@2.3.8
+
 ## [4.7.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.6.0...widget-lib-v4.7.0) (2026-09-09)
 
 ### Minor Changes

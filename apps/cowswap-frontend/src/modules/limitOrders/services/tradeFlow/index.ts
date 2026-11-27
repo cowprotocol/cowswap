@@ -3,38 +3,31 @@ import { sendTransaction } from 'wagmi/actions'
 
 import { captureError, ERROR_TYPES, normalizeError, reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
 import { SigningScheme } from '@cowprotocol/cow-sdk'
-import { Percent } from '@cowprotocol/currency'
-import { Command, UiOrderType } from '@cowprotocol/types'
+import { UiOrderType } from '@cowprotocol/types'
 
 import { tradingSdk } from 'tradingSdk/tradingSdk'
 
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { mapUnsignedOrderToOrder, wrapErrorInOperatorError } from 'legacy/utils/trade'
 
 import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
 import { PriceImpactDeclineError, TradeFlowContext, WidgetHookDeclineError } from 'modules/limitOrders/services/types'
-import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
 import { emitPostedOrderEvent } from 'modules/orders'
 import { callDataContainsPermitSigner, handlePermit } from 'modules/permit'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import type { TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
-import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
+
+import { TradeFlowParams } from '../../hooks/useTradeFlowParams'
 
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
 export async function tradeFlow(
   params: TradeFlowContext,
-  priceImpact: PriceImpact,
-  settingsState: LimitOrdersSettingsState,
-  analytics: TradeFlowAnalytics,
-  confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
-  beforePermit: () => Promise<void>,
-  beforeTrade: Command,
+  { priceImpact, confirmPriceImpactWithoutFee, analytics, beforeTrade, beforePermit, settingsState }: TradeFlowParams,
 ): Promise<string> {
   const {
     postOrderParams,

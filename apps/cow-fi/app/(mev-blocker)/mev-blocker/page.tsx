@@ -3,6 +3,7 @@
 import type { ReactNode } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 
+import { useRemainingSeconds } from '@cowprotocol/common-hooks'
 import { Color, Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
@@ -136,24 +137,14 @@ const InlineLink = styled.a`
 `
 
 export default function MevBlockerRedirectPage(): ReactNode {
-  const [secondsLeft, setSecondsLeft] = useState(REDIRECT_SECONDS)
+  const [redirectAt] = useState(() => Date.now() + REDIRECT_SECONDS * 1000)
+  const secondsLeft = useRemainingSeconds(redirectAt) ?? REDIRECT_SECONDS
 
   useEffect(() => {
-    const targetTime = Date.now() + REDIRECT_SECONDS * 1000
-    const intervalId = window.setInterval(() => {
-      const remainingSeconds = Math.max(0, Math.ceil((targetTime - Date.now()) / 1000))
-      setSecondsLeft(remainingSeconds)
-    }, 250)
-
-    const timeoutId = window.setTimeout(() => {
+    if (secondsLeft === 0) {
       window.location.assign(REDIRECT_URL)
-    }, REDIRECT_SECONDS * 1000)
-
-    return () => {
-      window.clearInterval(intervalId)
-      window.clearTimeout(timeoutId)
     }
-  }, [])
+  }, [secondsLeft])
 
   const countdownLabel = useMemo(() => {
     if (secondsLeft === 1) {

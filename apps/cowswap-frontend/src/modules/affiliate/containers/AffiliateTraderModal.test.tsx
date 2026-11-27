@@ -36,7 +36,9 @@ jest.mock('jotai', () => {
 })
 
 jest.mock('@cowprotocol/ui', () => ({
-  ModalHeader: () => <div>ModalHeader</div>,
+  Modal: {
+    Header: () => <div>ModalHeader</div>,
+  },
 }))
 
 jest.mock('common/pure/Modal', () => ({
@@ -65,6 +67,10 @@ jest.mock('./AffiliateTraderModalUnsupported', () => ({
 
 jest.mock('../hooks/useAffiliateStateViewAnalytics', () => ({
   useAffiliateStateViewAnalytics: jest.fn(),
+}))
+
+jest.mock('../hooks/useAffiliateSupportedNetworkNames', () => ({
+  useAffiliateSupportedNetworkNames: () => [],
 }))
 
 jest.mock('../hooks/useAffiliateTraderRecoverySideEffect', () => ({

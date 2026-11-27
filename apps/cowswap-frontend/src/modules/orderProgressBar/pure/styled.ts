@@ -292,10 +292,11 @@ export const BenefitSurplusContainer = styled.div`
 
 export const BenefitText = styled.div`
   width: 100%;
-  height: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
   overflow: hidden;
-  padding: 6px 0 0;
-  margin: 0;
+  padding: 0;
+  margin: 6px 0 0;
   box-sizing: border-box;
   display: flex;
   align-items: flex-start;

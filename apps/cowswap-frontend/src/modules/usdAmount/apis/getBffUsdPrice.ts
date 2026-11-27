@@ -1,5 +1,5 @@
 import { BFF_BASE_URL } from '@cowprotocol/common-const'
-import { fetchWithRateLimit, FractionUtils } from '@cowprotocol/common-utils'
+import { bffFetch, fetchWithRateLimit, FractionUtils } from '@cowprotocol/common-utils'
 import { Fraction, Token } from '@cowprotocol/currency'
 
 import { t } from '@lingui/core/macro'
@@ -30,7 +30,7 @@ export async function getBffUsdPrice(currency: Token): Promise<Fraction | null> 
   const url = `${BFF_BASE_URL}/${currency.chainId}/tokens/${currency.address}/usdPrice`
 
   try {
-    const res = await fetchRateLimited(url)
+    const res = await fetchRateLimited(() => bffFetch(url))
 
     // Token not found
     if (res.status === 404) {

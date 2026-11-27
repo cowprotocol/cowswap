@@ -1,12 +1,5 @@
-import { useWalletDetails } from '@cowprotocol/wallet'
+import { useGasPaymentReason } from './useGasPaymentReason'
 
-import { useIsEoaEthFlow } from './useIsEoaEthFlow'
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useShouldPayGas() {
-  const { allowsOffchainSigning } = useWalletDetails()
-  const isEoaEthFlow = useIsEoaEthFlow()
-
-  return isEoaEthFlow || !allowsOffchainSigning
+export function useShouldPayGas(): boolean {
+  return useGasPaymentReason() !== null
 }

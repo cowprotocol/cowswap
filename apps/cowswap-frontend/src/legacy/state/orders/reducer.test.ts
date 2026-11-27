@@ -7,6 +7,7 @@ import {
   cancelOrdersBatch,
   expireOrdersBatch,
   fulfillOrdersBatch,
+  invalidateAbandonedCreatingOrdersBatch,
   OrderStatus,
   requestOrderCancellation,
   SerializedOrder,
@@ -147,6 +148,73 @@ describe('orders reducer', () => {
       expect(finalState[CHAIN_ID]?.fulfilled[order.id]?.order.isCancelling).toBe(false)
     })
 
+    it('does not let a later successful cancellation overwrite fulfillment', () => {
+      const { state, order } = setupCancellingOrder()
+      let next = reducer(
+        state,
+        fulfillOrdersBatch({
+          chainId: CHAIN_ID,
+          orders: [{ uid: order.id } as unknown as EnrichedOrder],
+          isSafeWallet: true,
+        }),
+      )
+      const fulfillmentTime = next[CHAIN_ID]?.fulfilled[order.id]?.order.fulfillmentTime
+      next = reducer(next, cancelOrdersBatch({ chainId: CHAIN_ID, ids: [order.id], isSafeWallet: true }))
+      expect(next[CHAIN_ID]?.cancelled[order.id]).toBeUndefined()
+      expect(next[CHAIN_ID]?.fulfilled[order.id]?.order).toMatchObject({
+        status: OrderStatus.FULFILLED,
+        isCancelling: false,
+        fulfillmentTime,
+      })
+    })
+
+    it('repairs persisted cancellation from API fulfillment', () => {
+      const { state, order } = setupCancellingOrder()
+      let next = reducer(state, cancelOrdersBatch({ chainId: CHAIN_ID, ids: [order.id], isSafeWallet: true }))
+      const apiAdditionalInfo = { uid: order.id, status: 'fulfilled', invalidated: true } as unknown as EnrichedOrder
+      const apiOrder: SerializedOrder = {
+        ...(order as unknown as SerializedOrder),
+        status: OrderStatus.FULFILLED,
+        isCancelling: false,
+        apiAdditionalInfo,
+      }
+      next = reducer(next, addOrUpdateOrders({ chainId: CHAIN_ID, orders: [apiOrder], isSafeWallet: true }))
+      const fulfilled = next[CHAIN_ID]?.fulfilled[order.id]?.order
+      expect(next[CHAIN_ID]?.cancelled[order.id]).toBeUndefined()
+      expect(fulfilled).toMatchObject({ status: OrderStatus.FULFILLED, isCancelling: false, apiAdditionalInfo })
+      next = reducer(next, addOrUpdateOrders({ chainId: CHAIN_ID, orders: [apiOrder], isSafeWallet: true }))
+      expect(next[CHAIN_ID]?.fulfilled[order.id]?.order).toMatchObject({
+        status: OrderStatus.FULFILLED,
+        isCancelling: false,
+        apiAdditionalInfo,
+      })
+    })
+
+    it.each([OrderStatus.PENDING, OrderStatus.CANCELLED])(
+      'accepts a later API %s status after fulfillment',
+      (status) => {
+        const { state, order } = setupCancellingOrder()
+        let next = reducer(
+          state,
+          fulfillOrdersBatch({
+            chainId: CHAIN_ID,
+            orders: [{ uid: order.id } as unknown as EnrichedOrder],
+            isSafeWallet: true,
+          }),
+        )
+        next = reducer(
+          next,
+          addOrUpdateOrders({
+            chainId: CHAIN_ID,
+            orders: [{ ...(order as unknown as SerializedOrder), status, isCancelling: false }],
+            isSafeWallet: true,
+          }),
+        )
+        expect(next[CHAIN_ID]?.fulfilled[order.id]).toBeUndefined()
+        expect(next[CHAIN_ID]?.[status][order.id]?.order).toMatchObject({ status, isCancelling: false })
+      },
+    )
+
     it('addOrUpdateOrders for a brand new order uses API isCancelling as is', () => {
       let state = reducer(undefined, { type: '@@INIT' })
       const order = generateOrder({ owner: '0x...', sellToken, buyToken })
@@ -174,6 +242,70 @@ describe('orders reducer', () => {
       // order should still be in cancelled bucket, not moved back to pending
       expect(finalState[CHAIN_ID]?.cancelled[order.id]).toBeDefined()
       expect(finalState[CHAIN_ID]?.pending[order.id]).toBeUndefined()
+    })
+  })
+
+  describe('invalidateAbandonedCreatingOrdersBatch', () => {
+    function setupCreatingOrder(overrides: Partial<SerializedOrder> = {}): {
+      state: OrdersState
+      order: ReturnType<typeof generateOrder>
+    } {
+      let state = reducer(undefined, { type: '@@INIT' })
+      const order = generateOrder({ owner: '0x...', sellToken, buyToken })
+      state = reducer(
+        state,
+        addPendingOrder({
+          id: order.id,
+          chainId: CHAIN_ID,
+          order: { ...(order as unknown as SerializedOrder), status: OrderStatus.CREATING, ...overrides },
+          isSafeWallet: false,
+        }),
+      )
+
+      return { state, order }
+    }
+
+    it('fails an unwatched creating order', () => {
+      const { state, order } = setupCreatingOrder()
+
+      const finalState = reducer(
+        state,
+        invalidateAbandonedCreatingOrdersBatch({ chainId: CHAIN_ID, ids: [order.id], isSafeWallet: false }),
+      )
+
+      expect(finalState[CHAIN_ID]?.failed[order.id]).toBeDefined()
+      expect(finalState[CHAIN_ID]?.creating[order.id]).toBeUndefined()
+    })
+
+    // OrdersFromApiUpdater writes order-book statuses independently between the 404 that collected
+    // the id and this dispatch, so a rescued order must survive it.
+    it('leaves an order that has since been indexed by the order book', () => {
+      const { state, order } = setupCreatingOrder()
+      const indexed: SerializedOrder = {
+        ...(order as unknown as SerializedOrder),
+        status: OrderStatus.PENDING,
+      }
+      let finalState = reducer(state, addOrUpdateOrders({ chainId: CHAIN_ID, orders: [indexed], isSafeWallet: false }))
+
+      finalState = reducer(
+        finalState,
+        invalidateAbandonedCreatingOrdersBatch({ chainId: CHAIN_ID, ids: [order.id], isSafeWallet: false }),
+      )
+
+      expect(finalState[CHAIN_ID]?.pending[order.id]).toBeDefined()
+      expect(finalState[CHAIN_ID]?.failed[order.id]).toBeUndefined()
+    })
+
+    it('leaves a creating order whose creation transaction is being watched', () => {
+      const { state, order } = setupCreatingOrder({ orderCreationHash: '0xtx' })
+
+      const finalState = reducer(
+        state,
+        invalidateAbandonedCreatingOrdersBatch({ chainId: CHAIN_ID, ids: [order.id], isSafeWallet: false }),
+      )
+
+      expect(finalState[CHAIN_ID]?.creating[order.id]).toBeDefined()
+      expect(finalState[CHAIN_ID]?.failed[order.id]).toBeUndefined()
     })
   })
 })

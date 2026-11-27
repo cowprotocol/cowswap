@@ -25,6 +25,7 @@ function _getExplorerUrlByEnvironment(): Record<ChainId, string> {
     [ChainId.LINEA]: `${baseUrl}/linea`,
     [ChainId.PLASMA]: `${baseUrl}/plasma`,
     [ChainId.INK]: `${baseUrl}/ink`,
+    [ChainId.ROBINHOOD]: `${baseUrl}/robinhood`,
     [ChainId.SOLANA]: `${baseUrl}/solana`,
   }
 }
@@ -51,4 +52,14 @@ export function getExplorerOrderLink(chainId: ChainId, orderId: UID): string {
   const baseUrl = getExplorerBaseUrl(chainId)
 
   return baseUrl + `/orders/${orderId}`
+}
+
+export function getExplorerTwapOrderLink(chainId: ChainId, eventId: string): string | undefined {
+  if (!isTwapEventId(eventId)) return undefined
+
+  return `${getExplorerBaseUrl(chainId)}/twap/${eventId}`
+}
+
+export function isTwapEventId(value: string): boolean {
+  return /^\d{60,78}$/.test(value)
 }

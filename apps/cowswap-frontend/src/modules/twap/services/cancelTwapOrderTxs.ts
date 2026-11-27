@@ -14,10 +14,15 @@ export interface CancelTwapOrderContext {
   partOrderId?: string
   publicClient?: PublicClient
   account?: Address
+  partOnly?: boolean
 }
 
 export function cancelTwapOrderTxs(context: CancelTwapOrderContext): MetaTransactionData[] {
-  const { composableCowAddress, composableCowAbi, settlementAddress, settlementAbi, orderId, partOrderId } = context
+  const { composableCowAddress, composableCowAbi, settlementAddress, settlementAbi, orderId, partOrderId, partOnly } =
+    context
+  if (partOnly && !partOrderId) {
+    throw new Error('A part order UID is required to cancel a TWAP part')
+  }
   const cancelTwapOrderTx = {
     to: composableCowAddress,
     data: encodeFunctionData({
@@ -42,7 +47,7 @@ export function cancelTwapOrderTxs(context: CancelTwapOrderContext): MetaTransac
     operation: 0,
   }
 
-  return [cancelTwapOrderTx, cancelTwapPartOrderTx]
+  return partOnly ? [cancelTwapPartOrderTx] : [cancelTwapOrderTx, cancelTwapPartOrderTx]
 }
 
 // TODO: we might need a custom method for estimating gas on Linea

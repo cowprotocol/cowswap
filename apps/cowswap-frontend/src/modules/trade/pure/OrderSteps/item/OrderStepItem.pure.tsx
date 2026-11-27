@@ -1,16 +1,11 @@
 import { ReactNode, useState } from 'react'
 
-import { Currency } from '@cowprotocol/currency'
-import { Icon, IconType, UI } from '@cowprotocol/ui'
+import { Collapsible, Icon, IconType, UI } from '@cowprotocol/ui'
 
 import { Check, ChevronDown, X } from 'react-feather'
 
-import { ExpandableContent } from 'common/pure/ExpandableContent/ExpandableContent.pure'
-
 import * as styledEl from './OrderStepItem.styled'
 import { OrderStepStatus } from './OrderStepItem.types'
-
-import { OrderStepTokenInfo } from '../token-info/OrderStepTokenInfo.pure'
 
 const ICON_STROKE_WIDTH = 2.5
 
@@ -31,7 +26,6 @@ export interface OrderStep {
   label: ReactNode
   description?: string | ReactNode
   descriptionLabel?: ReactNode
-  token?: Currency
   status: OrderStepStatus
 }
 
@@ -40,45 +34,46 @@ export interface OrderStepItemProps {
 }
 
 export function OrderStepItem({
-  step: { label, description, descriptionLabel, token, status },
+  step: { label, description, descriptionLabel, status },
 }: OrderStepItemProps): ReactNode {
   const [isUserExpanded, setIsUserExpanded] = useState(false)
-  const hasDetails = description != null || descriptionLabel != null || token != null
+  const hasDetails = description != null || descriptionLabel != null
   const canExpand = hasDetails && EXPANDABLE_STATUSES.has(status)
   const isExpanded = (canExpand && isUserExpanded) || ALWAYS_EXPANDED_STATUSES.has(status)
 
-  const toggleIsUserExpanded = (): void => setIsUserExpanded((prev) => !prev)
-
   return (
     <styledEl.StepItem data-status={status}>
-      <styledEl.StepsIconWrapper data-status={status}>{ICONS_BY_STATUS[status]}</styledEl.StepsIconWrapper>
-
-      <styledEl.StepHeaderButton
-        type="button"
-        onClick={toggleIsUserExpanded}
-        aria-expanded={canExpand ? isUserExpanded : undefined}
+      <Collapsible.Root
+        open={isExpanded}
+        onOpenChange={(open) => {
+          if (!canExpand) return
+          setIsUserExpanded(open)
+        }}
         disabled={!canExpand}
       >
-        <styledEl.StepLabel>{label}</styledEl.StepLabel>
+        <styledEl.StepsIconWrapper data-status={status}>{ICONS_BY_STATUS[status]}</styledEl.StepsIconWrapper>
 
-        {canExpand ? (
-          <styledEl.StepExpandIcon>
-            <ChevronDown aria-hidden strokeWidth={ICON_STROKE_WIDTH} />
-          </styledEl.StepExpandIcon>
+        <styledEl.StepHeaderButton tabIndex={canExpand ? undefined : -1}>
+          <styledEl.StepLabel>{label}</styledEl.StepLabel>
+
+          {canExpand ? (
+            <styledEl.StepExpandIcon>
+              <ChevronDown aria-hidden strokeWidth={ICON_STROKE_WIDTH} />
+            </styledEl.StepExpandIcon>
+          ) : null}
+        </styledEl.StepHeaderButton>
+
+        {hasDetails ? (
+          <Collapsible.Panel keepMounted>
+            <styledEl.StepDetailsInner>
+              {descriptionLabel != null ? (
+                <styledEl.StepDescriptionLabel>{descriptionLabel}</styledEl.StepDescriptionLabel>
+              ) : null}
+              {description != null ? typeof description === 'string' ? <p>{description}</p> : description : null}
+            </styledEl.StepDetailsInner>
+          </Collapsible.Panel>
         ) : null}
-      </styledEl.StepHeaderButton>
-
-      {hasDetails ? (
-        <ExpandableContent expanded={isExpanded}>
-          <styledEl.StepDetailsInner>
-            {descriptionLabel != null ? (
-              <styledEl.StepDescriptionLabel>{descriptionLabel}</styledEl.StepDescriptionLabel>
-            ) : null}
-            {description != null ? typeof description === 'string' ? <p>{description}</p> : description : null}
-            {token ? <OrderStepTokenInfo token={token} /> : null}
-          </styledEl.StepDetailsInner>
-        </ExpandableContent>
-      ) : null}
+      </Collapsible.Root>
     </styledEl.StepItem>
   )
 }

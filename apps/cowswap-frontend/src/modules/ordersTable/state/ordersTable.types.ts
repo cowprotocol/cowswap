@@ -17,6 +17,8 @@ export type AlternativeOrderModalContext = { showAlternativeOrderModal: Command;
 
 export interface OrderActions {
   getShowCancellationModal: (order: ParsedOrder) => UseCancelOrderReturn
+  /** Null unless the order was cancelled before it expired and still holds rent the owner can take back. */
+  getReclaimRent: (order: ParsedOrder) => Command | null
   getAlternativeOrderModalContext: (order: ParsedOrder) => AlternativeOrderModalContext
   selectReceiptOrder(order: ParsedOrder): void
   toggleOrderForCancellation(order: ParsedOrder): void

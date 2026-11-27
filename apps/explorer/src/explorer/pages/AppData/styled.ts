@@ -200,29 +200,6 @@ export const Wrapper = styled(WrapperTemplate)`
     }
   }
 
-  .decode-container {
-    display: flex;
-    gap: 10rem;
-    flex: 1;
-    padding: 0 2rem;
-
-    .left-pannel {
-      display: flex;
-      flex-direction: column;
-      width: 40vw;
-    }
-
-    ${Media.upToSmall()} {
-      margin: 2rem 0;
-      flex-direction: column;
-      gap: 5rem;
-    }
-
-    ${Media.upToMedium()} {
-      margin: 2rem 0;
-    }
-  }
-
   .ipfs-container {
     display: flex;
     flex-direction: column;
@@ -351,34 +328,6 @@ export const Wrapper = styled(WrapperTemplate)`
       .tab-content {
         display: flex;
         flex-direction: column;
-      }
-    }
-
-    &--decode {
-      .data-container {
-        line-height: 1.6;
-        font-size: 1.3rem;
-        margin: 1rem 0;
-      }
-
-      .main-container {
-        width: 100%;
-      }
-
-      .data-form {
-        width: 100%;
-        max-width: 40rem;
-        margin-right: 2rem;
-        ${Media.upToSmall()} {
-          max-width: 100%;
-          margin-right: 0;
-        }
-        input {
-          margin-top: 1rem;
-        }
-      }
-      .hidden-content {
-        position: initial;
       }
     }
   }

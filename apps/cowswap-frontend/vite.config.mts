@@ -197,6 +197,11 @@ export default defineConfig(({ mode, isPreview }) => {
           target: 'http://localhost:4317',
           changeOrigin: true,
         },
+        // Mirrors the Vercel rewrite, run the RWA app with `pnpm start:rwa`
+        '/rwa': {
+          target: 'http://localhost:3002',
+          ws: true,
+        },
       },
     },
 
@@ -301,6 +306,10 @@ export default defineConfig(({ mode, isPreview }) => {
         '@reown/appkit-adapter-solana',
         '@reown/appkit-controllers',
         'wagmi',
+        // AdapterContext is a singleton in sdk-common. cow-sdk sets it, while cow-shed 0.6.1 reads it.
+        // The package.json override pins cow-shed onto sdk-common 0.14.1, but pnpm/Vite can still
+        // load that package twice. Dedupe so proxyOf sees the adapter setGlobalAdapter wrote.
+        '@cowprotocol/sdk-common',
       ],
     },
 
@@ -308,7 +317,7 @@ export default defineConfig(({ mode, isPreview }) => {
       manifest: true,
       assetsInlineLimit: 0, // prevent inlining assets
       assetsDir: 'static', // All assets go to /static/ directory
-      sourcemap: !isPreview,
+      sourcemap: !isPreview && process.env.BUNDLE_SIZE_BUILD !== 'true' && process.env.NO_SOURCEMAP !== 'true',
       rollupOptions: {
         output: {
           // Remove hash for font files to enable preloading

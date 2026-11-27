@@ -2,7 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { ReactNode, useEffect, useRef } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { ModalHeader } from '@cowprotocol/ui'
+import { Modal } from '@cowprotocol/ui'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { CowModal } from 'common/pure/Modal'
@@ -18,6 +18,7 @@ import {
   trackAffiliateEvent,
 } from '../analytics/affiliateAnalytics.utils'
 import { useAffiliateStateViewAnalytics } from '../hooks/useAffiliateStateViewAnalytics'
+import { useAffiliateSupportedNetworkNames } from '../hooks/useAffiliateSupportedNetworkNames'
 import { useAffiliateTraderRecoverySideEffect } from '../hooks/useAffiliateTraderRecoverySideEffect'
 import { useAffiliateTraderRefUrlSideEffect } from '../hooks/useAffiliateTraderRefUrlSideEffect'
 import { TraderWalletStatus, useAffiliateTraderWallet } from '../hooks/useAffiliateTraderWallet'
@@ -73,14 +74,15 @@ export function AffiliateTraderModal(): ReactNode {
   })
 
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const supportedNetworks = useAffiliateSupportedNetworkNames()
   const showAffiliateBanner = walletStatus === TraderWalletStatus.UNSUPPORTED && !isProviderNetworkUnsupported
 
   return (
     <>
-      {isModalOpen && showAffiliateBanner && <UnsupportedNetwork />}
+      {isModalOpen && showAffiliateBanner && <UnsupportedNetwork supportedNetworks={supportedNetworks} />}
       <CowModal isOpen={isModalOpen} onDismiss={toggleAffiliateModal} padding="0" maxHeight={90}>
         <ModalContainer>
-          <ModalHeader onBack={toggleAffiliateModal} />
+          <Modal.Header onBack={toggleAffiliateModal} />
           {walletStatus === TraderWalletStatus.UNSUPPORTED ? (
             <AffiliateTraderModalUnsupported />
           ) : walletStatus === TraderWalletStatus.LINKED ? (

@@ -17,6 +17,18 @@ export function tokenMapToListWithLogo(tokenMaps: TokensMap[], chainId: number):
         if (token.tags?.length) {
           existing.tags = [...new Set([...(existing.tags || []), ...token.tags])]
         }
+
+        // Favorites are persisted, so one saved before a token gained a logo shadows the list entry that has one
+        if (!existing.logoURI && token.logoURI) {
+          acc[key] = { ...existing, logoURI: token.logoURI }
+        }
+
+        if (existing.extensions || token.extensions) {
+          acc[key] = {
+            ...acc[key],
+            extensions: { ...existing.extensions, ...token.extensions, rank: token.extensions?.rank },
+          }
+        }
       } else {
         acc[key] = token
       }

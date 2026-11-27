@@ -1,4 +1,4 @@
-import { isTruthy } from '@cowprotocol/common-utils'
+import { deepEqual, isTruthy } from '@cowprotocol/common-utils'
 import {
   ContractsOrder,
   OrderParameters,
@@ -6,6 +6,7 @@ import {
   // eslint-disable-next-line @typescript-eslint/no-restricted-imports
   COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS as COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS_PROD,
   AddressPerChain,
+  areAddressesEqual,
 } from '@cowprotocol/cow-sdk'
 
 import { computeOrderUid } from 'utils/orderUtils/computeOrderUid'
@@ -47,12 +48,27 @@ export async function generateTwapOrderParts(
   twapOrder: TwapOrderItem,
   safeAddress: string,
   chainId: SupportedChainId,
+  cachedParts: TwapPartOrderItem[] = [],
 ): Promise<{ [id: string]: TwapPartOrderItem[] }> {
   const twapOrderId = twapOrder.id
 
   const parts = [...new Array(twapOrder.order.n)]
     .map((_, index) => createPartOrderFromParent(twapOrder, index))
     .filter(isTruthy)
+
+  if (
+    cachedParts.length === parts.length &&
+    cachedParts.every(
+      (cached, index) =>
+        cached.index === index &&
+        cached.twapOrderId === twapOrderId &&
+        cached.chainId === chainId &&
+        areAddressesEqual(cached.safeAddress, safeAddress) &&
+        deepEqual(cached.order, parts[index]),
+    )
+  ) {
+    return { [twapOrderId]: cachedParts }
+  }
 
   const ids = await Promise.all(
     parts.map((part) =>

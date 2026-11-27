@@ -1,5 +1,8 @@
+import { ReactNode } from 'react'
+
 import svgProgressbarBadNewsSrc from '@cowprotocol/assets/cow-swap/progressbar-bad-news.svg'
 import svgProgressbarGoodNewsSrc from '@cowprotocol/assets/cow-swap/progressbar-good-news.svg'
+import { isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 
 import { Trans } from '@lingui/react/macro'
@@ -12,19 +15,15 @@ import * as styledEl from './styled'
 import { Description } from '../../sharedStyled'
 
 interface ExpiredStepProps {
+  chainId: SupportedChainId
   children: React.ReactNode
   navigateToNewOrder?: Command
 }
 
 const INFO_ICON_HEIGHT = 38
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function ExpiredStep({ children, navigateToNewOrder }: ExpiredStepProps) {
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleAnalytics = (action: string) => {
+export function ExpiredStep({ chainId, children, navigateToNewOrder }: ExpiredStepProps): ReactNode {
+  const handleAnalytics = (action: string): void => {
     toCowSwapGtmEvent({
       category: CowSwapAnalyticsCategory.PROGRESS_BAR,
       action,
@@ -48,9 +47,13 @@ export function ExpiredStep({ children, navigateToNewOrder }: ExpiredStepProps) 
             <Trans>The bad news</Trans>
           </h3>
           <p>
-            <Trans>
-              Your order expired. This could be due to gas spikes, volatile prices, or problems with the network.
-            </Trans>
+            {isSolanaChain(chainId) ? (
+              <Trans>Your order expired. This could be due to volatile prices or problems with the network.</Trans>
+            ) : (
+              <Trans>
+                Your order expired. This could be due to gas spikes, volatile prices, or problems with the network.
+              </Trans>
+            )}
           </p>
         </styledEl.InfoCard>
         <styledEl.InfoCard variant="success">

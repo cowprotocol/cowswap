@@ -1,9 +1,9 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
-import { TokenWithLogo, USDC_GNOSIS_CHAIN, USDCe_GNOSIS_CHAIN } from '@cowprotocol/common-const'
+import { NATIVE_CURRENCIES, TokenWithLogo, USDC_GNOSIS_CHAIN, USDCe_GNOSIS_CHAIN } from '@cowprotocol/common-const'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
-import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { DEFAULT_FAVORITE_TOKENS } from '../../const/defaultFavoriteTokens'
 import { TokensMap } from '../../types'
@@ -26,7 +26,15 @@ export const favoriteTokensListAtom = atom((get) => {
 
   if (!state) return EMPTY_FAVORITE_TOKENS
 
-  return Object.values(state).map((token) => TokenWithLogo.fromToken(token, token.logoURI))
+  const nativeCurrency = NATIVE_CURRENCIES[chainId]
+
+  return Object.values(state).map((token) => {
+    // Favorites saved before the native currency carried a logo persist without one
+    const logoURI =
+      token.logoURI ?? (areAddressesEqual(token.address, nativeCurrency.address) ? nativeCurrency.logoURI : undefined)
+
+    return TokenWithLogo.fromToken(token, logoURI)
+  })
 })
 
 export const resetFavoriteTokensAtom = atom(null, (get, set) => {

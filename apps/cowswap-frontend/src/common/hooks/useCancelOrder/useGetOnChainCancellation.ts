@@ -46,6 +46,10 @@ export function useGetOnChainCancellation(): (order: Order) => Promise<OnChainCa
         return cancelTwapOrder(order.composableCowInfo!.id! as `0x${string}`, order)
       }
 
+      if (order.isEoaTwapOrder && order.composableCowInfo?.parentId) {
+        return cancelTwapOrder(order.composableCowInfo.parentId as `0x${string}`, order, { partOnly: true })
+      }
+
       const isEthFlowOrder = getIsNativeToken(order.inputToken)
 
       if (isEthFlowOrder) {

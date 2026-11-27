@@ -4,6 +4,7 @@ import {
   captureError,
   ERROR_TYPES,
   extractErrorCode,
+  getProviderErrorMessage,
   isRejectRequestProviderError,
   normalizeError,
 } from '@cowprotocol/common-utils'
@@ -28,7 +29,7 @@ export function useHandleApprovalError(symbol: string | undefined): (error: unkn
       } else {
         captureError(error, ERROR_TYPES.ON_APPROVE)
         approvalAnalytics('Error', symbol, extractErrorCode(err))
-        updateApproveProgressModalState({ error: error.message })
+        updateApproveProgressModalState({ error: getProviderErrorMessage(error) || error.message })
       }
     },
     [updateApproveProgressModalState, t, approvalAnalytics, symbol],

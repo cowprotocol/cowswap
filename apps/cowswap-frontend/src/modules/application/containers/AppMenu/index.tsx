@@ -1,31 +1,49 @@
+import { useAtom } from 'jotai'
 import { PropsWithChildren, ReactNode, useMemo } from 'react'
 
 import { SUPPORTED_LOCALES } from '@cowprotocol/common-const'
 import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { Command } from '@cowprotocol/types'
 import { Color, MenuBar, type CowSwapTheme } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
+import { alphaNetworksEnabledAtom, ARE_ALPHA_NETWORKS_OFFERED } from 'entities/alphaNetworks'
 import SVG from 'react-inlinesvg'
 import { NavLink } from 'react-router'
 
 import { useDarkModeManager, useUserLocaleManager } from 'legacy/state/user/hooks'
 
-import { useGetTradeUrlParams } from 'modules/trade'
+import {
+  GRAFFITI_MENU_BLUR,
+  graffitiThemeEnabledAtom,
+  isGraffitiTheme,
+  useIsGraffitiThemeOffered,
+  useIsGraffitiWallEnabled,
+} from 'modules/graffitiWall'
+import { useGetTradeUrlParams, useTradeRouteContext } from 'modules/trade'
 
 import { APP_HEADER_ELEMENT_ID } from 'common/constants/common'
+import { Routes } from 'common/constants/routes'
 import { useIsInternationalizationEnabled } from 'common/hooks/featureFlags/useIsInternationalizationEnabled'
-import { useCustomTheme } from 'common/hooks/useCustomTheme'
 import { useMenuItems } from 'common/hooks/useMenuItems'
-import { parameterizeTradeRoute } from 'common/modules/tradeNavigation'
+import { addChainIdToRoute, parameterizeTradeRoute } from 'common/modules/tradeNavigation'
+import { isTwapSupportedChain } from 'common/utils/isTwapSupportedChain'
 
 import { HideMobile, isMobileQuery } from './styled'
 
+import { useAppTheme } from '../../hooks/useAppTheme'
 import { NAV_ITEMS, PRODUCT_VARIANT } from '../App/menuConsts'
+import { isViceTheme, VICE_MENU_BAR_COLORS } from '../App/viceTheme.styled'
 
 const LinkComponent = ({ href, children }: PropsWithChildren<{ href: string }>): ReactNode => {
   const external = href.startsWith('http')
+
+  // The RWA app is served by a separate deployment, so it needs a full page load instead of a hash route
+  if (href === Routes.RWA) {
+    return <a href={href}>{children}</a>
+  }
 
   return (
     <NavLink to={href} target={external ? '_blank' : '_self'} rel={external ? 'noopener noreferrer' : undefined}>
@@ -39,29 +57,27 @@ interface AppMenuProps {
   customTheme?: CowSwapTheme
 }
 
+interface SettingsNavItem {
+  label: string
+  onClick: Command
+}
+
 export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMenuProps): ReactNode {
   const { chainId } = useWalletInfo()
   const isInjectedWidgetMode = isInjectedWidget()
   const menuItems = useMenuItems()
-  const { isSolversEnabled } = useFeatureFlags()
+  const { isSolversEnabled, isRwaEnabled } = useFeatureFlags()
   const [darkMode, toggleDarkMode] = useDarkModeManager()
   const { setLocale } = useUserLocaleManager()
   const isMobile = useMediaQuery(isMobileQuery(false))
-  const resolvedCustomTheme = useCustomTheme()
+  const resolvedCustomTheme = useAppTheme()
   const customTheme = overriddenCustomTheme ?? resolvedCustomTheme ?? (darkMode ? 'dark' : 'light')
   const getTradeUrlParams = useGetTradeUrlParams()
   const { t } = useLingui()
   const isInternationalizationEnabled = useIsInternationalizationEnabled()
+  const isGraffitiWallEnabled = useIsGraffitiWallEnabled()
 
-  const settingsNavItems = useMemo(
-    () => [
-      {
-        label: darkMode ? t`Light mode` : t`Dark mode`,
-        onClick: toggleDarkMode,
-      },
-    ],
-    [darkMode, toggleDarkMode, t],
-  )
+  const settingsNavItems = useSettingsNavItems(darkMode, toggleDarkMode)
 
   const languageNavItems = {
     label: t`Languages`,
@@ -71,12 +87,21 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
     })),
   }
 
+  const tradeMenuItems = useMemo(
+    () => menuItems.filter((item) => item.route !== Routes.ADVANCED_ORDERS || isTwapSupportedChain(chainId)),
+    [menuItems, chainId],
+  )
+
+  const { chainId: tradeChainId } = useTradeRouteContext()
+  const logoHref = useMemo(() => addChainIdToRoute(Routes.SWAP, tradeChainId), [tradeChainId])
+
   const navItems = useMemo(() => {
     return [
       {
         label: t`Trade`,
-        children: menuItems.map((item) => {
-          const href = parameterizeTradeRoute(getTradeUrlParams(item), item.route, true)
+        children: tradeMenuItems.map((item) => {
+          const href =
+            item.route === Routes.RWA ? item.route : parameterizeTradeRoute(getTradeUrlParams(item), item.route, true)
 
           return {
             href,
@@ -91,9 +116,9 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
           }
         }),
       },
-      ...NAV_ITEMS(chainId, !!isSolversEnabled),
+      ...NAV_ITEMS(chainId, { isSolversEnabled: !!isSolversEnabled, isGraffitiWallEnabled }),
     ]
-  }, [t, menuItems, chainId, getTradeUrlParams, isSolversEnabled])
+  }, [t, tradeMenuItems, chainId, getTradeUrlParams, isSolversEnabled, isGraffitiWallEnabled])
 
   if (isInjectedWidgetMode) return null
 
@@ -107,18 +132,64 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
       bgColorDark={'rgb(222 227 230 / 7%)'}
       bgDropdownColorDark={Color.neutral0}
       bgDropdownColorLight={Color.neutral100}
+      blur={isGraffitiTheme(customTheme) ? GRAFFITI_MENU_BLUR : undefined}
       colorDark={'#DEE3E6'}
       customTheme={customTheme}
       defaultFillDark="rgba(222, 227, 230, 0.4)"
       hoverBackgroundDark={'#18193B'}
+      {...(isViceTheme(customTheme) ? VICE_MENU_BAR_COLORS : undefined)}
       id={APP_HEADER_ELEMENT_ID}
       languageNavItems={languageNavItems}
+      logoHref={logoHref}
       navItems={navItems}
       persistentAdditionalContent={isMobile ? null : <HideMobile>{children}</HideMobile>} // This will stay at its original location
       productVariant={PRODUCT_VARIANT}
       settingsNavItems={settingsNavItems}
       showGlobalSettings
       isInternationalizationEnabled={isInternationalizationEnabled}
+      isRwaEnabled={!!isRwaEnabled}
     />
+  )
+}
+
+function useSettingsNavItems(darkMode: boolean, toggleDarkMode: Command): SettingsNavItem[] {
+  const [areAlphaNetworksEnabled, setAlphaNetworksEnabled] = useAtom(alphaNetworksEnabledAtom)
+  const [graffitiThemeEnabled, setGraffitiThemeEnabled] = useAtom(graffitiThemeEnabledAtom)
+  const graffitiThemeOffered = useIsGraffitiThemeOffered()
+  const { t } = useLingui()
+
+  return useMemo(
+    () => [
+      {
+        label: darkMode ? t`Light Mode` : t`Dark Mode`,
+        onClick: toggleDarkMode,
+      },
+      ...(graffitiThemeOffered
+        ? [
+            {
+              label: graffitiThemeEnabled ? t`Disable Graffiti Theme` : t`Enable Graffiti Theme`,
+              onClick: () => setGraffitiThemeEnabled(!graffitiThemeEnabled),
+            },
+          ]
+        : []),
+      ...(ARE_ALPHA_NETWORKS_OFFERED
+        ? [
+            {
+              label: areAlphaNetworksEnabled ? t`Disable Alpha Networks` : t`Enable Alpha Networks`,
+              onClick: () => setAlphaNetworksEnabled(!areAlphaNetworksEnabled),
+            },
+          ]
+        : []),
+    ],
+    [
+      darkMode,
+      toggleDarkMode,
+      graffitiThemeOffered,
+      graffitiThemeEnabled,
+      setGraffitiThemeEnabled,
+      areAlphaNetworksEnabled,
+      setAlphaNetworksEnabled,
+      t,
+    ],
   )
 }

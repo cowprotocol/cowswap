@@ -7,7 +7,8 @@ import { sendCalls } from 'wagmi/actions'
 
 import type { MetaTransactionData } from '@safe-global/types-kit'
 
-import { useSafeAppsSdk } from '../../wagmi/hooks/useSafeAppsSdk'
+import { safeAppsSdkAtom } from '../../wagmi/state/walletMetadata.atoms'
+import { runWalletTransactionGuard } from '../../wagmi/walletTransactionGuard'
 import { useWalletInfo } from '../hooks'
 import { isAtomicBatchSupportedAtom } from '../state/walletCapabilitiesAtom'
 
@@ -15,7 +16,7 @@ export type SendBatchTxCallback = (txs: MetaTransactionData[]) => Promise<string
 
 export function useSendBatchTransactions(): SendBatchTxCallback {
   const config = useConfig()
-  const safeAppsSdk = useSafeAppsSdk()
+  const safeAppsSdk = useAtomValue(safeAppsSdkAtom)
   const { chainId, account } = useWalletInfo()
   const isAtomicBatchSupported = useAtomValue(isAtomicBatchSupportedAtom)
 
@@ -40,6 +41,11 @@ export function useSendBatchTransactions(): SendBatchTxCallback {
       }
 
       if (safeAppsSdk) {
+        runWalletTransactionGuard(
+          txs.map(({ to, data }) => ({ from: account, to, data })),
+          chainId,
+        )
+
         const tx = await safeAppsSdk.txs.send({ txs })
 
         return tx.safeTxHash

@@ -120,6 +120,7 @@ const defaultProps: OrderProgressBarProps = {
     surplusPercent: '10',
     showFiatValue: true,
     showSurplus: true,
+    isReady: true,
   },
   isProgressBarSetup: true,
   swapAndBridgeContext: swapAndBridgeContextMock,
@@ -327,6 +328,24 @@ const Fixtures = {
     <Wrapper>
       <OrderProgressBar {...defaultProps} stepName={OrderProgressBarStepName.FINISHED} />
     </Wrapper>
+  ),
+  '4-finished-single-solver': () => (
+    <NarrowWrapper>
+      <OrderProgressBar
+        {...defaultProps}
+        solverCompetition={[
+          {
+            solver: 'baseline',
+            displayName: 'Baseline',
+            executedAmounts: {
+              sell: '5000000000000000000',
+              buy: '1000000000000000000000',
+            },
+          },
+        ]}
+        stepName={OrderProgressBarStepName.FINISHED}
+      />
+    </NarrowWrapper>
   ),
   '4-finished-customReceiver': () => (
     <Wrapper>

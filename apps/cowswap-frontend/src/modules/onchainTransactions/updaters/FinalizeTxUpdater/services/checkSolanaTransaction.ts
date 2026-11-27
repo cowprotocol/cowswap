@@ -1,16 +1,23 @@
+import { jotaiStore } from '@cowprotocol/core'
 import { Command } from '@cowprotocol/types'
 
+import { t } from '@lingui/core/macro'
+import { orderBookApi } from 'cowSdk'
 import ms from 'ms.macro'
 
 import { checkedTransaction, finalizeTransaction } from 'legacy/state/enhancedTransactions/actions'
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
+import { invalidateOrdersBatch } from 'legacy/state/orders/actions'
+import { isOrderFulfilled, partialOrderUpdate } from 'legacy/state/orders/utils'
+
+import { emitCancelledOrderEvent, orderFailureReasonsAtom } from 'modules/orders'
+
+import { resolveConfirmedSolanaStatus, SolanaRevertReason, SolanaStatusResult } from './resolveConfirmedSolanaStatus'
 
 import { emitOnchainTransactionEvent } from '../../../utils/emitOnchainTransactionEvent'
 import { CheckEthereumTransactions } from '../types'
 
 import type { Connection } from '@solana/web3.js'
-
-type StatusResult = { type: 'success' | 'reverted'; slot: number } | { type: 'pending' }
 
 /**
  * `searchTransactionHistory` reaches into the RPC provider's own archival index rather than the
@@ -41,7 +48,7 @@ export function checkSolanaTransaction(
 
   let isCancelled = false
 
-  const finalize = (status: 'success' | 'reverted', slot: number): void => {
+  const finalize = (status: 'success' | 'reverted', slot: number, reason?: SolanaRevertReason): void => {
     const receipt = {
       to: null,
       from: transaction.from,
@@ -55,21 +62,61 @@ export function checkSolanaTransaction(
 
     dispatch(finalizeTransaction({ chainId, hash, receipt }))
 
-    if (!transaction.solanaOrderCreation) {
-      emitOnchainTransactionEvent({
-        receipt: {
-          to: '',
-          from: transaction.from,
-          contractAddress: '',
-          transactionHash: hash as `0x${string}`,
-          blockNumber: slot,
-          status: status === 'success' ? 1 : 0,
-          replacementType: transaction.replacementType,
-        },
-        summary: transaction.summary || '',
-        isSafeTx: false,
-      })
+    // Like EVM's on-chain cancellation, a cancellation tx has no activity-list entry or completion
+    // snackbar of its own on success - the order it cancels (or fails to) carries that instead. Only a
+    // failed cancellation gets a snackbar, same as EVM.
+    if (transaction.onChainCancellation) {
+      const { orderId, sellTokenSymbol } = transaction.onChainCancellation
+
+      if (status === 'success') {
+        void finalizeSuccessfulCancellation(orderId, params, hash)
+      } else {
+        clearCancellingState(orderId, params)
+        emitTransactionFailedEvent(
+          transaction,
+          hash,
+          slot,
+          reason === 'multisig-rejected'
+            ? t`Cancellation rejected in your multisig`
+            : t`Failed to cancel order selling ${sellTokenSymbol}`,
+        )
+      }
+
+      return
     }
+
+    if (transaction.solanaCancelOrderIds) {
+      finalizeBatchCancellation(transaction.solanaCancelOrderIds, { transaction, params, slot, status, reason })
+
+      return
+    }
+
+    if (transaction.solanaOrderCreation) {
+      const createdOrderId = getCreatedOrderId(transaction)
+
+      // No id means a transaction stored before this field carried one — see `getCreatedOrderId`.
+      // There is nothing to fail, and claiming a failure without failing anything would leave the
+      // order in `CREATING` under a notification saying it had not been placed.
+      if (status === 'reverted' && createdOrderId) {
+        failCreatedOrder(createdOrderId, transaction, params, slot, reason)
+      }
+
+      return
+    }
+
+    emitOnchainTransactionEvent({
+      receipt: {
+        to: '',
+        from: transaction.from,
+        contractAddress: '',
+        transactionHash: hash as `0x${string}`,
+        blockNumber: slot,
+        status: status === 'success' ? 1 : 0,
+        replacementType: transaction.replacementType,
+      },
+      summary: transaction.summary || '',
+      isSafeTx: false,
+    })
   }
 
   checkStatus(solanaConnection, hash, transaction)
@@ -81,7 +128,7 @@ export function checkSolanaTransaction(
         return
       }
 
-      finalize(result.type === 'success' ? 'success' : 'reverted', result.slot)
+      finalize(result.type, result.slot, result.type === 'reverted' ? result.reason : undefined)
     })
     .catch((error) => {
       if (isCancelled) return
@@ -100,14 +147,17 @@ async function checkHistoricalStatus(
   signature: string,
   transaction: EnhancedTransactionDetails,
   fallbackSlot: number,
-): Promise<StatusResult> {
+): Promise<SolanaStatusResult> {
   const { value } = await connection.getSignatureStatuses([signature], { searchTransactionHistory: true })
   const [historicalStatus] = value
 
   if (historicalStatus) {
-    return historicalStatus.err
-      ? { type: 'reverted', slot: historicalStatus.slot }
-      : { type: 'success', slot: historicalStatus.slot }
+    if (historicalStatus.err) return { type: 'reverted', slot: historicalStatus.slot }
+
+    // Landing is not the same as succeeding: for a multisig filing the proposal decides. This path is
+    // reached within a minute or two of every send, once the signature ages out of the recent cache,
+    // so skipping the check here would retire the transaction before any vote could be cast.
+    return resolveConfirmedSolanaStatus(connection, signature, transaction, historicalStatus.slot)
   }
 
   // Still nothing, anywhere — but if we're only just past the blockhash's validity window, the archive
@@ -122,7 +172,7 @@ async function checkStatus(
   connection: Connection | undefined,
   signature: string,
   transaction: EnhancedTransactionDetails,
-): Promise<StatusResult> {
+): Promise<SolanaStatusResult> {
   if (!connection) return { type: 'pending' }
 
   // The cheap lookup: consults only the node's recent status cache.
@@ -134,7 +184,9 @@ async function checkStatus(
 
     const isConfirmed = status.confirmationStatus === 'confirmed' || status.confirmationStatus === 'finalized'
 
-    return isConfirmed ? { type: 'success', slot: status.slot } : { type: 'pending' }
+    if (!isConfirmed) return { type: 'pending' }
+
+    return resolveConfirmedSolanaStatus(connection, signature, transaction, status.slot)
   }
 
   const lastValidBlockHeight = getLastValidBlockHeight(transaction)
@@ -153,6 +205,144 @@ async function checkStatus(
   // Confirm against transaction history before declaring failure. That lookup is expensive for the node,
   // which is why it is reached only here, once the recent cache is no longer an option.
   return checkHistoricalStatus(connection, signature, transaction, context.slot)
+}
+
+function clearCancellingState(orderId: string, params: CheckEthereumTransactions): void {
+  const { chainId, isSafeWallet, dispatch } = params
+
+  partialOrderUpdate(
+    {
+      chainId,
+      order: { id: orderId, isCancelling: false, cancellationHash: undefined, cancellationHashTime: undefined },
+      isSafeWallet,
+    },
+    dispatch,
+  )
+}
+
+function emitTransactionFailedEvent(
+  transaction: EnhancedTransactionDetails,
+  hash: string,
+  slot: number,
+  summary: string,
+): void {
+  emitOnchainTransactionEvent({
+    receipt: {
+      to: '',
+      from: transaction.from,
+      contractAddress: '',
+      transactionHash: hash as `0x${string}`,
+      blockNumber: slot,
+      status: 0,
+      replacementType: transaction.replacementType,
+    },
+    summary,
+    isSafeTx: false,
+  })
+}
+
+/**
+ * The order lives only in local state until the order book indexes its creation transaction, and the
+ * book is never told about one whose transaction died. Nothing else links the two, so without this the
+ * order polls for an id that will never resolve and sits in `CREATING` indefinitely — offered as
+ * cancellable the whole time, against an order that does not exist on chain.
+ */
+function failCreatedOrder(
+  orderId: string,
+  transaction: EnhancedTransactionDetails,
+  params: CheckEthereumTransactions,
+  slot: number,
+  reason?: SolanaRevertReason,
+): void {
+  const { chainId, dispatch, isSafeWallet } = params
+
+  if (reason) {
+    jotaiStore.set(orderFailureReasonsAtom, (reasons) => ({ ...reasons, [orderId]: reason }))
+  }
+
+  dispatch(invalidateOrdersBatch({ chainId, ids: [orderId], isSafeWallet }))
+  // Not `transaction.summary`, which reads as the steps the transaction bundled: what the user needs
+  // to know is that the order did not get placed, and why when we can say.
+  emitTransactionFailedEvent(
+    transaction,
+    transaction.hash,
+    slot,
+    reason === 'multisig-rejected' ? t`Order rejected in your multisig` : t`Failed to place order`,
+  )
+}
+
+/**
+ * A batch cancellation reports per order: each one either goes to cancelled, or is released back to open
+ * with a single snackbar explaining why — never silently left mid-cancellation.
+ */
+function finalizeBatchCancellation(
+  orderIds: string[],
+  {
+    transaction,
+    params,
+    slot,
+    status,
+    reason,
+  }: {
+    transaction: EnhancedTransactionDetails
+    params: CheckEthereumTransactions
+    slot: number
+    status: 'success' | 'reverted'
+    reason?: SolanaRevertReason
+  },
+): void {
+  if (status === 'success') {
+    orderIds.forEach((orderId) => void finalizeSuccessfulCancellation(orderId, params, transaction.hash))
+
+    return
+  }
+
+  orderIds.forEach((orderId) => clearCancellingState(orderId, params))
+
+  const ordersCount = orderIds.length
+
+  emitTransactionFailedEvent(
+    transaction,
+    transaction.hash,
+    slot,
+    reason === 'multisig-rejected'
+      ? t`Cancellation rejected in your multisig`
+      : t`Failed to cancel ${ordersCount} orders`,
+  )
+}
+
+/**
+ * A solver's fill can land around the same time as the cancellation. Check the order-book before
+ * marking the order cancelled so one that's actually fulfilled never flashes "Cancelled" - leave it
+ * alone and let the normal fulfilled-order detection pick it up instead.
+ */
+async function finalizeSuccessfulCancellation(
+  orderId: string,
+  params: CheckEthereumTransactions,
+  hash: string,
+): Promise<void> {
+  const { chainId, isSafeWallet, cancelOrdersBatch } = params
+  const order = await orderBookApi.getOrderMultiEnv(orderId, { chainId })
+
+  if (!order || isOrderFulfilled(order)) return
+
+  cancelOrdersBatch({ chainId, ids: [orderId], isSafeWallet })
+  emitCancelledOrderEvent({ chainId, order, transactionHash: hash })
+}
+
+/**
+ * Transactions are persisted to local storage, and before the id was added this field was a plain
+ * `true`. One stored by an older build therefore still reads as truthy while carrying no id, so the
+ * shape is checked rather than trusted.
+ */
+function getCreatedOrderId(transaction: EnhancedTransactionDetails): string | undefined {
+  const value: unknown = transaction.solanaOrderCreation
+
+  if (typeof value !== 'object' || value === null) return undefined
+
+  const { orderId } = value as { orderId?: unknown }
+
+  return typeof orderId === 'string' ? orderId : undefined
 }
 
 function getLastValidBlockHeight(transaction: EnhancedTransactionDetails): number | undefined {

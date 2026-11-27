@@ -1,5 +1,68 @@
 # Changelog
 
+## [2.3.16](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.3.15...iframe-transport-v2.3.16) (2026-11-18)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.16.0
+
+## [2.3.15](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.3.14...iframe-transport-v2.3.15) (2026-11-11)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.15.1
+
+## [2.3.14](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.3.13...iframe-transport-v2.3.14) (2026-11-10)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.15.0
+
+## [2.3.13](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.3.12...iframe-transport-v2.3.13) (2026-11-05)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.14.2
+
+## [2.3.12](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.3.11...iframe-transport-v2.3.12) (2026-10-27)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.14.1
+
+## [2.3.11](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.3.10...iframe-transport-v2.3.11) (2026-10-21)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.14.0
+
+## [2.3.10](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.3.9...iframe-transport-v2.3.10) (2026-10-14)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.13.0
+
+## [2.3.9](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.3.8...iframe-transport-v2.3.9) (2026-10-06)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.12.0
+
+## [2.3.8](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.3.7...iframe-transport-v2.3.8) (2026-09-23)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.11.0
+
 ## [2.3.7](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.3.6...iframe-transport-v2.3.7) (2026-09-09)
 
 ### Patch Changes

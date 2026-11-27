@@ -1,5 +1,15 @@
+import { backendEnv } from '@cowprotocol/common-utils'
+import { jotaiStore } from '@cowprotocol/core'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
+import { SwapAdvancedSettings } from '@cowprotocol/sdk-trading'
 import { getSolanaQuote as getSolanaQuoteFromSdk } from '@cowprotocol/sdk-trading-solana'
+import { tokensByAddressAtom } from '@cowprotocol/tokens'
+
+import { PublicKey } from '@solana/web3.js'
+import { orderBookApi } from 'cowSdk'
+
+import { getSolanaTokenProgramId } from 'common/utils/getSolanaTokenProgramId'
 
 import { SolanaQuoteAndPost } from '../types'
 
@@ -9,12 +19,16 @@ import { SolanaQuoteAndPost } from '../types'
  * returned alongside `quoteResults` so `solanaFlow` can build the `CreateOrder` instruction and bundle it
  * with the wrap/delegate instructions into one transaction — quoting itself stays free of any signer.
  *
- * `orderToSign`/`appDataInfo`/`orderTypedData` stay stubbed: these are EIP-712/CoW app-data concepts
- * the Solana settlement program's order intent has no counterpart for at all. `tradeParameters` is
- * built from the real request/response below — `quoteUsingSameParameters` and `getQuoteTimeOffset`
- * (validFor-based expiry offset used by `getOrderValidTo`) both read it and need real values, not stubs.
+ * `appDataInfo` is the SDK's doc for `advancedSettings.appData`, merged onto its own defaults; `solanaFlow`
+ * merges the app's doc onto it again when building the order. `orderToSign`/`orderTypedData` stay stubbed:
+ * they are EIP-712 concepts with no Solana counterpart. `tradeParameters` is built from the real
+ * request/response below — `quoteUsingSameParameters` and `getQuoteTimeOffset` (validFor-based expiry
+ * offset used by `getOrderValidTo`) both read it and need real values, not stubs.
  */
-export async function getSolanaQuote(quoteParams: QuoteBridgeRequest): Promise<SolanaQuoteAndPost> {
+export async function getSolanaQuote(
+  quoteParams: QuoteBridgeRequest,
+  advancedSettings: SwapAdvancedSettings,
+): Promise<SolanaQuoteAndPost> {
   const {
     kind,
     amount,
@@ -25,19 +39,40 @@ export async function getSolanaQuote(quoteParams: QuoteBridgeRequest): Promise<S
     owner,
     account,
     receiver,
+    partiallyFillable,
+    appCode,
   } = quoteParams
 
-  const { quoteResults, solanaQuote } = await getSolanaQuoteFromSdk({
-    ownerAddress: owner ?? account,
-    sellTokenAddress,
-    buyTokenAddress,
-    receiverAddress: receiver ?? account,
-    sellTokenDecimals,
-    buyTokenDecimals,
-    amount,
-    kind,
-    validForSeconds: quoteParams.validFor,
-  })
+  const tokenProgramId = await getTokenProgramIdResolver()
+
+  const { quoteResults, solanaQuote } = await getSolanaQuoteFromSdk(
+    {
+      appCode,
+      ownerAddress: owner ?? account,
+      sellTokenAddress,
+      buyTokenAddress,
+      receiverAddress: receiver ?? account,
+      sellTokenDecimals,
+      buyTokenDecimals,
+      amount,
+      kind,
+      partiallyFillable,
+      validForSeconds: quoteParams.validFor,
+      // Both token accounts in the intent are derived from these. The SDK requires them: the wrong
+      // program names accounts the mint's own program does not own, and the order book rejects the
+      // whole transaction with `InvalidTransaction`.
+      sellTokenProgramId: tokenProgramId(sellTokenAddress),
+      buyTokenProgramId: tokenProgramId(buyTokenAddress),
+      // Jupiter reports 0 bps unless the order is requested for a specific taker, so the tolerance can't come
+      // from the quote provider. `useQuoteParams` passes the user-set or default value, and omits it only when
+      // smart slippage equals the quote's own suggestion, which the SDK then signs.
+      slippageBps: quoteParams.swapSlippageBps,
+      priceQuality: advancedSettings.quoteRequest?.priceQuality,
+    },
+    // The app's own client, so quotes land on the environment the rest of the app talks to. Without it
+    // the SDK builds a default one, which is prod — where Solana is not deployed.
+    { advancedSettings, orderBookApi, env: backendEnv },
+  )
 
   return {
     quoteResults,
@@ -47,4 +82,14 @@ export async function getSolanaQuote(quoteParams: QuoteBridgeRequest): Promise<S
     postSwapOrderFromQuote: () =>
       Promise.reject(new Error('Solana orders are created by solanaFlow via sendSolanaFlow, not from the quote')),
   }
+}
+
+/**
+ * Reads the token program from the list's Token-2022 flag, the same source `planDelegateStep` approves
+ * against — resolving it from the mint instead would cost an RPC round-trip on every quote poll.
+ */
+async function getTokenProgramIdResolver(): Promise<(address: string) => PublicKey> {
+  const { tokens } = await jotaiStore.get(tokensByAddressAtom)
+
+  return (address) => getSolanaTokenProgramId(tokens[getAddressKey(address)])
 }

@@ -61,7 +61,8 @@ export type AdvancedOrdersWidgetProps = {
   params: AdvancedOrdersWidgetParams
   mapCurrencyInfo?: (info: CurrencyInfo) => CurrencyInfo
   confirmContent: ReactElement
-  children(warnings: ReactNode): ReactNode
+  topContent?: ReactNode
+  children(warnings: ReactNode, captcha: ReactNode | null): ReactNode
 }
 
 // TODO: Break down this large function into smaller functions
@@ -73,6 +74,7 @@ export function AdvancedOrdersWidget({
   params,
   confirmContent,
   mapCurrencyInfo,
+  topContent,
 }: AdvancedOrdersWidgetProps) {
   const { i18n } = useLingui()
   const { title, orderType, buttonText, buttonLink, subtitle } = UNLOCK_SCREEN
@@ -123,8 +125,9 @@ export function AdvancedOrdersWidget({
 
   const slots: TradeWidgetSlots = {
     settingsWidget: <AdvancedOrdersSettings />,
-    bottomContent(warnings) {
-      return children(warnings)
+    topContent,
+    bottomContent(warnings, captcha) {
+      return children(warnings, captcha)
     },
     updaters,
     lockScreen: isUnlocked ? undefined : (

@@ -63,13 +63,12 @@ interface SummaryCardsProps {
 // TODO: Reduce function complexity by extracting logic
 
 export function SummaryCards({ summaryData, children }: SummaryCardsProps): React.ReactNode {
-  const { batchInfo, dailyTransactions, totalTokens, volumeUsd, dailyFees, isLoading } = summaryData || {}
+  const { batchInfo, dailyTransactions, totalTokens, volumeUsd, isLoading } = summaryData || {}
   const isDesktop = useMediaQuery(Media.LargeAndUp(false))
   const valueTextSize = isDesktop ? DESKTOP_TEXT_SIZE : MOBILE_TEXT_SIZE
   const rowsByCard = isDesktop ? '2row' : '3row'
   const diffTransactions =
     (dailyTransactions && getPercentageDifference(dailyTransactions.now, dailyTransactions.before)) || 0
-  const diffFees = (dailyFees && getPercentageDifference(dailyFees.now, dailyFees.before)) || 0
 
   return (
     <CardRow>
@@ -105,7 +104,7 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): Reac
       </WrappedDoubleCard>
       <Card emptyContent xs={12} sm={12} md={12} lg={4}>
         <CardRow>
-          <Card xs={6} sm={3} md={3} lg={6}>
+          <Card xs={6} sm={4} md={4} lg={6}>
             <CardContent
               variant={rowsByCard}
               label1="24h Transactions"
@@ -116,7 +115,7 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): Reac
               valueSize={valueTextSize}
             />
           </Card>
-          <Card xs={6} sm={3} md={3} lg={6}>
+          <Card xs={6} sm={4} md={4} lg={6}>
             <CardContent
               variant="2row"
               label1="Total Tokens"
@@ -125,18 +124,7 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): Reac
               valueSize={valueTextSize}
             />
           </Card>
-          <Card xs={6} sm={3} md={3} lg={6}>
-            <CardContent
-              variant={rowsByCard}
-              label1="24h Fees"
-              value1={`$${numberFormatter(dailyFees?.now || 0)}`}
-              caption1={`${diffFees.toFixed(2)}%`}
-              captionColor={getColorBySign(diffFees)}
-              loading={isLoading}
-              valueSize={valueTextSize}
-            />
-          </Card>
-          <Card xs={6} sm={3} md={3} lg={6}>
+          <Card xs={12} sm={4} md={4} lg={12}>
             <CardContent
               variant={rowsByCard}
               label1="Total Volume"

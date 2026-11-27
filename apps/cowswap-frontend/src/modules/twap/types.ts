@@ -24,7 +24,7 @@ export interface TWAPOrder {
 export interface TwapOrderExecutionInfo {
   executedSellAmount: string
   executedBuyAmount: string
-  executedFeeAmount: string
+  executedFee: string
 }
 
 export interface TwapOrderInfo {
@@ -89,4 +89,5 @@ export enum TwapOrderStatus {
   Cancelled = 'Cancelled',
   Expired = 'Expired',
   Fulfilled = 'Fulfilled',
+  PartiallyFilled = 'PartiallyFilled',
 }

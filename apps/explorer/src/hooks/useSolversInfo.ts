@@ -1,5 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 
+import { useAvailableChains } from '@cowprotocol/common-hooks'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { fetchSolversInfo, SolversInfo } from 'utils/fetchSolversInfo'
 
 export type UseSolversInfoResult = {
@@ -14,6 +17,7 @@ export function useSolversInfo(network?: number): UseSolversInfoResult {
   const [solversInfo, setSolversInfo] = useState<SolversInfo>(EMPTY_SOLVERS_INFO)
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
+  const availableChains = useAvailableChains()
 
   useEffect(() => {
     const isSubscribedRef = { current: true }
@@ -46,10 +50,13 @@ export function useSolversInfo(network?: number): UseSolversInfoResult {
 
   return useMemo(
     () => ({
-      solversInfo,
+      solversInfo: solversInfo.map((solver) => ({
+        ...solver,
+        deployments: solver.deployments.filter(({ chainId }) => availableChains.includes(chainId as SupportedChainId)),
+      })),
       isLoading,
       error,
     }),
-    [error, isLoading, solversInfo],
+    [availableChains, error, isLoading, solversInfo],
   )
 }

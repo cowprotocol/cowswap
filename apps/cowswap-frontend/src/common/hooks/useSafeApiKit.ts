@@ -1,14 +1,15 @@
+import { useAtomValue } from 'jotai'
 import { useRef, useState } from 'react'
 
 import { useAsyncEffect } from '@cowprotocol/common-hooks'
 import { createSafeApiKitInstance } from '@cowprotocol/core'
-import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { isSafeWalletAtom, useWalletInfo } from '@cowprotocol/wallet'
 import type SafeApiKit from '@safe-global/api-kit'
 
 export function useSafeApiKit(): SafeApiKit | null {
   const [safeApiClient, setSafeApiClient] = useState<SafeApiKit | null>(null)
   const { chainId } = useWalletInfo()
-  const isSafeWallet = useIsSafeWallet()
+  const isSafeWallet = useAtomValue(isSafeWalletAtom)
 
   const lastRequestedChainId = useRef<number | null>(null)
 

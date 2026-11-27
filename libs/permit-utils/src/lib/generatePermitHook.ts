@@ -2,6 +2,7 @@ import { Address, BaseError, ExecutionRevertedError, Hex } from 'viem'
 import type { Config } from 'wagmi'
 import { estimateGas } from 'wagmi/actions'
 
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { PERMIT_HOOK_DAPP_ID } from '@cowprotocol/hook-dapp-lib'
 
 import { DEFAULT_PERMIT_GAS_LIMIT, DEFAULT_PERMIT_VALUE, PERMIT_ACCOUNT } from '../const'
@@ -12,7 +13,7 @@ import { isSupportedPermitInfo } from '../utils/isSupportedPermitInfo'
 
 type NormalizedError = Error & { code?: number }
 
-const REQUESTS_CACHE: { [permitKey: string]: Promise<PermitHookData | undefined> } = {}
+const REQUESTS_CACHE = new WeakMap<Config, Map<string, Promise<PermitHookData | undefined>>>()
 
 // User rejection detection (EIP-1193 error codes and common wallet messages)
 const USER_REJECTION_CODES = [4001, -32000]
@@ -20,8 +21,9 @@ const USER_REJECTION_MESSAGES = ['user denied', 'user rejected', 'rejected trans
 
 export async function generatePermitHook(params: PermitHookParams): Promise<PermitHookData | undefined> {
   const permitKey = getCacheKey(params)
+  const requestsCache = REQUESTS_CACHE.get(params.config) ?? new Map<string, Promise<PermitHookData | undefined>>()
 
-  const cachedRequest = REQUESTS_CACHE[permitKey]
+  const cachedRequest = requestsCache.get(permitKey)
 
   if (cachedRequest) {
     return await cachedRequest
@@ -39,11 +41,11 @@ export async function generatePermitHook(params: PermitHookParams): Promise<Perm
       return undefined
     })
     .finally(() => {
-      // Remove consumed request to avoid stale data
-      delete REQUESTS_CACHE[permitKey]
+      requestsCache.delete(permitKey)
     })
 
-  REQUESTS_CACHE[permitKey] = request
+  requestsCache.set(permitKey, request)
+  REQUESTS_CACHE.set(params.config, requestsCache)
 
   return request
 }
@@ -104,7 +106,7 @@ async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHo
   const nonce = preFetchedNonce === undefined ? await eip2612Utils.getTokenNonce(tokenAddress, owner) : preFetchedNonce
 
   const deadline = getPermitDeadline()
-  const value = params.amount || DEFAULT_PERMIT_VALUE
+  const value = params.amount ?? DEFAULT_PERMIT_VALUE
 
   const callData =
     permitInfo.type === 'eip-2612'
@@ -159,8 +161,21 @@ async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHo
 }
 
 function getCacheKey(params: PermitHookParams): string {
-  const { inputToken, chainId, account, amount } = params
-  return `${inputToken.address.toLowerCase()}-${chainId}${account ? `-${account.toLowerCase()}` : ''}${amount ? `-${amount.toString()}` : ''}`
+  const { inputToken, chainId, account, amount, nonce, permitInfo, spender } = params
+  const owner = account ?? PERMIT_ACCOUNT.address
+  const tokenName = permitInfo.name || inputToken.name
+
+  return JSON.stringify({
+    tokenAddress: getAddressKey(inputToken.address),
+    chainId,
+    owner: getAddressKey(owner),
+    spender: getAddressKey(spender),
+    amount: (amount ?? DEFAULT_PERMIT_VALUE).toString(),
+    nonce: nonce ?? null,
+    permitType: permitInfo.type,
+    tokenName: tokenName ?? null,
+    permitVersion: permitInfo.version ?? null,
+  })
 }
 
 function getExecutionRevertedError(error: unknown): ExecutionRevertedError | undefined {

@@ -1,5 +1,133 @@
 # Changelog
 
+## [3.14.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.13.1...permit-utils-v3.14.0) (2026-11-18)
+
+### Minor Changes
+
+- feat: update SDK versions with updated near token lists (#8660)
+
+- feat(solana): support custom recipients (#8592)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/hook-dapp-lib@2.5.4
+
+## [3.13.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.13.0...permit-utils-v3.13.1) (2026-11-11)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/hook-dapp-lib@2.5.3
+
+## [3.13.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.12.1...permit-utils-v3.13.0) (2026-11-10)
+
+### Minor Changes
+
+- feat(networks): networks update (#8456)
+
+- feat(solana): pass appData to quote (#8509)
+
+### Patch Changes
+
+- fix(solana): use SDK for quote costs breakdown (#8522)
+
+- Updated dependencies []:
+  - @cowprotocol/hook-dapp-lib@2.5.2
+
+## [3.12.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.12.0...permit-utils-v3.12.1) (2026-11-05)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+- Updated dependencies []:
+  - @cowprotocol/hook-dapp-lib@2.5.1
+
+## [3.12.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.11.1...permit-utils-v3.12.0) (2026-10-28)
+
+### Minor Changes
+
+- feat: bump all gas limits 2x for Glamsterdam (#8389)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/hook-dapp-lib@2.5.0
+
+## [3.11.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.11.0...permit-utils-v3.11.1) (2026-10-27)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8474)
+
+- Updated dependencies []:
+  - @cowprotocol/hook-dapp-lib@2.4.1
+
+## [3.11.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.10.0...permit-utils-v3.11.0) (2026-10-21)
+
+### Minor Changes
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/hook-dapp-lib@2.4.0
+
+## [3.10.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.9.0...permit-utils-v3.10.0) (2026-10-14)
+
+### Minor Changes
+
+- feat: bump sdk + support tokens 2022 (#8315)
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+- feat: solana settlement 0.5 (#8345)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/hook-dapp-lib@2.3.2
+
+## [3.9.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.8.0...permit-utils-v3.9.0) (2026-10-06)
+
+### Minor Changes
+
+- feat(solana): add sponsored orders (#8200)
+
+- feat(solana): migration to v0.4 (#8188)
+
+- feat(solana): use cow quote API and suggested slippage (#8195)
+
+- feat: bump sdk + rename transaction -> partiallySignedTx (#8267)
+
+### Patch Changes
+
+- fix(solana): add solana native token icon (#8262)
+
+- Updated dependencies []:
+  - @cowprotocol/hook-dapp-lib@2.3.1
+
+## [3.8.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.7.1...permit-utils-v3.8.0) (2026-09-23)
+
+### Minor Changes
+
+- feat: show twaps in explorer (#8129)
+
+- feat(solana): apply user slippage from settings (#8164)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/hook-dapp-lib@2.3.0
+
+## [3.7.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.7.0...permit-utils-v3.7.1) (2026-09-15)
+
+### Patch Changes
+
+- fix(cowswap): fall back when permit execution reverts (#8033)
+
 ## [3.7.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.6.0...permit-utils-v3.7.0) (2026-09-09)
 
 ### Minor Changes

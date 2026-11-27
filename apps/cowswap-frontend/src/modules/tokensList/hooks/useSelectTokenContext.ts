@@ -1,9 +1,13 @@
 import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { isSupportedChainId } from '@cowprotocol/common-utils'
 
+import { useBalancesAccountForChain } from 'entities/balancesContext/useBalancesAccountForChain'
+
+import { useChainsToSelect } from './useChainsToSelect'
 import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
+import { useSourceChainId } from './useSourceChainId'
 
 import { useTokenDataSources } from '../containers/SelectTokenWidget/hooks/useTokenDataSources'
 import { useTokenSelectionHandler } from '../containers/SelectTokenWidget/hooks/useTokenSelectionHandler'
@@ -14,11 +18,21 @@ interface UseSelectTokenContextParams {
 }
 
 export function useSelectTokenContext(params?: UseSelectTokenContextParams): SelectTokenContext {
-  const { account } = useWalletInfo()
+  const { chainId: sourceChainId } = useSourceChainId()
   const widgetState = useSelectTokenWidgetState()
+  const chainsToSelect = useChainsToSelect()
   const tokenData = useTokenDataSources()
 
   const handleSelectToken = useTokenSelectionHandler(widgetState.onSelectToken, widgetState)
+
+  // Also true when only the CoW Shed account-proxy override is set (no EVM wallet connected) -
+  // intentional, since that's the account balances are actually fetched for in that case.
+  const balancesAccount = useBalancesAccountForChain(sourceChainId)
+  // useSourceChainId falls back to the wallet chain for bridge-only targets (e.g. Bitcoin),
+  // where the connected wallet has no account, so balances are never fetched there.
+  const browsedChainId = chainsToSelect?.defaultChainId ?? widgetState.selectedTargetChainId
+  const isBrowsingBridgeOnlyChain = browsedChainId !== undefined && !isSupportedChainId(browsedChainId)
+  const isWalletConnected = !!balancesAccount && !isBrowsingBridgeOnlyChain
 
   return useMemo(
     () => ({
@@ -29,7 +43,7 @@ export function useSelectTokenContext(params?: UseSelectTokenContextParams): Sel
       unsupportedTokens: tokenData.unsupportedTokens,
       permitCompatibleTokens: tokenData.permitCompatibleTokens,
       tokenListTags: tokenData.tokenListTags,
-      isWalletConnected: !!account,
+      isWalletConnected,
     }),
     [
       tokenData.balancesState,
@@ -39,7 +53,7 @@ export function useSelectTokenContext(params?: UseSelectTokenContextParams): Sel
       tokenData.unsupportedTokens,
       tokenData.permitCompatibleTokens,
       tokenData.tokenListTags,
-      account,
+      isWalletConnected,
     ],
   )
 }

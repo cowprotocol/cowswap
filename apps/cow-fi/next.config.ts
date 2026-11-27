@@ -10,6 +10,7 @@ const DEFAULT_CACHE_CONTROL_HEADER = {
 }
 
 const nextConfig: WithNxOptions & NextConfig = {
+  distDir: process.env.COW_FI_TEST_DIST_DIR || '.next',
   reactStrictMode: true,
   generateBuildId: process.env.BUNDLE_SIZE_BUILD === 'true' ? async () => 'bundle-size' : undefined,
   nx: {},
@@ -147,6 +148,10 @@ const nextConfig: WithNxOptions & NextConfig = {
       },
       {
         source: '/learn/:path*',
+        headers: [DEFAULT_CACHE_CONTROL_HEADER],
+      },
+      {
+        source: '/resources/:path*',
         headers: [DEFAULT_CACHE_CONTROL_HEADER],
       },
       // Cache all other pages for 1 hour

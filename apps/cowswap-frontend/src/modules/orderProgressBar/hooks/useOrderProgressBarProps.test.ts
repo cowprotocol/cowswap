@@ -1,9 +1,28 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CompetitionOrderStatus, SupportedChainId, getAddressKey } from '@cowprotocol/cow-sdk'
 
-import { getEnsLookupAddress, getProgressBarStepName, shouldUpdateStepImmediately } from './useOrderProgressBarProps'
+import { Order } from 'legacy/state/orders/actions'
+
+import { getOrderCompetitionStatus } from 'api/cowProtocol/api'
+import { ApiSolverCompetition } from 'common/types/soverCompetition'
+
+import {
+  getEnsLookupAddress,
+  buildSolverCompetition,
+  fetchOrderCompetitionStatus,
+  getIsCancellationRequested,
+  getProgressBarStepName,
+  shouldUpdateStepImmediately,
+} from './useOrderProgressBarProps'
 
 import { OrderProgressBarStepName } from '../constants'
 import { OrderProgressBarState } from '../types'
+
+jest.mock('api/cowProtocol/api', () => ({
+  ...jest.requireActual('api/cowProtocol/api'),
+  getOrderCompetitionStatus: jest.fn(),
+}))
+
+const mockedGetOrderCompetitionStatus = jest.mocked(getOrderCompetitionStatus)
 
 const OPEN_STATUS = 'open' as OrderProgressBarState['backendApiStatus']
 const EXECUTING_STATUS = 'executing' as OrderProgressBarState['backendApiStatus']
@@ -108,5 +127,126 @@ describe('getEnsLookupAddress', () => {
 
   it('returns undefined when there is no receiver', () => {
     expect(getEnsLookupAddress(SupportedChainId.MAINNET, undefined)).toBeUndefined()
+  })
+})
+
+describe('getIsCancellationRequested', () => {
+  it('is true when the activity reports the order as cancelling', () => {
+    expect(getIsCancellationRequested(undefined, true)).toBe(true)
+  })
+
+  it('is true when cancellation was requested after the order got filled', () => {
+    const filledOrder = { isCancelling: true } as Order
+
+    expect(getIsCancellationRequested(filledOrder, false)).toBe(true)
+  })
+
+  it('is false when no cancellation was requested', () => {
+    expect(getIsCancellationRequested({ isCancelling: false } as Order, false)).toBe(false)
+    expect(getIsCancellationRequested(undefined, false)).toBe(false)
+  })
+})
+
+describe('buildSolverCompetition', () => {
+  // Backend returns entries ranked ascending, so the last entry is the winner. A `marker` tags
+  // each raw entry so we can assert which duplicate occurrence survived deduplication.
+  function entry(solver: string, marker: string): ApiSolverCompetition {
+    return { solver, marker, executedAmounts: { sell: '1', buy: '1' } } as unknown as ApiSolverCompetition
+  }
+
+  const ADDR_LIVE = '0x1111111111111111111111111111111111111111'
+  const ADDR_RETIRED = '0x2222222222222222222222222222222222222222'
+  const ADDR_OTHER = '0x3333333333333333333333333333333333333333'
+  // A solver's live and retired deployments are distinct on-chain addresses that the CMS maps to
+  // the same solverId; a different solver maps to its own.
+  const byAddress = {
+    [getAddressKey(ADDR_LIVE)]: { solverId: 'baseline' },
+    [getAddressKey(ADDR_RETIRED)]: { solverId: 'baseline' },
+    [getAddressKey(ADDR_OTHER)]: { solverId: 'barter' },
+  } as unknown as Parameters<typeof buildSolverCompetition>[1]
+
+  it('keeps the highest-ranked occurrence of a repeated solver as the winner', () => {
+    const result = buildSolverCompetition(
+      [entry(ADDR_LIVE, 'first'), entry(ADDR_OTHER, 'barter'), entry(ADDR_RETIRED, 'last')],
+      byAddress,
+    )
+
+    expect(result.map((s) => s.solverId)).toEqual(['baseline', 'barter'])
+    // Winner stays at index 0 and is the highest-ranked (last) `baseline` occurrence, not the first.
+    expect((result[0] as unknown as { marker: string }).marker).toBe('last')
+  })
+
+  it('keeps the highest-ranked occurrence when the same address repeats', () => {
+    const result = buildSolverCompetition(
+      [entry(ADDR_LIVE, 'first'), entry(ADDR_OTHER, 'barter'), entry(ADDR_LIVE, 'last')],
+      byAddress,
+    )
+
+    expect(result.map((s) => s.solverId)).toEqual(['baseline', 'barter'])
+    expect((result[0] as unknown as { marker: string }).marker).toBe('last')
+  })
+
+  it('collapses distinct addresses that resolve to the same solverId', () => {
+    const result = buildSolverCompetition([entry(ADDR_LIVE, 'live'), entry(ADDR_RETIRED, 'retired')], byAddress)
+
+    expect(result.map((s) => s.solverId)).toEqual(['baseline'])
+    // The higher-ranked (last) address wins the collapsed entry.
+    expect((result[0] as unknown as { marker: string }).marker).toBe('retired')
+  })
+
+  it('does not deduplicate distinct solvers', () => {
+    const result = buildSolverCompetition([entry(ADDR_OTHER, 'barter'), entry(ADDR_LIVE, 'baseline')], byAddress)
+
+    expect(result.map((s) => s.solverId)).toEqual(['baseline', 'barter'])
+  })
+
+  it('excludes entries without a solver or executedAmounts', () => {
+    const result = buildSolverCompetition(
+      [
+        { marker: 'no-solver', executedAmounts: {} } as unknown as ApiSolverCompetition,
+        { solver: ADDR_LIVE, marker: 'no-amounts' } as unknown as ApiSolverCompetition,
+        entry(ADDR_OTHER, 'valid'),
+      ],
+      byAddress,
+    )
+
+    expect(result.map((s) => s.solverId)).toEqual(['barter'])
+  })
+
+  it('shows a solver missing from the CMS by its shortened address, with no display name', () => {
+    const [solver] = buildSolverCompetition([entry('0x4444444444444444444444444444444444444444', 'unknown')], byAddress)
+
+    expect(solver.solver).toBe('0x4444...4444')
+    expect(solver.displayName).toBeUndefined()
+  })
+
+  it('returns an empty list when there is no competition data', () => {
+    expect(buildSolverCompetition(undefined, {})).toEqual([])
+  })
+})
+
+describe('fetchOrderCompetitionStatus', () => {
+  const CHAIN_ID = SupportedChainId.MAINNET
+  const ORDER_ID = '0xorder'
+
+  afterEach(() => {
+    mockedGetOrderCompetitionStatus.mockReset()
+  })
+
+  it('resolves the status when the lookup succeeds', async () => {
+    const status = { type: 'traded' } as unknown as CompetitionOrderStatus
+    mockedGetOrderCompetitionStatus.mockResolvedValue(status)
+
+    await expect(fetchOrderCompetitionStatus(CHAIN_ID, ORDER_ID)).resolves.toBe(status)
+  })
+
+  // getOrderCompetitionStatus catches every failure and resolves undefined. Without a rejection here
+  // SWR treats that as success, `error` stays undefined, and the finished-order placeholder never clears.
+  it('rejects when the lookup settles without a status', async () => {
+    mockedGetOrderCompetitionStatus.mockResolvedValue(undefined)
+
+    await expect(fetchOrderCompetitionStatus(CHAIN_ID, ORDER_ID)).rejects.toThrow(
+      'Order competition status unavailable',
+    )
   })
 })
