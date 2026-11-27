@@ -48,7 +48,7 @@ export const SearchBar: React.FC<SearchBarProps> = () => {
   const inputRef = useRef<HTMLInputElement>(null)
   const searchContainerRef = useRef<HTMLDivElement>(null)
   const resultsRef = useRef<HTMLDivElement>(null)
-  const isMediumUp = useMediaQuery(Media.SmallAndUp(false))
+  const isSmallAndUp = useMediaQuery(Media.SmallAndUp(false))
   const router = useRouter()
 
   // Use custom debounce hook
@@ -177,11 +177,10 @@ export const SearchBar: React.FC<SearchBarProps> = () => {
 
   // Handle clicks outside using the useOnClickOutside hook
   const handleClickOutside = useCallback(() => {
-    if (isMediumUp) {
-      // Close search results when clicking outside on medium screens and up
+    if (isSmallAndUp) {
       setIsFocused(false)
     }
-  }, [isMediumUp])
+  }, [isSmallAndUp])
 
   useOnClickOutside([searchContainerRef], handleClickOutside)
 
@@ -194,10 +193,10 @@ export const SearchBar: React.FC<SearchBarProps> = () => {
           error ||
           showMinLengthMessage ||
           debouncedQuery.trim().length >= MIN_SEARCH_LENGTH)) ||
-      (!isMediumUp &&
+      (!isSmallAndUp &&
         query.trim() &&
         (filteredArticles.length > 0 || showMinLengthMessage || debouncedQuery.trim().length >= MIN_SEARCH_LENGTH)),
-    [isFocused, filteredArticles.length, isPending, error, showMinLengthMessage, isMediumUp, query, debouncedQuery],
+    [isFocused, filteredArticles.length, isPending, error, showMinLengthMessage, isSmallAndUp, query, debouncedQuery],
   )
 
   return (
