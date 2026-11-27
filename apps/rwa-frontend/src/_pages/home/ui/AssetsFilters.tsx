@@ -24,6 +24,7 @@ import { assetsCountLabelAtom } from '../model/assetsQueryAtoms'
 import { MEDIA_QUERIES } from '@/shared/config'
 import { useDismissOnEscape, useDismissOnMediaQueryChange, useDismissOnOutsideInteraction } from '@/shared/lib/dismiss'
 import { SearchIcon } from '@/shared/ui/icons'
+import { ResetFiltersButton } from '@/shared/ui/reset-filters-button'
 
 const AssetsFiltersDrawer = dynamic(
   () => import('./AssetsFiltersDrawer').then((module) => module.AssetsFiltersDrawer),
@@ -112,13 +113,12 @@ export function AssetsFilters(): ReactNode {
         )}
       </div>
       {activeFilters > 0 && (
-        <button
-          type="button"
+        <ResetFiltersButton
           className={styles.clearButton}
           onClick={() => updateFilters({ ...NO_PANEL_FILTERS, type: null })}
         >
           Clear
-        </button>
+        </ResetFiltersButton>
       )}
     </>
   )
