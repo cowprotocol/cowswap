@@ -10,7 +10,14 @@ import styles from './Portfolio.module.css'
 import type { Holding, TokenHolding } from '../lib/holdings'
 import type { Portfolio } from '../model/usePortfolio'
 
-import { DividendNotes, getAssetPath, getTokenKey, isListedAsset, RWA_ASSET_TYPE_LABELS } from '@/entities/asset'
+import {
+  DividendNotes,
+  getAssetPath,
+  getTokenKey,
+  isListedAsset,
+  isRwaChain,
+  RWA_ASSET_TYPE_LABELS,
+} from '@/entities/asset'
 import { getChainLabel, getExplorerAddressUrl } from '@/shared/lib/chain'
 import { EMPTY_VALUE, formatUsd, toTokenUnits } from '@/shared/lib/format'
 import { ArrowRightIcon, ChevronDownIcon, LinkIcon } from '@/shared/ui/icons'
@@ -180,7 +187,7 @@ function TokenRow({ holding: { asset }, tokenHolding, getLogoUrl, className }: T
   const { token, balance, shares, value } = tokenHolding
   const router = useRouter()
   const explorerUrl = getExplorerAddressUrl(token.chainId, token.address)
-  const assetPath = isListedAsset(asset) ? getAssetPath(asset.ticker, { token, from: 'portfolio' }) : null
+  const assetPath = isRwaChain(token.chainId) ? getAssetPath(asset.ticker, { token, from: 'portfolio' }) : null
   const amount =
     token.decimals === null ? EMPTY_VALUE : tokenAmountFormatter.format(toTokenUnits(balance, token.decimals))
 

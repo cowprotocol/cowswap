@@ -86,6 +86,36 @@ describe('useTradeTokenFromUrl', () => {
     expect(switchChain).toHaveBeenCalledTimes(1)
   })
 
+  it('switches once a wallet restored after the first render connects on another network', () => {
+    const { store, switchChain, rerender } = renderAtPath(BASE_TOKEN_PATH, { status: 'disconnected' })
+
+    expect(store.get(tradeTokenKeyAtom)).toBe(getTokenKey(BASE_TOKEN))
+
+    jest
+      .mocked(useConnection)
+      .mockReturnValue({ status: 'reconnecting', chainId: 1 } as ReturnType<typeof useConnection>)
+    rerender()
+    jest.mocked(useConnection).mockReturnValue({ status: 'connected', chainId: 1 } as ReturnType<typeof useConnection>)
+    rerender()
+    jest.mocked(useConnection).mockReturnValue({ status: 'connected', chainId: 10 } as ReturnType<typeof useConnection>)
+    rerender()
+
+    expect(switchChain).toHaveBeenCalledTimes(1)
+    expect(switchChain).toHaveBeenCalledWith({ chainId: 8453 }, expect.anything())
+  })
+
+  it('does not switch for a wallet connecting after the user picked another token', () => {
+    const { store, switchChain, rerender } = renderAtPath(BASE_TOKEN_PATH, { status: 'disconnected' })
+
+    store.set(tradeChainIdAtom, 1)
+    store.set(tradeTokenKeyAtom, getTokenKey(MAINNET_TOKEN))
+    jest.mocked(useConnection).mockReturnValue({ status: 'connected', chainId: 10 } as ReturnType<typeof useConnection>)
+    rerender()
+
+    expect(switchChain).not.toHaveBeenCalled()
+    expect(store.get(tradeTokenKeyAtom)).toBe(getTokenKey(MAINNET_TOKEN))
+  })
+
   it.each([getAssetPath('NVDA'), '/asset/NVDA?token=10:0xunknown'])('keeps the default selection at %s', (path) => {
     const { store, switchChain } = renderAtPath(path, { status: 'connected', chainId: 1 })
 
