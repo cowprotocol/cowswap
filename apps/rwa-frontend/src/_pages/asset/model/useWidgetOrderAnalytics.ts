@@ -6,13 +6,14 @@ import {
   mapFulfilledOrder,
   mapPostedOrder,
 } from '@cowprotocol/analytics/order-lifecycle'
-import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 import {
   type BaseOrderPayload,
   type CowWidgetEventListeners,
   CowWidgetEvents,
   type OnFulfilledOrderPayload,
 } from '@cowprotocol/events'
+
+import { isAssetSwap, isAssetToken } from '../lib/assetOrder'
 
 import { type RwaAsset } from '@/entities/asset'
 import { trackEvent } from '@/shared/lib/analytics'
@@ -26,15 +27,12 @@ type OrderOutcomePayload = BaseOrderPayload & Pick<OnFulfilledOrderPayload, 'bri
 export function useWidgetOrderAnalytics(asset: RwaAsset): CowWidgetEventListeners {
   return useMemo(() => {
     const { ticker } = asset
-    const isAssetToken = (chainId: number, address: string): boolean =>
-      asset.tokens.some((token) => token.chainId === chainId && areAddressesEqual(token.address, address))
     // A bridged order's buy token is the intermediate token on the source chain, the asset token is the bridge output
-    const getOrderTicker = ({ chainId, order, bridgeOrder }: OrderOutcomePayload): string | null => {
-      const bridgedToken = bridgeOrder?.quoteAmounts.bridgeMinReceiveAmount.token
+    const getOrderTicker = (payload: OrderOutcomePayload): string | null => {
+      const bridgedToken = payload.bridgeOrder?.quoteAmounts.bridgeMinReceiveAmount.token
       const isAssetOrder =
-        isAssetToken(chainId, order.sellToken) ||
-        isAssetToken(chainId, order.buyToken) ||
-        (bridgedToken ? isAssetToken(bridgedToken.chainId, bridgedToken.address) : false)
+        isAssetSwap(asset.tokens, payload) ||
+        (bridgedToken ? isAssetToken(asset.tokens, bridgedToken.chainId, bridgedToken.address) : false)
 
       return isAssetOrder ? ticker : null
     }
@@ -47,7 +45,7 @@ export function useWidgetOrderAnalytics(asset: RwaAsset): CowWidgetEventListener
             ...mapPostedOrder(payload),
             ticker,
             // On a bridged order `outputToken` is on the destination chain, `inputToken` is always on `chainId`
-            side: isAssetToken(payload.chainId, payload.inputToken.address) ? 'sell' : 'buy',
+            side: isAssetToken(asset.tokens, payload.chainId, payload.inputToken.address) ? 'sell' : 'buy',
           })
         },
       },

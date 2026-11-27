@@ -13,7 +13,6 @@ import { useParams } from 'react-router'
 import { Loading } from 'legacy/components/FlashingLoading'
 
 import {
-  advancedOrdersAtom,
   advancedOrdersDerivedStateAtom,
   AdvancedOrdersWidget,
   SetupAdvancedOrderAmountsFromUrlUpdater,
@@ -57,7 +56,6 @@ export function AdvancedOrdersPage(): ReactNode {
 
   const params = useParams()
   const { i18n, t } = useLingui()
-  const { isUnlocked } = useAtomValue(advancedOrdersAtom)
   const [isInverted, setIsInverted] = useAtom(twapRateInvertedAtom)
   const { ordersTableOnLeft } = useAtomValue(limitOrdersSettingsAtom)
 
@@ -84,7 +82,7 @@ export function AdvancedOrdersPage(): ReactNode {
     twapFormValidation === TwapFormState.RECEIVE_ZERO_FROM_NETWORK_COSTS
   const advancedWidgetParams = { disablePriceImpact }
   const advancedOrdersDerivedStateToFill = useAdvancedOrdersDerivedStateToFill(twapSlippage)
-  const { inputCurrency, outputCurrency } = advancedOrdersDerivedStateToFill
+  const { inputCurrency, outputCurrency, isUnlocked } = advancedOrdersDerivedStateToFill
   const receiveAmountInfo = useScaledReceiveAmountInfo()
   const worstAcceptablePrice = useMemo(
     () => (receiveAmountInfo ? getLimitPriceFromReceiveAmount(receiveAmountInfo) : null),
