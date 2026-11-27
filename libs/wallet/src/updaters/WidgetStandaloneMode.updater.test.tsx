@@ -207,6 +207,29 @@ describe('WidgetStandaloneModeUpdater', () => {
       expect(connectWalletByIdMock).not.toHaveBeenCalled()
     })
 
+    it('waits for a running standalone disconnect before connecting the widget connector in dapp mode', async () => {
+      setConnector(COW_WIDGET_CONNECTOR_ID)
+      const standaloneDisconnect = deferred()
+      disconnectMock.mockReturnValue(standaloneDisconnect.promise)
+
+      const { rerender } = renderUpdater(STANDALONE_MODE)
+
+      expect(disconnectMock).toHaveBeenCalledTimes(1)
+
+      setConnector(undefined)
+      rerender(<WidgetStandaloneModeUpdater standaloneMode={DAPP_MODE} />)
+      await act(async () => undefined)
+
+      expect(reownAppKitDisconnectMock).not.toHaveBeenCalled()
+      expect(connectWalletByIdMock).not.toHaveBeenCalled()
+
+      await act(async () => standaloneDisconnect.resolve())
+
+      expect(reownAppKitDisconnectMock).toHaveBeenCalledTimes(1)
+      expect(connectWalletByIdMock).toHaveBeenCalledTimes(1)
+      expect(connectWalletByIdMock).toHaveBeenCalledWith(COW_WIDGET_CONNECTOR_ID, 'injected')
+    })
+
     it('logs unexpected connect errors', async () => {
       connectWalletByIdMock.mockRejectedValue(new Error('provider unavailable'))
 
