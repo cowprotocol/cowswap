@@ -6,7 +6,7 @@ import { WAIT_AND_SAVE_DEMO_SAVE_AMOUNT_FIAT } from './waitAndSaveRow.constants'
 import { WaitAndSaveRow } from './WaitAndSaveRow.pure'
 
 function RowFixture({
-  approximateLabel = '7 min',
+  approximateLabel = '~7 min',
   hasError = false,
   initiallyEnabled = false,
   isFetching = false,
