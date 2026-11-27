@@ -18,6 +18,12 @@ import { TradeType, useTradeTypeInfoFromUrl } from 'common/modules/tradeNavigati
 import { useCloseTokenSelectWidget } from './useCloseTokenSelectWidget'
 import { useUpdateSelectTokenWidgetState } from './useUpdateSelectTokenWidgetState'
 
+const STATES_ALLOWING_TOKEN_SELECTION = [
+  CrossChainFamilySwitchState.FINISHED,
+  CrossChainFamilySwitchState.WALLET_NOT_CONNECTED,
+  CrossChainFamilySwitchState.HOST_OWNS_WALLET,
+]
+
 export function useOpenTokenSelectWidget(): (
   selectedToken: Nullish<Currency>,
   field: Field | undefined,
@@ -59,16 +65,12 @@ export function useOpenTokenSelectWidget(): (
               (isSelectedTokenEvm && !isNewTokenEvm) || (!isSelectedTokenEvm && isNewTokenEvm)
             const chainSwitchState = await crossChainFamilySwitch(currency.chainId)
 
-            const crossChainSwitched =
-              chainSwitchState === CrossChainFamilySwitchState.FINISHED ||
-              chainSwitchState === CrossChainFamilySwitchState.WALLET_NOT_CONNECTED
-
             /**
              * In case of switching from EVM to non-EVM (and vice versa)
              * Ask a confirmation from the user
              * Because it requires connecting to another wallet
              */
-            if (shouldConfirmNetworkSwitch && !crossChainSwitched) {
+            if (shouldConfirmNetworkSwitch && !STATES_ALLOWING_TOKEN_SELECTION.includes(chainSwitchState)) {
               return
             }
           }
