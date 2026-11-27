@@ -4,14 +4,17 @@ import styled, { css } from 'styled-components/macro'
 import { WIDGET_MAX_WIDTH } from 'theme'
 
 const DEFAULT_MAX_WIDTH = '1500px'
+const COLUMN_GAP = '20px'
+const formColumnTrack = `minmax(0, min(50% - ${COLUMN_GAP} / 2, ${WIDGET_MAX_WIDTH.swap}))`
+const flexibleColumnTrack = 'minmax(0, 1fr)'
 
 const secondaryLayout = css<{ secondaryOnLeft?: boolean; stacked?: boolean }>`
   grid-template-columns: ${({ secondaryOnLeft, stacked }) =>
     stacked
-      ? 'minmax(0, 1fr)'
+      ? flexibleColumnTrack
       : secondaryOnLeft
-        ? `minmax(0, 1fr) minmax(auto, ${WIDGET_MAX_WIDTH.swap})`
-        : `minmax(auto, ${WIDGET_MAX_WIDTH.swap}) minmax(0, 1fr)`};
+        ? `${flexibleColumnTrack} ${formColumnTrack}`
+        : `${formColumnTrack} ${flexibleColumnTrack}`};
   grid-template-rows: ${({ stacked }) => (stacked ? 'auto 1fr' : '1fr')};
   grid-template-areas: ${({ secondaryOnLeft, stacked }) =>
     stacked ? '"primary" "secondary"' : secondaryOnLeft ? '"secondary primary"' : '"primary secondary"'};
@@ -32,7 +35,7 @@ export const PageWrapper = styled.div<{
   grid-template-columns: 1fr;
   grid-template-rows: auto;
   grid-template-areas: ${({ hideOrdersTable }) => (hideOrdersTable ? '"primary"' : '"primary" "secondary"')};
-  gap: 20px;
+  gap: ${COLUMN_GAP};
 
   &:has(.price-chart) {
     grid-template-areas: 'primary' 'secondary';
