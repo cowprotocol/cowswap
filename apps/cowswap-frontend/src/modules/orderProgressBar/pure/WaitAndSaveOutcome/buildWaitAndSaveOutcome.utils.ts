@@ -1,22 +1,28 @@
-import { formatFiatAmount, formatTokenAmount } from '@cowprotocol/common-utils'
+import { formatTokenAmount } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { getTokenAmountTitle } from '@cowprotocol/ui'
 
-import { WAIT_AND_SAVE_HARDCODED_VOLUME_FEE_SAVED_USD } from './waitAndSaveOutcome.constants'
+import { formatPositiveFiat } from 'modules/trade'
 
 import type { PositiveAloneGain } from './deriveWaitAndSaveCompetition.utils'
 import type { WaitAndSaveOutcomeProps } from './WaitAndSaveOutcome.pure'
+
+export interface WaitAndSaveVolumeFee {
+  amount: CurrencyAmount<Currency>
+  fiatAmount: CurrencyAmount<Currency> | null
+}
 
 export function buildWaitAndSaveOutcome(params: {
   buyToken: Currency
   fiatAmount: CurrencyAmount<Currency> | null
   gain: PositiveAloneGain | undefined
-  volumeFeeSavedFiat?: string
+  volumeFee?: WaitAndSaveVolumeFee
 }): WaitAndSaveOutcomeProps | undefined {
-  const { buyToken, fiatAmount, gain, volumeFeeSavedFiat } = params
+  const { buyToken, fiatAmount, gain, volumeFee } = params
+  const displayedFee = toDisplayedVolumeFee(volumeFee)
 
-  if (gain && volumeFeeSavedFiat) {
-    return buildWaivedFeeAndCowOutcome(buyToken, fiatAmount, gain, volumeFeeSavedFiat)
+  if (gain && displayedFee) {
+    return buildWaivedFeeAndCowOutcome(buyToken, fiatAmount, gain, displayedFee, volumeFee?.fiatAmount ?? null)
   }
 
   if (gain) {
@@ -27,10 +33,10 @@ export function buildWaitAndSaveOutcome(params: {
     }
   }
 
-  if (volumeFeeSavedFiat) {
+  if (displayedFee) {
     return {
       variant: 'withWaivedFee',
-      volumeFeeSavedFiat,
+      volumeFeeSavedFiat: displayedFee.fiat,
     }
   }
 
@@ -38,58 +44,50 @@ export function buildWaitAndSaveOutcome(params: {
 }
 
 export function formatGainFiat(amount: CurrencyAmount<Currency> | null): string {
-  if (!amount || !amount.greaterThan(0)) return ''
-
-  const centScale = Math.max(amount.currency.decimals - 2, 0)
-  const oneCent = CurrencyAmount.fromRawAmount(amount.currency, (10n ** BigInt(centScale)).toString())
-  if (amount.lessThan(oneCent)) return '<$0.01'
-
-  const formatted = formatFiatAmount(amount)
-  return formatted ? `$${formatted}` : ''
+  return formatPositiveFiat(amount) ?? ''
 }
 
 export function formatTotalSavedFiat(
   priceImprovement: CurrencyAmount<Currency> | null,
-  volumeFeeSavedUsd: number,
+  volumeFee: CurrencyAmount<Currency> | null,
 ): string {
-  if (!priceImprovement || !priceImprovement.greaterThan(0)) {
-    return volumeFeeSavedUsd > 0 ? `$${volumeFeeSavedUsd.toFixed(2)}` : ''
+  if (
+    priceImprovement?.greaterThan(0) &&
+    volumeFee?.greaterThan(0) &&
+    priceImprovement.currency.equals(volumeFee.currency)
+  ) {
+    return formatGainFiat(priceImprovement.add(volumeFee))
   }
 
-  if (volumeFeeSavedUsd <= 0) {
-    return formatGainFiat(priceImprovement)
-  }
+  if (priceImprovement?.greaterThan(0)) return formatGainFiat(priceImprovement)
 
-  const feeAmount = usdToCurrencyAmount(priceImprovement.currency, volumeFeeSavedUsd)
-  return formatGainFiat(priceImprovement.add(feeAmount))
+  return formatGainFiat(volumeFee)
 }
 
 function buildFiatAmountTitles(
   buyToken: Currency,
   gainAmountRaw: bigint,
-  fiatAmount: CurrencyAmount<Currency> | null,
-  volumeFeeSavedUsd: number,
+  feeAmount: CurrencyAmount<Currency>,
 ):
   | {
       priceImprovementTitle: string
-      totalSavedTitle: string
-      volumeFeeSavedTitle: string | undefined
+      totalSavedTitle?: string
+      volumeFeeSavedTitle: string
     }
   | undefined {
-  if (!fiatAmount || !fiatAmount.greaterThan(0) || gainAmountRaw <= 0n) return undefined
+  if (gainAmountRaw <= 0n) return undefined
 
   const gainAmount = CurrencyAmount.fromRawAmount(buyToken, gainAmountRaw.toString())
-  const priceImprovementTitle = getTokenAmountTitle({ amount: gainAmount, tokenSymbol: buyToken })
-  const feeAmount = toBuyTokenAmountFromUsd(gainAmount, fiatAmount, volumeFeeSavedUsd)
-  const totalSavedTitle = getTokenAmountTitle({
-    amount: feeAmount ? gainAmount.add(feeAmount) : gainAmount,
-    tokenSymbol: buyToken,
-  })
+  const titles = {
+    priceImprovementTitle: getTokenAmountTitle({ amount: gainAmount, tokenSymbol: buyToken }),
+    volumeFeeSavedTitle: getTokenAmountTitle({ amount: feeAmount, tokenSymbol: feeAmount.currency }),
+  }
+
+  if (!gainAmount.currency.equals(feeAmount.currency)) return titles
 
   return {
-    priceImprovementTitle,
-    totalSavedTitle,
-    volumeFeeSavedTitle: feeAmount ? getTokenAmountTitle({ amount: feeAmount, tokenSymbol: buyToken }) : undefined,
+    ...titles,
+    totalSavedTitle: getTokenAmountTitle({ amount: gainAmount.add(feeAmount), tokenSymbol: buyToken }),
   }
 }
 
@@ -97,25 +95,24 @@ function buildWaivedFeeAndCowOutcome(
   buyToken: Currency,
   fiatAmount: CurrencyAmount<Currency> | null,
   gain: PositiveAloneGain,
-  volumeFeeSavedFiat: string,
+  displayedFee: { amount: CurrencyAmount<Currency>; fiat: string },
+  volumeFeeFiat: CurrencyAmount<Currency> | null,
 ): Extract<WaitAndSaveOutcomeProps, { variant: 'withWaivedFeeAndCow' }> {
   const gainAmount = formatOutcomeAmount(buyToken, gain.gainAmount)
   const tokenSymbol = buyToken.symbol ?? ''
   const priceImprovementFiat = formatGainFiat(fiatAmount)
   const priceImprovement = formatSavedAmount(priceImprovementFiat, gainAmount, tokenSymbol)
   const fiatTitles = priceImprovementFiat
-    ? buildFiatAmountTitles(buyToken, gain.gainAmount, fiatAmount, WAIT_AND_SAVE_HARDCODED_VOLUME_FEE_SAVED_USD)
+    ? buildFiatAmountTitles(buyToken, gain.gainAmount, displayedFee.amount)
     : undefined
 
   return {
     variant: 'withWaivedFeeAndCow',
     priceImprovement,
     priceImprovementTitle: fiatTitles?.priceImprovementTitle,
-    totalSaved: priceImprovementFiat
-      ? formatTotalSavedFiat(fiatAmount, WAIT_AND_SAVE_HARDCODED_VOLUME_FEE_SAVED_USD)
-      : priceImprovement,
+    totalSaved: priceImprovementFiat ? formatTotalSavedFiat(fiatAmount, volumeFeeFiat) : priceImprovement,
     totalSavedTitle: fiatTitles?.totalSavedTitle,
-    volumeFeeSaved: volumeFeeSavedFiat,
+    volumeFeeSaved: displayedFee.fiat,
     volumeFeeSavedTitle: fiatTitles?.volumeFeeSavedTitle,
   }
 }
@@ -130,19 +127,13 @@ function formatSavedAmount(fiatLabel: string, tokenAmount: string, tokenSymbol: 
   return tokenSymbol ? `${tokenAmount} ${tokenSymbol}` : tokenAmount
 }
 
-function toBuyTokenAmountFromUsd(
-  gainAmount: CurrencyAmount<Currency>,
-  fiatAmount: CurrencyAmount<Currency>,
-  usd: number,
-): CurrencyAmount<Currency> | undefined {
-  if (usd <= 0 || !fiatAmount.greaterThan(0)) return undefined
+function toDisplayedVolumeFee(
+  volumeFee: WaitAndSaveVolumeFee | undefined,
+): { amount: CurrencyAmount<Currency>; fiat: string } | undefined {
+  if (!volumeFee?.amount.greaterThan(0)) return undefined
 
-  return gainAmount.multiply(usdToCurrencyAmount(fiatAmount.currency, usd)).divide(fiatAmount)
-}
+  const fiat = formatGainFiat(volumeFee.fiatAmount)
+  if (!fiat) return undefined
 
-function usdToCurrencyAmount(currency: Currency, usd: number): CurrencyAmount<Currency> {
-  const cents = BigInt(Math.round(usd * 100))
-  const scale = 10n ** BigInt(Math.max(currency.decimals - 2, 0))
-
-  return CurrencyAmount.fromRawAmount(currency, (cents * scale).toString())
+  return { amount: volumeFee.amount, fiat }
 }

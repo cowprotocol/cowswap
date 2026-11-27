@@ -13,17 +13,19 @@ import useSWR from 'swr'
 import { AppDispatch } from 'legacy/state'
 import { useCloseModals } from 'legacy/state/application/hooks'
 
-import { useAppData, useAppDataHooks, useWaitAndSaveBatchData } from 'modules/appData'
+import { useAppData, useAppDataHooks, useEnableWaitForCow, useWaitAndSaveBatchData } from 'modules/appData'
 import { useBridgeQuoteAmounts } from 'modules/bridge'
 import { useGetAmountToSignApprove } from 'modules/erc20Approve'
 import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'modules/permit'
 import {
   TradeTypeToUiOrderType,
+  getWaitAndSaveWaivedFeeRawAmount,
   useDerivedTradeState,
   useGetReceiveAmountInfo,
   useIsHooksTradeType,
   useTradeConfirmActions,
   useTradeTypeInfo,
+  waitAndSaveComparisonQuoteAtom,
 } from 'modules/trade'
 import { getIsFinalQuote, getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 
@@ -92,6 +94,24 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const waitAndSaveBatchData = useWaitAndSaveBatchData()
   const validTo = getOrderValidTo(deadline, tradeQuote, waitAndSaveBatchData)
   const waitAndSaveNextBatch = waitAndSaveBatchData?.nextBatch
+  const comparisonQuote = useAtomValue(waitAndSaveComparisonQuoteAtom)
+  const userQuoteWithWaitAndSave = useEnableWaitForCow()
+  const mainQuote = tradeQuote.quote?.quoteResults.quoteResponse.quote
+  const waivedFee =
+    waitAndSaveBatchData && orderKind
+      ? getWaitAndSaveWaivedFeeRawAmount({
+          comparison: comparisonQuote,
+          mainQuote: {
+            buyAmount: mainQuote?.buyAmount,
+            feeAmount: mainQuote?.feeAmount == null ? undefined : String(mainQuote.feeAmount),
+            sellAmount: mainQuote?.sellAmount == null ? undefined : String(mainQuote.sellAmount),
+          },
+          orderKind,
+          userQuoteWithWaitAndSave,
+        })
+      : undefined
+  const waitAndSaveWaivedFeeAmount = waivedFee?.amount.toString()
+  const waitAndSaveWaivedFeeSide = waivedFee?.currency
 
   const settlementChainId = settlementContract.chainId
 
@@ -145,6 +165,8 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             setSigningStep,
             walletClient,
             config,
+            waitAndSaveWaivedFeeAmount,
+            waitAndSaveWaivedFeeSide,
           ]
         : null,
       // TODO: Break down this large function into smaller functions
@@ -182,6 +204,8 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         setSigningStep,
         walletClient,
         config,
+        waitAndSaveWaivedFeeAmount,
+        waitAndSaveWaivedFeeSide,
       ]) => {
         void settlementContract // in deps for memo stability
         return {
@@ -239,6 +263,8 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             partiallyFillable: isHooksTradeType,
             quoteId: tradeQuote.quoteResults.quoteResponse.id,
             isSafeWallet,
+            waitAndSaveWaivedFeeAmount,
+            waitAndSaveWaivedFeeSide,
           },
           config,
         }

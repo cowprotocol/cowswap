@@ -3,6 +3,8 @@ export * from './types'
 export * from './const/common'
 export * from './state/tradeTypeAtom'
 export { waitAndSaveEnabledAtom } from './state/waitAndSaveEnabledAtom'
+export { waitAndSaveComparisonQuoteAtom } from './state/waitAndSaveComparisonQuoteAtom'
+export type { WaitAndSaveComparisonQuote } from './state/waitAndSaveComparisonQuoteAtom'
 export {
   canonicalBatchScheduleQueryAtom,
   canonicalBatchScheduleAtom,
@@ -30,6 +32,9 @@ export * from './utils/getLimitPriceFromReceiveAmount'
 export * from './utils/tradeFlowAnalytics'
 export * from './utils/logger'
 export { addPendingOrderStep } from './utils/addPendingOrderStep'
+export { formatPositiveFiat } from './utils/formatPositiveFiat'
+export { getWaitAndSaveWaivedFeeRawAmount, parsePositiveBuyAmount } from './utils/waitAndSaveWaivedFee'
+export type { WaitAndSaveMainQuote, WaitAndSaveWaivedFeeRawAmount } from './utils/waitAndSaveWaivedFee'
 export * from './containers/TradeRouteRedirect'
 export { TradeRows, TradeRowsWide, tradeRowsWideStyles } from './containers/TradeWidget/TradeRows.styled'
 export * from './containers/TradeWidget'

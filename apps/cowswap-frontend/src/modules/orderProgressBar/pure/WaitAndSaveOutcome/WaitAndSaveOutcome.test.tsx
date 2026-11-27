@@ -8,6 +8,7 @@ import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-component
 import { getCowswapTheme } from 'theme'
 
 import {
+  WAIT_AND_SAVE_HARDCODED_VOLUME_FEE_SAVED_FIAT,
   WAIT_AND_SAVE_WITH_COW_DEMO,
   WAIT_AND_SAVE_WITH_WAIVED_FEE_AND_COW_FIAT_DEMO,
   WAIT_AND_SAVE_WITH_WAIVED_FEE_DEMO,
@@ -70,14 +71,14 @@ describe('WaitAndSaveOutcome', () => {
     expect(text).toContain('Better price than trading alone')
     expect(text).toContain('+$4.50')
     expect(text).toContain('No volume fee')
-    expect(text).toContain('+$0.30')
+    expect(text).toContain(`+${WAIT_AND_SAVE_HARDCODED_VOLUME_FEE_SAVED_FIAT}`)
   })
 
   it('renders the compact fee-waiver banner when comparison is unavailable', () => {
     renderOutcome(<WaitAndSaveOutcome {...WAIT_AND_SAVE_WITH_WAIVED_FEE_DEMO} />)
 
     expect(screen.getByTestId('wait-and-save-outcome').textContent).toContain(
-      'Wait & save: $0.30 saved on the volume fee',
+      `Wait & save: ${WAIT_AND_SAVE_HARDCODED_VOLUME_FEE_SAVED_FIAT} saved on the volume fee`,
     )
   })
 

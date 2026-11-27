@@ -11,6 +11,7 @@ import {
   waitAndSaveEnabledAtom,
 } from 'modules/trade'
 
+import { useWaitAndSaveSaveAmount } from '../../hooks/useWaitAndSaveSaveAmount'
 import { WaitAndSaveRow } from '../../pure/WaitAndSaveRow/WaitAndSaveRow.pure'
 
 export function WaitAndSaveRowContainer(): ReactNode {
@@ -56,6 +57,7 @@ export function WaitAndSaveRowContainer(): ReactNode {
   const onRetry = useCallback(() => {
     void refetch()
   }, [refetch])
+  const saveAmount = useWaitAndSaveSaveAmount()
 
   return (
     <WaitAndSaveRow
@@ -66,6 +68,7 @@ export function WaitAndSaveRowContainer(): ReactNode {
       isLoading={isLoading}
       isFetching={isFetching}
       onRetry={onRetry}
+      saveAmount={saveAmount}
     />
   )
 }

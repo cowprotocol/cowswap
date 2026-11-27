@@ -13,6 +13,7 @@ import { InvalidBridgeOutputUpdater } from './InvalidBridgeOutputUpdater'
 import { QuoteObserverUpdater } from './QuoteObserverUpdater'
 import { SetupSwapAmountsFromUrlUpdater } from './SetupSwapAmountsFromUrlUpdater'
 import { UnfillableSwapOrdersUpdater } from './UnfillableSwapOrdersUpdater'
+import { WaitAndSaveComparisonQuoteUpdater } from './WaitAndSaveComparisonQuoteUpdater'
 
 import { useSwapDerivedState } from '../hooks/useSwapDerivedState'
 import { useSwapDeadlineState, useSwapSettings } from '../hooks/useSwapSettings'
@@ -39,11 +40,18 @@ export function SwapUpdaters(): ReactNode {
       <QuoteObserverUpdater />
       <Erc20ApproveWidget isPartialApprovalEnabled={enablePartialApprovalBySettings} />
       {slippage && (
-        <AppDataUpdater
-          orderClass="market"
-          slippageBips={percentToBps(slippage)}
-          isSmartSlippage={isSmartSlippageApplied}
-        />
+        <>
+          <AppDataUpdater
+            orderClass="market"
+            slippageBips={percentToBps(slippage)}
+            isSmartSlippage={isSmartSlippageApplied}
+          />
+          <WaitAndSaveComparisonQuoteUpdater
+            orderClass="market"
+            slippageBips={percentToBps(slippage)}
+            isSmartSlippage={isSmartSlippageApplied}
+          />
+        </>
       )}
     </>
   )

@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import type { SolverCompetitionResponse } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
+import { parsePositiveBuyAmount } from 'modules/trade'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { useSolversInfoByAddress } from 'common/hooks/useSolversInfoByAddress'
@@ -14,18 +15,24 @@ import {
   type UseWaitAndSaveSolverCompetitionParams,
 } from './useWaitAndSaveSolverCompetition'
 
-import { buildWaitAndSaveOutcome } from '../pure/WaitAndSaveOutcome/buildWaitAndSaveOutcome.utils'
+import {
+  buildWaitAndSaveOutcome,
+  type WaitAndSaveVolumeFee,
+} from '../pure/WaitAndSaveOutcome/buildWaitAndSaveOutcome.utils'
 import {
   deriveWaitAndSaveCompetition,
   type WaitAndSaveCompetitionDerivation,
 } from '../pure/WaitAndSaveOutcome/deriveWaitAndSaveCompetition.utils'
 import { selectWaitAndSaveStrip, type WaitAndSaveStrip } from '../pure/WaitAndSaveOutcome/selectWaitAndSaveStrip.utils'
-import { WAIT_AND_SAVE_HARDCODED_VOLUME_FEE_SAVED_FIAT } from '../pure/WaitAndSaveOutcome/waitAndSaveOutcome.constants'
 
 import type { WaitAndSaveOutcomeProps } from '../pure/WaitAndSaveOutcome/WaitAndSaveOutcome.pure'
 
 export interface UseWaitAndSaveConfirmationParams extends UseWaitAndSaveSolverCompetitionParams {
   buyToken: Currency | undefined
+  /** Token the stored waived fee is priced in. The surplus stays in `buyToken`. */
+  feeToken?: Currency
+  /** Raw atoms stored on the order at placement, in `feeToken`. */
+  waivedFeeAmount?: string
 }
 
 export interface WaitAndSaveConfirmation {
@@ -43,19 +50,44 @@ const IDLE_CONFIRMATION: WaitAndSaveConfirmation = {
 }
 
 export function useWaitAndSaveConfirmation(params: UseWaitAndSaveConfirmationParams): WaitAndSaveConfirmation {
-  const { buyToken, chainId, enabled, orderUid } = params
+  const { buyToken, chainId, enabled, feeToken, orderUid, waivedFeeAmount } = params
   const { competition, pending } = useWaitAndSaveSolverCompetition({ chainId, enabled, orderUid })
   const solversInfoByAddress = useSolversInfoByAddress(chainId)
   const derivation = useMemo(() => deriveCompetition(competition, orderUid), [competition, orderUid])
+  const waivedFeeRaw = parsePositiveBuyAmount(waivedFeeAmount)
   const gainAmount = useMemo(() => toGainAmount(buyToken, derivation?.positiveGain?.gainAmount), [buyToken, derivation])
+  const waivedFeeCurrencyAmount = useMemo(
+    () => toGainAmount(feeToken ?? buyToken, waivedFeeRaw),
+    [buyToken, feeToken, waivedFeeRaw],
+  )
   const gainFiat = useUsdAmount(gainAmount).value
+  const waivedFeeFiat = useUsdAmount(waivedFeeCurrencyAmount).value
 
   return useMemo(() => {
     if (!enabled || !orderUid) return IDLE_CONFIRMATION
     if (pending) return { ...IDLE_CONFIRMATION, pending: true }
 
-    return toSettledConfirmation({ buyToken, derivation, gainFiat, solversInfoByAddress })
-  }, [buyToken, derivation, enabled, gainFiat, orderUid, pending, solversInfoByAddress])
+    return toSettledConfirmation({
+      buyToken,
+      derivation,
+      gainFiat,
+      solversInfoByAddress,
+      volumeFee:
+        waivedFeeCurrencyAmount === undefined
+          ? undefined
+          : { amount: waivedFeeCurrencyAmount, fiatAmount: waivedFeeFiat },
+    })
+  }, [
+    buyToken,
+    derivation,
+    enabled,
+    gainFiat,
+    orderUid,
+    pending,
+    solversInfoByAddress,
+    waivedFeeCurrencyAmount,
+    waivedFeeFiat,
+  ])
 }
 
 function deriveCompetition(
@@ -81,8 +113,9 @@ function toSettledConfirmation(params: {
   derivation: WaitAndSaveCompetitionDerivation | undefined
   gainFiat: CurrencyAmount<Currency> | null
   solversInfoByAddress: Parameters<typeof toDisplayedSolverCompetition>[1]
+  volumeFee: WaitAndSaveVolumeFee | undefined
 }): WaitAndSaveConfirmation {
-  const { buyToken, derivation, gainFiat, solversInfoByAddress } = params
+  const { buyToken, derivation, gainFiat, solversInfoByAddress, volumeFee } = params
   const displayedSolvers = derivation?.solvers.length
     ? toDisplayedSolverCompetition(derivation.solvers, solversInfoByAddress)
     : undefined
@@ -91,7 +124,7 @@ function toSettledConfirmation(params: {
         buyToken,
         fiatAmount: gainFiat,
         gain: derivation?.positiveGain,
-        volumeFeeSavedFiat: WAIT_AND_SAVE_HARDCODED_VOLUME_FEE_SAVED_FIAT,
+        volumeFee,
       })
     : undefined
 

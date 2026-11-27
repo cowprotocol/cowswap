@@ -59,6 +59,10 @@ export interface PostOrderParams {
   quoteId?: number
   isSafeWallet: boolean
   waitAndSaveNextBatch?: number
+  /** Local display state. Positive waived-fee atoms in the token named by `waitAndSaveWaivedFeeSide`. */
+  waitAndSaveWaivedFeeAmount?: string
+  /** `buy` for a sell order, `sell` for a buy order. */
+  waitAndSaveWaivedFeeSide?: 'buy' | 'sell'
 }
 
 export interface SignOrderParams {
@@ -213,6 +217,14 @@ export function mapUnsignedOrderToOrder({ unsignedOrder, additionalParams }: Map
 
     // sell amount BEFORE fee - necessary for later calculations (unfilled orders)
     sellAmountBeforeFee: sellAmountBeforeFee.quotient.toString(),
+    ...(additionalParams.waitAndSaveWaivedFeeAmount
+      ? {
+          waitAndSaveWaivedFeeAmount: additionalParams.waitAndSaveWaivedFeeAmount,
+          ...(additionalParams.waitAndSaveWaivedFeeSide
+            ? { waitAndSaveWaivedFeeSide: additionalParams.waitAndSaveWaivedFeeSide }
+            : undefined),
+        }
+      : undefined),
   }
 }
 
