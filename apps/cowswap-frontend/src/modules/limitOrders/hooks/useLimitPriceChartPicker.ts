@@ -17,9 +17,9 @@ export function useLimitPriceChartPicker(): ((rate: Fraction) => void) | undefin
   const [isLimitPickerMode, setLimitPickerMode] = useAtom(limitPickerModeAtom)
   const [isChartModalOpen, setChartModalOpen] = useAtom(priceChartModalOpenAtom)
   const isPriceChartVisible = usePriceChartVisibility()
-  const isUpToLarge = useMediaQuery(Media.upToLarge(false))
+  const isUpToMedium = useMediaQuery(Media.upToMedium(false))
   const updateRate = useUpdateActiveRate()
-  const isPriceChartOpen = isUnlocked && isPriceChartVisible && (!isUpToLarge || isChartModalOpen)
+  const isPriceChartOpen = isUnlocked && isPriceChartVisible && (!isUpToMedium || isChartModalOpen)
 
   useEffect(() => {
     if (!isPriceChartOpen) {

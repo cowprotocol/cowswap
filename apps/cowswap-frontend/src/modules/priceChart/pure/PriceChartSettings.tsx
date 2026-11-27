@@ -17,10 +17,10 @@ export function PriceChartSettings(): ReactNode {
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
   const isNetworkUnavailable = isProviderNetworkUnsupported || isProviderNetworkDeprecated
-  const isUpToLarge = useMediaQuery(Media.upToLarge(false))
+  const isUpToMedium = useMediaQuery(Media.upToMedium(false))
   const [isVisible, setIsVisible] = useAtom(priceChartVisibleAtom)
 
-  if (!isPriceChartAvailable || isUpToLarge) return null
+  if (!isPriceChartAvailable || isUpToMedium) return null
 
   return (
     <SettingsBox

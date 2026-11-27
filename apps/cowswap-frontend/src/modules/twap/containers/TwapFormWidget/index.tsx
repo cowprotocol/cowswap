@@ -48,6 +48,7 @@ import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../stat
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 import { ActionButtons } from '../ActionButtons'
 import { AmountParts } from '../AmountParts'
+import { twapFieldRowStackCss } from '../twapFieldRowStack.constants'
 import { TwapFormWarnings } from '../TwapFormWarnings/TwapFormWarnings.container'
 
 export type { LabelTooltip, LabelTooltipContent, LabelTooltipFn, LabelTooltipItems } from './tooltips'
@@ -180,8 +181,11 @@ export function TwapFormWidget({ tradeWarnings, captcha }: TwapFormWidget): Reac
 
   const tooltips = useLabelsTooltips()
 
+  // We need to add the CSS here, as @container is not supported by styled-components:
+
   return (
     <>
+      <style>{twapFieldRowStackCss}</style>
       {!hideQuoteAmount && (
         <TradeRows>
           <RateInfo

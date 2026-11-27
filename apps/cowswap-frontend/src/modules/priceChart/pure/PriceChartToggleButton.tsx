@@ -21,7 +21,7 @@ export function PriceChartToggleButton(): ReactNode {
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
   const { inputCurrency, outputCurrency } = useDerivedTradeState() ?? {}
-  const isUpToLarge = useMediaQuery(Media.upToLarge(false))
+  const isUpToMedium = useMediaQuery(Media.upToMedium(false))
   const [isModalOpen, setIsModalOpen] = useAtom(priceChartModalOpenAtom)
   const [isVisible, setIsVisible] = useAtom(priceChartVisibleAtom)
   const disabledReason =
@@ -30,7 +30,7 @@ export function PriceChartToggleButton(): ReactNode {
       : !inputCurrency && !outputCurrency
         ? t`Select a token to view its price chart.`
         : undefined
-  const label = !disabledReason && !isUpToLarge && isVisible ? t`Hide price chart` : t`Show price chart`
+  const label = !disabledReason && !isUpToMedium && isVisible ? t`Hide price chart` : t`Show price chart`
 
   if (!isPriceChartAvailable) return null
 
@@ -40,10 +40,10 @@ export function PriceChartToggleButton(): ReactNode {
         type="button"
         disabled={!!disabledReason}
         aria-label={label}
-        aria-pressed={isUpToLarge ? undefined : !disabledReason && isVisible}
-        aria-haspopup={isUpToLarge ? 'dialog' : undefined}
-        aria-expanded={isUpToLarge ? isModalOpen : undefined}
-        onClick={() => (isUpToLarge ? setIsModalOpen(true) : setIsVisible((value) => !value))}
+        aria-pressed={isUpToMedium ? undefined : !disabledReason && isVisible}
+        aria-haspopup={isUpToMedium ? 'dialog' : undefined}
+        aria-expanded={isUpToMedium ? isModalOpen : undefined}
+        onClick={() => (isUpToMedium ? setIsModalOpen(true) : setIsVisible((value) => !value))}
       >
         <TrendingUp aria-hidden="true" />
       </TradeIconButton>

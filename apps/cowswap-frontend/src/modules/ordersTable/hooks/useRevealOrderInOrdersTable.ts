@@ -23,7 +23,7 @@ export function useRevealOrderInOrdersTable(): (
 ) => Promise<boolean> {
   const navigateToOrdersTableTab = useNavigateToOrdersTableTab()
   const resetOrdersTableFilters = useSetAtom(resetOrdersTableFiltersAtom)
-  const isOrdersTableInDrawer = useMediaQuery(Media.upToLarge(false))
+  const isOrdersTableInDrawer = useMediaQuery(Media.upToMedium(false))
 
   return useCallback(
     async (orderId: string, tabId: OrderTabId, options?: RevealOrderInOrdersTableOptions): Promise<boolean> => {

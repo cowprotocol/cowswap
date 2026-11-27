@@ -22,6 +22,10 @@ const MAINNET_CHAIN_ID = SupportedChainId.MAINNET
 const MAINNET_WETH = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
 
 test.describe('Hooks store', () => {
+  // Desktop Chrome is 1280px wide. These tests open the collapsed trade-mode menu, which
+  // `TradeWidgetForm` only renders up to `Media.upToMedium` (960px).
+  test.use({ viewport: { width: 960, height: 720 } })
+
   test('[CS-129] Enable Hooks via settings toggle @smoke', async ({ swapPage }) => {
     await swapPage.goto({ chainId: CHAIN_ID })
 

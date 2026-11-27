@@ -34,7 +34,7 @@ export function RegularLimitOrdersPage(): ReactNode {
   const { ordersTableOnLeft } = useAtomValue(limitOrdersSettingsAtom)
   const { isOpen: isOrdersTableDrawerOpen } = useOrdersTableDrawerState()
   const setOrdersTableDrawerOpen = useSetOrdersTableDrawerOpen()
-  const isUpToLarge = useMediaQuery(Media.upToLarge(false))
+  const isUpToMedium = useMediaQuery(Media.upToMedium(false))
 
   const { inputCurrency, outputCurrency, isUnlocked } = useLimitOrdersDerivedState()
   const { activeRate, isInverted } = useAtomValue(limitRateAtom)
@@ -66,7 +66,7 @@ export function RegularLimitOrdersPage(): ReactNode {
       isUnlocked={isUnlocked}
       secondaryOnLeft={ordersTableOnLeft}
       maxWidth={LIMIT_ORDERS_MAX_WIDTH}
-      hideOrdersTable={hideOrdersTable || isUpToLarge || !isUnlocked}
+      hideOrdersTable={hideOrdersTable || isUpToMedium || !isUnlocked}
     >
       <styledEl.PrimaryWrapper>
         <LimitOrdersWidget />
@@ -86,12 +86,12 @@ export function RegularLimitOrdersPage(): ReactNode {
           />
           {!hideOrdersTable && (
             <DialogOrInline
-              isDialog={isUpToLarge}
+              isDialog={isUpToMedium}
               isOpen={isOrdersTableDrawerOpen}
               onOpenChange={handleOrdersTableDrawerOpenChange}
             >
               <Modal.Root className="trade-orders-table">
-                {isUpToLarge && (
+                {isUpToMedium && (
                   <Modal.Header
                     sticky
                     title={t`Limit orders`}
@@ -99,7 +99,7 @@ export function RegularLimitOrdersPage(): ReactNode {
                     onClose={() => setOrdersTableDrawerOpen(false)}
                   />
                 )}
-                <styledEl.SecondaryWrapper $inDrawer={isUpToLarge}>
+                <styledEl.SecondaryWrapper $inDrawer={isUpToMedium}>
                   {pendingOrders.length > 0 && <LimitOrdersPermitUpdater orders={pendingOrders} />}
                   <Suspense fallback={<Loading />}>
                     <OrdersTableWidget orderType={TabOrderTypes.LIMIT} />

@@ -54,7 +54,7 @@ export const FlyoutRow = styled.button<{ $active: boolean }>`
     outline-offset: 2px;
   }
 
-  ${Media.MediumAndUp()} {
+  ${Media.SmallAndUp()} {
     min-height: ${ROW_HEIGHT_DESKTOP};
     height: ${ROW_HEIGHT_DESKTOP};
   }

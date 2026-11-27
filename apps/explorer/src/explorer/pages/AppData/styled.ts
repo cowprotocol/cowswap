@@ -181,7 +181,7 @@ export const Wrapper = styled(WrapperTemplate)`
         top: 2.8rem;
       }
 
-      ${Media.MediumAndUp()} {
+      ${Media.SmallAndUp()} {
         position: sticky;
         top: 3rem;
       }

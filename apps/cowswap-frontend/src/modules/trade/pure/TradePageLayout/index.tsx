@@ -4,14 +4,17 @@ import styled, { css } from 'styled-components/macro'
 import { WIDGET_MAX_WIDTH } from 'theme'
 
 const DEFAULT_MAX_WIDTH = '1500px'
+const COLUMN_GAP = '20px'
+const formColumnTrack = `minmax(0, min(50% - ${COLUMN_GAP} / 2, ${WIDGET_MAX_WIDTH.swap}))`
+const flexibleColumnTrack = 'minmax(0, 1fr)'
 
 const secondaryLayout = css<{ secondaryOnLeft?: boolean; stacked?: boolean }>`
   grid-template-columns: ${({ secondaryOnLeft, stacked }) =>
     stacked
-      ? 'minmax(0, 1fr)'
+      ? flexibleColumnTrack
       : secondaryOnLeft
-        ? `minmax(0, 1fr) minmax(auto, ${WIDGET_MAX_WIDTH.swap})`
-        : `minmax(auto, ${WIDGET_MAX_WIDTH.swap}) minmax(0, 1fr)`};
+        ? `${flexibleColumnTrack} ${formColumnTrack}`
+        : `${formColumnTrack} ${flexibleColumnTrack}`};
   grid-template-rows: ${({ stacked }) => (stacked ? 'auto 1fr' : '1fr')};
   grid-template-areas: ${({ secondaryOnLeft, stacked }) =>
     stacked ? '"primary" "secondary"' : secondaryOnLeft ? '"secondary primary"' : '"primary secondary"'};
@@ -32,7 +35,7 @@ export const PageWrapper = styled.div<{
   grid-template-columns: 1fr;
   grid-template-rows: auto;
   grid-template-areas: ${({ hideOrdersTable }) => (hideOrdersTable ? '"primary"' : '"primary" "secondary"')};
-  gap: 20px;
+  gap: ${COLUMN_GAP};
 
   &:has(.price-chart) {
     grid-template-areas: 'primary' 'secondary';
@@ -42,7 +45,7 @@ export const PageWrapper = styled.div<{
     max-width: 1800px;
   }
 
-  ${Media.LargeAndUp()} {
+  ${Media.MediumAndUp()} {
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
     grid-template-areas: 'primary';
@@ -66,7 +69,9 @@ export const PageWrapper = styled.div<{
   }
 `
 
-// Form + banner
+// Form + banner. `trade-form` is the container the TWAP field rows query.
+const TRADE_FORM_CONTAINER_NAME = 'trade-form'
+
 export const PrimaryWrapper = styled.div`
   display: flex;
   flex-flow: column wrap;
@@ -77,6 +82,8 @@ export const PrimaryWrapper = styled.div`
   margin: 0 auto;
   color: inherit;
   grid-area: primary;
+  container-type: inline-size;
+  container-name: ${TRADE_FORM_CONTAINER_NAME};
 `
 
 export const SecondaryColumn = styled.div`

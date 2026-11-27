@@ -15,7 +15,7 @@ export function useViewPlacedOrder(onDismiss?: () => void): () => void {
   const placedOrder = useAtomValue(placedOrderHighlightAtom)
   const { onDismiss: dismissTradeConfirm } = useTradeConfirmActions()
   const setOrdersTableDrawerOpen = useSetOrdersTableDrawerOpen()
-  const isUpToLarge = useMediaQuery(Media.upToLarge(false))
+  const isUpToMedium = useMediaQuery(Media.upToMedium(false))
   const revealOrderInOrdersTable = useRevealOrderInOrdersTable()
   const navigateToOrdersTableTab = useNavigateToOrdersTableTab()
 
@@ -26,7 +26,7 @@ export function useViewPlacedOrder(onDismiss?: () => void): () => void {
       dismissTradeConfirm()
     }
 
-    if (isUpToLarge) {
+    if (isUpToMedium) {
       setOrdersTableDrawerOpen(true)
     }
 
@@ -42,7 +42,7 @@ export function useViewPlacedOrder(onDismiss?: () => void): () => void {
     navigateToOrdersTableTab(placedOrder.tabId)
   }, [
     dismissTradeConfirm,
-    isUpToLarge,
+    isUpToMedium,
     navigateToOrdersTableTab,
     onDismiss,
     placedOrder,

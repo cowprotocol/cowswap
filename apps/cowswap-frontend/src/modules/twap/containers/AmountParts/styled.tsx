@@ -4,14 +4,11 @@ import styled from 'styled-components/macro'
 
 import { TradeWidgetFieldBox, TradeWidgetFieldLabel } from 'modules/trade/pure/TradeWidgetField/styled'
 
-export const Wrapper = styled.div`
+import { TWAP_FIELD_ROW_CLASS } from '../twapFieldRowStack.constants'
+
+export const Wrapper = styled.div.attrs({ className: TWAP_FIELD_ROW_CLASS })`
   display: flex;
   grid-gap: 8px;
-
-  ${Media.upToSmall()} {
-    flex-direction: column;
-    grid-gap: 6px;
-  }
 `
 
 export const Part = styled(TradeWidgetFieldBox)`
