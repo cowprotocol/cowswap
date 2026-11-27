@@ -1,5 +1,8 @@
 import type { ReactNode } from 'react'
 
+import svgCowSwapSrc from '@cowprotocol/assets/images/logo-cowswap.svg'
+import { COW_SWAP_NAME } from '@cowprotocol/common-const/cowLinks'
+
 import Link from 'next/link'
 
 import styles from './Header.module.css'
@@ -18,9 +21,9 @@ export function Header(): ReactNode {
     <>
       <header className={styles.header}>
         <ProductsMenu />
-        <Link className={styles.logo} href="/" aria-label="CoW RWA">
-          <CowLogo />
-          <span className={styles.logoText}>CoW RWA</span>
+        <Link className={styles.logo} href="/" aria-label={COW_SWAP_NAME}>
+          <span className={styles.wordmark} style={{ maskImage: `url("${svgCowSwapSrc.src}")` }} aria-hidden="true" />
+          <CowLogo className={styles.logoIcon} />
         </Link>
         <HeaderNav />
         <div className={styles.search}>

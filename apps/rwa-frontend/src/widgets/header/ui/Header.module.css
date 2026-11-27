@@ -31,15 +31,20 @@
 .logo {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
   padding: 0 18px 0 10px;
   color: var(--color-accent);
-  font-size: 22px;
-  font-weight: 700;
-  line-height: 24px;
-  letter-spacing: -0.22px;
-  text-decoration: none;
-  white-space: nowrap;
+}
+
+.wordmark {
+  height: 24px;
+  aspect-ratio: 150 / 28;
+  background: currentColor;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+}
+
+.logoIcon {
+  display: none;
 }
 
 .search {
@@ -93,8 +98,12 @@
 }
 
 @media (max-width: 500px) {
-  .logoText {
+  .wordmark {
     display: none;
+  }
+
+  .logoIcon {
+    display: block;
   }
 }
 

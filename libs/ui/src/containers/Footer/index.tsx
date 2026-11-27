@@ -126,7 +126,7 @@ export const Footer = ({
   const footerRef = useRef<HTMLDivElement>(null)
   const theme = useTheme()
   const resolvedNavItems = navItems ?? getGlobalFooterNavItems(isRwaEnabled)
-  const productLogoLinks = getProductLogoLinks(isRwaEnabled)
+  const productLogoLinks = getProductLogoLinks()
 
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type

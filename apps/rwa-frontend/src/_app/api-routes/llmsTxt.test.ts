@@ -47,9 +47,9 @@ const APP_URL = 'https://rwa.example/rwa'
 describe('buildLlmsTxt', () => {
   it('starts with the title and summary', () => {
     expect(buildLlmsTxt([ASSET], APP_URL).split('\n').slice(0, 3)).toEqual([
-      '# CoW RWA',
+      '# CoW Swap',
       '',
-      '> Third-party tokens referencing stocks and ETFs, with swaps powered by CoW Protocol',
+      '> Tokenized stocks, ETFs and commodities from independent issuers, with swaps powered by CoW Protocol',
     ])
   })
 
@@ -63,7 +63,7 @@ describe('buildLlmsTxt', () => {
       '- [Apple (AAPL)](https://rwa.example/rwa/asset/AAPL): Stock by Ondo, xStocks on Ethereum, BNB\n',
     )
     expect(llmsTxt).toContain('- [SPDR S&P 500 (SPY)](https://rwa.example/rwa/asset/SPY): ETF by xStocks on Ethereum\n')
-    expect(llmsTxt).toContain('CoW RWA lists 2 real-world assets tokenized by Ondo, xStocks on Ethereum, BNB')
+    expect(llmsTxt).toContain('CoW Swap lists 2 real-world assets tokenized by Ondo, xStocks on Ethereum, BNB')
   })
 
   it('links only absolute URLs', () => {

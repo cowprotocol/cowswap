@@ -2,7 +2,7 @@
 
 import { type KeyboardEvent, type ReactNode, useCallback, useId, useRef, useState } from 'react'
 
-import { COW_DAO_LINK, COW_PRODUCT_LINKS, type CowProductId } from '@cowprotocol/common-const/cowLinks'
+import { COW_DAO_LINK, COW_PRODUCT_LINKS, COW_STOCKS_LINK } from '@cowprotocol/common-const/cowLinks'
 
 import Link from 'next/link'
 
@@ -13,8 +13,6 @@ import { CowLogo } from '@/shared/ui/cow-logo'
 import { ArrowUpRightIcon } from '@/shared/ui/icons'
 
 const MENU_LOGO_HEIGHT = 16
-
-const CURRENT_PRODUCT: CowProductId = 'cowRwa'
 
 export function ProductsMenu(): ReactNode {
   const menuId = useId()
@@ -51,22 +49,13 @@ export function ProductsMenu(): ReactNode {
         <nav id={menuId} className={styles.menu} aria-label="CoW products">
           <ExternalItem label={COW_DAO_LINK.label} href={COW_DAO_LINK.href} onClick={close} />
           <hr className={styles.divider} />
-          {COW_PRODUCT_LINKS.map(({ id, label, href }) =>
-            id === CURRENT_PRODUCT ? (
-              <Link
-                key={id}
-                className={`${styles.item} ${styles.current}`}
-                href="/"
-                aria-current="true"
-                onClick={close}
-              >
-                <CowLogo className={styles.logo} height={MENU_LOGO_HEIGHT} />
-                <span className={styles.label}>{label}</span>
-              </Link>
-            ) : (
-              <ExternalItem key={id} label={label} href={href} onClick={close} />
-            ),
-          )}
+          {COW_PRODUCT_LINKS.map(({ id, label, href }) => (
+            <ExternalItem key={id} label={label} href={href} onClick={close} />
+          ))}
+          <Link className={`${styles.item} ${styles.current}`} href="/" aria-current="true" onClick={close}>
+            <CowLogo className={styles.logo} height={MENU_LOGO_HEIGHT} />
+            <span className={styles.label}>{COW_STOCKS_LINK.label}</span>
+          </Link>
         </nav>
       )}
     </div>

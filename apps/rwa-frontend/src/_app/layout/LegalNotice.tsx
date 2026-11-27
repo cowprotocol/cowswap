@@ -20,11 +20,11 @@ export function LegalNotice(): ReactNode {
         ))}
       </ul>
       <p className={styles.disclaimer}>
-        CoW RWA provides access to information concerning third-party issued tokenized assets and supported onchain
-        transaction functionality. Tokenized assets are issued by independent third parties and are subject to their
-        respective terms and conditions. Tokens may not confer the rights attached to the underlying assets. The
-        availability of an asset through this interface does not constitute a recommendation or endorsement of that
-        asset.
+        This section of CoW Swap provides access to information concerning third-party issued tokenized assets and
+        supported onchain transaction functionality. Tokenized assets are issued by independent third parties and are
+        subject to their respective terms and conditions. Tokens may not confer the rights attached to the underlying
+        assets. The availability of an asset through this interface does not constitute a recommendation or endorsement
+        of that asset.
       </p>
     </aside>
   )

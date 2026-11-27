@@ -42,8 +42,8 @@ export const SOCIAL_LINKS = COW_SOCIAL_LINKS.map(({ id, label, href, utmContent 
   utmContent,
 }))
 
-export function getProductLogoLinks(isRwaEnabled: boolean): ProductLogoLink[] {
-  return COW_PRODUCT_LINKS.filter(({ id }) => isRwaEnabled || id !== 'cowRwa').map(({ id, label, href }) => ({
+export function getProductLogoLinks(): ProductLogoLink[] {
+  return COW_PRODUCT_LINKS.map(({ id, label, href }) => ({
     href,
     label,
     productVariant: COW_PRODUCT_VARIANTS[id],

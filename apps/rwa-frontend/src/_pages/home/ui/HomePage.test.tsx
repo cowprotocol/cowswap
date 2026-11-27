@@ -160,7 +160,7 @@ describe('HomePage', () => {
     mockApi(OVERVIEW)
     renderHomePage()
 
-    expect(screen.getByRole('heading', { level: 1, name: 'Explore tokenized real-world assets' })).toBeTruthy()
+    expect(screen.getByRole('heading', { level: 1, name: 'Tokenized stocks, ETFs and commodities' })).toBeTruthy()
     expect(screen.getByRole('searchbox', { name: 'Search assets' })).toBeTruthy()
   })
 

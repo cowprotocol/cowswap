@@ -48,7 +48,6 @@ export enum ProductVariant {
 export const COW_PRODUCT_VARIANTS: Record<CowProductId, ProductVariant> = {
   cowSwap: ProductVariant.CowSwap,
   cowProtocol: ProductVariant.CowProtocol,
-  cowRwa: ProductVariant.CowRwa,
 }
 
 interface LogoInfo {
