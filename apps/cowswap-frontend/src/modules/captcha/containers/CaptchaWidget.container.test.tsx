@@ -274,7 +274,7 @@ describe('CaptchaWidget', () => {
 
     renderWithStore()
 
-    expect(screen.getByTestId('turnstile').getAttribute('data-language')).toBe('ru-RU')
+    expect(screen.getByTestId('turnstile').getAttribute('data-language')).toBe('ru-ru')
   })
 
   it('uses the default locale for the pseudo locale', () => {
@@ -283,7 +283,7 @@ describe('CaptchaWidget', () => {
 
     renderWithStore()
 
-    expect(screen.getByTestId('turnstile').getAttribute('data-language')).toBe('en-US')
+    expect(screen.getByTestId('turnstile').getAttribute('data-language')).toBe('en-us')
   })
 
   it('tracks when the CAPTCHA requires interaction', () => {
