@@ -70,7 +70,7 @@
     "@lingui/core": "5.5.1",
     "@lingui/macro": "5.5.1",
     "@lingui/react": "5.5.1",
-    "@marsidev/react-turnstile": "1.4.2",
+    "@marsidev/react-turnstile": "1.6.3",
     "@reach/dialog": "0.18.0",
     "@reach/menu-button": "0.18.0",
     "@react-spring/web": "9.7.3",
