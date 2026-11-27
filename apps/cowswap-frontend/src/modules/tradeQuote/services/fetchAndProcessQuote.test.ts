@@ -136,6 +136,7 @@ describe('fetchAndProcessQuote', () => {
 
     mockGetBridgeQuoteSigner.mockReturnValue({} as jest.Mocked<any>)
     mockGetQuoteApiTypedError.mockReturnValue(false)
+    jotaiStore.set(quoteRateLimitedUntilAtom, null)
   })
 
   describe('Main fetchAndProcessQuote function', () => {
@@ -380,7 +381,6 @@ describe('fetchAndProcessQuote', () => {
     it('does not pause quotes for a 429 that answers a captcha JWT replaced in the meantime', async () => {
       const exp = Math.floor(Date.now() / 1000) + 3600
       const response = { status: 429, statusText: '', headers: new Headers({ 'Retry-After': '30' }) }
-      jotaiStore.set(quoteRateLimitedUntilAtom, null)
       mockBridgingSdk.getQuote.mockImplementation(async () => {
         jotaiStore.set(captchaJwtAtom, `header.${globalThis.btoa(JSON.stringify({ exp }))}.signature`)
         throw new OrderBookApiError(response as Response, '')
@@ -402,6 +402,26 @@ describe('fetchAndProcessQuote', () => {
       )
       expect(jotaiStore.get(quoteRateLimitedUntilAtom)).toBeNull()
       jotaiStore.set(captchaJwtAtom, null)
+    })
+
+    it('answers TooManyRequests without requesting a quote while quotes are paused', async () => {
+      jotaiStore.set(quoteRateLimitedUntilAtom, Date.now() + 60_000)
+
+      await fetchAndProcessQuote(
+        mockFetchParams,
+        mockQuoteParams,
+        tradeQuotePollingParameters,
+        mockAppData,
+        mockTradeQuoteManager,
+      )
+
+      expect(mockBridgingSdk.getQuote).not.toHaveBeenCalled()
+      expect(mockTradeQuoteManager.onError).toHaveBeenCalledWith(
+        expect.objectContaining({ type: QuoteApiErrorCodes.TooManyRequests }),
+        SupportedChainId.MAINNET,
+        mockQuoteParams,
+        mockFetchParams,
+      )
     })
 
     it('should handle QuoteApiError', async () => {

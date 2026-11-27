@@ -5,6 +5,7 @@ import { useIsOnline, useIsWindowVisible, usePrevious } from '@cowprotocol/commo
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 
 import { captchaCanQuoteAtom } from 'entities/captcha/state/captchaCanQuoteAtom'
+import { quoteRateLimitedUntilAtom } from 'entities/captcha/state/quoteRateLimitedUntilAtom'
 import ms from 'ms.macro'
 
 import { usePollQuoteCallback } from './usePollQuoteCallback'
@@ -26,6 +27,7 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
   const { isConfirmOpen, isQuoteUpdatePossible } = quotePollingParams
 
   const canQuote = useAtomValue(captchaCanQuoteAtom)
+  const quoteRateLimitedUntil = useAtomValue(quoteRateLimitedUntilAtom)
   const { amount, partiallyFillable } = useAtomValue(tradeQuoteInputAtom)
   const [tradeQuotePolling, setTradeQuotePolling] = useAtom(tradeQuoteCounterAtom)
   const resetQuoteCounter = useResetQuoteCounter()
@@ -72,7 +74,8 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
   }, [isWindowVisible, tradeQuoteManager, isConfirmOpen, amountStr, setTradeQuotePolling])
 
   /**
-   * Fetch the quote instantly once the quote params are changed
+   * Fetch the quote instantly once the quote params are changed,
+   * or once a new JWT clears the rate-limit pause, instead of on the next poll
    */
   useLayoutEffect(() => {
     /**
@@ -84,7 +87,7 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
     if (pollQuoteRef.current(true)) {
       resetQuoteCounter()
     }
-  }, [canQuote, isConfirmOpen, isQuoteUpdatePossible, quoteParams, resetQuoteCounter])
+  }, [canQuote, isConfirmOpen, isQuoteUpdatePossible, quoteParams, quoteRateLimitedUntil, resetQuoteCounter])
 
   /**
    * Update quote once a QUOTE_POLLING_INTERVAL

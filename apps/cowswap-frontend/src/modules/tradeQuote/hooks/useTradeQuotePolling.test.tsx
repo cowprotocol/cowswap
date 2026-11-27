@@ -2,6 +2,7 @@ import { createStore } from 'jotai'
 import { ReactNode } from 'react'
 
 import { COW_TOKEN_TO_CHAIN, WETH_SEPOLIA } from '@cowprotocol/common-const'
+import { jotaiStore } from '@cowprotocol/core'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@cowprotocol/currency'
 import { WalletInfo, walletInfoAtom } from '@cowprotocol/wallet'
@@ -193,8 +194,8 @@ describe('useTradeQuotePolling()', () => {
     }
   })
 
-  it('does not request quotes while the order book rate limit pause is active', async () => {
-    const mocks = [...jotaiMock, [walletInfoAtom, walletInfoMock], [quoteRateLimitedUntilAtom, Date.now() + 60_000]]
+  it('requests no quote while quotes are paused, and one as soon as a new JWT clears the pause', async () => {
+    jotaiStore.set(quoteRateLimitedUntilAtom, Date.now() + 60_000)
 
     renderHook(
       () =>
@@ -204,12 +205,15 @@ describe('useTradeQuotePolling()', () => {
           useSuggestedSlippageApi: false,
           hasPendingTrade: false,
         }),
-      { wrapper: Wrapper(mocks) },
+      { wrapper: Wrapper([...jotaiMock, [walletInfoAtom, walletInfoMock]], jotaiStore) },
     )
 
     await act(() => new Promise((resolve) => setTimeout(resolve, 1_000)))
-
     expect(bridgingSdkMock.getQuote).not.toHaveBeenCalled()
+
+    act(() => jotaiStore.set(quoteRateLimitedUntilAtom, null))
+
+    await waitFor(() => expect(bridgingSdkMock.getQuote).toHaveBeenCalled())
   })
 
   describe('When wallet is NOT connected', () => {

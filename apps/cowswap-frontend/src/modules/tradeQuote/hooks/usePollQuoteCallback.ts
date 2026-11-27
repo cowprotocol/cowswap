@@ -6,7 +6,6 @@ import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { useAreUnsupportedTokens } from '@cowprotocol/tokens'
 
 import { captchaCanQuoteAtom } from 'entities/captcha/state/captchaCanQuoteAtom'
-import { isQuoteRateLimited, quoteRateLimitedUntilAtom } from 'entities/captcha/state/quoteRateLimitedUntilAtom'
 import { useGetCorrelatedTokensByChainId } from 'entities/correlatedTokens'
 
 import { QuoteParams } from './useQuoteParams'
@@ -26,7 +25,6 @@ export function usePollQuoteCallback(
 ): (hasParamsChanged: boolean, forceUpdate?: boolean) => boolean {
   const isSolanaAvailable = useIsSolanaAvailable()
   const canQuote = useAtomValue(captchaCanQuoteAtom)
-  const quoteRateLimitedUntil = useAtomValue(quoteRateLimitedUntilAtom)
   const { fastQuote } = useAtomValue(tradeQuoteInputAtom)
   const getCorrelatedTokensByChainId = useGetCorrelatedTokensByChainId()
   const tradeQuote = useTradeQuote()
@@ -55,7 +53,6 @@ export function usePollQuoteCallback(
 
       if (
         !canQuote ||
-        isQuoteRateLimited(quoteRateLimitedUntil) ||
         !isQuoteUpdatePossible ||
         !tradeQuoteManager ||
         !quoteParams ||
@@ -122,7 +119,6 @@ export function usePollQuoteCallback(
       hasSmartSlippagePrev,
       currentAmountRef,
       canQuote,
-      quoteRateLimitedUntil,
       isSolanaAvailable,
     ],
   )

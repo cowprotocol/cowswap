@@ -1,4 +1,5 @@
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
+import { jotaiStore } from '@cowprotocol/core'
 import { SwapAdvancedSettings, QuoteAndPost, isSolanaChain } from '@cowprotocol/cow-sdk'
 import {
   BridgeProviderQuoteError,
@@ -10,7 +11,12 @@ import {
 } from '@cowprotocol/sdk-bridging'
 
 import { t } from '@lingui/core/macro'
-import { getCaptchaToken, pauseQuotesOnRateLimit } from 'entities/captcha/state/quoteRateLimitedUntilAtom'
+import {
+  getCaptchaToken,
+  isQuoteRateLimited,
+  pauseQuotesOnRateLimit,
+  quoteRateLimitedUntilAtom,
+} from 'entities/captcha/state/quoteRateLimitedUntilAtom'
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
 import { AppDataInfo } from 'modules/appData'
@@ -76,7 +82,10 @@ export async function fetchAndProcessQuote(
   tradeQuoteManager.setLoading(fetchParams, quoteParams)
 
   try {
-    if (isBridge) {
+    // Answer like the order book would, without a request. Skipping the fetch would leave an edited amount on the old quote.
+    if (isQuoteRateLimited(jotaiStore.get(quoteRateLimitedUntilAtom))) {
+      tradeQuoteManager.onError(getTooManyRequestsError(), chainId, quoteParams, fetchParams)
+    } else if (isBridge) {
       await fetchBridgingQuote(fetchParams, quoteParams, advancedSettings, tradeQuoteManager, processQuoteError)
     } else {
       await fetchSwapQuote(

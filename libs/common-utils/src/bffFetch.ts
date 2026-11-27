@@ -36,5 +36,8 @@ async function fetchWithBearer(input: string, init: BffFetchInit = {}): Promise<
   const response = await fetchWithTimeout(input, { ...init, headers })
 
   // BFF serves requests without a JWT but 401s an invalid one (expired, or issued by the other env's orderbook).
-  return response.status === 401 ? fetchWithTimeout(input, init) : response
+  if (response.status !== 401) return response
+
+  // An overlapping request may have been rate limited while this one was in flight.
+  return Date.now() < pausedUntil ? new Response(null, { status: 429 }) : fetchWithTimeout(input, init)
 }

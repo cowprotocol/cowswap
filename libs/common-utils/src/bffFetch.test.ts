@@ -47,6 +47,28 @@ describe('bffFetch', () => {
     expect(authOf(1)).toBeNull()
   })
 
+  it('skips the anonymous retry of a 401 once an overlapping request was rate limited', async () => {
+    let resolveSecond: (response: unknown) => void = () => undefined
+    setBffBearerToken('expired')
+    mockFetch
+      .mockResolvedValueOnce({ status: 401 })
+      .mockReturnValueOnce(
+        new Promise((resolve) => {
+          resolveSecond = resolve
+        }),
+      )
+      .mockResolvedValueOnce({ status: 429, headers: new Headers({ 'Retry-After': '30' }) })
+
+    const first = bffFetch(URL)
+    const second = bffFetch(URL)
+    await first
+    resolveSecond({ status: 401 })
+
+    expect((await second).status).toBe(429)
+    expect(mockFetch).toHaveBeenCalledTimes(3)
+    setBffBearerToken('jwt')
+  })
+
   describe('after a 429', () => {
     // One clock for the block: the pause is module state, so each test must start after the previous one expired.
     beforeAll(() => jest.useFakeTimers())
