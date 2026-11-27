@@ -58,6 +58,11 @@ export function getCreateOrderFundedAccounts(): SolanaFundedAccount[] {
  * (± slippage) — that's what a swap is. A limit order never goes through this: it needs the user's own
  * price, not the quote's, so it goes through `planCreateLimitOrderStep` instead, which never quotes.
  *
+ * The step carries whatever the SDK built, not `CreateOrder` alone: a self-paid order is preceded by the
+ * memo naming the quote it came from, which is how an on-chain creation reports its `quoteId`. A
+ * sponsored one gets none — that id travels in the placement request, and the order book refuses a
+ * bundle holding any instruction its template does not name.
+ *
  * `validTo` has to reach the instruction, not just the local order: the quoted intent carries the quote's
  * own TTL rather than the user's deadline, so an order built straight from the quote expires at a time the
  * UI never showed.
@@ -75,7 +80,7 @@ export async function planCreateOrderStep({
   sponsor,
   appDataDoc,
 }: PlanCreateOrderStepParams): Promise<PlannedCreateOrderStep> {
-  const { instruction, orderId, signingScheme, intent, feePayer, appDataInfo } = await buildSolanaSwapOrder(
+  const { instructions, orderId, signingScheme, intent, feePayer, appDataInfo } = await buildSolanaSwapOrder(
     { quoteResults, solanaQuote },
     { quoteRequest: { validTo }, appData: appDataDoc },
     { sponsor },
@@ -87,7 +92,7 @@ export async function planCreateOrderStep({
 
   return {
     step: {
-      instructions: [instruction],
+      instructions,
       summary: t`Swap ${sellSymbol} for ${buySymbol}`,
       createdOrderId: orderId,
       fundedAccounts: getCreateOrderFundedAccounts(),

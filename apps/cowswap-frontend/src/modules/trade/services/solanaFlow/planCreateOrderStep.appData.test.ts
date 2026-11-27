@@ -9,6 +9,7 @@ import { PublicKey } from '@solana/web3.js'
 import { toKeccak256 } from 'common/utils/toKeccak256'
 
 import { planCreateOrderStep } from './planCreateOrderStep'
+import { SolanaFlowStep } from './types'
 
 // Runs the real SDK, unlike planCreateOrderStep.test.ts: the flow registers the returned `fullAppData`
 // under the hash this signs, so a change in how the SDK merges or hashes the doc must fail here, not in prod.
@@ -104,5 +105,42 @@ describe('planCreateOrderStep · signed appData', () => {
 
     expect(JSON.parse(fullAppData).metadata.utm).toEqual(expect.objectContaining({ utmSource: 'cowmunity' }))
     expect(fullAppData).not.toBe(await stringifyDeterministic(SWAP_DOC))
+  })
+})
+
+// Whether a creation carries the memo naming its quote is the SDK's own default, keyed off `sponsor`,
+// and both sides of it are load-bearing: the order book refuses a sponsored bundle holding an
+// instruction its template does not name, and a self-paid creation without the memo leaves the order
+// linked to whichever quote the back end guesses. Pinned against the real SDK, since the mocked suite
+// cannot see a default change.
+describe('planCreateOrderStep · quote memo', () => {
+  const QUOTE_ID = 161211
+
+  async function planStep(sponsor?: PublicKey): Promise<SolanaFlowStep> {
+    const quote = await buildQuote(SWAP_DOC)
+    const { step } = await planCreateOrderStep({
+      ...quote,
+      quoteResults: { ...quote.quoteResults, quoteResponse: { id: QUOTE_ID } } as SolanaSwapOrderQuote['quoteResults'],
+      appDataDoc: SWAP_DOC,
+      sellSymbol: 'SOL',
+      buySymbol: 'USDC',
+      validTo: 1_700_000_600,
+      sponsor,
+    })
+
+    return step
+  }
+
+  it('names the quote ahead of a self-paid creation', async () => {
+    const { instructions } = await planStep()
+
+    expect(instructions).toHaveLength(2)
+    expect(instructions[0].data.toString('utf8')).toBe(`cow:quote:${QUOTE_ID}`)
+  })
+
+  it('leaves a sponsored bundle carrying the creation alone', async () => {
+    const { instructions } = await planStep(pubkey(3))
+
+    expect(instructions).toHaveLength(1)
   })
 })

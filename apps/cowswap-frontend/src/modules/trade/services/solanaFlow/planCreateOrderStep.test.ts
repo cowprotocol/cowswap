@@ -40,6 +40,8 @@ const SIGNED_BUY_AMOUNT = 7_654_321n
 
 const builtOrder = {
   instruction: 'CREATE_ORDER_IX',
+  quoteMemoInstruction: 'QUOTE_MEMO_IX',
+  instructions: ['QUOTE_MEMO_IX', 'CREATE_ORDER_IX'],
   orderId: '0xdeadbeef',
   signingScheme: SigningScheme.PRESIGN,
   intent: { appData: SIGNED_APP_DATA_BYTES, sellAmount: SIGNED_SELL_AMOUNT, buyAmount: SIGNED_BUY_AMOUNT },
@@ -72,7 +74,8 @@ describe('planCreateOrderStep', () => {
       },
       { sponsor: undefined },
     )
-    expect(step.instructions).toEqual(['CREATE_ORDER_IX'])
+    // Whatever the SDK built, in its order: the quote memo rides ahead of the creation it names.
+    expect(step.instructions).toEqual(['QUOTE_MEMO_IX', 'CREATE_ORDER_IX'])
   })
 
   it('carries the order identity out of the same call that built the instruction', async () => {
