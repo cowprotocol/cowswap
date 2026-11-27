@@ -119,4 +119,16 @@ describe('useOnSelectNetwork', () => {
     expect(switchNetwork).toHaveBeenCalledWith(SupportedChainId.SOLANA)
     expect(setChainIdToUrl).toHaveBeenCalledWith(SupportedChainId.SOLANA)
   })
+
+  it('switches the network when the host owns the wallet', async () => {
+    handleCrossChainFamilySwitch.mockResolvedValue(CrossChainFamilySwitchState.HOST_OWNS_WALLET)
+    const { result } = renderHook(() => useOnSelectNetwork())
+
+    await act(async () => {
+      await result.current(SupportedChainId.SOLANA)
+    })
+
+    expect(switchNetwork).toHaveBeenCalledWith(SupportedChainId.SOLANA)
+    expect(setChainIdToUrl).toHaveBeenCalledWith(SupportedChainId.SOLANA)
+  })
 })

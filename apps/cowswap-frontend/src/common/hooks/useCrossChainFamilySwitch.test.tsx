@@ -2,6 +2,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useDisconnectWallet, useOpenWalletConnectionModal, useWalletInfo } from '@cowprotocol/wallet'
 
 import { act, renderHook } from '@testing-library/react'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import { useCloseModal } from 'legacy/state/application/hooks'
 
@@ -13,6 +14,7 @@ jest.mock('@cowprotocol/wallet')
 jest.mock('./useConfirmationRequest')
 jest.mock('./useLegacySetChainIdToUrl')
 jest.mock('legacy/state/application/hooks')
+jest.mock('entities/injectedWidget')
 
 const mockedUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
 const mockedUseDisconnectWallet = useDisconnectWallet as jest.MockedFunction<typeof useDisconnectWallet>
@@ -22,6 +24,7 @@ const mockedUseOpenWalletConnectionModal = useOpenWalletConnectionModal as jest.
 const mockedUseConfirmationRequest = useConfirmationRequest as jest.MockedFunction<typeof useConfirmationRequest>
 const mockedUseLegacySetChainIdToUrl = useLegacySetChainIdToUrl as jest.MockedFunction<typeof useLegacySetChainIdToUrl>
 const mockedUseCloseModal = useCloseModal as jest.MockedFunction<typeof useCloseModal>
+const mockedUseInjectedWidgetParams = useInjectedWidgetParams as jest.MockedFunction<typeof useInjectedWidgetParams>
 
 describe('useCrossChainFamilySwitch', () => {
   let disconnectWallet: jest.Mock
@@ -48,6 +51,7 @@ describe('useCrossChainFamilySwitch', () => {
     mockedUseLegacySetChainIdToUrl.mockReturnValue(setChainIdToUrl)
     mockedUseConfirmationRequest.mockReturnValue(triggerConfirmation)
     mockedUseCloseModal.mockReturnValue(closeModal)
+    mockedUseInjectedWidgetParams.mockReturnValue({} as ReturnType<typeof useInjectedWidgetParams>)
 
     setWallet(SupportedChainId.MAINNET, '0xConnected')
   })
@@ -64,6 +68,24 @@ describe('useCrossChainFamilySwitch', () => {
     expect(handled).toBe(CrossChainFamilySwitchState.NOT_CROSSING_CHAIN)
     expect(triggerConfirmation).not.toHaveBeenCalled()
     expect(disconnectWallet).not.toHaveBeenCalled()
+  })
+
+  it('leaves the switch alone in dapp mode, where the host owns the wallet', async () => {
+    setWallet(SupportedChainId.MAINNET, '0xConnected')
+    mockedUseInjectedWidgetParams.mockReturnValue({ standaloneMode: false } as ReturnType<
+      typeof useInjectedWidgetParams
+    >)
+    const { result } = renderHook(() => useCrossChainFamilySwitch())
+
+    let handled: CrossChainFamilySwitchState | undefined
+    await act(async () => {
+      handled = await result.current(SupportedChainId.SOLANA)
+    })
+
+    expect(handled).toBe(CrossChainFamilySwitchState.HOST_OWNS_WALLET)
+    expect(triggerConfirmation).not.toHaveBeenCalled()
+    expect(disconnectWallet).not.toHaveBeenCalled()
+    expect(openWalletConnectionModal).not.toHaveBeenCalled()
   })
 
   it('returns WALLET_NOT_CONNECTED for a cross-family change when no wallet is connected', async () => {

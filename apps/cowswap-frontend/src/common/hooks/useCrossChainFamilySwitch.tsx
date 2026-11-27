@@ -7,6 +7,7 @@ import { useDisconnectWallet, useOpenWalletConnectionModal, useWalletInfo } from
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import { useCloseModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
@@ -17,6 +18,7 @@ import { useLegacySetChainIdToUrl } from './useLegacySetChainIdToUrl'
 export enum CrossChainFamilySwitchState {
   WALLET_NOT_CONNECTED = 'WALLET_NOT_CONNECTED',
   NOT_CROSSING_CHAIN = 'NOT_CROSSING_CHAIN',
+  HOST_OWNS_WALLET = 'HOST_OWNS_WALLET',
   NOT_CONFIRMED = 'NOT_CONFIRMED',
   DISCONNECT_FAILED = 'DISCONNECT_FAILED',
   FINISHED = 'FINISHED',
@@ -30,6 +32,10 @@ export enum CrossChainFamilySwitchState {
  * confirm the user's intent, disconnect the current wallet and open the connection
  * modal so they can connect a wallet compatible with the target network.
  *
+ * A widget in dapp mode is the exception: the host owns the wallet, the namespaces can be lent
+ * side by side, and the widget's own connect modal must never open there — so the switch is left
+ * to the regular path.
+ *
  * Returns a function that resolves to `true` when it took over the switch (target
  * crosses the family boundary while a wallet is connected — whether the user then
  * confirmed or cancelled), and `false` when the caller should perform a regular
@@ -40,6 +46,7 @@ export function useCrossChainFamilySwitch(): (
   skipClose?: boolean,
 ) => Promise<CrossChainFamilySwitchState> {
   const { chainId: currentChainId, account } = useWalletInfo()
+  const { standaloneMode } = useInjectedWidgetParams()
   const closeModal = useCloseModal(ApplicationModal.NETWORK_SELECTOR)
   const setChainIdToUrl = useLegacySetChainIdToUrl()
   const disconnectWallet = useDisconnectWallet()
@@ -53,6 +60,10 @@ export function useCrossChainFamilySwitch(): (
 
       if (!crossingChainFamily) {
         return CrossChainFamilySwitchState.NOT_CROSSING_CHAIN
+      }
+
+      if (standaloneMode === false) {
+        return CrossChainFamilySwitchState.HOST_OWNS_WALLET
       }
 
       if (!isWalletConnected) {
@@ -108,6 +119,7 @@ export function useCrossChainFamilySwitch(): (
     [
       account,
       currentChainId,
+      standaloneMode,
       triggerConfirmation,
       disconnectWallet,
       openWalletConnectionModal,
