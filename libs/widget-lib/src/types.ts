@@ -330,6 +330,8 @@ export interface CowSwapWidgetParams {
    * widget has no wallet of its own there and the EIP-1193 provider cannot sign Solana.
    * `partnerFee` is not charged on Solana trades, so a partner who sets one still earns nothing
    * there until Solana partner fees ship.
+   * The Solana wallet connector is built from the iframe URL as the widget boots, so changing this
+   * through `updateParams` reloads the iframe and discards whatever the user had in progress.
    * Defaults to `false`.
    */
   enableSolana?: boolean
@@ -337,6 +339,8 @@ export interface CowSwapWidgetParams {
   /**
    * The token lists (as urls) enabled for the widget.
    * These lists are available to both sell and buy selectors.
+   * Passing any list replaces the built-in defaults rather than adding to them, so a widget that
+   * also sets `enableSolana` needs a Solana list here or its Solana token selectors stay empty.
    */
   tokenLists?: string[]
 
