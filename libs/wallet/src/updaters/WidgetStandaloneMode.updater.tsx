@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { ConnectorAlreadyConnectedError, useConnection } from 'wagmi'
 
@@ -13,6 +13,15 @@ import { connectWalletById } from '../utils/connectWalletById'
 import { getIsSafeAppIframe } from '../utils/getIsSafeAppIframe'
 import { reownAppKit, wagmiAdapter } from '../wagmi/config'
 import { useDisconnectWallet } from '../wagmi/hooks/useDisconnectWallet'
+
+interface ConnectorReplacement {
+  /** Disconnects with `disconnectCurrent`, then connects the widget connector if `shouldConnectWidget()` still holds */
+  replaceConnector(disconnectCurrent: () => Promise<void>, shouldConnectWidget: () => boolean): void
+  isReplacing(): boolean
+  /** Bumps `recheckCount` once the running replacement settles */
+  requestRecheck(): void
+  recheckCount: number
+}
 
 interface WidgetStandaloneModeUpdaterProps {
   standaloneMode: boolean | undefined
@@ -32,8 +41,12 @@ interface WidgetStandaloneModeUpdaterProps {
  * 2. On entering standalone mode: disconnect the "cow-widget" connector and remove it from the
  *    Reown wallet connection modal so users can't pick it.
  * 3. Continuously (for injected widgets): disconnect any connector that is not allowed for the current mode -
- *    a non-widget connector in dapp mode, or the widget connector in standalone mode. The Safe App
- *    connection is left untouched.
+ *    a non-widget connector in dapp mode, which is then replaced by the "cow-widget" connector (outside the Safe
+ *    App), or the widget connector in standalone mode. The Safe App connection is left untouched.
+ *
+ * Effects 1 and 3 change the connector one at a time: a change asked for while another runs waits for it to settle
+ * (effect 3 checks again, effect 1 is queued), and the "cow-widget" connector is only connected if dapp mode is still
+ * on by then.
  *
  * Renders nothing.
  */
@@ -47,7 +60,13 @@ export function WidgetStandaloneModeUpdater({ standaloneMode }: WidgetStandalone
   const isWidgetConnector = connector?.id === COW_WIDGET_CONNECTOR_ID
   const isDappMode = standaloneMode === false
   const isStandaloneMode = standaloneMode === true
-  const isDisconnectInProgress = useRef(false)
+  const isDappModeRef = useRef(isDappMode)
+
+  useEffect(() => {
+    isDappModeRef.current = isDappMode
+  }, [isDappMode])
+
+  const { replaceConnector, isReplacing, requestRecheck, recheckCount } = useConnectorReplacement()
 
   useEffect(() => {
     setAppWalletContext((state) => ({ ...state, standaloneMode }))
@@ -67,25 +86,14 @@ export function WidgetStandaloneModeUpdater({ standaloneMode }: WidgetStandalone
     if (isSafeApp) return
 
     if (isDappMode) {
-      ;(async function () {
-        console.debug('[WidgetStandaloneModeUpdater] connect widget connector')
+      console.debug('[WidgetStandaloneModeUpdater] connect widget connector')
 
-        await reownAppKit.disconnect()
-
-        try {
-          await connectWalletById(COW_WIDGET_CONNECTOR_ID, 'injected')
-        } catch (err: unknown) {
-          const error = normalizeError(err)
-
-          // Auto-reconnect or the bridged provider's own connect event can beat us to it -
-          // wagmi is already connected to this connector, nothing left to do.
-          if (error instanceof ConnectorAlreadyConnectedError) return
-
-          logWallet.error(new Error('Failed to connect widget connector', { cause: error }))
-        }
-      })()
+      replaceConnector(
+        () => reownAppKit.disconnect(),
+        () => isDappModeRef.current,
+      )
     }
-  }, [isDappMode, isSafeApp])
+  }, [isDappMode, isSafeApp, replaceConnector])
 
   /**
    * Once in standalone mode, disconnect widget configurator
@@ -122,22 +130,47 @@ export function WidgetStandaloneModeUpdater({ standaloneMode }: WidgetStandalone
     if (!connector) return
     // Do not disconnect Safe App
     if (isSafeApp && isSafeConnector) return
-    if (isDisconnectInProgress.current) return
+    if (isReplacing()) {
+      requestRecheck()
+      return
+    }
     const inDappMode = isDappMode && !isWidgetConnector
     const inStandaloneMode = isStandaloneMode && isWidgetConnector
 
     if (inDappMode || inStandaloneMode) {
       console.debug('[WidgetStandaloneModeUpdater] disconnect connector', { inDappMode, inStandaloneMode })
 
-      isDisconnectInProgress.current = true
-
-      disconnect().finally(() => {
-        isDisconnectInProgress.current = false
-      })
+      replaceConnector(disconnect, () => inDappMode && !isSafeApp && isDappModeRef.current)
     }
-  }, [isWidgetConnector, isDappMode, isStandaloneMode, disconnect, connector, isSafeApp, isSafeConnector])
+  }, [
+    isWidgetConnector,
+    isDappMode,
+    isStandaloneMode,
+    disconnect,
+    connector,
+    isSafeApp,
+    isSafeConnector,
+    recheckCount,
+    isReplacing,
+    requestRecheck,
+    replaceConnector,
+  ])
 
   return null
+}
+
+async function connectWidgetConnector(): Promise<void> {
+  try {
+    await connectWalletById(COW_WIDGET_CONNECTOR_ID, 'injected')
+  } catch (err: unknown) {
+    const error = normalizeError(err)
+
+    // Auto-reconnect or the bridged provider's own connect event can beat us to it -
+    // wagmi is already connected to this connector, nothing left to do.
+    if (error instanceof ConnectorAlreadyConnectedError) return
+
+    logWallet.error(new Error('Failed to connect widget connector', { cause: error }))
+  }
 }
 
 /**
@@ -156,4 +189,57 @@ function syncInjectedWalletDiscovery(enableEIP6963: boolean): void {
   // TODO: See if that's related to Brave Shield or other setting.
 
   void wagmiAdapter.syncConnectors()
+}
+
+/** Runs one connector replacement at a time: a replacement asked for meanwhile is queued, the latest one wins */
+function useConnectorReplacement(): ConnectorReplacement {
+  const isDisconnectInProgress = useRef(false)
+  const isRecheckNeeded = useRef(false)
+  const queuedReplacementRef = useRef<(() => void) | null>(null)
+  const [recheckCount, setRecheckCount] = useState(0)
+
+  const replaceConnector = useCallback(
+    (disconnectCurrent: () => Promise<void>, shouldConnectWidget: () => boolean): void => {
+      const run = (): void => {
+        isDisconnectInProgress.current = true
+
+        disconnectCurrent()
+          .catch((err: unknown) => {
+            logWallet.error(new Error('Failed to disconnect the current connector', { cause: normalizeError(err) }))
+          })
+          .then(() => (shouldConnectWidget() ? connectWidgetConnector() : undefined))
+          .finally(() => {
+            isDisconnectInProgress.current = false
+
+            const queuedReplacement = queuedReplacementRef.current
+            queuedReplacementRef.current = null
+
+            if (queuedReplacement) {
+              queuedReplacement()
+              return
+            }
+
+            if (isRecheckNeeded.current) {
+              isRecheckNeeded.current = false
+              setRecheckCount((count) => count + 1)
+            }
+          })
+      }
+
+      if (isDisconnectInProgress.current) {
+        queuedReplacementRef.current = run
+        return
+      }
+
+      run()
+    },
+    [],
+  )
+
+  const isReplacing = useCallback(() => isDisconnectInProgress.current, [])
+  const requestRecheck = useCallback(() => {
+    isRecheckNeeded.current = true
+  }, [])
+
+  return { replaceConnector, isReplacing, requestRecheck, recheckCount }
 }

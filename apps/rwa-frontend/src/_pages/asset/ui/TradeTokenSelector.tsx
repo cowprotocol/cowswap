@@ -3,6 +3,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { type ReactNode, useId, useState } from 'react'
 
+import { useIsMutating } from '@tanstack/react-query'
 import { useConnection, useSwitchChain } from 'wagmi'
 
 import {
@@ -20,6 +21,7 @@ import { formatTokenStat } from '../lib/tokenStat'
 import { trackTradeTokenSelect } from '../lib/tradeAnalytics'
 import { tradeTokenKeyAtom } from '../model/tradeSelectionAtoms'
 import { useIsWalletOffTradeNetwork, useSelectTradeNetwork, useSelectTradeSide } from '../model/useSelectTradeToken'
+import { SWITCH_CHAIN_MUTATION_KEY } from '../model/useSwitchWalletToTradeNetwork'
 
 import type { QuotedToken } from '../lib/quotedTokens'
 import type { TradeSelection } from '../model/useTradeSelection'
@@ -188,7 +190,8 @@ function NetworkSelect({ asset, chainId }: { asset: RwaAsset; chainId: number })
 
 function SwitchNetworkPrompt({ chainId }: { chainId: number }): ReactNode {
   const isWalletOffTradeNetwork = useIsWalletOffTradeNetwork(chainId)
-  const { mutate: switchChain, isPending } = useSwitchChain()
+  const { mutate: switchChain } = useSwitchChain()
+  const isSwitchPending = useIsMutating({ mutationKey: SWITCH_CHAIN_MUTATION_KEY }) > 0
 
   if (!isWalletOffTradeNetwork) return null
 
@@ -197,7 +200,7 @@ function SwitchNetworkPrompt({ chainId }: { chainId: number }): ReactNode {
       <button
         type="button"
         className={styles.switchNetwork}
-        disabled={isPending}
+        disabled={isSwitchPending}
         onClick={() => switchChain({ chainId })}
       >
         Switch to {getChainLabel(chainId)}

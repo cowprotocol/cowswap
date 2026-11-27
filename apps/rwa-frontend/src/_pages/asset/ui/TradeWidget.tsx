@@ -6,7 +6,8 @@ import { type ReactNode, useCallback, useMemo, useRef, useState } from 'react'
 import { useConnection } from 'wagmi'
 
 import { isSupportedChain } from '@cowprotocol/cow-sdk'
-import { type CowSwapWidgetParams, type TokenInfo } from '@cowprotocol/widget-lib'
+import { type CowWidgetEventListeners } from '@cowprotocol/events'
+import { type CowSwapWidgetParams, type EthereumProvider, type TokenInfo } from '@cowprotocol/widget-lib'
 
 import dynamic from 'next/dynamic'
 
@@ -19,6 +20,7 @@ import { getTradingPauseMessage } from '../lib/tradingPause'
 import { ENABLED_TRADE_TYPES } from '../model/tradeTypeAtom'
 import { tradeWidgetHandlerRefAtom } from '../model/tradeWidgetHandlerRefAtom'
 import { TRADE_WIDGET_ID, useIsWalletOffTradeNetwork } from '../model/useSelectTradeToken'
+import { useSwitchWalletToTradeNetwork } from '../model/useSwitchWalletToTradeNetwork'
 import { useTradeSelection } from '../model/useTradeSelection'
 import { useWidgetOrderAnalytics } from '../model/useWidgetOrderAnalytics'
 import { useWidgetParamsTradeType } from '../model/useWidgetParamsTradeType'
@@ -42,6 +44,12 @@ const ASSET_TOKEN_AMOUNT = '1'
 // The app is in English only, so the widget must not follow the device language
 const WIDGET_LOCALE = 'en-US'
 
+interface TradeWidgetFrameProps {
+  widgetParams: CowSwapWidgetParams
+  provider: EthereumProvider | undefined
+  listeners: CowWidgetEventListeners
+}
+
 export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
   const provider = useWalletProvider()
   const { isConnected } = useConnection()
@@ -61,10 +69,8 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
     isHydrated && tradingPause?.issuer === assetToken?.issuer ? getTradingPauseMessage(tradingPause, new Date()) : null
   const side = selection?.side
   const isWalletOffTradeNetwork = useIsWalletOffTradeNetwork(selection?.chainId ?? 0)
+  useSwitchWalletToTradeNetwork(asset.ticker, selection?.chainId)
   const widgetRef = useRef<HTMLElement>(null)
-  const widgetHandlerRef = useAtomValue(tradeWidgetHandlerRefAtom)
-  const [isWidgetLoading, setIsWidgetLoading] = useState(true)
-  const onWidgetSettled = useCallback(() => setIsWidgetLoading(false), [])
 
   const widgetParams = useMemo((): CowSwapWidgetParams | null => {
     if (!assetToken || !side || !isSupportedChain(assetToken.chainId)) return null
@@ -89,9 +95,8 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
       locale: WIDGET_LOCALE,
     }
   }, [asset, assetToken, side, isConnected, isDark, market])
-  const params = useWidgetParamsTradeType(widgetParams, provider)
 
-  if (!params || !selection) {
+  if (!widgetParams || !selection) {
     return <p>Trading is not available for {asset.ticker}</p>
   }
 
@@ -99,19 +104,9 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
     <section ref={widgetRef} id={TRADE_WIDGET_ID} className={styles.widget}>
       <TradeTokenSelector asset={asset} selection={selection} />
       {tradingPauseMessage && <p className={styles.notice}>{tradingPauseMessage}</p>}
-      <div className={styles.frameContainer} hidden={isWalletOffTradeNetwork}>
-        <div className={styles.frame} data-loading={isWidgetLoading || undefined}>
-          <CowSwapWidget
-            params={params}
-            provider={provider}
-            listeners={listeners}
-            handlerRef={widgetHandlerRef}
-            onReady={onWidgetSettled}
-            onLoadingError={onWidgetSettled}
-          />
-          {isWidgetLoading && <TradeWidgetSkeleton overlay />}
-        </div>
-      </div>
+      {!isWalletOffTradeNetwork && (
+        <TradeWidgetFrame widgetParams={widgetParams} provider={provider} listeners={listeners} />
+      )}
       <p className={styles.disclaimer}>
         Tokens are issued by independent third parties and may not confer ownership of the underlying shares. Check
         issuer terms and eligibility before trading.
@@ -128,6 +123,31 @@ function toTokenInfo(
   const logoURI = coingeckoId ? market?.tokens[coingeckoId]?.logoUrl : null
 
   return { chainId, address, name, decimals, symbol, ...(logoURI ? { logoURI } : {}) }
+}
+
+function TradeWidgetFrame({ widgetParams, provider, listeners }: TradeWidgetFrameProps): ReactNode {
+  const params = useWidgetParamsTradeType(widgetParams, provider)
+  const widgetHandlerRef = useAtomValue(tradeWidgetHandlerRefAtom)
+  const [isWidgetLoading, setIsWidgetLoading] = useState(true)
+  const onWidgetSettled = useCallback(() => setIsWidgetLoading(false), [])
+
+  if (!params) return null
+
+  return (
+    <div className={styles.frameContainer}>
+      <div className={styles.frame} data-loading={isWidgetLoading || undefined}>
+        <CowSwapWidget
+          params={params}
+          provider={provider}
+          listeners={listeners}
+          handlerRef={widgetHandlerRef}
+          onReady={onWidgetSettled}
+          onLoadingError={onWidgetSettled}
+        />
+        {isWidgetLoading && <TradeWidgetSkeleton overlay />}
+      </div>
+    </div>
+  )
 }
 
 function TradeWidgetSkeleton({ overlay = false }: { overlay?: boolean }): ReactNode {
