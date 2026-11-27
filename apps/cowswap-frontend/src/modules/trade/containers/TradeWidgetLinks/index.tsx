@@ -5,7 +5,7 @@ import { Badge, BadgeTypes, HoverTooltip, Modal } from '@cowprotocol/ui'
 import type { TradeType } from '@cowprotocol/widget-lib'
 
 import { Trans, useLingui } from '@lingui/react/macro'
-import iconCaretSrc from 'assets/icon/caret.svg'
+import CaretIcon from 'assets/icon/caret.svg?react'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import SVG from 'react-inlinesvg'
 import { useLocation } from 'react-router'
@@ -119,22 +119,20 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps):
 
   const selectedMenuItem = menuItemsElements.find((item) => item.props.isActive) || menuItemsElements[0]
 
-  const { t } = useLingui()
-
   const rwaMenuItem = <RwaMenuItem menuItems={menuItems} isDropdownVisible={isDropdown && isDropdownVisible} />
 
   return isDropdown ? (
     <>
-      <styledEl.MenuItem
+      <styledEl.DropdownTriggerButton
         id="trading-mode-dropdown-button"
+        type="button"
+        disabled={singleMenuItem}
+        aria-expanded={isDropdownVisible}
         onClick={() => !singleMenuItem && setDropdownVisible(!isDropdownVisible)}
-        isDropdownVisible={isDropdownVisible}
       >
-        <styledEl.DropdownButton>
-          {selectedMenuItem.props.item.label}
-          {!singleMenuItem ? <SVG src={iconCaretSrc} title={t`select`} /> : null}
-        </styledEl.DropdownButton>
-      </styledEl.MenuItem>
+        {selectedMenuItem.props.item.label}
+        {!singleMenuItem ? <CaretIcon aria-hidden /> : null}
+      </styledEl.DropdownTriggerButton>
 
       {isDropdownVisible && (
         <styledEl.SelectMenu id="trading-mode-select-menu">

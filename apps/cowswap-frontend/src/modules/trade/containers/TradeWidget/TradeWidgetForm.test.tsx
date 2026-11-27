@@ -134,12 +134,15 @@ jest.mock('common/hooks/useIsProviderNetworkUnsupported', () => ({
 jest.mock('common/hooks/useIsProviderNetworkDeprecated', () => ({
   useIsProviderNetworkDeprecated: () => false,
 }))
+jest.mock('@cowprotocol/assets/svg/orders.svg?react', () => () => null)
+
 jest.mock('./styled', () => ({
   ContainerBox: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   Header: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   HeaderRight: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   CurrencySeparatorBox: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   OuterContentWrapper: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  MyOrdersButton: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }))
 
 jest.mock('./TradeWidgetForm.utils', () => ({ mapCurrencyInfo: (info: unknown) => info }))
