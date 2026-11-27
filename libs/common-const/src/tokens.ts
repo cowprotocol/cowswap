@@ -5,6 +5,8 @@ import { cowprotocolTokenLogoUrl } from './cowprotocolTokenLogoUrl'
 import { NATIVE_CURRENCIES, WRAPPED_NATIVE_CURRENCIES } from './nativeAndWrappedTokens'
 import { TokenWithLogo } from './types'
 
+export { cowprotocolTokenLogoUrl } from './cowprotocolTokenLogoUrl'
+
 // Mainnet
 export const USDT = new TokenWithLogo(
   cowprotocolTokenLogoUrl('0xdAC17F958D2ee523a2206206994597C13D831ec7', SupportedChainId.MAINNET),

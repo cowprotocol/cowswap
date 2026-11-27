@@ -221,7 +221,7 @@ function StockTokenRow({
     <tr className={isSelected ? styles.selected : undefined} aria-current={isSelected || undefined}>
       <td>
         <div className={styles.token}>
-          <TokenLogo symbol={token.symbol} logoUrl={market?.logoUrl} chainId={token.chainId} />
+          <TokenLogo symbol={token.symbol} logoUrl={market?.logoUrl} chainId={token.chainId} token={token} />
           <div className={styles.tokenText}>
             <span className={styles.tokenTitle}>
               <span className={styles.symbol}>{token.symbol}</span>

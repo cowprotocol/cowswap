@@ -49,7 +49,7 @@ export function TradeTokenLogo({
 }): ReactNode {
   const logoUrl = token.coingeckoId ? market?.tokens[token.coingeckoId]?.logoUrl : undefined
 
-  return <TokenLogo symbol={token.symbol} logoUrl={logoUrl} chainId={token.chainId} />
+  return <TokenLogo symbol={token.symbol} logoUrl={logoUrl} chainId={token.chainId} token={token} />
 }
 
 export function TradeTokenName({ quoted, bestQuoteLabel }: TradeTokenNameProps): ReactNode {

@@ -185,7 +185,7 @@ function TokenRow({ holding: { asset }, tokenHolding, getLogoUrl, className }: T
     <tr className={className}>
       <td>
         <div className={styles.holding}>
-          <TokenLogo symbol={token.symbol} logoUrl={getLogoUrl(asset, token)} chainId={token.chainId} />
+          <TokenLogo symbol={token.symbol} logoUrl={getLogoUrl(asset, token)} chainId={token.chainId} token={token} />
           <div className={styles.holdingIdentity}>
             <span className={styles.tokenTitle}>
               {token.symbol} · {token.issuer}
