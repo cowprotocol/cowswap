@@ -1,4 +1,5 @@
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
+import { jotaiStore } from '@cowprotocol/core'
 import { SwapAdvancedSettings, QuoteAndPost, isSolanaChain } from '@cowprotocol/cow-sdk'
 import {
   BridgeProviderQuoteError,
@@ -9,11 +10,18 @@ import {
   QuoteBridgeRequest,
 } from '@cowprotocol/sdk-bridging'
 
+import { t } from '@lingui/core/macro'
+import {
+  getCaptchaToken,
+  isQuoteRateLimited,
+  pauseQuotesOnRateLimit,
+  quoteRateLimitedUntilAtom,
+} from 'entities/captcha/state/quoteRateLimitedUntilAtom'
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
 import { AppDataInfo } from 'modules/appData'
 
-import { QuoteApiError } from 'api/cowProtocol/errors/QuoteError'
+import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 import { getIsQuoteApiTypedError } from 'api/cowProtocol/getIsOrderBookTypedError'
 import { coWBFFClient } from 'common/services/bff'
 
@@ -59,8 +67,12 @@ export async function fetchAndProcessQuote(
     allowIntermediateEqSellToken: true,
   }
 
+  const captchaToken = getCaptchaToken()
+
   const processQuoteError = (errorLocation: string, error: unknown): void => {
-    const parsedError = parseError(errorLocation, error)
+    const parsedError = pauseQuotesOnRateLimit(error, captchaToken)
+      ? getTooManyRequestsError()
+      : parseError(errorLocation, error)
 
     console.error(`[fetchAndProcessQuote]:: ${errorLocation} error`, parsedError)
 
@@ -70,7 +82,10 @@ export async function fetchAndProcessQuote(
   tradeQuoteManager.setLoading(fetchParams, quoteParams)
 
   try {
-    if (isBridge) {
+    // Answer like the order book would, without a request. Skipping the fetch would leave an edited amount on the old quote.
+    if (isQuoteRateLimited(jotaiStore.get(quoteRateLimitedUntilAtom))) {
+      tradeQuoteManager.onError(getTooManyRequestsError(), chainId, quoteParams, fetchParams)
+    } else if (isBridge) {
       await fetchBridgingQuote(fetchParams, quoteParams, advancedSettings, tradeQuoteManager, processQuoteError)
     } else {
       await fetchSwapQuote(
@@ -180,6 +195,13 @@ async function fetchSwapQuote(
   } catch (error) {
     processQuoteError('fetchSwapQuote', error)
   }
+}
+
+function getTooManyRequestsError(): QuoteApiError {
+  return new QuoteApiError({
+    errorType: QuoteApiErrorCodes.TooManyRequests,
+    description: t`Too many price requests from your browser or network. Prices will refresh automatically.`,
+  })
 }
 
 function parseError(errorLocation: string, error: unknown): QuoteApiError | BridgeProviderQuoteError {

@@ -5,6 +5,7 @@ import { onlyResolvesLast } from '@cowprotocol/common-utils'
 import { CrossChainQuoteAndPost, isBridgeQuoteAndPost } from '@cowprotocol/sdk-bridging'
 
 import { captchaCanQuoteAtom } from 'entities/captcha/state/captchaCanQuoteAtom'
+import { getCaptchaToken, pauseQuotesOnRateLimit } from 'entities/captcha/state/quoteRateLimitedUntilAtom'
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 import { QUOTE_SETTINGS } from 'tradingSdk/tradingSdk'
 
@@ -32,6 +33,8 @@ export function FullAmountQuoteUpdater() {
   useEffect(() => {
     if (!canQuote || error || isLoading || !partQuoteAmount || !quoteParams) return
 
+    const captchaToken = getCaptchaToken()
+
     getQuoteOnlyResolveLast(quoteParams, QUOTE_SETTINGS)
       .then((response) => {
         const { cancelled, data } = response
@@ -44,8 +47,9 @@ export function FullAmountQuoteUpdater() {
 
         updateQuoteState(quote)
       })
-      .catch((error) => {
-        console.error('[TWAP FullAmountQuoteUpdater]:: fetchQuote error', error)
+      .catch((err: unknown) => {
+        pauseQuotesOnRateLimit(err, captchaToken)
+        console.error('[TWAP FullAmountQuoteUpdater]:: fetchQuote error', err)
       })
   }, [canQuote, partQuoteAmount, isLoading, error, quoteParams, updateQuoteState])
 

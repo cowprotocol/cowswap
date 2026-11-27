@@ -2,11 +2,13 @@ import { createStore } from 'jotai'
 import { ReactNode } from 'react'
 
 import { COW_TOKEN_TO_CHAIN, WETH_SEPOLIA } from '@cowprotocol/common-const'
+import { jotaiStore } from '@cowprotocol/core'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@cowprotocol/currency'
 import { WalletInfo, walletInfoAtom } from '@cowprotocol/wallet'
 
 import { act, renderHook, waitFor } from '@testing-library/react'
+import { quoteRateLimitedUntilAtom } from 'entities/captcha/state/quoteRateLimitedUntilAtom'
 import { JotaiTestProvider, WithMockedWeb3 } from 'test-utils'
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
@@ -22,8 +24,13 @@ import { useTradeQuotePolling } from './useTradeQuotePolling'
 import { tradeTypeAtom } from '../../trade/state/tradeTypeAtom'
 import { tradeQuoteCounterAtom } from '../state/tradeQuoteCounterAtom'
 import { tradeQuoteInputAtom } from '../state/tradeQuoteInputAtom'
+import { quoteUsingSameParameters } from '../utils/quoteUsingSameParameters'
 
 jest.mock('modules/zeroApproval/hooks/useZeroApprovalState')
+jest.mock('../utils/quoteUsingSameParameters', () => ({
+  ...jest.requireActual('../utils/quoteUsingSameParameters'),
+  quoteUsingSameParameters: jest.fn(),
+}))
 jest.mock('common/hooks/useGetMarketDimension')
 jest.mock('common/hooks/useEnoughAllowance', () => ({
   ...jest.requireActual('common/hooks/useEnoughAllowance'),
@@ -190,6 +197,30 @@ describe('useTradeQuotePolling()', () => {
       else process.env.REACT_APP_TURNSTILE_SITE_KEY = previousSiteKey
       jest.useRealTimers()
     }
+  })
+
+  it('requests no quote while quotes are paused, and one as soon as a new JWT clears the pause', async () => {
+    // As if the rate-limited quote kept a response for the same params.
+    jest.mocked(quoteUsingSameParameters).mockReturnValue(true)
+    jotaiStore.set(quoteRateLimitedUntilAtom, Date.now() + 60_000)
+
+    renderHook(
+      () =>
+        useTradeQuotePolling({
+          isConfirmOpen: false,
+          isQuoteUpdatePossible: true,
+          useSuggestedSlippageApi: false,
+          hasPendingTrade: false,
+        }),
+      { wrapper: Wrapper([...jotaiMock, [walletInfoAtom, walletInfoMock]], jotaiStore) },
+    )
+
+    await act(() => new Promise((resolve) => setTimeout(resolve, 1_000)))
+    expect(bridgingSdkMock.getQuote).not.toHaveBeenCalled()
+
+    act(() => jotaiStore.set(quoteRateLimitedUntilAtom, null))
+
+    await waitFor(() => expect(bridgingSdkMock.getQuote).toHaveBeenCalled())
   })
 
   describe('When wallet is NOT connected', () => {

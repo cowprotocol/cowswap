@@ -20,6 +20,8 @@ export enum QuoteApiErrorCodes {
   SameBuyAndSellToken = 'SameBuyAndSellToken',
   SellAmountDoesNotCoverFee = 'SellAmountDoesNotCoverFee',
   TokenTemporarilySuspended = 'TokenTemporarilySuspended',
+  // FE-only: the order book answers 429 without an errorType.
+  TooManyRequests = 'TooManyRequests',
   TradingOutsideAllowedWindow = 'TradingOutsideAllowedWindow',
   UnsupportedBuyTokenDestination = 'UnsupportedBuyTokenDestination',
   UnsupportedOrderType = 'UnsupportedOrderType',

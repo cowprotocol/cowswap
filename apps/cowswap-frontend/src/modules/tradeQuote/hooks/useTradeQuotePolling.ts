@@ -5,6 +5,7 @@ import { useIsOnline, useIsWindowVisible, usePrevious } from '@cowprotocol/commo
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 
 import { captchaCanQuoteAtom } from 'entities/captcha/state/captchaCanQuoteAtom'
+import { quoteRateLimitedUntilAtom } from 'entities/captcha/state/quoteRateLimitedUntilAtom'
 import ms from 'ms.macro'
 
 import { usePollQuoteCallback } from './usePollQuoteCallback'
@@ -22,10 +23,13 @@ import { isQuoteExpired } from '../utils/quoteDeadline'
 const ONE_SEC = 1000
 const QUOTE_VALIDATION_INTERVAL = ms`2s`
 
+// eslint-disable-next-line max-lines-per-function
 export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParameters): null {
   const { isConfirmOpen, isQuoteUpdatePossible } = quotePollingParams
 
   const canQuote = useAtomValue(captchaCanQuoteAtom)
+  const quoteRateLimitedUntil = useAtomValue(quoteRateLimitedUntilAtom)
+  const isPauseCleared = !!usePrevious(quoteRateLimitedUntil) && !quoteRateLimitedUntil
   const { amount, partiallyFillable } = useAtomValue(tradeQuoteInputAtom)
   const [tradeQuotePolling, setTradeQuotePolling] = useAtom(tradeQuoteCounterAtom)
   const resetQuoteCounter = useResetQuoteCounter()
@@ -85,6 +89,11 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
       resetQuoteCounter()
     }
   }, [canQuote, isConfirmOpen, isQuoteUpdatePossible, quoteParams, resetQuoteCounter])
+
+  // A new JWT cleared the pause. Forced, as the rate-limited quote may still hold a response for the same params.
+  useLayoutEffect(() => {
+    if (!isConfirmOpen && isPauseCleared && pollQuoteRef.current(false, true)) resetQuoteCounter()
+  }, [isConfirmOpen, isPauseCleared, resetQuoteCounter])
 
   /**
    * Update quote once a QUOTE_POLLING_INTERVAL
