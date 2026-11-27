@@ -1,9 +1,6 @@
 .networks {
-  position: relative;
-  z-index: 1;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
 }
 
 .optionLogo {
@@ -12,5 +9,21 @@
 }
 
 .logo {
-  display: inline-flex;
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+
+.logo + .logo {
+  margin-left: -4px;
+  /* 1.5px gap around the previous logo, whose centre is 4px left of this one's edge */
+  mask: radial-gradient(circle at -4px 50%, transparent 9.5px, #000 10px);
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }

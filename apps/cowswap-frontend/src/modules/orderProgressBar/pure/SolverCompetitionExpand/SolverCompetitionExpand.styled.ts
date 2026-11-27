@@ -2,6 +2,8 @@ import { Collapsible, font, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
+import { SolverLogo } from 'common/pure/SolverLogo/SolverLogo.pure'
+
 export const ToggleRow = styled(Collapsible.Trigger)`
   --collapsible-trigger-hover-background: transparent;
   --collapsible-trigger-open-hover-background: transparent;
@@ -37,18 +39,12 @@ export const SolverStack = styled.div`
   flex-shrink: 0;
 `
 
-export const SolverAvatar = styled.img<{ $stackIndex: number }>`
-  position: relative;
+export const SolverAvatar = styled(SolverLogo)<{ $stackIndex: number }>`
   z-index: ${({ $stackIndex }) => 3 - $stackIndex};
-  width: 20px;
-  height: 20px;
-  border-radius: 10px;
-  border: 2px solid var(${UI.COLOR_PAPER});
-  background: var(${UI.COLOR_PAPER});
-  object-fit: cover;
+  box-shadow: 0 0 0 2px var(${UI.COLOR_PAPER});
 
   &:not(:first-child) {
-    margin-left: -6px;
+    margin-left: -2px;
   }
 `
 

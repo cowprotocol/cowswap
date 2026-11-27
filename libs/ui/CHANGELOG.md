@@ -1,5 +1,183 @@
 # Changelog
 
+## [3.26.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.25.0...ui-v3.26.0) (2026-11-25)
+
+### Minor Changes
+
+- feat(theme): add Vice sunset theme behind a feature flag (#8678)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.23.2
+  - @cowprotocol/common-hooks@3.22.2
+  - @cowprotocol/analytics@3.21.0
+  - @cowprotocol/assets@2.14.0
+  - @cowprotocol/common-const@3.26.0
+  - @cowprotocol/core@3.16.2
+
+## [3.25.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.24.0...ui-v3.25.0) (2026-11-19)
+
+### Minor Changes
+
+- feat(theme): cherry pick #8678 (vice theme)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/assets@2.13.0
+  - @cowprotocol/common-const@3.25.0
+  - @cowprotocol/analytics@3.20.1
+  - @cowprotocol/common-hooks@3.22.1
+  - @cowprotocol/common-utils@3.23.1
+  - @cowprotocol/core@3.16.1
+
+## [3.24.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.23.2...ui-v3.24.0) (2026-11-18)
+
+### Minor Changes
+
+- feat: update SDK versions with updated near token lists (#8660)
+
+- feat(cow-fi): add CoW Protocol on Solana landing page (#8470)
+
+- feat(cow-fi): gate GTM on cookie consent (#8606)
+
+- feat(graffiti): collaborative graffiti wall (consolidated) (#8560)
+
+- feat(solana): support custom recipients (#8592)
+
+### Patch Changes
+
+- fix(header): keep the selected network when clicking the logo (#8614)
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.20.0
+  - @cowprotocol/common-const@3.24.0
+  - @cowprotocol/common-hooks@3.22.0
+  - @cowprotocol/common-utils@3.23.0
+  - @cowprotocol/core@3.16.0
+  - @cowprotocol/currency@1.11.0
+  - @cowprotocol/types@4.16.0
+  - @cowprotocol/assets@2.12.0
+
+## [3.23.2](https://github.com/cowprotocol/cowswap/compare/ui-v3.23.1...ui-v3.23.2) (2026-11-16)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.23.0
+  - @cowprotocol/analytics@3.19.2
+  - @cowprotocol/common-hooks@3.21.1
+  - @cowprotocol/common-utils@3.22.4
+  - @cowprotocol/core@3.15.4
+
+## [3.23.1](https://github.com/cowprotocol/cowswap/compare/ui-v3.23.0...ui-v3.23.1) (2026-11-13)
+
+### Patch Changes
+
+- fix(header): keep the selected network when clicking the logo (#8638)
+
+## [3.23.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.22.0...ui-v3.23.0) (2026-11-13)
+
+### Minor Changes
+
+- feat(graffiti): collaborative graffiti wall (consolidated) (#8560)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/assets@2.11.0
+  - @cowprotocol/common-const@3.22.0
+  - @cowprotocol/common-hooks@3.21.0
+  - @cowprotocol/analytics@3.19.1
+  - @cowprotocol/common-utils@3.22.3
+  - @cowprotocol/core@3.15.3
+
+## [3.22.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.21.1...ui-v3.22.0) (2026-11-13)
+
+### Minor Changes
+
+- feat(cow-fi): gate GTM on cookie consent
+
+- feat(cow-fi): add CoW Protocol on Solana landing page (#8470)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.19.0
+  - @cowprotocol/assets@2.10.0
+  - @cowprotocol/common-const@3.21.0
+  - @cowprotocol/common-hooks@3.20.1
+  - @cowprotocol/common-utils@3.22.2
+  - @cowprotocol/core@3.15.2
+
+## [3.21.1](https://github.com/cowprotocol/cowswap/compare/ui-v3.21.0...ui-v3.21.1) (2026-11-11)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.20.0
+  - @cowprotocol/analytics@3.18.0
+  - @cowprotocol/common-const@3.20.0
+  - @cowprotocol/types@4.15.1
+  - @cowprotocol/common-utils@3.22.1
+  - @cowprotocol/core@3.15.1
+
+## [3.21.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.20.0...ui-v3.21.0) (2026-11-10)
+
+### Minor Changes
+
+- feat(networks): networks update (#8456)
+
+- feat(rwa): standardize header and footer with CoW product links (#8516)
+
+- feat(solana): pass appData to quote (#8509)
+
+### Patch Changes
+
+- fix(solana): use SDK for quote costs breakdown (#8522)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.22.0
+  - @cowprotocol/core@3.15.0
+  - @cowprotocol/analytics@3.17.0
+  - @cowprotocol/common-const@3.19.0
+  - @cowprotocol/common-hooks@3.19.0
+  - @cowprotocol/currency@1.10.0
+  - @cowprotocol/types@4.15.0
+  - @cowprotocol/assets@2.9.0
+
+## [3.20.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.19.2...ui-v3.20.0) (2026-11-05)
+
+### Minor Changes
+
+- feat: Wait for cows UI bits & new confirmation (#8443)
+
+- feat: Wait & save widget toggle (#8473)
+
+### Patch Changes
+
+- fix: replace Accordion with Expandable, fix React crash (#8475)
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+- Updated dependencies []:
+  - @cowprotocol/assets@2.8.0
+  - @cowprotocol/common-hooks@3.18.0
+  - @cowprotocol/analytics@3.16.4
+  - @cowprotocol/common-const@3.18.0
+  - @cowprotocol/common-utils@3.21.2
+  - @cowprotocol/core@3.14.3
+  - @cowprotocol/currency@1.9.2
+  - @cowprotocol/types@4.14.2
+
+## [3.19.2](https://github.com/cowprotocol/cowswap/compare/ui-v3.19.1...ui-v3.19.2) (2026-11-02)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/core@3.14.2
+
 ## [3.19.1](https://github.com/cowprotocol/cowswap/compare/ui-v3.19.0...ui-v3.19.1) (2026-10-28)
 
 ### Patch Changes

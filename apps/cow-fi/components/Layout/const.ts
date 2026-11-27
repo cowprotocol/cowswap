@@ -1,11 +1,11 @@
-import { initGtm } from '@cowprotocol/analytics'
+import { initGtmWithConsent } from '@cowprotocol/analytics'
 import { MenuItem, ProductVariant, UI } from '@cowprotocol/ui'
 
 import { CowFiCategory } from 'src/common/analytics/types'
 
 import { COW_SWAP_CTA } from '@/const/cta'
 
-const analytics = initGtm()
+const analytics = initGtmWithConsent()
 
 export const PAGE_MAX_WIDTH = 1760
 export const THEME_MODE = 'light'
@@ -25,6 +25,28 @@ const LEARN_NAV_ITEM: MenuItem = {
       utmContent: 'menubar-nav-item-docs',
     },
   ],
+}
+
+export function getNavAdditionalButtons(pathname: string | null): MenuItem[] {
+  const isSolanaPage = pathname === '/solana' || !!pathname?.startsWith('/solana/')
+
+  return [
+    {
+      label: COW_SWAP_CTA.text,
+      href: isSolanaPage ? COW_SWAP_CTA.solanaDeeplinkHref : COW_SWAP_CTA.deeplinkHref,
+      utmContent: 'menubar-nav-button-trade-on-cow-swap',
+      onClick: () =>
+        analytics.sendEvent({
+          category: CowFiCategory.NAVIGATION,
+          action: 'Click Trade on CoW Swap',
+          label: 'menubar-nav-button',
+        }),
+      external: true,
+      isButton: true,
+      bgColor: `var(${UI.COLOR_BLUE_300_PRIMARY})`,
+      color: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
+    },
+  ]
 }
 
 export function getNavItems(isSolversEnabled: boolean): MenuItem[] {
@@ -68,6 +90,10 @@ function getProductsNavItem(isSolversEnabled: boolean): MenuItem {
         href: '/cow-protocol',
       },
       {
+        label: 'Solana',
+        href: '/solana',
+      },
+      {
         label: 'More',
         children: [
           {
@@ -95,21 +121,3 @@ function getProductsNavItem(isSolversEnabled: boolean): MenuItem {
     ],
   }
 }
-
-export const NAV_ADDITIONAL_BUTTONS = [
-  {
-    label: COW_SWAP_CTA.text,
-    href: COW_SWAP_CTA.deeplinkHref,
-    utmContent: 'menubar-nav-button-trade-on-cow-swap',
-    onClick: () =>
-      analytics.sendEvent({
-        category: CowFiCategory.NAVIGATION,
-        action: 'Click Trade on CoW Swap',
-        label: 'menubar-nav-button',
-      }),
-    external: true,
-    isButton: true,
-    bgColor: `var(${UI.COLOR_BLUE_300_PRIMARY})`,
-    color: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
-  },
-]

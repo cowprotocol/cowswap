@@ -1,5 +1,110 @@
 # Changelog
 
+## [3.26.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.25.0...common-const-v3.26.0) (2026-11-25)
+
+### Minor Changes
+
+- feat(theme): add Vice sunset theme behind a feature flag (#8678)
+
+### Patch Changes
+
+- fix(rwa): apply geo restrictions to all RWA tokens via BFF (#8636)
+
+## [3.25.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.24.0...common-const-v3.25.0) (2026-11-19)
+
+### Minor Changes
+
+- feat(theme): cherry pick #8678 (vice theme)
+
+## [3.24.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.23.0...common-const-v3.24.0) (2026-11-18)
+
+### Minor Changes
+
+- feat: update SDK versions with updated near token lists (#8660)
+
+- feat(cow-fi): add CoW Protocol on Solana landing page (#8470)
+
+- feat(cow-fi): gate GTM on cookie consent (#8606)
+
+- feat(graffiti): collaborative graffiti wall (consolidated) (#8560)
+
+- feat(solana): support custom recipients (#8592)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.11.0
+  - @cowprotocol/types@4.16.0
+
+## [3.23.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.22.0...common-const-v3.23.0) (2026-11-16)
+
+### Minor Changes
+
+- feat: show Solana second in the network selector (#8652)
+
+## [3.22.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.21.0...common-const-v3.22.0) (2026-11-13)
+
+### Minor Changes
+
+- feat(graffiti): collaborative graffiti wall (consolidated) (#8560)
+
+## [3.21.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.20.0...common-const-v3.21.0) (2026-11-13)
+
+### Minor Changes
+
+- feat(cow-fi): gate GTM on cookie consent
+
+- feat(cow-fi): add CoW Protocol on Solana landing page (#8470)
+
+## [3.20.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.19.0...common-const-v3.20.0) (2026-11-11)
+
+### Minor Changes
+
+- feat(rwa): google analytics (#8542)
+
+### Patch Changes
+
+- fix(tokens): use Solana volume ranks in the selector (#8523)
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.15.1
+
+## [3.19.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.18.0...common-const-v3.19.0) (2026-11-10)
+
+### Minor Changes
+
+- feat(networks): networks update (#8456)
+
+- feat(rwa): standardize header and footer with CoW product links (#8516)
+
+- feat(solana): pass appData to quote (#8509)
+
+- feat(rwa): apply production design (#8503)
+
+### Patch Changes
+
+- fix(solana): use SDK for quote costs breakdown (#8522)
+
+- fix(tokens): use Solana volume ranks in the selector (#8523)
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.10.0
+  - @cowprotocol/types@4.15.0
+
+## [3.18.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.17.1...common-const-v3.18.0) (2026-11-05)
+
+### Minor Changes
+
+- feat(solana): integrate appData api (#8467)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.9.2
+  - @cowprotocol/types@4.14.2
+
 ## [3.17.1](https://github.com/cowprotocol/cowswap/compare/common-const-v3.17.0...common-const-v3.17.1) (2026-10-28)
 
 ### Patch Changes

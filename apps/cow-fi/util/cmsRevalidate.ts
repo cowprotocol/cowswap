@@ -8,6 +8,9 @@ export const CMS_REVALIDATE_ROUTES: ReadonlyArray<{ path: string; type?: 'layout
   { path: '/resources' },
   { path: '/resources/[campaign]', type: 'page' },
   { path: '/resources/[campaign]/[slug]', type: 'page' },
+  { path: '/careers/refer-to-earn' },
+  { path: '/careers' },
+  { path: '/affiliate-program' },
 ]
 
 export function getUnauthorizedRevalidateResponse(

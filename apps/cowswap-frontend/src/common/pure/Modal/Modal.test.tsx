@@ -4,18 +4,18 @@ import { ReactNode } from 'react'
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 
-import { render } from '@testing-library/react'
+import { render, waitFor } from '@testing-library/react'
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
 import { getCowswapTheme } from 'theme'
 
-import { openModalState } from '../../state/openModalState'
+import { openModalElementsState, openModalState } from '../../state/openModalState'
 
 import { Modal } from './index'
 
 i18n.load('en-US', {})
 i18n.activate('en-US')
 
-function renderModal(isOpen: boolean, store: ReturnType<typeof createStore>): ReturnType<typeof render> {
+function renderInStore(store: ReturnType<typeof createStore>, ui: ReactNode): ReturnType<typeof render> {
   const wrapper = ({ children }: { children: ReactNode }): ReactNode => (
     <Provider store={store}>
       <I18nProvider i18n={i18n}>
@@ -24,19 +24,34 @@ function renderModal(isOpen: boolean, store: ReturnType<typeof createStore>): Re
     </Provider>
   )
 
-  return render(
-    <Modal isOpen={isOpen} onDismiss={jest.fn()}>
-      content
-    </Modal>,
-    { wrapper },
+  return render(ui, { wrapper })
+}
+
+function TwoModals({ isSecondOpen }: { isSecondOpen: boolean }): ReactNode {
+  return (
+    <>
+      <Modal isOpen onDismiss={jest.fn()}>
+        first
+      </Modal>
+      <Modal isOpen={isSecondOpen} onDismiss={jest.fn()}>
+        second
+      </Modal>
+    </>
   )
 }
 
 describe('Modal', () => {
-  it('marks a modal as open while it is shown and clears it once closed', () => {
+  it('registers its dialog element while shown and removes it once closed', async () => {
     const store = createStore()
-    const { rerender } = renderModal(true, store)
+    const { rerender } = renderInStore(
+      store,
+      <Modal isOpen onDismiss={jest.fn()}>
+        content
+      </Modal>,
+    )
 
+    const [element] = store.get(openModalElementsState)
+    expect(element?.hasAttribute('data-reach-dialog-content')).toBe(true)
     expect(store.get(openModalState)).toBe(true)
 
     rerender(
@@ -45,15 +60,33 @@ describe('Modal', () => {
       </Modal>,
     )
 
+    await waitFor(() => expect(store.get(openModalElementsState)).toHaveLength(0))
     expect(store.get(openModalState)).toBe(false)
   })
 
-  it('clears the open-modal flag when an open modal is unmounted without being closed', () => {
+  it('removes the element when an open modal is unmounted without being closed', () => {
     const store = createStore()
-    const { unmount } = renderModal(true, store)
+    const { unmount } = renderInStore(
+      store,
+      <Modal isOpen onDismiss={jest.fn()}>
+        content
+      </Modal>,
+    )
 
     unmount()
 
-    expect(store.get(openModalState)).toBe(false)
+    expect(store.get(openModalElementsState)).toHaveLength(0)
+  })
+
+  it('keeps the modal underneath registered when the one on top closes', async () => {
+    const store = createStore()
+    const { rerender } = renderInStore(store, <TwoModals isSecondOpen />)
+
+    expect(store.get(openModalElementsState)).toHaveLength(2)
+
+    rerender(<TwoModals isSecondOpen={false} />)
+
+    await waitFor(() => expect(store.get(openModalElementsState)).toHaveLength(1))
+    expect(store.get(openModalState)).toBe(true)
   })
 })

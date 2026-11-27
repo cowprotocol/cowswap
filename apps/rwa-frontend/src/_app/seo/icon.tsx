@@ -6,12 +6,17 @@ import { CowLogo } from '@/shared/ui/cow-logo'
 const BACKGROUND = '#052b65'
 const FOREGROUND = '#ffffff'
 
-const FAVICON_SIZE = 32
 const APPLE_ICON_SIZE = 180
 const MANIFEST_ICON_SIZES = [192, 512]
-const ICON_SIZES = [FAVICON_SIZE, APPLE_ICON_SIZE, ...MANIFEST_ICON_SIZES]
+const ICON_SIZES = [APPLE_ICON_SIZE, ...MANIFEST_ICON_SIZES]
 
 export const ICON_CONTENT_TYPE = 'image/png'
+
+interface FaviconLink {
+  url: string
+  type: string
+  media: string
+}
 
 interface IconLink {
   url: string
@@ -19,7 +24,11 @@ interface IconLink {
   type: string
 }
 
-export const FAVICON = toIconLink(FAVICON_SIZE)
+export const FAVICON: FaviconLink[] = [
+  toFaviconLink('light', '(prefers-color-scheme: light)'),
+  toFaviconLink('dark', '(prefers-color-scheme: dark)'),
+  toFaviconLink('light', '(prefers-color-scheme: no-preference)'),
+]
 export const APPLE_ICON = toIconLink(APPLE_ICON_SIZE)
 export const MANIFEST_ICONS = MANIFEST_ICON_SIZES.map(toIconLink)
 
@@ -33,8 +42,6 @@ export function generateIconStaticParams(): { size: string }[] {
 
 export async function getIcon(_request: Request, { params }: IconRouteProps): Promise<ImageResponse> {
   const size = Number((await params).size)
-  // Platforms that install the app round the corners themselves, browser tabs show the favicon as is
-  const isRounded = size === FAVICON_SIZE
 
   return new ImageResponse(
     (
@@ -47,7 +54,6 @@ export async function getIcon(_request: Request, { params }: IconRouteProps): Pr
           justifyContent: 'center',
           background: BACKGROUND,
           color: FOREGROUND,
-          borderRadius: isRounded ? size * 0.22 : 0,
         }}
       >
         <CowLogo height={Math.round(size * 0.45)} />
@@ -55,6 +61,10 @@ export async function getIcon(_request: Request, { params }: IconRouteProps): Pr
     ),
     { width: size, height: size },
   )
+}
+
+function toFaviconLink(theme: 'light' | 'dark', media: string): FaviconLink {
+  return { url: withBasePath(`/favicon-${theme}-mode.png`), type: ICON_CONTENT_TYPE, media }
 }
 
 function toIconLink(size: number): IconLink {

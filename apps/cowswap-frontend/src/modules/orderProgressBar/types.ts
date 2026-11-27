@@ -10,6 +10,9 @@ import { SolverCompetition } from 'common/types/soverCompetition'
 
 import { OrderProgressBarStepName } from './constants'
 
+import type { WaitAndSaveStrip } from './pure/WaitAndSaveOutcome/selectWaitAndSaveStrip.utils'
+import type { WaitAndSaveOutcomeProps } from './pure/WaitAndSaveOutcome/WaitAndSaveOutcome.pure'
+
 export { OrderProgressBarStepName }
 
 export type BridgingFlowStep =
@@ -23,17 +26,24 @@ export type OrderProgressBarProps = {
   chainId: SupportedChainId
   countdown?: number | null | undefined
   solverCompetition?: SolverCompetition[]
+  solverCompetitionPending?: boolean
+  solverCompetitionReady?: boolean
   totalSolvers?: number
   order?: Order
   debugMode?: boolean
   showCancellationModal: Command | null
   surplusData?: SurplusData
   receiverEnsName?: string
+  onDismiss?: Command
   navigateToNewOrder?: Command
   isProgressBarSetup: boolean
   swapAndBridgeContext?: SwapAndBridgeContext
   isBridgingTrade: boolean
-  showWaitAndSaveOutcome?: boolean
+  waitAndSave?: {
+    outcome?: WaitAndSaveOutcomeProps
+    pending?: boolean
+    strip?: WaitAndSaveStrip
+  }
 }
 
 export type OrderProgressBarState = {

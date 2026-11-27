@@ -7,12 +7,8 @@ import { renderHook } from '@testing-library/react'
 
 import { useSwitchNetwork } from './useSwitchNetwork'
 
+import { useSolanaAccount } from '../../api/hooks/useSolanaAccount'
 import { reownAppKit } from '../config'
-
-jest.mock('@cowprotocol/common-const', () => ({
-  ...jest.requireActual('@cowprotocol/common-const'),
-  IS_SOLANA_ENABLED: true,
-}))
 
 jest.mock('@reown/appkit/networks', () => ({
   solana: { id: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', chainNamespace: 'solana' },
@@ -22,11 +18,16 @@ jest.mock('wagmi', () => ({
   useConnection: jest.fn(),
 }))
 
+jest.mock('../../api/hooks/useSolanaAccount', () => ({
+  useSolanaAccount: jest.fn(),
+}))
+
 jest.mock('../config', () => ({
   reownAppKit: { switchNetwork: jest.fn(), getActiveChainNamespace: jest.fn(), getCaipNetwork: jest.fn() },
 }))
 
 const useConnectionMock = useConnection as jest.Mock
+const useSolanaAccountMock = useSolanaAccount as jest.Mock
 const switchNetworkMock = reownAppKit.switchNetwork as jest.Mock
 const getActiveChainNamespaceMock = reownAppKit.getActiveChainNamespace as jest.Mock
 const getCaipNetworkMock = reownAppKit.getCaipNetwork as jest.Mock
@@ -35,7 +36,27 @@ describe('useSwitchNetwork', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     useConnectionMock.mockReturnValue({ isConnected: true })
+    useSolanaAccountMock.mockReturnValue(undefined)
     getActiveChainNamespaceMock.mockReturnValue('eip155')
+  })
+
+  it('switches through AppKit when only a Solana wallet is connected', async () => {
+    useConnectionMock.mockReturnValue({ isConnected: false })
+    useSolanaAccountMock.mockReturnValue('4JtDcUjdGXc93ahvvzH8tfXpyLQGeHqvdbG2wHz47s5B')
+    const { result } = renderHook(() => useSwitchNetwork())
+
+    await result.current(SupportedChainId.SOLANA)
+
+    expect(switchNetworkMock).toHaveBeenCalledWith(solana, { throwOnFailure: true })
+  })
+
+  it('only records the chain when no wallet is connected', async () => {
+    useConnectionMock.mockReturnValue({ isConnected: false })
+    const { result } = renderHook(() => useSwitchNetwork())
+
+    await result.current(SupportedChainId.SOLANA)
+
+    expect(switchNetworkMock).not.toHaveBeenCalled()
   })
 
   it('switches to Solana when wagmi is connected through a multi-namespace WalletConnect session', async () => {

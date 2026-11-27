@@ -1,5 +1,94 @@
 # Changelog
 
+## [3.13.2](https://github.com/cowprotocol/cowswap/compare/ens-v3.13.1...ens-v3.13.2) (2026-11-25)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.23.2
+  - @cowprotocol/common-const@3.26.0
+
+## [3.13.1](https://github.com/cowprotocol/cowswap/compare/ens-v3.13.0...ens-v3.13.1) (2026-11-19)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.25.0
+  - @cowprotocol/common-utils@3.23.1
+
+## [3.13.0](https://github.com/cowprotocol/cowswap/compare/ens-v3.12.4...ens-v3.13.0) (2026-11-18)
+
+### Minor Changes
+
+- feat: update SDK versions with updated near token lists (#8660)
+
+- feat(solana): support custom recipients (#8592)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.24.0
+  - @cowprotocol/common-utils@3.23.0
+
+## [3.12.4](https://github.com/cowprotocol/cowswap/compare/ens-v3.12.3...ens-v3.12.4) (2026-11-16)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.23.0
+  - @cowprotocol/common-utils@3.22.4
+
+## [3.12.3](https://github.com/cowprotocol/cowswap/compare/ens-v3.12.2...ens-v3.12.3) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.22.0
+  - @cowprotocol/common-utils@3.22.3
+
+## [3.12.2](https://github.com/cowprotocol/cowswap/compare/ens-v3.12.1...ens-v3.12.2) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.21.0
+  - @cowprotocol/common-utils@3.22.2
+
+## [3.12.1](https://github.com/cowprotocol/cowswap/compare/ens-v3.12.0...ens-v3.12.1) (2026-11-11)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.20.0
+  - @cowprotocol/common-utils@3.22.1
+
+## [3.12.0](https://github.com/cowprotocol/cowswap/compare/ens-v3.11.4...ens-v3.12.0) (2026-11-10)
+
+### Minor Changes
+
+- feat(networks): networks update (#8456)
+
+- feat(solana): pass appData to quote (#8509)
+
+### Patch Changes
+
+- fix(solana): use SDK for quote costs breakdown (#8522)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.22.0
+  - @cowprotocol/common-const@3.19.0
+  - @cowprotocol/wallet-provider@2.3.0
+
+## [3.11.4](https://github.com/cowprotocol/cowswap/compare/ens-v3.11.3...ens-v3.11.4) (2026-11-05)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.18.0
+  - @cowprotocol/common-utils@3.21.2
+
 ## [3.11.3](https://github.com/cowprotocol/cowswap/compare/ens-v3.11.2...ens-v3.11.3) (2026-10-28)
 
 ### Patch Changes

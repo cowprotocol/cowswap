@@ -3,7 +3,7 @@ import { atomWithQuery } from 'jotai-tanstack-query'
 
 import { tradeSideAtom } from './tradeSelectionAtoms'
 
-import { assetNetworkStatsQueryOptions, assetQuotesQueryOptions } from '@/entities/asset'
+import { assetQuotesQueryOptions, assetTokenStatsQueryOptions } from '@/entities/asset'
 
 export interface AssetNetworkParams {
   ticker: string
@@ -20,7 +20,6 @@ export const tradeQuotesQueryAtomFamily = atomFamily(
   areParamsEqual,
 )
 
-export const networkStatsQueryAtomFamily = atomFamily(
-  ({ ticker, chainId }: AssetNetworkParams) => atomWithQuery(() => assetNetworkStatsQueryOptions(ticker, chainId)),
-  areParamsEqual,
+export const tokenStatsQueryAtomFamily = atomFamily((ticker: string) =>
+  atomWithQuery(() => assetTokenStatsQueryOptions(ticker)),
 )

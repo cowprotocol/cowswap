@@ -3,6 +3,7 @@ import { ReactNode, useCallback, useEffect, useRef } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { useAddUserToken } from '@cowprotocol/tokens'
+import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { solanaOrderNotPlacedAtom, solanaSigningWindowExpiredAtom } from 'entities/trade'
@@ -21,7 +22,6 @@ import { RwaConsentModalContainer, useRwaConsentModalState } from 'modules/rwa'
 import {
   ImportTokenModal,
   useCloseTokenSelectWidget,
-  useRestrictedTokensImportStatus,
   useSelectTokenWidgetState,
   useTokenListAddingError,
 } from 'modules/tokensList'
@@ -33,6 +33,7 @@ import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 import { SolanaFlowScreen } from './SolanaFlowScreen'
 
 import { useAutoImportTokensState } from '../../hooks/useAutoImportTokensState'
+import { useCloseModalsOnWidgetRequest } from '../../hooks/useCloseModalsOnWidgetRequest'
 import { useTradeConfirmActions } from '../../hooks/useTradeConfirmActions'
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
 import { useTradeState } from '../../hooks/useTradeState'
@@ -44,6 +45,8 @@ import { WrapNativeModal } from '../WrapNativeModal'
 interface TradeWidgetModalsProps {
   confirmModal: ReactNode | undefined
   genericModal: ReactNode | undefined
+  onGenericModalDismiss?: Command
+  isGenericModalPending?: boolean
   renderFallback?: () => ReactNode
 }
 
@@ -52,6 +55,8 @@ interface TradeWidgetModalsProps {
 export function TradeWidgetModals({
   confirmModal,
   genericModal,
+  onGenericModalDismiss,
+  isGenericModalPending,
   renderFallback = () => null,
 }: TradeWidgetModalsProps): ReactNode {
   const { chainId, account } = useWalletInfo()
@@ -80,7 +85,6 @@ export function TradeWidgetModals({
     tokensToImport,
     modalState: { isModalOpen: isAutoImportModalOpen, closeModal: closeAutoImportModal },
   } = useAutoImportTokensState(rawState?.inputCurrencyId, rawState?.outputCurrencyId)
-  const { restriction: importRestriction } = useRestrictedTokensImportStatus(tokensToImport)
 
   const { onDismiss: closeTradeConfirm, onOpen: openTradeConfirm } = useTradeConfirmActions()
   const closeTokenSelectWidget = useCloseTokenSelectWidget()
@@ -115,6 +119,13 @@ export function TradeWidgetModals({
       setSolanaOrderNotPlaced,
     ],
   )
+
+  const closeAllScreens = useCallback(() => {
+    resetAllScreens()
+    onGenericModalDismiss?.()
+  }, [resetAllScreens, onGenericModalDismiss])
+
+  useCloseModalsOnWidgetRequest(closeAllScreens, isGenericModalPending)
 
   // Both Solana failure screens exit the same way: nothing was placed, so the way on is another
   // attempt from review. Price confirmation is forced because the quote kept refreshing meanwhile.
@@ -205,14 +216,7 @@ export function TradeWidgetModals({
   }
 
   if (isAutoImportModalOpen) {
-    return (
-      <ImportTokenModal
-        tokens={tokensToImport}
-        restriction={importRestriction}
-        onDismiss={closeAutoImportModal}
-        onImport={importTokenCallback}
-      />
-    )
+    return <ImportTokenModal tokens={tokensToImport} onDismiss={closeAutoImportModal} onImport={importTokenCallback} />
   }
 
   if (isWrapNativeOpen) {
@@ -238,6 +242,7 @@ export function TradeWidgetModals({
       <SolanaOrderNotPlaced
         errorMessage={solanaOrderNotPlaced.errorMessage}
         logs={solanaOrderNotPlaced.logs}
+        isSquadsSetupRequired={solanaOrderNotPlaced.isSquadsSetupRequired}
         inputAmount={solanaOrderNotPlaced.tradeAmounts.inputAmount}
         outputAmount={solanaOrderNotPlaced.tradeAmounts.outputAmount}
         onDismiss={onSolanaFailureDismiss}

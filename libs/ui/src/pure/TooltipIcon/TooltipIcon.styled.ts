@@ -3,6 +3,7 @@ import SVG from 'react-inlinesvg'
 import styled, { css } from 'styled-components/macro'
 
 import { UI } from '../../enum'
+import { Modal } from '../Modal/Modal.pure'
 import { NewTooltip } from '../Tooltip/Tooltip'
 
 const ICON_SIZE_PX = 14
@@ -58,6 +59,14 @@ export const InstantTooltip = styled(NewTooltip).attrs({
   closeDelay: 0,
 })`
   ${hitTargetStyles}
+`
+
+export const InteractiveTooltip = styled(NewTooltip)`
+  ${hitTargetStyles}
+`
+
+export const DrawerBody = styled(Modal.Content)`
+  padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
 `
 
 export const TriggerButton = styled.button`

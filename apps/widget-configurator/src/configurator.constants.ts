@@ -163,6 +163,7 @@ export const DEFAULT_CONFIGURATOR_FORM_VALUES: ConfiguratorFormValues = {
   buyTokenAmount: DEFAULT_STATE.buyAmount,
   tokenListUrls: DEFAULT_TOKEN_LISTS,
   customTokens: [],
+  prioritizedTokensText: {},
 
   // Theme Colors:
 
@@ -180,6 +181,7 @@ export const DEFAULT_CONFIGURATOR_FORM_VALUES: ConfiguratorFormValues = {
 
   disableProgressBar: false,
   disablePostTradeTips: false,
+  disablePricePercentageShortcuts: false,
   disableTokenImport: false,
   disableSwitchingTokens: false,
   hideRecentTokens: false,

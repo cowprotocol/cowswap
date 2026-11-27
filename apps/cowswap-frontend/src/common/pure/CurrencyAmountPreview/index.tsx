@@ -17,6 +17,9 @@ export interface CurrencyPreviewInfo {
   amount: Nullish<CurrencyAmount<Currency>>
   fiatAmount: Nullish<CurrencyAmount<Currency>>
   balance: Nullish<CurrencyAmount<Currency>>
+  /** Token shown while `amount` is still unknown. */
+  token?: Currency
+  amountLoading?: boolean
   label?: Nullish<string>
   prefix?: ReactNode
   secondaryAmount?: CurrencyPreviewSecondaryAmount
@@ -52,9 +55,9 @@ export function CurrencyAmountPreview({
   priceImpactParams,
   isBridging,
 }: CurrencyPreviewProps): ReactNode {
-  const { fiatAmount, amount, prefix, secondaryAmount } = currencyInfo
+  const { fiatAmount, amount, prefix, secondaryAmount, amountLoading } = currencyInfo
   const topLabel = currencyInfo.label
-  const currency = amount?.currency
+  const currency = amount?.currency ?? currencyInfo.token
   const containerClassName = [className, variant === 'slim' ? 'slim' : null].filter(Boolean).join(' ')
 
   return (
@@ -62,12 +65,16 @@ export function CurrencyAmountPreview({
       <styledEl.TopLabel>{topLabel}</styledEl.TopLabel>
       <styledEl.TokenLogo token={currency} size={TOKEN_SIZE_DEFAULT} />
       <styledEl.Amounts>
-        <styledEl.Amount
-          testId={TEST_IDS.currencyAmountPreviewValue}
-          amount={amount}
-          tokenSymbol={currency}
-          prefix={prefix}
-        />
+        {amountLoading ? (
+          <styledEl.AmountLoading data-testid="currency-amount-loading" />
+        ) : (
+          <styledEl.Amount
+            testId={TEST_IDS.currencyAmountPreviewValue}
+            amount={amount}
+            tokenSymbol={currency}
+            prefix={prefix}
+          />
+        )}
         {secondaryAmount ? (
           <SecondaryAmountRow secondaryAmount={secondaryAmount} />
         ) : (

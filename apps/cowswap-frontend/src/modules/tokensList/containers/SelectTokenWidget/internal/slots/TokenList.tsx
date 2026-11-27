@@ -7,9 +7,15 @@ import { TokensContent } from '../../../../pure/TokensContent'
 
 export interface TokenListProps {
   isRouteAvailable?: boolean
+  areFilteredTokensNotBridgeable?: boolean
+  notice?: string
 }
 
-export function TokenList({ isRouteAvailable = true }: TokenListProps): ReactNode {
+export function TokenList({
+  isRouteAvailable = true,
+  areFilteredTokensNotBridgeable = false,
+  notice,
+}: TokenListProps): ReactNode {
   if (!isRouteAvailable) {
     return (
       <styledEl.RouteNotAvailable>
@@ -18,5 +24,16 @@ export function TokenList({ isRouteAvailable = true }: TokenListProps): ReactNod
     )
   }
 
-  return <TokensContent />
+  return (
+    <>
+      {notice && <styledEl.TokensFilterNotice>{notice}</styledEl.TokensFilterNotice>}
+      {areFilteredTokensNotBridgeable ? (
+        <styledEl.RouteNotAvailable>
+          <Trans>None of the tokens available here can be bridged to this network yet.</Trans>
+        </styledEl.RouteNotAvailable>
+      ) : (
+        <TokensContent />
+      )}
+    </>
+  )
 }

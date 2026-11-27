@@ -6,8 +6,6 @@ import { Collapsible } from '@cowprotocol/ui'
 import { Plural, Trans } from '@lingui/react/macro'
 import { PiCaretDown } from 'react-icons/pi'
 
-import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
-
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { SolverCompetition } from 'common/types/soverCompetition'
 
@@ -70,12 +68,7 @@ export function SolverCompetitionExpand({
       >
         <styledEl.SolverStack aria-hidden data-testid="solver-competition-stack">
           {stackedSolvers.map((solver, index) => (
-            <styledEl.SolverAvatar
-              key={`${solver.solver}-${index}`}
-              $stackIndex={index}
-              src={solver.image || AMM_LOGOS[solver.solver]?.src || AMM_LOGOS.default.src}
-              alt=""
-            />
+            <styledEl.SolverAvatar key={`${solver.solver}-${index}`} $stackIndex={index} solver={solver} size={18} />
           ))}
         </styledEl.SolverStack>
 

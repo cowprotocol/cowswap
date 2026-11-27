@@ -13,6 +13,8 @@
   border: none;
   border-radius: var(--radius-pill);
   background: none;
+  display: flex;
+  align-items: center;
   color: var(--color-text-secondary);
   font-size: 13px;
   font-weight: 500;
@@ -27,4 +29,18 @@
   background: var(--color-bg);
   box-shadow: var(--shadow-pill);
   color: var(--color-text);
+}
+
+.ranges button[aria-disabled='true'] {
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+.hint {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }

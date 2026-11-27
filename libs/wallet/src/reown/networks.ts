@@ -1,8 +1,9 @@
-import { VIEM_CHAINS } from '@cowprotocol/common-const'
-import { ALL_SUPPORTED_CHAIN_IDS, isEvmChain, isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { RELEASED_SUPPORTED_CHAIN_IDS, VIEM_CHAINS } from '@cowprotocol/common-const'
+import { isEvmChain, isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { solana } from '@reown/appkit/networks'
 import { type Chain } from 'viem/chains'
+
+import { SOLANA_NETWORK } from './solanaNetwork'
 
 import { IS_SOLANA_WALLET_ENABLED } from '../constants'
 
@@ -19,16 +20,16 @@ import type { AppKitNetwork } from '@reown/appkit-common'
  * connector-id constants reown-free lets them be imported without dragging in that
  * bundle (which Jest does not transform).
  */
-export const SUPPORTED_REOWN_NETWORKS = ALL_SUPPORTED_CHAIN_IDS.flatMap((chainId): Chain[] =>
+export const SUPPORTED_REOWN_NETWORKS = RELEASED_SUPPORTED_CHAIN_IDS.flatMap((chainId): Chain[] =>
   isEvmChain(chainId) ? [VIEM_CHAINS[chainId]] : [],
 ) as [AppKitNetwork, ...AppKitNetwork[]]
 
 if (IS_SOLANA_WALLET_ENABLED) {
-  SUPPORTED_REOWN_NETWORKS.push(solana)
+  SUPPORTED_REOWN_NETWORKS.push(SOLANA_NETWORK)
 }
 
 export function getReownNetwork(chainId: SupportedChainId): AppKitNetwork | undefined {
-  const reownNetworkId = isSolanaChain(chainId) ? solana.id : chainId
+  const reownNetworkId = isSolanaChain(chainId) ? SOLANA_NETWORK.id : chainId
 
   return SUPPORTED_REOWN_NETWORKS.find(({ id }) => id === reownNetworkId)
 }

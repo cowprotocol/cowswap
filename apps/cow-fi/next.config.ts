@@ -10,6 +10,7 @@ const DEFAULT_CACHE_CONTROL_HEADER = {
 }
 
 const nextConfig: WithNxOptions & NextConfig = {
+  distDir: process.env.COW_FI_TEST_DIST_DIR || '.next',
   reactStrictMode: true,
   generateBuildId: process.env.BUNDLE_SIZE_BUILD === 'true' ? async () => 'bundle-size' : undefined,
   nx: {},

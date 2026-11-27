@@ -66,7 +66,7 @@ package "Next.js server" as SERVER {
     [getMarketOverview()] as S_OVERVIEW
     [getAsset()] as S_ASSET
     [getAssetChart()] as S_CHART
-    [getAssetNetworkStats()] as S_NET
+    [getAssetTokenStats()\none getNetworkStats per network] as S_NET
     [getAssetQuotes()] as S_QUOTES
   }
 
@@ -76,7 +76,7 @@ package "Next.js server" as SERVER {
     [GET /api/v1/market-overview\ns-maxage 60] as R_OVERVIEW
     [GET /api/v1/asset/{ticker}\ns-maxage 60] as R_ASSET
     [GET /api/v1/chart/{ticker}?range\ns-maxage = data cache rv] as R_CHART
-    [GET /api/v1/network-stats/{ticker}?chainId\ns-maxage 60] as R_NET
+    [GET /api/v1/token-stats/{ticker}\ns-maxage 60] as R_NET
     [GET /api/v1/quotes/{ticker}\ns-maxage 60, no SWR] as R_QUOTES
     [GET /api/v1/token-list\nforce-static, s-maxage 3600] as R_TL
   }
@@ -138,14 +138,14 @@ package "Browser" as BROWSER {
     [marketOverviewQueryAtom\nrefetch 60s] as A_OVERVIEW
     [assetQueryAtomFamily(ticker)\nrefetch 60s] as A_ASSET
     [assetChartQueryAtomFamily(ticker, range)\nno refetch] as A_CHART
-    [networkStatsQueryAtomFamily(ticker, chainId)\nrefetch 60s] as A_NET
+    [tokenStatsQueryAtomFamily(ticker)\nrefetch 300s] as A_NET
     [tradeQuotesQueryAtomFamily(ticker, chainId, side)\nrefetch 60s] as A_QUOTES
     [tokenListQueryAtom\nstaleTime 1h] as A_TL
   }
 
   package "Home page (/)" as UI_HOME {
     [AssetsExplorer / AssetsTable\n(price, change, mcap, vol, sparkline;\nlogo from registry)] as U_TABLE
-    [AssetsFilters / AssetsTypeTabs\n(typeCounts, issuers, chainIds)] as U_FILTERS
+    [AssetsFilters / AssetsTypeTabs\n(issuers, chainIds)] as U_FILTERS
     [MarketTotalsCard\n(mcap, vol, mcap sparkline)] as U_TOTALS
     [MostTradedCard\n(hourly DEX volume)] as U_MOST
     [TopMoversCard\n(gainers / losers + 1D sparkline)] as U_MOVERS
@@ -154,7 +154,7 @@ package "Browser" as BROWSER {
     [AssetView / AssetStats] as U_STATS
     [StockTokens / TradeTokenSelector /\nPositionsTab / useTradeSelection] as U_TOKENS
     [AssetPriceChart\n(ChartRangeSelector)] as U_CHART
-    [TradeWidget\n(onchain cap, DEX vol, quotes)] as U_TRADE
+    [TradeWidget\n(tokenized market cap, DEX vol, quotes)] as U_TRADE
   }
   package "Portfolio (/portfolio)" as UI_PORT {
     [HoldingsTable / AllocationCard /\nRecentActivityCard\n(uses market price only;\nlogo from registry)] as U_HOLD
@@ -185,6 +185,7 @@ U_STATS --> A_ASSET
 U_TOKENS --> A_ASSET
 U_CHART --> A_CHART
 U_TRADE --> A_NET
+U_TOKENS --> A_NET
 U_TRADE --> A_QUOTES
 U_TRADE --> A_ASSET : stock price
 U_HOLD --> A_PORT
@@ -205,7 +206,7 @@ note as HOT
      (most traded, Pro only) per 900s cache miss.
   5. /coins/markets and tokens/multi are cut into registry-wide batches, so
      every asset of a batch shares one cache entry: ≤3 + ≤47 URLs in total.
-  6. Client polls every 60s (overview, asset, network-stats, quotes), aligned
+  6. Client polls every 60s (overview, asset, quotes; token-stats every 300s), aligned
      with s-maxage 60 + SWR 300, so most polls are absorbed by the CDN.
   7. A failing URL keeps its stale entry and retries after 60s, 120s, 240s… ≤1h.
 end note

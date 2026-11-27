@@ -2,6 +2,9 @@ import { formatUnits } from 'viem'
 
 export const EMPTY_VALUE = '—'
 
+const MINUTES_PER_HOUR = 60
+const MINUTES_PER_DAY = 24 * MINUTES_PER_HOUR
+
 const usdFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
   currency: 'USD',
@@ -19,8 +22,6 @@ const compactUsdFormatter = new Intl.NumberFormat('en-US', {
 })
 
 const tokenAmountFormatter = new Intl.NumberFormat('en-US', { maximumFractionDigits: 6 })
-
-const dateTimeFormatter = new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeStyle: 'short' })
 
 // `en-GB` writes September as "Sept" in recent ICU, so the "14 Sep 2026" order is built from `en-US` parts
 const dateFormatter = new Intl.DateTimeFormat('en-US', {
@@ -45,9 +46,11 @@ export function formatDate(isoDate: string | null | undefined): string {
   return `${parts.day} ${parts.month} ${parts.year}`
 }
 
-/** `timestamp` is in Unix seconds */
-export function formatDateTime(timestamp: number | null | undefined): string {
-  return timestamp === null || timestamp === undefined ? EMPTY_VALUE : dateTimeFormatter.format(timestamp * 1000)
+export function formatDuration(minutes: number): string {
+  if (minutes < MINUTES_PER_HOUR) return `${minutes} min`
+  if (minutes < MINUTES_PER_DAY) return `${Math.floor(minutes / MINUTES_PER_HOUR)}h`
+
+  return `${Math.floor(minutes / MINUTES_PER_DAY)}d`
 }
 
 export function formatPercent(value: number | null | undefined): string {

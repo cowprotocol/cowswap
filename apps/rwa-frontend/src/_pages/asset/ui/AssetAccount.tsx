@@ -9,10 +9,10 @@ import { AssetAbout } from './AssetAbout'
 import styles from './AssetAccount.module.css'
 import { AssetNews } from './AssetNews'
 import { PositionsTab } from './PositionsTab'
+import { RelatedAssets } from './RelatedAssets'
 import { StockTokens } from './StockTokens'
 
-import type { RwaAsset } from '@/entities/asset'
-
+import { assetQueryAtomFamily, type RwaAsset, type RwaRelatedAsset, type RwaTokenSummary } from '@/entities/asset'
 import {
   type AccountQueryParams,
   type AccountTab,
@@ -33,7 +33,12 @@ const CONNECT_HINTS: Record<Exclude<AssetAccountTab, 'overview'>, string> = {
   activity: 'see your activity',
 }
 
-export function AssetAccount({ asset }: { asset: RwaAsset }): ReactNode {
+interface AssetAccountProps {
+  asset: RwaAsset
+  relatedAssets: RwaRelatedAsset[]
+}
+
+export function AssetAccount({ asset, relatedAssets }: AssetAccountProps): ReactNode {
   const { address } = useConnection()
   const [activeTab, setActiveTab] = useState<AssetAccountTab>('overview')
   // Kept here rather than in the tab so switching tabs doesn't reopen the balance streams
@@ -53,6 +58,7 @@ export function AssetAccount({ asset }: { asset: RwaAsset }): ReactNode {
           <div className={styles.overview}>
             <AssetAbout asset={asset} />
             <AssetNews asset={asset} />
+            <RelatedAssets assets={relatedAssets} />
           </div>
         </>
       ) : !address ? (
@@ -60,22 +66,42 @@ export function AssetAccount({ asset }: { asset: RwaAsset }): ReactNode {
       ) : activeTab === 'positions' ? (
         <PositionsTab asset={asset} balances={balances} />
       ) : activeTab === 'orders' ? (
-        <AssetOpenOrders params={{ owner: address, scope: asset.ticker, tokens: asset.tokens }} />
+        <AssetOpenOrders asset={asset} params={{ owner: address, scope: asset.ticker, tokens: asset.tokens }} />
       ) : (
-        <AssetActivity params={{ owner: address, scope: asset.ticker, tokens: asset.tokens }} />
+        <AssetActivity asset={asset} params={{ owner: address, scope: asset.ticker, tokens: asset.tokens }} />
       )}
     </AccountTabs>
   )
 }
 
-function AssetActivity({ params }: { params: AccountQueryParams }): ReactNode {
+function AssetActivity({ asset, params }: { asset: RwaAsset; params: AccountQueryParams }): ReactNode {
   const { data, error } = useAtomValue(activityQueryAtomFamily(params))
 
-  return <ActivityTable activity={data} error={error} emptyText={`You have no ${params.scope} activity yet`} />
+  return (
+    <ActivityTable
+      activity={data}
+      error={error}
+      emptyText={`You have no ${params.scope} activity yet`}
+      getLogoUrl={useTokenLogoUrl(asset)}
+    />
+  )
 }
 
-function AssetOpenOrders({ params }: { params: AccountQueryParams }): ReactNode {
+function AssetOpenOrders({ asset, params }: { asset: RwaAsset; params: AccountQueryParams }): ReactNode {
   const { data, error } = useAtomValue(openOrdersQueryAtomFamily(params))
 
-  return <OpenOrdersTable orders={data} error={error} emptyText={`You have no open ${params.scope} orders`} />
+  return (
+    <OpenOrdersTable
+      orders={data}
+      error={error}
+      emptyText={`You have no open ${params.scope} orders`}
+      getLogoUrl={useTokenLogoUrl(asset)}
+    />
+  )
+}
+
+function useTokenLogoUrl(asset: RwaAsset): (token: RwaTokenSummary) => string | null {
+  const market = useAtomValue(assetQueryAtomFamily(asset.ticker)).data?.market
+
+  return (token) => (token.coingeckoId && market?.tokens[token.coingeckoId]?.logoUrl) || asset.logoUrl || null
 }

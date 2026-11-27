@@ -31,7 +31,6 @@ export const StyledMenu = styled.div`
 `
 
 export const MenuFlyout = styled(MenuList)`
-  min-width: 20.125rem;
   background: var(${UI.COLOR_PRIMARY});
   box-shadow:
     0px 0px 1px rgba(0, 0, 0, 0.01),
@@ -53,5 +52,5 @@ export const MenuFlyout = styled(MenuList)`
   margin: 0;
   top: 36px;
   right: 0;
-  width: 280px;
+  width: min(20.125rem, calc(100vw - 2rem));
 `

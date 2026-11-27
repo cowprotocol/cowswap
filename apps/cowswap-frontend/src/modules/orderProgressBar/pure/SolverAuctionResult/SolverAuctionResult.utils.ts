@@ -75,21 +75,37 @@ export function getAuctionLegendCounts(
   return { won, alsoBid, didntBid, total }
 }
 
+const BID_FILL_FLOOR_PERCENT = 10
+const BID_FILL_SPAN_PERCENT = 90
+
+// The spread runs from the worst bid (0%) to the winner (100%). The floor stays filled so a 0% bid still shows.
 export function getSolverBidFillPercent(
   buyAmount: CurrencyAmount<Currency> | null,
   winnerBuyAmount: CurrencyAmount<Currency> | null,
+  worstBuyAmount: CurrencyAmount<Currency> | null,
 ): number | null {
-  if (!buyAmount || !winnerBuyAmount || !winnerBuyAmount.greaterThan(0)) {
+  if (!buyAmount || !winnerBuyAmount || !worstBuyAmount || !winnerBuyAmount.greaterThan(0)) {
     return null
   }
 
-  const percent = Number(new Fraction(buyAmount.quotient, winnerBuyAmount.quotient).multiply(100).toSignificant(6))
+  if (!winnerBuyAmount.greaterThan(worstBuyAmount)) {
+    return BID_FILL_FLOOR_PERCENT + BID_FILL_SPAN_PERCENT
+  }
 
-  if (!Number.isFinite(percent)) {
+  const span = winnerBuyAmount.subtract(worstBuyAmount)
+  const aboveWorst = buyAmount.greaterThan(worstBuyAmount)
+    ? buyAmount.subtract(worstBuyAmount)
+    : CurrencyAmount.fromRawAmount(buyAmount.currency, 0)
+  const capped = aboveWorst.greaterThan(span) ? span : aboveWorst
+  const spreadPercent = Number(new Fraction(capped.quotient, span.quotient).multiply(100).toSignificant(6))
+
+  if (!Number.isFinite(spreadPercent)) {
     return null
   }
 
-  return Math.min(100, Math.max(0, percent))
+  const clampedSpread = Math.min(100, Math.max(0, spreadPercent))
+
+  return BID_FILL_FLOOR_PERCENT + (clampedSpread / 100) * BID_FILL_SPAN_PERCENT
 }
 
 export function getSolverBuyAmount(solver: SolverCompetition, buyToken: Currency): CurrencyAmount<Currency> | null {
@@ -100,6 +116,22 @@ export function getSolverBuyAmount(solver: SolverCompetition, buyToken: Currency
   }
 
   return CurrencyAmount.fromRawAmount(buyToken, rawBuy)
+}
+
+export function getWorstSolverBuyAmount(
+  solvers: readonly SolverCompetition[],
+  buyToken: Currency,
+): CurrencyAmount<Currency> | null {
+  let worst: CurrencyAmount<Currency> | null = null
+
+  for (const solver of solvers) {
+    const amount = getSolverBuyAmount(solver, buyToken)
+
+    if (!amount) continue
+    if (!worst || amount.lessThan(worst)) worst = amount
+  }
+
+  return worst
 }
 
 export function isAuctionDotOddRow(index: number): boolean {

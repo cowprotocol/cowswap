@@ -5,7 +5,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { render, screen } from '@testing-library/react'
 
-import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
+import { useIsTradeFormValidationPassedOrRefreshing } from 'modules/tradeFormValidation'
 import { useTradeQuote } from 'modules/tradeQuote'
 
 import { noImpactWarningAcceptedAtom } from './useIsNoImpactWarningAccepted'
@@ -19,8 +19,7 @@ jest.mock('@cowprotocol/wallet', () => ({
 }))
 
 jest.mock('modules/tradeFormValidation', () => ({
-  ACTIVE_VALIDATION_CASES: [],
-  useGetTradeFormValidation: jest.fn(),
+  useIsTradeFormValidationPassedOrRefreshing: jest.fn(),
 }))
 
 jest.mock('modules/tradeQuote', () => ({
@@ -36,9 +35,8 @@ jest.mock('../../hooks/useTradePriceImpact', () => ({
 }))
 
 const mockedUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
-const mockedUseGetTradeFormValidation = useGetTradeFormValidation as jest.MockedFunction<
-  typeof useGetTradeFormValidation
->
+const mockedUseIsTradeFormValidationPassedOrRefreshing =
+  useIsTradeFormValidationPassedOrRefreshing as jest.MockedFunction<typeof useIsTradeFormValidationPassedOrRefreshing>
 const mockedUseTradeQuote = useTradeQuote as jest.MockedFunction<typeof useTradeQuote>
 const mockedUseTradePriceImpact = useTradePriceImpact as jest.MockedFunction<typeof useTradePriceImpact>
 
@@ -59,7 +57,7 @@ describe('NoImpactWarning', () => {
     mockedUseWalletInfo.mockReturnValue({ account: '0x0000000000000000000000000000000000000001' } as ReturnType<
       typeof useWalletInfo
     >)
-    mockedUseGetTradeFormValidation.mockReturnValue(null)
+    mockedUseIsTradeFormValidationPassedOrRefreshing.mockReturnValue(true)
     mockedUseTradeQuote.mockReturnValue({ error: null } as ReturnType<typeof useTradeQuote>)
   })
 

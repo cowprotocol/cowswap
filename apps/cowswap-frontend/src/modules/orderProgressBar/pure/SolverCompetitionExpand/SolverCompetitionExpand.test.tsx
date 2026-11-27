@@ -59,7 +59,29 @@ describe('SolverCompetitionExpand', () => {
     expect(screen.getByTestId('solver-competition-expand').textContent).toContain('4 solvers competed')
     expect(screen.getByTestId('solver-competition-expand').textContent).not.toContain('12 solvers competed')
     expect(screen.getByTestId('solver-competition-expand').textContent).toContain('Tsolver won')
-    expect(screen.getByTestId('solver-competition-stack').querySelectorAll('img')).toHaveLength(3)
+    expect(screen.getByTestId('solver-competition-stack').children).toHaveLength(3)
+    expect(screen.getByTestId('solver-competition-stack').textContent).toBe('TQF')
+  })
+
+  it('renders the CMS image for each stacked solver', () => {
+    const cmsImage = 'https://cms.example.com/solver-logo.png'
+    renderExpand(
+      <SolverCompetitionExpand solvers={solvers.map((solver) => ({ ...solver, image: cmsImage }))} totalSolvers={12} />,
+    )
+
+    const images = screen.getByTestId('solver-competition-stack').querySelectorAll('img')
+
+    expect(images).toHaveLength(3)
+    images.forEach((image) => expect(image.getAttribute('src')).toBe(cmsImage))
+  })
+
+  it.each(['0xDd5A...C01b', '3jHwQj...E9be'])('renders a generic icon for the unidentified solver %s', (solver) => {
+    renderExpand(<SolverCompetitionExpand solvers={[{ solver }] as SolverCompetition[]} totalSolvers={12} />)
+
+    const stack = screen.getByTestId('solver-competition-stack')
+
+    expect(stack.querySelector('svg')).not.toBeNull()
+    expect(stack.textContent).toBe('')
   })
 
   it('names the solver on the summary row when only one provided a solution', () => {

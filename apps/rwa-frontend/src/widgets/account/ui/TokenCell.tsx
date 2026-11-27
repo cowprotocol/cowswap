@@ -5,14 +5,23 @@ import styles from './AccountTable.module.css'
 import type { RwaTokenSummary } from '@/entities/asset'
 
 import { getChainLabel } from '@/shared/lib/chain'
+import { TokenLogo } from '@/shared/ui/token-logo'
 
-export function TokenCell({ token }: { token: RwaTokenSummary }): ReactNode {
+interface TokenCellProps {
+  token: RwaTokenSummary
+  logoUrl: string | null
+}
+
+export function TokenCell({ token, logoUrl }: TokenCellProps): ReactNode {
   return (
-    <>
-      {token.symbol}
-      <span className={styles.secondary}>
-        {token.issuer} · {getChainLabel(token.chainId)}
-      </span>
-    </>
+    <div className={styles.identity}>
+      <TokenLogo symbol={token.symbol} logoUrl={logoUrl} chainId={token.chainId} />
+      <div className={styles.stack}>
+        <span className={styles.strong}>
+          {token.symbol} · {token.issuer}
+        </span>
+        <span className={styles.secondary}>{getChainLabel(token.chainId)}</span>
+      </div>
+    </div>
   )
 }

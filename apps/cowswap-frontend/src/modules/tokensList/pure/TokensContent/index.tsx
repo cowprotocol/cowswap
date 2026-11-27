@@ -1,5 +1,6 @@
 import { ReactNode, useMemo } from 'react'
 
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getTokenId } from '@cowprotocol/cow-sdk'
 import { Loader } from '@cowprotocol/ui'
 
@@ -20,7 +21,12 @@ export function TokensContent(): ReactNode {
   const { favoriteTokens, recentTokens, areTokensLoading, allTokens, onClearRecentTokens } = useTokenListContext()
 
   const shouldShowFavoritesInline = !areTokensLoading && !searchInput && favoriteTokens.length > 0
-  const shouldShowRecentsInline = !areTokensLoading && !searchInput && !hideRecentTokens && recentTokens.length > 0
+  const shouldShowRecentsInline =
+    !areTokensLoading &&
+    !searchInput &&
+    !hideRecentTokens &&
+    recentTokens.length > 0 &&
+    !areAllTokensRecent(allTokens, recentTokens)
 
   const pinnedTokenKeys = useMemo(() => {
     // Only hide "Recent" tokens from the main list.
@@ -70,4 +76,11 @@ export function TokensContent(): ReactNode {
       onClearRecentTokens={onClearRecentTokens}
     />
   )
+}
+
+/** Recent tokens are moved out of the main list, so a "Recent" section that holds every token leaves it empty */
+function areAllTokensRecent(allTokens: TokenWithLogo[], recentTokens: TokenWithLogo[]): boolean {
+  const recentTokenIds = new Set(recentTokens.map(getTokenId))
+
+  return allTokens.every((token) => recentTokenIds.has(getTokenId(token)))
 }

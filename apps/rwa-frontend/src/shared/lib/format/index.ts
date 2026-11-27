@@ -2,7 +2,7 @@ export {
   EMPTY_VALUE,
   formatCompactUsd,
   formatDate,
-  formatDateTime,
+  formatDuration,
   formatPercent,
   formatRange,
   formatTokenAmount,
@@ -10,3 +10,4 @@ export {
   shortenAddress,
   toTokenUnits,
 } from './format'
+export { formatLocalTime, getLocalTimeParts, type LocalTimeParts } from './localTime'

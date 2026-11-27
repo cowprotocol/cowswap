@@ -1,7 +1,7 @@
 import { getContrastText } from '@cowprotocol/ui-utils'
 
 import { darken, lighten, transparentize } from 'color2k'
-import { css } from 'styled-components/macro'
+import { css, DefaultTheme, FlattenInterpolation, ThemeProps } from 'styled-components/macro'
 
 import { CHAIN_ACCENT_CONFIG_ARRAY } from './chainAccentConfig'
 
@@ -16,8 +16,9 @@ const CHAIN_ACCENT_VAR_DECLARATIONS = CHAIN_ACCENT_CONFIG_ARRAY.map(
   `,
 )
 
-export const ThemeColorVars = css`
-  :root {
+// eslint-disable-next-line max-lines-per-function
+const themeColorVars = (rootSelector: string): FlattenInterpolation<ThemeProps<DefaultTheme>> => css`
+  ${rootSelector} {
     // V3
     ${UI.COLOR_PRIMARY}: ${({ theme }) => theme.primary};
     ${UI.COLOR_PRIMARY_LIGHTER}: ${({ theme }) =>
@@ -207,7 +208,8 @@ export const ThemeColorVars = css`
     ${UI.FONT_SIZE_MEDIUM}: ${FONT_SIZING.FONT_MEDIUM[0]}px;
     ${UI.FONT_SIZE_LARGE}: ${FONT_SIZING.FONT_LARGE[0]}px;
     ${UI.FONT_SIZE_LARGER}: ${FONT_SIZING.FONT_LARGER[0]}px;
-    ${UI.FONT_SIZE_LARGEST}: 24px;
+    ${UI.FONT_SIZE_LARGEST}: ${FONT_SIZING.FONT_LARGEST[0]}px;
+    ${UI.FONT_SIZE_TITLE}: ${FONT_SIZING.FONT_TITLE[0]}px;
 
     // Line Heights:
     ${
@@ -232,3 +234,11 @@ export const ThemeColorVars = css`
     ${({ theme }) => theme.colorScrollbar}
   }
 `
+
+export const ThemeColorVars = themeColorVars(':root')
+
+/**
+ * The same variables under a selector that outranks `:root`, for a theme laid over the root one.
+ * Where two global styles declare them, their order in the stylesheet is not stable.
+ */
+export const ThemeColorVarsOverride = themeColorVars(':root:root')

@@ -32,6 +32,13 @@
         "command": "playwright test --ui"
       }
     },
+    "e2e:rwa": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/cowswap-e2e-tests",
+        "command": "playwright test --config playwright.rwa.config.ts"
+      }
+    },
     "e2e:record-mocks": {
       "executor": "nx:run-commands",
       "options": {
@@ -55,5 +62,5 @@
     }
   },
   "tags": [],
-  "implicitDependencies": ["cowswap-frontend"]
+  "implicitDependencies": ["cowswap-frontend", "rwa-frontend"]
 }

@@ -4,7 +4,7 @@ import styles from './Portfolio.module.css'
 
 import type { BalancesProgress } from '../model/usePortfolio'
 
-import { formatDateTime } from '@/shared/lib/format'
+import { formatLocalTime } from '@/shared/lib/format'
 
 interface BalancesStatusProps {
   progress: BalancesProgress
@@ -33,9 +33,7 @@ export function BalancesStatus({ progress, onRefresh }: BalancesStatusProps): Re
           </span>
         </>
       ) : (
-        updatedAt !== null && (
-          <span className={styles.secondary}>Balances updated {formatDateTime(updatedAt / 1000)}</span>
-        )
+        updatedAt !== null && <span className={styles.secondary}>Balances updated {formatLocalTime(updatedAt)}</span>
       )}
       <button
         type="button"

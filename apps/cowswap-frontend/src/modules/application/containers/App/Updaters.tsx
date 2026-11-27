@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import {
-  RestrictedTokensListUpdater,
+  RwaTokensListsUpdater,
   TokensListsTagsUpdater,
   TokensListsUpdater,
   UnsupportedTokensUpdater,
@@ -22,6 +22,7 @@ import { TradingSdkUpdater } from 'tradingSdk/TradingSdkUpdater'
 
 import { BalancesDevtools, CommonPriorityBalancesAndAllowancesUpdater } from 'modules/balancesAndAllowances'
 import { PendingBridgeOrdersUpdater, BridgingEnabledUpdater } from 'modules/bridge'
+import { CaptchaWidget } from 'modules/captcha'
 import { BalancesCombinedUpdater } from 'modules/combinedBalances'
 import { InFlightOrderFinalizeUpdater } from 'modules/ethFlow'
 import { CowEventsUpdater, InjectedWidgetUpdater } from 'modules/injectedWidget'
@@ -33,8 +34,8 @@ import {
 } from 'modules/orderProgressBar'
 import { OrdersNotificationsUpdater } from 'modules/orders'
 import { TradeOrdersPermitUpdater } from 'modules/ordersTable'
-import { GeoDataUpdater, useShouldExcludeRwaTokenLists } from 'modules/rwa'
-import { BlockedListSourcesUpdater, RecentTokensStorageUpdater, useSourceChainId } from 'modules/tokensList'
+import { GeoDataUpdater } from 'modules/rwa'
+import { RecentTokensStorageUpdater, useSourceChainId } from 'modules/tokensList'
 import { useTradeTypeInfo } from 'modules/trade'
 import { eoaTwapOrdersEffectAtom, SafeTwapOrdersUpdater, twapAppziSurveyEffectAtom } from 'modules/twap'
 import { UsdPricesUpdater } from 'modules/usdAmount'
@@ -70,20 +71,20 @@ export function Updaters(): ReactNode {
   useAtomValue(eoaTwapOrdersEffectAtom)
   useAtomValue(twapAppziSurveyEffectAtom)
 
-  const { isYieldEnabled, isRwaGeoblockEnabled } = useFeatureFlags()
+  const { isYieldEnabled } = useFeatureFlags()
   const tradeTypeInfo = useTradeTypeInfo()
   const isYieldWidget = tradeTypeInfo?.tradeType === TradeType.YIELD
   const { chainId: sourceChainId } = useSourceChainId()
   const bridgeNetworkInfo = useBridgeSupportedNetworks()
   const { standaloneMode } = useInjectedWidgetParams()
   const balancesAccount = useBalancesAccountForChain(sourceChainId)
-  const excludeRwaTokenLists = useShouldExcludeRwaTokenLists()
 
   return (
     <>
       <CowSdkUpdater />
       <BlockNumberUpdater />
       <FeatureFlagsUpdater />
+      <CaptchaWidget />
       <BridgeProvidersUpdater />
       <ThemeConfigUpdater />
       <ThemeFromUrlUpdater />
@@ -124,11 +125,9 @@ export function Updaters(): ReactNode {
         chainId={sourceChainId}
         enableLpTokensByDefault={isYieldWidget}
         isYieldEnabled={isYieldEnabled}
-        excludeRwaLists={excludeRwaTokenLists}
         bridgeNetworkInfo={bridgeNetworkInfo?.data}
       />
-      <RestrictedTokensListUpdater isRwaGeoblockEnabled={!!isRwaGeoblockEnabled} />
-      <BlockedListSourcesUpdater />
+      <RwaTokensListsUpdater />
       <RecentTokensStorageUpdater />
       <GeoDataUpdater />
       <TokensListsTagsUpdater />

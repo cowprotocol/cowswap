@@ -1,6 +1,7 @@
 import { ReactNode, useMemo, useState } from 'react'
 
-import { Currency } from '@cowprotocol/currency'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
+import { Collapsible } from '@cowprotocol/ui'
 
 import { Plural, Trans } from '@lingui/react/macro'
 import { PiCaretDown, PiCaretUp } from 'react-icons/pi'
@@ -11,7 +12,12 @@ import { SolverCompetition } from 'common/types/soverCompetition'
 import { AuctionDotMap } from './AuctionDotMap/AuctionDotMap.pure'
 import { AuctionLegend } from './AuctionLegend/AuctionLegend.pure'
 import * as styledEl from './SolverAuctionResult.styled'
-import { buildAuctionDots, getAuctionLegendCounts, getSolverBuyAmount } from './SolverAuctionResult.utils'
+import {
+  buildAuctionDots,
+  getAuctionLegendCounts,
+  getSolverBuyAmount,
+  getWorstSolverBuyAmount,
+} from './SolverAuctionResult.utils'
 import { SolverAuctionRow } from './SolverAuctionRow/SolverAuctionRow.pure'
 
 const INITIAL_VISIBLE_SOLVERS = 3
@@ -38,16 +44,20 @@ export function SolverAuctionResult({
   const solversLength = solvers.length
   const winner = solvers[0]
   const winnerName = winner?.displayName || winner?.solver || ''
-  const visibleSolvers = useMemo(
-    () => (showAllSolvers ? solvers : solvers.slice(0, INITIAL_VISIBLE_SOLVERS)),
-    [showAllSolvers, solvers],
-  )
+  const leadingSolvers = useMemo(() => solvers.slice(0, INITIAL_VISIBLE_SOLVERS), [solvers])
+  const extraSolvers = useMemo(() => solvers.slice(INITIAL_VISIBLE_SOLVERS), [solvers])
   const legend = useMemo(() => getAuctionLegendCounts(solversLength, totalSolvers), [solversLength, totalSolvers])
   const dots = useMemo(() => buildAuctionDots(legend.total, solversLength), [legend.total, solversLength])
   const winnerBuyAmount = useMemo(
     () => (buyToken && winner ? getSolverBuyAmount(winner, buyToken) : null),
     [buyToken, winner],
   )
+  const rangeSolvers = showAllSolvers ? solvers : leadingSolvers
+  const worstBuyAmount = useMemo(() => {
+    if (!buyToken) return null
+
+    return getWorstSolverBuyAmount(rangeSolvers, buyToken)
+  }, [buyToken, rangeSolvers])
 
   if (solversLength === 0) {
     return null
@@ -82,30 +92,79 @@ export function SolverAuctionResult({
       <AuctionDotMap dots={dots} animationKey={dotsAnimationKey} />
       <AuctionLegend won={legend.won} alsoBid={legend.alsoBid} didntBid={legend.didntBid} total={legend.total} />
 
+      <SolverAuctionBids
+        buyToken={buyToken}
+        expanded={showAllSolvers}
+        extraSolvers={extraSolvers}
+        leadingSolvers={leadingSolvers}
+        onExpandedChange={setShowAllSolvers}
+        winnerBuyAmount={winnerBuyAmount}
+        worstBuyAmount={worstBuyAmount}
+      />
+    </styledEl.Wrapper>
+  )
+}
+
+function SolverAuctionBids({
+  buyToken,
+  expanded,
+  extraSolvers,
+  leadingSolvers,
+  onExpandedChange,
+  winnerBuyAmount,
+  worstBuyAmount,
+}: {
+  buyToken: Currency | undefined
+  expanded: boolean
+  extraSolvers: SolverCompetition[]
+  leadingSolvers: SolverCompetition[]
+  onExpandedChange: (expanded: boolean) => void
+  winnerBuyAmount: CurrencyAmount<Currency> | null
+  worstBuyAmount: CurrencyAmount<Currency> | null
+}): ReactNode {
+  return (
+    <styledEl.BidsRoot open={expanded} onOpenChange={onExpandedChange}>
       <styledEl.List>
-        {visibleSolvers.map((solver, index) => (
+        {leadingSolvers.map((solver, index) => (
           <SolverAuctionRow
             key={`${solver.solver}-${index}`}
             solver={solver}
             index={index}
             buyToken={buyToken}
             winnerBuyAmount={winnerBuyAmount}
+            worstBuyAmount={worstBuyAmount}
           />
         ))}
+        {extraSolvers.length > 0 ? (
+          <styledEl.ExtraSolvers>
+            <Collapsible.Panel keepMounted data-testid="solver-auction-extra-solvers" data-expanded={expanded}>
+              <styledEl.ExtraList>
+                {extraSolvers.map((solver, index) => (
+                  <SolverAuctionRow
+                    key={`${solver.solver}-${index}`}
+                    solver={solver}
+                    index={leadingSolvers.length + index}
+                    buyToken={buyToken}
+                    winnerBuyAmount={winnerBuyAmount}
+                    worstBuyAmount={worstBuyAmount}
+                  />
+                ))}
+              </styledEl.ExtraList>
+            </Collapsible.Panel>
+          </styledEl.ExtraSolvers>
+        ) : null}
       </styledEl.List>
 
       <styledEl.Footer>
-        {solversLength > INITIAL_VISIBLE_SOLVERS ? (
+        {extraSolvers.length > 0 ? (
           <styledEl.ViewMoreButton
-            type="button"
             data-click-event={toCowSwapGtmEvent({
               category: CowSwapAnalyticsCategory.PROGRESS_BAR,
               action: 'Click Toggle Solvers',
-              label: showAllSolvers ? 'Hide' : 'Show',
+              label: expanded ? 'Hide' : 'Show',
             })}
-            onClick={() => setShowAllSolvers((prev) => !prev)}
           >
-            {showAllSolvers ? (
+            {expanded ? (
               <>
                 <Trans>Show less</Trans> <PiCaretUp />
               </>
@@ -127,6 +186,6 @@ export function SolverAuctionResult({
           <Trans>How the auction works</Trans> ↗
         </styledEl.AuctionDocsLink>
       </styledEl.Footer>
-    </styledEl.Wrapper>
+    </styledEl.BidsRoot>
   )
 }

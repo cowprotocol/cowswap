@@ -6,19 +6,17 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 import styles from './Header.module.css'
+import { HeaderMoreMenu } from './HeaderMoreMenu'
 
-const LINKS = [
-  { href: '/', title: 'Explore' },
-  { href: '/portfolio', title: 'Portfolio' },
-]
+import { isNavLinkActive, NAV_LINKS } from '../config/navLinks'
 
 export function HeaderNav(): ReactNode {
   const pathname = usePathname()
 
   return (
     <nav className={styles.nav}>
-      {LINKS.map(({ href, title }) => {
-        const isActive = href === '/' ? pathname === '/' || pathname.startsWith('/asset/') : pathname.startsWith(href)
+      {NAV_LINKS.map(({ href, title }) => {
+        const isActive = isNavLinkActive(href, pathname)
 
         return (
           <Link
@@ -31,8 +29,7 @@ export function HeaderNav(): ReactNode {
           </Link>
         )
       })}
-      {/* CoW Swap is served at the root of the same origin, outside of the basePath that `Link` adds */}
-      <a href="/">Swap</a>
+      <HeaderMoreMenu />
     </nav>
   )
 }

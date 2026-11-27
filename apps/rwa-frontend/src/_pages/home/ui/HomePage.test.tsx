@@ -2,12 +2,21 @@ import { createStore, Provider } from 'jotai'
 
 import { QueryClient } from '@tanstack/query-core'
 
-import { fireEvent, render, type RenderResult, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, type RenderResult, screen, waitFor, within } from '@testing-library/react'
 import { queryClientAtom } from 'jotai-tanstack-query'
 
 import { HomePage } from './HomePage'
 
-import type { RwaAssetListItem, RwaAssetsPage, RwaMarketOverview, RwaMarketOverviewItem } from '@/entities/asset'
+import { formatRefTime } from '../lib/formatRefTime'
+import { DEFAULT_ASSETS_PAGE_QUERY } from '../model/assetsPageQuery'
+
+import {
+  assetsPageQueryOptions,
+  type RwaAssetListItem,
+  type RwaAssetsPage,
+  type RwaMarketOverview,
+  type RwaMarketOverviewItem,
+} from '@/entities/asset'
 
 const NVDA: RwaMarketOverviewItem = {
   ticker: 'NVDA',
@@ -21,6 +30,8 @@ const NVDA: RwaMarketOverviewItem = {
   ],
 }
 
+const UPDATED_AT = '2026-10-01T14:00:00.000Z'
+
 const OVERVIEW: RwaMarketOverview = {
   totals: {
     marketCap: 526_000_000,
@@ -33,8 +44,8 @@ const OVERVIEW: RwaMarketOverview = {
   mostTraded: [{ ...NVDA, series: null }],
   gainers: [NVDA],
   losers: [],
-  updatedAt: '2026-10-01T14:00:00.000Z',
-  tradingTime: { title: 'US market open', start: '13:30 UTC', end: '20:00 UTC' },
+  updatedAt: UPDATED_AT,
+  tradingTime: { title: 'US market open', start: '09:30', end: '16:00', timeZone: 'America/New_York' },
   degraded: false,
 }
 
@@ -81,8 +92,8 @@ const ASSETS_PAGE: RwaAssetsPage = {
   page: 1,
   pageSize: 10,
   total: 1,
+  typeTotal: 1,
   totalPages: 1,
-  typeCounts: { stock: 3, index: 2, commodity: 0 },
   issuers: ['Ondo', 'xStocks'],
   chainIds: [1],
   degraded: false,
@@ -93,8 +104,13 @@ const DEGRADED_ASSETS_PAGE: RwaAssetsPage = {
   items: [],
   total: 0,
   totalPages: 0,
-  typeCounts: { stock: 0, index: 0, commodity: 0 },
   degraded: true,
+}
+
+interface RenderHomePageOptions {
+  /** The default table page the server renders */
+  serverAssetsPage?: RwaAssetsPage
+  queryClient?: QueryClient
 }
 
 function mockApi(overview: RwaMarketOverview | null, assetsPage: RwaAssetsPage | null = null): void {
@@ -109,9 +125,23 @@ function mockApi(overview: RwaMarketOverview | null, assetsPage: RwaAssetsPage |
   }) as unknown as typeof fetch
 }
 
-function renderHomePage(): RenderResult {
+function mockPendingAssetsApi(overview: RwaMarketOverview): void {
+  global.fetch = jest.fn((url: string) =>
+    url.includes('/assets?')
+      ? new Promise(() => undefined)
+      : Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(overview) }),
+  ) as unknown as typeof fetch
+}
+
+function renderHomePage({
+  serverAssetsPage,
+  queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } }),
+}: RenderHomePageOptions = {}): RenderResult {
   const store = createStore()
-  store.set(queryClientAtom, new QueryClient({ defaultOptions: { queries: { retry: false } } }))
+
+  if (serverAssetsPage)
+    queryClient.setQueryData(assetsPageQueryOptions(DEFAULT_ASSETS_PAGE_QUERY).queryKey, serverAssetsPage)
+  store.set(queryClientAtom, queryClient)
 
   return render(
     <Provider store={store}>
@@ -122,26 +152,165 @@ function renderHomePage(): RenderResult {
 
 describe('HomePage', () => {
   afterEach(() => {
+    jest.useRealTimers()
     localStorage.clear()
   })
 
-  it('renders the heading and the table filter', () => {
+  it('renders the heading and the table search', () => {
     mockApi(OVERVIEW)
     renderHomePage()
 
     expect(screen.getByRole('heading', { level: 1, name: 'Explore tokenized real-world assets' })).toBeTruthy()
-    expect(screen.getByRole('searchbox', { name: 'Filter assets' })).toBeTruthy()
+    expect(screen.getByRole('searchbox', { name: 'Search assets' })).toBeTruthy()
   })
 
-  it('renders the type tabs with counts and the asset rows', async () => {
+  it('renders the type toggles with All selected and the asset rows', async () => {
     mockApi(OVERVIEW, ASSETS_PAGE)
     renderHomePage()
 
-    expect(await screen.findByRole('tab', { name: 'All assets 5' })).toBeTruthy()
-    expect(screen.getByRole('tab', { name: 'Stocks 3' })).toBeTruthy()
-    expect(screen.getByRole('tab', { name: 'ETFs 2' })).toBeTruthy()
+    expect(await screen.findByText('$180M')).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'All', pressed: true })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Stocks', pressed: false })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'ETFs', pressed: false })).toBeTruthy()
     expect(screen.getByText('2 issuers')).toBeTruthy()
+    expect(screen.getByText('on Ethereum')).toBeTruthy()
+  })
+
+  it('selects one type at a time and unselects All', async () => {
+    mockApi(OVERVIEW, ASSETS_PAGE)
+    renderHomePage()
+
+    fireEvent.click(await screen.findByRole('button', { name: 'ETFs' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Commodities' }))
+
+    expect(await screen.findByRole('button', { name: 'Commodities', pressed: true })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'ETFs', pressed: false })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'All', pressed: false })).toBeTruthy()
+    await waitFor(() => expect(String((global.fetch as jest.Mock).mock.calls.at(-1)?.[0])).toContain('type=commodity'))
+  })
+
+  it('keeps the type filter through the market refresh', async () => {
+    const { refetchInterval } = assetsPageQueryOptions(DEFAULT_ASSETS_PAGE_QUERY)
+    if (typeof refetchInterval !== 'number') throw new Error('The assets page has no market refresh interval')
+
+    jest.useFakeTimers()
+    mockApi(OVERVIEW, ASSETS_PAGE)
+    const fetchMock = global.fetch as jest.Mock
+    renderHomePage()
+
+    fireEvent.click(await screen.findByRole('button', { name: 'ETFs' }))
+    await waitFor(() => expect(String(fetchMock.mock.calls.at(-1)?.[0])).toContain('type=index'))
+    const callsBeforeRefresh = fetchMock.mock.calls.length
+
+    await act(() => jest.advanceTimersByTimeAsync(refetchInterval))
+
+    const refreshedAssetsUrls = fetchMock.mock.calls
+      .slice(callsBeforeRefresh)
+      .map(([url]) => String(url))
+      .filter((url) => url.includes('/assets?'))
+
+    expect(refreshedAssetsUrls).not.toHaveLength(0)
+    expect(refreshedAssetsUrls.every((url) => url.includes('type=index'))).toBe(true)
+    expect(screen.getByRole('button', { name: 'ETFs', pressed: true })).toBeTruthy()
+  })
+
+  it('toggles a type off when it is selected again', async () => {
+    mockApi(OVERVIEW, ASSETS_PAGE)
+    renderHomePage()
+
+    fireEvent.click(await screen.findByRole('button', { name: 'ETFs' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'ETFs', pressed: true }))
+
+    await screen.findByRole('button', { name: 'ETFs', pressed: false })
+    expect(screen.getByRole('button', { name: 'All', pressed: true })).toBeTruthy()
+    expect(String((global.fetch as jest.Mock).mock.calls.at(-1)?.[0])).not.toContain('type=')
+  })
+
+  it('returns to all types with All', async () => {
+    mockApi(OVERVIEW, ASSETS_PAGE)
+    renderHomePage()
+
+    fireEvent.click(await screen.findByRole('button', { name: 'ETFs' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'All', pressed: false }))
+
+    expect(await screen.findByRole('button', { name: 'All', pressed: true })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'ETFs', pressed: false })).toBeTruthy()
+    expect(String((global.fetch as jest.Mock).mock.calls.at(-1)?.[0])).not.toContain('type=')
+
+    fireEvent.click(screen.getByRole('button', { name: 'All', pressed: true }))
+
+    expect(screen.getByRole('button', { name: 'All', pressed: true })).toBeTruthy()
+  })
+
+  it('counts the set filters without the type and clears them with the type', async () => {
+    mockApi(OVERVIEW, ASSETS_PAGE)
+    renderHomePage()
+
+    await screen.findByText('$180M')
+    fireEvent.click(screen.getByRole('button', { name: 'ETFs' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Filters' }))
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Ondo' }))
+    fireEvent.click(screen.getByRole('checkbox', { name: 'xStocks' }))
+    fireEvent.click(
+      within(screen.getByRole('radiogroup', { name: 'Tokenized market cap' })).getByRole('radio', { name: '$10M+' }),
+    )
+
+    expect(await screen.findByRole('button', { name: 'Filters 2 active' })).toBeTruthy()
+    expect(screen.getByText('2 of 2')).toBeTruthy()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Clear' }))
+
+    expect(await screen.findByRole('button', { name: 'Filters' })).toBeTruthy()
+    expect(screen.queryByRole('button', { name: 'Clear' })).toBeNull()
+    expect(screen.getByRole('button', { name: 'All', pressed: true })).toBeTruthy()
+    expect(
+      within(screen.getByRole('radiogroup', { name: 'Tokenized market cap' })).getByRole('radio', { name: 'Any' }),
+    ).toHaveProperty('checked', true)
+  })
+
+  it('restores the filters stored by a previous visit', async () => {
+    localStorage.setItem(
+      'rwaAssetsFilters:v1',
+      JSON.stringify({ type: 'index', issuers: ['Ondo'], chainIds: [1], minMarketCap: null, minVolume24h: 1000000 }),
+    )
+    mockApi(OVERVIEW, ASSETS_PAGE)
+    renderHomePage()
+
+    expect(await screen.findByRole('button', { name: 'Filters 3 active' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'ETFs', pressed: true })).toBeTruthy()
+    await waitFor(() =>
+      expect(String((global.fetch as jest.Mock).mock.calls.at(-1)?.[0])).toContain(
+        'type=index&issuer=Ondo&chainId=1&minVolume24h=1000000',
+      ),
+    )
+  })
+
+  it('hides the server-rendered rows while the stored filters load', async () => {
+    localStorage.setItem('rwaAssetsFilters:v1', JSON.stringify({ type: 'index' }))
+    mockPendingAssetsApi(OVERVIEW)
+    renderHomePage({ serverAssetsPage: ASSETS_PAGE })
+
+    expect(await screen.findByRole('button', { name: 'ETFs', pressed: true })).toBeTruthy()
+    expect(screen.queryByText('$180M')).toBeNull()
+  })
+
+  it('keeps the server-rendered rows while a filter picked on the page loads', async () => {
+    mockPendingAssetsApi(OVERVIEW)
+    renderHomePage({ serverAssetsPage: ASSETS_PAGE })
+
+    expect(await screen.findByText('$180M')).toBeTruthy()
+
+    fireEvent.click(screen.getByRole('button', { name: 'ETFs' }))
+
+    expect(await screen.findByRole('button', { name: 'ETFs', pressed: true })).toBeTruthy()
     expect(screen.getByText('$180M')).toBeTruthy()
+  })
+
+  it('shows the scope of a filtered table in the footer', async () => {
+    mockApi(OVERVIEW, { ...ASSETS_PAGE, typeTotal: 5 })
+    renderHomePage()
+
+    expect(await screen.findByText('Showing 1 of 5 assets')).toBeTruthy()
   })
 
   it('shows a dash in the 24h chart column of an asset without a series', async () => {
@@ -158,9 +327,13 @@ describe('HomePage', () => {
     mockApi(OVERVIEW, ASSETS_PAGE)
     renderHomePage()
 
-    fireEvent.click(await screen.findByRole('tab', { name: 'ETFs 2' }))
-    fireEvent.click(screen.getByRole('combobox', { name: 'Issuer' }))
-    fireEvent.click(screen.getByRole('option', { name: 'Ondo' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'ETFs' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Filters' }))
+    fireEvent.click(screen.getByRole('checkbox', { name: 'xStocks' }))
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Ondo' }))
+    fireEvent.click(
+      within(screen.getByRole('radiogroup', { name: '24h total volume' })).getByRole('radio', { name: '$1M+' }),
+    )
     fireEvent.click(screen.getByRole('button', { name: 'Asset' }))
 
     await waitFor(() =>
@@ -169,7 +342,8 @@ describe('HomePage', () => {
     const lastUrl = String((global.fetch as jest.Mock).mock.calls.at(-1)?.[0])
 
     expect(lastUrl).toContain('type=index')
-    expect(lastUrl).toContain('issuer=Ondo')
+    expect(lastUrl).toContain('issuer=Ondo%2CxStocks')
+    expect(lastUrl).toContain('minVolume24h=1000000')
     expect(lastUrl).toContain('sort=title')
     expect(lastUrl).toContain('order=asc')
   })
@@ -179,7 +353,7 @@ describe('HomePage', () => {
     mockApi(OVERVIEW, ASSETS_PAGE)
     renderHomePage()
 
-    const header = await screen.findByRole('columnheader', { name: '24h volume' })
+    const header = await screen.findByRole('columnheader', { name: /^24h total volume/ })
 
     expect(header.getAttribute('aria-sort')).toBe('descending')
     expect(screen.getByRole('columnheader', { name: 'Tokenized market cap' })).toBeTruthy()
@@ -199,7 +373,7 @@ describe('HomePage', () => {
     mockApi(OVERVIEW, ASSETS_PAGE)
     renderHomePage()
 
-    await screen.findByRole('tab', { name: 'All assets 5' })
+    await screen.findByText('$180M')
 
     expect(
       (global.fetch as jest.Mock).mock.calls
@@ -208,16 +382,16 @@ describe('HomePage', () => {
     ).toBe(true)
   })
 
-  it('labels the totals and most traded with the tokenized market figures', async () => {
+  it('labels the totals and most traded with the tokenized market figures, at a local reference time', async () => {
     mockApi(OVERVIEW)
     renderHomePage()
 
     const totals = await screen.findByRole('region', { name: 'Market overview' })
 
-    expect(totals.textContent).toContain('Market cap')
-    expect(totals.textContent).toContain('24h volume')
-    expect(totals.textContent).not.toContain('Onchain')
-    expect(screen.getByText('24h volume · All networks')).toBeTruthy()
+    expect(totals.textContent).toContain('Tokenized market cap')
+    expect(totals.textContent).toContain('24h total volume')
+    expect(await screen.findByText(`Ref. ${formatRefTime(UPDATED_AT)}`)).toBeTruthy()
+    expect(screen.getByText('24h total volume · DEX volume chart · All networks')).toBeTruthy()
   })
 
   it('stores starred assets and requests them in the watchlist mode', async () => {

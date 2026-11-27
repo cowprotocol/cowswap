@@ -15,8 +15,12 @@ const ARBITRUM = 42161
 const GNOSIS_CHAIN_ID = 100
 
 describe('resolveTradeChainId', () => {
-  it('falls back to the first token network', () => {
-    expect(resolveTradeChainId(TOKENS, null, null, undefined)).toBe(1)
+  it('falls back to Ethereum', () => {
+    expect(resolveTradeChainId([AAPLX_ARBITRUM, ...MAINNET_TOKENS], null, null, undefined)).toBe(1)
+  })
+
+  it('falls back to the first token network without Ethereum tokens', () => {
+    expect(resolveTradeChainId([AAPLX_ARBITRUM], null, null, undefined)).toBe(ARBITRUM)
   })
 
   it('uses the network picked in the selector when disconnected', () => {

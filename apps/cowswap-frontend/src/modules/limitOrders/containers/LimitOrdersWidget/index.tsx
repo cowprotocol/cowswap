@@ -25,7 +25,7 @@ import {
   useTradePriceImpact,
 } from 'modules/trade'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
-import { useIsTradeFormValidationPassed, useShouldHideTradeRateDetails } from 'modules/tradeFormValidation'
+import { useIsTradeFormValidationPassedOrRefreshing, useShouldHideTradeRateDetails } from 'modules/tradeFormValidation'
 import { useSetTradeQuoteParams, useTradeQuote } from 'modules/tradeQuote'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
@@ -168,7 +168,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   const handleUnlock = useCallback(() => updateLimitOrdersState({ isUnlocked: true }), [updateLimitOrdersState])
   const isWrapUnwrap = useIsWrapOrUnwrap()
   const hideTradeRateDetails = useShouldHideTradeRateDetails()
-  const isPrimaryValidationPassed = useIsTradeFormValidationPassed()
+  const isValidationPassedOrRefreshing = useIsTradeFormValidationPassedOrRefreshing()
 
   const tradeConfirmActions = useTradeConfirmActions()
   const {
@@ -244,7 +244,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
                 <TradeRateDetails rateInfoParams={rateInfoParams} alwaysExpanded={true} loading={isRateLoading} />
               </>
             )}
-            {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
+            {isValidationPassedOrRefreshing && <TradeApproveWithAffectedOrderList />}
           </TradeRows>
 
           <LimitOrdersWarnings feeAmount={feeAmount} />

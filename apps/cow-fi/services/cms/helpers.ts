@@ -46,7 +46,7 @@ export function getPopulateConfig(endpoint: '/categories' | '/articles' | '/page
         image: { fields: ['url'] },
       }
     case '/pages':
-      return { contentSections: '*' }
+      return { contentSections: { populate: '*' } }
     case '/articles':
       return {
         cover: { fields: ['url', 'width', 'height', 'alternativeText'] },

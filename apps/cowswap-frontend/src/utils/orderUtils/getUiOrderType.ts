@@ -43,9 +43,9 @@ export function getUiOrderType({
     return UiOrderType.TWAP
   }
 
-  // 2. A Solana order placed while `isSolanaAppDataEnabled` was off signs one of two agreed constants
-  // as its opaque appData and registers no doc, so that raw value is the only limit/market signal.
-  // Checked before the doc below so such orders stay classified after the flag is turned on.
+  // 2. A Solana order from before the order book served appData signs one of two agreed constants as
+  // its opaque appData and registers no doc, so that raw value is the only limit/market signal.
+  // Checked before the doc below so such orders stay classified.
   if (isSolanaLimitOrderAppData(inputToken, appData)) {
     return UiOrderType.LIMIT
   }

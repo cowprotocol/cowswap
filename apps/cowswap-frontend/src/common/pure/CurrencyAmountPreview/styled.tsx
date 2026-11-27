@@ -43,6 +43,14 @@ export const Amounts = styled.div`
   gap: 6px;
 `
 
+export const AmountLoading = styled.span`
+  display: inline-block;
+  width: 4.5em;
+  height: 1.15em;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(${UI.COLOR_TEXT}) 14%, transparent);
+`
+
 export const Amount = styled(TokenAmount)`
   ${font('FONT_MEDIUM', 'semibold')}
   transition: ${slowTransition(['font-size', 'line-height'])};

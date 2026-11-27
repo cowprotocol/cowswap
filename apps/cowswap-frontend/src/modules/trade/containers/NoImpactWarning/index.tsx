@@ -7,7 +7,7 @@ import { Trans } from '@lingui/react/macro'
 
 import { TradeWarning } from 'modules/trade/pure/TradeWarning'
 import { TradeWarningType } from 'modules/trade/pure/TradeWarning/constants'
-import { ACTIVE_VALIDATION_CASES, useGetTradeFormValidation } from 'modules/tradeFormValidation'
+import { useIsTradeFormValidationPassedOrRefreshing } from 'modules/tradeFormValidation'
 import { useTradeQuote } from 'modules/tradeQuote'
 
 import { noImpactWarningAcceptedAtom } from './useIsNoImpactWarningAccepted'
@@ -40,13 +40,10 @@ export function NoImpactWarning(props: NoImpactWarningProps): ReactNode {
 
   const { account } = useWalletInfo()
   const priceImpactParams = useTradePriceImpact()
-  const primaryFormValidation = useGetTradeFormValidation()
+  const isValidationPassedOrRefreshing = useIsTradeFormValidationPassedOrRefreshing()
   const tradeQuote = useTradeQuote()
 
-  const isTradeActive =
-    !!account &&
-    !tradeQuote.error &&
-    (primaryFormValidation === null || ACTIVE_VALIDATION_CASES.includes(primaryFormValidation))
+  const isTradeActive = !!account && !tradeQuote.error && isValidationPassedOrRefreshing
   const isPriceImpactUnknown = !priceImpactParams.loading && !priceImpactParams.priceImpact
 
   // Loading blocks the trade like an unknown impact does, but stays hidden so a requote doesn't blink the warning

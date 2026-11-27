@@ -19,7 +19,8 @@ const SORT_ORDERS: readonly RwaSortOrder[] = ['asc', 'desc']
  * Query: `page` (1-based, default 1), `pageSize` (1..100, default 20),
  * `sort` (priority | marketCap | volume24h | change24h | price | ticker | title, default priority),
  * `order` (asc | desc, default desc; ticker and title default to asc),
- * `type` (stock | index), `issuer`, `chainId`, `q` (matches ticker, title or token symbol),
+ * `type` (stock | index | commodity), `issuer` and `chainId` (comma-separated, any of them matches),
+ * `minMarketCap` and `minVolume24h` (USD), `q` (matches ticker, title or token symbol),
  * `tickers` (comma-separated, up to 100; empty matches nothing)
  */
 export async function getAssetsHandler(request: NextRequest): Promise<Response> {
@@ -40,21 +41,41 @@ export async function getAssetsHandler(request: NextRequest): Promise<Response> 
   return jsonResponse(await listAssets({ page, pageSize, sort, order, ...filter }), 60)
 }
 
+/** `null` when an item is not a chain id */
+function parseChainIds(value: string | null): number[] | undefined | null {
+  const chainIds = parseList(value)?.map(Number)
+
+  return chainIds?.some((chainId) => !Number.isSafeInteger(chainId) || chainId < 1) ? null : chainIds
+}
+
 /** The error message when a param is invalid */
 function parseFilter(params: URLSearchParams): RwaAssetsFilter | string {
   const type = parseEnumParam(params.get('type'), RWA_ASSET_TYPES, undefined)
-  const chainId = parseIntegerParam(params.get('chainId'), undefined, 1, Number.MAX_SAFE_INTEGER)
+  const chainIds = parseChainIds(params.get('chainId'))
+  const minimums = parseMarketMinimums(params)
   const query = params.get('q')?.trim() || undefined
-  const tickers = parseTickers(params.get('tickers'))
+  const tickers = parseList(params.get('tickers'))
 
   if (type === null) return `Invalid "type", expected one of: ${RWA_ASSET_TYPES.join(', ')}`
-  if (chainId === null) return 'Invalid "chainId"'
+  if (chainIds === null) return 'Invalid "chainId"'
+  if (typeof minimums === 'string') return minimums
   if (query && query.length > MAX_QUERY_LENGTH) return `"q" is longer than ${MAX_QUERY_LENGTH} chars`
   if (tickers && tickers.length > MAX_TICKERS) return `"tickers" has more than ${MAX_TICKERS} items`
 
-  return { type, chainId, issuer: params.get('issuer') || undefined, query, tickers }
+  return { type, issuers: parseList(params.get('issuer')), chainIds, ...minimums, query, tickers }
 }
 
-function parseTickers(value: string | null): string[] | undefined {
+function parseList(value: string | null): string[] | undefined {
   return value === null ? undefined : value.split(',').filter(Boolean)
+}
+
+/** The error message when a param is invalid */
+function parseMarketMinimums(params: URLSearchParams): Pick<RwaAssetsFilter, 'minMarketCap' | 'minVolume24h'> | string {
+  const minMarketCap = parseIntegerParam(params.get('minMarketCap'), undefined, 0, Number.MAX_SAFE_INTEGER)
+  const minVolume24h = parseIntegerParam(params.get('minVolume24h'), undefined, 0, Number.MAX_SAFE_INTEGER)
+
+  if (minMarketCap === null) return 'Invalid "minMarketCap"'
+  if (minVolume24h === null) return 'Invalid "minVolume24h"'
+
+  return { minMarketCap, minVolume24h }
 }

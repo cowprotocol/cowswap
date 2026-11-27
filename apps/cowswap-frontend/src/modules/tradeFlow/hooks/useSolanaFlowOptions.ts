@@ -2,6 +2,8 @@ import { useMemo } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
+import { useWalletAcceptsForeignFeePayer } from 'modules/trade'
+
 import type { SolanaFlowOptions } from '../services/solanaFlow'
 
 interface Params {
@@ -14,14 +16,13 @@ interface Params {
 }
 
 export function useSolanaFlowOptions({ canSponsor = false }: Params = {}): SolanaFlowOptions {
-  const { isSolanaSponsoredOrdersEnabled, isAtaCreationDisabled, isSolanaAppDataEnabled } = useFeatureFlags()
+  const { isSolanaSponsoredOrdersEnabled } = useFeatureFlags()
+  const walletAcceptsForeignFeePayer = useWalletAcceptsForeignFeePayer()
 
   return useMemo(
     () => ({
-      isSponsored: canSponsor && Boolean(isSolanaSponsoredOrdersEnabled),
-      isAtaCreationDisabled: Boolean(isAtaCreationDisabled),
-      isSolanaAppDataEnabled: Boolean(isSolanaAppDataEnabled),
+      isSponsored: canSponsor && walletAcceptsForeignFeePayer && Boolean(isSolanaSponsoredOrdersEnabled),
     }),
-    [canSponsor, isSolanaSponsoredOrdersEnabled, isAtaCreationDisabled, isSolanaAppDataEnabled],
+    [canSponsor, walletAcceptsForeignFeePayer, isSolanaSponsoredOrdersEnabled],
   )
 }

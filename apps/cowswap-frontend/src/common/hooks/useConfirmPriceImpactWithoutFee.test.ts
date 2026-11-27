@@ -2,13 +2,18 @@ import { Percent } from '@cowprotocol/currency'
 
 import { act, renderHook } from '@testing-library/react'
 
+import { logPriceImpactConfirmed } from 'common/services/logPriceImpactConfirmed'
+
 import { useConfirmationRequest } from './useConfirmationRequest'
 import { useConfirmPriceImpactWithoutFee } from './useConfirmPriceImpactWithoutFee'
 
-// Mock useConfirmationRequest
 jest.mock('./useConfirmationRequest')
+jest.mock('common/services/logPriceImpactConfirmed', () => ({
+  logPriceImpactConfirmed: jest.fn(),
+}))
 
 const mockedUseConfirmationRequest = useConfirmationRequest as jest.MockedFunction<typeof useConfirmationRequest>
+const mockedLogPriceImpactConfirmed = logPriceImpactConfirmed as jest.MockedFunction<typeof logPriceImpactConfirmed>
 
 describe('useConfirmPriceImpactWithoutFee', () => {
   let mockTriggerConfirmation: jest.Mock
@@ -31,6 +36,7 @@ describe('useConfirmPriceImpactWithoutFee', () => {
       expect(confirmed).toBe(true)
       expect(result.current.isConfirmed).toBe(true)
       expect(mockTriggerConfirmation).not.toHaveBeenCalled()
+      expect(mockedLogPriceImpactConfirmed).not.toHaveBeenCalled()
     })
 
     it('should return true and set isConfirmed to true when priceImpact is below high threshold', async () => {
@@ -45,6 +51,7 @@ describe('useConfirmPriceImpactWithoutFee', () => {
       expect(confirmed).toBe(true)
       expect(result.current.isConfirmed).toBe(true)
       expect(mockTriggerConfirmation).not.toHaveBeenCalled()
+      expect(mockedLogPriceImpactConfirmed).not.toHaveBeenCalled()
     })
 
     it('should trigger confirmation with skipInput=false when priceImpact is well above critical threshold', async () => {
@@ -67,6 +74,28 @@ describe('useConfirmPriceImpactWithoutFee', () => {
           description: expect.stringContaining('12'),
         }),
       )
+      expect(mockedLogPriceImpactConfirmed).toHaveBeenCalledWith({
+        priceImpact: '12.00',
+        isBridge: false,
+        isCritical: true,
+      })
+    })
+
+    it('should log soft confirmation when priceImpact is high but below critical', async () => {
+      const highPriceImpact = new Percent(7, 100)
+      mockTriggerConfirmation.mockResolvedValue(true)
+
+      const { result } = renderHook(() => useConfirmPriceImpactWithoutFee(false))
+
+      await act(async () => {
+        await result.current.confirmPriceImpactWithoutFee(highPriceImpact)
+      })
+
+      expect(mockedLogPriceImpactConfirmed).toHaveBeenCalledWith({
+        priceImpact: '7.00',
+        isBridge: false,
+        isCritical: false,
+      })
     })
 
     it('should return false and set isConfirmed to false when user rejects confirmation', async () => {
@@ -82,6 +111,7 @@ describe('useConfirmPriceImpactWithoutFee', () => {
 
       expect(confirmed).toBe(false)
       expect(result.current.isConfirmed).toBe(false)
+      expect(mockedLogPriceImpactConfirmed).not.toHaveBeenCalled()
     })
 
     it('should return false and set isConfirmed to false when confirmation throws error', async () => {
@@ -97,6 +127,7 @@ describe('useConfirmPriceImpactWithoutFee', () => {
 
       expect(confirmed).toBe(false)
       expect(result.current.isConfirmed).toBe(false)
+      expect(mockedLogPriceImpactConfirmed).not.toHaveBeenCalled()
     })
 
     it('should reset isConfirmed to false before showing confirmation modal', async () => {
@@ -159,6 +190,11 @@ describe('useConfirmPriceImpactWithoutFee', () => {
           skipInput: false,
         }),
       )
+      expect(mockedLogPriceImpactConfirmed).toHaveBeenCalledWith({
+        priceImpact: '17.00',
+        isBridge: true,
+        isCritical: true,
+      })
     })
   })
 })

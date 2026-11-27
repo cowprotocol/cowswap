@@ -434,7 +434,6 @@ test.describe('Cross-chain swaps', () => {
     swapPage,
     wallet,
     mocks,
-    context,
     rpcProxy,
   }) => {
     seedTrader(mocks, wallet, MAINNET, {
@@ -443,12 +442,6 @@ test.describe('Cross-chain swaps', () => {
     })
     await configureProviders(mocks, rpcProxy, 'near-intents')
     await mocks.launchDarkly.setFlag('isSolBridgeEnabled', true)
-    // Distinct from the LaunchDarkly-style flag above: `IS_SOLANA_ENABLED` is a plain localStorage
-    // switch (`libs/common-const/src/featureFlags.ts`) gating whether Solana even has a
-    // `CHAIN_INFO` entry to begin with — without it, `useSupportedTargetChains` has the flag on but
-    // nothing to look up, and Solana still can't appear as a destination chain.
-    await context.addInitScript(() => localStorage.setItem('IS_SOLANA_ENABLED', '1'))
-
     await wallet.openApp({ chainId: MAINNET, sell: USDC_MAINNET })
     await swapPage.unlockIfNeeded()
     await swapPage.enterSellAmount('100')

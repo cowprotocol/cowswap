@@ -86,7 +86,18 @@ describe('cmsValidation', () => {
       expect(isAllowedRevalidatePath('/resources/constructor/example')).toBe(true)
     })
 
-    it('rejects paths outside the learn and resources allowlists', () => {
+    it('accepts only the CMS-backed careers and affiliate pages', () => {
+      expect(isAllowedRevalidatePath('/careers/refer-to-earn')).toBe(true)
+      expect(isAllowedRevalidatePath('/careers')).toBe(true)
+      expect(isAllowedRevalidatePath('/affiliate-program')).toBe(true)
+      expect(isAllowedRevalidatePath('/affiliate-program/extra')).toBe(false)
+      expect(isAllowedRevalidatePath('/careers/another-page')).toBe(false)
+      expect(isAllowedRevalidatePath('/careers/refer-to-earn/extra')).toBe(false)
+      expect(isAllowedRevalidatePath('/careers/refer-to-earn?preview=true')).toBe(false)
+      expect(isAllowedRevalidatePath('/careers/../admin')).toBe(false)
+    })
+
+    it('rejects paths outside the CMS allowlists', () => {
       expect(isAllowedRevalidatePath('/')).toBe(false)
       expect(isAllowedRevalidatePath('/api/revalidate')).toBe(false)
       expect(isAllowedRevalidatePath('/admin')).toBe(false)

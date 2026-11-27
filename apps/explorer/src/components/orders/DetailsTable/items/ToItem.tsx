@@ -18,9 +18,10 @@ interface ToItemProps {
   isBridgingOrder: boolean
   bridgeProviderType
   onCopy(label: string): void
-  /** Solana only, where the receiver is a token account whose owner these two can recover. */
+  /** Solana only, where the receiver is a token account whose owner these three can recover. */
   orderOwner?: string
   buyTokenAddress?: string
+  receiverWallet?: string
 }
 
 interface ToTooltipParams {
@@ -39,12 +40,14 @@ export function ToItem({
   chainId,
   orderOwner,
   buyTokenAddress,
+  receiverWallet,
 }: ToItemProps): ReactNode {
   const isSolana = isSolanaChain(chainId)
   const { owner: tokenAccountOwner, isLoading } = useSolanaTokenAccountOwner({
     tokenAccount: isSolana ? receiver : undefined,
     orderOwner,
     buyMint: buyTokenAddress,
+    receiverWallet,
   })
 
   const recipient = tokenAccountOwner ?? receiver

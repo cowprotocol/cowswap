@@ -68,6 +68,13 @@ export const StyledDialogOverlay = styled(AnimatedDialogOverlay)`
 
     background-color: ${({ theme }) => (theme.darkMode ? 'rgba(0,0,0,.425)' : 'rgba(0,0,0,0.3)')};
     backdrop-filter: blur(5px);
+
+    /* Hosts with a fixed or capped height don't grow the widget iframe to fit the modal (see IframeResizer) */
+    ${({ theme }) =>
+      theme.isWidget &&
+      css`
+        overflow-y: auto;
+      `}
   }
 `
 
@@ -122,5 +129,13 @@ export const StyledDialogContent = styled(({ ...rest }) => <AnimatedDialogConten
         `}
       `}
     }
+
+    /* The widget iframe is resized to fit the modal (see IframeResizer), so it must keep its natural height */
+    ${({ theme }) =>
+      theme.isWidget &&
+      css`
+        margin: 0;
+        max-height: none;
+      `}
   }
 `

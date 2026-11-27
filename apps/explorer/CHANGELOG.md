@@ -1,5 +1,168 @@
 # Changelog
 
+## [4.21.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.20.1...explorer-v4.21.0) (2026-11-25)
+
+### Minor Changes
+
+- feat: extend cookie consent to CoW Swap, Explorer and RWA (#8555)
+
+- feat(explorer): add solver logo preparation page (#8607)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.23.2
+  - @cowprotocol/common-hooks@3.22.2
+  - @cowprotocol/analytics@3.21.0
+  - @cowprotocol/common-const@3.26.0
+  - @cowprotocol/ui@3.26.0
+  - @cowprotocol/core@3.16.2
+
+## [4.20.1](https://github.com/cowprotocol/cowswap/compare/explorer-v4.20.0...explorer-v4.20.1) (2026-11-19)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.25.0
+  - @cowprotocol/ui@3.25.0
+  - @cowprotocol/analytics@3.20.1
+  - @cowprotocol/common-hooks@3.22.1
+  - @cowprotocol/common-utils@3.23.1
+  - @cowprotocol/core@3.16.1
+
+## [4.20.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.19.5...explorer-v4.20.0) (2026-11-18)
+
+### Minor Changes
+
+- feat: update SDK versions with updated near token lists (#8660)
+
+- feat(solana): support custom recipients (#8592)
+
+### Patch Changes
+
+- fix(explorer): add robots.txt (#8664)
+
+- fix(explorer): show a generic icon for unidentified solvers (#8540)
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.20.0
+  - @cowprotocol/common-const@3.24.0
+  - @cowprotocol/common-hooks@3.22.0
+  - @cowprotocol/common-utils@3.23.0
+  - @cowprotocol/core@3.16.0
+  - @cowprotocol/types@4.16.0
+  - @cowprotocol/ui@3.24.0
+  - @cowprotocol/hook-dapp-lib@2.5.4
+
+## [4.19.5](https://github.com/cowprotocol/cowswap/compare/explorer-v4.19.4...explorer-v4.19.5) (2026-11-16)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.23.0
+  - @cowprotocol/analytics@3.19.2
+  - @cowprotocol/common-hooks@3.21.1
+  - @cowprotocol/common-utils@3.22.4
+  - @cowprotocol/core@3.15.4
+  - @cowprotocol/ui@3.23.2
+
+## [4.19.4](https://github.com/cowprotocol/cowswap/compare/explorer-v4.19.3...explorer-v4.19.4) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.23.1
+
+## [4.19.3](https://github.com/cowprotocol/cowswap/compare/explorer-v4.19.2...explorer-v4.19.3) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.22.0
+  - @cowprotocol/common-hooks@3.21.0
+  - @cowprotocol/ui@3.23.0
+  - @cowprotocol/analytics@3.19.1
+  - @cowprotocol/common-utils@3.22.3
+  - @cowprotocol/core@3.15.3
+
+## [4.19.2](https://github.com/cowprotocol/cowswap/compare/explorer-v4.19.1...explorer-v4.19.2) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.19.0
+  - @cowprotocol/common-const@3.21.0
+  - @cowprotocol/ui@3.22.0
+  - @cowprotocol/common-hooks@3.20.1
+  - @cowprotocol/common-utils@3.22.2
+  - @cowprotocol/core@3.15.2
+
+## [4.19.1](https://github.com/cowprotocol/cowswap/compare/explorer-v4.19.0...explorer-v4.19.1) (2026-11-11)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.20.0
+  - @cowprotocol/analytics@3.18.0
+  - @cowprotocol/common-const@3.20.0
+  - @cowprotocol/types@4.15.1
+  - @cowprotocol/ui@3.21.1
+  - @cowprotocol/common-utils@3.22.1
+  - @cowprotocol/core@3.15.1
+  - @cowprotocol/hook-dapp-lib@2.5.3
+
+## [4.19.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.18.0...explorer-v4.19.0) (2026-11-10)
+
+### Minor Changes
+
+- feat(networks): networks update (#8456)
+
+- feat(solana): pass appData to quote (#8509)
+
+### Patch Changes
+
+- fix(solana): detect balances of user-imported Token-2022 mints (#8501)
+
+- fix(solana): use SDK for quote costs breakdown (#8522)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.22.0
+  - @cowprotocol/core@3.15.0
+  - @cowprotocol/analytics@3.17.0
+  - @cowprotocol/common-const@3.19.0
+  - @cowprotocol/common-hooks@3.19.0
+  - @cowprotocol/types@4.15.0
+  - @cowprotocol/ui@3.21.0
+  - @cowprotocol/hook-dapp-lib@2.5.2
+
+## [4.18.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.17.2...explorer-v4.18.0) (2026-11-05)
+
+### Minor Changes
+
+- feat(solana): integrate appData api (#8467)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.20.0
+  - @cowprotocol/common-hooks@3.18.0
+  - @cowprotocol/analytics@3.16.4
+  - @cowprotocol/common-const@3.18.0
+  - @cowprotocol/common-utils@3.21.2
+  - @cowprotocol/core@3.14.3
+  - @cowprotocol/types@4.14.2
+  - @cowprotocol/hook-dapp-lib@2.5.1
+
+## [4.17.2](https://github.com/cowprotocol/cowswap/compare/explorer-v4.17.1...explorer-v4.17.2) (2026-11-02)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/core@3.14.2
+  - @cowprotocol/ui@3.19.2
+
 ## [4.17.1](https://github.com/cowprotocol/cowswap/compare/explorer-v4.17.0...explorer-v4.17.1) (2026-10-28)
 
 ### Patch Changes

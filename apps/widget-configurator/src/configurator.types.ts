@@ -43,6 +43,7 @@ export interface ConfiguratorFormValues {
   buyTokenAmount: number
   tokenListUrls: TokenListItem[]
   customTokens: TokenInfo[]
+  prioritizedTokensText: Partial<Record<SupportedChainId, string>>
 
   // Theme Colors:
 
@@ -61,6 +62,7 @@ export interface ConfiguratorFormValues {
 
   disableProgressBar: boolean
   disablePostTradeTips: boolean
+  disablePricePercentageShortcuts: boolean
   disableTokenImport: boolean
   disableSwitchingTokens: boolean
   hideRecentTokens: boolean

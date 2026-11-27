@@ -29,6 +29,7 @@ export enum CowFiCategory {
   CAREERS = 'Careers',
   TOKENS = 'Tokens',
   LEGAL = 'Legal',
+  SOLANA = 'Solana',
 }
 
 /**

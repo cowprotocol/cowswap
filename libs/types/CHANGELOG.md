@@ -1,5 +1,48 @@
 # Changelog
 
+## [4.16.0](https://github.com/cowprotocol/cowswap/compare/types-v4.15.1...types-v4.16.0) (2026-11-18)
+
+### Minor Changes
+
+- feat: update SDK versions with updated near token lists (#8660)
+
+- feat(solana): support custom recipients (#8592)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.11.0
+
+## [4.15.1](https://github.com/cowprotocol/cowswap/compare/types-v4.15.0...types-v4.15.1) (2026-11-11)
+
+### Patch Changes
+
+- fix(tokens): use Solana volume ranks in the selector (#8523)
+
+## [4.15.0](https://github.com/cowprotocol/cowswap/compare/types-v4.14.2...types-v4.15.0) (2026-11-10)
+
+### Minor Changes
+
+- feat(solana): pass appData to quote (#8509)
+
+### Patch Changes
+
+- fix(solana): use SDK for quote costs breakdown (#8522)
+
+- fix(tokens): use Solana volume ranks in the selector (#8523)
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.10.0
+
+## [4.14.2](https://github.com/cowprotocol/cowswap/compare/types-v4.14.1...types-v4.14.2) (2026-11-05)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.9.2
+
 ## [4.14.1](https://github.com/cowprotocol/cowswap/compare/types-v4.14.0...types-v4.14.1) (2026-10-27)
 
 ### Patch Changes

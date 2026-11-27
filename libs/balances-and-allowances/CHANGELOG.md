@@ -1,5 +1,170 @@
 # Changelog
 
+## [3.21.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.20.1...balances-and-allowances-v3.21.0) (2026-11-25)
+
+### Minor Changes
+
+- feat(solana): set the compute budget on sponsored creation transactions (#8615)
+
+- feat(solana): return order rent when an order is cancelled (#8692)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.23.2
+  - @cowprotocol/common-hooks@3.22.2
+  - @cowprotocol/tokens@3.21.0
+  - @cowprotocol/common-const@3.26.0
+  - @cowprotocol/core@3.16.2
+  - @cowprotocol/wallet@3.23.2
+
+## [3.20.1](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.20.0...balances-and-allowances-v3.20.1) (2026-11-19)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.25.0
+  - @cowprotocol/wallet@3.23.1
+  - @cowprotocol/common-hooks@3.22.1
+  - @cowprotocol/common-utils@3.23.1
+  - @cowprotocol/core@3.16.1
+  - @cowprotocol/tokens@3.20.1
+
+## [3.20.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.19.5...balances-and-allowances-v3.20.0) (2026-11-18)
+
+### Minor Changes
+
+- feat: update SDK versions with updated near token lists (#8660)
+
+- feat(solana): support custom recipients (#8592)
+
+### Patch Changes
+
+- fix(solana): derive limit order token accounts with the mint's token program (#8659)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.24.0
+  - @cowprotocol/common-hooks@3.22.0
+  - @cowprotocol/common-utils@3.23.0
+  - @cowprotocol/core@3.16.0
+  - @cowprotocol/currency@1.11.0
+  - @cowprotocol/tokens@3.20.0
+  - @cowprotocol/types@4.16.0
+  - @cowprotocol/wallet@3.23.0
+
+## [3.19.5](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.19.4...balances-and-allowances-v3.19.5) (2026-11-16)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.23.0
+  - @cowprotocol/common-hooks@3.21.1
+  - @cowprotocol/common-utils@3.22.4
+  - @cowprotocol/core@3.15.4
+  - @cowprotocol/tokens@3.19.4
+  - @cowprotocol/wallet@3.22.2
+
+## [3.19.4](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.19.3...balances-and-allowances-v3.19.4) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/tokens@3.19.3
+  - @cowprotocol/wallet@3.22.1
+
+## [3.19.3](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.19.2...balances-and-allowances-v3.19.3) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.22.0
+  - @cowprotocol/common-hooks@3.21.0
+  - @cowprotocol/wallet@3.22.0
+  - @cowprotocol/common-utils@3.22.3
+  - @cowprotocol/core@3.15.3
+  - @cowprotocol/tokens@3.19.2
+
+## [3.19.2](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.19.1...balances-and-allowances-v3.19.2) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.21.0
+  - @cowprotocol/wallet@3.21.2
+  - @cowprotocol/common-hooks@3.20.1
+  - @cowprotocol/common-utils@3.22.2
+  - @cowprotocol/core@3.15.2
+  - @cowprotocol/tokens@3.19.1
+
+## [3.19.1](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.19.0...balances-and-allowances-v3.19.1) (2026-11-11)
+
+### Patch Changes
+
+- fix(solana): support trading from multisig vaults (#8449)
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.20.0
+  - @cowprotocol/wallet@3.21.1
+  - @cowprotocol/tokens@3.19.0
+  - @cowprotocol/common-const@3.20.0
+  - @cowprotocol/types@4.15.1
+  - @cowprotocol/common-utils@3.22.1
+  - @cowprotocol/core@3.15.1
+
+## [3.19.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.18.5...balances-and-allowances-v3.19.0) (2026-11-10)
+
+### Minor Changes
+
+- feat(networks): networks update (#8456)
+
+- feat(rwa): filter widget token selectors to the asset tokens (#8491)
+
+- feat(solana): pass appData to quote (#8509)
+
+### Patch Changes
+
+- fix(solana): detect balances of user-imported Token-2022 mints (#8501)
+
+- fix(solana): use SDK for quote costs breakdown (#8522)
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.21.0
+  - @cowprotocol/common-utils@3.22.0
+  - @cowprotocol/core@3.15.0
+  - @cowprotocol/tokens@3.18.0
+  - @cowprotocol/common-const@3.19.0
+  - @cowprotocol/common-hooks@3.19.0
+  - @cowprotocol/currency@1.10.0
+  - @cowprotocol/types@4.15.0
+  - @cowprotocol/wallet-provider@2.3.0
+
+## [3.18.5](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.18.4...balances-and-allowances-v3.18.5) (2026-11-05)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+- fix(performance): remove render hotspots in token search, route matching and Solana balances (#8450)
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.18.0
+  - @cowprotocol/wallet@3.20.0
+  - @cowprotocol/common-const@3.18.0
+  - @cowprotocol/common-utils@3.21.2
+  - @cowprotocol/core@3.14.3
+  - @cowprotocol/currency@1.9.2
+  - @cowprotocol/tokens@3.17.3
+  - @cowprotocol/types@4.14.2
+
+## [3.18.4](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.18.3...balances-and-allowances-v3.18.4) (2026-11-02)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/core@3.14.2
+  - @cowprotocol/tokens@3.17.2
+  - @cowprotocol/wallet@3.19.2
+
 ## [3.18.3](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.18.2...balances-and-allowances-v3.18.3) (2026-10-28)
 
 ### Patch Changes

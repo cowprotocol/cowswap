@@ -1,3 +1,6 @@
+import type { SupportedChainId } from '@cowprotocol/cow-sdk'
+import type { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
+
 import { TokenListItem } from '../../../configurator.types'
 
 export type TokenListScope = 'enabled' | 'enabledForSell' | 'enabledForBuy'
@@ -8,6 +11,22 @@ export function appendTokenListUrl(tokenListUrls: TokenListItem[], newListUrl: s
   if (existing) return null
 
   return [...tokenListUrls, { url: newListUrl, enabled: true, enabledForSell: false, enabledForBuy: false }]
+}
+
+export function getPrioritizedTokensParam(
+  textByChain: Partial<Record<SupportedChainId, string>>,
+): CowSwapWidgetParams['prioritizedTokens'] {
+  const entries = Object.entries(textByChain)
+    .map(([chainId, text]): [string, string[]] => [
+      chainId,
+      (text ?? '')
+        .split('\n')
+        .map((line) => line.trim())
+        .filter(Boolean),
+    ])
+    .filter(([, addresses]) => addresses.length > 0)
+
+  return entries.length ? (Object.fromEntries(entries) as CowSwapWidgetParams['prioritizedTokens']) : undefined
 }
 
 export function getSelectedTokenListUrls(tokenListUrls: TokenListItem[], scope: TokenListScope): string[] {

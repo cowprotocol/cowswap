@@ -6,11 +6,11 @@
  * Env: COINGECKO_API_KEY (required), COINGECKO_API_PLAN (`pro` for pro-api.coingecko.com, Demo API otherwise).
  *
  * Hand-edited fields of assets and tokens that are already in the file are kept:
- * asset `title`, `priority`, `allowedTradingTime`, `newsFeed` and token `symbol`, `name`, `issuer`.
+ * asset `title`, `priority`, `allowedTradingTime`, `newsFeed`, `profile` and token `symbol`, `name`, `issuer`.
  *
- * Only tokens of `ALLOWED_ISSUERS` are written; an asset without any of them is skipped.
+ * Tokens of every issuer are written; an asset without tokens on CoW-supported chains is skipped. Nothing is written
+ * when the result fails `validate-registry`.
  */
-import { readFile, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -18,21 +18,22 @@ import { getAddress, isAddress } from 'viem'
 
 import { areAddressesEqual, isSupportedChain } from '@cowprotocol/cow-sdk'
 
+import { readRegistry, writeRegistry } from './registryFile.mjs'
+import { assertValidRegistry } from './registryValidation.mjs'
+
 const REGISTRY_PATH = resolve(dirname(fileURLToPath(import.meta.url)), '../data/RWAs.json')
 
 const ASSET_TYPES = { stock: 'stock', etf: 'index', commodity: 'commodity' }
-/** CoinGecko issuer id -> registry issuer name. Must match `ALLOWED_ISSUERS` in `validateRegistry.ts` */
-const ALLOWED_ISSUERS = {
+/** CoinGecko issuer id -> registry issuer name, where it differs from the CoinGecko name that `RWA_ISSUERS` relies on */
+const ISSUER_NAMES = {
   'ondo-tokenized-assets': 'Ondo',
-  'xstocks-ecosystem': 'xStocks',
-  'coinbase-ecosystem': 'Coinbase',
   'bstocks-ecosystem': 'bStocks',
-  'reality-ecosystem': 'Reality',
   'paxos-ecosystem': 'Paxos',
-  'tether-ecosystem': 'Tether',
+  'robinhood-chain-stocks-ecosystem': 'Robinhood',
+  'anchored-ecosystem': 'Anchored',
 }
 const DEFAULT_PRIORITY = 0
-const DEFAULT_TRADING_TIME = { title: 'US market open', start: '13:30 UTC', end: '20:00 UTC' }
+const DEFAULT_TRADING_TIME = { title: 'US market open', start: '09:30', end: '16:00', timeZone: 'America/New_York' }
 
 const CONCURRENCY = 8
 const MAX_RETRIES = 5
@@ -51,7 +52,7 @@ const BASE_URL = isPro ? 'https://pro-api.coingecko.com/api/v3' : 'https://api.c
 const HEADERS = { accept: 'application/json', [isPro ? 'x-cg-pro-api-key' : 'x-cg-demo-api-key']: apiKey }
 
 async function main() {
-  const registry = JSON.parse(await readFile(REGISTRY_PATH, 'utf8'))
+  const { registry, maps } = await readRegistry(REGISTRY_PATH)
   const platformChainIds = await fetchPlatformChainIds()
   const rwas = (await coingecko('/rwas/list')).filter((rwa) => {
     if (ASSET_TYPES[rwa.asset_type]) return true
@@ -70,9 +71,7 @@ async function main() {
 
   const coinIds = [
     ...new Set(
-      details.flatMap((rwa) =>
-        (rwa.tokens ?? []).filter((token) => ALLOWED_ISSUERS[token.issuer_details?.id]).map((token) => token.id),
-      ),
+      details.flatMap((rwa) => (rwa.tokens ?? []).filter((token) => getIssuerName(token)).map((token) => token.id)),
     ),
   ]
   const tokenMarketCaps = await fetchCoinMarketCaps(coinIds)
@@ -110,6 +109,7 @@ async function main() {
       priority: existing?.priority ?? DEFAULT_PRIORITY,
       allowedTradingTime: existing ? existing.allowedTradingTime : getDefaultTradingTime(rwa),
       newsFeed: existing?.newsFeed,
+      profile: existing?.profile,
       tokens,
     })
   }
@@ -119,7 +119,8 @@ async function main() {
     ? { version: bumpPatch(registry.version), lastModificationTime: new Date().toISOString(), assets }
     : registry
 
-  await writeFile(REGISTRY_PATH, `${JSON.stringify(next, null, 2)}\n`)
+  assertValidRegistry(next)
+  await writeRegistry(REGISTRY_PATH, next, maps)
 
   const tokensCount = assets.reduce((sum, asset) => sum + asset.tokens.length, 0)
   console.log(
@@ -140,9 +141,12 @@ async function buildTokens(rwa, existing, { platformChainIds, decimalsByPlatform
   const tokens = []
 
   for (const coin of coins) {
-    const issuer = ALLOWED_ISSUERS[coin.issuer_details?.id]
+    const issuer = getIssuerName(coin)
 
-    if (!issuer) continue
+    if (!issuer) {
+      console.warn(`Skipping ${coin.id}: no issuer`)
+      continue
+    }
 
     for (const [platform, address] of Object.entries(coin.platforms ?? {})) {
       const chainId = platformChainIds[platform]
@@ -174,6 +178,12 @@ async function buildTokens(rwa, existing, { platformChainIds, decimalsByPlatform
   }
 
   return tokens
+}
+
+function getIssuerName(coin) {
+  const { id, name } = coin.issuer_details ?? {}
+
+  return ISSUER_NAMES[id] ?? name?.trim()
 }
 
 /** CoinGecko asset platform id -> chain id, for the chains CoW supports */

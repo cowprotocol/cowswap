@@ -4,7 +4,12 @@ import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 import { Address } from 'viem'
 import { Connector, useEnsName } from 'wagmi'
 
-import { getCurrentChainIdFromUrl, getRawCurrentChainIdFromUrl, logSafeApi } from '@cowprotocol/common-utils'
+import {
+  getCurrentChainIdFromUrl,
+  getRawCurrentChainIdFromUrl,
+  isSupportedChainId,
+  logSafeApi,
+} from '@cowprotocol/common-utils'
 import { getSafeInfo, normalizeSafeError, SAFE_RATE_LIMIT_MSG } from '@cowprotocol/core'
 import { areAddressesEqual, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { AccountType } from '@cowprotocol/types'
@@ -48,7 +53,7 @@ function useWalletInfo(): WalletInfo {
   // TODO: Replace urlKey with locationNetworkAtom, which will also trigger the useMemo below less often.
   const urlKey = useBrowserUrlKey()
   const { address, chainId, isConnected, connector } = useAccountState()
-  const isChainIdUnsupported = !!chainId && !(chainId in SupportedChainId)
+  const isChainIdUnsupported = !!chainId && !isSupportedChainId(chainId)
   const [lastStableChainId, setLastStableChainId] = useState<SupportedChainId | undefined>(undefined)
   const [lastResolvedChainId, setLastResolvedChainId] = useState<SupportedChainId>(() => getCurrentChainIdFromUrl())
 

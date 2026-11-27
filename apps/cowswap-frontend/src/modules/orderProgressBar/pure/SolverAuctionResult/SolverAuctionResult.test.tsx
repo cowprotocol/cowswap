@@ -24,7 +24,18 @@ const mockedUseUsdAmount = useUsdAmount as jest.MockedFunction<typeof useUsdAmou
 i18n.load('en-US', {})
 i18n.activate('en-US')
 
+class TestPointerEvent extends MouseEvent {
+  readonly pointerType: string
+
+  constructor(type: string, init: PointerEventInit = {}) {
+    super(type, init)
+    this.pointerType = init.pointerType ?? ''
+  }
+}
+
 beforeAll(() => {
+  Object.defineProperty(window, 'PointerEvent', { value: TestPointerEvent, configurable: true })
+
   window.matchMedia =
     window.matchMedia ||
     (() =>
@@ -48,6 +59,16 @@ beforeAll(() => {
     value: ResizeObserverMock,
   })
 })
+
+function getBidTrigger(bidValues: HTMLElement[], index: number): HTMLElement {
+  const trigger = bidValues[index]?.parentElement
+
+  if (!trigger) {
+    throw new Error(`Missing solver auction bid trigger at index ${index}`)
+  }
+
+  return trigger
+}
 
 function renderResult(element: ReactElement): RenderResult {
   return render(<I18nProvider i18n={i18n}>{element}</I18nProvider>)
@@ -116,14 +137,17 @@ describe('SolverAuctionResult', () => {
   it('shows the first three solvers and expands on view all bids', () => {
     renderResult(<SolverAuctionResult solvers={solvers} />)
 
+    const extraSolvers = screen.getByTestId('solver-auction-extra-solvers')
+
     expect(screen.getByText('Tsolver')).toBeTruthy()
     expect(screen.getByText('Quasi')).toBeTruthy()
     expect(screen.getByText('Fractal')).toBeTruthy()
-    expect(screen.queryByText('Barn')).toBeNull()
+    expect(extraSolvers.getAttribute('data-expanded')).toBe('false')
     expect(screen.getByRole('link', { name: /how the auction works/i })).toBeTruthy()
 
     fireEvent.click(screen.getByRole('button', { name: /view all bids/i }))
 
+    expect(extraSolvers.getAttribute('data-expanded')).toBe('true')
     expect(screen.getByText('Barn')).toBeTruthy()
     expect(screen.getByRole('button', { name: /show less/i })).toBeTruthy()
   })
@@ -133,18 +157,29 @@ describe('SolverAuctionResult', () => {
 
     const fills = screen.getAllByTestId('solver-auction-row-fill')
     const winnerAmount = CurrencyAmount.fromRawAmount(buyToken, '36840000000000000000')
-    const quasiPercent = getSolverBidFillPercent(
-      CurrencyAmount.fromRawAmount(buyToken, '36600000000000000000'),
-      winnerAmount,
-    )
-    const fractalPercent = getSolverBidFillPercent(
-      CurrencyAmount.fromRawAmount(buyToken, '36400000000000000000'),
-      winnerAmount,
-    )
+    const collapsedWorst = CurrencyAmount.fromRawAmount(buyToken, '36400000000000000000')
+    const quasiAmount = CurrencyAmount.fromRawAmount(buyToken, '36600000000000000000')
+    const quasiPercent = getSolverBidFillPercent(quasiAmount, winnerAmount, collapsedWorst)
+    const fractalPercent = getSolverBidFillPercent(collapsedWorst, winnerAmount, collapsedWorst)
 
-    expect(fills).toHaveLength(2)
+    expect(fills).toHaveLength(3)
     expect(fills[0]?.getAttribute('data-percent')).toBe(String(quasiPercent))
     expect(fills[1]?.getAttribute('data-percent')).toBe(String(fractalPercent))
+    expect(fills[2]?.getAttribute('data-percent')).toBe('10')
+    expect(fractalPercent).toBe(10)
+
+    fireEvent.click(screen.getByRole('button', { name: /view all bids/i }))
+
+    const expandedFills = screen.getAllByTestId('solver-auction-row-fill')
+    const expandedWorst = CurrencyAmount.fromRawAmount(buyToken, '36000000000000000000')
+
+    expect(expandedFills).toHaveLength(3)
+    expect(expandedFills[0]?.getAttribute('data-percent')).toBe(
+      String(getSolverBidFillPercent(quasiAmount, winnerAmount, expandedWorst)),
+    )
+    expect(expandedFills[2]?.getAttribute('data-percent')).toBe(
+      String(getSolverBidFillPercent(expandedWorst, winnerAmount, expandedWorst)),
+    )
   })
 
   it('shows -<$0.01 when the usd bid gap is below one cent', () => {
@@ -156,6 +191,25 @@ describe('SolverAuctionResult', () => {
     renderResult(<SolverAuctionResult solvers={solvers} buyToken={buyToken} />)
 
     expect(screen.getAllByText('-<$0.01').length).toBeGreaterThan(0)
+  })
+
+  it('shows each bid amount in token units on price hover', () => {
+    mockedUseUsdAmount.mockReturnValue({
+      value: CurrencyAmount.fromRawAmount(USDC_MAINNET, '9000'),
+      isLoading: false,
+    })
+
+    renderResult(<SolverAuctionResult solvers={solvers} buyToken={buyToken} />)
+
+    const bidValues = screen.getAllByTestId('solver-auction-bid-value')
+    const winnerTrigger = getBidTrigger(bidValues, 0)
+    const quasiTrigger = getBidTrigger(bidValues, 1)
+
+    fireEvent.pointerEnter(winnerTrigger, { pointerType: 'mouse' })
+    expect(screen.getByText('36.84 RAI')).toBeTruthy()
+
+    fireEvent.pointerEnter(quasiTrigger, { pointerType: 'mouse' })
+    expect(screen.getByText('36.6 RAI')).toBeTruthy()
   })
 
   it('renders nothing when there are no solvers', () => {

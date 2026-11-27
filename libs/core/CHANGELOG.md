@@ -1,5 +1,105 @@
 # Changelog
 
+## [3.16.2](https://github.com/cowprotocol/cowswap/compare/core-v3.16.1...core-v3.16.2) (2026-11-25)
+
+### Patch Changes
+
+- fix(rwa): apply geo restrictions to all RWA tokens via BFF (#8636)
+
+- fix(cowswap): resolve solver names regardless of the CMS active flag (#8657)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.23.2
+  - @cowprotocol/common-const@3.26.0
+
+## [3.16.1](https://github.com/cowprotocol/cowswap/compare/core-v3.16.0...core-v3.16.1) (2026-11-19)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.25.0
+  - @cowprotocol/common-utils@3.23.1
+
+## [3.16.0](https://github.com/cowprotocol/cowswap/compare/core-v3.15.4...core-v3.16.0) (2026-11-18)
+
+### Minor Changes
+
+- feat: update SDK versions with updated near token lists (#8660)
+
+- feat(solana): support custom recipients (#8592)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.24.0
+  - @cowprotocol/common-utils@3.23.0
+
+## [3.15.4](https://github.com/cowprotocol/cowswap/compare/core-v3.15.3...core-v3.15.4) (2026-11-16)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.23.0
+  - @cowprotocol/common-utils@3.22.4
+
+## [3.15.3](https://github.com/cowprotocol/cowswap/compare/core-v3.15.2...core-v3.15.3) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.22.0
+  - @cowprotocol/common-utils@3.22.3
+
+## [3.15.2](https://github.com/cowprotocol/cowswap/compare/core-v3.15.1...core-v3.15.2) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.21.0
+  - @cowprotocol/common-utils@3.22.2
+
+## [3.15.1](https://github.com/cowprotocol/cowswap/compare/core-v3.15.0...core-v3.15.1) (2026-11-11)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.20.0
+  - @cowprotocol/common-utils@3.22.1
+
+## [3.15.0](https://github.com/cowprotocol/cowswap/compare/core-v3.14.3...core-v3.15.0) (2026-11-10)
+
+### Minor Changes
+
+- feat(networks): networks update (#8456)
+
+- feat(solana): pass appData to quote (#8509)
+
+### Patch Changes
+
+- fix(rwa): updated rwa token lists (#8487)
+
+- fix(solana): use SDK for quote costs breakdown (#8522)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.22.0
+  - @cowprotocol/common-const@3.19.0
+
+## [3.14.3](https://github.com/cowprotocol/cowswap/compare/core-v3.14.2...core-v3.14.3) (2026-11-05)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.18.0
+  - @cowprotocol/common-utils@3.21.2
+
+## [3.14.2](https://github.com/cowprotocol/cowswap/compare/core-v3.14.1...core-v3.14.2) (2026-11-02)
+
+### Patch Changes
+
+- fix(rwa): updated rwa token lists (#8487)
+
 ## [3.14.1](https://github.com/cowprotocol/cowswap/compare/core-v3.14.0...core-v3.14.1) (2026-10-28)
 
 ### Patch Changes

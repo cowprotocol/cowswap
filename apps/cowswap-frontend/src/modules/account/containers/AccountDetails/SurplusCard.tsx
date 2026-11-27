@@ -36,6 +36,7 @@ const BNB_START_DATE = new Date(2025, 8)
 const LINEA_START_DATE = new Date(2025, 10)
 const PLASMA_START_DATE = new Date(2026, 0)
 const INK_START_DATE = new Date(2026, 1)
+const ROBINHOOD_START_DATE = new Date(2026, 11)
 
 const START_DATE: Record<SupportedChainId, Date> = {
   [SupportedChainId.MAINNET]: DEFAULT_START_DATE,
@@ -49,6 +50,7 @@ const START_DATE: Record<SupportedChainId, Date> = {
   [SupportedChainId.LINEA]: LINEA_START_DATE,
   [SupportedChainId.PLASMA]: PLASMA_START_DATE,
   [SupportedChainId.INK]: INK_START_DATE,
+  [SupportedChainId.ROBINHOOD]: ROBINHOOD_START_DATE,
   // Solana trading not launched yet — surplus tracking doesn't apply.
   [SupportedChainId.SOLANA]: DEFAULT_START_DATE,
 }

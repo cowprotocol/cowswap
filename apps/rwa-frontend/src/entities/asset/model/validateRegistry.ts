@@ -2,13 +2,23 @@ import { isAddress } from 'viem'
 
 import { isSupportedChain } from '@cowprotocol/cow-sdk'
 
-import { RWA_ISSUERS } from './issuers'
-import { RWA_ASSET_TYPES, type RwaAsset, type RwaRegistry, type RwaToken, type RwaTradingTime } from './types'
+import { findRwaDescriptionIssue } from './description'
+import { RWA_SECTOR_SEPARATOR, RWA_SECTORS } from './sectors'
+import {
+  RWA_ASSET_TYPES,
+  type RwaAsset,
+  type RwaAssetProfile,
+  type RwaRegistry,
+  type RwaToken,
+  type RwaTradingTime,
+} from './types'
 
-const TRADING_TIME_REGEX = /^([01]\d|2[0-3]):[0-5]\d UTC$/
+import { isValidTimeZone } from '../lib/usMarketStatus'
 
-const ALLOWED_ISSUERS: readonly string[] = RWA_ISSUERS
+const TRADING_TIME_REGEX = /^([01]\d|2[0-3]):[0-5]\d$/
+
 const ASSET_TYPES: readonly string[] = RWA_ASSET_TYPES
+const SECTORS: readonly string[] = RWA_SECTORS
 
 export function validateRegistry(registry: RwaRegistry): string[] {
   const errors: string[] = []
@@ -35,8 +45,22 @@ function isHttpsUrl(value: string): boolean {
   return URL.canParse(value) && new URL(value).protocol === 'https:'
 }
 
+function isValidSector(sector: string): boolean {
+  const separatorIndex = sector.indexOf(RWA_SECTOR_SEPARATOR)
+  if (separatorIndex === -1) return false
+
+  const industry = sector.slice(separatorIndex + RWA_SECTOR_SEPARATOR.length).trim()
+
+  return SECTORS.includes(sector.slice(0, separatorIndex)) && industry.length > 0
+}
+
 function isValidTradingTime(tradingTime: RwaTradingTime | undefined): boolean {
-  return !tradingTime || (TRADING_TIME_REGEX.test(tradingTime.start) && TRADING_TIME_REGEX.test(tradingTime.end))
+  return (
+    !tradingTime ||
+    (TRADING_TIME_REGEX.test(tradingTime.start) &&
+      TRADING_TIME_REGEX.test(tradingTime.end) &&
+      isValidTimeZone(tradingTime.timeZone))
+  )
 }
 
 function validateAsset(asset: RwaAsset, path: string): string[] {
@@ -52,12 +76,28 @@ function validateAsset(asset: RwaAsset, path: string): string[] {
   }
 
   if (!isValidTradingTime(asset.allowedTradingTime)) {
-    errors.push(`${path}.allowedTradingTime: start/end must be "HH:mm UTC"`)
+    errors.push(`${path}.allowedTradingTime: start/end must be "HH:mm" in a valid timeZone`)
   }
 
   if (!asset.tokens.length) errors.push(`${path}.tokens: at least one token is required`)
 
   asset.tokens.forEach((token, index) => errors.push(...validateToken(token, `${path}.tokens[${index}]`)))
+
+  return errors
+}
+
+function validateProfile(profile: RwaAssetProfile, title: string, path: string): string[] {
+  const errors: string[] = []
+
+  const descriptionIssue = profile.description ? findRwaDescriptionIssue(profile.description, title) : 'required'
+  if (descriptionIssue) errors.push(`${path}.description: ${descriptionIssue}`)
+  if (!profile.sector) errors.push(`${path}.sector: required`)
+  else if (!isValidSector(profile.sector)) {
+    errors.push(`${path}.sector: must start with one of ${SECTORS.join(', ')} followed by "${RWA_SECTOR_SEPARATOR}"`)
+  }
+  if (profile.website !== undefined && !isHttpsUrl(profile.website)) {
+    errors.push(`${path}.website: must be an https URL`)
+  }
 
   return errors
 }
@@ -72,6 +112,7 @@ function validateRequiredStrings(asset: RwaAsset, path: string): string[] {
     if (!asset.newsFeed.source) errors.push(`${path}.newsFeed.source: required`)
     if (!isHttpsUrl(asset.newsFeed.url)) errors.push(`${path}.newsFeed.url: must be an https URL`)
   }
+  if (asset.profile) errors.push(...validateProfile(asset.profile, asset.title, `${path}.profile`))
 
   return errors
 }
@@ -83,11 +124,7 @@ function validateToken(token: RwaToken, path: string): string[] {
   if (!isAddress(token.address)) errors.push(`${path}.address: invalid address ${token.address}`)
   if (!token.symbol) errors.push(`${path}.symbol: required`)
   if (!token.name) errors.push(`${path}.name: required`)
-  if (!token.issuer) {
-    errors.push(`${path}.issuer: required`)
-  } else if (!ALLOWED_ISSUERS.includes(token.issuer)) {
-    errors.push(`${path}.issuer: "${token.issuer}" is not an allowed issuer (${ALLOWED_ISSUERS.join(', ')})`)
-  }
+  if (!token.issuer) errors.push(`${path}.issuer: required`)
   if (!Number.isInteger(token.decimals) || token.decimals < 0) errors.push(`${path}.decimals: invalid`)
 
   return errors

@@ -82,6 +82,8 @@ export const FONT_SIZING = {
   FONT_MEDIUM: [16, 22],
   FONT_LARGE: [18, 24],
   FONT_LARGER: [20, 28],
+  FONT_LARGEST: [24, 28],
+  FONT_TITLE: [28, 32],
 } as const satisfies Record<string, readonly [fontSize: number, lineHeight: number]>
 
 export type FontSizingName = keyof typeof FONT_SIZING

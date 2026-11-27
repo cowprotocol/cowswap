@@ -1,8 +1,9 @@
 'use client'
 
-import { Suspense, useState } from 'react'
+import { useState } from 'react'
 
-import { CowAnalyticsProvider, initGtm } from '@cowprotocol/analytics'
+import { CowAnalyticsProvider, initGtmWithConsent } from '@cowprotocol/analytics'
+import { CookieConsentBannerContainer } from '@cowprotocol/ui'
 
 import { ApolloProvider } from '@apollo/client'
 import { useServerInsertedHTML } from 'next/navigation'
@@ -15,29 +16,30 @@ import { ThemeProvider } from '../theme'
 import { WithLDProvider } from '@/components/WithLDProvider'
 import GlobalStyles from '@/styles/global.styles'
 
-const cowAnalytics = initGtm()
+const cowAnalytics = initGtmWithConsent()
 
+/** Root client providers: styling, Apollo, feature flags, theme, and analytics. */
 export function Providers({ children }: { children: React.ReactNode }): React.ReactNode {
   return (
-    <Suspense>
-      <CacheProvider>
-        <StyledComponentsRegistry>
-          <>
-            <ApolloProvider client={apolloClient}>
-              <WithLDProvider>
-                <ThemeProvider>
-                  <GlobalStyles />
-                  <CowAnalyticsProvider cowAnalytics={cowAnalytics}>{children}</CowAnalyticsProvider>
-                </ThemeProvider>
-              </WithLDProvider>
-            </ApolloProvider>
-          </>
-        </StyledComponentsRegistry>
-      </CacheProvider>
-    </Suspense>
+    <CacheProvider>
+      <StyledComponentsRegistry>
+        <>
+          <ApolloProvider client={apolloClient}>
+            <WithLDProvider>
+              <ThemeProvider>
+                <GlobalStyles />
+                <CowAnalyticsProvider cowAnalytics={cowAnalytics}>{children}</CowAnalyticsProvider>
+                <CookieConsentBannerContainer variant="paleBlue" />
+              </ThemeProvider>
+            </WithLDProvider>
+          </ApolloProvider>
+        </>
+      </StyledComponentsRegistry>
+    </CacheProvider>
   )
 }
 
+/** Collects styled-components styles during SSR and injects them into the server HTML. */
 function StyledComponentsRegistry({ children }: { children: React.ReactNode }): React.ReactNode {
   // Only create stylesheet once with lazy initial state
   // x-ref: https://reactjs.org/docs/hooks-reference.html#lazy-initial-state

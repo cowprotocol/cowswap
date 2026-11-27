@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 
 import { useChainId, useConnection } from 'wagmi'
 
-import { networkStatsQueryAtomFamily, tradeQuotesQueryAtomFamily } from './tradeQueryAtoms'
+import { tokenStatsQueryAtomFamily, tradeQuotesQueryAtomFamily } from './tradeQueryAtoms'
 import { tradeChainIdAtom, tradeSideAtom, tradeTokenKeyAtom } from './tradeSelectionAtoms'
 import { useKeptQuotedTokensOrder } from './useKeptQuotedTokensOrder'
 
@@ -55,7 +55,7 @@ export function useTradeSelection(asset: RwaAsset): TradeSelection | null {
     0
   const networkParams = { ticker: asset.ticker, chainId }
   const quotesQuery = useAtomValue(tradeQuotesQueryAtomFamily(networkParams))
-  const { data: stats } = useAtomValue(networkStatsQueryAtomFamily(networkParams))
+  const stats = useAtomValue(tokenStatsQueryAtomFamily(asset.ticker)).data?.tokens
   // `keepPreviousData` keeps the quotes of the previous side or network while the new ones load
   const chainQuotes = quotesQuery.data?.chainId === chainId ? quotesQuery.data : undefined
   const quotes = chainQuotes?.side === side ? chainQuotes : undefined
@@ -63,12 +63,8 @@ export function useTradeSelection(asset: RwaAsset): TradeSelection | null {
   const { stockPrice, sharesPerToken } = getSharePricing(market)
   const chainTokens = useMemo(() => asset.tokens.filter((token) => token.chainId === chainId), [asset.tokens, chainId])
   const sortedTokens = useMemo(
-    () =>
-      sortQuotedTokens(
-        toQuotedTokens(chainTokens, quotes, stats?.chainId === chainId ? stats : undefined, stockPrice, sharesPerToken),
-        side,
-      ),
-    [chainTokens, quotes, stats, chainId, stockPrice, sharesPerToken, side],
+    () => sortQuotedTokens(toQuotedTokens(chainTokens, quotes, stats, stockPrice, sharesPerToken), side),
+    [chainTokens, quotes, stats, stockPrice, sharesPerToken, side],
   )
   const quotedTokens = useKeptQuotedTokensOrder(sortedTokens, `${chainId}:${side}`)
 

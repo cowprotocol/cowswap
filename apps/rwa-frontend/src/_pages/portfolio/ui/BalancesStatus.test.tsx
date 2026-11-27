@@ -4,7 +4,10 @@ import { BalancesStatus } from './BalancesStatus'
 
 import type { BalancesProgress } from '../model/usePortfolio'
 
-const LOADED: BalancesProgress = { loaded: 8, total: 8, isLoading: false, updatedAt: Date.UTC(2026, 9, 5, 12, 0) }
+import { formatLocalTime } from '@/shared/lib/format'
+
+const UPDATED_AT = Date.UTC(2026, 9, 5, 12, 0)
+const LOADED: BalancesProgress = { loaded: 8, total: 8, isLoading: false, updatedAt: UPDATED_AT }
 
 describe('BalancesStatus', () => {
   it('shows how many networks have loaded', () => {
@@ -23,7 +26,7 @@ describe('BalancesStatus', () => {
     render(<BalancesStatus progress={LOADED} onRefresh={onRefresh} />)
 
     expect(screen.queryByRole('progressbar')).toBeNull()
-    expect(screen.getByText(/^Balances updated /)).toBeTruthy()
+    expect(screen.getByText(`Balances updated ${formatLocalTime(UPDATED_AT)}`)).toBeTruthy()
 
     fireEvent.click(screen.getByRole('button', { name: 'Refresh balances' }))
 

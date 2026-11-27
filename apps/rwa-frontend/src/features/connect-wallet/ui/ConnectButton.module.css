@@ -15,9 +15,20 @@
 .connect {
   padding: 0 18px;
   border: none;
+  font-weight: 600;
+}
+
+.primary {
   background: var(--color-accent);
   color: var(--color-on-accent);
-  font-weight: 600;
+}
+
+.secondary {
+  height: 32px;
+  padding: 0 14px;
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  font-size: 14px;
 }
 
 .connect:hover {

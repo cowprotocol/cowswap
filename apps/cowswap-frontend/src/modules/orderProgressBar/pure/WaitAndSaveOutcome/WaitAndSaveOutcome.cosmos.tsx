@@ -5,37 +5,29 @@ import { tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 
 import { DemoContainer } from 'cosmos.decorator'
 
-import { BaseTradeConfirmation } from 'modules/trade'
+import { BaseTradeConfirmation, CowParticipationFooter } from 'modules/trade'
 
-import { WAIT_AND_SAVE_OUTCOME_DEMO } from './waitAndSaveOutcome.demo'
+import {
+  WAIT_AND_SAVE_WITH_COW_DEMO,
+  WAIT_AND_SAVE_WITH_COW_LONG_SYMBOL_DEMO,
+  WAIT_AND_SAVE_WITH_WAIVED_FEE_AND_COW_FIAT_DEMO,
+  WAIT_AND_SAVE_WITH_WAIVED_FEE_AND_COW_LONG_SYMBOL_DEMO,
+  WAIT_AND_SAVE_WITH_WAIVED_FEE_AND_COW_TOKEN_DEMO,
+  WAIT_AND_SAVE_WITH_WAIVED_FEE_DEMO,
+  WAIT_AND_SAVE_WITH_WAIVED_FEE_LONG_SYMBOL_DEMO,
+} from './waitAndSaveOutcome.demo'
 import { WaitAndSaveOutcome, WaitAndSaveOutcomeProps } from './WaitAndSaveOutcome.pure'
 
 const sellAmount = tryParseCurrencyAmount('1000', USDC_MAINNET)
 const receivedAmount = tryParseCurrencyAmount('2612480.12', USDC_MAINNET)
 
-const LONG_SYMBOL_OUTCOME: WaitAndSaveOutcomeProps = {
-  ...WAIT_AND_SAVE_OUTCOME_DEMO,
-  gainAmount: '14.6161',
-  gainFiat: '142.37',
-  gainPercent: 2.94,
-  tradingAloneAmount: '497.8312',
-  tradingAloneNumeric: 497.8312,
-  gainNumeric: 14.6161,
-  tokenSymbol: 'B-80BAL-20WETH',
-}
-
-const TINY_GAIN_OUTCOME: WaitAndSaveOutcomeProps = {
-  ...WAIT_AND_SAVE_OUTCOME_DEMO,
-  gainAmount: '0.004',
-  gainFiat: '0.004',
-  gainPercent: 0.004,
-  tradingAloneAmount: '10,000',
-  tradingAloneNumeric: 10_000,
-  gainNumeric: 1,
-  tokenSymbol: 'USDC',
-}
-
-function ComposedConfirmation(props: WaitAndSaveOutcomeProps): ReactNode {
+function ComposedConfirmation({
+  outcome,
+  showCowFooter,
+}: {
+  outcome: WaitAndSaveOutcomeProps
+  showCowFooter?: boolean
+}): ReactNode {
   return (
     <DemoContainer>
       <BaseTradeConfirmation
@@ -58,12 +50,10 @@ function ComposedConfirmation(props: WaitAndSaveOutcomeProps): ReactNode {
             label: 'You received',
           },
           priceImpact: { priceImpact: undefined, loading: false },
-          cowParticipation: {
-            tooltip: 'Your trade was matched with other orders in a Coincidence of Wants (CoW).',
-          },
+          footer: showCowFooter ? <CowParticipationFooter kind="cow" /> : undefined,
         }}
       >
-        <WaitAndSaveOutcome {...props} />
+        <WaitAndSaveOutcome {...outcome} />
       </BaseTradeConfirmation>
     </DemoContainer>
   )
@@ -78,11 +68,31 @@ function OutcomeCard(props: WaitAndSaveOutcomeProps): ReactNode {
 }
 
 const Fixtures = {
-  default: <OutcomeCard {...WAIT_AND_SAVE_OUTCOME_DEMO} />,
-  longSymbol: <OutcomeCard {...LONG_SYMBOL_OUTCOME} />,
-  tinyGain: <OutcomeCard {...TINY_GAIN_OUTCOME} />,
-  swapCompleteWaitAndSave: <ComposedConfirmation {...WAIT_AND_SAVE_OUTCOME_DEMO} />,
-  swapCompleteLongSymbol: <ComposedConfirmation {...LONG_SYMBOL_OUTCOME} />,
+  withWaivedFeeAndCowFiat: <OutcomeCard {...WAIT_AND_SAVE_WITH_WAIVED_FEE_AND_COW_FIAT_DEMO} />,
+  withWaivedFeeAndCowToken: <OutcomeCard {...WAIT_AND_SAVE_WITH_WAIVED_FEE_AND_COW_TOKEN_DEMO} />,
+  withWaivedFeeAndCowLongSymbol: <OutcomeCard {...WAIT_AND_SAVE_WITH_WAIVED_FEE_AND_COW_LONG_SYMBOL_DEMO} />,
+  withWaivedFee: <OutcomeCard {...WAIT_AND_SAVE_WITH_WAIVED_FEE_DEMO} />,
+  withWaivedFeeLongSymbol: <OutcomeCard {...WAIT_AND_SAVE_WITH_WAIVED_FEE_LONG_SYMBOL_DEMO} />,
+  withCow: <OutcomeCard {...WAIT_AND_SAVE_WITH_COW_DEMO} />,
+  withCowLongSymbol: <OutcomeCard {...WAIT_AND_SAVE_WITH_COW_LONG_SYMBOL_DEMO} />,
+
+  swapCompleteWithWaivedFeeAndCowFiat: (
+    <ComposedConfirmation outcome={WAIT_AND_SAVE_WITH_WAIVED_FEE_AND_COW_FIAT_DEMO} showCowFooter />
+  ),
+  swapCompleteWithWaivedFeeAndCowToken: (
+    <ComposedConfirmation outcome={WAIT_AND_SAVE_WITH_WAIVED_FEE_AND_COW_TOKEN_DEMO} showCowFooter />
+  ),
+  swapCompleteWithWaivedFeeAndCowLongSymbol: (
+    <ComposedConfirmation outcome={WAIT_AND_SAVE_WITH_WAIVED_FEE_AND_COW_LONG_SYMBOL_DEMO} showCowFooter />
+  ),
+  swapCompleteWithWaivedFee: <ComposedConfirmation outcome={WAIT_AND_SAVE_WITH_WAIVED_FEE_DEMO} />,
+  swapCompleteWithWaivedFeeLongSymbol: (
+    <ComposedConfirmation outcome={WAIT_AND_SAVE_WITH_WAIVED_FEE_LONG_SYMBOL_DEMO} />
+  ),
+  swapCompleteWithCow: <ComposedConfirmation outcome={WAIT_AND_SAVE_WITH_COW_DEMO} showCowFooter />,
+  swapCompleteWithCowLongSymbol: (
+    <ComposedConfirmation outcome={WAIT_AND_SAVE_WITH_COW_LONG_SYMBOL_DEMO} showCowFooter />
+  ),
 }
 
 export default Fixtures

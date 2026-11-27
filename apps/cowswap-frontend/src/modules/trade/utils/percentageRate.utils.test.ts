@@ -1,6 +1,6 @@
 import { Fraction } from '@cowprotocol/currency'
 
-import { getPercentageRate } from './percentageRate.utils'
+import { getPercentageRate, getRatePercentage } from './percentageRate.utils'
 
 describe('getPercentageRate', () => {
   it.each([
@@ -69,5 +69,66 @@ describe('getPercentageRate', () => {
     [true, '1111111111111111'],
   ])('rejects percentages above the maximum %s / %s', (isInverted, percentage) => {
     expect(getPercentageRate(new Fraction(100), percentage, isInverted)).toBeNull()
+  })
+})
+
+describe('getRatePercentage', () => {
+  const market = new Fraction(2010)
+
+  it.each([
+    [false, '7'],
+    [false, '2.5'],
+    [false, '150'],
+    [true, '7'],
+    [true, '0.01'],
+    [true, '99.99'],
+  ])('round-trips a percentage when inverted=%s / %s', (isInverted, percentage) => {
+    expect(getRatePercentage(market, getPercentageRate(market, percentage, isInverted), isInverted)).toBe(percentage)
+  })
+
+  it('converts a percentage above market into the equivalent percentage below the inverted market', () => {
+    const rate = getPercentageRate(market, '7', false)
+
+    expect(getRatePercentage(market, rate, true)).toBe('6.54')
+  })
+
+  it('keeps the minimum percentage when converting it to the inverted side', () => {
+    const rate = getPercentageRate(market, '0.01', false)
+
+    expect(getRatePercentage(market, rate, true)).toBe('0.01')
+  })
+
+  it('converts a percentage below the inverted market into the equivalent percentage above market', () => {
+    const rate = getPercentageRate(market, '20', true)
+
+    expect(getRatePercentage(market, rate, false)).toBe('25')
+  })
+
+  it.each([
+    [true, '90.9', '998.9'],
+    [true, '99', '999.99'],
+    [true, '99.99', '999.99'],
+    [false, '999.99', '90.91'],
+  ])('caps the converted percentage inverted=%s / %s at the opposite maximum', (isInverted, percentage, expected) => {
+    const rate = getPercentageRate(market, percentage, isInverted)
+
+    expect(getRatePercentage(market, rate, !isInverted)).toBe(expected)
+  })
+
+  it.each([
+    [false, new Fraction(2000)],
+    [true, new Fraction(2000)],
+    [false, new Fraction(2010)],
+  ])('returns null when the rate is not on the expected side of market (inverted=%s)', (isInverted, rate) => {
+    expect(getRatePercentage(market, rate, isInverted)).toBeNull()
+  })
+
+  it.each([
+    [null, new Fraction(1)],
+    [market, null],
+    [new Fraction(0), new Fraction(1)],
+    [market, new Fraction(0)],
+  ])('returns null for unavailable rates', (referenceRate, rate) => {
+    expect(getRatePercentage(referenceRate, rate, false)).toBeNull()
   })
 })

@@ -6,14 +6,13 @@ import { Badge, BadgeTypes } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 
+import { ChainStatusBadge } from 'common/pure/ChainStatusBadge/ChainStatusBadge.pure'
+
 import { ActiveRowLinks } from './ActiveRowLinks/ActiveRowLinks.pure'
 import * as styledEl from './NetworksList.styled'
 import { getLogo } from './NetworksList.utils'
 
 import { useDeprecatedChains } from '../../hooks/useDeprecatedChains'
-import { ChainStatusBadge } from '../ChainStatusBadge/ChainStatusBadge.pure'
-
-const NEW_NETWORK_IDS: Set<TargetChainId> = new Set([])
 
 export interface NetworksListProps {
   currentChainId: SupportedChainId | null
@@ -38,7 +37,6 @@ export function NetworksList({
 
         const isActive = targetChainId === currentChainId
         const logoUrl = getLogo(isDarkMode, isActive, logo.dark, logo.light)
-        const isNewNetwork = NEW_NETWORK_IDS.has(targetChainId)
         const isDeprecatedNetwork = deprecatedChains.has(targetChainId)
 
         const rowContent = (
@@ -57,12 +55,6 @@ export function NetworksList({
                 style={isActive ? { marginRight: '10px' } : undefined}
               >
                 <Trans>READ-ONLY</Trans>
-              </Badge>
-            )}
-
-            {isNewNetwork && !isDeprecatedNetwork && (
-              <Badge type={BadgeTypes.ALERT2} style={isActive ? { marginRight: '10px' } : undefined}>
-                <Trans>NEW</Trans>
               </Badge>
             )}
 

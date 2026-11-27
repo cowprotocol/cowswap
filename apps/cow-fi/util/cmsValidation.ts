@@ -13,7 +13,13 @@ export const MAX_SEARCH_PAGE_SIZE = 100
 export const MAX_SEARCH_TERM_LENGTH = 100
 
 export function isAllowedRevalidatePath(path: string): boolean {
-  return LEARN_REVALIDATE_PATH_PATTERN.test(path) || RESOURCES_REVALIDATE_PATH_PATTERN.test(path)
+  return (
+    path === '/careers/refer-to-earn' ||
+    path === '/careers' ||
+    path === '/affiliate-program' ||
+    LEARN_REVALIDATE_PATH_PATTERN.test(path) ||
+    RESOURCES_REVALIDATE_PATH_PATTERN.test(path)
+  )
 }
 
 export function isValidCmsSlug(slug: string): boolean {

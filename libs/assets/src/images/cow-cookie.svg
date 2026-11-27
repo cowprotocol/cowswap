@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="144" height="112" viewBox="0 0 48 37" fill="none">
+  <defs>
+    <linearGradient id="cookie-face" x1="7" y1="4" x2="31" y2="31" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFE35B"/>
+      <stop offset="1" stop-color="#F5C516"/>
+    </linearGradient>
+    <mask id="cookie-bite" maskUnits="userSpaceOnUse" x="0" y="-3" width="40" height="33">
+      <path fill="#FFF" d="M0-3h40v33H0z"/>
+      <circle cx="30.5" cy="1.6" r="2.5" fill="#000"/>
+      <circle cx="34" cy="4" r="2.5" fill="#000"/>
+      <path fill="#000" d="M30.5-3H40v7h-9.5z"/>
+    </mask>
+  </defs>
+  <g transform="translate(3 5) rotate(8 18 12)">
+    <g mask="url(#cookie-bite)">
+      <path transform="translate(.7 1.2)" fill="#AE7608" d="M13.653 24a4.011 4.011 0 0 1-3.824-2.79L7.11 12.666H5.44a4.01 4.01 0 0 1-3.825-2.791L0 4.8h6.058L2.863 0h30.274l-3.195 4.8H36l-1.615 5.076a4.01 4.01 0 0 1-3.825 2.79h-1.67l-2.72 8.544A4.01 4.01 0 0 1 22.346 24h-8.693Z"/>
+      <path fill="url(#cookie-face)" d="M13.653 24a4.011 4.011 0 0 1-3.824-2.79L7.11 12.666H5.44a4.01 4.01 0 0 1-3.825-2.791L0 4.8h6.058L2.863 0h30.274l-3.195 4.8H36l-1.615 5.076a4.01 4.01 0 0 1-3.825 2.79h-1.67l-2.72 8.544A4.01 4.01 0 0 1 22.346 24h-8.693Z"/>
+      <circle cx="13.756" cy="10.333" r="2.156" fill="#052B65"/>
+      <circle cx="22.244" cy="10.333" r="2.156" fill="#052B65"/>
+      <g fill="#E9A20B">
+        <circle cx="8.2" cy="4.5" r=".78"/>
+        <circle cx="10.7" cy="2.3" r=".65"/>
+        <circle cx="23.8" cy="18.1" r=".75"/>
+        <circle cx="21.4" cy="20.5" r=".65"/>
+      </g>
+    </g>
+  </g>
+  <circle cx="41.1" cy="6.9" r="1.55" fill="#AE7608"/>
+  <circle cx="40.8" cy="6.45" r="1.55" fill="#FFD53D"/>
+  <circle cx="44" cy="9.7" r="1" fill="#AE7608"/>
+  <circle cx="43.8" cy="9.4" r="1" fill="#FFD53D"/>
+</svg>

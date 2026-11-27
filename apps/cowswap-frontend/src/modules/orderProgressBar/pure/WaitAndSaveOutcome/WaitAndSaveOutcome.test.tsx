@@ -7,7 +7,11 @@ import { render, RenderResult, screen } from '@testing-library/react'
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
 import { getCowswapTheme } from 'theme'
 
-import { WAIT_AND_SAVE_OUTCOME_DEMO } from './waitAndSaveOutcome.demo'
+import {
+  WAIT_AND_SAVE_WITH_COW_DEMO,
+  WAIT_AND_SAVE_WITH_WAIVED_FEE_AND_COW_FIAT_DEMO,
+  WAIT_AND_SAVE_WITH_WAIVED_FEE_DEMO,
+} from './waitAndSaveOutcome.demo'
 import { WaitAndSaveOutcome } from './WaitAndSaveOutcome.pure'
 
 jest.mock('react-inlinesvg', () => ({
@@ -49,18 +53,36 @@ function renderOutcome(element: ReactElement): RenderResult {
 }
 
 describe('WaitAndSaveOutcome', () => {
-  it('renders gain copy and truncates long symbols', () => {
-    renderOutcome(
-      <WaitAndSaveOutcome {...WAIT_AND_SAVE_OUTCOME_DEMO} tokenSymbol="SUPERLONGTOKENXYZ" gainPercent={0.004} />,
-    )
+  it('renders the large comparison card and truncates long symbols', () => {
+    renderOutcome(<WaitAndSaveOutcome {...WAIT_AND_SAVE_WITH_COW_DEMO} tokenSymbol="SUPERLONGTOKENXYZ" />)
 
     expect(screen.getByTestId('wait-and-save-outcome').textContent).toContain('SUPERLONGTOK...')
     expect(screen.getByTitle('SUPERLONGTOKENXYZ').textContent).toBe('SUPERLONGTOK...')
-    expect(screen.getByTestId('wait-and-save-gain-pill').textContent).toBe('<0.01%')
+    expect(screen.getByTestId('wait-and-save-outcome').textContent).toContain('Better price than trading alone')
+  })
+
+  it('renders the comparison card with a savings breakdown when fee waiver and comparison are both available', () => {
+    renderOutcome(<WaitAndSaveOutcome {...WAIT_AND_SAVE_WITH_WAIVED_FEE_AND_COW_FIAT_DEMO} />)
+
+    const text = screen.getByTestId('wait-and-save-outcome').textContent
+    expect(text).toContain('Wait & save · You saved')
+    expect(text).toContain('$4.80')
+    expect(text).toContain('Better price than trading alone')
+    expect(text).toContain('+$4.50')
+    expect(text).toContain('No volume fee')
+    expect(text).toContain('+$0.30')
+  })
+
+  it('renders the compact fee-waiver banner when comparison is unavailable', () => {
+    renderOutcome(<WaitAndSaveOutcome {...WAIT_AND_SAVE_WITH_WAIVED_FEE_DEMO} />)
+
+    expect(screen.getByTestId('wait-and-save-outcome').textContent).toContain(
+      'Wait & save: $0.30 saved on the volume fee',
+    )
   })
 
   it('explains trading alone as the best same-auction single-order offer', () => {
-    renderOutcome(<WaitAndSaveOutcome {...WAIT_AND_SAVE_OUTCOME_DEMO} />)
+    renderOutcome(<WaitAndSaveOutcome {...WAIT_AND_SAVE_WITH_COW_DEMO} />)
 
     expect(screen.getByTestId('tooltip-icon').textContent).toBe(
       "Compares what you received with the best offer solvers made for your order alone, in the same auction. It's not compared with swapping right away or with your quote.",
@@ -68,7 +90,7 @@ describe('WaitAndSaveOutcome', () => {
   })
 
   it('skips the hero blur transition when the user prefers reduced motion', () => {
-    renderOutcome(<WaitAndSaveOutcome {...WAIT_AND_SAVE_OUTCOME_DEMO} />)
+    renderOutcome(<WaitAndSaveOutcome {...WAIT_AND_SAVE_WITH_COW_DEMO} />)
 
     const cssText = Array.from(document.querySelectorAll('style'))
       .map((node) => node.textContent ?? '')

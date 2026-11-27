@@ -1,4 +1,5 @@
 import { createStore, Provider } from 'jotai'
+import type { ReactElement } from 'react'
 
 import { QueryClient } from '@tanstack/query-core'
 
@@ -9,9 +10,15 @@ import { HeaderSearch } from './HeaderSearch'
 
 import type { RwaAssetsSearchResult, RwaAssetWithMarket } from '@/entities/asset'
 
-const mockPush = jest.fn()
+import { mockViewport } from '@/shared/lib/testing'
 
-jest.mock('next/navigation', () => ({ useRouter: () => ({ push: mockPush }) }))
+const FULL_SCREEN_WIDTH = 390
+const PAST_FULL_SCREEN_WIDTH = 800
+
+const mockPush = jest.fn()
+let mockPathname = '/'
+
+jest.mock('next/navigation', () => ({ useRouter: () => ({ push: mockPush }), usePathname: () => mockPathname }))
 
 function asset(ticker: string, title: string): RwaAssetWithMarket {
   return { ticker, coingeckoId: ticker.toLowerCase(), title, type: 'stock', priority: 0, tokens: [], market: null }
@@ -19,20 +26,25 @@ function asset(ticker: string, title: string): RwaAssetWithMarket {
 
 const RESULT: RwaAssetsSearchResult = { items: [asset('NVDA', 'NVIDIA'), asset('NFLX', 'Netflix')], degraded: false }
 
-function renderSearch(): HTMLElement {
+function renderSearch(): { input: HTMLElement; rerender(): void } {
   const store = createStore()
   store.set(queryClientAtom, new QueryClient({ defaultOptions: { queries: { retry: false } } }))
-  render(
+  const tree = (): ReactElement => (
     <Provider store={store}>
       <HeaderSearch />
-    </Provider>,
+    </Provider>
   )
+  const view = render(tree())
 
-  return screen.getByRole('combobox', { name: 'Search assets' })
+  return { input: screen.getByRole('combobox', { name: 'Search assets' }), rerender: () => view.rerender(tree()) }
 }
 
 describe('HeaderSearch', () => {
+  let setWidth: (width: number) => void
+
   beforeEach(() => {
+    setWidth = mockViewport(FULL_SCREEN_WIDTH)
+    mockPathname = '/'
     mockPush.mockReset()
     global.fetch = jest.fn(() =>
       Promise.resolve({ ok: true, status: 200, json: () => Promise.resolve(RESULT) }),
@@ -40,7 +52,7 @@ describe('HeaderSearch', () => {
   })
 
   it('requests up to five suggestions', async () => {
-    const input = renderSearch()
+    const { input } = renderSearch()
 
     fireEvent.change(input, { target: { value: 'n' } })
 
@@ -49,7 +61,7 @@ describe('HeaderSearch', () => {
   })
 
   it('opens the highlighted asset on Enter', async () => {
-    const input = renderSearch()
+    const { input } = renderSearch()
 
     fireEvent.change(input, { target: { value: 'n' } })
     await screen.findByRole('option', { name: /NVIDIA/ })
@@ -64,7 +76,7 @@ describe('HeaderSearch', () => {
   })
 
   it('closes on Escape and keeps the query', async () => {
-    const input = renderSearch()
+    const { input } = renderSearch()
 
     fireEvent.change(input, { target: { value: 'n' } })
     await screen.findByRole('option', { name: /NVIDIA/ })
@@ -76,10 +88,88 @@ describe('HeaderSearch', () => {
   })
 
   it('focuses on the slash key', () => {
-    const input = renderSearch()
+    const { input } = renderSearch()
 
     fireEvent.keyDown(document.body, { key: '/' })
 
     expect(document.activeElement).toBe(input)
+  })
+
+  it('shows the field from the search button and hides it on Escape', () => {
+    const { input } = renderSearch()
+    const button = screen.getByRole('button', { name: 'Search' })
+
+    fireEvent.click(button)
+
+    expect(button.getAttribute('aria-expanded')).toBe('true')
+    expect(document.activeElement).toBe(input)
+
+    fireEvent.keyDown(input, { key: 'Escape' })
+
+    expect(button.getAttribute('aria-expanded')).toBe('false')
+    expect(document.activeElement).toBe(button)
+  })
+
+  it('hides the field from the close button', () => {
+    renderSearch()
+    const button = screen.getByRole('button', { name: 'Search' })
+
+    fireEvent.click(button)
+    fireEvent.click(screen.getByRole('button', { name: 'Close search' }))
+
+    expect(button.getAttribute('aria-expanded')).toBe('false')
+    expect(document.activeElement).toBe(button)
+  })
+
+  it('hides the field on Escape from the close button and marks the Escape handled', () => {
+    renderSearch()
+    const button = screen.getByRole('button', { name: 'Search' })
+
+    fireEvent.click(button)
+    const isNotHandled = fireEvent.keyDown(screen.getByRole('button', { name: 'Close search' }), { key: 'Escape' })
+
+    expect(isNotHandled).toBe(false)
+    expect(button.getAttribute('aria-expanded')).toBe('false')
+    expect(document.activeElement).toBe(button)
+  })
+
+  it('hides the field on Escape while the focus is outside it', () => {
+    renderSearch()
+    const button = screen.getByRole('button', { name: 'Search' })
+
+    fireEvent.click(button)
+    fireEvent.keyDown(document.body, { key: 'Escape' })
+
+    expect(button.getAttribute('aria-expanded')).toBe('false')
+  })
+
+  it('hides the field when the viewport grows past the full-screen breakpoint', () => {
+    renderSearch()
+    const button = screen.getByRole('button', { name: 'Search' })
+
+    fireEvent.click(button)
+    setWidth(PAST_FULL_SCREEN_WIDTH)
+
+    expect(button.getAttribute('aria-expanded')).toBe('false')
+
+    setWidth(FULL_SCREEN_WIDTH)
+
+    expect(button.getAttribute('aria-expanded')).toBe('false')
+  })
+
+  it('hides the field when the page changes', () => {
+    const { rerender } = renderSearch()
+    const button = screen.getByRole('button', { name: 'Search' })
+
+    fireEvent.click(button)
+    mockPathname = '/asset/NVDA'
+    rerender()
+
+    expect(button.getAttribute('aria-expanded')).toBe('false')
+
+    mockPathname = '/'
+    rerender()
+
+    expect(button.getAttribute('aria-expanded')).toBe('false')
   })
 })

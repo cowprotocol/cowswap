@@ -13,6 +13,7 @@ import {
 } from 'modules/limitOrders/state/limitOrdersRawStateAtom'
 import { useBuildTradeDerivedState } from 'modules/trade/hooks/useBuildTradeDerivedState'
 
+import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { TradeType } from 'common/modules/tradeNavigation'
 
@@ -27,11 +28,12 @@ export function useLimitOrdersDerivedState(): LimitOrdersDerivedState {
 export function useLimitOrdersDerivedStateToFill(): LimitOrdersDerivedState {
   const canQuote = useAtomValue(captchaCanQuoteAtom)
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
   const isUnlocked = useIsWidgetUnlocked()
   const derivedState = useBuildTradeDerivedState(limitOrdersRawStateAtom, false)
 
   return useMemo(() => {
-    if (isProviderNetworkUnsupported) return DEFAULT_LIMIT_DERIVED_STATE
+    if (isProviderNetworkUnsupported || isProviderNetworkDeprecated) return DEFAULT_LIMIT_DERIVED_STATE
 
     const gatedAmounts = canQuote
       ? {}
@@ -46,5 +48,5 @@ export function useLimitOrdersDerivedStateToFill(): LimitOrdersDerivedState {
       slippage: LIMIT_ORDER_SLIPPAGE,
       tradeType: TradeType.LIMIT_ORDER,
     }
-  }, [canQuote, derivedState, isUnlocked, isProviderNetworkUnsupported])
+  }, [canQuote, derivedState, isUnlocked, isProviderNetworkUnsupported, isProviderNetworkDeprecated])
 }

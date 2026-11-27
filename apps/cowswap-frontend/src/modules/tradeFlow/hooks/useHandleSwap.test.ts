@@ -27,6 +27,7 @@ jest.mock('modules/trade', () => ({
   useDerivedTradeState: jest.fn(),
   useTradeFlowAnalytics: jest.fn(),
   useTradePriceImpact: jest.fn(),
+  useWalletAcceptsForeignFeePayer: () => true,
 }))
 jest.mock('common/hooks/useConfirmPriceImpactWithoutFee', () => ({
   useConfirmPriceImpactWithoutFee: () => ({ confirmPriceImpactWithoutFee: jest.fn() }),

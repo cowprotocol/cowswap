@@ -1,12 +1,13 @@
 import { createStore } from 'jotai'
 
+import { USER_STATE_STORAGE_KEY } from '@cowprotocol/common-const/theme'
+
 import {
   readThemePreference,
   resolveTheme,
   setThemePreferenceAtom,
   THEME_INIT_SCRIPT,
   themePreferenceAtom,
-  watchThemeChanges,
 } from './theme'
 
 function mockSystemScheme(prefersDark: boolean): void {
@@ -14,6 +15,18 @@ function mockSystemScheme(prefersDark: boolean): void {
     configurable: true,
     value: () => ({ matches: prefersDark, addEventListener: () => undefined, removeEventListener: () => undefined }),
   })
+}
+
+function readCowSwapUser(): unknown {
+  return JSON.parse(localStorage.getItem(USER_STATE_STORAGE_KEY) ?? 'null')
+}
+
+function storeCowSwapUser(user: unknown): string {
+  const value = JSON.stringify(user)
+
+  localStorage.setItem(USER_STATE_STORAGE_KEY, value)
+
+  return value
 }
 
 describe('theme', () => {
@@ -29,59 +42,55 @@ describe('theme', () => {
     expect(resolveTheme('dark', false)).toBe('dark')
   })
 
-  it('falls back to auto for a missing or invalid stored preference', () => {
+  it('reads the CoW Swap dark mode choice', () => {
     expect(readThemePreference()).toBe('auto')
 
-    localStorage.setItem('rwaTheme:v1', '"sepia"')
+    storeCowSwapUser({ userDarkMode: null, matchesDarkMode: true })
     expect(readThemePreference()).toBe('auto')
 
-    localStorage.setItem('rwaTheme:v1', 'not json')
-    expect(readThemePreference()).toBe('auto')
-
-    localStorage.setItem('rwaTheme:v1', '"dark"')
+    storeCowSwapUser({ userDarkMode: true })
     expect(readThemePreference()).toBe('dark')
+
+    storeCowSwapUser({ userDarkMode: false })
+    expect(readThemePreference()).toBe('light')
+
+    localStorage.setItem(USER_STATE_STORAGE_KEY, 'not json')
+    expect(readThemePreference()).toBe('auto')
   })
 
-  it('stores the preference and applies it to the page', () => {
+  it('saves the preference into the CoW Swap user state, keeping its other fields', () => {
     mockSystemScheme(true)
+    storeCowSwapUser({ userDarkMode: true, userLocale: 'es-ES', hooksEnabled: true })
     const store = createStore()
 
     store.set(setThemePreferenceAtom, 'light')
 
     expect(store.get(themePreferenceAtom)).toBe('light')
-    expect(localStorage.getItem('rwaTheme:v1')).toBe('"light"')
+    expect(readCowSwapUser()).toEqual({ userDarkMode: false, userLocale: 'es-ES', hooksEnabled: true })
     expect(document.documentElement.dataset.theme).toBe('light')
 
     store.set(setThemePreferenceAtom, 'auto')
 
+    expect(readCowSwapUser()).toEqual({ userDarkMode: null, userLocale: 'es-ES', hooksEnabled: true })
     expect(document.documentElement.dataset.theme).toBe('dark')
   })
 
-  it('applies a preference saved in another tab', () => {
-    mockSystemScheme(false)
-    const unwatch = watchThemeChanges()
+  it('creates the CoW Swap user state when CoW Swap was never opened', () => {
+    createStore().set(setThemePreferenceAtom, 'dark')
 
-    localStorage.setItem('rwaTheme:v1', '"dark"')
-    window.dispatchEvent(new StorageEvent('storage', { key: 'rwaTheme:v1', newValue: '"dark"' }))
-
-    expect(document.documentElement.dataset.theme).toBe('dark')
-
-    unwatch()
-    localStorage.setItem('rwaTheme:v1', '"light"')
-    window.dispatchEvent(new StorageEvent('storage', { key: 'rwaTheme:v1', newValue: '"light"' }))
-
-    expect(document.documentElement.dataset.theme).toBe('dark')
+    expect(readCowSwapUser()).toEqual({ userDarkMode: true })
   })
 
   it.each([
-    ['"dark"', false, 'dark'],
-    ['"light"', true, 'light'],
-    ['"auto"', true, 'dark'],
+    [{ userDarkMode: true }, false, 'dark'],
+    [{ userDarkMode: false }, true, 'light'],
+    [{ userDarkMode: null }, true, 'dark'],
     [null, false, 'light'],
     ['broken', true, 'dark'],
-  ])('init script applies the stored %s preference (system dark: %s)', (stored, prefersDark, theme) => {
+  ])('init script applies the stored %j CoW Swap user state (system dark: %s)', (stored, prefersDark, theme) => {
     mockSystemScheme(prefersDark)
-    if (stored !== null) localStorage.setItem('rwaTheme:v1', stored)
+    if (stored === 'broken') localStorage.setItem(USER_STATE_STORAGE_KEY, stored)
+    else if (stored !== null) storeCowSwapUser(stored)
 
     new Function(THEME_INIT_SCRIPT)()
 

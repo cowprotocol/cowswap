@@ -34,6 +34,7 @@ const SAFE_API_NETWORK_ID: Partial<Record<SupportedChainId, string>> = {
   [SupportedChainId.LINEA]: 'linea',
   [SupportedChainId.PLASMA]: 'plasma',
   [SupportedChainId.INK]: 'ink',
+  [SupportedChainId.ROBINHOOD]: 'robinhood',
 }
 
 export function getSafeApiUrl(chainId: SupportedChainId): string {
@@ -68,7 +69,7 @@ export async function createSafeApiKitInstance(chainId: number): Promise<SafeApi
 }
 
 export function getSafeAccountUrl(chainId: SupportedChainId, safeAddress: string): string {
-  const chainShortName = CHAIN_INFO[chainId].addressPrefix
+  const chainShortName = getSafeChainShortName(chainId)
 
   return `${SAFE_BASE_URL}/${chainShortName}:${safeAddress}`
 }
@@ -93,7 +94,7 @@ export async function getSafeTransaction(
 }
 
 export function getSafeWebUrl(chainId: SupportedChainId, safeAddress: string, safeTxHash: string): string {
-  const chainShortName = CHAIN_INFO[chainId].addressPrefix
+  const chainShortName = getSafeChainShortName(chainId)
 
   return `${SAFE_BASE_URL}/transactions/tx?safe=${chainShortName}:${safeAddress}&id=multisig_${safeAddress}_${safeTxHash}`
 }
@@ -124,4 +125,9 @@ async function _getClientOrThrow(chainId: number): Promise<SafeApiKitType> {
   }
 
   return client
+}
+
+// Safe names Robinhood `robinhood` instead of its EIP-3770 short name `robinhoodchain`
+function getSafeChainShortName(chainId: SupportedChainId): string {
+  return chainId === SupportedChainId.ROBINHOOD ? 'robinhood' : CHAIN_INFO[chainId].addressPrefix
 }

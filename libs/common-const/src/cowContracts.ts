@@ -20,5 +20,6 @@ export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.LINEA]: null,
   [SupportedChainId.PLASMA]: null,
   [SupportedChainId.INK]: null,
+  [SupportedChainId.ROBINHOOD]: null,
   [SupportedChainId.SOLANA]: null,
 }

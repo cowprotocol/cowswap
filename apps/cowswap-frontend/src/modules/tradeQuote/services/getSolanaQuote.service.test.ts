@@ -75,6 +75,7 @@ describe('getSolanaQuote', () => {
 
     expect(mockGetSolanaQuoteFromSdk).toHaveBeenCalledWith(
       {
+        appCode: quoteParams.appCode,
         ownerAddress: quoteParams.owner,
         sellTokenAddress: quoteParams.sellTokenAddress,
         buyTokenAddress: quoteParams.buyTokenAddress,

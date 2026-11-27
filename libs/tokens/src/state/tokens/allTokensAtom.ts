@@ -1,15 +1,13 @@
 import { atom } from 'jotai'
 
 import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
-import { getAddressKey } from '@cowprotocol/cow-sdk'
+import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenInfo } from '@cowprotocol/types'
 
-import { blockedListSourcesAtom } from './blockedListSourcesAtom'
 import { favoriteTokensAtom } from './favoriteTokensAtom'
 import { userAddedTokensAtom } from './userAddedTokensAtom'
 
 import { GLOBAL_TOKENS_OVERRIDES } from '../../const/tokensOverrides'
-import { getSourceAsKey } from '../../hooks/lists/useIsListBlocked'
 import { TokensBySymbolState, TokensMap } from '../../types'
 import { normalizeTokensMapKeys } from '../../utils/normalizeTokensMapKeys'
 import { parseTokenInfo } from '../../utils/parseTokenInfo'
@@ -34,7 +32,6 @@ const tokensStateAtom = atom(async (get) => {
   const { chainId, selectedLists } = get(environmentAtom)
   const listsStatesList = await get(listsStatesListAtom)
   const listsEnabledState = await get(listsEnabledStateAtom)
-  const blockedListSources = get(blockedListSourcesAtom)
 
   return {
     listsCount: listsStatesList.length,
@@ -45,12 +42,6 @@ const tokensStateAtom = atom(async (get) => {
       .sort((a, b) => (a.priority ?? Number.MAX_SAFE_INTEGER) - (b.priority ?? Number.MAX_SAFE_INTEGER))
       .reduce<TokensState>(
         (acc, list) => {
-          // Skip processing tokens from blocked lists (geo-blocked or consent required)
-          const sourceKey = getSourceAsKey(list.source)
-          if (blockedListSources.has(sourceKey)) {
-            return acc
-          }
-
           const isListEnabled = listsEnabledState[list.source] || selectedLists?.includes(list.source)
           const lpTokenProvider = list.lpTokenProvider
 
@@ -97,13 +88,35 @@ export const activeTokensMapAtom = atom(async (get) => {
 })
 
 /**
+ * Listed tokens are hidden here instead of being deleted from storage: user-added tokens are shared by
+ * every tab while enabled lists are per tab, so deleting by this tab's lists also drops a token that a
+ * tab without the list has just imported.
+ */
+const unlistedUserAddedTokensAtom = atom(async (get) => {
+  const { chainId } = get(environmentAtom)
+  const userAddedTokens = normalizeTokensMapKeys(get(userAddedTokensAtom)[chainId] || {})
+  const activeTokens = await get(activeTokensMapAtom)
+
+  return Object.keys(userAddedTokens).reduce<TokensMap>((acc, key) => {
+    if (!activeTokens[key]) acc[key] = userAddedTokens[key]
+
+    return acc
+  }, {})
+})
+
+export const userAddedTokensListAtom = atom(async (get) => {
+  const tokens = await get(unlistedUserAddedTokensAtom)
+
+  return Object.values(tokens).map((token) => TokenWithLogo.fromToken(token, token.logoURI))
+})
+
+/**
  * Returns a list of tokens that are active and sorted alphabetically
  * The list includes: native token, user added tokens, optional favorite tokens and tokens from active lists
  * Native token is always the first element in the list
  */
 export const allActiveTokensAtom = atom(async (get) => {
   const { chainId, enableLpTokensByDefault, hideFavoriteTokens } = get(environmentAtom)
-  const userAddedTokens = get(userAddedTokensAtom)
   const favoriteTokensState = get(favoriteTokensAtom)
   const isTokenListsUpdating = get(tokenListsUpdatingAtom)
 
@@ -140,13 +153,24 @@ export const allActiveTokensAtom = atom(async (get) => {
     tokenSources.push(normalizeTokensMapKeys(favoriteTokensState[chainId]))
   }
 
-  tokenSources.push(normalizeTokensMapKeys(userAddedTokens[chainId] || {}), tokensMap.activeTokens)
+  tokenSources.push(await get(unlistedUserAddedTokensAtom), tokensMap.activeTokens)
 
   if (nativeToken) {
     tokenSources.push({ [getAddressKey(nativeToken.address)]: nativeToken as TokenInfo })
   }
 
   const tokens = tokenMapToListWithLogo(tokenSources, chainId)
+
+  if (chainId === SupportedChainId.SOLANA) {
+    tokens.forEach((token) => {
+      if (token.extensions) {
+        token.extensions = {
+          ...token.extensions,
+          rank: tokensMap.activeTokens[getAddressKey(token.address)]?.extensions?.rank,
+        }
+      }
+    })
+  }
 
   return { tokens, chainId }
 })

@@ -1,70 +1,134 @@
 'use client'
 
 import { useAtomValue, useSetAtom } from 'jotai'
-import type { ReactNode } from 'react'
+import { type ReactNode, useCallback, useId, useRef, useState } from 'react'
+
+import dynamic from 'next/dynamic'
 
 import styles from './AssetsExplorer.module.css'
+import { AssetsFiltersPanel } from './AssetsFiltersPanel'
 import { StarIcon } from './StarIcon'
+import { FilterIcon } from './ToolbarIcons'
 
+import { useMediaQuery } from '../lib/useMediaQuery'
 import {
+  activePanelFiltersCountAtom,
   assetsFilterQueryAtom,
   assetsFiltersAtom,
+  NO_PANEL_FILTERS,
   setAssetsFilterQueryAtom,
   updateAssetsFiltersAtom,
 } from '../model/assetsFiltersAtoms'
-import { assetsPageQueryAtom } from '../model/assetsQueryAtoms'
+import { assetsCountLabelAtom } from '../model/assetsQueryAtoms'
 
+import { MEDIA_QUERIES } from '@/shared/config'
+import { useDismissOnEscape, useDismissOnMediaQueryChange, useDismissOnOutsideInteraction } from '@/shared/lib/dismiss'
 import { SearchIcon } from '@/shared/ui/icons'
-import { useNetworkOptions } from '@/shared/ui/network-logos'
-import { Select } from '@/shared/ui/select'
+
+const AssetsFiltersDrawer = dynamic(
+  () => import('./AssetsFiltersDrawer').then((module) => module.AssetsFiltersDrawer),
+  {
+    ssr: false,
+  },
+)
 
 export function AssetsFilters(): ReactNode {
   const query = useAtomValue(assetsFilterQueryAtom)
   const setQuery = useSetAtom(setAssetsFilterQueryAtom)
-  const { issuer, chainId, watchlistOnly } = useAtomValue(assetsFiltersAtom)
+  const { watchlistOnly } = useAtomValue(assetsFiltersAtom)
+  const activeFilters = useAtomValue(activePanelFiltersCountAtom)
   const updateFilters = useSetAtom(updateAssetsFiltersAtom)
-  const { data } = useAtomValue(assetsPageQueryAtom)
-  const issuers = data?.issuers ?? []
-  const networkOptions = useNetworkOptions(data?.chainIds ?? [])
+  const assetsCount = useAtomValue(assetsCountLabelAtom)
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false)
+  const isPhoneWidth = useMediaQuery(MEDIA_QUERIES.upToSmall)
+  const searchPlaceholder = useSearchPlaceholder()
+  const wrapperRef = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const filtersId = useId()
+  const isPopoverOpen = isFiltersOpen && !isPhoneWidth
+  const closeFilters = useCallback(() => setIsFiltersOpen(false), [])
+  const closeAndFocusTrigger = useCallback(() => {
+    setIsFiltersOpen(false)
+    triggerRef.current?.focus()
+  }, [])
+
+  useDismissOnOutsideInteraction(isPopoverOpen, [wrapperRef], closeFilters, false)
+  useDismissOnEscape(isPopoverOpen, closeFilters, triggerRef)
+  // Not `isPopoverOpen`: React commits between media query listeners, which would remove this one before it fires
+  useDismissOnMediaQueryChange(isFiltersOpen, MEDIA_QUERIES.upToSmall, closeAndFocusTrigger)
 
   return (
-    <div className={styles.filters}>
+    <>
       <label className={styles.filterInput}>
         <SearchIcon />
         <input
           type="search"
-          placeholder="Filter assets…"
-          aria-label="Filter assets"
+          placeholder={searchPlaceholder}
+          aria-label="Search assets"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
         />
       </label>
       <span className={styles.visuallyHidden} role="status">
-        {data && `${data.total} ${data.total === 1 ? 'asset' : 'assets'}`}
+        {assetsCount}
       </span>
-      <div className={styles.filterControls}>
-        <Select
-          aria-label="Issuer"
-          value={issuer}
-          options={[{ value: null, label: 'All issuers' }, ...issuers.map((item) => ({ value: item, label: item }))]}
-          onChange={(value) => updateFilters({ issuer: value })}
-        />
-        <Select
-          aria-label="Network"
-          value={chainId}
-          options={[{ value: null, label: 'All networks' }, ...networkOptions]}
-          onChange={(value) => updateFilters({ chainId: value })}
-        />
+      <button
+        type="button"
+        className={`${styles.outlinedButton} ${styles.iconButton}`}
+        aria-pressed={watchlistOnly}
+        onClick={() => updateFilters({ watchlistOnly: !watchlistOnly })}
+      >
+        <StarIcon filled={watchlistOnly} />
+        <span className={styles.buttonLabel}>Watchlist</span>
+      </button>
+      <div ref={wrapperRef}>
+        <button
+          ref={triggerRef}
+          type="button"
+          className={`${styles.outlinedButton} ${styles.iconButton}`}
+          data-active={activeFilters > 0}
+          aria-expanded={isFiltersOpen}
+          aria-controls={isFiltersOpen ? filtersId : undefined}
+          onClick={() => setIsFiltersOpen((isOpen) => !isOpen)}
+        >
+          <FilterIcon />
+          <span className={styles.buttonLabel}>Filters</span>
+          {activeFilters > 0 && (
+            <span className={styles.filtersCount}>
+              {activeFilters}
+              <span className={styles.visuallyHidden}> active</span>
+            </span>
+          )}
+        </button>
+        {isPhoneWidth ? (
+          <AssetsFiltersDrawer
+            id={filtersId}
+            isOpen={isFiltersOpen}
+            onOpenChange={setIsFiltersOpen}
+            triggerRef={triggerRef}
+          />
+        ) : (
+          <AssetsFiltersPanel id={filtersId} hidden={!isFiltersOpen} />
+        )}
+      </div>
+      {activeFilters > 0 && (
         <button
           type="button"
-          className={styles.watchlistButton}
-          aria-pressed={watchlistOnly}
-          onClick={() => updateFilters({ watchlistOnly: !watchlistOnly })}
+          className={styles.clearButton}
+          onClick={() => updateFilters({ ...NO_PANEL_FILTERS, type: null })}
         >
-          <StarIcon filled={watchlistOnly} />
-          Watchlist
+          Clear
         </button>
-      </div>
-    </div>
+      )}
+    </>
   )
+}
+
+function useSearchPlaceholder(): string {
+  const isTinyWidth = useMediaQuery(MEDIA_QUERIES.upToTiny)
+  const isTabletWidth = useMediaQuery(MEDIA_QUERIES.upToMedium)
+
+  if (isTinyWidth) return 'Search…'
+
+  return isTabletWidth ? 'Search assets…' : 'Search assets or tickers…'
 }

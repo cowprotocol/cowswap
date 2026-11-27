@@ -9,33 +9,49 @@ jest.mock('launchdarkly-react-client-sdk', () => ({
 
 const mockUseFlags = jest.mocked(useFlags)
 
-const LD_FLAGS = { isSolanaEnabled: true, isSolBridgeEnabled: true, isTwapEoaEnabled: true }
+const LD_FLAGS = { isSolBridgeEnabled: true, isTwapEoaEnabled: true }
 
 describe('useFeatureFlags', () => {
   beforeEach(() => {
     mockUseFlags.mockReturnValue(LD_FLAGS)
   })
 
-  afterEach(() => {
-    window.location.hash = ''
-  })
-
-  it('returns LaunchDarkly flags as is outside the widget', () => {
+  it('returns LaunchDarkly flags as is', () => {
     const { result } = renderHook(() => useFeatureFlags())
 
     expect(result.current).toBe(LD_FLAGS)
   })
+})
 
-  it('forces Solana and the alpha networks option off inside the widget and keeps the rest, including bridging to Solana', () => {
-    window.location.hash = '#/1/widget/swap'
+describe('useFeatureFlags with REACT_APP_FEATURE_FLAGS', () => {
+  const originalValue = process.env.REACT_APP_FEATURE_FLAGS
+
+  beforeEach(() => {
+    mockUseFlags.mockReturnValue(LD_FLAGS)
+  })
+
+  afterEach(() => {
+    if (originalValue === undefined) delete process.env.REACT_APP_FEATURE_FLAGS
+    else process.env.REACT_APP_FEATURE_FLAGS = originalValue
+  })
+
+  it('merges env overrides over unresolved LaunchDarkly flags', () => {
+    process.env.REACT_APP_FEATURE_FLAGS = '{"isWaitForCowsEnabled":true,"isTwapEoaEnabled":false}'
 
     const { result } = renderHook(() => useFeatureFlags())
 
     expect(result.current).toEqual({
-      isSolanaEnabled: false,
-      isAlphaNetworksOptionVisible: false,
-      isSolBridgeEnabled: true,
-      isTwapEoaEnabled: true,
+      ...LD_FLAGS,
+      isWaitForCowsEnabled: true,
+      isTwapEoaEnabled: false,
     })
+  })
+
+  it('ignores malformed JSON', () => {
+    process.env.REACT_APP_FEATURE_FLAGS = 'not json'
+
+    const { result } = renderHook(() => useFeatureFlags())
+
+    expect(result.current).toBe(LD_FLAGS)
   })
 })

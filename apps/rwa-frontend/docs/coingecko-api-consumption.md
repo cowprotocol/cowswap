@@ -28,9 +28,9 @@ All calls go through `src/shared/api/coingecko/coingeckoClient.ts` → `entities
 | # | CoinGecko endpoint | Cache key | Revalidate | Calls per refresh | Triggered by (app route → UI) |
 |---|---|---|---|---|---|
 | 1 | `GET /rwas/markets?per_page=250&page=N&sparkline=true` | one global snapshot | 180 s | **4** (CoinGecko lists 988 RWAs today: 2 concurrent pages, then 2 sequential until a short page) | `/assets`, `/assets-search`, `/market-overview`, `/asset/{t}`: home table, search, portfolio, asset page |
-| 2 | `GET /coins/markets?ids=<batch of 250>` | per batch of the 601 sorted registry coin ids (3 batches) | 60 s | 1 per batch holding the asset's ids (1 for most assets) | `/asset/{t}` and `/network-stats/{t}`: asset page, polled every 60 s |
-| 3 | `GET /coins/{id}/market_chart?days=…` | per asset × range | 1D: 900 s; 1W: 1800 s; 1M/1Y/ALL: 3600 s (the route's CDN `s-maxage` is the same) | 1 | `/chart/{t}?range`: asset page chart, no polling, 1D by default |
-| 4 | `GET /onchain/networks/{net}/tokens/multi/{batch of 30}` | per batch of the sorted registry addresses on the chain (47 batches over all chains) | 300 s | 1 per batch holding the asset's addresses on the chain (0 on Ink, which isn't indexed) | `/network-stats/{t}?chainId`: trade widget, polled every 60 s, **with or without a wallet** |
+| 2 | `GET /coins/markets?ids=<batch of 250>` | per batch of the 601 sorted registry coin ids (3 batches) | 60 s | 1 per batch holding the asset's ids (1 for most assets) | `/asset/{t}` and `/token-stats/{t}`: asset page, polled every 60 s (`/token-stats` every 300 s) |
+| 3 | `GET /rwas/{id}/market_chart?days=…` (Pro plan; otherwise `/coins/{id}/market_chart` of the first coin with prices) | per asset × range | 1D: 900 s; 1W: 1800 s; 1M/1Y/ALL: 3600 s (the route's CDN `s-maxage` is the same) | 1 | `/chart/{t}?range`: asset page chart, no polling, 1D by default; 1Y also on every asset page visit, for the About 52-week range |
+| 4 | `GET /onchain/networks/{net}/tokens/multi/{batch of 30}` | per batch of the sorted registry addresses on the chain (47 batches over all chains) | 300 s | 1 per batch holding the asset's addresses on the chain (0 on Ink, which isn't indexed) | `/token-stats/{t}`: asset page Stock tokens table and trade widget token selector, **with or without a wallet**, 1 per network of the asset, polled every 300 s (the revalidate period, so a poll is at most one call per network) |
 | 5 | `GET /onchain/networks/{net}/tokens/{addr}/ohlcv/hour` | per token | 900 s | 1 per token of the 3 most-traded assets (~19 today) | `/market-overview`: home "Most traded" card, polled every 60 s. Paid plan only |
 
 What `/rwas/markets` provides: per RWA, the price, 24h change, 24h high/low, market cap, 24h volume, last update time and a 7-day hourly sparkline, aggregated over every tokenized version of the asset. Its `current_price` is the headline price of the home table and the asset page, so the snapshot is kept at 3 minutes.
@@ -131,13 +131,13 @@ The earlier code requested `/coins/markets` and onchain `tokens/multi` per asset
 | Change | A + B / day: before → now |
 |---|---|
 | **#2: `/coins/markets` in registry-wide batches.** The 601 registry coin ids are sorted and cut into batches of 250. An asset requests only the batches holding its ids, and every asset of a batch shares the URL (`getTokenMarkets` → `fetchCoinsMarkets(ids, 60, registryIds)`) | 102k → **4.3k** |
-| **#4: onchain `tokens/multi` in registry-wide batches per chain, revalidate 60 s → 300 s.** Same batching over the addresses of each chain (583 + 542 + 102 + … = 47 batches of 30). Onchain cap and 24h DEX volume don't need minute freshness | 126k → **12.7k** |
+| **#4: onchain `tokens/multi` in registry-wide batches per chain, revalidate 60 s → 300 s.** Same batching over the addresses of each chain (583 + 542 + 102 + … = 47 batches of 30). 24h DEX volume doesn't need minute freshness | 126k → **12.7k** |
 | #5: OHLCV revalidate 300 s → 900 s (an hourly series) | 5.5k → 1.8k |
 | #1: `/rwas/markets` revalidate 60 s → 180 s | 5.8k → 1.9k |
 | #3: `market_chart` 1D revalidate 300 s → 900 s, 1W 900 s → 1800 s. The route's CDN `s-maxage` now uses the same values (`CHART_REVALIDATE_SECONDS`), so 1W refreshes every 30 min instead of every hour. The 1D chart (5-minute points) may lag up to 15 min at its right edge; the headline price above it comes from `/rwas/markets` | 34k → 26.2k |
 | **Total** | **274k → 46.9k / day (8.2M → 1.4M / month)** |
 
-Before, A + B needed the Pro plan with the 8M or 10M credit option, and peaks of ~400–600 calls/min ruled out Lite. Apart from the 1D chart route, the `/api/v1/*` `s-maxage` values and the client polls are unchanged. A `/network-stats` poll inside the 300 s window is a cache hit.
+Before, A + B needed the Pro plan with the 8M or 10M credit option, and peaks of ~400–600 calls/min ruled out Lite. Apart from the 1D chart route, the `/api/v1/*` `s-maxage` values and the client polls are unchanged. A `/token-stats` poll inside the 300 s window is a cache hit.
 
 ## Retry backoff
 

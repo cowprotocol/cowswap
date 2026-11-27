@@ -1,12 +1,14 @@
-import { SupportedChainId, getAddressKey } from '@cowprotocol/cow-sdk'
+import { CompetitionOrderStatus, SupportedChainId, getAddressKey } from '@cowprotocol/cow-sdk'
 
 import { Order } from 'legacy/state/orders/actions'
 
+import { getOrderCompetitionStatus } from 'api/cowProtocol/api'
 import { ApiSolverCompetition } from 'common/types/soverCompetition'
 
 import {
   getEnsLookupAddress,
   buildSolverCompetition,
+  fetchOrderCompetitionStatus,
   getIsCancellationRequested,
   getProgressBarStepName,
   shouldUpdateStepImmediately,
@@ -14,6 +16,13 @@ import {
 
 import { OrderProgressBarStepName } from '../constants'
 import { OrderProgressBarState } from '../types'
+
+jest.mock('api/cowProtocol/api', () => ({
+  ...jest.requireActual('api/cowProtocol/api'),
+  getOrderCompetitionStatus: jest.fn(),
+}))
+
+const mockedGetOrderCompetitionStatus = jest.mocked(getOrderCompetitionStatus)
 
 const OPEN_STATUS = 'open' as OrderProgressBarState['backendApiStatus']
 const EXECUTING_STATUS = 'executing' as OrderProgressBarState['backendApiStatus']
@@ -204,7 +213,40 @@ describe('buildSolverCompetition', () => {
     expect(result.map((s) => s.solverId)).toEqual(['barter'])
   })
 
+  it('shows a solver missing from the CMS by its shortened address, with no display name', () => {
+    const [solver] = buildSolverCompetition([entry('0x4444444444444444444444444444444444444444', 'unknown')], byAddress)
+
+    expect(solver.solver).toBe('0x4444...4444')
+    expect(solver.displayName).toBeUndefined()
+  })
+
   it('returns an empty list when there is no competition data', () => {
     expect(buildSolverCompetition(undefined, {})).toEqual([])
+  })
+})
+
+describe('fetchOrderCompetitionStatus', () => {
+  const CHAIN_ID = SupportedChainId.MAINNET
+  const ORDER_ID = '0xorder'
+
+  afterEach(() => {
+    mockedGetOrderCompetitionStatus.mockReset()
+  })
+
+  it('resolves the status when the lookup succeeds', async () => {
+    const status = { type: 'traded' } as unknown as CompetitionOrderStatus
+    mockedGetOrderCompetitionStatus.mockResolvedValue(status)
+
+    await expect(fetchOrderCompetitionStatus(CHAIN_ID, ORDER_ID)).resolves.toBe(status)
+  })
+
+  // getOrderCompetitionStatus catches every failure and resolves undefined. Without a rejection here
+  // SWR treats that as success, `error` stays undefined, and the finished-order placeholder never clears.
+  it('rejects when the lookup settles without a status', async () => {
+    mockedGetOrderCompetitionStatus.mockResolvedValue(undefined)
+
+    await expect(fetchOrderCompetitionStatus(CHAIN_ID, ORDER_ID)).rejects.toThrow(
+      'Order competition status unavailable',
+    )
   })
 })

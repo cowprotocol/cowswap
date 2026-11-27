@@ -1,3 +1,5 @@
+import { i18n } from '@lingui/core'
+
 import {
   debounce,
   getProviderErrorMessage,
@@ -228,6 +230,53 @@ describe('getProviderErrorMessage', () => {
   it('falls back to the regular message when the host sent no usable reason', () => {
     expect(getProviderErrorMessage(viemWrapped(hostError(undefined)))).toBe('JSON is not a valid request object.')
     expect(getProviderErrorMessage(viemWrapped(hostError('   ')))).toBe('JSON is not a valid request object.')
+  })
+
+  it("replaces viem's generic InternalRpcError message with a friendly one", () => {
+    const internalError = { code: -32603, name: 'InternalRpcError', shortMessage: 'An internal error was received.' }
+    const friendlyMessage =
+      "Looks like something's not quite right with your wallet. \nGive it a quick check and try again in a moo-ment! 🐄"
+    i18n.loadAndActivate({ locale: 'en-US', messages: {} })
+
+    expect(getProviderErrorMessage(internalError)).toBe(friendlyMessage)
+    expect(
+      getProviderErrorMessage({
+        name: 'TransactionExecutionError',
+        shortMessage: 'An internal error was received.',
+        cause: internalError,
+      }),
+    ).toBe(friendlyMessage)
+  })
+
+  it('shows the revert reason when an InternalRpcError wraps an execution revert', () => {
+    const revertReason = 'execution reverted: ERC20: transfer amount exceeds balance'
+    const providerError = {
+      code: -32603,
+      message: 'Internal JSON-RPC error.',
+      data: { code: 3, message: revertReason, data: '0x08c379a0' },
+    }
+
+    expect(
+      getProviderErrorMessage({
+        name: 'TransactionExecutionError',
+        shortMessage: 'An internal error was received.',
+        cause: { name: 'InternalRpcError', shortMessage: 'An internal error was received.', cause: providerError },
+      }),
+    ).toBe(revertReason)
+  })
+
+  it('keeps the friendly message when InternalRpcError data is not a revert', () => {
+    i18n.loadAndActivate({ locale: 'en-US', messages: {} })
+
+    expect(
+      getProviderErrorMessage({
+        name: 'InternalRpcError',
+        shortMessage: 'An internal error was received.',
+        cause: { code: -32603, message: 'Internal JSON-RPC error.', data: { message: 'header not found' } },
+      }),
+    ).toBe(
+      "Looks like something's not quite right with your wallet. \nGive it a quick check and try again in a moo-ment! 🐄",
+    )
   })
 
   it('still lets the rejection and insufficient-funds checks see a host rejection with code 4001', () => {

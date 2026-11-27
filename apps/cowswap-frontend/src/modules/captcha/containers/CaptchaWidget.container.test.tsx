@@ -1,11 +1,12 @@
 import { Provider as JotaiProvider } from 'jotai'
 import { createStore } from 'jotai/vanilla'
-import { act, ReactNode } from 'react'
+import { act, ReactNode, Ref } from 'react'
 
 import { useFeatureFlags, useTheme } from '@cowprotocol/common-hooks'
 
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { setBearerToken } from 'cowSdk'
+import { captchaErrorAtom } from 'entities/captcha/state/captchaErrorAtom'
 import { captchaInteractionRequiredAtom } from 'entities/captcha/state/captchaInteractionRequiredAtom'
 import { captchaJwtAtom } from 'entities/captcha/state/captchaJwtAtom'
 
@@ -14,6 +15,7 @@ import { useActiveLocale } from 'legacy/hooks/useActiveLocale'
 import { CaptchaWidget } from './CaptchaWidget.container'
 
 import { exchangeTurnstileToken } from '../api/captchaApi'
+import { captchaSlotAtom } from '../state/captchaSlot.atoms'
 
 jest.mock('@cowprotocol/common-hooks', () => {
   const actualModule = jest.requireActual('@cowprotocol/common-hooks')
@@ -25,23 +27,53 @@ jest.mock('@cowprotocol/common-hooks', () => {
   }
 })
 
-jest.mock('@marsidev/react-turnstile', () => ({
+const mockReset = jest.fn()
+const mockMount = jest.fn()
+const mockTrack = jest.fn()
+
+jest.mock('@cowprotocol/analytics', () => ({
   __esModule: true,
-  Turnstile: ({
-    onBeforeInteractive,
-    onAfterInteractive,
-    options,
-  }: {
-    onBeforeInteractive(): void
-    onAfterInteractive(): void
-    options: { language?: string }
-  }) => (
-    <div data-testid="turnstile" data-language={options.language}>
-      <button data-testid="before-interactive" onClick={onBeforeInteractive} />
-      <button data-testid="after-interactive" onClick={onAfterInteractive} />
-    </div>
-  ),
+  __resetGtmInstance: jest.fn(),
+  createCowTracker: () => (event: unknown) => mockTrack(event),
 }))
+
+interface TurnstileMockProps {
+  ref?: Ref<{ reset(): void; execute(): void }>
+  onWidgetLoad(widgetId: string): void
+  onBeforeInteractive(): void
+  onAfterInteractive(): void
+  onSuccess(token: string): void
+  onError(errorCode: string): void
+  scriptOptions: { onError(): void }
+  options: { language?: string }
+}
+
+jest.mock('@marsidev/react-turnstile', () => {
+  const { useEffect, useImperativeHandle } = jest.requireActual<typeof import('react')>('react')
+
+  return {
+    __esModule: true,
+    DEFAULT_SCRIPT_ID: 'cf-turnstile-script',
+    Turnstile: (props: TurnstileMockProps) => {
+      useImperativeHandle(props.ref, () => ({ reset: mockReset, execute: () => undefined }))
+      useEffect(() => mockMount(), [])
+
+      return (
+        <div data-testid="turnstile" data-language={props.options.language}>
+          <button
+            data-testid="widget-load"
+            onClick={() => props.onWidgetLoad(`widget-${mockMount.mock.calls.length}`)}
+          />
+          <button data-testid="before-interactive" onClick={props.onBeforeInteractive} />
+          <button data-testid="after-interactive" onClick={props.onAfterInteractive} />
+          <button data-testid="success" onClick={() => props.onSuccess('turnstile-token')} />
+          <button data-testid="error" onClick={() => props.onError('300030')} />
+          <button data-testid="script-error" onClick={() => props.scriptOptions.onError()} />
+        </div>
+      )
+    },
+  }
+})
 
 jest.mock('legacy/hooks/useActiveLocale', () => ({
   useActiveLocale: jest.fn(),
@@ -93,6 +125,119 @@ describe('CaptchaWidget', () => {
     useActiveLocaleMock.mockReturnValue('en-US')
   })
 
+  afterEach(() => jest.useRealTimers())
+
+  it('renders Turnstile into the trade form slot when there is one', () => {
+    const store = createStore()
+    const slot = document.createElement('div')
+    document.body.appendChild(slot)
+    store.set(captchaSlotAtom, slot)
+    useFeatureFlagsMock.mockReturnValue({ isCaptchaEnabled: true })
+
+    const { container } = renderWithStore(store)
+
+    expect(slot.contains(screen.getByTestId('turnstile'))).toBe(true)
+    expect(container.contains(screen.getByTestId('turnstile'))).toBe(false)
+    slot.remove()
+  })
+
+  it('keeps Turnstile mounted after a challenge error', () => {
+    const store = createStore()
+    useFeatureFlagsMock.mockReturnValue({ isCaptchaEnabled: true })
+
+    renderWithStore(store)
+    fireEvent.click(screen.getByTestId('error'))
+
+    expect(screen.getByTestId('turnstile')).not.toBeNull()
+    expect(store.get(captchaErrorAtom)).not.toBeNull()
+  })
+
+  it('resets Turnstile after a backoff delay when the JWT exchange fails, tracking the failure once', async () => {
+    jest.useFakeTimers()
+    useFeatureFlagsMock.mockReturnValue({ isCaptchaEnabled: true })
+    exchangeTurnstileTokenMock.mockRejectedValue(new Error('exchange failed'))
+
+    renderWithStore()
+    await act(async () => fireEvent.click(screen.getByTestId('success')))
+
+    expect(mockReset).not.toHaveBeenCalled()
+    act(() => jest.advanceTimersByTime(1000))
+    expect(mockReset).toHaveBeenCalledTimes(1)
+
+    await act(async () => fireEvent.click(screen.getByTestId('success')))
+    expect(mockTrack.mock.calls.filter(([event]) => event.reason === 'jwtExchangeFailed')).toHaveLength(1)
+  })
+
+  it('resets the interaction flag and drops a pending exchange retry when Turnstile moves into the trade form', async () => {
+    jest.useFakeTimers()
+    const store = createStore()
+    const slot = document.createElement('div')
+    document.body.appendChild(slot)
+    useFeatureFlagsMock.mockReturnValue({ isCaptchaEnabled: true })
+    let rejectExchange: (error: Error) => void = () => undefined
+    exchangeTurnstileTokenMock.mockReturnValue(
+      new Promise<never>((_, reject) => {
+        rejectExchange = reject
+      }),
+    )
+
+    renderWithStore(store)
+    fireEvent.click(screen.getByTestId('widget-load'))
+    fireEvent.click(screen.getByTestId('success'))
+    fireEvent.click(screen.getByTestId('before-interactive'))
+
+    act(() => store.set(captchaSlotAtom, slot))
+    expect(store.get(captchaInteractionRequiredAtom)).toBe(false)
+
+    fireEvent.click(screen.getByTestId('widget-load'))
+    await act(async () => rejectExchange(new Error('exchange failed')))
+    act(() => jest.advanceTimersByTime(30_000))
+    expect(mockReset).not.toHaveBeenCalled()
+    slot.remove()
+  })
+
+  it('clears the captcha error once a JWT arrives', async () => {
+    const store = createStore()
+    useFeatureFlagsMock.mockReturnValue({ isCaptchaEnabled: true })
+    exchangeTurnstileTokenMock.mockRejectedValueOnce(new Error('exchange failed')).mockResolvedValueOnce(createJwt())
+
+    renderWithStore(store)
+    await act(async () => fireEvent.click(screen.getByTestId('success')))
+    expect(store.get(captchaErrorAtom)).not.toBeNull()
+
+    await act(async () => fireEvent.click(screen.getByTestId('success')))
+    await waitFor(() => expect(store.get(captchaErrorAtom)).toBeNull())
+  })
+
+  it('drops a failed Turnstile script at once and remounts Turnstile after a backoff delay', () => {
+    jest.useFakeTimers()
+    useFeatureFlagsMock.mockReturnValue({ isCaptchaEnabled: true })
+    const script = document.createElement('script')
+    script.id = 'cf-turnstile-script'
+    document.body.appendChild(script)
+
+    renderWithStore()
+    fireEvent.click(screen.getByTestId('script-error'))
+
+    expect(document.getElementById('cf-turnstile-script')).toBeNull()
+    expect(screen.queryByTestId('turnstile')).toBeNull()
+
+    act(() => jest.advanceTimersByTime(1000))
+    expect(mockMount).toHaveBeenCalledTimes(2)
+  })
+
+  it('remounts Turnstile when a JWT from another tab arrives and expires during a script retry', () => {
+    const store = createStore()
+    useFeatureFlagsMock.mockReturnValue({ isCaptchaEnabled: true })
+
+    renderWithStore(store)
+    fireEvent.click(screen.getByTestId('script-error'))
+    act(() => store.set(captchaJwtAtom, createJwt()))
+    act(() => store.set(captchaJwtAtom, null))
+
+    expect(screen.getByTestId('turnstile')).not.toBeNull()
+  })
+
   it('does not clear stored captcha state when the captcha flag is missing', () => {
     const store = createStore()
     const jwt = createJwt()
@@ -129,7 +274,7 @@ describe('CaptchaWidget', () => {
 
     renderWithStore()
 
-    expect(screen.getByTestId('turnstile').getAttribute('data-language')).toBe('ru-RU')
+    expect(screen.getByTestId('turnstile').getAttribute('data-language')).toBe('ru-ru')
   })
 
   it('uses the default locale for the pseudo locale', () => {
@@ -138,7 +283,7 @@ describe('CaptchaWidget', () => {
 
     renderWithStore()
 
-    expect(screen.getByTestId('turnstile').getAttribute('data-language')).toBe('en-US')
+    expect(screen.getByTestId('turnstile').getAttribute('data-language')).toBe('en-us')
   })
 
   it('tracks when the CAPTCHA requires interaction', () => {

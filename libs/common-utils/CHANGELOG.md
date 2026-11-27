@@ -1,5 +1,101 @@
 # Changelog
 
+## [3.23.2](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.23.1...common-utils-v3.23.2) (2026-11-25)
+
+### Patch Changes
+
+- fix(utm): emit utm_source instead of utm\_\_source on cow.fi links (#8543)
+
+- fix(rwa): medium bugs of the RWA UI backlog (#8661)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.26.0
+
+## [3.23.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.23.0...common-utils-v3.23.1) (2026-11-19)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.25.0
+
+## [3.23.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.22.4...common-utils-v3.23.0) (2026-11-18)
+
+### Minor Changes
+
+- feat: update SDK versions with updated near token lists (#8660)
+
+- feat(solana): support custom recipients (#8592)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.24.0
+  - @cowprotocol/currency@1.11.0
+  - @cowprotocol/types@4.16.0
+
+## [3.22.4](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.22.3...common-utils-v3.22.4) (2026-11-16)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.23.0
+
+## [3.22.3](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.22.2...common-utils-v3.22.3) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.22.0
+
+## [3.22.2](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.22.1...common-utils-v3.22.2) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.21.0
+
+## [3.22.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.22.0...common-utils-v3.22.1) (2026-11-11)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.20.0
+  - @cowprotocol/types@4.15.1
+
+## [3.22.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.21.2...common-utils-v3.22.0) (2026-11-10)
+
+### Minor Changes
+
+- feat(solana): report order submission failures under one sentry scope (#8525)
+
+- feat(networks): networks update (#8456)
+
+- feat(solana): pass appData to quote (#8509)
+
+### Patch Changes
+
+- fix(solana): use SDK for quote costs breakdown (#8522)
+
+- fix(wallet): display custom message for rpc internal error (#8515)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.19.0
+  - @cowprotocol/currency@1.10.0
+  - @cowprotocol/types@4.15.0
+
+## [3.21.2](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.21.1...common-utils-v3.21.2) (2026-11-05)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+- fix(widget): display widget provider error in the UI (#8462)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.18.0
+  - @cowprotocol/currency@1.9.2
+  - @cowprotocol/types@4.14.2
+
 ## [3.21.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.21.0...common-utils-v3.21.1) (2026-10-28)
 
 ### Patch Changes

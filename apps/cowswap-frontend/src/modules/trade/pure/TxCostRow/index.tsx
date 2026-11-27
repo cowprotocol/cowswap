@@ -7,6 +7,8 @@ import { Trans, useLingui } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
 
+import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
+
 import { ReviewOrderModalAmountRow } from '../ReviewOrderModalAmountRow'
 
 const CoveredAmount = styled.span`
@@ -29,6 +31,11 @@ interface TxCostRowProps {
    */
   ownerDeposit: Nullish<CurrencyAmount<Currency>>
   ownerDepositUsd: Nullish<CurrencyAmount<Currency>>
+  /**
+   * `txCost` excludes the transaction fee — `SolanaTxCost.isFeePaidByVaultMember`. Required for the same
+   * reason as `ownerDeposit`: a caller that omitted it would have the row price a fee the vault never pays.
+   */
+  isFeePaidByVaultMember: boolean
   withTimelineDot?: boolean
   isLast?: boolean
   /** Limit form detail-row typography (medium label, secondary value). */
@@ -39,6 +46,7 @@ interface TxCostRowProps {
 interface TxCostTooltipProps {
   isSponsored: boolean
   hasOwnerDeposit: boolean
+  isFeePaidByVaultMember: boolean
 }
 
 /**
@@ -52,6 +60,7 @@ export function TxCostRow({
   isSponsored,
   ownerDeposit,
   ownerDepositUsd,
+  isFeePaidByVaultMember,
   withTimelineDot = false,
   isLast = false,
   detailRowStyle = false,
@@ -68,7 +77,14 @@ export function TxCostRow({
       withTimelineDot={withTimelineDot}
       amount={shownAmount}
       fiatAmount={shownAmountUsd}
-      tooltip={<TxCostTooltip isSponsored={isSponsored} hasOwnerDeposit={!!ownerDeposit} />}
+      amountSuffix={isFeePaidByVaultMember && !isFullyCovered ? <NetworkCostsSuffix /> : undefined}
+      tooltip={
+        <TxCostTooltip
+          isSponsored={isSponsored}
+          hasOwnerDeposit={!!ownerDeposit}
+          isFeePaidByVaultMember={isFeePaidByVaultMember}
+        />
+      }
       label={t`Tx cost`}
       isLast={isLast}
       detailRowStyle={detailRowStyle}
@@ -95,7 +111,24 @@ export function TxCostRow({
   )
 }
 
-function TxCostTooltip({ isSponsored, hasOwnerDeposit }: TxCostTooltipProps): ReactNode {
+function TxCostTooltip({ isSponsored, hasOwnerDeposit, isFeePaidByVaultMember }: TxCostTooltipProps): ReactNode {
+  if (isFeePaidByVaultMember) {
+    return (
+      <>
+        <Trans>
+          Solana charges a deposit for the accounts your order needs. It comes out of the vault's SOL balance, on top of
+          the amount you sell rather than out of your trade.
+        </Trans>
+        <br />
+        <br />
+        <Trans>
+          Because you are trading from a multisig vault, the member who executes the proposal pays the Solana
+          transaction fee separately, from their own wallet.
+        </Trans>
+      </>
+    )
+  }
+
   if (!isSponsored) {
     return (
       <>

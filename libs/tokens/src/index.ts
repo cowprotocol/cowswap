@@ -8,11 +8,10 @@ migrateNetworkMismatchUserAddedTokens()
 
 // Updaters
 export { TokensListsUpdater } from './updaters/TokensListsUpdater'
+export { RwaTokensListsUpdater } from './updaters/RwaTokensListsUpdater'
 export { TokensListsTagsUpdater } from './updaters/TokensListsTagsUpdater'
 export { UnsupportedTokensUpdater } from './updaters/UnsupportedTokensUpdater'
 export { WidgetTokensListsUpdater } from './updaters/WidgetTokensListsUpdater'
-export { RestrictedTokensListUpdater } from './updaters/RestrictedTokensListUpdater'
-export type { RestrictedTokensListUpdaterProps } from './updaters/RestrictedTokensListUpdater'
 
 // Pure components
 export { TokenLogo, TokenLogoWrapper } from './pure/TokenLogo'
@@ -23,9 +22,7 @@ export * from './types'
 export type { TokensByAddress, TokensBySymbol } from './state/tokens/allTokensAtom'
 export type { ListSearchResponse } from './hooks/lists/useSearchList'
 export type { TokenSearchResponse } from './hooks/tokens/useSearchToken'
-export type { RestrictedTokenListState } from './state/restrictedTokens/restrictedTokensAtom'
 export type { TokenId } from '@cowprotocol/cow-sdk'
-export type { RestrictedTokenInfo } from './hooks/tokens/useRestrictedToken'
 
 // Hooks
 export { useAllListsList } from './hooks/lists/useAllListsList'
@@ -64,12 +61,9 @@ export { useFetchTokenFromBlockchain } from './hooks/tokens/useFetchTokenFromBlo
 export type { FetchTokenFromBlockchain } from './hooks/tokens/useFetchTokenFromBlockchain'
 export { useAllLpTokens } from './hooks/tokens/useAllLpTokens'
 export { useAreTokenListsLoading } from './hooks/tokens/useAreTokenListsLoading'
-export { useRestrictedToken, useAnyRestrictedToken, findRestrictedToken } from './hooks/tokens/useRestrictedToken'
 
 // State
-export { restrictedTokensAtom, restrictedListsAtom } from './state/restrictedTokens/restrictedTokensAtom'
 export { environmentAtom } from './state/environmentAtom'
-export { blockedListSourcesAtom } from './state/tokens/blockedListSourcesAtom'
 export { allActiveTokensAtom, tokensByAddressAtom } from './state/tokens/allTokensAtom'
 export { favoriteTokensListAtom } from './state/tokens/favoriteTokensAtom'
 export { listsStatesMapAtom } from './state/tokenLists/tokenListsStateAtom'
@@ -80,6 +74,7 @@ export { getTokenListViewLink } from './utils/getTokenListViewLink'
 export { getTokenLogoUrls } from './utils/getTokenLogoUrls'
 export { fetchTokenFromBlockchain } from './utils/fetchTokenFromBlockchain'
 export { getTokenSearchFilter } from './utils/getTokenSearchFilter'
+export { getPrioritizedTokenKeys } from './utils/getPrioritizedTokenKeys'
 export { excludeAlreadyActiveTokens } from './utils/tokenIdentity'
 export { getChainCurrencySymbols } from './utils/getChainCurrencySymbols'
 
@@ -87,12 +82,7 @@ export { getChainCurrencySymbols } from './utils/getChainCurrencySymbols'
 export { fetchTokenList } from './services/fetchTokenList'
 
 // Consts
-export { DEFAULT_TOKENS_LISTS } from './const/tokensLists'
-export { RWA_CONSENT_HASH } from './updaters/RestrictedTokensListUpdater'
-export { useIsAnyOfTokensRWA } from './hooks/lists/useIsAnyOfTokensRWA'
-export { useFilterBlockedLists } from './hooks/lists/useFilterBlockedLists'
-export { useIsListBlocked, getSourceAsKey, getCountryAsKey } from './hooks/lists/useIsListBlocked'
-export { useRestrictedListInfo } from './hooks/lists/useRestrictedListInfo'
-
-// Types
-export type { RestrictedListInfo } from './hooks/lists/useRestrictedListInfo'
+export { DEFAULT_TOKENS_LISTS, isRwaTokenListSource } from './const/tokensLists'
+export { useMarketHoursRwaToken } from './hooks/lists/useMarketHoursRwaToken'
+export { useIsRwaToken } from './hooks/lists/useIsRwaToken'
+export { getSourceAsKey } from './utils/getSourceAsKey'

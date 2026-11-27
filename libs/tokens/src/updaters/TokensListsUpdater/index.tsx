@@ -16,7 +16,6 @@ import { environmentAtom, updateEnvironmentAtom } from '../../state/environmentA
 import { upsertListsAtom } from '../../state/tokenLists/tokenListsActionsAtom'
 import { allListsSourcesAtom, tokenListsUpdatingAtom } from '../../state/tokenLists/tokenListsStateAtom'
 import { ListState } from '../../types'
-import { UserAddedTokensUpdater } from '../UserAddedTokensUpdater'
 
 const LAST_UPDATE_TIME_DEFAULT = 0
 
@@ -40,7 +39,6 @@ interface TokensListsUpdaterProps {
   chainId: SupportedChainId
   enableLpTokensByDefault: boolean
   isYieldEnabled: boolean
-  excludeRwaLists: boolean
   bridgeNetworkInfo: ChainInfo[] | undefined
 }
 
@@ -49,7 +47,6 @@ export function TokensListsUpdater({
   chainId: currentChainId,
   enableLpTokensByDefault,
   isYieldEnabled,
-  excludeRwaLists,
   bridgeNetworkInfo,
 }: TokensListsUpdaterProps): ReactNode {
   const { chainId } = useAtomValue(environmentAtom)
@@ -66,10 +63,9 @@ export function TokensListsUpdater({
       chainId: currentChainId,
       enableLpTokensByDefault,
       isYieldEnabled,
-      excludeRwaLists,
       bridgeNetworkInfo,
     })
-  }, [setEnvironment, currentChainId, enableLpTokensByDefault, isYieldEnabled, excludeRwaLists, bridgeNetworkInfo])
+  }, [setEnvironment, currentChainId, enableLpTokensByDefault, isYieldEnabled, bridgeNetworkInfo])
 
   useEffect(() => {
     updateLastUpdateTime({ [chainId]: 0 })
@@ -97,5 +93,5 @@ export function TokensListsUpdater({
     upsertLists(chainId, listsStates)
   }, [listsStates, isLoading, chainId, upsertLists, setTokenListsUpdating, updateLastUpdateTime])
 
-  return <UserAddedTokensUpdater />
+  return null
 }

@@ -45,6 +45,7 @@ export function toRawOrder(order: SolanaRawOrder): RawOrder {
   const {
     uid,
     owner,
+    receiver,
     sellToken,
     buyToken,
     sellTokenAccount,
@@ -95,7 +96,7 @@ export function toRawOrder(order: SolanaRawOrder): RawOrder {
     // No order classes on Solana; the UI order type is read from `fullAppData`.
     class: OrderClass.MARKET,
     // No EVM counterpart. Its presence is also what marks the order as Solana's.
-    solana: { orderPda, sellTokenAccount, buyTokenAccount },
+    solana: { orderPda, sellTokenAccount, buyTokenAccount, receiverWallet: receiver ?? undefined },
   }
 }
 
