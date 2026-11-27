@@ -1,3 +1,5 @@
+import { type ReactNode, useState } from 'react'
+
 import { fireEvent, render, screen } from '@testing-library/react'
 
 import { PortfolioFilters } from './PortfolioFilters'
@@ -53,5 +55,21 @@ describe('PortfolioFilters', () => {
     const reset = screen.getByRole('button', { name: 'Reset filters' })
 
     expect(network.compareDocumentPosition(reset) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  })
+
+  it('moves focus to the network filter when "Reset filters" is used from the keyboard', () => {
+    function StatefulFilters(): ReactNode {
+      const [filter, setFilter] = useState<PortfolioFilter>({ issuer: 'Ondo', chainId: 56 })
+
+      return <PortfolioFilters assets={ASSETS} filter={filter} onChange={setFilter} />
+    }
+    render(<StatefulFilters />)
+    const reset = screen.getByRole('button', { name: 'Reset filters' })
+
+    reset.focus()
+    fireEvent.click(reset)
+
+    expect(screen.queryByRole('button', { name: 'Reset filters' })).toBeNull()
+    expect(document.activeElement).toBe(screen.getByRole('combobox', { name: 'Network' }))
   })
 })
