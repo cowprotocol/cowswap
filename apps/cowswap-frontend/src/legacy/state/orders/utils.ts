@@ -498,13 +498,14 @@ function extrapolatePriceBasedOnFeeAmount<T extends Currency>(
   const newSellAmount = feeAmount.multiply(JSBI.BigInt(FEE_AMOUNT_MULTIPLIER))
   // Only use this method if the new sell amount is smaller than the remaining sell amount
   if (remainingSellAmount.greaterThan(newSellAmount)) {
-    // Quote the buy amount using the existing limit price
-    const buyAmount = limitPrice.quote(newSellAmount)
+    // Selling FEE_AMOUNT_MULTIPLIER fees for limitPrice, of which one fee goes to the network, is the price
+    // limitPrice * M / (M - 1). It's kept exact: quoting the M fees in buy token atoms floors to whole atoms,
+    // which is a price worse than the limit when the fee is a few atoms and a buy token atom is worth a lot
     return new Price(
       inputToken,
       outputToken,
-      newSellAmount.subtract(feeAmount).quotient, // TODO: should we use the fee with margin here?
-      buyAmount.quotient,
+      limitPrice.denominator * BigInt(FEE_AMOUNT_MULTIPLIER - 1),
+      limitPrice.numerator * BigInt(FEE_AMOUNT_MULTIPLIER),
     )
   }
   return undefined

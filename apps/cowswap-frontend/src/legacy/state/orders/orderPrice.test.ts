@@ -1,12 +1,16 @@
 import { USDC_MAINNET, WETH_MAINNET } from '@cowprotocol/common-const'
 import { OrderClass, OrderKind, SigningScheme } from '@cowprotocol/cow-sdk'
-import { Price } from '@cowprotocol/currency'
+import { Price, Token } from '@cowprotocol/currency'
 
 import BigNumber from 'bignumber.js'
 import JSBI from 'jsbi'
 
 import { Order, OrderStatus } from './actions'
-import { getEstimatedExecutionPrice, getRemainderAmountsWithoutSurplus } from './utils'
+import {
+  getEstimatedExecutionPrice,
+  getOrderLimitPriceWithPartnerFee,
+  getRemainderAmountsWithoutSurplus,
+} from './utils'
 
 const getLimitOrderWithFee = (
   sellAmountBeforeFee: string,
@@ -52,6 +56,30 @@ describe('getEstimatedExecutionPrice()', () => {
 
     expect(executionPriceWithFee?.toFixed(12)).toEqual('1820.007835117276')
     expect(executionPriceWithoutFee?.toFixed(12)).toEqual('1820.000000000000')
+  })
+
+  describe('partially fillable order with a fee of a few atoms', () => {
+    const INK_CHAIN_ID = 57073
+    const USDT0 = new Token(INK_CHAIN_ID, '0x0200C29006150606B650577BBE7B6248F58470c1', 6, 'USDT0')
+    const KBTC = new Token(INK_CHAIN_ID, '0x73E0C0d45E048D25Fc26Fa3159b0aA04BfA4Db98', 8, 'kBTC')
+    // 250 USDT0 for 0.0042735 kBTC, a limit of 58,500.06 USDT0 per kBTC
+    const order: Order = {
+      ...getLimitOrderWithFee('250000000', '427350', '0'),
+      inputToken: USDT0,
+      outputToken: KBTC,
+      partiallyFillable: true,
+    }
+    // 59,731.93 USDT0 per kBTC, the market is below the limit
+    const fillPrice = new Price(USDT0, KBTC, '59731930000', '100000000')
+    const limitPrice = getOrderLimitPriceWithPartnerFee(order)
+
+    it.each(['5', '10', '14'])('estimates the limit price plus 0.1%% for a fee of %s atoms', (fee) => {
+      const executionPrice = getEstimatedExecutionPrice(order, fillPrice, fee)
+
+      expect(executionPrice?.equalTo(limitPrice.multiply(new Price(KBTC, KBTC, '999', '1000')))).toBe(true)
+      expect(executionPrice?.invert().toFixed(2)).toBe('58441.56')
+      expect(executionPrice?.equalTo(fillPrice)).toBe(false)
+    })
   })
 })
 
