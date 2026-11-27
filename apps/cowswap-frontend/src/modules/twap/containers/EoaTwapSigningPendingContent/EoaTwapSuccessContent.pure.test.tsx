@@ -41,7 +41,7 @@ describe('EoaTwapSuccessContent()', () => {
   })
 
   it('renders the success heading without a token pair', () => {
-    renderSuccessContent(<EoaTwapSuccessHeading />)
+    renderSuccessContent(<EoaTwapSuccessHeading hasOrdersTable />)
 
     const heading = screen.getByTestId('confirmation-success-heading')
     expect(heading.textContent).toContain('Your TWAP is active')
@@ -49,11 +49,23 @@ describe('EoaTwapSuccessContent()', () => {
     expect(screen.queryByTestId('trade-token-pair')).toBeNull()
   })
 
+  it('does not point to the orders when there is no orders table', () => {
+    renderSuccessContent(<EoaTwapSuccessHeading hasOrdersTable={false} />)
+
+    const heading = screen.getByTestId('confirmation-success-heading')
+    expect(heading.textContent).toContain('Your TWAP is active')
+    expect(heading.textContent).not.toContain('Track its progress in Orders.')
+  })
+
   it('renders explorer link and action', () => {
     const onViewOrders = jest.fn()
 
     renderSuccessContent(
-      <EoaTwapSuccessContent explorerUrl="https://explorer.cow.fi/orders/0xorder" onViewOrders={onViewOrders} />,
+      <EoaTwapSuccessContent
+        explorerUrl="https://explorer.cow.fi/orders/0xorder"
+        onDismiss={jest.fn()}
+        onViewOrders={onViewOrders}
+      />,
     )
 
     expect(screen.getByRole('link', { name: /Open in CoW Explorer/ }).getAttribute('href')).toBe(
@@ -66,8 +78,19 @@ describe('EoaTwapSuccessContent()', () => {
   })
 
   it('hides the explorer link when no url is provided', () => {
-    renderSuccessContent(<EoaTwapSuccessContent onViewOrders={jest.fn()} />)
+    renderSuccessContent(<EoaTwapSuccessContent onDismiss={jest.fn()} onViewOrders={jest.fn()} />)
 
     expect(screen.queryByRole('link', { name: /Open in CoW Explorer/ })).toBeNull()
+  })
+
+  it('closes instead of opening the orders when there is no orders table', () => {
+    const onDismiss = jest.fn()
+
+    renderSuccessContent(<EoaTwapSuccessContent onDismiss={onDismiss} />)
+
+    expect(screen.queryByRole('button', { name: 'View in Orders' })).toBeNull()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }))
+    expect(onDismiss).toHaveBeenCalledTimes(1)
   })
 })

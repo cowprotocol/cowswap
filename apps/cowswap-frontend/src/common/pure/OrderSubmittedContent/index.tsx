@@ -85,12 +85,14 @@ export function OrderSubmittedContent({
         <TrackOrderBanner onEnableClick={onGetNotifiedClick} onClose={onDismissGetNotifiedMessage} />
       ) : null}
 
-      {onViewOrders ? (
-        <Modal.FooterWithTwoButtons
-          inline
-          secondaryButton={{ label: <Trans>View in Orders</Trans>, onClick: onViewOrders }}
-        />
-      ) : null}
+      <Modal.FooterWithTwoButtons
+        inline
+        secondaryButton={
+          onViewOrders
+            ? { label: <Trans>View in Orders</Trans>, onClick: onViewOrders }
+            : { label: <Trans>Close</Trans>, onClick: onDismiss }
+        }
+      />
     </Wrapper>
   )
 }

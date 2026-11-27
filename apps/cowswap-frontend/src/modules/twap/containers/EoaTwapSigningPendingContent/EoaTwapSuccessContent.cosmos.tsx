@@ -45,7 +45,11 @@ function TwapSuccessFixture(): ReactNode {
           priceImpact: { priceImpact: undefined, loading: false },
         }}
       >
-        <EoaTwapSuccessContent explorerUrl="https://explorer.cow.fi" onViewOrders={() => undefined} />
+        <EoaTwapSuccessContent
+          explorerUrl="https://explorer.cow.fi"
+          onDismiss={() => undefined}
+          onViewOrders={() => undefined}
+        />
       </BaseTradeConfirmation>
     </DemoContainer>
   )

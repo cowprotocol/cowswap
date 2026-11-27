@@ -43,11 +43,17 @@ describe('OrderSubmittedContent()', () => {
     expect(screen.queryByRole('button', { name: 'Continue' })).toBeNull()
   })
 
-  it('hides View in Orders when no handler is provided', () => {
-    renderSubmittedContent(<OrderSubmittedContent {...defaultProps} />)
+  it('closes instead of opening the orders when no handler is provided', () => {
+    const onDismiss = jest.fn()
+
+    renderSubmittedContent(<OrderSubmittedContent {...defaultProps} onDismiss={onDismiss} />)
 
     expect(screen.queryByRole('button', { name: 'View in Orders' })).toBeNull()
     expect(screen.queryByRole('button', { name: 'Continue' })).toBeNull()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }))
+
+    expect(onDismiss).toHaveBeenCalledTimes(1)
   })
 
   it('keeps View in Orders when the track-order banner is shown', () => {

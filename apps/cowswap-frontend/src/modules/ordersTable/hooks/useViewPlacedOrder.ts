@@ -4,6 +4,8 @@ import { useCallback } from 'react'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { Media } from '@cowprotocol/ui'
 
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
+
 import { useSetOrdersTableDrawerOpen, useTradeConfirmActions } from 'modules/trade'
 
 import { useNavigateToOrdersTableTab } from './tabs/useNavigateToOrdersTableTab'
@@ -11,7 +13,9 @@ import { useRevealOrderInOrdersTable } from './useRevealOrderInOrdersTable'
 
 import { placedOrderHighlightAtom } from '../state/placedOrderHighlightAtom'
 
-export function useViewPlacedOrder(onDismiss?: () => void): () => void {
+/** `undefined` when the widget hides the orders table (`hideOrdersTable`), as there are no orders to view then */
+export function useViewPlacedOrder(onDismiss?: () => void): (() => void) | undefined {
+  const { hideOrdersTable } = useInjectedWidgetParams()
   const placedOrder = useAtomValue(placedOrderHighlightAtom)
   const { onDismiss: dismissTradeConfirm } = useTradeConfirmActions()
   const setOrdersTableDrawerOpen = useSetOrdersTableDrawerOpen()
@@ -19,7 +23,7 @@ export function useViewPlacedOrder(onDismiss?: () => void): () => void {
   const revealOrderInOrdersTable = useRevealOrderInOrdersTable()
   const navigateToOrdersTableTab = useNavigateToOrdersTableTab()
 
-  return useCallback(() => {
+  const viewPlacedOrder = useCallback(() => {
     if (onDismiss) {
       onDismiss()
     } else {
@@ -49,4 +53,6 @@ export function useViewPlacedOrder(onDismiss?: () => void): () => void {
     revealOrderInOrdersTable,
     setOrdersTableDrawerOpen,
   ])
+
+  return hideOrdersTable ? undefined : viewPlacedOrder
 }

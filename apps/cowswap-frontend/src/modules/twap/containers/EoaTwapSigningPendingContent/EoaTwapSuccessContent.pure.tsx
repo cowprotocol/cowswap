@@ -11,10 +11,15 @@ import * as styledEl from './EoaTwapSuccessContent.styled'
 
 export interface EoaTwapSuccessContentProps {
   explorerUrl?: string
-  onViewOrders(): void | Promise<void>
+  onDismiss(): void
+  onViewOrders?: () => void | Promise<void>
 }
 
-export function EoaTwapSuccessContent({ explorerUrl, onViewOrders }: EoaTwapSuccessContentProps): ReactNode {
+export interface EoaTwapSuccessHeadingProps {
+  hasOrdersTable: boolean
+}
+
+export function EoaTwapSuccessContent({ explorerUrl, onDismiss, onViewOrders }: EoaTwapSuccessContentProps): ReactNode {
   return (
     <>
       {explorerUrl ? (
@@ -23,18 +28,22 @@ export function EoaTwapSuccessContent({ explorerUrl, onViewOrders }: EoaTwapSucc
 
       <Modal.FooterWithTwoButtons
         inline
-        secondaryButton={{ label: <Trans>View in Orders</Trans>, onClick: onViewOrders }}
+        secondaryButton={
+          onViewOrders
+            ? { label: <Trans>View in Orders</Trans>, onClick: onViewOrders }
+            : { label: <Trans>Close</Trans>, onClick: onDismiss }
+        }
       />
     </>
   )
 }
 
-export function EoaTwapSuccessHeading(): ReactNode {
+export function EoaTwapSuccessHeading({ hasOrdersTable }: EoaTwapSuccessHeadingProps): ReactNode {
   return (
     <BaseTradeConfirmation
       heading={{
         title: <Trans>Your TWAP is active</Trans>,
-        subtitle: <Trans>Track its progress in Orders.</Trans>,
+        subtitle: hasOrdersTable ? <Trans>Track its progress in Orders.</Trans> : undefined,
       }}
     />
   )

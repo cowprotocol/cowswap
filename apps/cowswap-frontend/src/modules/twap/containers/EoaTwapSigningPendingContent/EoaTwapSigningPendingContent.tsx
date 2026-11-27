@@ -15,12 +15,14 @@ import { EoaTwapCurrentStepButtonProps } from '../../utils/buildEoaTwapConfirmat
 export interface EoaTwapSigningPendingContentProps {
   steps: OrderStep[]
   buttonProps: EoaTwapCurrentStepButtonProps | null
-  onViewOrders(): void
+  onDismiss(): void
+  onViewOrders?: () => void
 }
 
 export function EoaTwapSigningPendingContent({
   steps,
   buttonProps,
+  onDismiss,
   onViewOrders,
 }: EoaTwapSigningPendingContentProps): ReactNode {
   const signingStep = useEoaTwapSigningStep()
@@ -32,7 +34,7 @@ export function EoaTwapSigningPendingContent({
     const explorerUrl =
       chainId && signingStep.eventId ? getExplorerTwapOrderLink(chainId, signingStep.eventId) : undefined
 
-    return <EoaTwapSuccessContent explorerUrl={explorerUrl} onViewOrders={onViewOrders} />
+    return <EoaTwapSuccessContent explorerUrl={explorerUrl} onDismiss={onDismiss} onViewOrders={onViewOrders} />
   }
 
   return (
