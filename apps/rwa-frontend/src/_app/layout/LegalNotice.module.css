@@ -1,0 +1,31 @@
+.legal {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 24px;
+  padding: 0 4px;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.links a {
+  color: var(--color-text);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  text-underline-offset: 3px;
+}
+
+.disclaimer {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}

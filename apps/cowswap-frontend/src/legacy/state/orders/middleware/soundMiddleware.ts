@@ -3,10 +3,10 @@
 import { isAnyOf } from '@reduxjs/toolkit'
 import { AnyAction, Dispatch, Middleware, MiddlewareAPI } from 'redux'
 
-import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from 'modules/sounds'
+import { getCowSoundError, getCowSoundSend, getCowSoundSuccess, isFartcoin, SoundBuyToken } from 'modules/sounds'
 
 import { AppState } from '../../index'
-import { AddPendingOrderParams, BatchOrdersUpdateParams, UpdateOrderParams } from '../actions'
+import { AddPendingOrderParams, BatchOrdersUpdateParams, FulfillOrdersBatchParams, UpdateOrderParams } from '../actions'
 import * as OrderActions from '../actions'
 import { getOrderByIdFromState } from '../helpers'
 import { OrdersState } from '../reducer'
@@ -25,7 +25,6 @@ const isBatchFulfillOrderAction = isAnyOf(OrderActions.fulfillOrdersBatch)
 const isBatchExpireOrderAction = isAnyOf(OrderActions.expireOrdersBatch)
 const isBatchCancelOrderAction = isAnyOf(OrderActions.cancelOrdersBatch)
 // const isBatchPresignOrders = isAnyOf(OrderActions.preSignOrders)
-const isFulfillOrderAction = isAnyOf(OrderActions.addPendingOrder, OrderActions.fulfillOrdersBatch)
 
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line complexity
@@ -53,10 +52,10 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
   let cowSound
   if (isPendingOrderAction(action)) {
     if (_shouldPlayPendingOrderSound(action.payload)) {
-      cowSound = getCowSoundSend()
+      cowSound = getCowSoundSend(action.payload.order.outputToken)
     }
-  } else if (isFulfillOrderAction(action)) {
-    cowSound = getCowSoundSuccess()
+  } else if (isBatchFulfillOrderAction(action)) {
+    cowSound = getCowSoundSuccess(_getFulfilledBuyToken(action.payload))
   } else if (isBatchExpireOrderAction(action)) {
     if (_shouldPlayExpiredOrderSound(action.payload, store)) {
       cowSound = getCowSoundError()
@@ -76,12 +75,16 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
   return result
 }
 
+function _getFulfilledBuyToken({ chainId, orders }: FulfillOrdersBatchParams): SoundBuyToken | undefined {
+  return orders.map((order) => ({ chainId, address: order.buyToken })).find(isFartcoin)
+}
+
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function _getUpdatedOrderSound(payload: UpdateOrderParams) {
   if (!payload.order.isHidden) {
     // Trigger COW sound when an order is being updated to a non-hidden state
-    return getCowSoundSend()
+    return getCowSoundSend(payload.order.outputToken)
   }
   return undefined
 }

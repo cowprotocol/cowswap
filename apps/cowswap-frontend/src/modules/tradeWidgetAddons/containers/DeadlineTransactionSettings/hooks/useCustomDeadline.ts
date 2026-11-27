@@ -1,10 +1,11 @@
+import { useAtomValue } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { DEFAULT_DEADLINE_FROM_NOW } from '@cowprotocol/common-const'
 import { clampValue, isValidIntegerFactory } from '@cowprotocol/common-utils'
 import { StatefulValue } from '@cowprotocol/types'
-import { useIsSmartContractWallet } from '@cowprotocol/wallet'
+import { isSmartContractWalletAtom } from '@cowprotocol/wallet'
 import { TradeType } from '@cowprotocol/widget-lib'
 
 import { useInjectedWidgetDeadline } from 'modules/injectedWidget'
@@ -48,7 +49,7 @@ export function useCustomDeadline(deadlineState: StatefulValue<number>): {
   const [deadline, setDeadline] = deadlineState
   const widgetDeadline = useInjectedWidgetDeadline(TradeType.SWAP)
 
-  const isSmartContractWallet = useIsSmartContractWallet()
+  const isSmartContractWallet = useAtomValue(isSmartContractWalletAtom)
   const isEoaEthFlow = useIsEoaEthFlow()
   const analytics = useCowAnalytics()
 

@@ -1,0 +1,44 @@
+{
+  "name": "rwa-frontend",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/rwa-frontend/src",
+  "projectType": "application",
+  "tags": [],
+  "targets": {
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
+      "options": {
+        "jestConfig": "apps/rwa-frontend/jest.config.ts"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "apps/rwa-frontend/**/*.{ts,tsx,js,jsx}"
+        ]
+      },
+      "dependsOn": [
+        "lint-fsd"
+      ]
+    },
+    "lint-fsd": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/src/**/*",
+        "{projectRoot}/steiger.config.ts"
+      ],
+      "options": {
+        "command": "steiger ./src",
+        "cwd": "apps/rwa-frontend"
+      }
+    }
+  }
+}

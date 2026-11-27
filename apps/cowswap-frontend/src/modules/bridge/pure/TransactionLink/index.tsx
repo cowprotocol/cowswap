@@ -4,6 +4,7 @@ import { getChainInfo } from '@cowprotocol/common-const'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { Media } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
 import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 
 import { TransactionLinkDisplay } from './TransactionLinkDisplay'
@@ -25,5 +26,5 @@ export function TransactionLinkItem({ link, label, chainId }: TransactionLinkIte
 }
 
 function getChainTransactionLinkText(explorerTitle: string, isMobile: boolean): string {
-  return isMobile ? `${explorerTitle} ↗` : `View on ${explorerTitle} ↗`
+  return isMobile ? `${explorerTitle} ↗` : t`View on ${explorerTitle} ↗`
 }

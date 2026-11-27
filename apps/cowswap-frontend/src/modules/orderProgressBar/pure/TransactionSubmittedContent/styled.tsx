@@ -57,6 +57,10 @@ export const ButtonGroup = styled.div`
   ${Media.upToSmall()} {
     flex-direction: column;
   }
+
+  &:empty {
+    display: none;
+  }
 `
 
 export const Header = styled.div`

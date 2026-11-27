@@ -1,5 +1,57 @@
 # Changelog
 
+## [2.14.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.13.0...assets-v2.14.0) (2026-11-25)
+
+### Minor Changes
+
+- feat(theme): add Vice sunset theme behind a feature flag (#8678)
+
+## [2.13.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.12.0...assets-v2.13.0) (2026-11-19)
+
+### Minor Changes
+
+- feat(theme): cherry pick #8678 (vice theme)
+
+## [2.12.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.11.0...assets-v2.12.0) (2026-11-18)
+
+### Minor Changes
+
+- feat(cow-fi): add CoW Protocol on Solana landing page (#8470)
+
+- feat(cow-fi): gate GTM on cookie consent (#8606)
+
+- feat(graffiti): collaborative graffiti wall (consolidated) (#8560)
+
+## [2.11.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.10.0...assets-v2.11.0) (2026-11-13)
+
+### Minor Changes
+
+- feat(graffiti): collaborative graffiti wall (consolidated) (#8560)
+
+## [2.10.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.9.0...assets-v2.10.0) (2026-11-13)
+
+### Minor Changes
+
+- feat(cow-fi): gate GTM on cookie consent
+
+- feat(cow-fi): add CoW Protocol on Solana landing page (#8470)
+
+## [2.9.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.8.0...assets-v2.9.0) (2026-11-10)
+
+### Minor Changes
+
+- feat(rwa): standardize header and footer with CoW product links (#8516)
+
+## [2.8.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.7.0...assets-v2.8.0) (2026-11-05)
+
+### Minor Changes
+
+- feat: Wait for cows UI bits & new confirmation (#8443)
+
+### Patch Changes
+
+- fix(progress-bar): give solver logos an edge and drop the Gnosis fallback (#8524)
+
 ## [2.7.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.6.0...assets-v2.7.0) (2026-09-09)
 
 ### Minor Changes

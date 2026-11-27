@@ -1,11 +1,12 @@
+import { useAtomValue } from 'jotai'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import {
-  useAccountType,
-  useIsSafeViaWc,
-  useIsSafeWallet,
-  useIsSmartContractWallet,
+  accountTypeAtom,
+  isSafeViaWcAtom,
+  isSafeWalletAtom,
+  isSmartContractWalletAtom,
   useWalletInfo,
 } from '@cowprotocol/wallet'
 
@@ -168,10 +169,10 @@ function useTwapDemandWalletType(account?: string): {
   isWalletTypePending: boolean
   walletType: TwapDemandWalletType
 } {
-  const accountType = useAccountType()
-  const isSafeViaWc = useIsSafeViaWc()
-  const isSafeWallet = useIsSafeWallet()
-  const isSmartContractWallet = useIsSmartContractWallet()
+  const accountType = useAtomValue(accountTypeAtom)
+  const isSafeViaWc = useAtomValue(isSafeViaWcAtom) === true
+  const isSafeWallet = useAtomValue(isSafeWalletAtom)
+  const isSmartContractWallet = useAtomValue(isSmartContractWalletAtom)
 
   const walletType = useMemo(() => {
     return getTwapDemandWalletType({

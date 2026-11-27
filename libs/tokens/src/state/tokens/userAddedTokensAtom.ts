@@ -18,14 +18,6 @@ export const userAddedTokensAtom = atomWithStorage<PersistentStateByChain<Tokens
   getJotaiMergerStorage(),
 )
 
-export const userAddedTokensListAtom = atom((get) => {
-  const { chainId } = get(environmentAtom)
-  const userAddedTokensState = get(userAddedTokensAtom)
-  const userAddedTokenStateForChain = userAddedTokensState[chainId] || {}
-
-  return Object.values(userAddedTokenStateForChain).map((token) => TokenWithLogo.fromToken(token, token.logoURI))
-})
-
 export const addUserTokenAtom = atom(null, (get, set, tokens: TokenWithLogo[]) => {
   const { chainId } = get(environmentAtom)
   const userAddedTokensState = get(userAddedTokensAtom)

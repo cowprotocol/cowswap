@@ -11,7 +11,15 @@ import {
   COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
   COW_PROTOCOL_VAULT_RELAYER_ADDRESS,
 } from '@cowprotocol/common-utils'
-import { CONTRACTS_PKG_VERSION, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import {
+  CONTRACTS_PKG_VERSION,
+  isSolanaChain,
+  SOLANA_SETTLEMENT_PROGRAM_ID,
+  SOLANA_SETTLEMENT_PROGRAM_ID_STAGING,
+  SOLANA_SETTLEMENT_PROGRAM_VERSION,
+  SOLANA_SETTLEMENT_PROGRAM_VERSION_STAGING,
+  SupportedChainId as ChainId,
+} from '@cowprotocol/cow-sdk'
 import { ExternalLink, Media, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -26,6 +34,11 @@ const GIT_COMMIT_HASH = process.env.REACT_APP_GIT_COMMIT_HASH ?? ''
 const GIT_RELEASE_TAG = process.env.REACT_APP_GIT_RELEASE_TAG ?? ''
 
 const contractsTsVersion = CONTRACTS_PKG_VERSION
+
+const solanaSettlementProgramId = isBarnBackendEnv ? SOLANA_SETTLEMENT_PROGRAM_ID_STAGING : SOLANA_SETTLEMENT_PROGRAM_ID
+const solanaSettlementProgramVersion = isBarnBackendEnv
+  ? SOLANA_SETTLEMENT_PROGRAM_VERSION_STAGING
+  : SOLANA_SETTLEMENT_PROGRAM_VERSION
 
 function getCommitHref(): string {
   if (GIT_RELEASE_TAG) {
@@ -48,6 +61,24 @@ const _getContractsUrls = (
 type VersionInfo = {
   version: string
   href: (_chainId: ChainId) => string
+}
+
+const EVM_CONTRACTS_VERSIONS: Record<string, VersionInfo> = {
+  'Vault Relayer': {
+    version: 'v' + contractsTsVersion,
+    href: (chainId: ChainId) => _getContractsUrls(chainId, COW_PROTOCOL_VAULT_RELAYER_ADDRESS),
+  },
+  'Settlement Contract': {
+    version: 'v' + contractsTsVersion,
+    href: (chainId: ChainId) => _getContractsUrls(chainId, COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS),
+  },
+}
+
+const SOLANA_CONTRACTS_VERSIONS: Record<string, VersionInfo> = {
+  'Settlement Program': {
+    version: 'v' + solanaSettlementProgramVersion,
+    href: (chainId: ChainId) => getEtherscanLink(chainId, 'address', solanaSettlementProgramId),
+  },
 }
 
 const orderbookApiVersionQueryAtom = atomWithQuery(() => ({
@@ -184,14 +215,7 @@ export const Version = ({ className }: { className?: string }): ReactNode => {
       version: GIT_COMMIT_HASH || 'unknown',
       href: () => getCommitHref(),
     },
-    'Vault Relayer': {
-      version: 'v' + contractsTsVersion,
-      href: (chainId: ChainId) => _getContractsUrls(chainId, COW_PROTOCOL_VAULT_RELAYER_ADDRESS),
-    },
-    'Settlement Contract': {
-      version: 'v' + contractsTsVersion,
-      href: (chainId: ChainId) => _getContractsUrls(chainId, COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS),
-    },
+    ...(isSolanaChain(chainId) ? SOLANA_CONTRACTS_VERSIONS : EVM_CONTRACTS_VERSIONS),
     'Orderbook API': {
       version: `${isBarnBackendEnv ? 'barn' : 'prod'}:` + orderbookApiVersion,
       href: () => 'https://github.com/cowprotocol/services/releases',
@@ -203,9 +227,7 @@ export const Version = ({ className }: { className?: string }): ReactNode => {
 
   useOnClickOutside([dropdownRef], () => setShowDropdown(false))
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleLinkClick = () => {
+  const handleLinkClick = (): void => {
     setShowDropdown(false)
   }
 

@@ -1,7 +1,7 @@
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
-import { getAddressKey } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { t } from '@lingui/core/macro'
 
@@ -96,31 +96,85 @@ export function buildVirtualRows(params: BuildVirtualRowsParams): TokensVirtualR
     })
   }
 
-  if (hasFavoriteSection || hasRecentSection) {
+  if ((hasFavoriteSection || hasRecentSection) && tokenRows.length > 0) {
     composedRows.push({ type: 'title', label: t`All tokens` })
   }
 
   return [...composedRows, ...tokenRows]
 }
 
-export function sortTokensByBalance(tokens: TokenWithLogo[], balances: BalancesMap): TokenWithLogo[] {
-  if (!balances) {
+export function sortTokensByBalance(
+  tokens: TokenWithLogo[],
+  balances: BalancesMap,
+  prioritizedTokenKeys: string[] = [],
+): TokenWithLogo[] {
+  const hasRanks = tokens.some((token) => getSolanaTokenRank(token) !== Infinity)
+
+  if (!balances && !hasRanks && !prioritizedTokenKeys.length) {
     return tokens
   }
 
+  const prioritizedPositions = new Map(prioritizedTokenKeys.map((key, index) => [key, index]))
+  const { held, prioritized, remainder } = splitTokens(tokens, balances, prioritizedPositions)
+
+  if (balances) {
+    held.sort(tokensListSorter(balances))
+  }
+
+  prioritized.sort(
+    (a, b) =>
+      (prioritizedPositions.get(getAddressKey(a.address)) ?? 0) -
+      (prioritizedPositions.get(getAddressKey(b.address)) ?? 0),
+  )
+
+  if (hasRanks) {
+    remainder.sort(compareSolanaTokenRank)
+  }
+
+  return [...held, ...prioritized, ...remainder]
+}
+
+function compareSolanaTokenRank(a: TokenWithLogo, b: TokenWithLogo): number {
+  const rankA = getSolanaTokenRank(a)
+  const rankB = getSolanaTokenRank(b)
+
+  if (rankA !== rankB) return rankA - rankB
+
+  const symbolOrder = (a.symbol ?? '').localeCompare(b.symbol ?? '')
+  if (symbolOrder) return symbolOrder
+  if (areAddressesEqual(a.address, b.address)) return 0
+
+  return a.sortsBefore(b) ? -1 : 1
+}
+
+function getSolanaTokenRank(token: TokenWithLogo): number {
+  const rank = token.extensions?.rank
+
+  return token.chainId === SupportedChainId.SOLANA && typeof rank === 'number' && Number.isSafeInteger(rank) && rank > 0
+    ? rank
+    : Infinity
+}
+
+function splitTokens(
+  tokens: TokenWithLogo[],
+  balances: BalancesMap,
+  prioritizedPositions: Map<string, number>,
+): { held: TokenWithLogo[]; prioritized: TokenWithLogo[]; remainder: TokenWithLogo[] } {
+  const held: TokenWithLogo[] = []
   const prioritized: TokenWithLogo[] = []
   const remainder: TokenWithLogo[] = []
 
   for (const token of tokens) {
-    const hasBalance = Boolean(balances[getAddressKey(token.address)])
-    if (hasBalance || getIsNativeToken(token)) {
+    const addressKey = getAddressKey(token.address)
+
+    if (Boolean(balances?.[addressKey]) || getIsNativeToken(token)) {
+      held.push(token)
+    } else if (prioritizedPositions.has(addressKey)) {
       prioritized.push(token)
     } else {
       remainder.push(token)
     }
   }
 
-  const sortedPrioritized = prioritized.length > 1 ? [...prioritized].sort(tokensListSorter(balances)) : prioritized
-
-  return [...sortedPrioritized, ...remainder]
+  return { held, prioritized, remainder }
 }

@@ -3,10 +3,12 @@ import { ReactNode } from 'react'
 import { useUsdAmount } from 'modules/usdAmount'
 import { useVolumeFeeTooltip } from 'modules/volumeFee'
 
+import { AccountRentRow } from '../../pure/AccountRentRow'
 import { NetworkCostsRow } from '../../pure/NetworkCostsRow'
 import { TradeFees } from '../../pure/TradeFees'
 import { ReceiveAmountInfo } from '../../types'
 import { getOrderTypeReceiveAmounts } from '../../utils/getOrderTypeReceiveAmounts'
+import { getProtocolFeeDisplayAmount } from '../../utils/getProtocolFeeDisplayAmount'
 
 interface TradeFeesAndCostsProps {
   receiveAmountInfo: ReceiveAmountInfo | null
@@ -33,17 +35,19 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps): ReactNode {
   const partnerFee = receiveAmountInfo && receiveAmountInfo.costs.partnerFee
   const partnerFeeAmount = partnerFee?.amount
   const partnerFeeBps = partnerFee?.bps
-  const protocolFee = receiveAmountInfo && receiveAmountInfo.costs.protocolFee
-  const protocolFeeAmount = protocolFee?.amount
-  const protocolFeeBps = protocolFee?.bps
+  const protocolFeeAmount = getProtocolFeeDisplayAmount(receiveAmountInfo)
+  const protocolFeeBps = receiveAmountInfo?.costs.protocolFee?.bps
+  const accountRentFee = receiveAmountInfo?.costs.accountRentFee
 
   const partnerFeeUsd = useUsdAmount(partnerFeeAmount).value
   const protocolFeeUsd = useUsdAmount(protocolFeeAmount).value
   const networkFeeAmountUsd = useUsdAmount(networkFeeAmount).value
+  const accountRentFeeUsd = useUsdAmount(accountRentFee).value
 
   const volumeFeeTooltip = useVolumeFeeTooltip()
 
   const hasNetworkCosts = networkFeeAmount?.greaterThan(0)
+  const hasAccountRent = accountRentFee?.greaterThan(0)
 
   return (
     <>
@@ -56,9 +60,19 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps): ReactNode {
         protocolFeeBps={protocolFeeBps}
         volumeFeeTooltip={volumeFeeTooltip}
         withTimelineDot={withTimelineDot}
-        isLast={!hasNetworkCosts}
+        isLast={!hasNetworkCosts && !hasAccountRent}
         testId={feeTestId}
       />
+
+      {hasAccountRent && accountRentFee && (
+        <AccountRentRow
+          rentAmount={accountRentFee}
+          rentAmountUsd={accountRentFeeUsd}
+          buyTokenSymbol={receiveAmountInfo?.beforeAllFees.buyAmount.currency.symbol}
+          withTimelineDot={withTimelineDot}
+          isLast={!hasNetworkCosts}
+        />
+      )}
 
       {hasNetworkCosts && networkFeeAmount && (
         <NetworkCostsRow

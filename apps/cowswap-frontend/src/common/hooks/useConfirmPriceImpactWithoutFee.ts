@@ -5,6 +5,7 @@ import { Percent } from '@cowprotocol/currency'
 import { t } from '@lingui/core/macro'
 
 import { useConfirmationRequest } from 'common/hooks/useConfirmationRequest'
+import { logPriceImpactConfirmed } from 'common/services/logPriceImpactConfirmed'
 
 import { BRIDGE_PRICE_IMPACT_THRESHOLD, PRICE_IMPACT_THRESHOLD } from '../constants/priceImpact'
 
@@ -33,11 +34,11 @@ export function useConfirmPriceImpactWithoutFee(isBridge: boolean): ConfirmPrice
             const pct = priceImpact.toFixed(0)
 
             if (!priceImpact.lessThan(criticalThreshold)) {
-              return t`This swap has a price impact of at least ${pct}%.`
+              return t`This trade has a price impact of at least ${pct}%.`
             }
 
             if (!priceImpact.lessThan(highThreshold)) {
-              return t`This swap has a price impact of at least ${pct}%.`
+              return t`This trade has a price impact of at least ${pct}%.`
             }
 
             return undefined
@@ -46,11 +47,20 @@ export function useConfirmPriceImpactWithoutFee(isBridge: boolean): ConfirmPrice
           const result = await triggerConfirmation({
             confirmWord: t`confirm`,
             title: t`Confirm Price Impact`,
-            action: t`continue with this swap`,
-            callToAction: t`Confirm Swap`,
+            action: t`continue`,
+            callToAction: t`Confirm`,
             description,
             skipInput: shouldSkipInput,
           })
+
+          if (result) {
+            logPriceImpactConfirmed({
+              priceImpact: priceImpact.toFixed(2),
+              isBridge,
+              isCritical: !shouldSkipInput,
+            })
+          }
+
           setIsConfirmed(result)
           return result
         } catch {

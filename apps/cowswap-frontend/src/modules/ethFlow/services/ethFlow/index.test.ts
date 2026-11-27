@@ -58,7 +58,7 @@ describe('ethFlow - Send analytics payload', () => {
   ): Parameters<typeof ethFlow>[0]['tradeContext'] {
     return {
       tradeConfirmActions: { onSign: jest.fn(), onSuccess: jest.fn(), onError: jest.fn() },
-      swapFlowAnalyticsContext: {
+      tradeFlowAnalyticsContext: {
         account: '0xaccount',
         orderType: UiOrderType.SWAP,
         marketLabel: 'ETH,BUY',

@@ -2,6 +2,8 @@ import { useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
 
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
+
 import { useIsNativeIn, useWrappedToken } from 'modules/trade'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
@@ -24,6 +26,7 @@ export function EthFlowBanner({ hasEnoughWrappedBalance, ...props }: EthFlowBann
   const isNativeIn = useIsNativeIn()
   const native = useNativeCurrency()
   const wrapped = useWrappedToken()
+  const { hideWrapBanner } = useInjectedWidgetParams()
 
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -31,8 +34,7 @@ export function EthFlowBanner({ hasEnoughWrappedBalance, ...props }: EthFlowBann
     return setShowBanner((state) => !state)
   }
 
-  // dont render if it isn't a native token swap
-  if (!isNativeIn) return null
+  if (!isNativeIn || hideWrapBanner) return null
 
   return (
     <EthFlowBannerContent

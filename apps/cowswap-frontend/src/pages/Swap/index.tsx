@@ -7,19 +7,21 @@ import { useLingui } from '@lingui/react/macro'
 import { useParams } from 'react-router'
 
 import { PageTitle } from 'modules/application'
+import { PriceChart } from 'modules/priceChart'
 import { swapDerivedStateAtom, SwapUpdaters, SwapWidget, useSwapDerivedStateToFill } from 'modules/swap'
 import { PageWrapper, PrimaryWrapper, TradeRouteRedirect } from 'modules/trade'
 
 import { Routes } from 'common/constants/routes'
 import { HydrateAtom } from 'common/state/HydrateAtom'
 
-const TRADE_PAGE_MAX_WIDTH = '1800px'
+const COMPACT_TRADE_PAGE_MAX_WIDTH = '1270px'
 
 export function SwapPage(): ReactNode {
   const params = useParams()
   const { i18n } = useLingui()
   const { chainId } = useWalletInfo()
   const swapDerivedStateToFill = useSwapDerivedStateToFill()
+  const { inputCurrency, isUnlocked, outputCurrency } = swapDerivedStateToFill
 
   if (!params.chainId) {
     return (
@@ -32,10 +34,12 @@ export function SwapPage(): ReactNode {
       <PageTitle title={i18n._(PAGE_TITLES.SWAP)} />
 
       <SwapUpdaters />
-      <PageWrapper isUnlocked maxWidth={TRADE_PAGE_MAX_WIDTH} hideOrdersTable>
+      <PageWrapper isUnlocked={isUnlocked} maxWidth={COMPACT_TRADE_PAGE_MAX_WIDTH} hideOrdersTable>
         <PrimaryWrapper>
           <SwapWidget />
         </PrimaryWrapper>
+
+        {isUnlocked && <PriceChart inputCurrency={inputCurrency} outputCurrency={outputCurrency} expandable />}
       </PageWrapper>
     </HydrateAtom>
   )

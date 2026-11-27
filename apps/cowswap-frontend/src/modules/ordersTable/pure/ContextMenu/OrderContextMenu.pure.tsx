@@ -5,7 +5,7 @@ import { ContextMenuTooltip, ContextMenuItemButton, ContextMenuExternalLink } fr
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
-import { Edit, FileText, MoreVertical, Repeat, Trash2 } from 'react-feather'
+import { CornerUpLeft, Edit, FileText, MoreVertical, Repeat, Trash2 } from 'react-feather'
 
 import { AlternativeOrderModalContext } from '../../state/ordersTable.types'
 
@@ -13,6 +13,7 @@ export interface OrderContextMenuProps {
   openReceipt: Command
   activityUrl: string | undefined
   showCancellationModal: Command | null
+  reclaimRent: Command | null
   alternativeOrderModalContext?: AlternativeOrderModalContext
 }
 
@@ -20,6 +21,7 @@ export function OrderContextMenu({
   openReceipt,
   activityUrl,
   showCancellationModal,
+  reclaimRent,
   alternativeOrderModalContext,
 }: OrderContextMenuProps): ReactNode {
   return (
@@ -39,6 +41,14 @@ export function OrderContextMenu({
               {alternativeOrderModalContext.isEdit ? <Edit size={16} /> : <Repeat size={16} />}
               <span>
                 {alternativeOrderModalContext.isEdit ? t`Edit` : t`Recreate`} <Trans>order</Trans>
+              </span>
+            </ContextMenuItemButton>
+          )}
+          {reclaimRent && (
+            <ContextMenuItemButton onClick={reclaimRent}>
+              <CornerUpLeft size={16} />
+              <span>
+                <Trans>Reclaim rent</Trans>
               </span>
             </ContextMenuItemButton>
           )}

@@ -101,8 +101,6 @@ const baseMockOrderData = {
     executedBuyAmount: new BigNumber('0'),
     executedSellAmount: new BigNumber('0'),
     executedFeeAmount: new BigNumber('0'),
-    executedFee: new BigNumber('0'), // Can be null, using 0 for simplicity
-    totalFee: new BigNumber('0'),
     executedFeeToken: usdtToken.address, // Address of the token fee is paid in
     partiallyFilled: false,
     fullyFilled: false,
@@ -122,8 +120,6 @@ const baseMockOrderData = {
     executedBuyAmount: new BigNumber('1000000000000000000'), // Full amount bought
     executedSellAmount: new BigNumber('2000000000'), // Full amount sold
     executedFeeAmount: new BigNumber('1000000000000000'), // Full fee amount
-    executedFee: new BigNumber('1000000000000000'),
-    totalFee: new BigNumber('1000000000000000'), // Total fee for the order is the full feeAmount
     executedFeeToken: usdtToken.address,
     partiallyFilled: false,
     fullyFilled: true,
@@ -143,8 +139,6 @@ const baseMockOrderData = {
     executedBuyAmount: new BigNumber('0'),
     executedSellAmount: new BigNumber('0'),
     executedFeeAmount: new BigNumber('0'),
-    executedFee: new BigNumber('0'),
-    totalFee: new BigNumber('0'),
     executedFeeToken: usdtToken.address,
     partiallyFilled: false,
     fullyFilled: false,
@@ -164,8 +158,6 @@ const baseMockOrderData = {
     executedBuyAmount: new BigNumber('0'),
     executedSellAmount: new BigNumber('0'),
     executedFeeAmount: new BigNumber('0'),
-    executedFee: new BigNumber('0'),
-    totalFee: new BigNumber('0'),
     executedFeeToken: usdtToken.address,
     partiallyFilled: false,
     fullyFilled: false,
@@ -186,8 +178,6 @@ const baseMockOrderData = {
     executedBuyAmount: new BigNumber('0'),
     executedSellAmount: new BigNumber('0'),
     executedFeeAmount: new BigNumber('0'),
-    executedFee: new BigNumber('0'),
-    totalFee: new BigNumber('0'),
     executedFeeToken: usdtToken.address,
     partiallyFilled: false,
     fullyFilled: false,
@@ -207,8 +197,6 @@ const baseMockOrderData = {
     executedBuyAmount: new BigNumber('0'),
     executedSellAmount: new BigNumber('0'),
     executedFeeAmount: new BigNumber('0'),
-    executedFee: new BigNumber('0'),
-    totalFee: new BigNumber('0'),
     executedFeeToken: usdtToken.address,
     partiallyFilled: false,
     fullyFilled: false,
@@ -229,8 +217,6 @@ const baseMockOrderData = {
     executedBuyAmount: new BigNumber('500000000000000000'), // 0.5 WETH executed
     executedSellAmount: new BigNumber('1000000000'), // 1000 USDT executed
     executedFeeAmount: new BigNumber('500000000000000'), // Half fee amount
-    executedFee: new BigNumber('500000000000000'),
-    totalFee: new BigNumber('1000000000000000'),
     executedFeeToken: usdtToken.address,
     partiallyFilled: true,
     fullyFilled: false,
@@ -356,8 +342,6 @@ const swapBridgePartiallyFilledOrder: Order = {
   bridgeDetails: pendingBridgeDetails,
 } as Order
 
-const mockTradeExecutedFee = filledOrder.totalFee // totalFee from Order is BigNumber
-
 const mockTradesFilledOrder: Trade[] = [
   {
     blockNumber: 15000000,
@@ -368,8 +352,7 @@ const mockTradesFilledOrder: Trade[] = [
     kind: filledOrder.kind,
     buyAmount: filledOrder.executedBuyAmount,
     sellAmount: filledOrder.executedSellAmount, // This is sell amount *after* fees for the trade
-    executedFee: mockTradeExecutedFee, // Fee for this specific trade
-    sellAmountBeforeFees: filledOrder.executedSellAmount.plus(mockTradeExecutedFee), // Calculated before fee
+    sellAmountBeforeFees: filledOrder.executedSellAmount.plus(filledOrder.executedFeeAmount),
     buyToken: filledOrder.buyToken,
     buyTokenAddress: filledOrder.buyTokenAddress,
     sellToken: filledOrder.sellToken,

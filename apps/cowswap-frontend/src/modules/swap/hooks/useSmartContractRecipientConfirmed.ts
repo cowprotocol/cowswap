@@ -1,7 +1,7 @@
 import { atom, useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { useIsSmartContractWallet } from '@cowprotocol/wallet'
+import { isSmartContractWalletAtom } from '@cowprotocol/wallet'
 
 import { useDerivedTradeState } from '../../trade'
 import { useIsCurrentTradeBridging } from '../../trade/hooks/useIsCurrentTradeBridging'
@@ -13,7 +13,7 @@ export function useShouldCheckBridgingRecipient(): boolean {
   const { outputCurrencyAmount } = useDerivedTradeState() || {}
   const { isLoading } = useTradeQuote()
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
-  const isSmartContractWallet = useIsSmartContractWallet()
+  const isSmartContractWallet = useAtomValue(isSmartContractWalletAtom)
 
   return !!isSmartContractWallet && !!outputCurrencyAmount && isCurrentTradeBridging && !isLoading
 }

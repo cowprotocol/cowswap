@@ -18,6 +18,7 @@ import {
   deleteOrders,
   expireOrdersBatch,
   fulfillOrdersBatch,
+  invalidateAbandonedCreatingOrdersBatch,
   invalidateOrdersBatch,
   OrderStatus,
   preSignOrders,
@@ -56,6 +57,10 @@ export type OrdersState = {
   readonly [chainId in ChainId]?: OrdersStateNetwork
 }
 export interface OrdersStateNetwork extends OrderLists {
+  /**
+   * Block of the first completed pending-orders poll per chain per session, not the latest one.
+   * Only used as a "hydrated" marker: any value other than the chain default means orders were polled.
+   */
   lastCheckedBlock: number
 }
 
@@ -160,6 +165,12 @@ function cancelOrderInState(
   orderObject: OrderObject,
   isSafeWallet: boolean,
 ) {
+  // Invalidation can succeed after a fill; it cannot undo execution.
+  if (orderObject.order.status === OrderStatus.FULFILLED) {
+    orderObject.order.isCancelling = false
+    return
+  }
+
   const id = orderObject.id
 
   deleteOrderById(state, chainId, id)
@@ -182,6 +193,19 @@ function deleteOrderById(state: Required<OrdersState>, chainId: ChainId, id: str
   delete stateForChain.creating[id]
   delete stateForChain.failed[id]
   delete stateForChain.scheduled[id]
+}
+
+function failOrderById(state: Required<OrdersState>, chainId: ChainId, id: string, isSafeWallet: boolean): void {
+  const orderObject = getOrderById(state, chainId, id)
+
+  if (!orderObject) return
+
+  deleteOrderById(state, chainId, id)
+
+  orderObject.order.status = OrderStatus.FAILED
+  orderObject.order.isCancelling = false
+
+  addOrderToState(state, chainId, id, 'failed', orderObject.order, isSafeWallet)
 }
 
 function getDefaultLastCheckedBlock(chainId: ChainId): number {
@@ -411,19 +435,24 @@ export default createReducer(initialState, (builder) =>
       prefillState(state, action)
       const { ids, chainId, isSafeWallet } = action.payload
 
-      // if there are any newly fulfilled orders
-      // update them
+      ids.forEach((id) => {
+        failOrderById(state, chainId, id, isSafeWallet)
+      })
+    })
+    .addCase(invalidateAbandonedCreatingOrdersBatch, (state, action) => {
+      prefillState(state, action)
+      const { ids, chainId, isSafeWallet } = action.payload
+
       ids.forEach((id) => {
         const orderObject = getOrderById(state, chainId, id)
 
-        if (orderObject) {
-          deleteOrderById(state, chainId, id)
-
-          orderObject.order.status = OrderStatus.FAILED
-          orderObject.order.isCancelling = false
-
-          addOrderToState(state, chainId, id, 'failed', orderObject.order, isSafeWallet)
+        // Re-read rather than trusting the id: another updater may have advanced this order to
+        // pending or filled since the 404 that collected it. See the action's own doc comment.
+        if (!orderObject || orderObject.order.status !== OrderStatus.CREATING || orderObject.order.orderCreationHash) {
+          return
         }
+
+        failOrderById(state, chainId, id, isSafeWallet)
       })
     })
     .addCase(setOrderCancellationHash, (state, action) => {
@@ -434,6 +463,7 @@ export default createReducer(initialState, (builder) =>
 
       if (orderObject) {
         orderObject.order.cancellationHash = hash
+        orderObject.order.cancellationHashTime = new Date().toISOString()
       }
     })
     .addCase(requestOrderCancellation, (state, action) => {
@@ -553,10 +583,10 @@ function reClassifyOrder(
   newOrder: SerializedOrder,
   existingOrder: OrderObject | undefined,
 ): { status: OrderStatus; isCancelling: boolean | undefined } {
-  // Onchain cancellations are considered final
-  // Still, the order classification at apps/cowswap-frontend/src/legacy/state/orders/utils.ts can't tell
-  // what type of cancellation it was as it doesn't have the local store context
-  // Here we do, so we can tell whether it should be fully cancelled or still pending
+  // Preserve cancellation against stale pending responses, but accept a confirmed fill.
+  if (newOrder.status === OrderStatus.FULFILLED) {
+    return { status: newOrder.status, isCancelling: false }
+  }
   if (existingOrder?.order.status === OrderStatus.CANCELLED) {
     return { status: existingOrder.order.status, isCancelling: false }
   }

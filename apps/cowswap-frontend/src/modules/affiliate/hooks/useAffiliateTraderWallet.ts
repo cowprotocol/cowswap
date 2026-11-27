@@ -2,11 +2,11 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletChainId } from '@cowprotocol/wallet-provider'
 
+import { useAffiliateChainId } from './useAffiliateChainId'
 import { TraderEligibilityStatus, useAffiliateTraderEligibility } from './useAffiliateTraderEligibility'
+import { useIsAffiliateSupportedTradingNetwork } from './useIsAffiliateSupportedTradingNetwork'
 
-import { isSupportedTradingNetwork } from '../lib/affiliateProgramUtils'
 import { affiliateTraderSavedCodeAtom } from '../state/affiliateTraderSavedCodeAtom'
 
 export enum TraderWalletStatus {
@@ -29,9 +29,9 @@ export enum TraderWalletStatus {
 export function useAffiliateTraderWallet(): TraderWalletStatus {
   const { account } = useWalletInfo()
   const { isLinked } = useAtomValue(affiliateTraderSavedCodeAtom)
-  const chainId = useWalletChainId()
+  const chainId = useAffiliateChainId()
 
-  const supportedTradingNetwork = isSupportedTradingNetwork(chainId)
+  const supportedTradingNetwork = useIsAffiliateSupportedTradingNetwork(chainId)
   const { status: eligibilityStatus, hasLoadingTimeout } = useAffiliateTraderEligibility({
     account,
     enabled: !!account && supportedTradingNetwork && !isLinked,

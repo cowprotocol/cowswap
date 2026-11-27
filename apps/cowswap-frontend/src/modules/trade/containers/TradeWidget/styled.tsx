@@ -16,6 +16,7 @@ const getContainerMaxWidth = ({ isTokenSelectOpen, isTokenSelectWide }: Containe
 export const Container = styled.div<ContainerSizeProps>`
   width: 100%;
   max-width: ${getContainerMaxWidth};
+  min-width: 0;
   margin: 0 auto;
   position: relative;
 `

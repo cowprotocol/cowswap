@@ -13,6 +13,7 @@ export const NETWORK_SLUG_TO_CHAIN_ID: Readonly<Record<string, number>> = {
   avalanche: 43114,
   linea: 59144,
   ink: 57073,
+  robinhood: 4663,
   lens: 232,
   plasma: 9745,
   sepolia: 11155111,

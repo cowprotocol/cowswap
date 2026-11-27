@@ -1,94 +1,24 @@
-import type { ReactNode } from 'react'
+import { type ReactNode, useState } from 'react'
 
 import { Tooltip as BaseTooltip } from '@base-ui/react/tooltip'
 import ms from 'ms.macro'
-import styled from 'styled-components/macro'
 
-import { UI } from '../../enum'
+import * as styledEl from './Tooltip.styled'
 
 const CLOSE_DELAY_MS = ms`0.3s`
-
-const Trigger = styled.div`
-  display: inline-flex;
-  align-items: center;
-`
-
-const Positioner = styled(BaseTooltip.Positioner)`
-  z-index: 10;
-`
-
-const Popup = styled(BaseTooltip.Popup)`
-  max-width: 320px;
-  background: var(${UI.COLOR_PAPER_DARKER});
-  color: var(${UI.COLOR_TEXT_PAPER});
-  box-shadow: var(${UI.BOX_SHADOW});
-  border: 1px solid var(${UI.COLOR_PAPER_DARKEST});
-  border-radius: 12px;
-  padding: 10px 9px;
-  font-size: 13px;
-  font-weight: 400;
-  word-break: break-word;
-  backdrop-filter: blur(20px);
-  transform-origin: var(--transform-origin);
-`
-
-const Arrow = styled(BaseTooltip.Arrow)`
-  width: 8px;
-  height: 8px;
-  pointer-events: none;
-  color: inherit;
-
-  ::before {
-    position: absolute;
-    width: 8px;
-    height: 8px;
-    content: '';
-    background: var(${UI.COLOR_PAPER_DARKER});
-    border: 1px solid var(${UI.COLOR_PAPER_DARKEST});
-    transform: rotate(45deg);
-  }
-
-  &[data-side='top'] {
-    bottom: -5px;
-
-    ::before {
-      border-top: none;
-      border-left: none;
-    }
-  }
-
-  &[data-side='bottom'] {
-    top: -5px;
-
-    ::before {
-      border-bottom: none;
-      border-right: none;
-    }
-  }
-
-  &[data-side='left'] {
-    right: -5px;
-
-    ::before {
-      border-bottom: none;
-      border-left: none;
-    }
-  }
-
-  &[data-side='right'] {
-    left: -5px;
-
-    ::before {
-      border-right: none;
-      border-top: none;
-    }
-  }
-`
 
 export interface NewTooltipProps {
   content: ReactNode
   children: ReactNode
   placement?: TooltipPlacement
+  /**
+   * When true, hovering the popup does not keep it open — leaving the trigger closes it.
+   * @default false
+   */
+  disableHoverablePopup?: boolean
+  /** Override provider close delay (ms). */
+  closeDelay?: number
+  className?: string
 }
 export type TooltipPlacement = Side | `${Side}-${Exclude<Align, 'center'>}`
 
@@ -97,24 +27,56 @@ type Align = 'start' | 'center' | 'end'
 type Side = 'top' | 'right' | 'bottom' | 'left'
 
 export function NewTooltip(props: NewTooltipProps): ReactNode {
-  const { content, children, placement } = props
-  const [side, align = 'center'] = placement?.split('-') as [Side, Align?]
+  const {
+    content,
+    children,
+    placement = 'top',
+    disableHoverablePopup = false,
+    closeDelay = CLOSE_DELAY_MS,
+    className,
+  } = props
+  const [side, align = 'center'] = placement.split('-') as [Side, Align?]
+  const [open, setOpen] = useState(false)
 
   return (
-    <BaseTooltip.Provider delay={0} closeDelay={CLOSE_DELAY_MS}>
-      <BaseTooltip.Root>
-        <BaseTooltip.Trigger closeOnClick={false} render={<Trigger />}>
+    <BaseTooltip.Provider delay={0} closeDelay={closeDelay}>
+      <BaseTooltip.Root open={open} disableHoverablePopup={disableHoverablePopup} onOpenChange={setOpen}>
+        <BaseTooltip.Trigger
+          closeOnClick={false}
+          delay={0}
+          closeDelay={closeDelay}
+          render={(triggerProps) => (
+            <styledEl.Trigger
+              {...triggerProps}
+              className={[triggerProps.className, className].filter(Boolean).join(' ')}
+            />
+          )}
+          onPointerEnter={(event) => {
+            if (isMouseLikePointerType(event.pointerType)) {
+              setOpen(true)
+            }
+          }}
+          onPointerLeave={() => {
+            if (disableHoverablePopup) {
+              setOpen(false)
+            }
+          }}
+        >
           {children}
         </BaseTooltip.Trigger>
         <BaseTooltip.Portal>
-          <Positioner side={side} align={align} sideOffset={8}>
-            <Popup>
-              <Arrow />
+          <styledEl.Positioner side={side} align={align} sideOffset={8}>
+            <styledEl.Popup {...(disableHoverablePopup ? { 'data-non-interactive': '' } : undefined)}>
+              <styledEl.Arrow />
               {content}
-            </Popup>
-          </Positioner>
+            </styledEl.Popup>
+          </styledEl.Positioner>
         </BaseTooltip.Portal>
       </BaseTooltip.Root>
     </BaseTooltip.Provider>
   )
+}
+
+function isMouseLikePointerType(pointerType: string): boolean {
+  return pointerType === 'mouse' || pointerType === 'pen' || pointerType === ''
 }

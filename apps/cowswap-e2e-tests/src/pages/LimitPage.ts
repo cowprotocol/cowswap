@@ -77,7 +77,6 @@ export class LimitPage implements TradePage {
     await this.page.waitForFunction(
       () => !document.querySelector('#currency-arrow-separator')?.getAttribute('data-isLoading'),
       undefined,
-      { timeout: 30_000 },
     )
   }
 

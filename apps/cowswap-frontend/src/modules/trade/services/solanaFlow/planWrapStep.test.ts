@@ -26,6 +26,17 @@ describe('planWrapStep', () => {
     expect(decoded.toPubkey.equals(ata)).toBe(true)
   })
 
+  // The WSOL account is the owner's to close, so a sponsor-funded one would hand them the rent back;
+  // the step therefore has no way to name anyone but the owner, sponsored bundle or not.
+  it('rents the WSOL account from the owner, as it does the transfer', () => {
+    const step = planWrapStep({ owner: OWNER, sellAmount: 10_000n })
+
+    const [create, transfer] = step!.instructions
+
+    expect(create.keys[0].pubkey.equals(OWNER)).toBe(true)
+    expect(SystemInstruction.decodeTransfer(transfer).fromPubkey.equals(OWNER)).toBe(true)
+  })
+
   it('summarizes the SOL amount wrapped', () => {
     const step = planWrapStep({ owner: OWNER, sellAmount: 10_000n })
 

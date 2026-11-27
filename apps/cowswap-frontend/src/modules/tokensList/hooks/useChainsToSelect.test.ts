@@ -24,7 +24,7 @@ const DEFAULT_ROUTES_AVAILABILITY = {
 jest.mock('@cowprotocol/wallet', () => ({
   ...jest.requireActual('@cowprotocol/wallet'),
   useWalletInfo: jest.fn(),
-  useNetworkSwitchUnsupported: jest.fn(),
+  isNetworkSwitchUnsupportedAtom: jest.requireActual('jotai').atom(false),
 }))
 
 jest.mock('@cowprotocol/common-hooks', () => ({
@@ -48,7 +48,6 @@ const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletI
 const mockUseSelectTokenWidgetState = useSelectTokenWidgetState as jest.MockedFunction<typeof useSelectTokenWidgetState>
 
 const { useIsBridgingEnabled, useAvailableChains } = require('@cowprotocol/common-hooks')
-const { useNetworkSwitchUnsupported } = require('@cowprotocol/wallet')
 const mockUseIsBridgingEnabled = useIsBridgingEnabled as jest.MockedFunction<typeof useIsBridgingEnabled>
 const mockUseAvailableChains = useAvailableChains as jest.MockedFunction<typeof useAvailableChains>
 
@@ -57,10 +56,6 @@ const mockUseBridgeSupportedNetworks = useBridgeSupportedNetworks as jest.Mocked
   typeof useBridgeSupportedNetworks
 >
 const mockUseRoutesAvailability = useRoutesAvailability as jest.MockedFunction<typeof useRoutesAvailability>
-
-const mockuseNetworkSwitchUnsupported = useNetworkSwitchUnsupported as jest.MockedFunction<
-  typeof useNetworkSwitchUnsupported
->
 
 type WidgetState = ReturnType<typeof useSelectTokenWidgetState>
 const createWidgetState = (override: Partial<typeof DEFAULT_SELECT_TOKEN_WIDGET_STATE>): WidgetState => {
@@ -353,6 +348,56 @@ describe('useChainsToSelect state builders', () => {
     // Should have 3 chains: Mainnet, Base, and injected Gnosis
     expect(state.chains?.length).toBe(3)
   })
+
+  it('lists only the allowed sell chains and falls back to an allowed one', () => {
+    const supportedChains = [
+      createChainInfoForTests(SupportedChainId.MAINNET),
+      createChainInfoForTests(SupportedChainId.BASE),
+      createChainInfoForTests(SupportedChainId.BNB),
+    ]
+
+    const state = createInputChainsState(SupportedChainId.BASE, supportedChains, [SupportedChainId.BNB])
+
+    expect(state.chains?.map((c) => c.id)).toEqual([SupportedChainId.BNB])
+    expect(state.defaultChainId).toBe(SupportedChainId.BNB)
+  })
+
+  it('keeps the selected sell chain when it is allowed', () => {
+    const supportedChains = [
+      createChainInfoForTests(SupportedChainId.MAINNET),
+      createChainInfoForTests(SupportedChainId.BASE),
+    ]
+
+    const state = createInputChainsState(SupportedChainId.BASE, supportedChains, [
+      SupportedChainId.MAINNET,
+      SupportedChainId.BASE,
+    ])
+
+    expect(state.defaultChainId).toBe(SupportedChainId.BASE)
+  })
+
+  it('lists only the allowed chains and falls back to an allowed one', () => {
+    const supportedChains = [
+      createChainInfoForTests(SupportedChainId.MAINNET),
+      createChainInfoForTests(SupportedChainId.BASE),
+      createChainInfoForTests(SupportedChainId.ARBITRUM_ONE),
+      createChainInfoForTests(SupportedChainId.BNB),
+    ]
+
+    const state = createOutputChainsState({
+      selectedTargetChainId: SupportedChainId.BASE,
+      chainId: SupportedChainId.GNOSIS_CHAIN,
+      currentChainInfo: createChainInfoForTests(SupportedChainId.GNOSIS_CHAIN),
+      bridgeSupportedNetworks: supportedChains,
+      supportedChains,
+      isLoading: false,
+      routesAvailability: DEFAULT_ROUTES_AVAILABILITY,
+      allowedChainIds: [SupportedChainId.BNB, SupportedChainId.ARBITRUM_ONE],
+    })
+
+    expect(state.chains?.map((c) => c.id)).toEqual([SupportedChainId.BNB, SupportedChainId.ARBITRUM_ONE])
+    expect(state.defaultChainId).toBe(SupportedChainId.BNB)
+  })
 })
 
 describe('useChainsToSelect hook', () => {
@@ -366,7 +411,6 @@ describe('useChainsToSelect hook', () => {
       isLoading: false,
     })
     mockUseRoutesAvailability.mockReturnValue(DEFAULT_ROUTES_AVAILABILITY)
-    mockuseNetworkSwitchUnsupported.mockReturnValue(false)
   })
 
   it('returns undefined for LIMIT_ORDER + OUTPUT (buy token)', () => {

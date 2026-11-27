@@ -19,6 +19,7 @@ import { limitOrdersDerivedStateAtom } from '../state/limitOrdersRawStateAtom'
 import { LimitOrdersSettingsState, updateLimitOrdersSettingsAtom } from '../state/limitOrdersSettingsAtom'
 import { updateLimitRateAtom } from '../state/limitRateAtom'
 import { partiallyFillableOverrideAtom } from '../state/partiallyFillableOverride'
+import { getRecreatedOrderAmounts } from '../utils/getRecreatedOrderAmounts.utils'
 
 export function AlternativeLimitOrderUpdater(): null {
   // Update raw state and related settings once on load
@@ -163,18 +164,9 @@ function useUpdateAlternativeRawState(): null {
       // Reset existing derived state to avoid stale info
       updateDerivedState({ ...DEFAULT_TRADE_DERIVED_STATE, isUnlocked: true })
 
-      const {
-        inputToken,
-        outputToken,
-        sellAmount,
-        feeAmount,
-        buyAmount: outputCurrencyAmount,
-        kind: orderKind,
-        partiallyFillable,
-      } = alternativeOrder
+      const { inputToken, outputToken, kind: orderKind, partiallyFillable } = alternativeOrder
 
-      // To account for orders created before fee=0 went live
-      const inputCurrencyAmount = (BigInt(sellAmount) + BigInt(feeAmount)).toString()
+      const { inputCurrencyAmount, outputCurrencyAmount } = getRecreatedOrderAmounts(alternativeOrder)
 
       updateRawState({
         inputCurrencyId: inputToken.address,

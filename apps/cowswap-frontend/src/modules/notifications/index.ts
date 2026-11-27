@@ -2,6 +2,7 @@ export { NotificationSidebar } from './containers/NotificationSidebar/Notificati
 export { NotificationBell } from './pure/NotificationBell/NotificationBell.pure'
 export { useSpeechBubbleNotification } from './hooks/useSpeechBubbleNotification'
 export { useHasNotificationSubscription } from './hooks/useHasNotificationSubscription'
+export { useTelegramNotificationsAvailability } from './hooks/useTelegramNotificationsAvailability'
 export { useNotificationAlertDismissal } from './hooks/useNotificationAlertDismissal'
 export { useTrackOrderBannerDismissal } from './hooks/useTrackOrderBannerDismissal'
 export {

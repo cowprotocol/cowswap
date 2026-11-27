@@ -1,14 +1,15 @@
+import { useAtomValue } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
-import { formatDateWithTimezone, getAddress, getIsNativeToken } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { formatDateWithTimezone, getCurrencyAddress, getIsNativeToken } from '@cowprotocol/common-utils'
+import { areAddressesEqual, isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Price } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
 import { PercentDisplay, percentIsAlmostHundred, TokenAmount } from '@cowprotocol/ui'
-import { useIsSafeWallet } from '@cowprotocol/wallet'
+import { isSafeWalletAtom } from '@cowprotocol/wallet'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 import { getEstimatedExecutionPrice } from 'legacy/state/orders/utils'
@@ -22,6 +23,7 @@ import { CurrencyLogoPair } from 'common/pure/CurrencyLogoPair'
 import { RateInfo } from 'common/pure/RateInfo'
 import { getQuoteCurrency } from 'common/services/getQuoteCurrency'
 import { isOrderCancellable } from 'common/utils/isOrderCancellable'
+import { getOrderFundingToken } from 'utils/orderUtils/getOrderFundingToken'
 import { getSellAmountWithFee } from 'utils/orderUtils/getSellAmountWithFee'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -107,7 +109,7 @@ export function OrderRow({
   const estimatedExecutionPrice = useSafeMemo(() => {
     return spotPrice && feeAmount && getEstimatedExecutionPrice(order, spotPrice, feeAmount.quotient.toString())
   }, [spotPrice, feeAmount, order])
-  const isSafeWallet = useIsSafeWallet()
+  const isSafeWallet = useAtomValue(isSafeWalletAtom)
 
   const isChainIdDeprecated = useIsProviderNetworkDeprecated()
   const showCancellationModal = useMemo(() => {
@@ -117,6 +119,7 @@ export function OrderRow({
     () => (isChainIdDeprecated ? undefined : orderActions.getAlternativeOrderModalContext(order)),
     [order, orderActions, isChainIdDeprecated],
   )
+  const reclaimRent = useMemo(() => orderActions.getReclaimRent(order), [orderActions, order])
 
   const withAllowanceWarning = hasEnoughAllowance === false
   const withWarning =
@@ -134,9 +137,12 @@ export function OrderRow({
   const activityUrl = chainId ? getActivityUrl(chainId, order) : undefined
 
   const isInvertedState = useState(() => {
-    // On mount, apply smart quote selection
     const quoteCurrency = getQuoteCurrency(chainId, inputCurrencyAmount, outputCurrencyAmount)
-    return getAddress(quoteCurrency) === getAddress(inputCurrencyAmount?.currency)
+    const inputCurrency = inputCurrencyAmount?.currency
+
+    if (!quoteCurrency || !inputCurrency) return false
+
+    return areAddressesEqual(getCurrencyAddress(quoteCurrency), getCurrencyAddress(inputCurrency))
   })
   const [isInverted, setIsInverted] = isInvertedState
   const toggleIsInverted = useCallback(() => setIsInverted((curr) => !curr), [setIsInverted])
@@ -164,7 +170,7 @@ export function OrderRow({
     isFallbackHandlerUnfillable ||
     (!percentIsAlmostHundred(filledPercentDisplay) && (isExecutedPriceZero || withWarning))
 
-  const inputTokenSymbol = order.inputToken.symbol || ''
+  const inputTokenSymbol = getOrderFundingToken(chainId, order).symbol || ''
 
   const warningReason = isFallbackHandlerUnfillable
     ? WarningReason.FallbackHandler
@@ -227,7 +233,14 @@ export function OrderRow({
           <TableRowCheckbox
             type="checkbox"
             checked={isRowSelected}
-            disabled={getIsNativeToken(order.inputToken) || !isOrderCancellable(order)}
+            // The native-token exclusion is an EVM (ETH-flow) concept: those orders can't be batched
+            // into an off-chain signature. Solana batch cancellation is on-chain and has no such split.
+            // Keyed off the order's own token chain (not the wallet-level chainId prop) so it can't
+            // desync from which chain this particular order actually lives on.
+            disabled={
+              (!isSolanaChain(order.inputToken.chainId) && getIsNativeToken(order.inputToken)) ||
+              !isOrderCancellable(order)
+            }
             onChange={() => orderActions.toggleOrderForCancellation(order)}
           />
           <CheckboxCheckmark />
@@ -397,6 +410,7 @@ export function OrderRow({
           activityUrl={activityUrl}
           openReceipt={onClick}
           showCancellationModal={showCancellationModal}
+          reclaimRent={reclaimRent}
           alternativeOrderModalContext={alternativeOrderModalContext}
         />
       </styledEl.CellElement>

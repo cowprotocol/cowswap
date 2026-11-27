@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { ButtonPrimary, ButtonOutlined, ModalHeader } from '@cowprotocol/ui'
+import { ButtonPrimary, ButtonOutlined, Modal } from '@cowprotocol/ui'
 
 import * as styledEl from './styled'
 
@@ -25,7 +25,7 @@ export function RwaConsentModal(props: RwaConsentModalProps): ReactNode {
 
   return (
     <styledEl.Wrapper>
-      <ModalHeader onClose={onDismiss}>{title}</ModalHeader>
+      <Modal.Header onClose={onDismiss}>{title}</Modal.Header>
       <styledEl.Contents>
         {token && (
           <styledEl.TokenBlock>

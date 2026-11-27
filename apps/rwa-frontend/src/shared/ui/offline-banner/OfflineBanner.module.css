@@ -1,0 +1,9 @@
+.banner {
+  margin-bottom: 10px;
+  padding: 8px 16px;
+  border-radius: var(--radius-control);
+  background: var(--color-warning-bg);
+  color: var(--color-warning-text);
+  text-align: center;
+  font-size: 14px;
+}

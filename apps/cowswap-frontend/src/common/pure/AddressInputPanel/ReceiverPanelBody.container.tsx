@@ -1,17 +1,20 @@
 import { ReactElement, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 import svgOrderCheckSrc from '@cowprotocol/assets/cow-swap/order-check.svg'
-import { TargetChainId } from '@cowprotocol/cow-sdk'
+import { isSolanaChain, TargetChainId } from '@cowprotocol/cow-sdk'
 import { TEST_IDS } from '@cowprotocol/test-ids'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/react/macro'
 
 import { useAddressDisplayValue } from './hooks/useAddressDisplayValue'
+import { useIsReceiverPda } from './hooks/useIsReceiverPda'
 import { useOnAddressInput } from './hooks/useOnAddressInput'
 import { useReceiverChainInfo } from './hooks/useReceiverChainInfo'
 import { useReceiverPlaceholder } from './hooks/useReceiverPlaceholder'
 import { useReceiverValidation } from './hooks/useReceiverValidation'
 import { ReceiverConfirmationRow } from './ReceiverConfirmationRow.pure'
+import { ReceiverPdaConfirmationRow } from './ReceiverPdaConfirmationRow.pure'
 import { ReceiverErrorText, ReceiverInput, ReceiverInputRow, ReceiverInputWrapper, ValidCheckmark } from './styled'
 
 import ChainPrefixWarning from '../ChainPrefixWarning'
@@ -35,8 +38,11 @@ export function ReceiverPanelBody({
   isSmartContractWalletBridging,
   onNonEvmReceiverConfirmedChange,
 }: ReceiverPanelBodyProps): ReactElement {
+  const { chainId: walletChainId } = useWalletInfo()
   const { strategy, isNonEvm, chainInfo, chainId } = useReceiverChainInfo(targetChainId)
   const { isValid, isError, loading } = useReceiverValidation(value, targetChainId)
+  const isAddressSettled = isValid && !loading
+  const isPdaReceiver = useIsReceiverPda(value, isAddressSettled)
   const { handleInput, chainPrefixWarning } = useOnAddressInput(onChange, chainInfo?.addressPrefix, strategy, value)
   const { displayValue, handleFocus, handleBlur } = useAddressDisplayValue(value, isValid, loading, isNonEvm)
 
@@ -81,9 +87,10 @@ export function ReceiverPanelBody({
     [onNonEvmReceiverConfirmedChange],
   )
 
-  const showConfirmationRow = (isNonEvm || !!isSmartContractWalletBridging) && isValid && !loading
+  const showConfirmationRow =
+    !isSolanaChain(walletChainId) && (isNonEvm || !!isSmartContractWalletBridging) && isAddressSettled
 
-  const showCheckmark = isValid && !loading
+  const showCheckmark = isAddressSettled
   // Only non-EVM addresses get JS-shortened by useAddressDisplayValue (shouldBeShorted = isNonEvm) -
   // a valid EVM address's displayValue is the full, untruncated string, so shrinking the input to
   // fit it would blow the layout out just like the invalid-address case did.
@@ -134,6 +141,7 @@ export function ReceiverPanelBody({
           onConfirmChange={handleConfirmChange}
         />
       )}
+      {isPdaReceiver && <ReceiverPdaConfirmationRow confirmed={isConfirmed} onConfirmChange={handleConfirmChange} />}
     </>
   )
 }

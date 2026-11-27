@@ -1,15 +1,69 @@
 import { createStore } from 'jotai'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { UiOrderType } from '@cowprotocol/types'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
+import { triggerAppziSurvey } from 'appzi'
 import { eoaTwapOrdersAtom, twapOrdersAtom, type TwapOrderItem } from 'entities/twap'
 
-import { setTwapOrderStatusAtom } from './twapOrdersListAtom'
+import { addTwapOrderToListAtom, setTwapOrderStatusAtom } from './twapOrdersListAtom'
 
 import { TwapOrderStatus } from '../types'
 
 const OWNER = '0x1111111111111111111111111111111111111111'
+
+jest.mock('appzi', () => ({ getSurveyType: () => 'nps', triggerAppziSurvey: jest.fn() }))
+
+describe('addTwapOrderToListAtom', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+    localStorage.clear()
+  })
+
+  it('triggers the NPS survey once for a newly placed EOA parent', () => {
+    const store = createStore()
+    const order = makeOrder('parent-hash')
+    store.set(walletInfoAtom, { account: OWNER, chainId: order.chainId })
+
+    store.set(addTwapOrderToListAtom, order)
+    store.set(addTwapOrderToListAtom, order)
+
+    expect(triggerAppziSurvey).toHaveBeenCalledTimes(1)
+    expect(triggerAppziSurvey).toHaveBeenCalledWith(
+      expect.objectContaining({
+        created: true,
+        orderType: UiOrderType.TWAP,
+        chainId: order.chainId,
+        account: OWNER,
+        pendingOrderIds: order.id,
+      }),
+      'nps',
+    )
+  })
+
+  it('waits for Safe signing before triggering a creation survey', () => {
+    const store = createStore()
+    const order = { ...makeOrder('safe-hash'), safeAddress: OWNER, status: TwapOrderStatus.WaitSigning }
+    store.set(walletInfoAtom, { account: OWNER, chainId: order.chainId })
+
+    store.set(addTwapOrderToListAtom, order)
+
+    expect(store.get(twapOrdersAtom)[order.id]).toEqual(order)
+    expect(triggerAppziSurvey).not.toHaveBeenCalled()
+  })
+
+  it('does not show feedback for a placement belonging to another wallet or chain', () => {
+    const store = createStore()
+    const order = makeOrder('parent-hash')
+    store.set(walletInfoAtom, { account: order.safeAddress, chainId: order.chainId })
+    store.set(addTwapOrderToListAtom, order)
+    store.set(walletInfoAtom, { account: OWNER, chainId: SupportedChainId.MAINNET })
+    store.set(addTwapOrderToListAtom, { ...order, id: 'another-parent' })
+
+    expect(triggerAppziSurvey).not.toHaveBeenCalled()
+  })
+})
 
 describe('setTwapOrderStatusAtom', () => {
   beforeEach(() => {
@@ -57,7 +111,7 @@ function makeOrder(id: string): TwapOrderItem {
     },
     executionInfo: {
       confirmedPartsCount: 0,
-      info: { executedSellAmount: '0', executedBuyAmount: '0', executedFeeAmount: '0' },
+      info: { executedSellAmount: '0', executedBuyAmount: '0', executedFee: '0' },
     },
     partOrdersCount: 0,
   }

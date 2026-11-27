@@ -1,29 +1,35 @@
-import { useEffect, useRef } from 'react'
+import { useAtomValue } from 'jotai'
+import { useEffect, useMemo, useRef } from 'react'
 
 import { DEFAULT_APP_CODE } from '@cowprotocol/common-const'
-import { useDebounce } from '@cowprotocol/common-hooks'
+import { useDebounce, useFeatureFlags } from '@cowprotocol/common-hooks'
 import { COW_PROTOCOL_ETH_FLOW_ADDRESS, getCurrencyAddress } from '@cowprotocol/common-utils'
-import { getGlobalAdapter, OrderKind } from '@cowprotocol/cow-sdk'
+import { isSolanaChain, OrderKind, type Signer } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { isEoaAtom, useWalletInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
 import { Nullish } from 'types'
 
 import { AppDataInfo, useAppData } from 'modules/appData'
 import { useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
-import { useTradeSlippageValueAndType } from 'modules/tradeSlippage'
+import { useShouldUseAutoSlippage, useTradeSlippageValueAndType } from 'modules/tradeSlippage'
 import type { VolumeFee } from 'modules/volumeFee'
 import { useVolumeFee } from 'modules/volumeFee'
 
+import { useAppSignerForAccount } from 'common/hooks/useAppSigner'
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { useQuoteParamsRecipient } from './useQuoteParamsRecipient'
+import { useSmartSlippageFromQuote } from './useSmartSlippageFromQuote'
+import { useTradeQuote } from './useTradeQuote'
 
-import { BRIDGE_QUOTE_ACCOUNT, getBridgeQuoteSigner } from '../utils/getBridgeQuoteSigner'
+import { BRIDGE_QUOTE_ACCOUNT, getBridgeQuoteSigner, NON_EVM_CHAIN_CONFIG } from '../utils/getBridgeQuoteSigner'
+import { getEoaTwapQuotePreHooks } from '../utils/getEoaTwapQuotePreHooks'
+import { withAdditionalPreHooks } from '../utils/withAdditionalPreHooks'
 
 const DEFAULT_QUOTE_TTL = ms`30m` / 1000
 const AMOUNT_CHANGE_DEBOUNCE_TIME = ms`350ms`
@@ -41,6 +47,7 @@ interface BuildQuoteParamsArgs {
   orderKind: OrderKind
   amount: string
   account: string | undefined
+  accountSigner: Signer | undefined
   appDataDoc: AppDataInfo['doc'] | undefined
   receiver: Nullish<string>
   bridgeRecipient: Nullish<string>
@@ -51,7 +58,10 @@ interface BuildQuoteParamsArgs {
 }
 
 export function useQuoteParams(amount: Nullish<string>, partiallyFillable = false): QuoteParams | undefined {
-  const { account } = useWalletInfo()
+  const { account, chainId } = useWalletInfo()
+  const accountSigner = useAppSignerForAccount(account)
+  const isEoa = useAtomValue(isEoaAtom)
+  const { isTwapEoaEnabled } = useFeatureFlags()
   const appData = useAppData()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
@@ -59,7 +69,6 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
   const state = useDerivedTradeState()
   const volumeFee = useVolumeFee()
   const tradeSlippage = useTradeSlippageValueAndType()
-  const userSlippageBps = tradeSlippage.type === 'user' ? tradeSlippage.value : undefined
   const smartSlippageBps = tradeSlippage.type === 'smart' ? tradeSlippage.value : undefined
 
   const smartSlippageBpsRef = useRef(smartSlippageBps)
@@ -68,8 +77,19 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
   }, [smartSlippageBps])
 
   const { inputCurrency, outputCurrency, orderKind } = state || {}
+  const userSlippageBps = useQuoteSlippageBps(inputCurrency)
   const { receiver, bridgeRecipient } = useQuoteParamsRecipient()
-  const appDataDoc = appData?.doc
+
+  const appDataDoc = useMemo(() => {
+    const additionalPreHooks = getEoaTwapQuotePreHooks({
+      orderClass: appData?.doc?.metadata?.orderClass?.orderClass,
+      isTwapEoaEnabled: !!isTwapEoaEnabled,
+      isEoa,
+      chainId,
+    })
+
+    return withAdditionalPreHooks(appData?.doc, additionalPreHooks)
+  }, [appData?.doc, isTwapEoaEnabled, isEoa, chainId])
 
   const params = useSafeMemo(() => {
     if (isWrapOrUnwrap || isProviderNetworkUnsupported || isProviderNetworkDeprecated) return
@@ -85,6 +105,7 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
       orderKind,
       amount,
       account,
+      accountSigner,
       appDataDoc,
       receiver,
       bridgeRecipient,
@@ -103,6 +124,7 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
     receiver,
     bridgeRecipient,
     account,
+    accountSigner,
     isWrapOrUnwrap,
     isProviderNetworkUnsupported,
     isProviderNetworkDeprecated,
@@ -113,13 +135,12 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
 }
 
 function buildQuoteParams(args: BuildQuoteParamsArgs): QuoteParams {
-  const { inputCurrency, outputCurrency, orderKind, amount, account } = args
+  const { inputCurrency, outputCurrency, orderKind, amount, account, accountSigner } = args
   const { appDataDoc, receiver, bridgeRecipient, volumeFee, userSlippageBps, partiallyFillable, hasSmartSlippage } =
     args
 
-  const adapterSigner = account ? getGlobalAdapter().signerOrNull() : null
-  const signer = adapterSigner || getBridgeQuoteSigner(inputCurrency.chainId)
-  const owner = (account || BRIDGE_QUOTE_ACCOUNT) as `0x${string}`
+  const signer = accountSigner || getBridgeQuoteSigner(inputCurrency.chainId)
+  const owner = (account || getDefaultOwnerPlaceholder(inputCurrency.chainId)) as `0x${string}`
 
   const quoteParams: QuoteBridgeRequest = {
     kind: orderKind,
@@ -144,4 +165,30 @@ function buildQuoteParams(args: BuildQuoteParamsArgs): QuoteParams {
   }
 
   return { quoteParams, inputCurrency, appData: appDataDoc, hasSmartSlippage }
+}
+
+/** Returns the default owner/account placeholder for quoting when no wallet is connected.
+ *  Falls back to the chain-specific non-EVM placeholder (e.g. Solana) so the sell chain's
+ *  address format is respected instead of always using the EVM placeholder. */
+function getDefaultOwnerPlaceholder(sellTokenChainId: number): string {
+  return NON_EVM_CHAIN_CONFIG.find(({ isChain }) => isChain(sellTokenChainId))?.defaultRecipient ?? BRIDGE_QUOTE_ACCOUNT
+}
+
+// Solana signs exactly the tolerance it is handed, so the resolved one must travel with the quote,
+// not only an explicit user override. Keyed on the sell token's chain — what the quote routes on.
+// The exception is an uncapped smart slippage: the SDK signs its own fresh suggestion when none is passed,
+// while passing it would send the previous quote's suggestion and requote once the new one arrives.
+// Before the first final quote there is no suggestion yet, so passing the default would requote the same way.
+function useQuoteSlippageBps(inputCurrency: Nullish<Currency>): number | undefined {
+  const tradeSlippage = useTradeSlippageValueAndType()
+  const smartSlippageFromQuote = useSmartSlippageFromQuote()
+  const shouldUseAutoSlippage = useShouldUseAutoSlippage()
+  const { hasFinalQuote } = useTradeQuote()
+
+  const isSolana = !!inputCurrency && isSolanaChain(inputCurrency.chainId)
+  const isSolanaSlippageFromQuote =
+    (tradeSlippage.type === 'smart' && tradeSlippage.value === smartSlippageFromQuote) ||
+    (tradeSlippage.type === 'default' && shouldUseAutoSlippage && !hasFinalQuote)
+
+  return tradeSlippage.type === 'user' || (isSolana && !isSolanaSlippageFromQuote) ? tradeSlippage.value : undefined
 }

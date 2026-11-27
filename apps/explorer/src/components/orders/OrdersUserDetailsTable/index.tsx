@@ -68,7 +68,11 @@ export type OrderTableRowData = Pick<
   | 'executedBuyAmount'
   | 'partiallyFilled'
   | 'filledPercentage'
-> & { status: StatusLabelProps['status']; statusLabel?: string }
+> &
+  Partial<Pick<Order, 'surplusAmount' | 'surplusPercentage'>> & {
+    status: StatusLabelProps['status']
+    statusLabel?: string
+  }
 
 export type Props = SimpleTableProps & {
   orders: OrderTableRowData[] | undefined
@@ -87,7 +91,7 @@ interface RowProps {
   showPreSigning: boolean
 }
 
-const FilterRow = styled.tr`
+export const FilterRow = styled.tr`
   background: ${Color.explorer_background};
 
   @media (max-width: 1155px) {
@@ -112,7 +116,7 @@ const FilterRow = styled.tr`
   }
 `
 
-const Filters = styled.div`
+export const Filters = styled.div`
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -120,7 +124,7 @@ const Filters = styled.div`
   gap: 1rem;
 `
 
-const HiddenOrdersLegend = styled.div`
+export const HiddenOrdersLegend = styled.div`
   p {
     text-align: center;
   }
@@ -199,7 +203,7 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted, showCanceledAndE
         )}
       </td>
       <td>{renderSpinnerWhenNoValue(limitPriceSettled) || limitPriceSettled}</td>
-      <td>{hasOrderDetails(order) ? <OrderSurplusDisplayStyledByRow order={order} /> : '-'}</td>
+      <td>{hasSurplus(order) ? <OrderSurplusDisplayStyledByRow order={order} /> : '-'}</td>
       <td>{hasOrderDetails(order) && <Tags order={order} />}</td>
       <td>
         <DateDisplay date={creationDate} showIcon={true} />
@@ -348,7 +352,13 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
 }
 
 function hasOrderDetails(order: OrderTableRowData): order is Order {
-  return 'surplusAmount' in order
+  return 'owner' in order
+}
+
+function hasSurplus(
+  order: OrderTableRowData,
+): order is OrderTableRowData & Pick<Order, 'surplusAmount' | 'surplusPercentage'> {
+  return order.surplusAmount !== undefined && order.surplusPercentage !== undefined
 }
 
 export default OrdersUserDetailsTable

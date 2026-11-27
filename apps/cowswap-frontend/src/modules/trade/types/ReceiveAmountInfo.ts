@@ -36,6 +36,7 @@ export interface ReceiveAmountInfo {
       bps: number
     }
     bridgeFee?: BridgeFeeAmounts
+    accountRentFee?: CurrencyAmount<Currency>
   }
 
   beforeAllFees: Currencies

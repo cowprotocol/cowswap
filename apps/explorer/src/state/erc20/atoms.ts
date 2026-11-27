@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
-import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
+import { getAddressKey, SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 import { PersistentStateByChain } from '@cowprotocol/types'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
@@ -27,7 +27,7 @@ export const addLoadedTokensToChainAtom = atom(null, (get, set, { chainId, token
 
   const updatedChainTokens = tokens.reduce(
     (acc, token) => {
-      const address = token.address.toLowerCase()
+      const address = getAddressKey(token.address)
       if (!acc[address]) {
         acc[address] = token
       }

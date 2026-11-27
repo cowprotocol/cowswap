@@ -1,7 +1,7 @@
-import { getNavItems, NAV_ADDITIONAL_BUTTONS } from './const'
+import { getNavAdditionalButtons, getNavItems } from './const'
 
 jest.mock('@cowprotocol/analytics', () => ({
-  initGtm: () => ({
+  initGtmWithConsent: () => ({
     sendEvent: jest.fn(),
   }),
 }))
@@ -47,11 +47,23 @@ describe('getNavItems', () => {
   })
 })
 
-describe('NAV_ADDITIONAL_BUTTONS', () => {
+describe('getNavAdditionalButtons', () => {
   it('does not include the LP on CoW AMM button', () => {
-    const labels = NAV_ADDITIONAL_BUTTONS.map((button) => button.label)
+    const labels = getNavAdditionalButtons('/').map((button) => button.label)
 
     expect(labels).not.toContain('LP on CoW AMM')
     expect(labels).toContain('Trade on CoW Swap')
+  })
+
+  it('opens CoW Swap on Ethereum from regular pages', () => {
+    expect(getNavAdditionalButtons('/cow-protocol')[0].href).toBe('https://swap.cow.fi/#/1/swap/USDC/COW')
+  })
+
+  it('opens CoW Swap on Solana from the Solana page', () => {
+    expect(getNavAdditionalButtons('/solana')[0].href).toBe('https://swap.cow.fi/#/1000000001/swap/SOL/USDC')
+  })
+
+  it('does not treat other paths starting with solana as the Solana page', () => {
+    expect(getNavAdditionalButtons('/solana-faq')[0].href).toBe('https://swap.cow.fi/#/1/swap/USDC/COW')
   })
 })

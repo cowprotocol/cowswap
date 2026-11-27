@@ -1,18 +1,20 @@
 import { useCallback } from 'react'
 
 import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, isBarnBackendEnv } from '@cowprotocol/common-utils'
-import { OrderSigningUtils } from '@cowprotocol/cow-sdk'
+import { isSolanaChain, OrderSigningUtils } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 import { orderBookApi } from 'cowSdk'
 
 import { useAppSigner } from 'common/hooks/useAppSigner'
+import { useSolanaCancelMultipleOrders } from 'common/hooks/useCancelOrder/useSolanaCancelMultipleOrders'
 import { CancellableOrder, isOrderCancellable } from 'common/utils/isOrderCancellable'
 
 export function useCancelMultipleOrders(): (orders: CancellableOrder[]) => Promise<void> {
   const { chainId } = useWalletInfo()
   const signer = useAppSigner()
+  const solanaCancelMultipleOrders = useSolanaCancelMultipleOrders()
 
   return useCallback(
     async (ordersToCancel: CancellableOrder[]) => {
@@ -20,6 +22,10 @@ export function useCancelMultipleOrders(): (orders: CancellableOrder[]) => Promi
 
       if (notCancellableOrders.length) {
         throw new Error(t`Some orders can not be cancelled!`)
+      }
+
+      if (isSolanaChain(chainId)) {
+        return solanaCancelMultipleOrders(ordersToCancel)
       }
 
       if (!signer) {
@@ -43,6 +49,6 @@ export function useCancelMultipleOrders(): (orders: CancellableOrder[]) => Promi
         { chainId },
       )
     },
-    [chainId, signer],
+    [chainId, signer, solanaCancelMultipleOrders],
   )
 }

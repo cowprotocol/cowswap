@@ -1,8 +1,9 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode, useCallback, useMemo } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { useIsSafeViaWc, useIsSafeWallet } from '@cowprotocol/wallet'
+import { isSafeViaWcAtom, isSafeWalletAtom } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 
@@ -13,8 +14,8 @@ import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
 import { useAreWarningsAccepted } from '../../hooks/useAreWarningsAccepted'
 import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
-import { PrimaryActionButton } from '../../pure/PrimaryActionButton'
 import { TwapFormState } from '../../pure/PrimaryActionButton/getTwapFormState'
+import { PrimaryActionButton } from '../../pure/PrimaryActionButton/PrimaryActionButton.pure'
 
 interface ActionButtonsProps {
   localFormValidation: TwapFormState | null
@@ -29,9 +30,10 @@ export function ActionButtons({
 }: ActionButtonsProps): ReactNode {
   const { walletIsNotConnected } = useTwapWarningsContext()
   const cowAnalytics = useCowAnalytics()
-  const isSafeWallet = useIsSafeWallet()
-  const isSafeViaWc = useIsSafeViaWc()
+  const isSafeWallet = useAtomValue(isSafeWalletAtom)
+  const isSafeViaWc = useAtomValue(isSafeViaWcAtom) === true
   const { isTwapEoaEnabled } = useFeatureFlags()
+  const isEoaTwap = !!isTwapEoaEnabled && !isSafeWallet && !isSafeViaWc
 
   // Analytics callback that fires only when trade confirmation is actually opened
   const onConfirmOpen = useCallback(() => {
@@ -39,8 +41,9 @@ export function ActionButtons({
       category: CowSwapAnalyticsCategory.TWAP,
       action: 'Conversion',
       label: `initiated|${fallbackHandlerIsNotSet ? 'no-handler' : 'handler-set'}`,
+      isEoaTwap,
     })
-  }, [cowAnalytics, fallbackHandlerIsNotSet])
+  }, [cowAnalytics, fallbackHandlerIsNotSet, isEoaTwap])
 
   const hookParams = useMemo(() => ({ onConfirmOpen }), [onConfirmOpen])
   const { confirmTrade } = useConfirmTradeWithRwaCheck(hookParams)
@@ -52,8 +55,6 @@ export function ActionButtons({
   }
 
   const tradeFormButtonContext = useTradeFormButtonContext(t`TWAP order`, confirmTrade, true)
-
-  const isEoaTwap = !!isTwapEoaEnabled && !isSafeWallet && !isSafeViaWc
 
   // EOA TWAP handles EOA => Vault approvals in the multi-step flow, not via LegacyApproveButton, so we just pass `null`
   // in that case:

@@ -1,22 +1,11 @@
 import { useAtomValue } from 'jotai'
-import { useMemo } from 'react'
 
-import { areAddressesEqual, Nullish } from '@cowprotocol/cow-sdk'
+import { getAddressKey, Nullish } from '@cowprotocol/cow-sdk'
 
-import { XSTOCKS_TOKENS_LIST_SOURCE } from '../../const/tokensLists'
-import { listsStatesMapAtom } from '../../state/tokenLists/tokenListsStateAtom'
+import { xstockTokenAddressesAtom } from '../../state/tokenLists/xstockTokenAddressesAtom'
 
 export function useIsXstockToken(token: Nullish<{ address: string }>): boolean {
-  const listStatesMapAtom = useAtomValue(listsStatesMapAtom)
-  const listState = listStatesMapAtom[XSTOCKS_TOKENS_LIST_SOURCE]
+  const xstockTokenAddresses = useAtomValue(xstockTokenAddressesAtom)
 
-  return useMemo(() => {
-    if (!listState || !token) return false
-
-    for (const item of listState.list.tokens) {
-      if (areAddressesEqual(item.address, token.address)) return true
-    }
-
-    return false
-  }, [listState, token])
+  return !!token && xstockTokenAddresses.has(getAddressKey(token.address))
 }

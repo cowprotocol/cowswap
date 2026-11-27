@@ -1,0 +1,53 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding-top: 72px;
+  text-align: center;
+}
+
+.title {
+  margin: 0;
+  font-size: 44px;
+  font-weight: 600;
+  line-height: 48px;
+  letter-spacing: -0.88px;
+}
+
+.intro {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.homeLink {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  margin-top: 8px;
+  padding: 0 18px;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 20px;
+  text-decoration: none;
+}
+
+.homeLink:hover {
+  opacity: 0.9;
+}
+
+@media (max-width: 720px) {
+  .page {
+    padding-top: 32px;
+  }
+
+  .title {
+    font-size: 32px;
+    line-height: 38px;
+  }
+}

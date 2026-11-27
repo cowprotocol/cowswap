@@ -7,6 +7,8 @@ import styled from 'styled-components/macro'
 
 import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
 
+import { WarningAcknowledgement } from '../WarningAcknowledgement/WarningAcknowledgement.pure'
+
 export interface RateImpactWarningProps extends Partial<RateImpactAcknowledge> {
   rateImpact: number
   inputCurrency: Currency
@@ -43,22 +45,6 @@ const ReadMoreLink = styled.a`
   }
 `
 
-const AcknowledgeBox = styled.div`
-  color: var(${UI.COLOR_DANGER_TEXT});
-  background: var(${UI.COLOR_DANGER_BG});
-  text-align: center;
-  padding: 16px 0;
-  border-radius: 0 0 16px 16px;
-
-  label {
-    cursor: pointer;
-  }
-
-  input {
-    margin-right: 5px;
-  }
-`
-
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function RateImpactWarning({
@@ -92,19 +78,10 @@ export function RateImpactWarning({
           </ReadMoreLink>
         </div>
       </RateImpactWarningBox>
-      {withAcknowledge && (
-        <AcknowledgeBox>
-          <label>
-            <input
-              type="checkbox"
-              checked={isAccepted}
-              onChange={(event) => onAcknowledgeChange?.(event.target.checked)}
-            />
-            <span>
-              <Trans>I acknowledge the high price impact</Trans>
-            </span>
-          </label>
-        </AcknowledgeBox>
+      {withAcknowledge && onAcknowledgeChange && (
+        <WarningAcknowledgement isAccepted={!!isAccepted} onAcknowledgeChange={onAcknowledgeChange}>
+          <Trans>I acknowledge the high price impact</Trans>
+        </WarningAcknowledgement>
       )}
     </div>
   )

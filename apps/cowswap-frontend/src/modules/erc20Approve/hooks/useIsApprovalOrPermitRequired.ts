@@ -7,7 +7,7 @@ import { isSupportedPermitInfo, PermitType } from '@cowprotocol/permit-utils'
 import { Nullish } from '@cowprotocol/types'
 
 import { usePermitInfo } from 'modules/permit'
-import { useDerivedTradeState } from 'modules/trade'
+import { getIsNativeSellUnsupported, useDerivedTradeState } from 'modules/trade'
 
 import { TradeType } from 'common/modules/tradeNavigation'
 
@@ -62,7 +62,9 @@ export function useIsApprovalOrPermitRequired({
   // no standalone approve step. It still reports `BundleApproveRequired` rather than `Unsupported`,
   // because the user picks how much to delegate and `Unsupported` would hide that switcher too.
   const solanaReason =
-    inputCurrency && isSolanaChain(inputCurrency.chainId) ? getSolanaApproveRequirement(amountToApprove) : null
+    inputCurrency && isSolanaChain(inputCurrency.chainId)
+      ? getSolanaApproveRequirement(amountToApprove, inputCurrency, tradeType)
+      : null
 
   const reason =
     solanaReason ??
@@ -117,7 +119,17 @@ function getPermitRequirements(type?: PermitType): ApproveRequiredReason {
   }
 }
 
-function getSolanaApproveRequirement(amountToApprove: CurrencyAmount<Currency> | null): ApproveRequiredReason {
+function getSolanaApproveRequirement(
+  amountToApprove: CurrencyAmount<Currency> | null,
+  inputCurrency: Currency,
+  tradeType: Nullish<TradeType>,
+): ApproveRequiredReason {
+  // Mirrors `isApproveSupportedByFlowOrWallet` for Solana. Reporting a delegation here would outrank
+  // the `SellNativeToken` block in `validateTradeForm` and let the order through.
+  if (getIsNativeSellUnsupported(inputCurrency, tradeType)) {
+    return ApproveRequiredReason.Unsupported
+  }
+
   return isNonZeroApproveAmount(amountToApprove)
     ? ApproveRequiredReason.BundleApproveRequired
     : ApproveRequiredReason.NotRequired

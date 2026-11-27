@@ -4,7 +4,7 @@
  * Targets the shed-authorized Poller (`registerFromShed`) from composable-cow#145.
  * Keep local until `@cowprotocol/sdk-composable` exports matching helpers.
  *
- * Schedule layout (verified against deployed `schedules()` @ `0xf1C5e22f…`):
+ * Schedule layout (verified against deployed `schedules()` @ `0x8c1cdD…`):
  * `handler`, `authEpoch` (uint96), `funder`, `owner`, `salt`, `staticInput`.
  * First registration must use `authEpoch: 0`.
  *

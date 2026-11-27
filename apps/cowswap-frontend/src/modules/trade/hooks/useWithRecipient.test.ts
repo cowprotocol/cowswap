@@ -1,16 +1,21 @@
 import { renderHook } from '@testing-library/react'
 
 import { useTradeStateFromUrl } from './setupTradeState/useTradeStateFromUrl'
+import { useIsCustomRecipientDisabled } from './useIsCustomRecipientDisabled'
 import { useIsNonEvmBridging } from './useIsNonEvmBridging'
 import { useIsWrapOrUnwrap } from './useIsWrapOrUnwrap'
 import { useIsWithRecipient } from './useWithRecipient'
 
 jest.mock('./useIsWrapOrUnwrap', () => ({ useIsWrapOrUnwrap: jest.fn() }))
 jest.mock('./useIsNonEvmBridging', () => ({ useIsNonEvmBridging: jest.fn() }))
+jest.mock('./useIsCustomRecipientDisabled', () => ({ useIsCustomRecipientDisabled: jest.fn() }))
 jest.mock('./setupTradeState/useTradeStateFromUrl', () => ({ useTradeStateFromUrl: jest.fn() }))
 
 const mockIsWrapOrUnwrap = useIsWrapOrUnwrap as jest.MockedFunction<typeof useIsWrapOrUnwrap>
 const mockIsNonEvmBridging = useIsNonEvmBridging as jest.MockedFunction<typeof useIsNonEvmBridging>
+const mockIsCustomRecipientDisabled = useIsCustomRecipientDisabled as jest.MockedFunction<
+  typeof useIsCustomRecipientDisabled
+>
 const mockTradeStateFromUrl = useTradeStateFromUrl as jest.MockedFunction<typeof useTradeStateFromUrl>
 
 function render(showRecipient: boolean): boolean {
@@ -20,10 +25,12 @@ function render(showRecipient: boolean): boolean {
 function setup({
   isWrapOrUnwrap = false,
   isNonEvmBridging = false,
+  isCustomRecipientDisabled = false,
   recipientInUrl = null as string | null,
 } = {}): void {
   mockIsWrapOrUnwrap.mockReturnValue(isWrapOrUnwrap)
   mockIsNonEvmBridging.mockReturnValue(isNonEvmBridging)
+  mockIsCustomRecipientDisabled.mockReturnValue(isCustomRecipientDisabled)
   mockTradeStateFromUrl.mockReturnValue(
     recipientInUrl ? ({ recipient: recipientInUrl } as ReturnType<typeof useTradeStateFromUrl>) : null,
   )
@@ -48,6 +55,23 @@ describe('useIsWithRecipient', () => {
 
     it('hides even with recipient in URL', () => {
       setup({ isWrapOrUnwrap: true, recipientInUrl: '0xrecipient' })
+      expect(render(false)).toBe(false)
+    })
+  })
+
+  describe('custom recipient disabled — always hidden', () => {
+    it('hides when the toggle is on', () => {
+      setup({ isCustomRecipientDisabled: true })
+      expect(render(true)).toBe(false)
+    })
+
+    it('hides even with recipient in URL', () => {
+      setup({ isCustomRecipientDisabled: true, recipientInUrl: '0xrecipient' })
+      expect(render(false)).toBe(false)
+    })
+
+    it('hides for non-EVM bridging', () => {
+      setup({ isCustomRecipientDisabled: true, isNonEvmBridging: true })
       expect(render(false)).toBe(false)
     })
   })

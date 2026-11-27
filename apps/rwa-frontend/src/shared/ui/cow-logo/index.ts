@@ -1,0 +1,1 @@
+export { CowLogo } from './CowLogo'

@@ -1,3 +1,5 @@
+import { i18n } from '@lingui/core'
+
 import {
   debounce,
   getProviderErrorMessage,
@@ -142,6 +144,24 @@ describe('isInsufficientFundsProviderError', () => {
     expect(isInsufficientFundsProviderError(viemStyleError)).toBe(true)
   })
 
+  it('detects Solana simulation failures: fee-payer rent, zero-lamport payer, and transfer shortfall', () => {
+    expect(
+      isInsufficientFundsProviderError({
+        message:
+          'Simulation failed. Message: Transaction simulation failed: Transaction results in an account (0) with insufficient funds for rent.',
+      }),
+    ).toBe(true)
+    expect(
+      isInsufficientFundsProviderError({
+        message:
+          'Simulation failed. Message: Transaction simulation failed: Attempt to debit an account but found no record of a prior credit.',
+      }),
+    ).toBe(true)
+    expect(
+      isInsufficientFundsProviderError({ message: 'Transfer: insufficient lamports 293000, need 745539000' }),
+    ).toBe(true)
+  })
+
   it('returns false for unrelated errors, including CoW API "not enough funds" wording', () => {
     expect(isInsufficientFundsProviderError({ message: "The account doesn't have enough funds." })).toBe(false)
     expect(isInsufficientFundsProviderError({ code: 4001, message: 'User rejected the request' })).toBe(false)
@@ -162,9 +182,106 @@ describe('isInsufficientFundsProviderError', () => {
 })
 
 describe('getProviderErrorMessage', () => {
+  const hostError = (reason: unknown): object => ({
+    isRpcError: true,
+    code: -32600,
+    reason,
+    message: `-32600: ${String(reason)}`,
+  })
+  // Same nesting viem produces when the widget host rejects an approval
+  const viemWrapped = (cause: object): object => ({
+    name: 'ContractFunctionExecutionError',
+    shortMessage: 'JSON is not a valid request object.',
+    cause: {
+      name: 'TransactionExecutionError',
+      shortMessage: 'JSON is not a valid request object.',
+      cause: {
+        name: 'InvalidRequestRpcError',
+        code: -32600,
+        shortMessage: 'JSON is not a valid request object.',
+        cause,
+      },
+    },
+  })
+
   it('ignores a non-string error.message instead of returning it as-is', () => {
     // Falls through to the generic `.toString()` fallback rather than returning the object
     // as-is, which would make downstream `.toLowerCase()` calls throw.
     expect(getProviderErrorMessage({ message: {} })).toBe('[object Object]')
+  })
+
+  it("returns viem's short message for a regular wallet error", () => {
+    expect(getProviderErrorMessage(viemWrapped({ code: -32600, message: 'raw' }))).toBe(
+      'JSON is not a valid request object.',
+    )
+  })
+
+  it("returns the widget host's message when the host's provider rejected the request", () => {
+    expect(getProviderErrorMessage(viemWrapped(hostError('Safety of the transaction could not be verified')))).toBe(
+      'Safety of the transaction could not be verified',
+    )
+  })
+
+  it('keeps only the first line when the host rethrows a multi-line viem error', () => {
+    const reason = 'User rejected the request.\n\nRequest Arguments:\n  from: 0x123\n\nVersion: viem@2.48.8'
+    expect(getProviderErrorMessage(viemWrapped(hostError(reason)))).toBe('User rejected the request.')
+  })
+
+  it('falls back to the regular message when the host sent no usable reason', () => {
+    expect(getProviderErrorMessage(viemWrapped(hostError(undefined)))).toBe('JSON is not a valid request object.')
+    expect(getProviderErrorMessage(viemWrapped(hostError('   ')))).toBe('JSON is not a valid request object.')
+  })
+
+  it("replaces viem's generic InternalRpcError message with a friendly one", () => {
+    const internalError = { code: -32603, name: 'InternalRpcError', shortMessage: 'An internal error was received.' }
+    const friendlyMessage =
+      "Looks like something's not quite right with your wallet. \nGive it a quick check and try again in a moo-ment! 🐄"
+    i18n.loadAndActivate({ locale: 'en-US', messages: {} })
+
+    expect(getProviderErrorMessage(internalError)).toBe(friendlyMessage)
+    expect(
+      getProviderErrorMessage({
+        name: 'TransactionExecutionError',
+        shortMessage: 'An internal error was received.',
+        cause: internalError,
+      }),
+    ).toBe(friendlyMessage)
+  })
+
+  it('shows the revert reason when an InternalRpcError wraps an execution revert', () => {
+    const revertReason = 'execution reverted: ERC20: transfer amount exceeds balance'
+    const providerError = {
+      code: -32603,
+      message: 'Internal JSON-RPC error.',
+      data: { code: 3, message: revertReason, data: '0x08c379a0' },
+    }
+
+    expect(
+      getProviderErrorMessage({
+        name: 'TransactionExecutionError',
+        shortMessage: 'An internal error was received.',
+        cause: { name: 'InternalRpcError', shortMessage: 'An internal error was received.', cause: providerError },
+      }),
+    ).toBe(revertReason)
+  })
+
+  it('keeps the friendly message when InternalRpcError data is not a revert', () => {
+    i18n.loadAndActivate({ locale: 'en-US', messages: {} })
+
+    expect(
+      getProviderErrorMessage({
+        name: 'InternalRpcError',
+        shortMessage: 'An internal error was received.',
+        cause: { code: -32603, message: 'Internal JSON-RPC error.', data: { message: 'header not found' } },
+      }),
+    ).toBe(
+      "Looks like something's not quite right with your wallet. \nGive it a quick check and try again in a moo-ment! 🐄",
+    )
+  })
+
+  it('still lets the rejection and insufficient-funds checks see a host rejection with code 4001', () => {
+    const hostRejection = viemWrapped({ ...hostError('Your wallet declined'), code: 4001 })
+    expect(isRejectRequestProviderError(hostRejection)).toBe(true)
+    expect(isInsufficientFundsProviderError(hostRejection)).toBe(false)
   })
 })

@@ -2,13 +2,7 @@ import type { ReactNode } from 'react'
 
 import { notFound } from 'next/navigation'
 
-import {
-  Category,
-  getAllCategorySlugs,
-  getArticles,
-  getCategories,
-  getCategoryBySlug,
-} from '../../../../../services/cms'
+import { Category, getArticles, getCategories, getCategoryBySlug } from '../../../../../services/cms'
 
 import type { Metadata } from 'next'
 
@@ -54,12 +48,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   })
 }
 
-export async function generateStaticParams(): Promise<{ topicSlug: string }[]> {
-  'use server'
-
-  const categoriesResponse = await getAllCategorySlugs()
-
-  return categoriesResponse.map((topicSlug) => ({ topicSlug }))
+export function generateStaticParams(): [] {
+  // Generate on first request so builds can finish during a partial CMS outage.
+  return []
 }
 
 export default async function TopicPage({ params }: { params: Promise<{ topicSlug: string }> }): Promise<ReactNode> {

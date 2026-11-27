@@ -1,0 +1,17 @@
+diff --git a/dist/esm/src/utils/MobileWallet.js b/dist/esm/src/utils/MobileWallet.js
+index fd6397e88c9d07fc2fa4baec7c825efb8a933ee7..0dc947de71b62cd919a79540a1c8ed2d5bfc628c 100644
+--- a/dist/esm/src/utils/MobileWallet.js
++++ b/dist/esm/src/utils/MobileWallet.js
+@@ -120,7 +120,11 @@ export const MobileWalletUtil = {
+          * Coinbase/Base wallet deeplink for EVM chains.
+          * Uses cbwallet://miniapp?url={REDIRECT_URL} to open in-app browser.
+          */
+-        if (namespace === ConstantsUtil.CHAIN.EVM) {
++        /*
++         * Mobile only: on desktop the cbwallet:// navigation consumes the click's user activation,
++         * so the Base Account SDK popup that follows gets blocked ("App wants to continue in Base Account").
++         */
++        if (namespace === ConstantsUtil.CHAIN.EVM && CoreHelperUtil.isMobile()) {
+             if (id === CUSTOM_DEEPLINK_WALLETS.COINBASE.id &&
+                 (isCoinbaseDisabled || !('coinbaseWalletExtension' in window))) {
+                 window.location.href = `${CUSTOM_DEEPLINK_WALLETS.COINBASE.evmDeeplink}?url=${encodedHref}`;

@@ -179,10 +179,40 @@ describe('classifyOrder', () => {
       const order: typeof BASE_ORDER = { ...BASE_ORDER, validTo: (Date.now() - ms`50 min`) / 1000 }
       expect(classifyOrder(order)).toBe('expired')
     })
+
+    it('is expired when the backend expired it before validTo', () => {
+      const order: typeof BASE_ORDER = {
+        ...BASE_ORDER,
+        status: OrderStatus.EXPIRED,
+        validTo: (Date.now() + ms`10 min`) / 1000,
+      }
+      expect(classifyOrder(order)).toBe('expired')
+    })
+
+    it('is not expired when the backend expired it but validTo passed within the buffer', () => {
+      const order: typeof BASE_ORDER = {
+        ...BASE_ORDER,
+        status: OrderStatus.EXPIRED,
+        validTo: (Date.now() - ms`10s`) / 1000,
+      }
+      expect(classifyOrder(order)).toBe('pending')
+    })
   })
   describe('cancelled', () => {
     it('is cancelled when invalidated for more than X time', () => {
       const order: typeof BASE_ORDER = { ...BASE_ORDER, invalidated: true }
+      expect(classifyOrder(order)).toBe('cancelled')
+    })
+
+    // Solana's API doesn't return `invalidated` at all, so `classifyOrder` has to fall back to the raw
+    // `status` field for it. The cast is deliberate: the SDK types the field as a required boolean,
+    // which is exactly the assumption that doesn't hold here.
+    it('is cancelled when invalidated is absent but status is cancelled', () => {
+      const order: typeof BASE_ORDER = {
+        ...BASE_ORDER,
+        invalidated: undefined as unknown as boolean,
+        status: OrderStatus.CANCELLED,
+      }
       expect(classifyOrder(order)).toBe('cancelled')
     })
   })

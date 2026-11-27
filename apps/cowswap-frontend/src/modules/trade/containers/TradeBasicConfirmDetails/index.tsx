@@ -1,7 +1,6 @@
 import { ReactNode, useMemo, useState } from 'react'
 
 import { Percent } from '@cowprotocol/currency'
-import { PercentDisplay } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Nullish } from 'types'
@@ -11,11 +10,14 @@ import { useUsdAmount } from 'modules/usdAmount'
 import { RateInfoParams, RateInfo } from 'common/pure/RateInfo'
 
 import { LimitPriceRow } from './LimitPriceRow'
+import { SlippageConfirmRow } from './SlippageConfirmRow'
 import * as styledEl from './styled'
 
+import { useSolanaTxCost } from '../../hooks/useSolanaTxCost'
 import { RecipientRow } from '../../pure/RecipientRow'
 import { ReviewOrderModalAmountRow } from '../../pure/ReviewOrderModalAmountRow'
 import { DividerHorizontal } from '../../pure/Row/styled'
+import { TxCostRow } from '../../pure/TxCostRow'
 import { ReceiveAmountInfo } from '../../types'
 import { getLimitPriceFromReceiveAmount } from '../../utils/getLimitPriceFromReceiveAmount'
 import { getOrderTypeReceiveAmounts } from '../../utils/getOrderTypeReceiveAmounts'
@@ -46,6 +48,7 @@ type Props = {
   hideLimitPrice?: boolean
   hideUsdValues?: boolean
   withTimelineDot?: boolean
+  showSlippagePrice?: boolean
 }
 
 export function TradeBasicConfirmDetails(props: Props): ReactNode {
@@ -57,9 +60,11 @@ export function TradeBasicConfirmDetails(props: Props): ReactNode {
     hideLimitPrice,
     hideUsdValues,
     withTimelineDot = true,
+    showSlippagePrice = false,
     children,
   } = props
   const isInvertedState = useState(false)
+  const [isInverted, setIsInverted] = isInvertedState
   const { amountAfterFees, amountAfterSlippage } = getOrderTypeReceiveAmounts(receiveAmountInfo)
   const { networkCostsSuffix, networkCostsTooltipSuffix } = labelsAndTooltips || {}
 
@@ -68,6 +73,9 @@ export function TradeBasicConfirmDetails(props: Props): ReactNode {
 
   const amountAfterSlippageUsd = useUsdAmount(hideUsdValues ? null : amountAfterSlippage).value
   const amountAfterFeesUsd = useUsdAmount(hideUsdValues ? null : amountAfterFees).value
+  const solanaTxCost = useSolanaTxCost()
+  const solanaTxCostUsd = useUsdAmount(solanaTxCost?.amount).value
+  const solanaOwnerDepositUsd = useUsdAmount(solanaTxCost?.ownerDeposit).value
 
   // Limit price is the same for all parts
   const limitPrice = useMemo(() => getLimitPriceFromReceiveAmount(receiveAmountInfo), [receiveAmountInfo])
@@ -91,6 +99,17 @@ export function TradeBasicConfirmDetails(props: Props): ReactNode {
         networkCostsSuffix={networkCostsSuffix}
         networkCostsTooltipSuffix={networkCostsTooltipSuffix}
       />
+      {solanaTxCost && (
+        <TxCostRow
+          txCost={solanaTxCost.amount}
+          txCostUsd={solanaTxCostUsd}
+          isSponsored={solanaTxCost.isSponsored}
+          ownerDeposit={solanaTxCost.ownerDeposit}
+          ownerDepositUsd={solanaOwnerDepositUsd}
+          isFeePaidByVaultMember={solanaTxCost.isFeePaidByVaultMember}
+          withTimelineDot={withTimelineDot}
+        />
+      )}
       <ReviewOrderModalAmountRow
         highlighted
         amount={amountAfterFees}
@@ -98,12 +117,15 @@ export function TradeBasicConfirmDetails(props: Props): ReactNode {
         label={expectReceiveLabel}
       />
       <DividerHorizontal />
-      {/* Slippage */}
-      {
-        <ReviewOrderModalAmountRow withTimelineDot={withTimelineDot} tooltip={slippageTooltip} label={slippageLabel}>
-          <PercentDisplay percent={slippage.toFixed(2)} />
-        </ReviewOrderModalAmountRow>
-      }
+      <SlippageConfirmRow
+        slippage={slippage}
+        price={showSlippagePrice ? limitPrice : null}
+        isInverted={isInverted}
+        onToggleInverted={() => setIsInverted((curr) => !curr)}
+        withTimelineDot={withTimelineDot}
+        tooltip={slippageTooltip}
+        label={slippageLabel}
+      />
       {/* Min received */}
       <ReviewOrderModalAmountRow
         highlighted={true}

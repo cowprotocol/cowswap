@@ -6,9 +6,9 @@
   "main": "index.js",
   "license": "ISC",
   "dependencies": {
-    "viem": "2.48.8",
-    "@cowprotocol/cow-sdk": "9.2.10",
-    "@cowprotocol/sdk-order-book": "4.0.4",
+    "viem": "2.55.19",
+    "@cowprotocol/cow-sdk": "9.3.5",
+    "@cowprotocol/sdk-order-book": "4.7.0",
     "@cowprotocol/test-ids": "workspace:*"
   },
   "devDependencies": {

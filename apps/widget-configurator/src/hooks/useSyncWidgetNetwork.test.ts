@@ -55,4 +55,56 @@ describe('useSyncWidgetNetwork', () => {
 
     expect(setNetworkControlState).toHaveBeenCalledWith(SupportedChainId.GNOSIS_CHAIN)
   })
+  it('does not sync configurator chainId to the wallet chain in standalone mode', () => {
+    const setNetworkControlState = jest.fn()
+
+    mockedUseConnection.mockReturnValue({
+      chainId: SupportedChainId.GNOSIS_CHAIN,
+      isConnected: true,
+    } as unknown as ReturnType<typeof useConnection>)
+
+    renderHook(() => useSyncWidgetNetwork(SupportedChainId.MAINNET, setNetworkControlState, 'standalone'))
+
+    expect(setNetworkControlState).not.toHaveBeenCalled()
+  })
+  it('falls back to Mainnet when Solana is selected in standalone mode, ignoring the wallet chain', () => {
+    const setNetworkControlState = jest.fn()
+
+    mockedUseConnection.mockReturnValue({
+      chainId: SupportedChainId.GNOSIS_CHAIN,
+      isConnected: true,
+    } as unknown as ReturnType<typeof useConnection>)
+
+    renderHook(() => useSyncWidgetNetwork(SupportedChainId.SOLANA, setNetworkControlState, 'standalone'))
+
+    expect(setNetworkControlState).toHaveBeenLastCalledWith(SupportedChainId.MAINNET)
+  })
+
+  it('falls back to Mainnet when Solana is selected in dapp mode without a wallet', () => {
+    const setNetworkControlState = jest.fn()
+
+    mockedUseConnection.mockReturnValue({ chainId: undefined, isConnected: false } as unknown as ReturnType<
+      typeof useConnection
+    >)
+
+    renderHook(() => useSyncWidgetNetwork(SupportedChainId.SOLANA, setNetworkControlState, 'dapp'))
+
+    expect(setNetworkControlState).toHaveBeenLastCalledWith(SupportedChainId.MAINNET)
+  })
+
+  it('falls back to the wallet chain and does not request a switch when Solana is selected in dapp mode', () => {
+    const setNetworkControlState = jest.fn()
+    const switchChain = jest.fn()
+
+    mockedUseSwitchChain.mockReturnValue({ mutate: switchChain } as unknown as ReturnType<typeof useSwitchChain>)
+    mockedUseConnection.mockReturnValue({
+      chainId: SupportedChainId.GNOSIS_CHAIN,
+      isConnected: true,
+    } as unknown as ReturnType<typeof useConnection>)
+
+    renderHook(() => useSyncWidgetNetwork(SupportedChainId.SOLANA, setNetworkControlState, 'dapp'))
+
+    expect(setNetworkControlState).toHaveBeenLastCalledWith(SupportedChainId.GNOSIS_CHAIN)
+    expect(switchChain).not.toHaveBeenCalled()
+  })
 })

@@ -1,38 +1,43 @@
-import { UI } from '@cowprotocol/ui'
+import { UI, font } from '@cowprotocol/ui'
 
 import { MenuButton, MenuItem, MenuList } from '@reach/menu-button'
-import { transparentize } from 'color2k'
-import { X } from 'react-feather'
 import styled from 'styled-components/macro'
 
+import { StyledToggleArrow } from 'common/pure/ToggleArrow'
+
 export const Wrapper = styled.div`
-  color: inherit;
   padding: 0;
   justify-content: space-between;
   display: flex;
   flex-flow: row wrap;
   width: 100%;
-  font-size: 13px;
-  font-weight: inherit;
 `
 
 export const Label = styled.span`
   display: flex;
-  font-size: inherit;
-  font-weight: inherit;
-  color: inherit;
   align-self: center;
   justify-self: center;
+  color: var(${UI.COLOR_TEXT});
+  ${font('FONT_SMALL_PLUS', 'medium')}
+`
+
+export const Value = styled.div`
+  color: var(${UI.COLOR_TEXT_SECONDARY});
+  ${font('FONT_SMALL_PLUS', 'medium')}
 `
 
 export const Current = styled(MenuButton)<{ $custom?: boolean }>`
-  color: inherit;
-  font-size: ${({ $custom }) => ($custom ? '12px' : '100%')};
+  color: var(${UI.COLOR_TEXT_SECONDARY});
+  font-size: ${({ $custom }) => ($custom ? '12px' : '13px')};
+  line-height: ${({ $custom }) => ($custom ? 'inherit' : '18px')};
   letter-spacing: ${({ $custom }) => ($custom ? '-0.3px' : '0')};
-  font-weight: inherit;
-  display: flex;
+  font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
+  gap: 5px;
+  width: auto;
+  max-width: 100%;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -43,10 +48,13 @@ export const Current = styled(MenuButton)<{ $custom?: boolean }>`
 
   > span {
     display: inline-block;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  > svg {
-    margin: 0 0 0 auto;
+  &[aria-expanded='true'] ${StyledToggleArrow} {
+    transform: rotate(180deg);
   }
 `
 
@@ -78,98 +86,5 @@ export const ListItem = styled(MenuItem)`
 
   :hover {
     text-decoration: underline;
-  }
-`
-
-export const CustomInput = styled.input`
-  display: flex;
-  cursor: pointer;
-  font-size: 21px;
-  border-radius: 8px;
-  width: 100%;
-  border: 1px solid ${({ theme }) => transparentize(theme.text, 0.7)};
-  color: inherit;
-  padding: 4px 8px;
-  background: var(${UI.COLOR_PAPER});
-
-  &::-webkit-calendar-picker-indicator {
-    filter: ${({ theme }) => (theme.darkMode ? 'invert(1)' : 'invert(0)')};
-  }
-
-  &::-webkit-datetime-edit {
-    color: inherit;
-  }
-
-  &::-webkit-datetime-edit[disabled] {
-    color: ${({ theme }) => transparentize(theme.text, 0.7)};
-  }
-`
-
-export const CustomLabel = styled.label`
-  display: flex;
-  flex-flow: column wrap;
-  font-size: 15px;
-  font-weight: 600;
-  gap: 10px;
-  width: 100%;
-`
-
-export const ModalWrapper = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-  height: 100%;
-  width: 100%;
-  padding: 16px;
-  min-height: 150px;
-`
-
-export const ModalHeader = styled.div`
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-  padding: 0 0 16px;
-  color: inherit;
-
-  > h3 {
-    font-size: 21px;
-    margin: 0;
-  }
-`
-
-export const ModalFooter = styled.div`
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-  padding: 32px 0 0;
-  gap: 10px;
-
-  > button {
-    border-radius: 12px;
-  }
-`
-
-export const ModalContent = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-  align-items: flex-start;
-  justify-content: center;
-  padding: 16px;
-  background: var(${UI.COLOR_PAPER_DARKER});
-  border-radius: 12px;
-`
-
-export const CloseIcon = styled(X)`
-  height: 28px;
-  width: 28px;
-  opacity: 0.6;
-  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
-
-  &:hover {
-    cursor: pointer;
-    opacity: 1;
-  }
-
-  > line {
-    stroke: var(${UI.COLOR_TEXT});
   }
 `

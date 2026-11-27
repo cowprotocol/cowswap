@@ -102,12 +102,13 @@ describe('limit orders safeBundleFlow - Send analytics payload', () => {
   }
 
   function run(quoteId: number | undefined, allowsOffchainSigning: boolean, amountToApprove?: bigint): Promise<string> {
-    return safeBundleFlow({
-      params: buildParams(quoteId, allowsOffchainSigning, amountToApprove),
+    return safeBundleFlow(buildParams(quoteId, allowsOffchainSigning, amountToApprove), {
       priceImpact: { priceImpact: undefined } as never,
       settingsState: {} as never,
       confirmPriceImpactWithoutFee: jest.fn().mockResolvedValue(true),
       analytics: analytics as never,
+      beforeTrade: jest.fn(),
+      beforePermit: jest.fn().mockResolvedValue(undefined),
       config: {} as never,
     })
   }

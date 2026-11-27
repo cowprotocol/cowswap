@@ -12,7 +12,7 @@ import {
 } from 'services/helpers/tryGetOrderOnAllNetworks'
 import { useNetworkId } from 'state/network'
 import { Errors, Network, UiError } from 'types'
-import { transformOrder } from 'utils'
+import { getChainsForOrderId, transformOrder } from 'utils'
 
 import { getOrder, GetOrderParams, Order } from 'api/operator'
 
@@ -87,7 +87,16 @@ export function useOrderByNetwork(orderId: string, networkId: Network | null, up
   const [forcedUpdate, setForcedUpdate] = useState({})
   const forceUpdate = useCallback((): void => setForcedUpdate({}), [])
 
+  // Not folded into the fetch below: that one also re-runs on `forcedUpdate`, and clearing there would
+  // blank an order the poll is only refreshing.
   useEffect(() => {
+    setOrder(null)
+    setErrorOrderPresentInNetworkId(null)
+  }, [networkId, orderId])
+
+  useEffect(() => {
+    let isStale = false
+
     async function fetchOrder(): Promise<void> {
       if (!networkId) return
 
@@ -98,7 +107,10 @@ export function useOrderByNetwork(orderId: string, networkId: Network | null, up
           networkId,
           orderId,
         )
-        console.log({ rawOrder, errorOrderPresentInNetworkIdRaw })
+        // A lookup spans both environments and, when the order is missing, every chain the id could
+        // belong to — long enough for the caller to have moved on to a different order by now.
+        if (isStale) return
+
         if (rawOrder) {
           setOrder(transformOrder(rawOrder))
         }
@@ -107,15 +119,21 @@ export function useOrderByNetwork(orderId: string, networkId: Network | null, up
         }
         setError(undefined)
       } catch (e) {
+        if (isStale) return
+
         const msg = `Failed to fetch order`
         console.error(`${msg}: ${orderId}`, e.message)
         setError({ message: `${msg}: ${shortenOrderId(orderId)}`, type: 'error' })
       } finally {
-        setIsLoading(false)
+        if (!isStale) setIsLoading(false)
       }
     }
 
     fetchOrder()
+
+    return (): void => {
+      isStale = true
+    }
   }, [networkId, orderId, forcedUpdate])
 
   useEffect(() => {
@@ -147,5 +165,5 @@ function _getOrder(networkId: Network, orderId: string): Promise<GetOrderResult<
     defaultParams,
   }
 
-  return tryGetOrderOnAllNetworksAndEnvironments<SingleOrder>(networkId, getOrderApi)
+  return tryGetOrderOnAllNetworksAndEnvironments<SingleOrder>(networkId, getOrderApi, getChainsForOrderId(orderId))
 }

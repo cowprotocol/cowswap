@@ -52,6 +52,17 @@ describe('validateTokens', () => {
       ]),
     ).rejects.toThrow(/^Token list failed validation:.*logoURI/)
   })
+
+  it('accepts more than 10 extensions', async () => {
+    const tokens = [
+      {
+        ...INLINE_TOKEN_LIST[0],
+        extensions: Object.fromEntries(Array.from({ length: 11 }, (_, i) => [`ext${i}`, i])),
+      },
+    ]
+
+    await expect(validateTokens(tokens)).resolves.toBe(tokens)
+  })
 })
 
 describe('validateTokenList', () => {

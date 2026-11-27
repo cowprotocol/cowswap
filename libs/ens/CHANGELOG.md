@@ -1,5 +1,183 @@
 # Changelog
 
+## [3.13.2](https://github.com/cowprotocol/cowswap/compare/ens-v3.13.1...ens-v3.13.2) (2026-11-25)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.23.2
+  - @cowprotocol/common-const@3.26.0
+
+## [3.13.1](https://github.com/cowprotocol/cowswap/compare/ens-v3.13.0...ens-v3.13.1) (2026-11-19)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.25.0
+  - @cowprotocol/common-utils@3.23.1
+
+## [3.13.0](https://github.com/cowprotocol/cowswap/compare/ens-v3.12.4...ens-v3.13.0) (2026-11-18)
+
+### Minor Changes
+
+- feat: update SDK versions with updated near token lists (#8660)
+
+- feat(solana): support custom recipients (#8592)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.24.0
+  - @cowprotocol/common-utils@3.23.0
+
+## [3.12.4](https://github.com/cowprotocol/cowswap/compare/ens-v3.12.3...ens-v3.12.4) (2026-11-16)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.23.0
+  - @cowprotocol/common-utils@3.22.4
+
+## [3.12.3](https://github.com/cowprotocol/cowswap/compare/ens-v3.12.2...ens-v3.12.3) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.22.0
+  - @cowprotocol/common-utils@3.22.3
+
+## [3.12.2](https://github.com/cowprotocol/cowswap/compare/ens-v3.12.1...ens-v3.12.2) (2026-11-13)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.21.0
+  - @cowprotocol/common-utils@3.22.2
+
+## [3.12.1](https://github.com/cowprotocol/cowswap/compare/ens-v3.12.0...ens-v3.12.1) (2026-11-11)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.20.0
+  - @cowprotocol/common-utils@3.22.1
+
+## [3.12.0](https://github.com/cowprotocol/cowswap/compare/ens-v3.11.4...ens-v3.12.0) (2026-11-10)
+
+### Minor Changes
+
+- feat(networks): networks update (#8456)
+
+- feat(solana): pass appData to quote (#8509)
+
+### Patch Changes
+
+- fix(solana): use SDK for quote costs breakdown (#8522)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.22.0
+  - @cowprotocol/common-const@3.19.0
+  - @cowprotocol/wallet-provider@2.3.0
+
+## [3.11.4](https://github.com/cowprotocol/cowswap/compare/ens-v3.11.3...ens-v3.11.4) (2026-11-05)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.18.0
+  - @cowprotocol/common-utils@3.21.2
+
+## [3.11.3](https://github.com/cowprotocol/cowswap/compare/ens-v3.11.2...ens-v3.11.3) (2026-10-28)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.17.1
+  - @cowprotocol/common-utils@3.21.1
+
+## [3.11.2](https://github.com/cowprotocol/cowswap/compare/ens-v3.11.1...ens-v3.11.2) (2026-10-28)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.17.0
+  - @cowprotocol/common-utils@3.21.0
+
+## [3.11.1](https://github.com/cowprotocol/cowswap/compare/ens-v3.11.0...ens-v3.11.1) (2026-10-27)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8474)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.16.1
+  - @cowprotocol/common-utils@3.20.1
+
+## [3.11.0](https://github.com/cowprotocol/cowswap/compare/ens-v3.10.0...ens-v3.11.0) (2026-10-21)
+
+### Minor Changes
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.16.0
+  - @cowprotocol/common-utils@3.20.0
+
+## [3.10.0](https://github.com/cowprotocol/cowswap/compare/ens-v3.9.0...ens-v3.10.0) (2026-10-14)
+
+### Minor Changes
+
+- feat: bump sdk + support tokens 2022 (#8315)
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+- feat: solana settlement 0.5 (#8345)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.15.0
+  - @cowprotocol/common-utils@3.19.0
+
+## [3.9.0](https://github.com/cowprotocol/cowswap/compare/ens-v3.8.0...ens-v3.9.0) (2026-10-06)
+
+### Minor Changes
+
+- feat(solana): add sponsored orders (#8200)
+
+- feat(solana): migration to v0.4 (#8188)
+
+- feat(solana): use cow quote API and suggested slippage (#8195)
+
+- feat: bump sdk + rename transaction -> partiallySignedTx (#8267)
+
+### Patch Changes
+
+- fix(solana): add solana native token icon (#8262)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.14.0
+  - @cowprotocol/common-utils@3.18.0
+
+## [3.8.0](https://github.com/cowprotocol/cowswap/compare/ens-v3.7.2...ens-v3.8.0) (2026-09-23)
+
+### Minor Changes
+
+- feat: show twaps in explorer (#8129)
+
+- feat(solana): apply user slippage from settings (#8164)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.17.0
+  - @cowprotocol/common-const@3.13.0
+  - @cowprotocol/cowswap-abis@4.3.0
+
 ## [3.7.2](https://github.com/cowprotocol/cowswap/compare/ens-v3.7.1...ens-v3.7.2) (2026-09-15)
 
 ### Patch Changes

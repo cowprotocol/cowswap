@@ -71,7 +71,7 @@ describe('safeBundleApprovalFlow - Send analytics payload', () => {
     return {
       context: { chainId: SupportedChainId.MAINNET, inputAmount, outputAmount },
       callbacks: { closeModals: jest.fn(), dispatch: jest.fn(), addBridgeOrder: jest.fn() },
-      swapFlowAnalyticsContext: {
+      tradeFlowAnalyticsContext: {
         account: '0xaccount',
         orderType: UiOrderType.SWAP,
         marketLabel: 'SELL,BUY',

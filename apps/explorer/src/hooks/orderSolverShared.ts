@@ -14,6 +14,7 @@ export type OrderSolverInfo = {
   solverId: string
   displayName: string
   image?: string
+  isUnidentified?: boolean
 }
 
 export type UseOrderSolverResult = {
@@ -74,7 +75,7 @@ function buildSolverInfoFromAddress(address: string, solvers: SolverInfo[]): Ord
   if (matchingSolver) return toOrderSolverInfo(matchingSolver)
 
   // Unknown to the CMS: display the address itself, shortened when possible.
-  return { solverId: address, displayName: safeShortenAddress(address) }
+  return { solverId: address, displayName: safeShortenAddress(address), isUnidentified: true }
 }
 
 /**

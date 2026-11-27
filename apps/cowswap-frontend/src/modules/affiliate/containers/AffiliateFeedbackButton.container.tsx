@@ -16,7 +16,7 @@ import { Routes as RoutesEnum } from 'common/constants/routes'
 import * as styledEl from './AffiliateFeedbackButton.styled'
 
 import { TraderWalletStatus, useAffiliateTraderWallet } from '../hooks/useAffiliateTraderWallet'
-import { isSupportedTradingNetwork } from '../lib/affiliateProgramUtils'
+import { useIsAffiliateSupportedTradingNetwork } from '../hooks/useIsAffiliateSupportedTradingNetwork'
 import { affiliateTraderSavedCodeAtom } from '../state/affiliateTraderSavedCodeAtom'
 
 interface AffiliateFeedbackTriggerProps {
@@ -69,15 +69,17 @@ function AffiliateFeedbackTrigger({ canShow, chainId }: AffiliateFeedbackTrigger
 function AffiliatePartnerFeedbackButton(): ReactNode {
   const chainId = useWalletChainId()
 
-  return <AffiliateFeedbackTrigger canShow={isSupportedTradingNetwork(chainId)} chainId={chainId} />
+  const isSupportedNetwork = useIsAffiliateSupportedTradingNetwork(chainId)
+
+  return <AffiliateFeedbackTrigger canShow={isSupportedNetwork} chainId={chainId} />
 }
 
 function AffiliateTraderFeedbackButton(): ReactNode {
   const chainId = useWalletChainId()
   const { savedCode } = useAtomValue(affiliateTraderSavedCodeAtom)
   const walletStatus = useAffiliateTraderWallet()
-  const canShow =
-    isSupportedTradingNetwork(chainId) && Boolean(savedCode) && walletStatus !== TraderWalletStatus.INELIGIBLE
+  const isSupportedNetwork = useIsAffiliateSupportedTradingNetwork(chainId)
+  const canShow = isSupportedNetwork && Boolean(savedCode) && walletStatus !== TraderWalletStatus.INELIGIBLE
 
   return <AffiliateFeedbackTrigger canShow={canShow} chainId={chainId} />
 }

@@ -3,7 +3,7 @@ import { Fragment, ReactNode } from 'react'
 import { i18n } from '@lingui/core'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
-import { styled, useFeatureFlags } from '@cowprotocol/common-hooks'
+import { styled } from '@cowprotocol/common-hooks'
 import {
   getEtherscanLink,
   getExplorerAddressLink,
@@ -11,6 +11,7 @@ import {
   isInjectedWidget,
   shortenAddress,
 } from '@cowprotocol/common-utils'
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { Badge, BadgeTypes, ExternalLink } from '@cowprotocol/ui'
 import {
@@ -33,7 +34,11 @@ import { groupActivitiesByDay, useMultipleActivityDescriptors } from 'legacy/hoo
 import { useAppDispatch } from 'legacy/state/hooks'
 import { updateSelectedWallet } from 'legacy/state/user/reducer'
 
-import { useHasNotificationSubscription, useOpenNotificationSidebar } from 'modules/notifications'
+import {
+  useHasNotificationSubscription,
+  useOpenNotificationSidebar,
+  useTelegramNotificationsAvailability,
+} from 'modules/notifications'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { UnsupportedNetworksText } from 'common/pure/UnsupportedNetworksText'
@@ -71,6 +76,10 @@ const CowShedInfoStyled = styled(CowShedInfo)`
   margin-top: 10px;
 `
 
+const EmptySurplusCard = styled.div`
+  height: 20px;
+`
+
 const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
   dateStyle: 'long',
 }
@@ -100,7 +109,7 @@ export function AccountDetails({
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const closeAccountModal = useCloseAccountModal()
   const { standaloneMode } = useInjectedWidgetParams()
-  const { areTelegramNotificationsEnabled } = useFeatureFlags()
+  const { isAvailable: areTelegramNotificationsAvailable } = useTelegramNotificationsAvailability()
   const { hasSubscription, isLoading: isNotificationSubscriptionLoading } = useHasNotificationSubscription()
   const openNotificationSidebar = useOpenNotificationSidebar()
 
@@ -110,7 +119,7 @@ export function AccountDetails({
   }
 
   const showGetNotifiedRow =
-    areTelegramNotificationsEnabled && !isNotificationSubscriptionLoading && !hasSubscription && !isInjectedWidget()
+    areTelegramNotificationsAvailable && !isNotificationSubscriptionLoading && !hasSubscription && !isInjectedWidget()
 
   const explorerOrdersLink = account && getExplorerAddressLink(chainId, account)
   const explorerLabel = account ? getExplorerLabel(chainId, 'address', account) : undefined
@@ -192,8 +201,8 @@ export function AccountDetails({
         </UnsupportedWalletBox>
       ) : (
         <>
-          <SurplusCard />
-
+          {/*TODO: add it back once Solana support /total_surplus*/}
+          {isSolanaChain(chainId) ? <EmptySurplusCard></EmptySurplusCard> : <SurplusCard />}
           {activityTotalCount ? (
             <LowerSection id="account-activities-list">
               <ActivityHeader>

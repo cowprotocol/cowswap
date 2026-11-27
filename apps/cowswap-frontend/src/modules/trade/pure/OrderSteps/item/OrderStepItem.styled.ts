@@ -1,4 +1,4 @@
-import { font, UI } from '@cowprotocol/ui'
+import { Collapsible, font, UI } from '@cowprotocol/ui'
 
 import styled, { keyframes } from 'styled-components/macro'
 
@@ -122,9 +122,21 @@ export const StepsIconWrapper = styled.div`
   }
 `
 
-export const StepHeaderButton = styled.button`
+export const StepHeaderButton = styled(Collapsible.Trigger)`
+  --collapsible-trigger-hover-background: transparent;
+  --collapsible-trigger-open-hover-background: transparent;
+
   position: relative;
+  display: block;
+  width: 100%;
+  min-height: unset;
+  justify-content: unset;
+  gap: 0;
   padding: var(--spacing-around) calc(var(--circle-size) + var(--spacing-around)) 0 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
 
   &::before {
     content: '';
@@ -136,8 +148,9 @@ export const StepHeaderButton = styled.button`
     border-radius: 14px;
   }
 
-  &:disabled {
-    cursor: default;
+  &[data-panel-open] {
+    background: transparent;
+    color: inherit;
   }
 `
 
@@ -187,7 +200,7 @@ export const StepExpandIcon = styled.span`
     transition: transform 0.2s ease-in-out;
   }
 
-  ${StepHeaderButton}[aria-expanded='true'] & > svg {
+  ${StepHeaderButton}[data-panel-open] & > svg {
     transform: rotate(180deg);
   }
 `

@@ -11,7 +11,7 @@ import {
 import { SimpleStyledText } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
+import { Plural, Trans } from '@lingui/react/macro'
 
 export interface GetNonNativeSlippageTooltipParams {
   isDynamic?: boolean
@@ -36,7 +36,8 @@ export function getNativeOrderDeadlineTooltip(symbols: (string | undefined)[] | 
     <SimpleStyledText>
       <p>
         <Trans>
-          {symbolName} orders require a minimum transaction expiration time threshold of {minutes} minutes to ensure the
+          {symbolName} orders require a minimum transaction expiration time threshold of{' '}
+          <Plural value={minutes} one="# minute" few="# minutes" many="# minutes" other="# minutes" /> to ensure the
           best swapping experience.
         </Trans>
       </p>
@@ -75,11 +76,18 @@ export function getNativeSlippageTooltip(
   )
 }
 
-export function getNonNativeOrderDeadlineTooltip(): ReactNode {
+export function getNonNativeOrderDeadlineTooltip(isWaitForCowsEnabled?: boolean): ReactNode {
   return (
     <SimpleStyledText>
       <p>
-        <Trans>Your swap expires and will not execute if it is pending for longer than the selected duration.</Trans>
+        {isWaitForCowsEnabled ? (
+          <Trans>
+            With Wait for CoWs, your swap stays open for this duration after it joins the next batch. Total time until
+            expiry is the batch wait plus this expiration.
+          </Trans>
+        ) : (
+          <Trans>Your swap expires and will not execute if it is pending for longer than the selected duration.</Trans>
+        )}
       </p>
       <p>{i18n._(INPUT_OUTPUT_EXPLANATION)}</p>
     </SimpleStyledText>

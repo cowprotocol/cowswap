@@ -7,7 +7,13 @@ export const FooterContainer = styled.footer<{ expanded: boolean; hasTouchFooter
   --bgColor: ${({ theme }) => (theme.darkMode ? `var(${UI.COLOR_NEUTRAL_0})` : `var(${UI.COLOR_NEUTRAL_10})`)};
   --color: ${({ theme }) => (theme.darkMode ? `var(${UI.COLOR_NEUTRAL_50})` : `var(${UI.COLOR_NEUTRAL_50})`)};
   --colorTitle: ${({ theme }) => (theme.darkMode ? `var(${UI.COLOR_NEUTRAL_90})` : `var(${UI.COLOR_NEUTRAL_98})`)};
-  background: var(--bgColor);
+  /*
+   * Read from overridable properties rather than --bgColor directly: that one doubles as the social
+   * icons' glyph colour and has to stay opaque, and an open footer needs a different backdrop from a
+   * closed one — open, it has columns of links to keep legible over whatever is behind it.
+   */
+  background: ${({ expanded }) =>
+    expanded ? 'var(--bgExpanded, var(--bgColor))' : 'var(--bgCollapsed, var(--bgColor))'};
   color: var(--color);
   padding: ${({ expanded, hasTouchFooter }) =>
     !expanded && hasTouchFooter ? '68px 0 0' : expanded ? '134px 0 0' : '0'};
@@ -198,7 +204,26 @@ export const FooterBottomLogos = styled.div`
 `
 
 export const BottomText = styled.p`
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  gap: 16px;
   margin: 0;
+`
+
+export const CookieSettingsButton = styled.button`
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--colorTitle);
+  }
 `
 
 export const Description = styled.p`

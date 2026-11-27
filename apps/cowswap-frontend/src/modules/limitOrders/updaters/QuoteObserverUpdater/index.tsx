@@ -1,4 +1,4 @@
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useMemo } from 'react'
 
 import { FractionUtils, getWrappedToken } from '@cowprotocol/common-utils'
@@ -6,15 +6,22 @@ import { CurrencyAmount, Fraction, Token } from '@cowprotocol/currency'
 
 import { Nullish } from 'types'
 
-import { updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
-import { useDerivedTradeState } from 'modules/trade'
+import { limitRateAtom, updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
+import { getPercentageRate, useDerivedTradeState } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { useUsdPrice } from 'modules/usdAmount/hooks/useUsdPrice'
 
+import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useSafeEffect } from 'common/hooks/useSafeMemo'
+
+import { useUpdateActiveRate } from '../../hooks/useUpdateActiveRate'
+import { getQuoteFeeAmountRaw } from '../../utils/getQuoteFeeAmountRaw'
 
 export function QuoteObserverUpdater(): null {
   const state = useDerivedTradeState()
+  const { percentageSelection, activeRate } = useAtomValue(limitRateAtom)
+  const updateRate = useUpdateActiveRate()
 
   const updateLimitRateState = useSetAtom(updateLimitRateAtom)
 
@@ -26,16 +33,30 @@ export function QuoteObserverUpdater(): null {
 
   const { price, isLoading } = useSpotPrice(inputToken, outputToken)
 
-  // Update market rate based on spot prices
   useSafeEffect(() => {
     updateLimitRateState({ marketRate: price, isLoadingMarketRate: isLoading })
   }, [price, isLoading, updateLimitRateState])
 
+  useSafeEffect(() => {
+    if (!percentageSelection || isLoading || !state?.inputCurrencyAmount) return
+
+    const rate = getPercentageRate(price, percentageSelection.value, percentageSelection.isInverted)
+
+    if (!rate || activeRate?.equalTo(rate)) return
+
+    updateRate({
+      activeRate: rate,
+      percentageSelection,
+      isTypedValue: false,
+      isRateFromUrl: false,
+      isAlternativeOrderRate: false,
+    })
+  }, [price, isLoading, percentageSelection, activeRate, state?.inputCurrencyAmount, updateRate])
+
   const { quote } = useTradeQuote()
-  const feeAmountRaw = quote?.quoteResults.quoteResponse.quote.feeAmount
+  const feeAmountRaw = getQuoteFeeAmountRaw(quote)
   const feeAmount = inputCurrency && feeAmountRaw ? CurrencyAmount.fromRawAmount(inputCurrency, feeAmountRaw) : null
 
-  // Update fee amount based on quote response
   useSafeEffect(() => {
     updateLimitRateState({ feeAmount })
   }, [feeAmount, updateLimitRateState])
@@ -52,19 +73,30 @@ function useSpotPrice(
 } {
   const inputUsdPrice = useUsdPrice(inputCurrency)
   const outputUsdPrice = useUsdPrice(outputCurrency)
+  const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
 
-  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   return useMemo(() => {
-    const isLoading = !!inputUsdPrice?.isLoading || !!outputUsdPrice?.isLoading
+    const pricesUnavailable = isProviderNetworkUnsupported || isProviderNetworkDeprecated
+    // Valid token with no atom entry yet is still in-flight (queue has not marked loading).
+    const awaitingPriceState =
+      !pricesUnavailable && Boolean((inputCurrency && !inputUsdPrice) || (outputCurrency && !outputUsdPrice))
+    const isLoading = awaitingPriceState || Boolean(inputUsdPrice?.isLoading || outputUsdPrice?.isLoading)
 
     if (!inputUsdPrice?.price || !outputUsdPrice?.price) {
       return { price: null, isLoading }
     }
+
     const inputFraction = FractionUtils.fromPrice(inputUsdPrice.price)
     const outputFraction = FractionUtils.fromPrice(outputUsdPrice.price)
 
-    const price = inputFraction.divide(outputFraction)
-
-    return { price, isLoading }
-  }, [inputUsdPrice?.price, inputUsdPrice?.isLoading, outputUsdPrice?.price, outputUsdPrice?.isLoading])
+    return { price: inputFraction.divide(outputFraction), isLoading }
+  }, [
+    inputUsdPrice,
+    outputUsdPrice,
+    inputCurrency,
+    outputCurrency,
+    isProviderNetworkUnsupported,
+    isProviderNetworkDeprecated,
+  ])
 }

@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { i18n } from '@lingui/core'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -34,6 +36,7 @@ const BNB_START_DATE = new Date(2025, 8)
 const LINEA_START_DATE = new Date(2025, 10)
 const PLASMA_START_DATE = new Date(2026, 0)
 const INK_START_DATE = new Date(2026, 1)
+const ROBINHOOD_START_DATE = new Date(2026, 11)
 
 const START_DATE: Record<SupportedChainId, Date> = {
   [SupportedChainId.MAINNET]: DEFAULT_START_DATE,
@@ -47,6 +50,7 @@ const START_DATE: Record<SupportedChainId, Date> = {
   [SupportedChainId.LINEA]: LINEA_START_DATE,
   [SupportedChainId.PLASMA]: PLASMA_START_DATE,
   [SupportedChainId.INK]: INK_START_DATE,
+  [SupportedChainId.ROBINHOOD]: ROBINHOOD_START_DATE,
   // Solana trading not launched yet — surplus tracking doesn't apply.
   [SupportedChainId.SOLANA]: DEFAULT_START_DATE,
 }
@@ -169,10 +173,8 @@ const Wrapper = styled.div`
     }
   }
 `
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function SurplusCard() {
+
+export function SurplusCard(): ReactNode {
   const { surplusAmount, isLoading } = useTotalSurplus()
   const { t } = useLingui()
 

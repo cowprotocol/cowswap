@@ -31,7 +31,6 @@ export const OrderWidget: React.FC = () => {
   } = useOrderAndErc20s(orderId, ORDER_QUERY_INTERVAL)
   const {
     trades,
-    protocolFees,
     error,
     isLoading: areTradesLoading,
     hasNextPage,
@@ -51,7 +50,6 @@ export const OrderWidget: React.FC = () => {
     <OrderDetails
       order={order}
       trades={trades}
-      protocolFees={protocolFees}
       isOrderLoading={isOrderLoading}
       areTradesLoading={areTradesLoading}
       errors={errors}

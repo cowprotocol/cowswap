@@ -9,12 +9,14 @@ import {
 import { UiOrderType } from '@cowprotocol/types'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
+import { UNWATCHED_CREATING_ORDER_TIMEOUT } from 'legacy/state/orders/consts'
 
 import { getOrder } from 'api/cowProtocol'
 import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
 
 import {
   fetchAndClassifyOrder,
+  getIsAbandonedCreatingOrder,
   getFulfilledOrderUidsForSurplusQueue,
   getOrdersFromTransitionData,
   getOrderTypesByUid,
@@ -24,6 +26,7 @@ import {
 
 jest.mock('api/cowProtocol', () => ({
   getOrder: jest.fn(),
+  getIsOrderNotFoundError: jest.requireActual('api/cowProtocol/getIsOrderNotFoundError').getIsOrderNotFoundError,
 }))
 
 jest.mock('common/utils/getIsBridgeOrder', () => ({
@@ -214,6 +217,50 @@ describe('order updater utils', () => {
         '0xswap': UiOrderType.SWAP,
         '0xtwap': UiOrderType.TWAP,
       })
+    })
+  })
+
+  describe('getIsAbandonedCreatingOrder', () => {
+    function buildCreatingOrder(overrides: Partial<Order> = {}): Order {
+      return {
+        id: '0xcreating',
+        status: OrderStatus.CREATING,
+        creationTime: new Date(Date.now() - UNWATCHED_CREATING_ORDER_TIMEOUT - 1000).toISOString(),
+        orderCreationHash: undefined,
+        ...overrides,
+      } as Order
+    }
+
+    const notFound = Object.assign(new Error('Not Found'), { response: { status: 404 } })
+
+    it('gives up once the order book has had long enough to index an order it never saw', () => {
+      expect(getIsAbandonedCreatingOrder(buildCreatingOrder(), notFound)).toBe(true)
+    })
+
+    it('keeps waiting while the order is younger than the timeout', () => {
+      const order = buildCreatingOrder({ creationTime: new Date().toISOString() })
+
+      expect(getIsAbandonedCreatingOrder(order, notFound)).toBe(false)
+    })
+
+    // FinalizeTxUpdater fails those when their transaction dies; giving up here would race it.
+    it('keeps waiting for an order whose creation transaction is being watched', () => {
+      const order = buildCreatingOrder({ orderCreationHash: '0xtx' })
+
+      expect(getIsAbandonedCreatingOrder(order, notFound)).toBe(false)
+    })
+
+    it('keeps waiting when the lookup failed for a reason other than the order being missing', () => {
+      const serverError = Object.assign(new Error('Bad Gateway'), { response: { status: 502 } })
+
+      expect(getIsAbandonedCreatingOrder(buildCreatingOrder(), new Error('Network request failed'))).toBe(false)
+      expect(getIsAbandonedCreatingOrder(buildCreatingOrder(), serverError)).toBe(false)
+    })
+
+    it('keeps waiting when the creation time cannot be read', () => {
+      const order = buildCreatingOrder({ creationTime: 'not a date' })
+
+      expect(getIsAbandonedCreatingOrder(order, notFound)).toBe(false)
     })
   })
 })

@@ -1,4 +1,6 @@
-import { useIsSmartContractWallet } from '@cowprotocol/wallet'
+import { getDefaultStore, type PrimitiveAtom } from 'jotai'
+
+import { isSmartContractWalletAtom } from '@cowprotocol/wallet'
 
 import { renderHook } from '@testing-library/react'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
@@ -6,14 +8,14 @@ import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { useIsPermitEnabled } from './useIsPermitEnabled'
 
 jest.mock('@cowprotocol/wallet', () => ({
-  useIsSmartContractWallet: jest.fn(),
+  isSmartContractWalletAtom: jest.requireActual('jotai').atom(false),
 }))
 
 jest.mock('entities/injectedWidget', () => ({
   useInjectedWidgetParams: jest.fn(),
 }))
 
-const mockUseIsSmartContractWallet = useIsSmartContractWallet as jest.MockedFunction<typeof useIsSmartContractWallet>
+const writableIsSmartContractWalletAtom = isSmartContractWalletAtom as PrimitiveAtom<boolean | null>
 const mockUseInjectedWidgetParams = useInjectedWidgetParams as jest.MockedFunction<typeof useInjectedWidgetParams>
 
 describe('useIsPermitEnabled', () => {
@@ -23,7 +25,7 @@ describe('useIsPermitEnabled', () => {
   })
 
   it('returns true for EOA wallets when the widget param is unset', () => {
-    mockUseIsSmartContractWallet.mockReturnValue(false)
+    getDefaultStore().set(writableIsSmartContractWalletAtom, false)
 
     const { result } = renderHook(() => useIsPermitEnabled())
 
@@ -31,7 +33,15 @@ describe('useIsPermitEnabled', () => {
   })
 
   it('returns false for smart-contract wallets even when the widget param is unset', () => {
-    mockUseIsSmartContractWallet.mockReturnValue(true)
+    getDefaultStore().set(writableIsSmartContractWalletAtom, true)
+
+    const { result } = renderHook(() => useIsPermitEnabled())
+
+    expect(result.current).toBe(false)
+  })
+
+  it('returns false while wallet type is still unknown', () => {
+    getDefaultStore().set(writableIsSmartContractWalletAtom, null)
 
     const { result } = renderHook(() => useIsPermitEnabled())
 
@@ -39,7 +49,7 @@ describe('useIsPermitEnabled', () => {
   })
 
   it('returns false when disableEIP2612Permits is true, even for EOA wallets', () => {
-    mockUseIsSmartContractWallet.mockReturnValue(false)
+    getDefaultStore().set(writableIsSmartContractWalletAtom, false)
     mockUseInjectedWidgetParams.mockReturnValue({ disableEIP2612Permits: true })
 
     const { result } = renderHook(() => useIsPermitEnabled())
@@ -48,7 +58,7 @@ describe('useIsPermitEnabled', () => {
   })
 
   it('returns true when disableEIP2612Permits is false and wallet is EOA', () => {
-    mockUseIsSmartContractWallet.mockReturnValue(false)
+    getDefaultStore().set(writableIsSmartContractWalletAtom, false)
     mockUseInjectedWidgetParams.mockReturnValue({ disableEIP2612Permits: false })
 
     const { result } = renderHook(() => useIsPermitEnabled())

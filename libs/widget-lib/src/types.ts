@@ -1,4 +1,4 @@
-import type { EnrichedOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
+import type { EnrichedOrder, SupportedChainId, TargetChainId } from '@cowprotocol/cow-sdk'
 import {
   CowWidgetEventListeners,
   CowWidgetEventPayloadMap,
@@ -121,6 +121,37 @@ export type TokenPairConstraint = {
   buy: { address: string; chainId: SupportedChainId }
 }
 
+/**
+ * Narrows the tokens of one token selector (sell or buy).
+ * Search results and recent tokens are narrowed the same way.
+ */
+export interface TokenSelectorFilter {
+  /**
+   * Addresses of the only tokens to show
+   */
+  tokens?: string[]
+
+  /**
+   * Addresses of tokens to hide. Like `tokens`, it limits search results to the token lists (no token import).
+   */
+  excludedTokens?: string[]
+
+  /**
+   * Shows only the tokens the connected wallet holds. Ignored while no wallet is connected, and for bridge target tokens.
+   */
+  onlyWithBalance?: boolean
+
+  /**
+   * Ids of the only networks to list in the selector. In the buy selector, the networks other than the sell token one are bridge targets.
+   */
+  selectableChainIds?: number[]
+
+  /**
+   * Shown above the token list, to explain why tokens are missing
+   */
+  notice?: string
+}
+
 export type WidgetHookResult = Promise<boolean> | boolean
 
 export enum TradeType {
@@ -159,6 +190,7 @@ export enum WidgetMethodsListen {
   PROVIDER_RPC_RESPONSE = 'PROVIDER_RPC_RESPONSE',
   PROVIDER_ON_EVENT = 'PROVIDER_ON_EVENT',
   HOOK_RESULT = 'HOOK_RESULT',
+  CLOSE_ALL_MODALS = 'CLOSE_ALL_MODALS',
 }
 
 /**
@@ -229,7 +261,6 @@ export type CowSwapWidgetPaletteParams = { [K in CowSwapWidgetPaletteColors]: st
 export interface CowSwapWidgetParams {
   /**
    * The unique identifier of the widget consumer.
-   * Please fill the for to let us know a little about you: https://cowprotocol.typeform.com/to/rONXaxHV
    */
   appCode: string
 
@@ -303,6 +334,16 @@ export interface CowSwapWidgetParams {
   buyTokenLists?: string[]
 
   /**
+   * Narrows the tokens of the sell selector, on top of `sellTokenLists`
+   */
+  sellTokensFilter?: TokenSelectorFilter
+
+  /**
+   * Narrows the tokens of the buy selector, on top of `buyTokenLists`
+   */
+  buyTokensFilter?: TokenSelectorFilter
+
+  /**
    * Forces the widget locale.
    * Serialized as the `lng` query param used by the frontend locale resolver.
    * Accepts supported locales like `en-US` and fuzzy values like `en`.
@@ -318,6 +359,14 @@ export interface CowSwapWidgetParams {
    * Control the "Favorite tokens" section displaying in the token selector
    */
   hideFavoriteTokens?: boolean
+
+  /**
+   * Tokens moved up in the token selector list: right after the native token and the tokens the wallet holds,
+   * in this order, even with a zero balance. Only the order changes: no badge and no separate section,
+   * unlike "Favorite tokens".
+   * Keyed by chain id. Addresses missing from the active token lists are skipped (add them with `customTokens`).
+   */
+  prioritizedTokens?: Partial<Record<TargetChainId, string[]>>
 
   /**
    * Swap, Limit or Advanced (Twap).
@@ -368,8 +417,6 @@ export interface CowSwapWidgetParams {
 
   /**
    * The partner fee
-   *
-   * Please contact https://cowprotocol.typeform.com/to/rONXaxHV
    */
   partnerFee?: PartnerFee
 
@@ -378,6 +425,19 @@ export interface CowSwapWidgetParams {
    * Defaults to false.
    */
   disableCrossChainSwap?: boolean
+
+  /**
+   * Hides the price chart and its controls.
+   * Defaults to false.
+   */
+  disablePriceChart?: boolean
+
+  /**
+   * Hides the post-swap take-profit banner (price percentage shortcuts that open a limit order).
+   * Automatically treated as `true` when Limit is not included in `enabledTradeTypes`.
+   * Defaults to false.
+   */
+  disablePricePercentageShortcuts?: boolean
 
   /**
    * Disable setting custom recipient for all trading widgets (swap,limit,twap)
@@ -472,6 +532,16 @@ export interface CowSwapWidgetParams {
    * Option to hide bridge info
    */
   hideBridgeInfo?: boolean
+
+  /**
+   * Hides the Wait & Save toggle and related confirmation UI.
+   */
+  hideWaitAndSave?: boolean
+
+  /**
+   * Option to hide the banner suggesting to wrap the native token (e.g. ETH -> WETH) when selling it.
+   */
+  hideWrapBanner?: boolean
 
   /**
    * Option to hide orders table on LIMIT and TWAP forms.
@@ -682,6 +752,7 @@ export interface WidgetMethodsListenPayloadMap {
   [WidgetMethodsListen.PROVIDER_RPC_RESPONSE]: ProviderRpcResponsePayload
   [WidgetMethodsListen.PROVIDER_ON_EVENT]: ProviderOnEventPayload
   [WidgetMethodsListen.HOOK_RESULT]: WidgetHookResultPayload
+  [WidgetMethodsListen.CLOSE_ALL_MODALS]: void
 }
 
 export type WidgetMethodsListenPayloads = WidgetMethodsListenPayloadMap[WidgetMethodsListen]

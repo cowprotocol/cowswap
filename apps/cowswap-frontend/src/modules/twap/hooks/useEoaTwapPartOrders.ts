@@ -14,7 +14,9 @@ import type { TwapPartOrder, TwapPartOrderStatus } from '@cowprotocol/sdk-compos
 
 import useSWR from 'swr'
 
-import { type Order } from 'legacy/state/orders/actions'
+import { useAllTransactionsDetails } from 'legacy/state/enhancedTransactions/hooks'
+import type { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
+import { OrderStatus, type Order } from 'legacy/state/orders/actions'
 
 import { ORDERS_TABLE_PAGE_SIZE } from 'modules/ordersTable'
 
@@ -78,6 +80,8 @@ export function useEoaTwapPartOrders(
     },
   )
 
+  const transactions = useAllTransactionsDetails()
+
   return useMemo(() => {
     if (!enabled || !twapOrder || partOrdersCount === 0) return { orders: [], isLoading: false }
     if (
@@ -95,11 +99,11 @@ export function useEoaTwapPartOrders(
     return {
       // Convert API part orders into table orders and mark the final TWAP part.
       orders: partPage.items.map((partOrder, index) =>
-        mapPartOrder(partOrder, twapOrder, parent, offset + index === partPage.totalCount - 1),
+        mapPartOrder(partOrder, twapOrder, parent, offset + index === partPage.totalCount - 1, transactions),
       ),
       isLoading: false,
     }
-  }, [enabled, isLoading, page, parent, partPage, partOrdersCount, twapOrder])
+  }, [enabled, isLoading, page, parent, partPage, partOrdersCount, twapOrder, transactions])
 }
 
 function mapApiAdditionalInfo(
@@ -146,6 +150,7 @@ function mapPartOrder(
   twapOrder: TwapOrderItem,
   parent: ParsedOrder,
   isTheLastPart: boolean,
+  transactions: EnhancedTransactionDetails[],
 ): ParsedOrder {
   const startTime =
     partOrder.validTo === null ? partOrder.createdAt : getTwapPartStartTime(partOrder.validTo, twapOrder.order)
@@ -172,7 +177,15 @@ function mapPartOrder(
     apiAdditionalInfo,
   } satisfies Order
 
-  return parseOrder(order)
+  const cancellation = transactions.find(
+    (tx) => tx.onChainCancellation?.orderId === partOrder.orderUid && tx.receipt?.status !== 'reverted',
+  )
+  if (cancellation && order.status === OrderStatus.PENDING) {
+    order.status = cancellation.receipt?.status === 'success' ? OrderStatus.CANCELLED : order.status
+    order.isCancelling = !cancellation.receipt
+  }
+
+  return { ...parseOrder(order), cancellationOrder: order }
 }
 
 function mapSdkPartOrderStatus(status: TwapPartOrderStatus): SdkOrderStatus {

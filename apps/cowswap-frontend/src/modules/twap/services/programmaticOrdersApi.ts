@@ -11,6 +11,8 @@ import type { TwapOrdersList } from 'entities/twap'
 const PROGRAMMATIC_ORDERS_API_URL =
   process.env.REACT_APP_PROGRAMMATIC_ORDERS_API_URL || 'https://programmatic-orders.cow.fi/'
 
+const DEPLOYED_COW_SHED_PAGE_SIZE = 10
+
 type EoaTwapOrdersDelta = Omit<EoaTwapOrdersResult, 'totalCount'>
 
 interface EoaTwapOrdersResult {
@@ -84,6 +86,15 @@ class ProgrammaticOrdersApi {
     const latestPart = items[0]
 
     return latestPart?.status === 'open' ? latestPart : undefined
+  }
+
+  async fetchDeployedCowShedAddresses(owner: string, chainId: SupportedChainId): Promise<string[]> {
+    const { items } = await this.api.getDeployedCowSheds(
+      { owner, chainId },
+      { limit: DEPLOYED_COW_SHED_PAGE_SIZE, offset: 0 },
+    )
+
+    return items.map((shed) => shed.address)
   }
 }
 

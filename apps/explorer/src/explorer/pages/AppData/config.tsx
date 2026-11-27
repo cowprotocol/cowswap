@@ -153,20 +153,6 @@ export const handleErrors = (
   return errors
 }
 
-export const decodeAppDataSchema: JSONSchema7 = {
-  type: 'object',
-  title: 'AppData Decode',
-  description: 'Decode a text file document from AppData hash.',
-  required: ['appData'],
-  properties: {
-    appData: {
-      type: 'string',
-      title: 'AppData Hex',
-      pattern: '^0x[a-fA-F0-9]{64}',
-    },
-  },
-}
-
 export const CustomField = (props: FieldProps): React.ReactElement => {
   const { schema, onChange, readonly, required, formData, idSchema, uiSchema } = props
   return (

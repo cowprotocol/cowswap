@@ -1,7 +1,7 @@
 import { AnyAction, Dispatch, MiddlewareAPI } from 'redux'
 import { instance, mock, resetCalls, when } from 'ts-mockito'
 
-import { getCowSoundError, getCowSoundSend, getCowSoundSuccess } from 'modules/sounds'
+import { getCowSoundError, getCowSoundSend, getCowSoundSuccess, isFartcoin } from 'modules/sounds'
 
 import { soundMiddleware } from './soundMiddleware'
 
@@ -70,7 +70,8 @@ describe('soundMiddleware', () => {
   })
   describe('pending order action', () => {
     it('should play a sound when order is not hidden', () => {
-      when(actionMock.payload).thenReturn({ chainId: 1, order: { isHidden: false } })
+      const outputToken = { chainId: 1, address: '0x1' }
+      when(actionMock.payload).thenReturn({ chainId: 1, order: { isHidden: false, outputToken } })
       when(actionMock.type).thenReturn('order/addPendingOrder')
 
       soundMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
@@ -78,6 +79,7 @@ describe('soundMiddleware', () => {
       expect(getCowSoundSuccess).toHaveBeenCalledTimes(0)
       expect(getCowSoundError).toHaveBeenCalledTimes(0)
       expect(getCowSoundSend).toHaveBeenCalledTimes(1)
+      expect(getCowSoundSend).toHaveBeenCalledWith(outputToken)
     })
 
     it('should not play a sound when order is hidden', () => {
@@ -101,6 +103,17 @@ describe('soundMiddleware', () => {
       expect(getCowSoundSuccess).toHaveBeenCalledTimes(1)
       expect(getCowSoundError).toHaveBeenCalledTimes(0)
       expect(getCowSoundSend).toHaveBeenCalledTimes(0)
+    })
+
+    it('should pass the Fartcoin buy token to the success sound', () => {
+      const buyToken = '9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump'
+      jest.mocked(isFartcoin).mockImplementation((token) => token?.address === buyToken)
+      when(actionMock.payload).thenReturn({ chainId: 1, orders: [{ buyToken: 'other' }, { buyToken }] })
+      when(actionMock.type).thenReturn('order/fullfillOrdersBatch')
+
+      soundMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
+
+      expect(getCowSoundSuccess).toHaveBeenCalledWith({ chainId: 1, address: buyToken })
     })
   })
   describe('batch expire order action', () => {

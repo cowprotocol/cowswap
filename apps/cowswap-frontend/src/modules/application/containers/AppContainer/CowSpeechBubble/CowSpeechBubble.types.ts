@@ -1,1 +1,1 @@
-export type CowSpeechBubbleVariant = 'hiring' | 'notification'
+export type CowSpeechBubbleVariant = 'hiring' | 'graffiti' | 'notification'

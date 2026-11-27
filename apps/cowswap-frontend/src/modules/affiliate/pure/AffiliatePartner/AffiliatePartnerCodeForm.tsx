@@ -3,7 +3,7 @@ import { KeyboardEvent, ReactNode, useCallback, useId } from 'react'
 import { CopyButton, HelpTooltip, UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
+import { Plural, Trans } from '@lingui/react/macro'
 import { RotateCw } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -45,6 +45,16 @@ interface AffiliatePartnerCodeFormProps extends AffiliatePartnerCodeFormRefInput
 }
 
 type AffiliatePartnerCodeFormRefInputProps = Omit<RefCodeInputProps, 'disabled' | 'isLoading' | 'hasError'>
+
+const CODE_TOO_SHORT = (
+  <Plural
+    value={REF_CODE_MIN_LENGTH}
+    one="The code must be at least # character long."
+    few="The code must be at least # characters long."
+    many="The code must be at least # characters long."
+    other="The code must be at least # characters long."
+  />
+)
 
 export function AffiliatePartnerCodeForm({
   availability,
@@ -123,7 +133,7 @@ export function AffiliatePartnerCodeForm({
             <StatusText $variant="error">
               {/* we only check the lower limit because the upper limit is enforced by the input */}
               {inputValue && inputValue.length < REF_CODE_MIN_LENGTH ? (
-                <Trans>The code must be at least {REF_CODE_MIN_LENGTH} characters long.</Trans>
+                CODE_TOO_SHORT
               ) : (
                 <Trans>Only A-Z, 0-9, dashes, and underscores are allowed.</Trans>
               )}

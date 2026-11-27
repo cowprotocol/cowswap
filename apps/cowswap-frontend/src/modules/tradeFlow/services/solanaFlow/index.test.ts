@@ -1,20 +1,50 @@
-import { TokenWithLogo } from '@cowprotocol/common-const'
-import { OrderKind, SigningScheme, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { NATIVE_CURRENCIES, TOKEN_2022_TAG, TokenWithLogo } from '@cowprotocol/common-const'
+import { captureError, ERROR_TYPES } from '@cowprotocol/common-utils'
+import { jotaiStore } from '@cowprotocol/core'
+import {
+  LATEST_APP_DATA_VERSION,
+  OrderBookApiError,
+  OrderClass,
+  OrderKind,
+  SigningScheme,
+  SupportedChainId,
+} from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
+import { postSolanaSponsoredOrder } from '@cowprotocol/sdk-trading-solana'
 import { UiOrderType } from '@cowprotocol/types'
 
+import { TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { Connection, PublicKey } from '@solana/web3.js'
+import {
+  solanaOrderNotPlacedAtom,
+  solanaSigningAbandonedAtom,
+  solanaSigningDeadlineAtom,
+  SolanaSigningDeadlineState,
+  solanaSigningWindowExpiredAtom,
+} from 'entities/trade'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
+import { type AppDataInfo, uploadAppDataDocOrderbookApi } from 'modules/appData'
 import { emitPostedOrderEvent } from 'modules/orders'
+import { tradeConfirmStateAtom } from 'modules/trade'
+import {
+  getIsBuyAtaCreationSkipped,
+  planCreateBuyAtaStep,
+} from 'modules/trade/services/solanaFlow/planCreateBuyAtaStep'
+import { planCreateLimitOrderStep } from 'modules/trade/services/solanaFlow/planCreateLimitOrderStep'
 import { planCreateOrderStep } from 'modules/trade/services/solanaFlow/planCreateOrderStep'
 import { planDelegateStep } from 'modules/trade/services/solanaFlow/planDelegateStep'
 import { planWrapStep } from 'modules/trade/services/solanaFlow/planWrapStep'
 import { sendSolanaFlow } from 'modules/trade/services/solanaFlow/sendSolanaFlow'
+import { signSolanaFlow } from 'modules/trade/services/solanaFlow/signSolanaFlow'
 import { SolanaFlowStep } from 'modules/trade/services/solanaFlow/types'
+import { estimateSolanaSigningDeadline } from 'modules/trade/services/solanaSend/estimateSolanaSigningDeadline'
 import * as addPendingOrderStepModule from 'modules/trade/utils/addPendingOrderStep'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
+
+import { USER_SWAP_REJECTED_ERROR } from 'common/utils/getSwapErrorMessage'
+import { toKeccak256 } from 'common/utils/toKeccak256'
 
 import { SolanaTradeFlowContext } from '../../types/TradeFlowContext'
 
@@ -24,33 +54,96 @@ import type { Provider as SolanaProvider } from '@reown/appkit-adapter-solana/re
 
 jest.mock('modules/trade/utils/addPendingOrderStep')
 jest.mock('modules/orders', () => ({ emitPostedOrderEvent: jest.fn() }))
+jest.mock('modules/appData/services', () => ({ uploadAppDataDocOrderbookApi: jest.fn() }))
+jest.mock('@cowprotocol/common-utils', () => ({
+  ...jest.requireActual('@cowprotocol/common-utils'),
+  captureError: jest.fn(),
+}))
 
 // The step planners are unit-tested on their own; mocking them here keeps this a test of the flow's
 // composition, and keeps the real instruction builders (which need ed25519 curve math jsdom can't run)
 // out of this suite.
 jest.mock('modules/trade/services/solanaFlow/sendSolanaFlow', () => ({ sendSolanaFlow: jest.fn() }))
+jest.mock('modules/trade/services/solanaFlow/signSolanaFlow', () => {
+  class SigningWindowClosedError extends Error {}
+
+  return {
+    signSolanaFlow: jest.fn(),
+    SigningWindowClosedError,
+    getSigningWindowClosedError: () =>
+      new SigningWindowClosedError('The signing window closed before the transaction was signed. Please try again.'),
+  }
+})
+jest.mock('modules/trade/services/solanaSend/estimateSolanaSigningDeadline', () => ({
+  estimateSolanaSigningDeadline: jest.fn(),
+}))
+jest.mock('@cowprotocol/sdk-trading-solana', () => ({
+  ...jest.requireActual('@cowprotocol/sdk-trading-solana'),
+  postSolanaSponsoredOrder: jest.fn(),
+  SolanaTradingSdk: jest.fn(),
+}))
 jest.mock('modules/trade/services/solanaFlow/planWrapStep', () => ({ planWrapStep: jest.fn() }))
 jest.mock('modules/trade/services/solanaFlow/planDelegateStep', () => ({ planDelegateStep: jest.fn() }))
+jest.mock('modules/trade/services/solanaFlow/planCreateBuyAtaStep', () => ({
+  planCreateBuyAtaStep: jest.fn(),
+  getIsBuyAtaCreationSkipped: jest.fn(),
+}))
 jest.mock('modules/trade/services/solanaFlow/planCreateOrderStep', () => ({ planCreateOrderStep: jest.fn() }))
+jest.mock('modules/trade/services/solanaFlow/planCreateLimitOrderStep', () => ({ planCreateLimitOrderStep: jest.fn() }))
 
 const mockSendSolanaFlow = sendSolanaFlow as jest.MockedFunction<typeof sendSolanaFlow>
+const mockSignSolanaFlow = signSolanaFlow as jest.MockedFunction<typeof signSolanaFlow>
 const mockPlanWrapStep = planWrapStep as jest.MockedFunction<typeof planWrapStep>
 const mockPlanDelegateStep = planDelegateStep as jest.MockedFunction<typeof planDelegateStep>
+const mockPlanCreateBuyAtaStep = planCreateBuyAtaStep as jest.MockedFunction<typeof planCreateBuyAtaStep>
+const mockGetIsBuyAtaCreationSkipped = getIsBuyAtaCreationSkipped as jest.MockedFunction<
+  typeof getIsBuyAtaCreationSkipped
+>
 const mockPlanCreateOrderStep = planCreateOrderStep as jest.MockedFunction<typeof planCreateOrderStep>
+const mockPlanCreateLimitOrderStep = planCreateLimitOrderStep as jest.MockedFunction<typeof planCreateLimitOrderStep>
 const mockEmitPostedOrderEvent = emitPostedOrderEvent as jest.MockedFunction<typeof emitPostedOrderEvent>
+const mockEstimateSolanaSigningDeadline = estimateSolanaSigningDeadline as jest.MockedFunction<
+  typeof estimateSolanaSigningDeadline
+>
+const mockPostSolanaSponsoredOrder = postSolanaSponsoredOrder as jest.MockedFunction<typeof postSolanaSponsoredOrder>
+const mockUploadAppData = uploadAppDataDocOrderbookApi as jest.MockedFunction<typeof uploadAppDataDocOrderbookApi>
+const mockCaptureError = captureError as jest.MockedFunction<typeof captureError>
 
 // Canonical Solana System Program address (32 zero bytes) — always a syntactically
 // valid Solana pubkey, used here as a stand-in "connected account".
 const SOLANA_ACCOUNT = '11111111111111111111111111111111'
+const RECEIVER_ADDRESS = '5k75h1UBx8gJp6kTkPcbkgAgPmrPBiLHLLXmzMfVsBEZ'
+// The flow's own freshly-resolved receiver — deliberately distinct from RECEIVER_ADDRESS (the quote's,
+// possibly-stale one) so tests can tell which one a given code path actually used. Must be a real,
+// parseable base58 pubkey: `solanaFlow` now passes it through `new PublicKey(...)` for limit orders.
+const RESOLVED_RECEIVER_ADDRESS = new PublicKey(new Uint8Array(32).fill(6)).toBase58()
+// A real Squads vault. jsdom's crypto shim breaks `findProgramAddressSync`, so the PDA is written out
+// rather than derived; the test asserts it really is off the curve.
+const VAULT_OWNER = new PublicKey('D9DvzXZjyqECswED5YgHi4wA1qTVjjiGP76sN6Dr8vGE')
+// The back end's rotating sponsor account, reported by the quote.
+const FUNDER_ADDRESS = new PublicKey(new Uint8Array(32).fill(8)).toBase58()
 const SOLANA_CHAIN_ID = SupportedChainId.SOLANA
 const TX_HASH = 'tx-signature-abc'
 const SELL_AMOUNT = 1_000_000_000n
 
-const step = (summary: string): SolanaFlowStep => ({ instructions: [], summary })
+const step = (summary: string): SolanaFlowStep => ({ instructions: [], summary, fundedAccounts: [] })
 const WRAP_STEP = step('Wrap 1 SOL')
 const DELEGATE_STEP = step('Approve WSOL')
+const BUY_ATA_STEP = step('Create USDC account')
 const ORDER_STEP = step('Swap SOL for USDC')
 const ORDER_ID = '0xdeadbeef'
+// Deliberately different from solanaQuote.intent's amounts (1_000_000n/1_900_000n) and from each other:
+// a limit order's actually-signed price must never be confused with the market quote's or with a swap's.
+const MARKET_SIGNED_SELL_AMOUNT = 1_000_000n
+const MARKET_SIGNED_BUY_AMOUNT = 1_900_000n
+const LIMIT_SIGNED_SELL_AMOUNT = 5_000_000n
+const LIMIT_SIGNED_BUY_AMOUNT = 12_000_000n
+// The buy account each path's signed intent names. A swap keeps the quoted one; a limit order rebuilds
+// the intent against its own receiver and so names a different account. Distinct here so a test can tell
+// which intent reached the buy-ATA step. Written out rather than derived: jsdom's crypto shim breaks
+// `findProgramAddressSync`, so these stand in for the associated token addresses they represent.
+const QUOTED_BUY_TOKEN_ACCOUNT = new PublicKey(new Uint8Array(32).fill(10))
+const LIMIT_BUY_TOKEN_ACCOUNT = new PublicKey(new Uint8Array(32).fill(11))
 
 const wsol = new TokenWithLogo(
   undefined,
@@ -61,6 +154,30 @@ const wsol = new TokenWithLogo(
   'Wrapped SOL',
 )
 const usdc = new Token(SOLANA_CHAIN_ID, 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', 6, 'USDC')
+const token2022Sell = new TokenWithLogo(
+  undefined,
+  SOLANA_CHAIN_ID,
+  '9Pq7aLAbhDG2tTnS22cm6kuysZVcZpLFE368HWuypump',
+  6,
+  'JOB',
+  'DogWifJob',
+  [TOKEN_2022_TAG],
+)
+
+const APP_DATA: AppDataInfo = {
+  doc: { version: LATEST_APP_DATA_VERSION, appCode: 'CoW Swap', metadata: {} },
+  fullAppData: '{}',
+  appDataKeccak256: toKeccak256('{}'),
+}
+// What each planner signs: a swap the SDK's merged doc, a limit order the app's own hash. They differ, so a
+// test can tell which one reached the upload.
+const MARKET_FULL_APP_DATA = JSON.stringify({
+  appCode: 'CoW Swap',
+  metadata: { utm: { utmSource: 'cowmunity' } },
+  version: LATEST_APP_DATA_VERSION,
+})
+const MARKET_APP_DATA_HEX = toKeccak256(MARKET_FULL_APP_DATA)
+const LIMIT_APP_DATA_HEX = APP_DATA.appDataKeccak256
 const outputAmount = CurrencyAmount.fromRawAmount(usdc, '150000000')
 // The quote always reports its sellToken as WSOL, even for a native sell — see `getSolanaSellToken`.
 const inputAmount = CurrencyAmount.fromRawAmount(wsol, SELL_AMOUNT.toString())
@@ -76,31 +193,60 @@ function buildAnalytics(): TradeFlowAnalytics {
   }
 }
 
-function buildContext({ isNativeSell = true, delegationAmount = SELL_AMOUNT } = {}): SolanaTradeFlowContext {
+function buildContext({
+  isNativeSell = true,
+  delegationAmount = SELL_AMOUNT,
+  orderClass = OrderClass.MARKET,
+  buyAmount = outputAmount,
+  quoteBuyToken = usdc.address,
+  quoteReceiver = RECEIVER_ADDRESS,
+  owner = new PublicKey(SOLANA_ACCOUNT),
+  sellToken = wsol,
+  buyTokenProgramId = TOKEN_PROGRAM_ID,
+}: {
+  isNativeSell?: boolean
+  delegationAmount?: bigint
+  orderClass?: OrderClass
+  buyAmount?: CurrencyAmount<Token>
+  quoteBuyToken?: string
+  quoteReceiver?: string
+  owner?: PublicKey
+  sellToken?: TokenWithLogo
+  buyTokenProgramId?: PublicKey
+} = {}): SolanaTradeFlowContext {
   return {
-    account: SOLANA_ACCOUNT,
+    account: owner.toBase58(),
     isNativeSell,
     solanaQuote: {
       uid: new Uint8Array(32).fill(7),
       orderPda: new PublicKey(new Uint8Array(32).fill(4)),
       programId: new PublicKey(new Uint8Array(32).fill(5)),
-      intent: { owner: new PublicKey(SOLANA_ACCOUNT) },
+      // Post-slippage amounts: these are what gets signed on chain, and what the stored order must carry.
+      intent: {
+        owner: new PublicKey(SOLANA_ACCOUNT),
+        sellAmount: 1_000_000n,
+        buyAmount: 1_900_000n,
+        buyTokenAccount: QUOTED_BUY_TOKEN_ACCOUNT,
+      },
+      buyTokenProgramId,
+      funder: FUNDER_ADDRESS,
     } as unknown as SolanaTradeFlowContext['solanaQuote'],
     solana: {
       connection: {} as Connection,
       provider: {} as SolanaProvider,
-      owner: new PublicKey(SOLANA_ACCOUNT),
+      owner,
     },
-    sellToken: wsol,
+    sellToken,
     sellAmount: SELL_AMOUNT,
     currentDelegation: 0n,
     delegationAmount,
+    appData: APP_DATA,
     tradeQuote: {
       quoteResults: {
         quoteResponse: {
           quote: {
             sellToken: wsol.address,
-            buyToken: usdc.address,
+            buyToken: quoteBuyToken,
             receiver: null,
             sellAmount: SELL_AMOUNT.toString(),
             buyAmount: outputAmount.quotient.toString(),
@@ -111,16 +257,21 @@ function buildContext({ isNativeSell = true, delegationAmount = SELL_AMOUNT } = 
             partiallyFillable: false,
           },
         },
+        // The receiver the quote derived `intent.buyTokenAccount` from — the buy-ATA step must use this
+        // one, not `context.receiver`, or it would name an account the order does not credit.
+        tradeParameters: { receiver: quoteReceiver },
       },
       postSwapOrderFromQuote: jest.fn(),
     } as unknown as SolanaTradeFlowContext['tradeQuote'],
     context: {
       chainId: SOLANA_CHAIN_ID,
       inputAmount,
-      outputAmount,
+      outputAmount: buyAmount,
       orderKind: OrderKind.SELL,
       validTo: Math.floor(Date.now() / 1000) + 600,
-      receiver: 'ReceiverSolanaAddress1111111111111111111111',
+      receiver: RESOLVED_RECEIVER_ADDRESS,
+      orderClass,
+      partiallyFillable: false,
     },
     callbacks: {
       closeModals: jest.fn(),
@@ -134,8 +285,9 @@ function buildContext({ isNativeSell = true, delegationAmount = SELL_AMOUNT } = 
       onOpen: jest.fn(),
       requestPermitSignature: jest.fn(),
       onDismiss: jest.fn(),
+      setConfirming: jest.fn(),
     },
-    swapFlowAnalyticsContext: {
+    tradeFlowAnalyticsContext: {
       account: SOLANA_ACCOUNT,
       orderType: UiOrderType.SWAP,
       marketLabel: 'SOL,USDC',
@@ -147,27 +299,68 @@ function sentSteps(): SolanaFlowStep[] {
   return mockSendSolanaFlow.mock.calls[0][1]
 }
 
-describe('solanaFlow', () => {
-  beforeEach(() => {
-    jest.clearAllMocks()
-    mockSendSolanaFlow.mockResolvedValue({ hash: TX_HASH })
-    mockPlanWrapStep.mockReturnValue(WRAP_STEP)
-    mockPlanDelegateStep.mockReturnValue(DELEGATE_STEP)
-    mockPlanCreateOrderStep.mockResolvedValue({
-      step: ORDER_STEP,
-      orderId: ORDER_ID,
-      signingScheme: SigningScheme.PRESIGN,
-    })
+const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms))
+const tick = (): Promise<void> => sleep(0)
+
+/** Stands in for an unanswered wallet prompt: the flow stays pending until the test rejects it. */
+function deferRejection(): { promise: Promise<never>; reject(error: Error): void } {
+  let reject: (error: Error) => void = () => undefined
+  const promise = new Promise<never>((_, rejectPromise) => {
+    reject = rejectPromise
   })
 
-  it('bundles wrap, delegate and create-order into a single transaction', async () => {
+  return { promise, reject: (error) => reject(error) }
+}
+
+/** A prompt that is never answered at all — the state a retry sits in while the test runs. */
+const neverSettles = (): Promise<never> => new Promise<never>(() => undefined)
+
+beforeEach(() => {
+  jest.clearAllMocks()
+  mockSendSolanaFlow.mockResolvedValue({ hash: TX_HASH })
+  mockSignSolanaFlow.mockResolvedValue({
+    transaction: 'signed-tx',
+    signedAtMs: Date.now(),
+  })
+  // The estimate never resolves by default, matching tests that need no countdown; cases that need a
+  // deadline resolve it explicitly.
+  mockEstimateSolanaSigningDeadline.mockImplementation(() => neverSettles())
+  mockPostSolanaSponsoredOrder.mockResolvedValue(undefined as never)
+  mockUploadAppData.mockResolvedValue(undefined)
+  mockPlanWrapStep.mockReturnValue(WRAP_STEP)
+  mockPlanDelegateStep.mockReturnValue(DELEGATE_STEP)
+  mockPlanCreateBuyAtaStep.mockReturnValue(BUY_ATA_STEP)
+  mockGetIsBuyAtaCreationSkipped.mockReturnValue(false)
+  mockPlanCreateOrderStep.mockResolvedValue({
+    step: ORDER_STEP,
+    orderId: ORDER_ID,
+    signingScheme: SigningScheme.PRESIGN,
+    appData: MARKET_APP_DATA_HEX,
+    fullAppData: MARKET_FULL_APP_DATA,
+    sellAmount: MARKET_SIGNED_SELL_AMOUNT,
+    buyAmount: MARKET_SIGNED_BUY_AMOUNT,
+    intent: { buyTokenAccount: QUOTED_BUY_TOKEN_ACCOUNT },
+  })
+  mockPlanCreateLimitOrderStep.mockResolvedValue({
+    step: ORDER_STEP,
+    orderId: ORDER_ID,
+    signingScheme: SigningScheme.PRESIGN,
+    appData: LIMIT_APP_DATA_HEX,
+    sellAmount: LIMIT_SIGNED_SELL_AMOUNT,
+    buyAmount: LIMIT_SIGNED_BUY_AMOUNT,
+    intent: { buyTokenAccount: LIMIT_BUY_TOKEN_ACCOUNT },
+  })
+})
+
+describe('solanaFlow', () => {
+  it('bundles wrap, delegate, buy-ATA and create-order into a single transaction', async () => {
     const context = buildContext({ isNativeSell: true })
 
     const result = await solanaFlow(context, buildAnalytics())
 
     expect(result).toBe(true)
     expect(mockSendSolanaFlow).toHaveBeenCalledTimes(1)
-    expect(sentSteps()).toEqual([WRAP_STEP, DELEGATE_STEP, ORDER_STEP])
+    expect(sentSteps()).toEqual([WRAP_STEP, DELEGATE_STEP, BUY_ATA_STEP, ORDER_STEP])
   })
 
   it('passes the full sell amount to the wrap planner for a native SOL sell', async () => {
@@ -200,13 +393,49 @@ describe('solanaFlow', () => {
     expect(mockPlanWrapStep).toHaveBeenCalledWith(expect.objectContaining({ sellAmount: 0n }))
   })
 
-  it('drops steps the planners skip', async () => {
+  it('drops steps the planners skip, but still creates the buy account', async () => {
     mockPlanWrapStep.mockReturnValue(null)
     mockPlanDelegateStep.mockReturnValue(null)
 
     await solanaFlow(buildContext(), buildAnalytics())
 
-    expect(sentSteps()).toEqual([ORDER_STEP])
+    // Without the flag the buy-ATA step has no skip condition: the instruction is idempotent, so including
+    // it unconditionally is cheaper than an RPC existence check and immune to the account appearing mid-flight.
+    expect(sentSteps()).toEqual([BUY_ATA_STEP, ORDER_STEP])
+  })
+
+  it('creates the buy account for the receiver the quote used, not the one resolved for the order', async () => {
+    const context = buildContext()
+
+    await solanaFlow(context, buildAnalytics())
+
+    const [{ payer, receiver, quote }] = mockPlanCreateBuyAtaStep.mock.calls[0]
+    expect(receiver.toBase58()).toBe(RECEIVER_ADDRESS)
+    expect(receiver.toBase58()).not.toBe(context.context.receiver)
+    expect(payer.toBase58()).toBe(SOLANA_ACCOUNT)
+    expect(quote.intent.buyTokenAccount).toEqual(QUOTED_BUY_TOKEN_ACCOUNT)
+    expect(quote.buyTokenProgramId).toBe(context.solanaQuote.buyTokenProgramId)
+  })
+
+  // A limit order never quotes (planCreateLimitOrderStep derives its own buyTokenAccount straight from
+  // context.receiver — see its params), so the buy-ATA the transaction actually creates has to target the
+  // same receiver, or the order's signed intent points at an ATA that was never created and settlement
+  // fails with something like `InvalidAccountData`. The quote's own receiver is stale/irrelevant here.
+  it('creates the buy account for the resolved receiver, not the stale quote receiver, for a limit order', async () => {
+    const context = buildContext({ orderClass: OrderClass.LIMIT })
+
+    await solanaFlow(context, buildAnalytics())
+
+    const [{ payer, receiver, quote }] = mockPlanCreateBuyAtaStep.mock.calls[0]
+    expect(receiver.toBase58()).toBe(context.context.receiver)
+    expect(receiver.toBase58()).not.toBe(RECEIVER_ADDRESS)
+    expect(payer.toBase58()).toBe(SOLANA_ACCOUNT)
+    // The account the rebuilt intent names, never the quoted one: the associated token program rejects a
+    // create whose address is not the named receiver's, which would fail the whole bundle.
+    expect(quote.intent.buyTokenAccount).toEqual(LIMIT_BUY_TOKEN_ACCOUNT)
+    expect(quote.intent.buyTokenAccount).not.toEqual(context.solanaQuote.intent.buyTokenAccount)
+    // Both decisions read the same intent, so the skip check can never disagree with what was created.
+    expect(mockGetIsBuyAtaCreationSkipped).toHaveBeenCalledWith(expect.objectContaining({ quote }))
   })
 
   it('never posts the order from the quote', async () => {
@@ -215,6 +444,27 @@ describe('solanaFlow', () => {
     await solanaFlow(context, buildAnalytics())
 
     expect(context.tradeQuote.postSwapOrderFromQuote).not.toHaveBeenCalled()
+  })
+
+  // A native-SOL buy is priced against WSOL (`toSplMint` in getSolanaQuote) while the order credits
+  // lamports, so the quote response and the order disagree on the buy mint. `useGetExecutedBridgeSummary`
+  // reads a `buyToken` that differs from `outputToken` as a bridge intermediate token and labels the
+  // surplus with it, which showed "Surplus 0.0032 WSOL" on an order that paid out native SOL.
+  it('stores the buy token the order credits, not the one the quote was priced in', async () => {
+    const nativeSol = NATIVE_CURRENCIES[SOLANA_CHAIN_ID]
+    const context = buildContext({
+      buyAmount: CurrencyAmount.fromRawAmount(nativeSol, '150000000'),
+      quoteBuyToken: wsol.address,
+    })
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({
+        order: expect.objectContaining({ buyToken: nativeSol.address, outputToken: nativeSol }),
+      }),
+      expect.anything(),
+    )
   })
 
   it('adds a pending order and reports success', async () => {
@@ -239,14 +489,189 @@ describe('solanaFlow', () => {
           // deadline picked after quoting is missing from the order until indexing replaces it.
           receiver: context.context.receiver,
           validTo: context.context.validTo,
+          // Amounts come from the planner's actually-signed intent, not the quote directly: the quote's
+          // are pre-slippage, so using them would show a limit price the on-chain order does not have.
+          sellAmount: MARKET_SIGNED_SELL_AMOUNT.toString(),
+          buyAmount: MARKET_SIGNED_BUY_AMOUNT.toString(),
+          sellAmountBeforeFee: MARKET_SIGNED_SELL_AMOUNT.toString(),
         }),
       }),
       context.callbacks.dispatch,
     )
     expect(context.tradeConfirmActions.onSuccess).toHaveBeenCalledWith(ORDER_ID)
     expect(context.tradeConfirmActions.onError).not.toHaveBeenCalled()
-    expect(analytics.trade).toHaveBeenCalledWith(context.swapFlowAnalyticsContext)
-    expect(analytics.sign).toHaveBeenCalledWith(context.swapFlowAnalyticsContext)
+    expect(analytics.trade).toHaveBeenCalledWith(context.tradeFlowAnalyticsContext)
+    expect(analytics.sign).toHaveBeenCalledWith(context.tradeFlowAnalyticsContext)
+  })
+
+  // The quote's own OrderParameters.appData is a meaningless stub for Solana (ZERO_APP_DATA in
+  // getSolanaQuote.ts) — the local order has to carry what the planner actually signed instead, the same
+  // way it already overrides sellAmount/buyAmount/receiver/validTo from the signed intent, not the quote.
+  it("records the market planner's actually-signed appData on the local order, not the quote's stub", async () => {
+    const context = buildContext({ orderClass: OrderClass.MARKET })
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ order: expect.objectContaining({ appData: MARKET_APP_DATA_HEX }) }),
+      expect.anything(),
+    )
+  })
+
+  it("records the limit planner's actually-signed appData on the local order, not the quote's stub", async () => {
+    const context = buildContext({ orderClass: OrderClass.LIMIT })
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ order: expect.objectContaining({ appData: LIMIT_APP_DATA_HEX }) }),
+      expect.anything(),
+    )
+  })
+
+  // Regression test: the local order previously always read sellAmount/buyAmount from
+  // `solanaQuote.intent` (the market quote's own amounts) regardless of order class, so a limit order's
+  // Redux/localStorage entry showed the market-implied price instead of the price the user entered and
+  // actually signed on-chain — even though the on-chain order itself was correct.
+  it("records the limit planner's actually-signed sellAmount/buyAmount on the local order, not the market quote's", async () => {
+    const context = buildContext({ orderClass: OrderClass.LIMIT })
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({
+        order: expect.objectContaining({
+          sellAmount: LIMIT_SIGNED_SELL_AMOUNT.toString(),
+          buyAmount: LIMIT_SIGNED_BUY_AMOUNT.toString(),
+          sellAmountBeforeFee: LIMIT_SIGNED_SELL_AMOUNT.toString(),
+        }),
+      }),
+      expect.anything(),
+    )
+  })
+
+  // The bundle carrying the SPL delegation is only submitted by the order book once a solver wins, so
+  // the orders table has to know not to read the delegation from chain while the order waits — otherwise
+  // every pending sponsored order is labelled unfillable.
+  it('marks the local order as sponsored', async () => {
+    mockSignSolanaFlow.mockResolvedValue({ transaction: 'base64-tx', signedAtMs: Date.now() })
+
+    await solanaFlow(buildContext(), buildAnalytics(), { isSponsored: true })
+
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ order: expect.objectContaining({ isSponsored: true }) }),
+      expect.anything(),
+    )
+  })
+
+  // The wrap lives in the same deferred bundle, so the orders table needs to know the sold WSOL does
+  // not exist yet and the native balance is what backs the order.
+  it('records whether a sponsored order is a native sell', async () => {
+    mockSignSolanaFlow.mockResolvedValue({ transaction: 'base64-tx', signedAtMs: Date.now() })
+
+    await solanaFlow(buildContext({ isNativeSell: true }), buildAnalytics(), { isSponsored: true })
+
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ order: expect.objectContaining({ isNativeSell: true }) }),
+      expect.anything(),
+    )
+  })
+
+  it('records an SPL sell as not native', async () => {
+    await solanaFlow(buildContext({ isNativeSell: false }), buildAnalytics())
+
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ order: expect.objectContaining({ isNativeSell: false }) }),
+      expect.anything(),
+    )
+  })
+
+  it('does not mark a self-paid order as sponsored', async () => {
+    await solanaFlow(buildContext(), buildAnalytics())
+
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ order: expect.objectContaining({ isSponsored: false }) }),
+      expect.anything(),
+    )
+  })
+
+  // A vault's order only reaches the chain nested in `VaultTransactionExecute`, while sponsored
+  // placement needs the funder as fee payer and `CreateOrder` top-level — the order book rejects the
+  // combination as `WrongFeePayer`. Self-paid is the path such an owner can actually complete.
+  it('places self-paid for a smart contract wallet owner, even with sponsoring on', async () => {
+    mockSignSolanaFlow.mockResolvedValue({ transaction: 'base64-tx', signedAtMs: Date.now() })
+
+    expect(PublicKey.isOnCurve(VAULT_OWNER.toBytes())).toBe(false)
+
+    await solanaFlow(buildContext({ owner: VAULT_OWNER }), buildAnalytics(), { isSponsored: true })
+
+    expect(mockSignSolanaFlow).not.toHaveBeenCalled()
+    expect(mockPostSolanaSponsoredOrder).not.toHaveBeenCalled()
+    expect(mockSendSolanaFlow).toHaveBeenCalled()
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ order: expect.objectContaining({ isSponsored: false }) }),
+      expect.anything(),
+    )
+  })
+
+  it('sets the local order class from context.orderClass (LIMIT)', async () => {
+    const context = buildContext({ orderClass: OrderClass.LIMIT })
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({
+        order: expect.objectContaining({ class: OrderClass.LIMIT }),
+      }),
+      expect.anything(),
+    )
+  })
+
+  it('sets the local order class from context.orderClass (MARKET)', async () => {
+    const context = buildContext({ orderClass: OrderClass.MARKET })
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({
+        order: expect.objectContaining({ class: OrderClass.MARKET }),
+      }),
+      expect.anything(),
+    )
+  })
+
+  // A limit order never quotes for its price: planCreateLimitOrderStep takes only the raw intent fields,
+  // so its amounts can never silently become whatever the market happened to be at quote time.
+  it('dispatches a limit order to planCreateLimitOrderStep with the raw intent fields, not the quote planner', async () => {
+    const context = buildContext({ orderClass: OrderClass.LIMIT })
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(mockPlanCreateLimitOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({
+        ownerAddress: context.account,
+        receiverAddress: context.context.receiver,
+        sellTokenAddress: context.context.inputAmount.currency.address,
+        buyTokenAddress: context.context.outputAmount.currency.address,
+        sellAmount: BigInt(context.context.inputAmount.quotient.toString()),
+        buyAmount: BigInt(context.context.outputAmount.quotient.toString()),
+        kind: context.context.orderKind,
+        validTo: context.context.validTo,
+        partiallyFillable: context.context.partiallyFillable,
+      }),
+    )
+    expect(mockPlanCreateOrderStep).not.toHaveBeenCalled()
+  })
+
+  it('dispatches a market order to planCreateOrderStep (the quote-priced planner), not the limit one', async () => {
+    const context = buildContext({ orderClass: OrderClass.MARKET })
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(mockPlanCreateOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ quoteResults: context.tradeQuote.quoteResults, solanaQuote: context.solanaQuote }),
+    )
+    expect(mockPlanCreateLimitOrderStep).not.toHaveBeenCalled()
   })
 
   it('emits the posted-order event so the rich "Order submitted" snackbar shows, not the raw tx summary', async () => {
@@ -259,7 +684,7 @@ describe('solanaFlow', () => {
       id: ORDER_ID,
       owner: context.account,
       kind: context.context.orderKind,
-      uiOrderType: context.swapFlowAnalyticsContext.orderType,
+      uiOrderType: context.tradeFlowAnalyticsContext.orderType,
       receiver: context.context.receiver,
       inputAmount: context.context.inputAmount,
       outputAmount: context.context.outputAmount,
@@ -280,5 +705,712 @@ describe('solanaFlow', () => {
     expect(context.tradeConfirmActions.onSuccess).not.toHaveBeenCalled()
     expect(context.tradeConfirmActions.onError).toHaveBeenCalled()
     expect(analytics.error).toHaveBeenCalled()
+  })
+
+  // After the signing window expires the wallet prompt is still open; rejecting it then is the
+  // expected retry path, so the user lands back on the review screen instead of the error modal.
+  it('returns to the review screen when a rejection arrives after the signing window closed', async () => {
+    jotaiStore.set(tradeConfirmStateAtom, { ...jotaiStore.get(tradeConfirmStateAtom), isOpen: true })
+    mockSendSolanaFlow.mockImplementation(async () => {
+      jotaiStore.set(solanaSigningAbandonedAtom, true)
+      throw new Error('User rejected the request')
+    })
+    const context = buildContext()
+
+    const result = await solanaFlow(context, buildAnalytics())
+
+    expect(result).toBeUndefined()
+    expect(context.tradeConfirmActions.onError).not.toHaveBeenCalled()
+    expect(context.tradeConfirmActions.onOpen).toHaveBeenCalled()
+
+    jotaiStore.set(tradeConfirmStateAtom, { ...jotaiStore.get(tradeConfirmStateAtom), isOpen: false })
+  })
+
+  // The user may reject the stale prompt long after leaving the trade modal; a silent rejection
+  // must not pop the modal back open.
+  it('stays silent on a late rejection when the trade modal is already closed', async () => {
+    mockSendSolanaFlow.mockImplementation(async () => {
+      jotaiStore.set(solanaSigningAbandonedAtom, true)
+      throw new Error('User rejected the request')
+    })
+    const context = buildContext()
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(context.tradeConfirmActions.onError).not.toHaveBeenCalled()
+    expect(context.tradeConfirmActions.onOpen).not.toHaveBeenCalled()
+  })
+
+  // Only a rejection gets the soft return: any other failure after the window closed still needs a
+  // screen — the expired one, since the user already watched the countdown reach 00:00.
+  it('shows the expired screen when a non-rejection failure arrives after the window closed', async () => {
+    mockSendSolanaFlow.mockImplementation(async () => {
+      jotaiStore.set(solanaSigningAbandonedAtom, true)
+      throw new Error('The signing window closed before the transaction was signed. Please try again.')
+    })
+    const context = buildContext()
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(context.tradeConfirmActions.onError).toHaveBeenCalled()
+    expect(context.tradeConfirmActions.onOpen).not.toHaveBeenCalled()
+    expect(jotaiStore.get(solanaSigningWindowExpiredAtom)).toEqual({
+      inputAmount: context.context.inputAmount,
+      outputAmount: context.context.outputAmount,
+    })
+  })
+
+  // A hung prompt from an earlier attempt can reject while a newer attempt is already running; the
+  // stale flow must not repaint the UI the newer one owns. This path never has a deadline to go by,
+  // so the attempt itself has to be recognised as stale.
+  it('touches no UI when a stale flow fails while a newer attempt is running', async () => {
+    const staleSign = deferRejection()
+    mockSendSolanaFlow.mockImplementationOnce(() => staleSign.promise)
+    const staleContext = buildContext()
+    const staleRun = solanaFlow(staleContext, buildAnalytics())
+    await tick()
+
+    mockSendSolanaFlow.mockImplementationOnce(() => neverSettles())
+    void solanaFlow(buildContext(), buildAnalytics())
+    await tick()
+
+    staleSign.reject(new Error('User rejected the request'))
+    await staleRun
+
+    expect(staleContext.tradeConfirmActions.onError).not.toHaveBeenCalled()
+    expect(staleContext.tradeConfirmActions.onOpen).not.toHaveBeenCalled()
+  })
+})
+
+describe('solanaFlow · appData', () => {
+  const signMismatchedAppData = (): void => {
+    const planned = {
+      step: ORDER_STEP,
+      orderId: ORDER_ID,
+      signingScheme: SigningScheme.PRESIGN,
+      appData: '0x' + 'cc'.repeat(32),
+      fullAppData: MARKET_FULL_APP_DATA,
+      sellAmount: MARKET_SIGNED_SELL_AMOUNT,
+      buyAmount: MARKET_SIGNED_BUY_AMOUNT,
+      feePayer: new PublicKey(SOLANA_ACCOUNT),
+      intent: { buyTokenAccount: QUOTED_BUY_TOKEN_ACCOUNT },
+    }
+    mockPlanCreateOrderStep.mockResolvedValue(planned)
+    mockPlanCreateLimitOrderStep.mockResolvedValue(planned)
+  }
+
+  it("signs the app's appData doc into a swap", async () => {
+    await solanaFlow(buildContext({ orderClass: OrderClass.MARKET }), buildAnalytics())
+
+    expect(mockPlanCreateOrderStep).toHaveBeenCalledWith(expect.objectContaining({ appDataDoc: APP_DATA.doc }))
+  })
+
+  it("signs the app's appData hash into a limit order", async () => {
+    await solanaFlow(buildContext({ orderClass: OrderClass.LIMIT }), buildAnalytics())
+
+    expect(mockPlanCreateLimitOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ appDataHash: APP_DATA.appDataKeccak256 }),
+    )
+  })
+
+  it('registers the full appData under the signed hash before sending the transaction', async () => {
+    await solanaFlow(buildContext({ orderClass: OrderClass.LIMIT }), buildAnalytics())
+
+    expect(mockUploadAppData).toHaveBeenCalledWith({
+      appDataKeccak256: LIMIT_APP_DATA_HEX,
+      fullAppData: APP_DATA.fullAppData,
+      chainId: SOLANA_CHAIN_ID,
+    })
+    expect(mockUploadAppData.mock.invocationCallOrder[0]).toBeLessThan(mockSendSolanaFlow.mock.invocationCallOrder[0])
+  })
+
+  it("registers and records the SDK's merged doc for a swap, which is what it signed", async () => {
+    await solanaFlow(buildContext({ orderClass: OrderClass.MARKET }), buildAnalytics())
+
+    expect(mockUploadAppData).toHaveBeenCalledWith({
+      appDataKeccak256: MARKET_APP_DATA_HEX,
+      fullAppData: MARKET_FULL_APP_DATA,
+      chainId: SOLANA_CHAIN_ID,
+    })
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ order: expect.objectContaining({ fullAppData: MARKET_FULL_APP_DATA }) }),
+      expect.anything(),
+    )
+  })
+
+  it.each([false, true])(
+    'opens no wallet prompt for an attempt retried past during its upload (sponsored: %s)',
+    async (isSponsored) => {
+      let finishStaleUpload: () => void = () => undefined
+      mockUploadAppData.mockImplementationOnce(
+        () =>
+          new Promise<void>((resolve) => {
+            finishStaleUpload = resolve
+          }),
+      )
+      const staleContext = buildContext()
+      const staleRun = solanaFlow(staleContext, buildAnalytics(), { isSponsored })
+      await tick()
+
+      await solanaFlow(buildContext(), buildAnalytics(), { isSponsored })
+      finishStaleUpload()
+      await staleRun
+
+      const walletPrompt = isSponsored ? mockSignSolanaFlow : mockSendSolanaFlow
+      expect(walletPrompt).toHaveBeenCalledTimes(1)
+      expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledTimes(1)
+      expect(staleContext.tradeConfirmActions.onSuccess).not.toHaveBeenCalled()
+      expect(staleContext.tradeConfirmActions.onError).not.toHaveBeenCalled()
+    },
+  )
+
+  it('places nothing when the appData cannot be registered', async () => {
+    mockUploadAppData.mockRejectedValue(new Error('AppDataHashMismatch'))
+    const context = buildContext()
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(mockSendSolanaFlow).not.toHaveBeenCalled()
+    expect(addPendingOrderStepModule.addPendingOrderStep).not.toHaveBeenCalled()
+    expect(context.tradeConfirmActions.onError).toHaveBeenCalled()
+    expect(jotaiStore.get(solanaOrderNotPlacedAtom)).not.toBeNull()
+  })
+
+  it.each([OrderClass.MARKET, OrderClass.LIMIT])(
+    'places nothing and registers nothing when the signed appData does not match the doc (%s)',
+    async (orderClass) => {
+      signMismatchedAppData()
+      const context = buildContext({ orderClass })
+
+      await solanaFlow(context, buildAnalytics())
+
+      expect(mockUploadAppData).not.toHaveBeenCalled()
+      expect(mockSendSolanaFlow).not.toHaveBeenCalled()
+      expect(addPendingOrderStepModule.addPendingOrderStep).not.toHaveBeenCalled()
+      expect(context.tradeConfirmActions.onError).toHaveBeenCalled()
+      expect(jotaiStore.get(solanaOrderNotPlacedAtom)).not.toBeNull()
+    },
+  )
+
+  it('reports a signed appData mismatch to Sentry with the doc that failed to hash', async () => {
+    signMismatchedAppData()
+
+    await solanaFlow(buildContext({ orderClass: OrderClass.MARKET }), buildAnalytics())
+
+    expect(mockCaptureError).toHaveBeenCalledWith(
+      expect.objectContaining({ name: 'SolanaOrderSubmissionError' }),
+      ERROR_TYPES.ON_SWAP,
+      expect.objectContaining({ reason: 'app-data-mismatch', fullAppData: MARKET_FULL_APP_DATA }),
+      expect.objectContaining({ scope: 'SolanaOrder' }),
+      ['SolanaOrder', 'app-data-mismatch'],
+    )
+  })
+
+  it('tags a failure that follows an earlier one, and forgets it after a success', async () => {
+    const run = (): Promise<boolean | void> =>
+      solanaFlow(buildContext({ orderClass: OrderClass.MARKET }), buildAnalytics())
+    const lastFollowsFailure = (): string | undefined => {
+      const { calls } = mockCaptureError.mock
+
+      return calls[calls.length - 1]?.[3]?.followsFailure
+    }
+
+    // The flag lives for the page session, not the test, so start from a success to clear it.
+    await run()
+
+    mockUploadAppData.mockRejectedValueOnce(new Error('boom'))
+    await run()
+    expect(lastFollowsFailure()).toBe('false')
+
+    mockUploadAppData.mockRejectedValueOnce(new Error('boom'))
+    await run()
+    expect(lastFollowsFailure()).toBe('true')
+
+    await run()
+    mockUploadAppData.mockRejectedValueOnce(new Error('boom'))
+    await run()
+    expect(lastFollowsFailure()).toBe('false')
+  })
+
+  it('records the full appData on the local order, so its type is read from it', async () => {
+    await solanaFlow(buildContext({ orderClass: OrderClass.LIMIT }), buildAnalytics())
+
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ order: expect.objectContaining({ fullAppData: APP_DATA.fullAppData }) }),
+      expect.anything(),
+    )
+  })
+})
+// Both of the intent's associated token accounts have to be derived with the mint's own token program:
+// a Token-2022 mint derived as classic SPL names an address the associated token program rejects
+// ("Provided seeds do not result in a valid address"), and the delegate step approves a different account.
+describe('solanaFlow · token programs', () => {
+  it.each([
+    ['a Token-2022 sell mint', token2022Sell, TOKEN_2022_PROGRAM_ID],
+    ['a classic SPL sell mint', wsol, TOKEN_PROGRAM_ID],
+  ])("passes %s's token program to the limit planner", async (_label, sellToken, expectedProgramId) => {
+    const context = buildContext({ orderClass: OrderClass.LIMIT, sellToken })
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(mockPlanCreateLimitOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ sellTokenProgramId: expectedProgramId }),
+    )
+  })
+
+  it.each([
+    ['a Token-2022 buy mint', token2022Sell, TOKEN_2022_PROGRAM_ID],
+    ['a classic SPL buy mint', usdc, TOKEN_PROGRAM_ID],
+  ])("derives %s's buy account with the selected token's program", async (_label, buyToken, expectedProgramId) => {
+    const context = buildContext({
+      orderClass: OrderClass.LIMIT,
+      buyAmount: CurrencyAmount.fromRawAmount(buyToken, '150000000'),
+      // The quote disagrees on purpose: its ids come from a token-list lookup that answers "classic SPL"
+      // for a mint the list has not loaded yet, and the intent must not inherit that.
+      buyTokenProgramId: TOKEN_PROGRAM_ID,
+    })
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(mockPlanCreateLimitOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ buyTokenProgramId: expectedProgramId }),
+    )
+    // The same value the buy-ATA step creates the account with, so the two can never disagree.
+    expect(mockPlanCreateBuyAtaStep).toHaveBeenCalledWith(
+      expect.objectContaining({ quote: expect.objectContaining({ buyTokenProgramId: expectedProgramId }) }),
+    )
+  })
+
+  // A swap keeps the quote's intent, whose buy account the SDK already derived with the quote's program.
+  // Creating that account with any other program names a different address, which the ATA program rejects.
+  it("creates a swap's buy account with the program that derived the quoted intent", async () => {
+    const context = buildContext({
+      orderClass: OrderClass.MARKET,
+      buyAmount: CurrencyAmount.fromRawAmount(token2022Sell, '150000000'),
+      buyTokenProgramId: TOKEN_PROGRAM_ID,
+    })
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(mockPlanCreateBuyAtaStep).toHaveBeenCalledWith(
+      expect.objectContaining({ quote: expect.objectContaining({ buyTokenProgramId: TOKEN_PROGRAM_ID }) }),
+    )
+  })
+})
+
+describe('solanaFlow · buy account creation', () => {
+  it('leaves the account to the driver when it creates it at settle', async () => {
+    mockGetIsBuyAtaCreationSkipped.mockReturnValue(true)
+    mockPlanCreateBuyAtaStep.mockReturnValue(null)
+
+    const context = buildContext()
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(mockGetIsBuyAtaCreationSkipped).toHaveBeenCalledWith({
+      quote: { intent: { buyTokenAccount: QUOTED_BUY_TOKEN_ACCOUNT }, buyTokenProgramId: TOKEN_PROGRAM_ID },
+      owner: context.solana.owner,
+      receiver: undefined,
+    })
+    expect(mockPlanCreateBuyAtaStep).toHaveBeenCalledWith(expect.objectContaining({ isCreationSkipped: true }))
+    expect(sentSteps()).toEqual([WRAP_STEP, DELEGATE_STEP, ORDER_STEP])
+  })
+
+  it('keeps the creation step when the account is the bundle’s own to create', async () => {
+    await solanaFlow(buildContext(), buildAnalytics())
+
+    expect(mockPlanCreateBuyAtaStep).toHaveBeenCalledWith(expect.objectContaining({ isCreationSkipped: false }))
+  })
+})
+
+describe('solanaFlow · order not placed', () => {
+  const KEYRING_ERROR = 'An unknown error occurred while handling the keyring (v2) request'
+
+  // Nothing reached the network, so the screen may state that outright and keep the wallet's own
+  // unreadable wording under "technical details".
+  it('routes a failure before the hand-over to the order-not-placed screen', async () => {
+    const logs = ['Program log: CreateIdempotent', 'Program log: Error: Associated address does not match seed']
+    mockSendSolanaFlow.mockRejectedValue(Object.assign(new Error(KEYRING_ERROR), { logs }))
+    const context = buildContext()
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(context.tradeConfirmActions.onError).toHaveBeenCalled()
+    expect(jotaiStore.get(solanaOrderNotPlacedAtom)).toEqual({
+      tradeAmounts: { inputAmount: context.context.inputAmount, outputAmount: context.context.outputAmount },
+      errorMessage: KEYRING_ERROR,
+      logs,
+      isSquadsSetupRequired: false,
+    })
+  })
+
+  // Elena's repro: the wallet answers a prompt whose countdown already ran out and reports it as an
+  // unreadable internal failure. The expired window is the explanation, so it wins over this copy.
+  it('prefers the expired screen when the countdown had already run out', async () => {
+    mockSendSolanaFlow.mockImplementation(async () => {
+      jotaiStore.set(solanaSigningAbandonedAtom, true)
+      throw new Error(KEYRING_ERROR)
+    })
+    const context = buildContext()
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(jotaiStore.get(solanaSigningWindowExpiredAtom)).toEqual({
+      inputAmount: context.context.inputAmount,
+      outputAmount: context.context.outputAmount,
+    })
+    expect(jotaiStore.get(solanaOrderNotPlacedAtom)).toBeNull()
+  })
+
+  // The wallet refuses every order until the SquadsX key is a proposer on the Squad, and its own
+  // wording gives the user nothing to act on.
+  it('flags a SquadsX key that is not a proposer so the screen can explain the setup step', async () => {
+    mockSendSolanaFlow.mockRejectedValue(new Error('this extension is not an active proposer on the selected multisig'))
+
+    await solanaFlow(buildContext(), buildAnalytics())
+
+    expect(jotaiStore.get(solanaOrderNotPlacedAtom)).toEqual(expect.objectContaining({ isSquadsSetupRequired: true }))
+  })
+
+  // Cancelling is a decision, not a failure: "Transaction checks failed" would be a lie about it.
+  it('keeps a deliberate rejection on its own message instead of the order-not-placed screen', async () => {
+    mockSendSolanaFlow.mockRejectedValue(new Error('User rejected the request'))
+    const context = buildContext()
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(context.tradeConfirmActions.onError).toHaveBeenCalledWith(USER_SWAP_REJECTED_ERROR)
+    expect(jotaiStore.get(solanaOrderNotPlacedAtom)).toBeNull()
+  })
+})
+
+describe('solanaFlow · sponsored', () => {
+  /**
+   * Replays the retry the countdown screen is built around: the first prompt is left unanswered past
+   * its window, the user cancels back to the review screen and confirms again, and only then does the
+   * wallet deliver the stale prompt's answer. Returns the abandoned attempt, still pending.
+   */
+  async function startStaleAttemptUnderRetry(params: {
+    staleDeadline: SolanaSigningDeadlineState
+    /** null = the retry's own estimate is still in flight, so it has published no countdown. */
+    retryDeadline: SolanaSigningDeadlineState | null
+  }): Promise<{ context: SolanaTradeFlowContext; run: Promise<boolean | void>; reject(error: Error): void }> {
+    const staleSign = deferRejection()
+    mockEstimateSolanaSigningDeadline.mockResolvedValueOnce(params.staleDeadline)
+    mockSignSolanaFlow.mockImplementationOnce(async (signContext) => {
+      signContext.onDeadline?.(1_234)
+
+      return staleSign.promise
+    })
+    const context = buildContext()
+    const run = solanaFlow(context, buildAnalytics(), { isSponsored: true })
+    await tick()
+
+    jotaiStore.set(solanaSigningAbandonedAtom, true)
+    jotaiStore.set(solanaSigningDeadlineAtom, null)
+
+    if (params.retryDeadline) {
+      mockEstimateSolanaSigningDeadline.mockResolvedValueOnce(params.retryDeadline)
+    } else {
+      mockEstimateSolanaSigningDeadline.mockImplementationOnce(() => neverSettles())
+    }
+    mockSignSolanaFlow.mockImplementationOnce(async (signContext) => {
+      signContext.onDeadline?.(1_234)
+
+      return neverSettles()
+    })
+    void solanaFlow(buildContext(), buildAnalytics(), { isSponsored: true })
+    await tick()
+
+    return { context, run, reject: staleSign.reject }
+  }
+
+  // The settle in postSponsoredBundle runs whenever a hung attempt finally gets its wallet answer;
+  // by then the deadline atom holds a NEWER attempt's live countdown, which must survive.
+  it("leaves a newer attempt's live countdown untouched when a stale attempt settles", async () => {
+    const retryDeadline = { expiresAt: Date.now() + 30_000, durationMs: 30_000 }
+    const stale = await startStaleAttemptUnderRetry({
+      staleDeadline: { expiresAt: Date.now() + 50, durationMs: 30_000 },
+      retryDeadline,
+    })
+
+    stale.reject(new Error('User rejected the request'))
+    await stale.run
+
+    expect(jotaiStore.get(solanaSigningDeadlineAtom)).toBe(retryDeadline)
+    expect(stale.context.tradeConfirmActions.onError).not.toHaveBeenCalled()
+    expect(stale.context.tradeConfirmActions.onOpen).not.toHaveBeenCalled()
+
+    jotaiStore.set(solanaSigningDeadlineAtom, null)
+  })
+
+  // An estimate resolving after its attempt was retried past belongs to a dead prompt; painted, it
+  // would stomp the newer attempt's screen — even a live-looking window lies about WHICH transaction
+  // it counts down for.
+  it("drops a stale attempt's late deadline estimate instead of painting it over the retry", async () => {
+    let resolveStaleEstimate: (deadline: SolanaSigningDeadlineState) => void = () => undefined
+    mockEstimateSolanaSigningDeadline.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          resolveStaleEstimate = resolve
+        }),
+    )
+    mockSignSolanaFlow.mockImplementationOnce(async (signContext) => {
+      signContext.onDeadline?.(1_234)
+
+      return neverSettles()
+    })
+    void solanaFlow(buildContext(), buildAnalytics(), { isSponsored: true })
+    await tick()
+
+    mockSignSolanaFlow.mockImplementationOnce(async (signContext) => {
+      signContext.onDeadline?.(1_234)
+
+      return neverSettles()
+    })
+    void solanaFlow(buildContext(), buildAnalytics(), { isSponsored: true })
+    await tick()
+
+    resolveStaleEstimate({ expiresAt: Date.now() + 30_000, durationMs: 30_000 })
+    await tick()
+
+    expect(jotaiStore.get(solanaSigningDeadlineAtom)).toBeNull()
+  })
+
+  // The estimate can resolve pathologically late (a rate-limited RPC retrying for a minute): by then
+  // its window may already be over, and painting it would open the countdown straight onto 00:00.
+  it('skips an estimate that is already expired when it resolves, leaving the countdown off', async () => {
+    mockEstimateSolanaSigningDeadline.mockResolvedValueOnce({ expiresAt: Date.now() - 1_000, durationMs: 30_000 })
+    mockSignSolanaFlow.mockImplementationOnce(async (signContext) => {
+      signContext.onDeadline?.(1_234)
+
+      return neverSettles()
+    })
+
+    void solanaFlow(buildContext(), buildAnalytics(), { isSponsored: true })
+    await tick()
+    await tick()
+
+    expect(jotaiStore.get(solanaSigningDeadlineAtom)).toBeNull()
+  })
+
+  // The retry owns the screen from its very first line, long before its own deadline estimate lands —
+  // and never gets one at all when that estimate fails. Recognising the stale attempt cannot depend
+  // on the newer one having published a countdown.
+  it('touches no UI when a stale flow fails before the newer attempt has a deadline', async () => {
+    const stale = await startStaleAttemptUnderRetry({
+      staleDeadline: { expiresAt: Date.now() + 50, durationMs: 30_000 },
+      retryDeadline: null,
+    })
+
+    stale.reject(new Error('User rejected the request'))
+    await stale.run
+
+    expect(jotaiStore.get(solanaSigningDeadlineAtom)).toBeNull()
+    expect(stale.context.tradeConfirmActions.onError).not.toHaveBeenCalled()
+    expect(stale.context.tradeConfirmActions.onOpen).not.toHaveBeenCalled()
+  })
+
+  // The post-sign RPC round-trip must count against nobody: a signature given inside the window is
+  // valid even when the height read resolves after the window closed.
+  it('posts a signature given in time even when the post-sign check outlives the window', async () => {
+    // Both margins are wall-clock: the window has to be wide enough that a loaded runner still records
+    // the signature inside it, and the read has to finish past it for the test to mean anything.
+    mockEstimateSolanaSigningDeadline.mockResolvedValueOnce({ expiresAt: Date.now() + 500, durationMs: 30_000 })
+    mockSignSolanaFlow.mockImplementationOnce(async (signContext) => {
+      signContext.onDeadline?.(1_234)
+      await tick()
+      const signedAtMs = Date.now()
+      // The height read drags past the deadline while the signature is already in hand.
+      await sleep(700)
+
+      return { transaction: 'signed-tx', signedAtMs }
+    })
+
+    const result = await solanaFlow(buildContext(), buildAnalytics(), { isSponsored: true })
+
+    expect(result).toBe(true)
+    expect(mockPostSolanaSponsoredOrder).toHaveBeenCalledTimes(1)
+  })
+
+  // Without this the settlement has no wallet to create the payout account for, and placement refuses
+  // the order as unreceivable — the custom-recipient failure the field exists to fix.
+  it('names the wallet the buy token account belongs to when it is not the owner', async () => {
+    await solanaFlow(buildContext(), buildAnalytics(), { isSponsored: true })
+
+    expect(mockPostSolanaSponsoredOrder).toHaveBeenCalledWith(
+      expect.objectContaining({ receiver: RECEIVER_ADDRESS }),
+      expect.anything(),
+    )
+  })
+
+  // Naming the owner means the same to placement as naming nobody. Undefined keeps it off the wire:
+  // the order book serializes the body with JSON.stringify, which drops them.
+  it('names no receiver when the payout goes to the owner', async () => {
+    await solanaFlow(buildContext({ quoteReceiver: SOLANA_ACCOUNT }), buildAnalytics(), { isSponsored: true })
+
+    expect(mockPostSolanaSponsoredOrder).toHaveBeenCalledTimes(1)
+    expect(mockPostSolanaSponsoredOrder.mock.calls[0]?.[0].receiver).toBeUndefined()
+  })
+
+  // The real blockhash usually outlives the shown window (the estimate is capped), so the chain-level
+  // check alone happily passes a signature the screen already told the user to abandon.
+  it('never posts a signature the wallet approved after the shown window closed', async () => {
+    // Live when painted, over by the time the wallet answers.
+    const shortDeadline = { expiresAt: Date.now() + 50, durationMs: 30_000 }
+    mockEstimateSolanaSigningDeadline.mockResolvedValue(shortDeadline)
+    mockSignSolanaFlow.mockImplementation(async (signContext) => {
+      signContext.onDeadline?.(1_234)
+      await sleep(80)
+
+      return { transaction: 'signed-too-late', signedAtMs: Date.now() }
+    })
+    const context = buildContext()
+
+    const result = await solanaFlow(context, buildAnalytics(), { isSponsored: true })
+
+    expect(result).toBeUndefined()
+    expect(mockPostSolanaSponsoredOrder).not.toHaveBeenCalled()
+    expect(context.tradeConfirmActions.onSuccess).not.toHaveBeenCalled()
+    expect(context.tradeConfirmActions.onError).toHaveBeenCalledWith(
+      expect.stringContaining('The signing window closed'),
+    )
+    // The error screen renders its own copy and the amounts the confirm state has already dropped.
+    expect(jotaiStore.get(solanaSigningWindowExpiredAtom)).toEqual({
+      inputAmount: context.context.inputAmount,
+      outputAmount: context.context.outputAmount,
+    })
+  })
+
+  // The countdown hands over optimistically, so a signature given near the boundary is caught by the
+  // order book rather than locally. Same dead blockhash, so it has to reach the same screen.
+  it('routes the order book rejecting the blockhash to the expired screen too', async () => {
+    mockPostSolanaSponsoredOrder.mockRejectedValueOnce(
+      new OrderBookApiError({ statusText: 'Bad Request' } as Response, {
+        errorType: 'BlockhashExpired',
+        description: 'blockhash expired',
+      }),
+    )
+    const context = buildContext()
+
+    const result = await solanaFlow(context, buildAnalytics(), { isSponsored: true })
+
+    expect(result).toBeUndefined()
+    expect(addPendingOrderStepModule.addPendingOrderStep).not.toHaveBeenCalled()
+    expect(context.tradeConfirmActions.onError).toHaveBeenCalled()
+    expect(jotaiStore.get(solanaSigningWindowExpiredAtom)).toEqual({
+      inputAmount: context.context.inputAmount,
+      outputAmount: context.context.outputAmount,
+    })
+  })
+
+  it('leaves an unrelated order book rejection on the generic error screen', async () => {
+    mockPostSolanaSponsoredOrder.mockRejectedValueOnce(
+      new OrderBookApiError({ statusText: 'Bad Request' } as Response, {
+        errorType: 'InsufficientFee',
+        description: 'fee too low',
+      }),
+    )
+    const context = buildContext()
+
+    await solanaFlow(context, buildAnalytics(), { isSponsored: true })
+
+    expect(context.tradeConfirmActions.onError).toHaveBeenCalled()
+    expect(jotaiStore.get(solanaSigningWindowExpiredAtom)).toBeNull()
+  })
+
+  // The hand-over is where certainty ends: the order book may well have taken the bundle, so this
+  // failure must not reach a screen that promises nothing was submitted.
+  it('leaves a failure after the hand-over off the order-not-placed screen', async () => {
+    mockPostSolanaSponsoredOrder.mockRejectedValueOnce(
+      new OrderBookApiError({ statusText: 'Bad Request' } as Response, {
+        errorType: 'InsufficientFee',
+        description: 'fee too low',
+      }),
+    )
+
+    await solanaFlow(buildContext(), buildAnalytics(), { isSponsored: true })
+
+    expect(jotaiStore.get(solanaOrderNotPlacedAtom)).toBeNull()
+  })
+
+  // Approving a prompt the user already retried past must not place the abandoned order next to the
+  // new attempt's one — even while the abandoned window is formally still open.
+  it("never posts a stale attempt's signature approved after a retry started", async () => {
+    let approveStaleSign: () => void = () => undefined
+    mockEstimateSolanaSigningDeadline.mockResolvedValueOnce({ expiresAt: Date.now() + 30_000, durationMs: 30_000 })
+    mockSignSolanaFlow.mockImplementationOnce(async (signContext) => {
+      signContext.onDeadline?.(1_234)
+
+      return new Promise((resolve) => {
+        approveStaleSign = () => resolve({ transaction: 'stale-signed', signedAtMs: Date.now() })
+      })
+    })
+    const staleContext = buildContext()
+    const staleRun = solanaFlow(staleContext, buildAnalytics(), { isSponsored: true })
+    await tick()
+
+    mockSignSolanaFlow.mockImplementationOnce(async (signContext) => {
+      signContext.onDeadline?.(1_234)
+
+      return neverSettles()
+    })
+    void solanaFlow(buildContext(), buildAnalytics(), { isSponsored: true })
+    await tick()
+
+    approveStaleSign()
+    await staleRun
+
+    expect(mockPostSolanaSponsoredOrder).not.toHaveBeenCalled()
+    expect(staleContext.tradeConfirmActions.onSuccess).not.toHaveBeenCalled()
+    expect(staleContext.tradeConfirmActions.onError).not.toHaveBeenCalled()
+  })
+
+  // Once the wallet returns the signature the outcome no longer depends on the user, so a countdown
+  // ticking (and expiring) through the order book POST would be a lie.
+  it('clears the countdown at the signature, before the order book POST', async () => {
+    const deadline = { expiresAt: Date.now() + 40_000, durationMs: 40_000 }
+    mockEstimateSolanaSigningDeadline.mockResolvedValue(deadline)
+    mockSignSolanaFlow.mockImplementation(async (signContext) => {
+      signContext.onDeadline?.(1_234)
+      await tick()
+      expect(jotaiStore.get(solanaSigningDeadlineAtom)).toBe(deadline)
+
+      return { transaction: 'signed-tx', signedAtMs: Date.now() }
+    })
+    let deadlineAtPostTime: unknown = 'never-posted'
+    mockPostSolanaSponsoredOrder.mockImplementation(async () => {
+      deadlineAtPostTime = jotaiStore.get(solanaSigningDeadlineAtom)
+
+      return undefined as never
+    })
+
+    const result = await solanaFlow(buildContext(), buildAnalytics(), { isSponsored: true })
+
+    expect(result).toBe(true)
+    expect(deadlineAtPostTime).toBeNull()
+  })
+
+  it('routes a rejection that arrives after the window closed back to the review screen', async () => {
+    jotaiStore.set(tradeConfirmStateAtom, { ...jotaiStore.get(tradeConfirmStateAtom), isOpen: true })
+    // Live when painted, over by the time the wallet answers.
+    const shortDeadline = { expiresAt: Date.now() + 50, durationMs: 30_000 }
+    mockEstimateSolanaSigningDeadline.mockResolvedValue(shortDeadline)
+    mockSignSolanaFlow.mockImplementation(async (signContext) => {
+      signContext.onDeadline?.(1_234)
+      await sleep(80)
+
+      throw new Error('User rejected the request')
+    })
+    const context = buildContext()
+
+    await solanaFlow(context, buildAnalytics(), { isSponsored: true })
+
+    expect(context.tradeConfirmActions.onError).not.toHaveBeenCalled()
+    // `true` forces the "Price Updated" banner: the quote refreshed while the prompt was open.
+    expect(context.tradeConfirmActions.onOpen).toHaveBeenCalledWith(true)
+    expect(jotaiStore.get(solanaSigningDeadlineAtom)).toBeNull()
+
+    jotaiStore.set(tradeConfirmStateAtom, { ...jotaiStore.get(tradeConfirmStateAtom), isOpen: false })
   })
 })

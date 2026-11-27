@@ -24,6 +24,7 @@ export const TOKEN_SYMBOL_UNKNOWN = 'UNKNOWN'
 export enum Routes {
   HOME = '/',
   SOLVERS = '/solvers',
+  SOLVER_LOGOS = '/solver-logo-tool',
   APPDATA = '/appdata',
 }
 
@@ -48,3 +49,4 @@ export const SPECIAL_ADDRESSES: { [key: string]: string } = {
 }
 
 export const TAB_QUERY_PARAM_KEY = 'tab'
+export const TWAP_TAB_QUERY_VALUE = 'twap'

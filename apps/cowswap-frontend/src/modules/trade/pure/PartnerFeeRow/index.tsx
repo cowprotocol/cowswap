@@ -20,6 +20,7 @@ interface PartnerFeeRowProps {
   volumeFeeTooltip: VolumeFeeTooltip
   isLast?: boolean
   loading?: boolean
+  detailRowStyle?: boolean
   testId?: string
 }
 
@@ -31,6 +32,7 @@ export function PartnerFeeRow({
   volumeFeeTooltip,
   isLast = false,
   loading = false,
+  detailRowStyle = false,
   testId,
 }: PartnerFeeRowProps): ReactNode {
   const feeAsPercent = partnerFeeBps ? formatPercent(bpsToPercent(partnerFeeBps)) : null
@@ -38,7 +40,7 @@ export function PartnerFeeRow({
   const { t } = useLingui()
 
   if (!partnerFeeAmount || !partnerFeeBps || partnerFeeAmount.equalTo(0)) {
-    return <FreeFeeRow withTimelineDot={false} loading={loading} testId={testId} />
+    return <FreeFeeRow withTimelineDot={false} loading={loading} detailRowStyle={detailRowStyle} testId={testId} />
   }
 
   const label = volumeFeeTooltip.label
@@ -67,6 +69,7 @@ export function PartnerFeeRow({
       }
       isLast={isLast}
       loading={loading}
+      detailRowStyle={detailRowStyle}
       testId={testId}
     />
   )

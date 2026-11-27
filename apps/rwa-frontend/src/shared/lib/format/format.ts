@@ -1,0 +1,88 @@
+import { formatUnits } from 'viem'
+
+export const EMPTY_VALUE = '—'
+
+const MINUTES_PER_HOUR = 60
+const MINUTES_PER_DAY = 24 * MINUTES_PER_HOUR
+
+const usdFormatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+})
+
+const compactUsdFormatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  notation: 'compact',
+  // Node 22 ICU keeps the currency's 2-digit minimum under compact notation ("$526.00M")
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 2,
+})
+
+const tokenAmountFormatter = new Intl.NumberFormat('en-US', { maximumFractionDigits: 6 })
+
+// `en-GB` writes September as "Sept" in recent ICU, so the "14 Sep 2026" order is built from `en-US` parts
+const dateFormatter = new Intl.DateTimeFormat('en-US', {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+  timeZone: 'UTC',
+})
+
+export function formatCompactUsd(value: number | null | undefined): string {
+  return value === null || value === undefined ? EMPTY_VALUE : compactUsdFormatter.format(value)
+}
+
+/** `14 Sep 2026`, UTC */
+export function formatDate(isoDate: string | null | undefined): string {
+  const time = isoDate ? Date.parse(isoDate) : NaN
+
+  if (Number.isNaN(time)) return EMPTY_VALUE
+
+  const parts = Object.fromEntries(dateFormatter.formatToParts(time).map(({ type, value }) => [type, value]))
+
+  return `${parts.day} ${parts.month} ${parts.year}`
+}
+
+export function formatDuration(minutes: number): string {
+  if (minutes < MINUTES_PER_HOUR) return `${minutes} min`
+  if (minutes < MINUTES_PER_DAY) return `${Math.floor(minutes / MINUTES_PER_HOUR)}h`
+
+  return `${Math.floor(minutes / MINUTES_PER_DAY)}d`
+}
+
+export function formatPercent(value: number | null | undefined): string {
+  if (value === null || value === undefined) return EMPTY_VALUE
+
+  const sign = value > 0 ? '+' : ''
+
+  return `${sign}${value.toFixed(2)}%`
+}
+
+export function formatRange(low: number | null | undefined, high: number | null | undefined): string {
+  if (low === null || low === undefined || high === null || high === undefined) return EMPTY_VALUE
+
+  return `${formatUsd(low)} – ${formatUsd(high)}`
+}
+
+/** `atoms` is a decimal string of the token's smallest units */
+export function formatTokenAmount(atoms: string, decimals: number | null | undefined): string {
+  if (decimals === null || decimals === undefined) return EMPTY_VALUE
+
+  return tokenAmountFormatter.format(toTokenUnits(atoms, decimals))
+}
+
+export function formatUsd(value: number | null | undefined): string {
+  return value === null || value === undefined ? EMPTY_VALUE : usdFormatter.format(value)
+}
+
+export function shortenAddress(address: string): string {
+  return `${address.slice(0, 6)}…${address.slice(-4)}`
+}
+
+/** `atoms` is a decimal string of the token's smallest units */
+export function toTokenUnits(atoms: string, decimals: number): number {
+  return Number(formatUnits(BigInt(atoms), decimals))
+}

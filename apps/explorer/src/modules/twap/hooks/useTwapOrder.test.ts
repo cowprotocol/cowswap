@@ -1,6 +1,7 @@
 import { createElement, type ReactNode } from 'react'
 
-import { ALL_SUPPORTED_CHAIN_IDS, getAddressKey, isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { RELEASED_SUPPORTED_CHAIN_IDS } from '@cowprotocol/common-const'
+import { getAddressKey, isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { TwapOrder } from '@cowprotocol/sdk-composable'
 
 import { renderHook, waitFor } from '@testing-library/react'
@@ -99,7 +100,7 @@ describe('findTwapOrder', () => {
       chainId: targetChain,
       order: ORDER,
     })
-    expect(getTwapOrder).toHaveBeenCalledTimes(ALL_SUPPORTED_CHAIN_IDS.filter(isEvmChain).length)
+    expect(getTwapOrder).toHaveBeenCalledTimes(RELEASED_SUPPORTED_CHAIN_IDS.filter(isEvmChain).length)
   })
 
   it('stops after the selected-chain miss for direct links', async () => {
@@ -116,7 +117,7 @@ describe('findTwapOrder', () => {
     })
 
     await expect(findTwapOrder(EVENT_ID, SupportedChainId.GNOSIS_CHAIN, true)).resolves.toBeNull()
-    expect(getTwapOrder).toHaveBeenCalledTimes(ALL_SUPPORTED_CHAIN_IDS.filter(isEvmChain).length)
+    expect(getTwapOrder).toHaveBeenCalledTimes(RELEASED_SUPPORTED_CHAIN_IDS.filter(isEvmChain).length)
     expect(getTwapOrder).not.toHaveBeenCalledWith(expect.objectContaining({ chainId: SupportedChainId.SOLANA }))
   })
 

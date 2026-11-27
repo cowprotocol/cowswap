@@ -29,14 +29,24 @@ export function WrapNativeModal() {
 
   const operationLabel = isNativeIn ? t`Wrapping` : t`Unwrapping`
 
+  const sentAmount = <TokenAmount amount={sendAmount ?? inputCurrencyAmount} tokenSymbol={inputCurrency} />
+  const receivedAmount = receiveAmount ? (
+    <TokenAmount amount={receiveAmount} tokenSymbol={outputCurrency} />
+  ) : (
+    <TokenSymbol token={outputCurrency} />
+  )
+  const inputSymbol = <TokenSymbol token={inputCurrency} />
+
   const title = (
     <span>
-      {operationLabel} <TokenAmount amount={sendAmount ?? inputCurrencyAmount} tokenSymbol={inputCurrency} />{' '}
-      <Trans>to</Trans>{' '}
-      {receiveAmount ? (
-        <TokenAmount amount={receiveAmount} tokenSymbol={outputCurrency} />
+      {isNativeIn ? (
+        <Trans>
+          Wrapping {sentAmount} to {receivedAmount}
+        </Trans>
       ) : (
-        <TokenSymbol token={outputCurrency} />
+        <Trans>
+          Unwrapping {sentAmount} to {receivedAmount}
+        </Trans>
       )}
     </span>
   )
@@ -45,11 +55,7 @@ export function WrapNativeModal() {
     <ConfirmationPendingContent
       onDismiss={handleDismiss}
       title={title}
-      description={
-        <>
-          {operationLabel} <TokenSymbol token={inputCurrency} />
-        </>
-      }
+      description={isNativeIn ? <Trans>Wrapping {inputSymbol}</Trans> : <Trans>Unwrapping {inputSymbol}</Trans>}
       operationLabel={operationLabel.toLowerCase()}
     />
   )

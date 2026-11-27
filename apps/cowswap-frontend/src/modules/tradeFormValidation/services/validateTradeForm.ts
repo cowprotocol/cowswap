@@ -1,7 +1,8 @@
 import { getCurrencyAddress, getIsNativeToken, isFractionFalsy, isSellOrder } from '@cowprotocol/common-utils'
-import { areAddressesEqual, isEvmChain } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, isEvmChain, isSolanaChain } from '@cowprotocol/cow-sdk'
+import { isSolanaSmartContractWallet } from '@cowprotocol/sdk-trading-solana'
 
-import { getIsFastQuote, isQuoteExpired } from 'modules/tradeQuote'
+import { getAreAllQuotesReceived, getIsFastQuote, isQuoteExpired } from 'modules/tradeQuote'
 
 import { TradeType } from 'common/modules/tradeNavigation'
 import { getAddressValidationStrategy } from 'common/utils/addressValidation'
@@ -41,6 +42,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isCaptchaPending,
     isCaptchaRequired,
     swapMaximumSellAmount,
+    solanaNativeShortfall,
   } = context
 
   const {
@@ -66,8 +68,11 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   const { isLoading: isQuoteLoading, fetchParams } = tradeQuote
   const isFastQuote = getIsFastQuote(fetchParams)
+  const isLimitOrder = derivedTradeState.tradeType === TradeType.LIMIT_ORDER
+  const isQuoteRefreshing = !isLimitOrder && !getAreAllQuotesReceived(tradeQuote)
 
   const isXstockTradeBelowLimit = getIsXstockTradeBelowLimit(context)
+  const isWalletNotConnected = !isSwapUnsupported && !account
 
   const validations: TradeFormValidation[] = []
 
@@ -76,12 +81,14 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     validations.push(TradeFormValidation.BrowserOffline)
   }
 
-  if (customTokenError) {
-    validations.push(TradeFormValidation.CustomTokenError)
-  }
-
+  // Outranks customTokenError: its weekend notice tells the user to come back on Monday, which a
+  // geoblocked user never can.
   if (isRestrictedForCountry) {
     validations.push(TradeFormValidation.RestrictedForCountry)
+  }
+
+  if (customTokenError) {
+    validations.push(TradeFormValidation.CustomTokenError)
   }
 
   // Return early as these take precedence
@@ -128,7 +135,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     }
   }
 
-  if (!isSwapUnsupported && !account) {
+  if (isWalletNotConnected) {
     validations.push(
       isRestoringConnection ? TradeFormValidation.RestoringWallet : TradeFormValidation.WalletNotConnected,
     )
@@ -173,11 +180,19 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
     // For Swap, the balance must cover the slippage-inclusive maximum sell amount, not just the raw input
     // amount, otherwise the order could be unfillable if the price moves against the user up to slippage.
-    const balanceCheckAmount = swapMaximumSellAmount ?? inputCurrencyAmount
+    // Wrap/unwrap is 1:1 and never quoted, so a `swapMaximumSellAmount` there can only come from the previous
+    // pair's quote (quotes are keyed by the sell token) and must not be used.
+    const balanceCheckAmount = (isWrapUnwrap ? null : swapMaximumSellAmount) ?? inputCurrencyAmount
 
     if (inputCurrencyBalance && balanceCheckAmount && inputCurrencyBalance.lessThan(balanceCheckAmount)) {
       validations.push(TradeFormValidation.BalanceInsufficient)
     }
+  }
+
+  // Outside the `canPlaceOrderWithoutBalance` gate: a Solana limit order still pays the PDA rent and
+  // the fee at signing time. The hook is null on other chains and when the wallet isn't debited.
+  if (!!account && solanaNativeShortfall) {
+    validations.push(TradeFormValidation.SolanaInsufficientNativeBalance)
   }
 
   const isNonEvmBridging = isBridging && outputCurrency && !isEvmChain(outputCurrency.chainId)
@@ -187,13 +202,12 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
       validations.push(TradeFormValidation.RecipientNotSet)
     }
 
-    const strategy = getAddressValidationStrategy(isNonEvmBridging ? outputCurrency.chainId : undefined)
+    const strategy = getAddressValidationStrategy(isNonEvmBridging ? outputCurrency.chainId : inputCurrency?.chainId)
     const isRecipientAddress = Boolean(recipient && strategy.isValidAddress(recipient))
 
-    /**
-     * For bridging, recipient can be only an address (ENS is not supported)
-     */
-    const isRecipientValid = isBridging ? isRecipientAddress : recipientEnsAddress ? true : isRecipientAddress
+    // recipientEnsAddress can outlive a switch from an EVM chain to a non-ENS one (e.g. Solana)
+    const isEnsRecipientAllowed = !isBridging && strategy.supportsENS && !!recipientEnsAddress
+    const isRecipientValid = isRecipientAddress || isEnsRecipientAllowed
 
     if (recipient && !isRecipientValid) {
       validations.push(TradeFormValidation.RecipientInvalid)
@@ -203,11 +217,25 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
       validations.push(TradeFormValidation.RecipientNotConfirmed)
     }
 
+    // A program-derived recipient has no key pair, so the payout is only ever recoverable through the
+    // program that owns it — which nothing here can establish. Confirmed by hand, like the bridging one.
+    const isSolanaPdaRecipient =
+      !isBridging &&
+      !!inputCurrency &&
+      isSolanaChain(inputCurrency.chainId) &&
+      !!recipient &&
+      isRecipientValid &&
+      isSolanaSmartContractWallet(recipient)
+
+    if (isSolanaPdaRecipient && !isNonEvmReceiverConfirmed) {
+      validations.push(TradeFormValidation.RecipientNotConfirmed)
+    }
+
     if (isSwapUnsupported) {
       validations.push(TradeFormValidation.CurrencyNotSupported)
     }
 
-    if (isFastQuote || !tradeQuote.quote || (isBridging && tradeQuote.isLoading)) {
+    if (isFastQuote || !tradeQuote.quote || isQuoteRefreshing || (isBridging && tradeQuote.isLoading)) {
       validations.push(TradeFormValidation.QuoteLoading)
     }
 

@@ -24,10 +24,6 @@ jest.mock('../../components/orders/FilledProgress', () => ({
   FilledProgress: (): React.ReactNode => <span>FilledProgress</span>,
 }))
 
-jest.mock('../../components/orders/GasFeeDisplay', () => ({
-  GasFeeDisplay: (): React.ReactNode => <span>GasFeeDisplay</span>,
-}))
-
 jest.mock('../../components/orders/OrderPriceDisplay', () => ({
   OrderPriceDisplay: (): React.ReactNode => <span>OrderPriceDisplay</span>,
 }))

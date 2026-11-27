@@ -45,6 +45,14 @@ export const twapOrdersSettingsAtom = atomWithStorage<TwapOrdersSettingsState>(
   getJotaiIsolatedStorage(),
 )
 
+/** Keep at most two decimal places by cutting extra digits (`10.129` → `10.12`). */
+export function truncateSlippageToHundredths(slippageValue: number): number {
+  const [whole, fraction = ''] = slippageValue.toString().split('.')
+  const hundredths = fraction.slice(0, 2).padEnd(2, '0')
+
+  return Number(whole) * 100 + Number(hundredths)
+}
+
 export const updateTwapOrdersSettingsAtom = atom(null, (get, set, nextState: Partial<TwapOrdersSettingsState>) => {
   set(twapOrdersSettingsAtom, () => {
     const prevState = get(twapOrdersSettingsAtom)
@@ -57,7 +65,7 @@ export const twapOrderSlippageAtom = atom<Percent>((get) => {
   const { slippageValue } = get(twapOrdersSettingsAtom)
 
   return slippageValue != null
-    ? // Multiplying on 100 to allow decimals values (e.g 0.05)
-      new Percent(Math.round(slippageValue * 100), 10000)
+    ? // Hundredths allow two decimals (e.g. 0.05). Extra digits are truncated, not rounded.
+      new Percent(truncateSlippageToHundredths(slippageValue), 10000)
     : DEFAULT_TWAP_SLIPPAGE
 })

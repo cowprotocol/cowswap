@@ -182,4 +182,9 @@ export const LightButton = styled.button`
     border: 1px solid var(${UI.COLOR_PAPER_DARKER});
     background-color: transparent;
   }
+
+  &:focus-visible {
+    outline: none;
+    text-decoration: underline;
+  }
 `

@@ -125,12 +125,7 @@ test.describe('Cross-chain swaps', () => {
     await swapPage.page.goto(url)
   }
 
-  test('[CS-285] Cross-chain swap UI: accessible via Swap form @smoke', async ({
-    swapPage,
-    wallet,
-    mocks,
-    rpcProxy,
-  }) => {
+  test('[CS-285] Cross-chain swap UI: accessible via Swap form', async ({ swapPage, wallet, mocks, rpcProxy }) => {
     seedTrader(mocks, wallet, MAINNET, {
       balances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
       allowances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
@@ -164,7 +159,13 @@ test.describe('Cross-chain swaps', () => {
     await expect(swapPage.routePanel.bridgeStopTitle('Near Intents')).toBeVisible()
   })
 
-  test('[CS-286] Cross-chain swap: Near provider', async ({ swapPage, wallet, confirmModal, mocks, rpcProxy }) => {
+  test('[CS-286] Cross-chain swap: Near provider @smoke', async ({
+    swapPage,
+    wallet,
+    confirmModal,
+    mocks,
+    rpcProxy,
+  }) => {
     seedTrader(mocks, wallet, MAINNET, {
       balances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
       allowances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
@@ -207,18 +208,12 @@ test.describe('Cross-chain swaps', () => {
     await expect(swapPage.routePanel.bridgeMinToReceive()).toHaveAttribute('title', /.+/)
 
     const orderId = generateOrderId()
-    // Confirming a cross-chain swap needs two separate enable-waits + clicks
-    // (clickPrimaryAction, then confirmModal.confirm()) before the order actually posts — under a
-    // loaded CI runner that sequence alone can eat past the default 10s budget with no time left
-    // for the network round-trip, observed in CI as a false "no postOrder request observed"
-    // failure even though the trigger was still mid-flight. First bumped to 15s, then to 20s after
-    // CS-287 still timed out on CI with `clickPrimaryAction` alone taking ~15s on a loaded runner.
     await mocks.orders.expectOrderToBePosted({
       orderId,
       owner: wallet.address,
       timeoutMs: 20_000,
       trigger: async () => {
-        await swapPage.clickPrimaryAction()
+        await confirmModal.openWith(() => swapPage.clickPrimaryAction())
         await confirmModal.confirm()
       },
     })
@@ -228,7 +223,7 @@ test.describe('Cross-chain swaps', () => {
     // The swap leg settles and the progress modal moves on to bridging — full bridge-order
     // tracking (`PendingBridgeOrdersUpdater`'s deposit/status polling) is out of scope here (see
     // the module doc comment), so this is as far as the mocked flow goes.
-    await expect(swapPage.orderProgressBarModal).toContainText('Bridging to destination', { timeout: 15_000 })
+    await expect(swapPage.orderProgressBarModal).toContainText('Bridging to destination')
   })
 
   test('[CS-287] Cross-chain swap: Bungee provider @smoke', async ({
@@ -277,18 +272,12 @@ test.describe('Cross-chain swaps', () => {
     await expect(swapPage.routePanel.bridgeMinToReceive()).toHaveAttribute('title', /.+/)
 
     const orderId = generateOrderId()
-    // Confirming a cross-chain swap needs two separate enable-waits + clicks
-    // (clickPrimaryAction, then confirmModal.confirm()) before the order actually posts — under a
-    // loaded CI runner that sequence alone can eat past the default 10s budget with no time left
-    // for the network round-trip, observed in CI as a false "no postOrder request observed"
-    // failure even though the trigger was still mid-flight. First bumped to 15s, then to 20s after
-    // CS-287 still timed out on CI with `clickPrimaryAction` alone taking ~15s on a loaded runner.
     await mocks.orders.expectOrderToBePosted({
       orderId,
       owner: wallet.address,
       timeoutMs: 20_000,
       trigger: async () => {
-        await swapPage.clickPrimaryAction()
+        await confirmModal.openWith(() => swapPage.clickPrimaryAction())
         await confirmModal.confirm()
       },
     })
@@ -298,7 +287,7 @@ test.describe('Cross-chain swaps', () => {
     // The swap leg settles and the progress modal moves on to bridging — full bridge-order
     // tracking (`PendingBridgeOrdersUpdater`'s deposit/status polling) is out of scope here (see
     // the module doc comment), so this is as far as the mocked flow goes.
-    await expect(swapPage.orderProgressBarModal).toContainText('Bridging to destination', { timeout: 15_000 })
+    await expect(swapPage.orderProgressBarModal).toContainText('Bridging to destination')
   })
 
   test('[CS-297] Cross-chain: ETH-flow source — native ETH sent cross-chain @smoke', async ({
@@ -410,7 +399,7 @@ test.describe('Cross-chain swaps', () => {
     // Same CI-load headroom as the `expectOrderToBePosted` calls above: the preceding
     // `clickSwap()`/`confirmModal.confirm()` pair alone was observed taking close to the default
     // 10s budget on a loaded runner, leaving the poll no room to ever see a sent value.
-    await expect.poll(() => ethFlow.getSentValue(), { timeout: 20_000 }).toBe(parseUnits('0.1', 18))
+    await expect.poll(() => ethFlow.getSentValue()).toBe(parseUnits('0.1', 18))
     ethFlow.confirmMined()
     orderIndexed = true
 
@@ -438,14 +427,13 @@ test.describe('Cross-chain swaps', () => {
     // The swap leg settles and the progress modal moves on to bridging — full bridge-order
     // tracking (`PendingBridgeOrdersUpdater`'s deposit/status polling) is out of scope here (see
     // the module doc comment), so this is as far as the mocked flow goes.
-    await expect(swapPage.orderProgressBarModal).toContainText('Bridging to destination', { timeout: 15_000 })
+    await expect(swapPage.orderProgressBarModal).toContainText('Bridging to destination')
   })
 
-  test('[CS-299] Cross-chain: swap to Solana — SOL or SPL token as destination @smoke', async ({
+  test('[CS-299] Cross-chain: swap to Solana — SOL or SPL token as destination', async ({
     swapPage,
     wallet,
     mocks,
-    context,
     rpcProxy,
   }) => {
     seedTrader(mocks, wallet, MAINNET, {
@@ -454,12 +442,6 @@ test.describe('Cross-chain swaps', () => {
     })
     await configureProviders(mocks, rpcProxy, 'near-intents')
     await mocks.launchDarkly.setFlag('isSolBridgeEnabled', true)
-    // Distinct from the LaunchDarkly-style flag above: `IS_SOLANA_ENABLED` is a plain localStorage
-    // switch (`libs/common-const/src/featureFlags.ts`) gating whether Solana even has a
-    // `CHAIN_INFO` entry to begin with — without it, `useSupportedTargetChains` has the flag on but
-    // nothing to look up, and Solana still can't appear as a destination chain.
-    await context.addInitScript(() => localStorage.setItem('IS_SOLANA_ENABLED', '1'))
-
     await wallet.openApp({ chainId: MAINNET, sell: USDC_MAINNET })
     await swapPage.unlockIfNeeded()
     await swapPage.enterSellAmount('100')
@@ -508,12 +490,7 @@ test.describe('Cross-chain swaps', () => {
     await expect(swapPage.primaryActionButton).toBeEnabled()
   })
 
-  test('[CS-301] Cross-chain: swap to Bitcoin — BTC as destination @smoke', async ({
-    swapPage,
-    wallet,
-    mocks,
-    rpcProxy,
-  }) => {
+  test('[CS-301] Cross-chain: swap to Bitcoin — BTC as destination', async ({ swapPage, wallet, mocks, rpcProxy }) => {
     seedTrader(mocks, wallet, MAINNET, {
       balances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
       allowances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },

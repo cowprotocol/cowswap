@@ -1,4 +1,4 @@
-import { Media, UI } from '@cowprotocol/ui'
+import { INPUT_MIN_HEIGHT_PX, Media, UI } from '@cowprotocol/ui'
 
 import styled, { css } from 'styled-components/macro'
 
@@ -39,7 +39,7 @@ export const ErrorText = styled.div<{ type?: 'error' | 'warning' }>`
 `
 
 export const TradeWidgetFieldBox = styled.div<{ hasPrefix?: boolean }>`
-  --minHeight: 45px;
+  --minHeight: ${INPUT_MIN_HEIGHT_PX}px;
   background: ${({ hasPrefix }) => (hasPrefix ? 'transparent' : `var(${UI.COLOR_PAPER_DARKER})`)};
   border: 1px solid ${({ hasPrefix }) => (hasPrefix ? `var(${UI.COLOR_PAPER_DARKER})` : 'transparent')};
   border-radius: 16px;

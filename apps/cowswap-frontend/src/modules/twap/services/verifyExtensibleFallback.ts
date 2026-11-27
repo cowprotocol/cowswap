@@ -1,5 +1,6 @@
 import { readContract } from 'wagmi/actions'
 
+import { logSafeApi } from '@cowprotocol/common-utils'
 import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 import { SignatureVerifierMuxerAbi } from '@cowprotocol/cowswap-abis'
 
@@ -42,7 +43,7 @@ export async function verifyExtensibleFallback(
 
     return ExtensibleFallbackVerification.HAS_EXTENSIBLE_FALLBACK
   } catch (e) {
-    console.log('FALLBACK HANDLER CHECKED, error: ', e)
+    logSafeApi.warn('FALLBACK HANDLER CHECKED, error: ', e)
     return ExtensibleFallbackVerification.HAS_NOTHING
   }
 }

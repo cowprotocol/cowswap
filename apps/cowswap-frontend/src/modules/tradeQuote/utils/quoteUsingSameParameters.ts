@@ -6,6 +6,8 @@ import { Nullish } from 'types'
 
 import type { AppDataInfo, CowHook } from 'modules/appData'
 
+import { isSolanaQuoteAndPost } from '../types'
+
 import type { TradeQuoteState } from '../state/tradeQuoteAtom'
 
 /**
@@ -23,8 +25,7 @@ export function quoteUsingSameParameters(
   const currentParams = currentQuote.quote?.quoteResults.tradeParameters
   if (!currentParams || !nextParams) return false
 
-  // Do not compare slippage if the request contains smart slippage
-  const slippageCheck = hasSmartSlippage ? true : compareSlippage(currentParams.slippageBps, nextParams.swapSlippageBps)
+  const slippageCheck = isSameSlippage(currentQuote, nextParams, hasSmartSlippage)
 
   if (currentQuote.bridgeQuote) {
     const bridgeTradeParams = currentQuote.bridgeQuote.tradeParameters
@@ -45,6 +46,7 @@ export function quoteUsingSameParameters(
       [bridgeTradeParams.bridgeRecipient === nextParams.bridgeRecipient, 'bridgeRecipient'],
       // Use currentParams.slippageBps since bridgeTradeParams doesn't preserve slippageBps when auto-slippage is enabled
       [slippageCheck, 'slippageBps', currentParams.slippageBps, nextParams.swapSlippageBps],
+      [isSignedSlippageWithinQuote(currentParams.slippageBps, appData), 'signedSlippageBps'],
       [areAddressesEqual(currentParams.sellToken, nextParams.sellTokenAddress), 'sellToken'],
       [bridgeTradeParams.sellTokenChainId === nextParams.sellTokenChainId, 'sellTokenChainId'],
       [areAddressesEqual(bridgeTradeParams.buyTokenAddress, nextParams.buyTokenAddress), 'buyTokenAddress'],
@@ -60,7 +62,10 @@ export function quoteUsingSameParameters(
     return changes.length === 0
   }
 
-  const { isEqual: isAppDataEqual, diff: appDataDiff } = compareAppDataWithoutQuoteData(currentAppData, appData)
+  // A Solana quote has no appData (the request always sends an empty one), so it can never differ by appData
+  const { isEqual: isAppDataEqual, diff: appDataDiff } = isSolanaQuoteAndPost(currentQuote.quote)
+    ? { isEqual: true, diff: undefined }
+    : compareAppDataWithoutQuoteData(currentAppData, appData)
 
   const cases = [
     [isAppDataEqual, 'appData', appDataDiff],
@@ -69,6 +74,7 @@ export function quoteUsingSameParameters(
     [currentParams.amount === nextParams.amount.toString(), 'amount'],
     [currentParams.validFor === nextParams.validFor, 'validFor'],
     [currentParams.receiver === nextParams.receiver, 'receiver'],
+    [!!currentParams.partiallyFillable === !!nextParams.partiallyFillable, 'partiallyFillable'],
     /**
      * Check slippage only if it is set in nextParams
      * Because we should refetch quote only when a user changed slippage
@@ -120,6 +126,29 @@ function compareSlippage(currentSlippage: number | undefined, nextSlippage: numb
   return !nextSlippage || !currentSlippage || currentSlippage === nextSlippage
 }
 
+// Do not compare slippage if the request contains smart slippage.
+// A Solana quote signs the slippage it was fetched with (its own suggestion when none was passed),
+// so switching between an explicit and an omitted slippage must requote.
+function isSameSlippage(
+  currentQuote: TradeQuoteState,
+  nextParams: QuoteBridgeRequest,
+  hasSmartSlippage: boolean | undefined,
+): boolean {
+  const currentSlippageBps = currentQuote.quote?.quoteResults.tradeParameters.slippageBps
+
+  if (isSolanaQuoteAndPost(currentQuote.quote)) return currentSlippageBps === nextParams.swapSlippageBps
+
+  return !!hasSmartSlippage || compareSlippage(currentSlippageBps, nextParams.swapSlippageBps)
+}
+
+// The SDK signs the bridge hook with the quote's slippage, so the order must not allow more
+function isSignedSlippageWithinQuote(
+  quoteSlippageBps: number | undefined,
+  appData: AppDataInfo['doc'] | undefined,
+): boolean {
+  return (appData?.metadata.quote?.slippageBips ?? 0) <= (quoteSlippageBps ?? 0)
+}
+
 function removeBridgePostHook(
   appData: AppDataInfo['doc'] | undefined,
   postHook: CowHook | undefined,
@@ -152,11 +181,12 @@ function removeBridgePostHook(
  */
 function removeQuoteMetadata(appData: AppDataInfo['doc']): string {
   const { metadata: fullMetadata, ...rest } = appData
-  const { partnerFee, hooks, referrer, replacedOrder } = fullMetadata
+  const { partnerFee, hooks, referrer, replacedOrder, orderClass } = fullMetadata
 
   const obj = {
     ...rest,
     metadata: {
+      orderClass: orderClass ?? undefined,
       partnerFee: partnerFee ?? undefined,
       hooks: hooks ?? undefined,
       referrer: referrer ?? undefined,

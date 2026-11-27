@@ -1,16 +1,19 @@
-import { decodeFunctionData, encodeAbiParameters } from 'viem'
+import { createPublicClient, decodeFunctionData, encodeAbiParameters, http } from 'viem'
 
+import { VIEM_CHAINS } from '@cowprotocol/common-const'
+import { AbstractProviderAdapter, EvmChains, setGlobalAdapter } from '@cowprotocol/cow-sdk'
 import { ComposableCowPollerAbi } from '@cowprotocol/cowswap-abis'
+import { ComposableCowPoller } from '@cowprotocol/sdk-composable'
+import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
 
-import { COMPOSABLE_COW_POLLER_INITIAL_AUTH_EPOCH } from './composable-cow-poller.constants'
 import {
-  encodePollFundsCalldata,
-  encodeRegisterFromShedCalldata,
-  getComposableCowPollerScheduleId,
-} from './composable-cow-poller.utils'
+  COMPOSABLE_COW_POLLER_ADDRESS,
+  COMPOSABLE_COW_POLLER_INITIAL_AUTH_EPOCH,
+} from './composable-cow-poller.constants'
 
 import type { ComposableCowPollerSchedule } from './composable-cow-poller.types'
 
+const POLLER_ADDRESS = COMPOSABLE_COW_POLLER_ADDRESS[EvmChains.MAINNET]
 const FUNDER = '0x1111111111111111111111111111111111111111' as const
 const HANDLER = '0x2222222222222222222222222222222222222222' as const
 const OWNER = '0x3333333333333333333333333333333333333333' as const
@@ -35,73 +38,90 @@ const FIRST_REGISTER_SCHEDULE: ComposableCowPollerSchedule = {
   staticInput: STATIC_INPUT,
 }
 
-describe('getComposableCowPollerScheduleId()', () => {
-  it('matches the Solidity _scheduleId hash for funder, handler, owner, salt', () => {
-    expect(
-      getComposableCowPollerScheduleId({
+function poller(): ComposableCowPoller {
+  return new ComposableCowPoller(POLLER_ADDRESS)
+}
+
+describe('ComposableCowPoller schedule encoding', () => {
+  beforeAll(() => {
+    setGlobalAdapter(
+      new ViemAdapter({
+        provider: createPublicClient({
+          chain: VIEM_CHAINS[EvmChains.MAINNET],
+          transport: http('http://127.0.0.1:8545'),
+        }),
+      }) as AbstractProviderAdapter,
+    )
+  })
+
+  describe('getScheduleId()', () => {
+    it('matches the Solidity _scheduleId hash for funder, handler, owner, salt', () => {
+      expect(
+        poller().getScheduleId({
+          funder: FUNDER,
+          handler: HANDLER,
+          owner: OWNER,
+          salt: SALT,
+        }),
+      ).toBe(EXPECTED_SCHEDULE_ID)
+    })
+
+    it('keeps schedule id independent of authEpoch / staticInput', () => {
+      const withoutAuth = poller().getScheduleId(FIRST_REGISTER_SCHEDULE)
+      const scheduleWithDifferentStatic: ComposableCowPollerSchedule = {
+        ...FIRST_REGISTER_SCHEDULE,
+        staticInput: '0xabcd',
+      }
+      const withDifferentStatic = poller().getScheduleId(scheduleWithDifferentStatic)
+
+      expect(withoutAuth).toBe(withDifferentStatic)
+      expect(withoutAuth).toBe(EXPECTED_SCHEDULE_ID)
+    })
+  })
+
+  describe('encodePollFunds()', () => {
+    it('encodes pollFunds selector with schedule id', () => {
+      const id = poller().getScheduleId({
         funder: FUNDER,
         handler: HANDLER,
         owner: OWNER,
         salt: SALT,
-      }),
-    ).toBe(EXPECTED_SCHEDULE_ID)
-  })
-})
+      })
+      const callData = poller().encodePollFunds(id)
 
-describe('encodePollFundsCalldata()', () => {
-  it('encodes pollFunds selector with schedule id', () => {
-    const id = getComposableCowPollerScheduleId({
-      funder: FUNDER,
-      handler: HANDLER,
-      owner: OWNER,
-      salt: SALT,
+      expect(callData.startsWith('0x')).toBe(true)
+      expect(callData).toContain(id.slice(2))
     })
-    const callData = encodePollFundsCalldata(id)
-
-    expect(callData.startsWith('0x')).toBe(true)
-    expect(callData).toContain(id.slice(2))
   })
-})
 
-describe('encodeRegisterFromShedCalldata()', () => {
-  it('encodes a uint96 authEpoch of 0 between handler and funder on first register', () => {
-    const callData = encodeRegisterFromShedCalldata(FIRST_REGISTER_SCHEDULE)
+  describe('encodeRegisterFromShed()', () => {
+    it('encodes a uint96 authEpoch of 0 between handler and funder on first register', () => {
+      const callData = poller().encodeRegisterFromShed(FIRST_REGISTER_SCHEDULE)
 
-    const decoded = decodeFunctionData({
-      abi: ComposableCowPollerAbi,
-      data: callData,
+      const decoded = decodeFunctionData({
+        abi: ComposableCowPollerAbi,
+        data: callData as `0x${string}`,
+      })
+
+      expect(decoded.functionName).toBe('registerFromShed')
+
+      const [schedule] = decoded.args as [ComposableCowPollerSchedule]
+      expect(schedule.handler.toLowerCase()).toBe(HANDLER.toLowerCase())
+      expect(schedule.authEpoch).toBe(0n)
+      expect(schedule.funder.toLowerCase()).toBe(FUNDER.toLowerCase())
+      expect(schedule.owner.toLowerCase()).toBe(OWNER.toLowerCase())
+      expect(schedule.salt).toBe(SALT)
+      expect(schedule.staticInput).toBe(STATIC_INPUT)
+
+      // Fixture: packed tuple head includes a zero uint96 word after handler.
+      // ABI encoding of the dynamic tuple starts at word 1; handler is word 0 of the tuple,
+      // authEpoch is word 1 (must be 0 for first registration).
+      const expectedAuthEpochWord = encodeAbiParameters([{ type: 'uint96' }], [0n]).slice(2)
+      const handlerWord = HANDLER.slice(2).toLowerCase().padStart(64, '0')
+      const funderWord = FUNDER.slice(2).toLowerCase().padStart(64, '0')
+      const packed = callData.toLowerCase()
+
+      expect(packed).toContain(`${handlerWord}${expectedAuthEpochWord}${funderWord}`)
     })
-
-    expect(decoded.functionName).toBe('registerFromShed')
-
-    const [schedule] = decoded.args as [ComposableCowPollerSchedule]
-    expect(schedule.handler.toLowerCase()).toBe(HANDLER.toLowerCase())
-    expect(schedule.authEpoch).toBe(0n)
-    expect(schedule.funder.toLowerCase()).toBe(FUNDER.toLowerCase())
-    expect(schedule.owner.toLowerCase()).toBe(OWNER.toLowerCase())
-    expect(schedule.salt).toBe(SALT)
-    expect(schedule.staticInput).toBe(STATIC_INPUT)
-
-    // Fixture: packed tuple head includes a zero uint96 word after handler.
-    // ABI encoding of the dynamic tuple starts at word 1; handler is word 0 of the tuple,
-    // authEpoch is word 1 (must be 0 for first registration).
-    const expectedAuthEpochWord = encodeAbiParameters([{ type: 'uint96' }], [0n]).slice(2)
-    const handlerWord = HANDLER.slice(2).toLowerCase().padStart(64, '0')
-    const funderWord = FUNDER.slice(2).toLowerCase().padStart(64, '0')
-    const packed = callData.toLowerCase()
-
-    expect(packed).toContain(`${handlerWord}${expectedAuthEpochWord}${funderWord}`)
-  })
-
-  it('keeps schedule id independent of authEpoch / staticInput', () => {
-    const withoutAuth = getComposableCowPollerScheduleId(FIRST_REGISTER_SCHEDULE)
-    const scheduleWithDifferentStatic: ComposableCowPollerSchedule = {
-      ...FIRST_REGISTER_SCHEDULE,
-      staticInput: '0xabcd',
-    }
-    const withDifferentStatic = getComposableCowPollerScheduleId(scheduleWithDifferentStatic)
-
-    expect(withoutAuth).toBe(withDifferentStatic)
-    expect(withoutAuth).toBe(EXPECTED_SCHEDULE_ID)
   })
 })

@@ -11,7 +11,7 @@ export const PERMIT_ACCOUNT = privateKeyToAccount(PERMIT_PK)
 
 export const DEFAULT_MIN_GAS_LIMIT = 55_000n
 
-export const DEFAULT_PERMIT_GAS_LIMIT = 80000n
+export const DEFAULT_PERMIT_GAS_LIMIT = 160_000n
 
 export const DEFAULT_PERMIT_VALUE = maxUint256
 

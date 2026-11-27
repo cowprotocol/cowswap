@@ -50,10 +50,6 @@ export const RICH_ORDER: Order = {
   executedSellAmount: ZERO_BIG_NUMBER,
   feeAmount: new BigNumber(RAW_ORDER.feeAmount),
   executedFeeAmount: new BigNumber(RAW_ORDER.executedFeeAmount),
-  executedFee: ZERO_BIG_NUMBER,
-  totalFee: ZERO_BIG_NUMBER,
-  // Overrides the raw `string | null` carried over from the RAW_ORDER spread.
-  gasCost: undefined,
   cancelled: RAW_ORDER.invalidated,
   status: OrderStatusInner.Open,
   partiallyFilled: false,

@@ -35,6 +35,10 @@ const patchValidationSchema = (schema: any) => ({
         },
       },
     },
+    ExtensionMap: {
+      ...schema.definitions.ExtensionMap,
+      maxProperties: 20,
+    },
     ExtensionPrimitiveValue: {
       anyOf: [
         {

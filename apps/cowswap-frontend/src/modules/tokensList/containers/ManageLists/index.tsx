@@ -1,19 +1,10 @@
 import { ReactNode, useMemo } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import {
-  ListSearchResponse,
-  ListState,
-  useFilterBlockedLists,
-  useIsListBlocked,
-  useListsEnabledState,
-  useRemoveList,
-} from '@cowprotocol/tokens'
+import { ListSearchResponse, ListState, useListsEnabledState, useRemoveList } from '@cowprotocol/tokens'
 import { Loader } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
-
-import { useGeoCountry } from 'modules/rwa'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
@@ -39,12 +30,6 @@ interface ListSearchState {
 export function ManageLists(props: ManageListsProps): ReactNode {
   const { lists, listSearchResponse, isListUrlValid } = props
 
-  const country = useGeoCountry()
-
-  // only filter by country (blocked), NOT by consent requirement
-  // lists requiring consent should be visible so users can give consent
-  const filteredLists = useFilterBlockedLists(lists, country)
-
   const activeTokenListsIds = useListsEnabledState()
   const addListImport = useAddListImport()
   const cowAnalytics = useCowAnalytics()
@@ -59,7 +44,6 @@ export function ManageLists(props: ManageListsProps): ReactNode {
   })
 
   const { source, listToImport, loading } = useListSearchResponse(listSearchResponse)
-  const { isBlocked } = useIsListBlocked(listToImport?.source, country)
 
   return (
     <styledEl.Wrapper>
@@ -78,7 +62,6 @@ export function ManageLists(props: ManageListsProps): ReactNode {
           <ImportTokenListItem
             source={source}
             list={listToImport}
-            isBlocked={isBlocked}
             data-click-event={toCowSwapGtmEvent({
               category: CowSwapAnalyticsCategory.LIST,
               action: 'Import List',
@@ -93,7 +76,7 @@ export function ManageLists(props: ManageListsProps): ReactNode {
         </styledEl.ImportListsContainer>
       )}
       <styledEl.ListsContainer id="tokens-lists-table">
-        {filteredLists
+        {[...lists]
           .sort((a, b) => (a.priority || 0) - (b.priority || 0))
           .map((list) => (
             <ListItem

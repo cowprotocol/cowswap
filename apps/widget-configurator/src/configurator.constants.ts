@@ -102,12 +102,6 @@ export const DEFAULT_STATE = {
 export const DEFAULT_TOKEN_LISTS: TokenListItem[] = [
   { url: `${COW_CDN}/tokens/CowSwap.json`, enabled: true, enabledForSell: false, enabledForBuy: false },
   { url: `${COW_CDN}/token-lists/CoinGecko.1.json`, enabled: true, enabledForSell: false, enabledForBuy: false },
-  {
-    url: 'https://wispy-bird-88a7.uniswap.workers.dev/?url=http://stablecoin.cmc.eth.link',
-    enabled: false,
-    enabledForSell: false,
-    enabledForBuy: false,
-  },
   { url: 'https://www.gemini.com/uniswap/manifest.json', enabled: false, enabledForSell: false, enabledForBuy: false },
   { url: 'https://messari.io/tokenlist/messari-verified', enabled: false, enabledForSell: false, enabledForBuy: false },
   {
@@ -117,7 +111,6 @@ export const DEFAULT_TOKEN_LISTS: TokenListItem[] = [
     enabledForBuy: false,
   },
   { url: 'https://app.tryroll.com/tokens.json', enabled: false, enabledForSell: false, enabledForBuy: false },
-  { url: 'https://ipfs.io/ipns/tokens.uniswap.org', enabled: false, enabledForSell: false, enabledForBuy: false },
 ]
 
 export const DEFAULT_CUSTOM_TOKENS: TokenInfo[] = [
@@ -170,6 +163,7 @@ export const DEFAULT_CONFIGURATOR_FORM_VALUES: ConfiguratorFormValues = {
   buyTokenAmount: DEFAULT_STATE.buyAmount,
   tokenListUrls: DEFAULT_TOKEN_LISTS,
   customTokens: [],
+  prioritizedTokensText: {},
 
   // Theme Colors:
 
@@ -187,11 +181,14 @@ export const DEFAULT_CONFIGURATOR_FORM_VALUES: ConfiguratorFormValues = {
 
   disableProgressBar: false,
   disablePostTradeTips: false,
+  disablePricePercentageShortcuts: false,
   disableTokenImport: false,
   disableSwitchingTokens: false,
   hideRecentTokens: false,
   hideFavoriteTokens: false,
   hideBridgeInfo: false,
+  hideWaitAndSave: false,
+  hideWrapBanner: false,
   hideOrdersTable: false,
   disableWindowOpen: false,
   disableTradeWhenPriceImpactIsUnknown: false,

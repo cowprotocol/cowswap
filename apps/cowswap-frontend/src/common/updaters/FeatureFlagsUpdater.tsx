@@ -1,8 +1,9 @@
 import { useSetAtom } from 'jotai'
 import { useLayoutEffect } from 'react'
 
-import { syncBootFeatureFlags } from '@cowprotocol/common-const'
+import { persistCustomThemeFlags } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 
 import { useLDClient, useLDClientError } from 'launchdarkly-react-client-sdk'
 
@@ -22,7 +23,8 @@ export function FeatureFlagsUpdater(): null {
     if (client) {
       setFeatureFlags(flags)
       setFeatureFlagsStatus(clientError ? 'unavailable' : 'ready')
-      syncBootFeatureFlags(flags)
+      // The widget never paints a seasonal theme, so it has nothing worth persisting for the next visit
+      if (!isInjectedWidget() && !clientError) persistCustomThemeFlags(flags)
       return
     }
 

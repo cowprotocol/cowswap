@@ -1,5 +1,7 @@
 import { ReactNode } from 'react'
 
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { renderHook, waitFor } from '@testing-library/react'
 import BigNumber from 'bignumber.js'
 import { useNetworkId } from 'state/network'
@@ -7,6 +9,7 @@ import { SWRConfig } from 'swr'
 import { transformTrade } from 'utils'
 
 import { getTrades, Order, RawTrade, Trade } from 'api/operator'
+import { getSlotTimestamp } from 'api/solanaOrderbook/solanaRpc'
 
 import { ALL_TRADES_PAGE_SIZE, useOrderTrades } from '../../hooks/useOperatorTrades'
 
@@ -18,10 +21,12 @@ jest.mock('api/operator', () => ({
   getTrades: jest.fn(),
 }))
 
-// getProtocolFees has its own unit test; a pass-through keeps these assertions about the paging.
 jest.mock('utils', () => ({
   transformTrade: jest.fn(),
-  getProtocolFees: jest.fn((trades) => trades),
+}))
+
+jest.mock('api/solanaOrderbook/solanaRpc', () => ({
+  getSlotTimestamp: jest.fn(),
 }))
 
 jest.mock('../../explorer/api', () => ({
@@ -35,6 +40,7 @@ jest.mock('../../explorer/api', () => ({
 const mockedUseNetworkId = jest.mocked(useNetworkId)
 const mockedGetTrades = jest.mocked(getTrades)
 const mockedTransformTrade = jest.mocked(transformTrade)
+const mockedGetSlotTimestamp = jest.mocked(getSlotTimestamp)
 
 const ONE = new BigNumber(1)
 const TWO = new BigNumber(2)
@@ -74,6 +80,7 @@ beforeEach(() => {
   mockedUseNetworkId.mockReset()
   mockedGetTrades.mockReset()
   mockedTransformTrade.mockReset()
+  mockedGetSlotTimestamp.mockReset()
 
   mockedUseNetworkId.mockReturnValue(1)
   mockedTransformTrade.mockImplementation(
@@ -91,8 +98,6 @@ describe('useOrderTrades fills page', () => {
 
     expect(result.current.error?.message).toBe('Failed to fetch trades')
     expect(result.current.trades).toEqual([])
-    // Undefined, not [] — the caller must not read this as "the order charged no fees".
-    expect(result.current.protocolFees).toBeUndefined()
   })
 
   it('clears error and returns trades after a successful refetch', async () => {
@@ -133,59 +138,53 @@ describe('useOrderTrades fills page', () => {
 
     await waitFor(() => expect(result.current.trades).toHaveLength(2))
     expect(result.current.hasNextPage).toBe(true)
-    const callsAfterFirstPage = mockedGetTrades.mock.calls.length
+    // The API documents a short page as the last one, so a second call would be wasted.
+    expect(mockedGetTrades).toHaveBeenCalledTimes(1)
 
     rerender({ offset: 2 })
 
     await waitFor(() => expect(result.current.trades).toHaveLength(1))
     expect(result.current.hasNextPage).toBe(false)
     expect(result.current.trades[0].txHash).toBe('0xfill2')
-    expect(mockedGetTrades).toHaveBeenCalledTimes(callsAfterFirstPage)
+    expect(mockedGetTrades).toHaveBeenCalledTimes(1)
   })
 })
 
-describe('useOrderTrades protocol fees', () => {
+describe('useOrderTrades fetching every fill', () => {
   it('does not fetch anything when given no order', () => {
     const { result } = renderHook(() => useOrderTrades(null, 0, 10), { wrapper: FreshSwrCache })
 
     expect(mockedGetTrades).not.toHaveBeenCalled()
-    expect(result.current.protocolFees).toBeUndefined()
-  })
-
-  it('aggregates every fill, not only the ones on the current page', async () => {
-    serveFills([createFill(0), createFill(1), createFill(2)])
-
-    const { result } = renderHook(() => useOrderTrades(createMockOrder(), 0, 2), { wrapper: FreshSwrCache })
-
-    await waitFor(() => expect(result.current.protocolFees).toHaveLength(3))
-    expect(result.current.trades).toHaveLength(2)
-
-    // The API documents a short page as the last one, so a second call would be wasted.
-    expect(mockedGetTrades).toHaveBeenCalledTimes(1)
+    expect(result.current.trades).toEqual([])
   })
 
   it('keeps paging while the API fills every page', async () => {
     const fills = [...createFullPage(), createFill(ALL_TRADES_PAGE_SIZE)]
     mockedGetTrades.mockImplementation(async ({ offset = 0 }) => fills.slice(offset, offset + ALL_TRADES_PAGE_SIZE))
 
-    const { result } = renderHook(() => useOrderTrades(createMockOrder(), 0, 10), { wrapper: FreshSwrCache })
+    const { result } = renderHook(() => useOrderTrades(createMockOrder(), ALL_TRADES_PAGE_SIZE, 10), {
+      wrapper: FreshSwrCache,
+    })
 
     // Stopping at the first full page would drop the last fill.
-    await waitFor(() => expect(result.current.protocolFees).toHaveLength(fills.length))
+    await waitFor(() => expect(result.current.trades).toHaveLength(1))
     expect(mockedGetTrades).toHaveBeenLastCalledWith(expect.objectContaining({ offset: ALL_TRADES_PAGE_SIZE }))
   })
 
-  it('stops instead of double-counting when the API ignores the offset', async () => {
+  it('stops instead of duplicating fills when the API ignores the offset', async () => {
     // Always the same full page: only the dedupe can end this, since no page is ever short.
     mockedGetTrades.mockResolvedValue(createFullPage())
 
-    const { result } = renderHook(() => useOrderTrades(createMockOrder(), 0, 10), { wrapper: FreshSwrCache })
+    const { result } = renderHook(() => useOrderTrades(createMockOrder(), ALL_TRADES_PAGE_SIZE - 1, 10), {
+      wrapper: FreshSwrCache,
+    })
 
-    await waitFor(() => expect(result.current.protocolFees).toHaveLength(ALL_TRADES_PAGE_SIZE))
+    await waitFor(() => expect(result.current.trades).toHaveLength(1))
+    expect(result.current.hasNextPage).toBe(false)
     expect(mockedGetTrades).toHaveBeenCalledTimes(2)
   })
 
-  it('does not report one order’s fees while another order is loading', async () => {
+  it('does not report one order’s fills while another order is loading', async () => {
     serveFills([createFill(0), createFill(1)])
 
     const { result, rerender } = renderHook(({ order }) => useOrderTrades(order, 0, 10), {
@@ -193,16 +192,76 @@ describe('useOrderTrades protocol fees', () => {
       wrapper: FreshSwrCache,
     })
 
-    await waitFor(() => expect(result.current.protocolFees).toHaveLength(2))
+    await waitFor(() => expect(result.current.trades).toHaveLength(2))
 
-    // Hold the second order's only page open: its fees are unknown, not the first order's.
+    // Hold the second order's only page open: its fills are unknown, not the first order's.
     let resolveSecond: (trades: RawTrade[]) => void = () => undefined
     mockedGetTrades.mockImplementationOnce(() => new Promise((resolve) => (resolveSecond = resolve)))
     rerender({ order: createMockOrder({ uid: '0xsecond' }) })
 
-    expect(result.current.protocolFees).toBeUndefined()
+    expect(result.current.trades).toEqual([])
 
     resolveSecond([createFill(9)])
-    await waitFor(() => expect(result.current.protocolFees).toHaveLength(1))
+    await waitFor(() => expect(result.current.trades).toHaveLength(1))
+  })
+})
+
+describe('useOrderTrades execution time', () => {
+  it('resolves Solana fills from their slot and skips fills not indexed yet', async () => {
+    mockedUseNetworkId.mockReturnValue(SupportedChainId.SOLANA)
+    mockedGetSlotTimestamp.mockResolvedValue(1791553269)
+    serveFills([
+      { txHash: 'solanaSig1', blockNumber: 454882660, logIndex: 0 } as RawTrade,
+      { txHash: 'solanaSig2', blockNumber: 0, logIndex: 0 } as RawTrade,
+    ])
+
+    renderHook(() => useOrderTrades(createMockOrder(), 0, 10), { wrapper: FreshSwrCache })
+
+    await waitFor(() =>
+      expect(mockedTransformTrade).toHaveBeenCalledWith(
+        expect.objectContaining({ txHash: 'solanaSig1' }),
+        expect.anything(),
+        1791553269,
+      ),
+    )
+    expect(mockedGetSlotTimestamp).toHaveBeenCalledTimes(1)
+    expect(mockedGetSlotTimestamp).toHaveBeenCalledWith(454882660)
+  })
+
+  it('keeps resolved Solana fill times when another slot fails, and retries the failed slot', async () => {
+    mockedUseNetworkId.mockReturnValue(SupportedChainId.SOLANA)
+    mockedGetSlotTimestamp.mockImplementation(async (slot) => {
+      if (slot === 300) throw new Error('Block 300 cleaned up')
+      return 1791553000
+    })
+    serveFills([
+      { txHash: 'solanaSigOk', blockNumber: 200, logIndex: 0 } as RawTrade,
+      { txHash: 'solanaSigFailed', blockNumber: 300, logIndex: 0 } as RawTrade,
+    ])
+
+    const { rerender } = renderHook(({ order }) => useOrderTrades(order, 0, 10), {
+      initialProps: { order: createMockOrder({ uid: '0xfirstVisit' }) },
+      wrapper: FreshSwrCache,
+    })
+
+    await waitFor(() =>
+      expect(mockedTransformTrade).toHaveBeenCalledWith(
+        expect.objectContaining({ txHash: 'solanaSigOk' }),
+        expect.anything(),
+        1791553000,
+      ),
+    )
+
+    mockedGetSlotTimestamp.mockResolvedValue(1791553100)
+    rerender({ order: createMockOrder({ uid: '0xsecondVisit' }) })
+
+    await waitFor(() =>
+      expect(mockedTransformTrade).toHaveBeenCalledWith(
+        expect.objectContaining({ txHash: 'solanaSigFailed' }),
+        expect.anything(),
+        1791553100,
+      ),
+    )
+    expect(mockedGetSlotTimestamp.mock.calls.filter(([slot]) => slot === 300)).toHaveLength(2)
   })
 })

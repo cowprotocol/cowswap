@@ -1,18 +1,12 @@
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
-import { t } from '@lingui/core/macro'
+import { plural, t } from '@lingui/core/macro'
 
 import { Order } from 'legacy/state/orders/actions'
 
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
-
-export function getSurplusText(isSell: boolean | undefined, isCustomRecipient: boolean | undefined): string {
-  if (isSell) {
-    return isCustomRecipient ? t`including an extra ` : t`and got an extra `
-  }
-  return t`and saved `
-}
+import { SolverCompetition } from 'common/types/soverCompetition'
 
 export function getTwitterShareUrl(surplusData: SurplusData | undefined, order: Order | undefined): string {
   const surplusAmount = surplusData?.surplusAmount?.toSignificant() || '0'
@@ -23,18 +17,40 @@ export function getTwitterShareUrl(surplusData: SurplusData | undefined, order: 
   return `https://x.com/intent/tweet?text=${twitterText}`
 }
 
+export function getTwitterShareUrlForAuction(solvers: SolverCompetition[]): string {
+  const solverCount = solvers.length
+  const winnerName = solvers[0]?.displayName?.trim()
+  const twitterText = encodeURIComponent(
+    solverCount >= 2 && winnerName
+      ? t`${plural(solverCount, {
+          one: '# solver competed for my swap on @CoWSwap.',
+          few: '# solvers competed for my swap on @CoWSwap.',
+          many: '# solvers competed for my swap on @CoWSwap.',
+          other: '# solvers competed for my swap on @CoWSwap.',
+        })} ${winnerName} won 🐮⚡\n\nStart swapping on swap.cow.fi`
+      : t`Solvers compete for every swap on @CoWSwap 🐮⚡\n\nStart swapping on swap.cow.fi`,
+  )
+  return `https://x.com/intent/tweet?text=${twitterText}`
+}
+
 export function getTwitterShareUrlForBenefit(benefit: string): string {
   const twitterText = getTwitterTextForBenefit(benefit)
   return `https://x.com/intent/tweet?text=${twitterText}`
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function getTwitterText(surplusAmount: string, surplusToken: string, orderKind: OrderKind) {
-  const actionWord = isSellOrder(orderKind) ? t`got` : t`saved`
+export function getTwitterShareUrlForWaitAndSave(gain: string): string {
+  const twitterText = encodeURIComponent(
+    t`Hey, I just got an extra ${gain} with Wait & save on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi`,
+  )
+  return `https://x.com/intent/tweet?text=${twitterText}`
+}
+
+export function getTwitterText(surplusAmount: string, surplusToken: string, orderKind: OrderKind): string {
   const surplus = `${surplusAmount} ${surplusToken}`
   return encodeURIComponent(
-    t`Hey, I just ${actionWord} an extra ${surplus} on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi`,
+    isSellOrder(orderKind)
+      ? t`Hey, I just got an extra ${surplus} on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi`
+      : t`Hey, I just saved an extra ${surplus} on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi`,
   )
 }
 

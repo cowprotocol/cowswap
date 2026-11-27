@@ -1,4 +1,4 @@
-import { HookDappType, PERMIT_HOOK_DAPP_ID } from './consts'
+import { EOA_TWAP_POLL_FUNDS_DAPP_ID, HookDappType, PERMIT_HOOK_DAPP_ID } from './consts'
 import { hookDappsRegistry } from './hookDappsRegistry'
 import { CowHook, HookDappBase } from './types'
 
@@ -11,7 +11,7 @@ const hookDapps = Object.keys(hookDappsRegistry).reduce((acc, id) => {
 
 // Display metadata only: this automatic hook must not appear in the hook store.
 const twapFundingHookDapp: HookDappBase = {
-  id: 'cowswap://twap/eoa-poll-funds',
+  id: EOA_TWAP_POLL_FUNDS_DAPP_ID,
   name: 'TWAP funding',
   descriptionShort: 'Transfers sell tokens into the TWAP account before a part executes.',
   type: HookDappType.INTERNAL,
@@ -20,6 +20,28 @@ const twapFundingHookDapp: HookDappBase = {
   image:
     'https://raw.githubusercontent.com/cowprotocol/cowswap/refs/heads/develop/libs/assets/src/images/logo-icon-cow-circle.svg',
 }
+
+// Display metadata only: CoW AMM is discontinued, its hooks are out of the hook store but still label past orders.
+const cowAmmHookDapps: HookDappBase[] = [
+  {
+    id: 'COW_AMM_WITHDRAW',
+    name: 'CoW AMM Withdraw Liquidity',
+    descriptionShort: 'Remove liquidity from a CoW AMM pool before the swap',
+    type: HookDappType.IFRAME,
+    version: '0.0.1',
+    website: 'https://balancer.fi/pools/cow',
+    image: 'https://cow-hooks-dapps-withdraw-pool.vercel.app/icon.png',
+  },
+  {
+    id: 'COW_AMM_DEPOSIT',
+    name: 'CoW AMM Deposit',
+    descriptionShort: 'Add liquidity to any of the CoW AMM pools',
+    type: HookDappType.IFRAME,
+    version: '0.0.1',
+    website: 'https://balancer.fi/pools/cow',
+    image: 'https://cow-hooks-dapps-cow-amm-deposit.vercel.app/icon.png',
+  },
+]
 
 // permit() function selector
 const EIP_2612_PERMIT_SELECTOR = '0xd505accf'
@@ -35,6 +57,10 @@ type StrictCowHook = Omit<CowHook, 'dappId'> & { dappId?: string }
 
 export function doesHookHavePermit(hook: { callData: string }): boolean {
   return hook.callData.startsWith(EIP_2612_PERMIT_SELECTOR) || hook.callData.startsWith(DAI_PERMIT_SELECTOR)
+}
+
+export function isEoaTwapPollFundsHook(hook: { dappId?: string }): boolean {
+  return hook.dappId === EOA_TWAP_POLL_FUNDS_DAPP_ID
 }
 
 export function matchHooksToDapps(hooks: StrictCowHook[], dapps: HookDappBase[]): HookToDappMatch[] {
@@ -76,5 +102,5 @@ export function matchHooksToDappsRegistry(
   hooks: StrictCowHook[],
   additionalHookDapps: HookDappBase[] = [],
 ): HookToDappMatch[] {
-  return matchHooksToDapps(hooks, hookDapps.concat(twapFundingHookDapp, additionalHookDapps))
+  return matchHooksToDapps(hooks, hookDapps.concat(twapFundingHookDapp, cowAmmHookDapps, additionalHookDapps))
 }

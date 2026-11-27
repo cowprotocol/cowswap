@@ -108,28 +108,25 @@ function AllowanceWarning({ symbol, isScheduled, approve }: AllowanceWarningProp
       </h3>
       <p>
         {isScheduled ? (
-          <>
-            <Trans>Insufficient allowance granted for</Trans>{' '}
+          <Trans>
+            Insufficient allowance granted for{' '}
             <strong>
               <TokenSymbol token={{ symbol }} />
             </strong>
-            .{' '}
-            <Trans>
-              If allowance remains insufficient at creation time, this portion will not be created. Approve the
-            </Trans>{' '}
+            . If allowance remains insufficient at creation time, this portion will not be created. Approve the{' '}
             <strong>
               <TokenSymbol token={{ symbol }} />
             </strong>{' '}
-            <Trans>token before creation.</Trans>
-          </>
+            token before creation.
+          </Trans>
         ) : (
-          <>
-            <Trans>The order remains open. Execution requires adequate allowance for</Trans>{' '}
+          <Trans>
+            The order remains open. Execution requires adequate allowance for{' '}
             <strong>
               <TokenSymbol token={{ symbol }} />
             </strong>
-            . <Trans>Approve the token to proceed.</Trans>
-          </>
+            . Approve the token to proceed.
+          </Trans>
         )}
       </p>
       <styledEl.WarningActionBox>
@@ -150,31 +147,31 @@ function BalanceWarning({ symbol, isScheduled }: WarningProps) {
         <Trans>Insufficient token balance</Trans>
       </h3>
       <p>
-        <Trans>Insufficient</Trans>{' '}
-        <strong>
-          <TokenSymbol token={{ symbol }} />
-        </strong>{' '}
-        <Trans>balance detected.</Trans>
+        <Trans>
+          Insufficient{' '}
+          <strong>
+            <TokenSymbol token={{ symbol }} />
+          </strong>{' '}
+          balance detected.
+        </Trans>
         <br />
         <br />
         {isScheduled ? (
-          <>
-            <Trans>
-              If the balance remains insufficient at creation time, this order portion will not be created. Add more
-            </Trans>{' '}
+          <Trans>
+            If the balance remains insufficient at creation time, this order portion will not be created. Add more{' '}
             <strong>
               <TokenSymbol token={{ symbol }} />
             </strong>{' '}
-            <Trans>before that time.</Trans>
-          </>
+            before that time.
+          </Trans>
         ) : (
-          <>
-            <Trans>The order remains open. Execution requires sufficient</Trans>{' '}
+          <Trans>
+            The order remains open. Execution requires sufficient{' '}
             <strong>
               <TokenSymbol token={{ symbol }} />
             </strong>{' '}
-            <Trans>balance.</Trans>
-          </>
+            balance.
+          </Trans>
         )}
       </p>
     </styledEl.WarningParagraph>

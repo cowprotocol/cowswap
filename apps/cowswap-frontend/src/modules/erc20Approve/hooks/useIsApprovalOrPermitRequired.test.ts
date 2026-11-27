@@ -36,6 +36,8 @@ jest.mock('modules/permit', () => ({
 
 jest.mock('modules/trade', () => ({
   useDerivedTradeState: jest.fn(),
+  getIsNativeSellUnsupported: jest.requireActual('modules/trade/utils/getIsNativeSellUnsupported')
+    .getIsNativeSellUnsupported,
   TradeType: {
     SWAP: 'SWAP',
     LIMIT_ORDER: 'LIMIT_ORDER',
@@ -290,6 +292,43 @@ describe('useIsApprovalOrPermitRequired', () => {
     ])('should return BundleApproveRequired on Solana for %s when a delegation is needed', (_label, currency) => {
       mockUseGetAmountToSignApprove.mockReturnValue(CurrencyAmount.fromRawAmount(currency, '1000000'))
       mockUseDerivedTradeState.mockReturnValue(createMockTradeState({ inputCurrency: currency }))
+      mockUseApproveState.mockReturnValue({ state: ApprovalState.NOT_APPROVED, currentAllowance: BigInt(0) })
+      mockUsePermitInfo.mockReturnValue(undefined)
+
+      const { result } = renderHook(() =>
+        useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: false }),
+      )
+
+      expect(result.current.reason).toBe(ApproveRequiredReason.BundleApproveRequired)
+    })
+
+    // Native SOL is wrapped inside the order-creation transaction, so it stays Swap-only like on EVM.
+    // A delegation reason here would shadow `SellNativeToken` and let a native limit order through.
+    it.each([TradeType.LIMIT_ORDER, TradeType.ADVANCED_ORDERS, TradeType.YIELD])(
+      'should return Unsupported on Solana for native SOL in %s',
+      (tradeType) => {
+        const nativeSol = new TestNativeCurrency(SupportedChainId.SOLANA)
+
+        mockUseGetAmountToSignApprove.mockReturnValue(CurrencyAmount.fromRawAmount(nativeSol, '1000000000'))
+        mockUseDerivedTradeState.mockReturnValue(createMockTradeState({ inputCurrency: nativeSol, tradeType }))
+        mockUseApproveState.mockReturnValue({ state: ApprovalState.NOT_APPROVED, currentAllowance: BigInt(0) })
+        mockUsePermitInfo.mockReturnValue(undefined)
+
+        const { result } = renderHook(() =>
+          useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: false }),
+        )
+
+        expect(result.current.reason).toBe(ApproveRequiredReason.Unsupported)
+      },
+    )
+
+    it('should keep delegating an SPL token in LIMIT_ORDER on Solana', () => {
+      const usdc = new Token(SupportedChainId.SOLANA, 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', 6, 'USDC')
+
+      mockUseGetAmountToSignApprove.mockReturnValue(CurrencyAmount.fromRawAmount(usdc, '1000000'))
+      mockUseDerivedTradeState.mockReturnValue(
+        createMockTradeState({ inputCurrency: usdc, tradeType: TradeType.LIMIT_ORDER }),
+      )
       mockUseApproveState.mockReturnValue({ state: ApprovalState.NOT_APPROVED, currentAllowance: BigInt(0) })
       mockUsePermitInfo.mockReturnValue(undefined)
 

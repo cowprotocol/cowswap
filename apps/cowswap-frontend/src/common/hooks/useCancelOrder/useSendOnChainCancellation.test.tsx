@@ -12,6 +12,8 @@ import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import { Order } from 'legacy/state/orders/actions'
 import { useRequestOrderCancellation, useSetOrderCancellationHash } from 'legacy/state/orders/hooks'
 
+import { useCancelTwapOrder } from 'modules/twap/hooks/useCancelTwapOrder'
+
 import { useSendOnChainCancellation } from './useSendOnChainCancellation'
 
 import { LinguiWrapper } from '../../../../LinguiJestProvider'
@@ -44,7 +46,6 @@ jest.mock('modules/twap/hooks/useSetPartOrderCancelling', () => {
 })
 jest.mock('modules/twap/hooks/useCancelTwapOrder', () => {
   return {
-    ...jest.requireActual('modules/twap/hooks/useCancelTwapOrder'),
     useCancelTwapOrder: jest.fn(),
   }
 })
@@ -89,6 +90,27 @@ const WithProviders = ({ children }: PropsWithChildren) => {
 // TODO: Break down this large function into smaller functions
 
 describe('useSendOnChainCancellation() + useGetOnChainCancellation()', () => {
+  it.each([false, true])('routes EOA parts through TWAP cancellation (last part: %s)', async (isTheLastPart) => {
+    const sendTransaction = jest.fn().mockResolvedValue(undefined)
+    const cancelTwapOrder = jest.fn().mockResolvedValue({ estimatedGas: 1n, sendTransaction })
+    jest.mocked(useCancelTwapOrder).mockReturnValue(cancelTwapOrder)
+    const { result } = renderHook(() => useSendOnChainCancellation(), { wrapper: WithProviders })
+    const order = {
+      ...orderMock,
+      inputToken: COW_TOKEN_TO_CHAIN[chainId]!,
+      isEoaTwapOrder: true,
+      composableCowInfo: { parentId: '0xparent', isTheLastPart },
+    }
+
+    await act(async () => {
+      await result.current(order)
+    })
+
+    expect(cancelTwapOrder).toHaveBeenCalledWith('0xparent', order, ...(isTheLastPart ? [] : [{ partOnly: true }]))
+    expect(sendTransaction).toHaveBeenCalledTimes(1)
+    expect(mockWriteContract).not.toHaveBeenCalled()
+  })
+
   beforeEach(() => {
     jest.clearAllMocks()
 

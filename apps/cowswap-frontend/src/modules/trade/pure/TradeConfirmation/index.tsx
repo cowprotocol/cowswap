@@ -1,6 +1,6 @@
 import { ReactElement, ReactNode, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
-import { Modal, ModalHeader } from '@cowprotocol/ui'
+import { Modal } from '@cowprotocol/ui'
 
 import { useLingui } from '@lingui/react/macro'
 import { useSigningStep } from 'entities/trade'
@@ -10,7 +10,6 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { OrderHooksDetails } from 'common/containers/OrderHooksDetails'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyInputPanel'
 
-import { ConfirmAmounts } from './ConfirmAmounts'
 import { ConfirmButton } from './ConfirmButton'
 import { ConfirmWarnings } from './ConfirmWarnings'
 import { QuoteCountdown } from './CountDown'
@@ -20,16 +19,17 @@ import { NoImpactWarning } from '../../containers/NoImpactWarning'
 import { CommonTradeConfirmContext } from '../../hooks/useCommonTradeConfirmContext'
 import { useTradeConfirmActions } from '../../hooks/useTradeConfirmActions'
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
+import { TradeTokenPair } from '../TradeTokenPair/TradeTokenPair.pure'
 
 export interface TradeConfirmationProps extends CommonTradeConfirmContext {
-  onConfirm(): Promise<void | false>
+  onConfirm(): Promise<void | boolean>
   onDismiss(): void
 
   inputCurrencyInfo: CurrencyPreviewInfo
   outputCurrencyInfo: CurrencyPreviewInfo
   isConfirmDisabled: boolean
   priceImpact: PriceImpact
-  title: ReactElement | string
+  title?: ReactElement | string
   isPriceStatic?: boolean
   recipient?: string | null
   buttonText?: ReactNode
@@ -37,10 +37,11 @@ export interface TradeConfirmationProps extends CommonTradeConfirmContext {
   confirmClickEvent?: string
   hasSigningPlan?: boolean
   lockDismiss?: boolean
+  headerContent?: ReactNode
 }
 
 export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
-  const { pendingTrade, forcePriceConfirmation, isConfirming } = useTradeConfirmState()
+  const { pendingTrade, forcePriceConfirmation, isConfirming, sessionId } = useTradeConfirmState()
   const tradeConfirmActions = useTradeConfirmActions()
   const { t } = useLingui()
   const signingStep = useSigningStep()
@@ -56,7 +57,7 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
 
   // Freeze amounts/actions, but keep children live so signing-step UI (e.g. collapsible details) can update.
   const { onConfirm, isConfirmDisabled, buttonText, isPriceStatic, appData, confirmClickEvent } = props
-  const { title, hasSigningPlan, lockDismiss, onDismiss, children } = _props
+  const { title, hasSigningPlan, lockDismiss, onDismiss, children, headerContent } = _props
 
   /**
    * Once the user clicks confirm, keep the confirmation content frozen for the rest of the flow
@@ -70,18 +71,18 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
   }, [isConfirming])
 
   const handleConfirm = useCallback(async (): Promise<void | boolean> => {
-    tradeConfirmActions.setConfirming(true)
+    tradeConfirmActions.setConfirming(true, sessionId)
     try {
       const isConfirmed = await onConfirm()
       if (!isConfirmed) {
-        tradeConfirmActions.setConfirming(false)
+        tradeConfirmActions.setConfirming(false, sessionId)
       }
       return isConfirmed
     } catch (error) {
-      tradeConfirmActions.setConfirming(false)
+      tradeConfirmActions.setConfirming(false, sessionId)
       throw error
     }
-  }, [onConfirm, tradeConfirmActions])
+  }, [onConfirm, sessionId, tradeConfirmActions])
 
   const { isPriceChanged, resetPriceChanged } = useIsPriceChanged(
     props.inputCurrencyInfo.amount?.toExact(),
@@ -110,16 +111,16 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
 
   return (
     <Modal.Root>
-      <ModalHeader
+      <Modal.Header
         title={title}
+        headerContent={headerContent}
         onBack={hasSigningPlan ? undefined : onDismiss}
         onClose={hasSigningPlan && !lockDismiss ? onDismiss : undefined}
-        // TODO: Consider still displaying this here or somewhere else?
-        rightSlot={isConfirming || isPriceStatic ? null : <QuoteCountdown />}
+        rightSlot={isConfirming || isPriceStatic || hasSigningPlan ? null : <QuoteCountdown />}
       />
 
       <Modal.Content id="trade-confirmation">
-        <ConfirmAmounts
+        <TradeTokenPair
           variant={hasSigningPlan ? 'slim' : 'default'}
           inputCurrencyInfo={props.inputCurrencyInfo}
           outputCurrencyInfo={props.outputCurrencyInfo}

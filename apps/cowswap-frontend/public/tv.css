@@ -1,0 +1,41 @@
+:root {
+  --tv-color-toolbar-button-text-active: var(--tv-color-toolbar-button-text);
+  --tv-color-toolbar-button-text-hover: var(--tv-color-toolbar-button-text);
+  --tv-color-toolbar-button-text-active-hover: var(--tv-color-toolbar-button-text-active);
+  --tv-color-toolbar-button-background-hover: color-mix(in srgb, var(--tv-color-toolbar-button-text) 8%, var(--tv-color-pane-background));
+  --tv-color-toolbar-button-background-active-hover: var(--tv-color-toolbar-button-background-active);
+  --tv-color-toolbar-button-background-expanded: var(--tv-color-toolbar-button-background-active);
+  --tv-color-toolbar-toggle-button-background-active: var(--tv-color-toolbar-button-background-active);
+  --tv-color-toolbar-toggle-button-background-active-hover: var(--tv-color-toolbar-button-background-active);
+  --tv-color-item-active-text: var(--tv-color-toolbar-button-text-active);
+  --tv-color-toolbar-divider-background: color-mix(in srgb, var(--tv-color-toolbar-button-text) 12%, transparent);
+  --tv-color-popup-element-background-active: var(--tv-color-toolbar-button-background-active);
+  --tv-color-popup-element-background-hover: var(--tv-color-toolbar-button-background-hover);
+  --tv-color-popup-element-divider-background: var(--tv-color-toolbar-divider-background);
+  --tv-color-popup-element-text-active: var(--tv-color-toolbar-button-text-active);
+}
+
+:root:not(.theme-dark) {
+  --tv-spinner-color: #004293;
+  --tv-color-platform-background: #f2f2f2;
+  --tv-color-pane-background: #fff;
+  --tv-color-toolbar-button-text: #00234e;
+  --tv-color-toolbar-button-background-active: #ebebeb;
+  --tv-color-popup-background: #fff;
+  --tv-color-popup-element-text: #00234e;
+}
+
+:root.theme-dark {
+  --tv-spinner-color: #65d9ff;
+  --tv-color-platform-background: #090a20;
+  --tv-color-pane-background: #18193b;
+  --tv-color-toolbar-button-text: #dee3e6;
+  --tv-color-toolbar-button-background-active: color-mix(in srgb, #65d9ff 12%, var(--tv-color-pane-background));
+  --tv-color-popup-background: #090a20;
+  --tv-color-popup-element-text: #dee3e6;
+  /* TradingView 32 uses internal colors for scale highlights and tooltips. */
+  --color-price-axis-highlight: var(--tv-color-toolbar-button-background-active);
+  --color-price-axis-label-back: var(--tv-color-toolbar-button-background-active);
+  --color-common-tooltip-bg: var(--tv-color-toolbar-button-background-active);
+  --color-tooltip-bg: var(--tv-color-toolbar-button-background-active);
+}

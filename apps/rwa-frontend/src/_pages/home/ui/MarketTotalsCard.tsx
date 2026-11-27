@@ -1,0 +1,93 @@
+'use client'
+
+import type { ReactNode } from 'react'
+
+import styles from './MarketOverview.module.css'
+import { Sparkline } from './Sparkline'
+
+import { formatRefTime } from '../lib/formatRefTime'
+import { MARKET_DATA_HINT, TOTAL_VOLUME_HINT } from '../lib/marketDataHint'
+
+import { isUsMarketOpen, type RwaMarketOverview, type RwaTradingTime } from '@/entities/asset'
+import { formatCompactUsd } from '@/shared/lib/format'
+import { useIsHydrated } from '@/shared/lib/hydrated'
+import { InfoIcon } from '@/shared/ui/icons'
+import { Tooltip } from '@/shared/ui/tooltip'
+
+interface MarketTotalsCardProps {
+  /** `undefined` while loading */
+  overview: RwaMarketOverview | undefined
+}
+
+export function MarketTotalsCard({ overview }: MarketTotalsCardProps): ReactNode {
+  const isHydrated = useIsHydrated()
+  const refTime = isHydrated && overview?.updatedAt ? formatRefTime(overview.updatedAt) : null
+
+  return (
+    <section className={styles.card} aria-labelledby="market-totals-title">
+      <header className={styles.cardHeader}>
+        <span className={styles.cardTitleGroup}>
+          <h2 id="market-totals-title" className={styles.cardTitle}>
+            Market overview
+          </h2>
+          <Tooltip className={styles.info} content={MARKET_DATA_HINT}>
+            <span role="img" aria-label="About market data">
+              <InfoIcon />
+            </span>
+          </Tooltip>
+        </span>
+        <span className={styles.cardHint}>7D</span>
+      </header>
+      <div className={styles.totals}>
+        <Total label="Tokenized market cap" value={overview && formatCompactUsd(overview.totals.marketCap)} />
+        <Total
+          label={
+            <>
+              24h total volume
+              <Tooltip className={styles.info} content={TOTAL_VOLUME_HINT}>
+                <span role="img" aria-label="About total volume">
+                  <InfoIcon />
+                </span>
+              </Tooltip>
+            </>
+          }
+          value={overview && formatCompactUsd(overview.totals.volume24h)}
+        />
+      </div>
+      <div className={styles.capChart}>
+        {overview ? (
+          <Sparkline series={overview.totals.marketCapSeries} tone="neutral" area />
+        ) : (
+          <span className={`${styles.skeleton} ${styles.skeletonChart}`} />
+        )}
+      </div>
+      <div className={styles.axis}>
+        <span>7 days ago</span>
+        <span>Today</span>
+      </div>
+      <footer className={styles.cardFooter}>
+        {overview?.tradingTime && isHydrated && <MarketStatus tradingTime={overview.tradingTime} />}
+        {refTime && <span>Ref. {refTime}</span>}
+      </footer>
+    </section>
+  )
+}
+
+function MarketStatus({ tradingTime }: { tradingTime: RwaTradingTime }): ReactNode {
+  const open = isUsMarketOpen(tradingTime, new Date())
+
+  return <span className={open ? styles.statusOpen : styles.statusClosed}>US market {open ? 'open' : 'closed'}</span>
+}
+
+function Total({ label, value }: { label: ReactNode; value: string | undefined }): ReactNode {
+  return (
+    <div className={styles.total}>
+      {value === undefined ? (
+        <span className={`${styles.skeleton} ${styles.skeletonValue}`} />
+      ) : (
+        <span className={styles.totalValue}>{value}</span>
+      )}
+      <span className={styles.totalLabel}>{label}</span>
+    </div>
+  )
+}
