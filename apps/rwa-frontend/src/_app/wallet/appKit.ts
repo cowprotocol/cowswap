@@ -7,6 +7,7 @@ import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { ChainController, OptionsController, RouterController } from '@reown/appkit-controllers'
 
 import { DEFAULT_NETWORK, SUPPORTED_NETWORKS } from './networks'
+import { forgetUnsupportedStoredNetwork } from './storedNetwork'
 
 import { WALLET_CONNECT_PROJECT_ID } from '@/shared/config'
 
@@ -27,6 +28,8 @@ export const wagmiConfig = wagmiAdapter.wagmiConfig
 // can't be reconnected there. AppKit 1.8.19 does not copy createAppKit({ enableInjected }) into
 // OptionsController.state, which WagmiAdapter reads before adding its default injected connector.
 OptionsController.setOptions({ ...OptionsController.state, enableInjected: false })
+
+if (typeof window !== 'undefined') forgetUnsupportedStoredNetwork(SUPPORTED_NETWORKS)
 
 export const appKit = createAppKit({
   adapters: [wagmiAdapter],
