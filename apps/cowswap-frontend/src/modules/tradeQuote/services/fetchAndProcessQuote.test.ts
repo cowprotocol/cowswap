@@ -404,6 +404,25 @@ describe('fetchAndProcessQuote', () => {
       jotaiStore.set(captchaJwtAtom, null)
     })
 
+    it('keeps a longer pause set while the quote was in flight', async () => {
+      const until = Date.now() + 120_000
+      const response = { status: 429, statusText: '', headers: new Headers({ 'Retry-After': '30' }) }
+      mockBridgingSdk.getQuote.mockImplementation(async () => {
+        jotaiStore.set(quoteRateLimitedUntilAtom, until)
+        throw new OrderBookApiError(response as Response, '')
+      })
+
+      await fetchAndProcessQuote(
+        mockFetchParams,
+        mockQuoteParams,
+        tradeQuotePollingParameters,
+        mockAppData,
+        mockTradeQuoteManager,
+      )
+
+      expect(jotaiStore.get(quoteRateLimitedUntilAtom)).toBe(until)
+    })
+
     it('answers TooManyRequests without requesting a quote while quotes are paused', async () => {
       jotaiStore.set(quoteRateLimitedUntilAtom, Date.now() + 60_000)
 

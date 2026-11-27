@@ -23,11 +23,13 @@ import { isQuoteExpired } from '../utils/quoteDeadline'
 const ONE_SEC = 1000
 const QUOTE_VALIDATION_INTERVAL = ms`2s`
 
+// eslint-disable-next-line max-lines-per-function
 export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParameters): null {
   const { isConfirmOpen, isQuoteUpdatePossible } = quotePollingParams
 
   const canQuote = useAtomValue(captchaCanQuoteAtom)
   const quoteRateLimitedUntil = useAtomValue(quoteRateLimitedUntilAtom)
+  const isPauseCleared = !!usePrevious(quoteRateLimitedUntil) && !quoteRateLimitedUntil
   const { amount, partiallyFillable } = useAtomValue(tradeQuoteInputAtom)
   const [tradeQuotePolling, setTradeQuotePolling] = useAtom(tradeQuoteCounterAtom)
   const resetQuoteCounter = useResetQuoteCounter()
@@ -74,8 +76,7 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
   }, [isWindowVisible, tradeQuoteManager, isConfirmOpen, amountStr, setTradeQuotePolling])
 
   /**
-   * Fetch the quote instantly once the quote params are changed,
-   * or once a new JWT clears the rate-limit pause, instead of on the next poll
+   * Fetch the quote instantly once the quote params are changed
    */
   useLayoutEffect(() => {
     /**
@@ -87,7 +88,12 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
     if (pollQuoteRef.current(true)) {
       resetQuoteCounter()
     }
-  }, [canQuote, isConfirmOpen, isQuoteUpdatePossible, quoteParams, quoteRateLimitedUntil, resetQuoteCounter])
+  }, [canQuote, isConfirmOpen, isQuoteUpdatePossible, quoteParams, resetQuoteCounter])
+
+  // A new JWT cleared the pause. Forced, as the rate-limited quote may still hold a response for the same params.
+  useLayoutEffect(() => {
+    if (!isConfirmOpen && isPauseCleared && pollQuoteRef.current(false, true)) resetQuoteCounter()
+  }, [isConfirmOpen, isPauseCleared, resetQuoteCounter])
 
   /**
    * Update quote once a QUOTE_POLLING_INTERVAL

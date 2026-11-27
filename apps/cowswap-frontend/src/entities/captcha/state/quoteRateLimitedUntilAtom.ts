@@ -23,7 +23,9 @@ export function pauseQuotesOnRateLimit(error: unknown, captchaTokenAtRequest: st
 
   // A 429 for a JWT replaced since the request started doesn't limit the new one.
   if (getCaptchaToken() === captchaTokenAtRequest) {
-    jotaiStore.set(quoteRateLimitedUntilAtom, Date.now() + parseRetryAfter(error.response))
+    // An overlapping 429 with a shorter Retry-After must not cut the pause short.
+    const until = Date.now() + parseRetryAfter(error.response)
+    jotaiStore.set(quoteRateLimitedUntilAtom, (current) => Math.max(current ?? 0, until))
   }
 
   return true

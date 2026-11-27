@@ -24,8 +24,13 @@ import { useTradeQuotePolling } from './useTradeQuotePolling'
 import { tradeTypeAtom } from '../../trade/state/tradeTypeAtom'
 import { tradeQuoteCounterAtom } from '../state/tradeQuoteCounterAtom'
 import { tradeQuoteInputAtom } from '../state/tradeQuoteInputAtom'
+import { quoteUsingSameParameters } from '../utils/quoteUsingSameParameters'
 
 jest.mock('modules/zeroApproval/hooks/useZeroApprovalState')
+jest.mock('../utils/quoteUsingSameParameters', () => ({
+  ...jest.requireActual('../utils/quoteUsingSameParameters'),
+  quoteUsingSameParameters: jest.fn(),
+}))
 jest.mock('common/hooks/useGetMarketDimension')
 jest.mock('common/hooks/useEnoughAllowance', () => ({
   ...jest.requireActual('common/hooks/useEnoughAllowance'),
@@ -195,6 +200,8 @@ describe('useTradeQuotePolling()', () => {
   })
 
   it('requests no quote while quotes are paused, and one as soon as a new JWT clears the pause', async () => {
+    // As if the rate-limited quote kept a response for the same params.
+    jest.mocked(quoteUsingSameParameters).mockReturnValue(true)
     jotaiStore.set(quoteRateLimitedUntilAtom, Date.now() + 60_000)
 
     renderHook(

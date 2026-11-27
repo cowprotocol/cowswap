@@ -47,26 +47,53 @@ describe('bffFetch', () => {
     expect(authOf(1)).toBeNull()
   })
 
-  it('skips the anonymous retry of a 401 once an overlapping request was rate limited', async () => {
-    let resolveSecond: (response: unknown) => void = () => undefined
-    setBffBearerToken('expired')
-    mockFetch
-      .mockResolvedValueOnce({ status: 401 })
-      .mockReturnValueOnce(
-        new Promise((resolve) => {
-          resolveSecond = resolve
-        }),
-      )
-      .mockResolvedValueOnce({ status: 429, headers: new Headers({ 'Retry-After': '30' }) })
+  describe('with overlapping requests', () => {
+    beforeAll(() => jest.useFakeTimers())
+    afterAll(() => jest.useRealTimers())
+    // The pause is module state, so the next test must start without it.
+    afterEach(() => setBffBearerToken('jwt'))
 
-    const first = bffFetch(URL)
-    const second = bffFetch(URL)
-    await first
-    resolveSecond({ status: 401 })
+    function deferResponse(): (response: unknown) => void {
+      let resolve: (response: unknown) => void = () => undefined
+      mockFetch.mockReturnValueOnce(new Promise((r) => (resolve = r)))
+      return resolve
+    }
 
-    expect((await second).status).toBe(429)
-    expect(mockFetch).toHaveBeenCalledTimes(3)
-    setBffBearerToken('jwt')
+    async function expectPausedFor(ms: number): Promise<void> {
+      const calls = mockFetch.mock.calls.length
+
+      jest.advanceTimersByTime(ms - 1)
+      expect((await bffFetch(URL)).status).toBe(429)
+      expect(mockFetch).toHaveBeenCalledTimes(calls)
+
+      jest.advanceTimersByTime(1)
+      mockFetch.mockResolvedValueOnce({ status: 200 })
+      expect((await bffFetch(URL)).status).toBe(200)
+    }
+
+    it.each([30, 120])('skips the anonymous retry of a 401 and keeps a %ss pause', async (seconds) => {
+      setBffBearerToken('expired')
+      const resolveFirst = deferResponse()
+      const first = bffFetch(URL)
+      mockFetch.mockResolvedValueOnce({ status: 429, headers: new Headers({ 'Retry-After': String(seconds) }) })
+      await bffFetch(URL)
+      resolveFirst({ status: 401 })
+
+      expect((await first).status).toBe(429)
+      expect(mockFetch).toHaveBeenCalledTimes(2)
+      await expectPausedFor(seconds * 1000)
+    })
+
+    it('keeps the later deadline when an overlapping 429 has a shorter Retry-After', async () => {
+      const resolveFirst = deferResponse()
+      const first = bffFetch(URL)
+      mockFetch.mockResolvedValueOnce({ status: 429, headers: new Headers({ 'Retry-After': '120' }) })
+      await bffFetch(URL)
+      resolveFirst({ status: 429, headers: new Headers({ 'Retry-After': '30' }) })
+      await first
+
+      await expectPausedFor(120_000)
+    })
   })
 
   describe('after a 429', () => {
