@@ -133,6 +133,7 @@ export function TwapConfirmModal(): ReactNode {
                 <EoaTwapSigningPendingContent
                   steps={steps ?? []}
                   buttonProps={buttonProps}
+                  onDismiss={onDismiss}
                   onViewOrders={dismissSuccessState}
                 />
               ) : null}

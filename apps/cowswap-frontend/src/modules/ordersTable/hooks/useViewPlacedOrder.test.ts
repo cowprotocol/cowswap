@@ -3,6 +3,7 @@ import { useAtomValue } from 'jotai'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 
 import { act, renderHook } from '@testing-library/react'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { OrderTabId } from 'entities/routes/routes.atom'
 
 import { useSetOrdersTableDrawerOpen, useTradeConfirmActions, TradeConfirmActions } from 'modules/trade'
@@ -28,6 +29,10 @@ jest.mock('modules/trade', () => ({
   useTradeConfirmActions: jest.fn(),
 }))
 
+jest.mock('entities/injectedWidget', () => ({
+  useInjectedWidgetParams: jest.fn(),
+}))
+
 jest.mock('./useRevealOrderInOrdersTable', () => ({
   useRevealOrderInOrdersTable: jest.fn(),
 }))
@@ -48,6 +53,7 @@ const mockedUseSetOrdersTableDrawerOpen = useSetOrdersTableDrawerOpen as jest.Mo
   typeof useSetOrdersTableDrawerOpen
 >
 const mockedUseTradeConfirmActions = useTradeConfirmActions as jest.MockedFunction<typeof useTradeConfirmActions>
+const mockedUseInjectedWidgetParams = useInjectedWidgetParams as jest.MockedFunction<typeof useInjectedWidgetParams>
 
 describe('useViewPlacedOrder()', () => {
   const onSign = jest.fn()
@@ -63,6 +69,7 @@ describe('useViewPlacedOrder()', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
+    mockedUseInjectedWidgetParams.mockReturnValue({})
     mockedUseSetOrdersTableDrawerOpen.mockReturnValue(setOrdersTableDrawerOpen)
     mockedUseRevealOrderInOrdersTable.mockReturnValue(revealOrderInOrdersTable)
     mockedUseNavigateToOrdersTableTab.mockReturnValue(navigateToOrdersTableTab)
@@ -90,7 +97,7 @@ describe('useViewPlacedOrder()', () => {
     const { result } = renderHook(() => useViewPlacedOrder())
 
     act(() => {
-      result.current()
+      result.current?.()
     })
 
     expect(onDismiss).toHaveBeenCalledTimes(1)
@@ -111,7 +118,7 @@ describe('useViewPlacedOrder()', () => {
     const { result } = renderHook(() => useViewPlacedOrder())
 
     act(() => {
-      result.current()
+      result.current?.()
     })
 
     expect(setOrdersTableDrawerOpen).toHaveBeenCalledWith(true)
@@ -125,7 +132,7 @@ describe('useViewPlacedOrder()', () => {
     const { result } = renderHook(() => useViewPlacedOrder(customDismiss))
 
     act(() => {
-      result.current()
+      result.current?.()
     })
 
     expect(customDismiss).toHaveBeenCalledTimes(1)
@@ -145,7 +152,7 @@ describe('useViewPlacedOrder()', () => {
     const { result } = renderHook(() => useViewPlacedOrder())
 
     act(() => {
-      result.current()
+      result.current?.()
     })
 
     expect(setOrdersTableDrawerOpen).toHaveBeenCalledWith(true)
@@ -160,11 +167,20 @@ describe('useViewPlacedOrder()', () => {
     const { result } = renderHook(() => useViewPlacedOrder())
 
     act(() => {
-      result.current()
+      result.current?.()
     })
 
     expect(onDismiss).toHaveBeenCalledTimes(1)
     expect(revealOrderInOrdersTable).not.toHaveBeenCalled()
     expect(navigateToOrdersTableTab).not.toHaveBeenCalled()
+  })
+
+  it('gives no action when the widget hides the orders table', () => {
+    mockedUseMediaQuery.mockReturnValue(false)
+    mockedUseInjectedWidgetParams.mockReturnValue({ hideOrdersTable: true })
+
+    const { result } = renderHook(() => useViewPlacedOrder())
+
+    expect(result.current).toBeUndefined()
   })
 })
