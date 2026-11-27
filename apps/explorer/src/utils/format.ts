@@ -1,6 +1,6 @@
 import { hexToBytes, hexToString, type Hex } from 'viem'
 
-import { formatSmart, safeTokenName, TokenErc20 } from '@gnosis.pm/dex-js'
+import { formatSmart as dexFormatSmart, safeTokenName, TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
 import { DEFAULT_DECIMALS, MINIMUM_ATOM_VALUE, ONE_BIG_NUMBER, ONE_HUNDRED_BIG_NUMBER, TEN_BIG_NUMBER } from 'const'
 import { FormatAmountPrecision } from 'utils'
@@ -17,13 +17,26 @@ export {
   adjustPrecision,
   formatAmountFull,
   formatPrice,
-  formatSmart,
   parseAmount,
   safeFilledToken,
   safeTokenName,
 } from '@gnosis.pm/dex-js'
 
 // TODO: Move utils to dex-utils
+
+interface FormatSmartParams {
+  amount: string
+  precision: number
+  decimals?: number
+  smallLimit?: string
+  thousandSeparator?: boolean
+  isLocaleAware?: boolean
+}
+
+export function formatSmart(params: FormatSmartParams): string {
+  // dex-js trims the zeros left after cutting decimals but keeps the separator: 1234.00001 => "1,234."
+  return dexFormatSmart(params).replace(/[.,]$/, '')
+}
 
 export function makeMultipleOf(mult = 5, value?: number | string | null): number {
   const cache = {}
