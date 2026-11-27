@@ -1,6 +1,8 @@
 import { useStore } from 'jotai'
 import { useMemo } from 'react'
 
+import { useConnection } from 'wagmi'
+
 import { type CowWidgetEventListeners, CowWidgetEvents } from '@cowprotocol/events'
 
 import { queryClientAtom } from 'jotai-tanstack-query'
@@ -8,9 +10,9 @@ import { queryClientAtom } from 'jotai-tanstack-query'
 import { assetAccountTabAtomFamily } from './assetAccountTabAtom'
 
 import { RWA_QUERY_KEY_ROOT } from '@/shared/api'
-import { awaitedOpenOrderAtom } from '@/widgets/account'
+import { awaitedActivityOrderAtom, awaitedOpenOrderAtom, type AwaitedOrder } from '@/widgets/account'
 
-const AWAIT_POSTED_ORDER_MS = 60_000
+const AWAIT_ORDER_MS = 60_000
 
 const ORDER_CLOSED_EVENTS = [
   CowWidgetEvents.ON_FULFILLED_ORDER,
@@ -20,6 +22,7 @@ const ORDER_CLOSED_EVENTS = [
 
 export function useWidgetOrderEventListeners(ticker: string): CowWidgetEventListeners {
   const store = useStore()
+  const { address } = useConnection()
 
   return useMemo(() => {
     const refreshAccount = (): void => {
@@ -34,7 +37,7 @@ export function useWidgetOrderEventListeners(ticker: string): CowWidgetEventList
         event: CowWidgetEvents.ON_POSTED_ORDER,
         handler: ({ orderUid }) => {
           store.set(assetAccountTabAtomFamily(ticker), 'orders')
-          store.set(awaitedOpenOrderAtom, { id: orderUid, until: Date.now() + AWAIT_POSTED_ORDER_MS })
+          store.set(awaitedOpenOrderAtom, getAwaitedOrder(orderUid, address, ticker))
           refreshAccount()
         },
       },
@@ -42,10 +45,17 @@ export function useWidgetOrderEventListeners(ticker: string): CowWidgetEventList
         event,
         handler: ({ order }: { order: { uid: string } }) => {
           store.set(awaitedOpenOrderAtom, (awaited) => (awaited?.id === order.uid ? null : awaited))
+          if (event === CowWidgetEvents.ON_FULFILLED_ORDER) {
+            store.set(awaitedActivityOrderAtom, getAwaitedOrder(order.uid, address, ticker))
+          }
           refreshAccount()
         },
       })),
       { event: CowWidgetEvents.ON_PRESIGNED_ORDER, handler: refreshAccount },
     ]
-  }, [store, ticker])
+  }, [store, ticker, address])
+}
+
+function getAwaitedOrder(id: string, owner: string | undefined, scope: string): AwaitedOrder | null {
+  return owner ? { id, owner, scope, until: Date.now() + AWAIT_ORDER_MS } : null
 }

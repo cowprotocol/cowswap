@@ -2,6 +2,7 @@ import { createStore, Provider } from 'jotai'
 import type { ReactNode } from 'react'
 
 import { QueryClient } from '@tanstack/react-query'
+import { useConnection } from 'wagmi'
 
 import { type CowWidgetEventListeners, CowWidgetEvents } from '@cowprotocol/events'
 
@@ -12,12 +13,14 @@ import { assetAccountTabAtomFamily } from './assetAccountTabAtom'
 import { useWidgetOrderEventListeners } from './useWidgetOrderEventListeners'
 
 import { RWA_QUERY_KEY_ROOT } from '@/shared/api'
-import { awaitedOpenOrderAtom } from '@/widgets/account'
+import { awaitedActivityOrderAtom, awaitedOpenOrderAtom } from '@/widgets/account'
 
 jest.mock('@/features/connect-wallet', () => ({ ConnectButton: () => null }))
+jest.mock('wagmi', () => ({ useConnection: jest.fn() }))
 
 const TICKER = 'XAU'
 const ORDER_UID = '0xorder'
+const OWNER = '0x00000000000000000000000000000000000000aA'
 
 interface RenderedListeners {
   store: ReturnType<typeof createStore>
@@ -25,7 +28,8 @@ interface RenderedListeners {
   emit(event: CowWidgetEvents, payload: object): void
 }
 
-function renderListeners(): RenderedListeners {
+function renderListeners(address: string | null = OWNER): RenderedListeners {
+  jest.mocked(useConnection).mockReturnValue({ address: address ?? undefined } as ReturnType<typeof useConnection>)
   const store = createStore()
   const queryClient = new QueryClient()
   const invalidateQueries = jest.spyOn(queryClient, 'invalidateQueries').mockResolvedValue(undefined)
@@ -59,12 +63,51 @@ describe('useWidgetOrderEventListeners', () => {
     expect(invalidateQueries).toHaveBeenCalledWith({ queryKey: [RWA_QUERY_KEY_ROOT, 'open-orders'] })
   })
 
-  it('awaits the posted order', () => {
+  it('awaits the posted order in the open orders of the wallet and asset', () => {
     const { store, emit } = renderListeners()
 
     emit(CowWidgetEvents.ON_POSTED_ORDER, { orderUid: ORDER_UID })
 
-    expect(store.get(awaitedOpenOrderAtom)).toEqual({ id: ORDER_UID, until: expect.any(Number) })
+    expect(store.get(awaitedOpenOrderAtom)).toEqual({
+      id: ORDER_UID,
+      owner: OWNER,
+      scope: TICKER,
+      until: expect.any(Number),
+    })
+  })
+
+  it('awaits the filled order in the activity of the wallet and asset', () => {
+    const { store, emit } = renderListeners()
+
+    emit(CowWidgetEvents.ON_FULFILLED_ORDER, { order: { uid: ORDER_UID } })
+
+    expect(store.get(awaitedActivityOrderAtom)).toEqual({
+      id: ORDER_UID,
+      owner: OWNER,
+      scope: TICKER,
+      until: expect.any(Number),
+    })
+  })
+
+  it.each([CowWidgetEvents.ON_CANCELLED_ORDER, CowWidgetEvents.ON_EXPIRED_ORDER])(
+    'does not await activity for %s',
+    (event) => {
+      const { store, emit } = renderListeners()
+
+      emit(event, { order: { uid: ORDER_UID } })
+
+      expect(store.get(awaitedActivityOrderAtom)).toBeNull()
+    },
+  )
+
+  it('awaits nothing without a connected wallet', () => {
+    const { store, emit } = renderListeners(null)
+
+    emit(CowWidgetEvents.ON_POSTED_ORDER, { orderUid: ORDER_UID })
+    emit(CowWidgetEvents.ON_FULFILLED_ORDER, { order: { uid: ORDER_UID } })
+
+    expect(store.get(awaitedOpenOrderAtom)).toBeNull()
+    expect(store.get(awaitedActivityOrderAtom)).toBeNull()
   })
 
   it.each([
