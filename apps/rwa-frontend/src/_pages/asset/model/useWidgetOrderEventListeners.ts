@@ -3,12 +3,13 @@ import { useMemo } from 'react'
 
 import { useConnection } from 'wagmi'
 
-import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 import { type CowWidgetEventListeners, CowWidgetEvents, type OnFulfilledOrderPayload } from '@cowprotocol/events'
 
 import { queryClientAtom } from 'jotai-tanstack-query'
 
 import { assetAccountTabAtomFamily } from './assetAccountTabAtom'
+
+import { isAssetSwap } from '../lib/assetOrder'
 
 import type { RwaTokenSummary } from '@/entities/asset'
 
@@ -36,12 +37,6 @@ export function useWidgetOrderEventListeners({
   const { address } = useConnection()
 
   return useMemo(() => {
-    const isAssetToken = (chainId: number, address: string): boolean =>
-      tokens.some((token) => token.chainId === chainId && areAddressesEqual(token.address, address))
-    // Activity lists the trades of the asset tokens on the order's own chain, so a bridged buy is never listed there
-    const isListedInActivity = ({ chainId, order }: OrderOutcome): boolean =>
-      isAssetToken(chainId, order.sellToken) || isAssetToken(chainId, order.buyToken)
-
     const refreshAccount = (): void => {
       const queryClient = store.get(queryClientAtom)
 
@@ -64,7 +59,7 @@ export function useWidgetOrderEventListeners({
           const { order } = payload
 
           store.set(awaitedOpenOrderAtom, (awaited) => (awaited?.id === order.uid ? null : awaited))
-          if (event === CowWidgetEvents.ON_FULFILLED_ORDER && isListedInActivity(payload)) {
+          if (event === CowWidgetEvents.ON_FULFILLED_ORDER && isAssetSwap(tokens, payload)) {
             store.set(awaitedActivityOrderAtom, getAwaitedOrder(order.uid, address, ticker))
           }
           refreshAccount()
