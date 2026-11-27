@@ -15,6 +15,12 @@ import { ApplicationModal } from 'legacy/state/application/reducer'
 import { CrossChainFamilySwitchState, useCrossChainFamilySwitch } from './useCrossChainFamilySwitch'
 import { useLegacySetChainIdToUrl } from './useLegacySetChainIdToUrl'
 
+const STATES_LEFT_TO_THE_REGULAR_SWITCH = [
+  CrossChainFamilySwitchState.NOT_CROSSING_CHAIN,
+  CrossChainFamilySwitchState.WALLET_NOT_CONNECTED,
+  CrossChainFamilySwitchState.HOST_OWNS_WALLET,
+]
+
 export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: boolean) => Promise<void> {
   const addSnackbar = useAddSnackbar()
   const closeModal = useCloseModal(ApplicationModal.NETWORK_SELECTOR)
@@ -25,15 +31,13 @@ export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: bo
   return useCallback(
     async (targetChain: SupportedChainId, skipClose?: boolean) => {
       // Switching between EVM and non-EVM networks requires a different wallet and is handled
-      // separately (confirm + disconnect + reconnect) instead of a regular network switch,
-      // unless the WalletConnect session already approved the target chain's namespace.
+      // separately (confirm + disconnect + reconnect) instead of a regular network switch, unless
+      // the WalletConnect session already approved the target chain's namespace or the host owns
+      // the wallet.
       if (!hasWalletConnectAccountForChain(targetChain)) {
         const switchChainState = await handleCrossChainFamilySwitch(targetChain, skipClose)
 
-        if (
-          switchChainState !== CrossChainFamilySwitchState.NOT_CROSSING_CHAIN &&
-          switchChainState !== CrossChainFamilySwitchState.WALLET_NOT_CONNECTED
-        ) {
+        if (!STATES_LEFT_TO_THE_REGULAR_SWITCH.includes(switchChainState)) {
           return
         }
       }

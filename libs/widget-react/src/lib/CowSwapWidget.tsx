@@ -7,6 +7,7 @@ import {
   CowSwapWidgetParams,
   CowSwapWidgetProps,
   EthereumProvider,
+  SolanaProvider,
   createCowSwapWidget,
   WIDGET_CONTAINER_ID,
 } from '@cowprotocol/widget-lib'
@@ -20,6 +21,7 @@ interface CreateWidgetParams {
   container: HTMLDivElement
   params: CowSwapWidgetParams
   provider?: EthereumProvider
+  solanaProvider?: SolanaProvider
   listeners?: CowWidgetEventListeners
   onReady?: () => void
   onLoadingError?: () => void
@@ -33,6 +35,7 @@ type WidgetErrorState = { error: Error; message: string } | null
 interface WidgetRefs {
   paramsRef: MutableRef<CowSwapWidgetParams | null>
   providerRef: MutableRef<EthereumProvider | undefined>
+  solanaProviderRef: MutableRef<SolanaProvider | undefined>
   listenersRef: MutableRef<CowWidgetEventListeners | undefined>
   enableSafeSdkBridgeRef: MutableRef<boolean>
   widgetHandlerRef: MutableRef<CowSwapWidgetHandler | null>
@@ -48,6 +51,7 @@ interface WidgetSettings {
 export function CowSwapWidget({
   params,
   provider,
+  solanaProvider,
   listeners,
   onReady,
   onLoadingError,
@@ -57,6 +61,7 @@ export function CowSwapWidget({
   const [error, setError] = useState<WidgetErrorState>(null)
   const paramsRef = useRef<CowSwapWidgetParams | null>(null)
   const providerRef = useRef<EthereumProvider | undefined>(provider)
+  const solanaProviderRef = useRef<SolanaProvider | undefined>(solanaProvider)
   const listenersRef = useRef<CowWidgetEventListeners | undefined>(listeners)
   const enableSafeSdkBridgeRef = useRef(enableSafeSdkBridge)
   const containerRef = useRef<HTMLDivElement | null>(null)
@@ -113,7 +118,7 @@ export function CowSwapWidget({
   )
 
   useDestroyWidgetOnUnmount({
-    refs: { paramsRef, providerRef, listenersRef, enableSafeSdkBridgeRef, widgetHandlerRef },
+    refs: { paramsRef, providerRef, solanaProviderRef, listenersRef, enableSafeSdkBridgeRef, widgetHandlerRef },
     setWidgetHandler,
   })
 
@@ -154,6 +159,7 @@ export function CowSwapWidget({
             container,
             params,
             provider,
+            solanaProvider: solanaProviderRef.current,
             listeners,
             onReady,
             onLoadingError,
@@ -172,6 +178,7 @@ export function CowSwapWidget({
             container,
             params,
             provider,
+            solanaProvider: solanaProviderRef.current,
             listeners,
             onReady,
             onLoadingError,
@@ -205,6 +212,7 @@ export function CowSwapWidget({
             container,
             params,
             provider,
+            solanaProvider: solanaProviderRef.current,
             listeners,
             onReady,
             onLoadingError,
@@ -216,6 +224,17 @@ export function CowSwapWidget({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onReady, provider, tryOrHandleError])
+
+  useEffect(() => {
+    if (!widgetHandlerRef.current || solanaProviderRef.current === solanaProvider) return
+
+    solanaProviderRef.current = solanaProvider
+
+    const handler = widgetHandlerRef.current
+    tryOrHandleError('Updating the Solana provider', latestSettingsRef.current, () =>
+      handler.updateSolanaProvider(solanaProvider),
+    )
+  }, [solanaProvider, tryOrHandleError])
 
   useEffect(() => {
     if (!widgetHandlerRef.current || listenersRef.current === listeners) return
@@ -267,6 +286,7 @@ function createWidget({
   container,
   params,
   provider,
+  solanaProvider,
   listeners,
   onReady,
   onLoadingError,
@@ -275,6 +295,7 @@ function createWidget({
   return createCowSwapWidget(container, {
     params,
     provider,
+    solanaProvider,
     listeners,
     onReady,
     enableSafeSdkBridge,
@@ -305,6 +326,7 @@ function useDestroyWidgetOnUnmount({
     return () => {
       refs.paramsRef.current = null
       refs.providerRef.current = undefined
+      refs.solanaProviderRef.current = undefined
       refs.listenersRef.current = undefined
       refs.enableSafeSdkBridgeRef.current = true
 

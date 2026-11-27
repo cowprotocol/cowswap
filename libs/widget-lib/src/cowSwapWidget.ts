@@ -1,5 +1,10 @@
 import { CowWidgetEventListeners } from '@cowprotocol/events'
-import { getParentOrigin, IframeRpcProviderBridge } from '@cowprotocol/iframe-transport'
+import {
+  getParentOrigin,
+  IframeRpcProviderBridge,
+  IframeSolanaProviderBridge,
+  SolanaProvider,
+} from '@cowprotocol/iframe-transport'
 
 import { isAllowedWindowOpenUrl } from './allowedWindowOpenUrl'
 import { assignElementStyles } from './applyElementStyles'
@@ -37,6 +42,7 @@ const noopHandler: CowSwapWidgetHandler = {
   updateParams: () => void 0,
   updateListeners: () => void 0,
   updateProvider: () => void 0,
+  updateSolanaProvider: () => void 0,
   closeAllModals: () => void 0,
   destroy: () => void 0,
 }
@@ -49,6 +55,7 @@ export interface CowSwapWidgetHandler {
   updateParams: (params: CowSwapWidgetParams) => void
   updateListeners: (newListeners?: CowWidgetEventListeners) => void
   updateProvider: (newProvider?: EthereumProvider) => void
+  updateSolanaProvider: (newSolanaProvider?: SolanaProvider) => void
   /** Closes the modals and drawers open in the widget, e.g. the orders table, so it shows the trade form */
   closeAllModals: () => void
   destroy: () => void
@@ -63,10 +70,18 @@ export interface CowSwapWidgetHandler {
 
 // eslint-disable-next-line max-lines-per-function
 export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidgetProps): CowSwapWidgetHandler {
-  const { params, provider: providerAux, listeners, onReady, enableSafeSdkBridge = true } = props
+  const {
+    params,
+    provider: providerAux,
+    solanaProvider: solanaProviderAux,
+    listeners,
+    onReady,
+    enableSafeSdkBridge = true,
+  } = props
 
   let provider = providerAux
-  let currentParams: CowSwapWidgetParams = resolveWidgetParams(params)
+  let solanaProvider = solanaProviderAux
+  let currentParams: CowSwapWidgetParams = resolveWidgetParams(params, !!solanaProvider)
   let lastDynamicHeight: string = ''
 
   if (typeof window === 'undefined') return noopHandler
@@ -91,6 +106,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
 
   let iFrameCowEventEmitter: IframeCowEventEmitter | null = null
   let iframeRpcProviderBridge: IframeRpcProviderBridge | null = null
+  let iframeSolanaProviderBridge: IframeSolanaProviderBridge | null = null
   let iframeSafeSdkBridge: IframeSafeSdkBridge | null = null
 
   let heightChangeListeners: WindowListener[] = []
@@ -154,6 +170,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
 
     // 8. Wire up the iframeRpcProviderBridge with the provider (so RPC calls flow back and forth)
     iframeRpcProviderBridge = updateProvider(iframeWindow, iframeOrigin, null, provider)
+    iframeSolanaProviderBridge = updateSolanaProvider(iframeWindow, iframeOrigin, null, solanaProvider)
 
     // 9. Schedule the uploading of the params, once the iframe is loaded
     iframe.addEventListener('load', () => {
@@ -171,8 +188,8 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   }
 
   function destroy(skipIframeDestroy = false): void {
-    // Disconnect rpc provider and unsubscribe to events
-    iframeRpcProviderBridge?.disconnect()
+    // Disconnect the provider bridges and unsubscribe to events
+    ;[iframeRpcProviderBridge, iframeSolanaProviderBridge].forEach((bridge) => bridge?.disconnect())
     // Stop listening for cow events
     iFrameCowEventEmitter?.stopListeningIframe()
 
@@ -199,7 +216,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
     iframe,
     updateParams: (newParams: CowSwapWidgetParams) => {
       if (!iframeWindow) return
-      const nextParams = resolveWidgetParams(newParams)
+      const nextParams = resolveWidgetParams(newParams, !!solanaProvider)
       const shouldReloadIframe = requiresIframeReload(iframe, nextParams)
 
       if (shouldReloadIframe) assertSameIframeOrigin(nextParams, iframeOrigin)
@@ -221,6 +238,25 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
 
       provider = newProvider
       iframeRpcProviderBridge = updateProvider(iframeWindow, iframeOrigin, iframeRpcProviderBridge, newProvider)
+    },
+    updateSolanaProvider: (newSolanaProvider) => {
+      if (!iframeWindow) return
+
+      const previousSolanaProvider = solanaProvider
+      solanaProvider = newSolanaProvider
+      iframeSolanaProviderBridge = updateSolanaProvider(
+        iframeWindow,
+        iframeOrigin,
+        iframeSolanaProviderBridge,
+        newSolanaProvider,
+      )
+
+      // The widget reads its Solana account once, while the bundle loads, and this provider has no
+      // way to announce a later one unless the host implemented `on`. Reload so the new account
+      // cannot stay stale on screen.
+      if (previousSolanaProvider !== newSolanaProvider) {
+        reloadIframe(iframe, currentParams)
+      }
     },
     closeAllModals: () => {
       if (!iframeWindow) return
@@ -399,7 +435,7 @@ function requiresIframeReload(iframe: HTMLIFrameElement, params: CowSwapWidgetPa
   return isSolanaEnabledInWidgetSrc(iframe.src) !== isSolanaEnabledForWidget(params)
 }
 
-function resolveWidgetParams(params: CowSwapWidgetParams): CowSwapWidgetParams {
+function resolveWidgetParams(params: CowSwapWidgetParams, hasSolanaProvider: boolean): CowSwapWidgetParams {
   const currentParams = { ...DEFAULT_WIDGET_PARAMS, ...params }
 
   if (typeof currentParams.appCode !== 'string' || currentParams.appCode.trim().length === 0) {
@@ -408,6 +444,10 @@ function resolveWidgetParams(params: CowSwapWidgetParams): CowSwapWidgetParams {
 
   if (currentParams.disableWindowOpen && currentParams.standaloneMode !== false) {
     throw new Error('`disableWindowOpen: true` requires `standaloneMode: false`')
+  }
+
+  if (currentParams.enableSolana && currentParams.standaloneMode === false && !hasSolanaProvider) {
+    logWidget('Solana is offered in dapp mode but cannot be traded until a `solanaProvider` is passed.')
   }
 
   return currentParams
@@ -512,6 +552,29 @@ function updateProvider(
   // Connect to the new provider
   if (newProvider) {
     providerBridge.onConnect(newProvider)
+  }
+
+  return providerBridge
+}
+
+/**
+ * Swaps the Solana bridge over to a new host wallet.
+ *
+ * A disconnected bridge has given up its message listener for good, so this builds a fresh one
+ * rather than reusing it — a reused bridge would stop answering the widget entirely.
+ */
+function updateSolanaProvider(
+  iframe: Window,
+  iframeOrigin: string,
+  iframeSolanaProviderBridge: IframeSolanaProviderBridge | null,
+  newSolanaProvider?: SolanaProvider,
+): IframeSolanaProviderBridge {
+  iframeSolanaProviderBridge?.disconnect()
+
+  const providerBridge = new IframeSolanaProviderBridge(iframe, iframeOrigin)
+
+  if (newSolanaProvider) {
+    providerBridge.onConnect(newSolanaProvider)
   }
 
   return providerBridge

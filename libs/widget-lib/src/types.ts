@@ -5,6 +5,7 @@ import {
   CowWidgetEvents,
   OnTradeParamsPayload,
 } from '@cowprotocol/events'
+import type { SolanaProvider } from '@cowprotocol/iframe-transport'
 
 import type * as CSS from 'csstype'
 
@@ -16,6 +17,16 @@ export type CowSwapTheme = 'dark' | 'light'
 export interface CowSwapWidgetProps {
   params: CowSwapWidgetParams
   provider?: EthereumProvider
+  /**
+   * The host's Solana wallet, for dapp mode (`standaloneMode: false`) together with
+   * {@link CowSwapWidgetParams.enableSolana}. Ignored in standalone mode, where the widget
+   * connects its own wallet.
+   *
+   * Wrap a Wallet Standard wallet with {@link solanaProviderFromStandardWallet}, or implement
+   * {@link SolanaProvider} directly. Keep the reference stable: handing over a different object
+   * reloads the iframe, because the widget reads the wallet once while its bundle loads.
+   */
+  solanaProvider?: SolanaProvider
   listeners?: CowWidgetEventListeners
   onReady?(): void
   onLoadingError?(): void
@@ -314,7 +325,9 @@ export interface CowSwapWidgetParams {
   targetChainId?: number
 
   /**
-   * Lists Solana among the widget's networks. Requires standalone mode.
+   * Lists Solana among the widget's networks.
+   * In dapp mode it additionally requires {@link CowSwapWidgetProps.solanaProvider}, since the
+   * widget has no wallet of its own there and the EIP-1193 provider cannot sign Solana.
    * `partnerFee` is not charged on Solana trades, so a partner who sets one still earns nothing
    * there until Solana partner fees ship.
    * The Solana wallet connector is built from the iframe URL as the widget boots, so changing this

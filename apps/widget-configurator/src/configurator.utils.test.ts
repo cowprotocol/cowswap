@@ -1,4 +1,4 @@
-import { SOLANA_TOKEN_LIST_URL } from '@cowprotocol/common-const'
+import { SOLANA_TOKEN_LIST_URL, USDC, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TradeType } from '@cowprotocol/widget-lib'
 
@@ -12,8 +12,9 @@ import {
   buildConfiguratorState,
   getCrossChainBlockedReason,
   getDefaultCustomColorsByTheme,
+  getDefaultTokenPair,
+  getSolanaDappModeNotice,
   isTradeTypeAvailableOnChain,
-  getSolanaBlockedReason,
   getSolanaFeeNotice,
   isSolanaSelectable,
   resolveConfiguratorCustomColorsByTheme,
@@ -41,6 +42,35 @@ jest.mock('@cowprotocol/common-const', () => {
 describe('configurator.utils', () => {
   beforeEach(() => {
     localStorage.clear()
+  })
+
+  it('keeps the default pair on a chain where COW is deployed', () => {
+    expect(getDefaultTokenPair(SupportedChainId.MAINNET)).toEqual({
+      sellToken: DEFAULT_CONFIGURATOR_FORM_VALUES.sellToken,
+      buyToken: DEFAULT_CONFIGURATOR_FORM_VALUES.buyToken,
+    })
+  })
+
+  it('falls back to wrapped native / USDC where COW has no deployment', () => {
+    const { sellToken, buyToken } = getDefaultTokenPair(SupportedChainId.SOLANA)
+
+    expect(sellToken).toBe(WRAPPED_NATIVE_CURRENCIES[SupportedChainId.SOLANA].address)
+    expect(buyToken).toBe(USDC[SupportedChainId.SOLANA]?.address)
+    expect(buyToken).not.toBe(DEFAULT_CONFIGURATOR_FORM_VALUES.buyToken)
+  })
+
+  it('covers every chain the configurator can select', () => {
+    const chainIds = Object.values(SupportedChainId).filter((value): value is SupportedChainId =>
+      Number.isInteger(value),
+    )
+
+    const incomplete = chainIds.filter((chainId) => {
+      const { sellToken, buyToken } = getDefaultTokenPair(chainId)
+
+      return !sellToken || !buyToken
+    })
+
+    expect(incomplete).toEqual([])
   })
 
   it('blocks advanced and yield on Solana, which cannot run them', () => {
@@ -205,6 +235,8 @@ describe('Solana availability', () => {
     partnerFeeBps: 0,
   } as const
 
+  const OPTED_IN_DAPP = { ...OPTED_IN, widgetMode: 'dapp' } as const
+
   it('is off in the shipped defaults, which the API docs promise', () => {
     expect(isSolanaSelectable(DEFAULT_CONFIGURATOR_FORM_VALUES)).toBe(false)
     expect(DEFAULT_CONFIGURATOR_FORM_VALUES.enableSolana).toBe(false)
@@ -212,7 +244,7 @@ describe('Solana availability', () => {
 
   it('is selectable once a standalone widget opts in', () => {
     expect(isSolanaSelectable(OPTED_IN)).toBe(true)
-    expect(getSolanaBlockedReason(OPTED_IN)).toBeUndefined()
+    expect(getSolanaDappModeNotice(OPTED_IN, false)).toBeUndefined()
     expect(getSolanaFeeNotice(OPTED_IN)).toBeUndefined()
   })
 
@@ -220,21 +252,23 @@ describe('Solana availability', () => {
     const values = { ...OPTED_IN, enableSolana: false }
 
     expect(isSolanaSelectable(values)).toBe(false)
-    expect(getSolanaBlockedReason(values)).toBeUndefined()
+    expect(getSolanaDappModeNotice(values, false)).toBeUndefined()
   })
 
   it('stays selectable with a partner fee set, and warns that Solana earns none', () => {
     const values = { ...OPTED_IN, partnerFeeBps: 50 }
 
     expect(isSolanaSelectable(values)).toBe(true)
-    expect(getSolanaBlockedReason(values)).toBeUndefined()
+    expect(getSolanaDappModeNotice(values, false)).toBeUndefined()
     expect(getSolanaFeeNotice(values)).toEqual(expect.any(String))
   })
 
-  it('blocks the opt-in in dapp mode', () => {
-    const values = { ...OPTED_IN, widgetMode: 'dapp' } as const
+  it('tells a dapp-mode integrator to connect a Solana wallet, while Solana stays selectable', () => {
+    expect(getSolanaDappModeNotice(OPTED_IN_DAPP, false)).toEqual(expect.any(String))
+    expect(isSolanaSelectable(OPTED_IN_DAPP)).toBe(true)
+  })
 
-    expect(getSolanaBlockedReason(values)).toEqual(expect.any(String))
-    expect(isSolanaSelectable(values)).toBe(false)
+  it('drops the notice in dapp mode once the host wallet is connected', () => {
+    expect(getSolanaDappModeNotice(OPTED_IN_DAPP, true)).toBeUndefined()
   })
 })

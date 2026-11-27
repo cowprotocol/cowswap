@@ -192,6 +192,7 @@ function createWidgetHandler(): CowSwapWidgetHandler {
     updateParams: jest.fn(),
     updateListeners: jest.fn(),
     updateProvider: jest.fn(),
+    updateSolanaProvider: jest.fn(),
     closeAllModals: jest.fn(),
     destroy: jest.fn(),
   }

@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react'
 import { useConnection, useSwitchChain } from 'wagmi'
 
 import { useAvailableChains } from '@cowprotocol/common-hooks'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { WidgetMode } from '../configurator.types'
 
@@ -12,12 +12,14 @@ export function useSyncWidgetNetwork(
   setNetworkControlState: (chainId: SupportedChainId) => void,
   widgetMode: WidgetMode,
   isSolanaEnabled: boolean,
+  solanaAddress?: string | null,
 ): void {
   const { chainId: walletChainId, isConnected } = useConnection()
   const { mutate: switchChain } = useSwitchChain()
   const availableChains = useAvailableChains({ excludeSolana: !isSolanaEnabled })
   const walletChainIdRef = useRef(walletChainId)
   const currentChainIdRef = useRef(chainId)
+  const previousSolanaAddressRef = useRef(solanaAddress)
   // eslint-disable-next-line react-hooks/refs
   walletChainIdRef.current = walletChainId
   // eslint-disable-next-line react-hooks/refs
@@ -26,6 +28,9 @@ export function useSyncWidgetNetwork(
   // Bind network control to wallet network
   useEffect(() => {
     if (widgetMode === 'standalone' || !isConnected || !walletChainId) return
+    // Solana is lent to the widget by a separate namespace, so the EVM wallet must not pull the
+    // selection back to its own chain.
+    if (isSolanaChain(currentChainIdRef.current)) return
 
     const walletSupportedChainId = walletChainId as SupportedChainId
 
@@ -34,6 +39,35 @@ export function useSyncWidgetNetwork(
     currentChainIdRef.current = walletSupportedChainId
     setNetworkControlState(walletSupportedChainId)
   }, [availableChains, isConnected, walletChainId, setNetworkControlState, widgetMode])
+
+  // Counterpart of the binding above for the Solana namespace, which has no wallet chain to report.
+  // Keyed on the connect itself rather than on staying connected, so picking an EVM chain afterwards
+  // is not pulled back to Solana.
+  useEffect(() => {
+    const justConnected = !previousSolanaAddressRef.current && !!solanaAddress
+    previousSolanaAddressRef.current = solanaAddress
+
+    if (!justConnected || widgetMode === 'standalone' || !isSolanaEnabled) return
+
+    currentChainIdRef.current = SupportedChainId.SOLANA
+    setNetworkControlState(SupportedChainId.SOLANA)
+  }, [solanaAddress, widgetMode, isSolanaEnabled, setNetworkControlState])
+
+  // The widget now offers Solana whether or not a wallet is lent, so losing the host's Solana wallet
+  // no longer makes the chain unavailable inside the iframe — nothing there would move the widget off
+  // a chain it can no longer sign for. The host has to do it.
+  useEffect(() => {
+    if (widgetMode === 'standalone' || !isSolanaChain(chainId) || solanaAddress) return
+
+    const walletSupportedChainId = walletChainId as SupportedChainId
+    const fallbackChainId =
+      isConnected && availableChains.includes(walletSupportedChainId)
+        ? walletSupportedChainId
+        : SupportedChainId.MAINNET
+
+    currentChainIdRef.current = fallbackChainId
+    setNetworkControlState(fallbackChainId)
+  }, [availableChains, chainId, isConnected, setNetworkControlState, solanaAddress, walletChainId, widgetMode])
 
   // Persisted configurator state may still hold a chain that is no longer available (e.g. Solana)
   useEffect(() => {
@@ -52,6 +86,7 @@ export function useSyncWidgetNetwork(
       !switchChain ||
       !isConnected ||
       widgetMode === 'standalone' ||
+      isSolanaChain(chainId) ||
       !availableChains.includes(chainId) ||
       walletChainIdRef.current === chainId ||
       currentChainIdRef.current === walletChainIdRef.current

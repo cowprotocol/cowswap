@@ -105,4 +105,12 @@ describe('useOpenTokenSelectWidget', () => {
 
     expect(onSelectToken).toHaveBeenCalledWith(solanaToken)
   })
+
+  it('selects a sell token from another chain family in dapp mode, where the host owns the wallet', async () => {
+    crossChainFamilySwitch.mockResolvedValue(CrossChainFamilySwitchState.HOST_OWNS_WALLET)
+
+    const onSelectToken = await selectSellToken(solanaToken, evmToken)
+
+    expect(onSelectToken).toHaveBeenCalledWith(evmToken)
+  })
 })

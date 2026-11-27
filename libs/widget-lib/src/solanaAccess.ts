@@ -5,13 +5,14 @@ import type { CowSwapWidgetParams } from './types'
  * `solanaEnabled` URL flag the wallet config reads at boot, and the network list the widget
  * renders once the params arrive.
  *
- * Solana trades are signed by the widget's own wallet, which dapp mode does not have — its provider
- * contract is EIP-1193.
+ * Deliberately blind to whether a `solanaProvider` has arrived, which keeps Solana on the same
+ * footing as the EVM chains: those are listed in dapp mode whether or not the host has lent a
+ * wallet, and the connect screen handles the gap. Keying this on the provider instead would also
+ * make the flag flip whenever the host's Solana wallet connects or disconnects, and a changed flag
+ * costs an iframe reload (see `requiresIframeReload`) that drops the widget's other connection.
  */
 export function isSolanaEnabledForWidget(params: Partial<CowSwapWidgetParams>): boolean {
-  const { enableSolana, standaloneMode } = params
-
-  return Boolean(enableSolana) && standaloneMode !== false
+  return !!params.enableSolana
 }
 
 /**

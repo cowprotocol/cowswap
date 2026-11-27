@@ -108,6 +108,93 @@ describe('useSyncWidgetNetwork', () => {
     expect(switchChain).not.toHaveBeenCalled()
   })
 
+  it('selects Solana when the host connects a Solana wallet in dapp mode', () => {
+    const setNetworkControlState = jest.fn()
+
+    mockedUseAvailableChains.mockReturnValue([SupportedChainId.MAINNET, SupportedChainId.SOLANA])
+    mockedUseConnection.mockReturnValue({ chainId: undefined, isConnected: false } as unknown as ReturnType<
+      typeof useConnection
+    >)
+
+    const { rerender } = renderHook(
+      ({ solanaAddress }: { solanaAddress: string | null }) =>
+        useSyncWidgetNetwork(SupportedChainId.MAINNET, setNetworkControlState, 'dapp', true, solanaAddress),
+      { initialProps: { solanaAddress: null } },
+    )
+
+    expect(setNetworkControlState).not.toHaveBeenCalled()
+
+    rerender({ solanaAddress: 'So1anaAddress' })
+
+    expect(setNetworkControlState).toHaveBeenCalledWith(SupportedChainId.SOLANA)
+  })
+
+  it('does not select Solana for a connected host wallet in standalone mode', () => {
+    const setNetworkControlState = jest.fn()
+
+    mockedUseAvailableChains.mockReturnValue([SupportedChainId.MAINNET, SupportedChainId.SOLANA])
+    mockedUseConnection.mockReturnValue({ chainId: undefined, isConnected: false } as unknown as ReturnType<
+      typeof useConnection
+    >)
+
+    const { rerender } = renderHook(
+      ({ solanaAddress }: { solanaAddress: string | null }) =>
+        useSyncWidgetNetwork(SupportedChainId.MAINNET, setNetworkControlState, 'standalone', true, solanaAddress),
+      { initialProps: { solanaAddress: null } },
+    )
+
+    rerender({ solanaAddress: 'So1anaAddress' })
+
+    expect(setNetworkControlState).not.toHaveBeenCalled()
+  })
+
+  it('does not pull the selection back to Solana while the host wallet stays connected', () => {
+    const setNetworkControlState = jest.fn()
+
+    mockedUseAvailableChains.mockReturnValue([SupportedChainId.MAINNET, SupportedChainId.SOLANA])
+    mockedUseConnection.mockReturnValue({ chainId: undefined, isConnected: false } as unknown as ReturnType<
+      typeof useConnection
+    >)
+
+    const { rerender } = renderHook(
+      ({ chainId }: { chainId: SupportedChainId }) =>
+        useSyncWidgetNetwork(chainId, setNetworkControlState, 'dapp', true, 'So1anaAddress'),
+      { initialProps: { chainId: SupportedChainId.SOLANA } },
+    )
+
+    setNetworkControlState.mockClear()
+
+    rerender({ chainId: SupportedChainId.MAINNET })
+
+    expect(setNetworkControlState).not.toHaveBeenCalled()
+  })
+
+  it('moves off Solana when the host takes its Solana wallet back', () => {
+    const setNetworkControlState = jest.fn()
+
+    mockedUseAvailableChains.mockReturnValue([
+      SupportedChainId.MAINNET,
+      SupportedChainId.GNOSIS_CHAIN,
+      SupportedChainId.SOLANA,
+    ])
+    mockedUseConnection.mockReturnValue({
+      chainId: SupportedChainId.GNOSIS_CHAIN,
+      isConnected: true,
+    } as unknown as ReturnType<typeof useConnection>)
+
+    const { rerender } = renderHook(
+      ({ solanaAddress }: { solanaAddress: string | null }) =>
+        useSyncWidgetNetwork(SupportedChainId.SOLANA, setNetworkControlState, 'dapp', true, solanaAddress),
+      { initialProps: { solanaAddress: 'So1anaAddress' } },
+    )
+
+    setNetworkControlState.mockClear()
+
+    rerender({ solanaAddress: null })
+
+    expect(setNetworkControlState).toHaveBeenCalledWith(SupportedChainId.GNOSIS_CHAIN)
+  })
+
   it('keeps Solana selected in standalone mode once the partner enabled it', () => {
     const setNetworkControlState = jest.fn()
 

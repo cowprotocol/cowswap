@@ -3,7 +3,7 @@ import { ReactNode, useCallback, useEffect } from 'react'
 import { useConnection } from 'wagmi'
 
 import { useLocalStorageState, useThrottledCallback } from '@cowprotocol/common-hooks'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { PaletteMode } from '@mui/material'
 import Box from '@mui/material/Box'
@@ -23,12 +23,14 @@ import { ColorPalette, ConfiguratorFormValues, ConfiguratorState } from '../../c
 import {
   buildConfiguratorState,
   getDefaultCustomColorsByTheme,
+  getDefaultTokenPair,
   isSolanaSelectable,
   resolveConfiguratorCustomColorsByTheme,
   resolveConfiguratorFormValues,
 } from '../../configurator.utils'
 import { useColorPaletteManager } from '../../hooks/useColorPaletteManager'
 import { useExpandedSectionHash } from '../../hooks/useExpandedSectionHash'
+import { useHostSolanaWallet } from '../../hooks/useHostSolanaWallet'
 import { useSyncWidgetNetwork } from '../../hooks/useSyncWidgetNetwork'
 import { UseToastsManagerReturn } from '../../hooks/useToastsManager'
 import { useColorMode } from '../../theme/context/hooks/useColorMode'
@@ -121,6 +123,12 @@ export function Sidebar({
         const shouldKeepNull = name === 'baseUrl' || JSON_FIELD_NAMES.has(name)
         const nextValue = value === null && !shouldKeepNull ? '' : value
 
+        if (name === 'chainId' && nextValue !== prevState.chainId) {
+          const chainId = nextValue as SupportedChainId
+
+          return { ...prevState, chainId, ...getDefaultTokenPair(chainId) }
+        }
+
         return {
           ...prevState,
           [name]: nextValue,
@@ -143,8 +151,15 @@ export function Sidebar({
   const { colorPalette, defaultPalette } = paletteManager
 
   const { chainId: walletChainId, isConnected } = useConnection()
+  const { address: solanaAddress } = useHostSolanaWallet()
 
-  const isWalletChainEffective = configuratorFormValues.widgetMode === 'dapp' && isConnected && !!walletChainId
+  // The EVM wallet's chain must not override a Solana selection: Solana reaches the widget through
+  // its own namespace, and wagmi has no chain to report for it.
+  const isWalletChainEffective =
+    configuratorFormValues.widgetMode === 'dapp' &&
+    isConnected &&
+    !!walletChainId &&
+    !isSolanaChain(configuratorFormValues.chainId)
   const effectiveChainId = isWalletChainEffective ? walletChainId : configuratorFormValues.chainId
 
   // Building the resolved state (including parsing JSON fields) is only done when we
@@ -186,6 +201,7 @@ export function Sidebar({
     setNetworkControlState,
     configuratorFormValues.widgetMode,
     isSolanaSelectable(configuratorFormValues),
+    solanaAddress,
   )
 
   return (

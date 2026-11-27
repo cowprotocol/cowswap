@@ -13,6 +13,7 @@ export interface VersionedCowSwapWidgetProps {
   sdkVersion: WidgetSdkVersion
   params: CowSwapWidgetParams
   provider?: CowSwapWidgetProps['provider']
+  solanaProvider?: CowSwapWidgetProps['solanaProvider']
   listeners?: CowWidgetEventListeners
   onReady?: () => void
   onLoadingError?: () => void
@@ -24,17 +25,20 @@ export function VersionedCowSwapWidget({
   sdkVersion,
   params,
   provider,
+  solanaProvider,
   listeners,
   onReady,
   onLoadingError,
 }: VersionedCowSwapWidgetProps): ReactNode {
-  const widgetProps = { params, provider, listeners, onReady, onLoadingError }
+  const widgetProps = { params, provider, solanaProvider, listeners, onReady, onLoadingError }
 
   if (sdkVersion === 'local') {
     return <CowSwapWidget {...widgetProps} />
   }
 
-  return <LazyPinnedCowSwapWidget sdkVersion={sdkVersion} {...widgetProps} />
+  const { solanaProvider: _solanaProvider, ...pinnedWidgetProps } = widgetProps
+
+  return <LazyPinnedCowSwapWidget sdkVersion={sdkVersion} {...pinnedWidgetProps} />
 }
 
 function attachIframeLoadReveal(host: HTMLElement, onIframeLoad: () => void): void {

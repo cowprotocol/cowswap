@@ -1,4 +1,9 @@
-import { DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK } from '@cowprotocol/common-const'
+import {
+  COW_TOKEN_TO_CHAIN,
+  DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK,
+  USDC,
+  WRAPPED_NATIVE_CURRENCIES,
+} from '@cowprotocol/common-const'
 import { isRecord } from '@cowprotocol/common-utils'
 import { isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { isSolanaEnabledForWidget, TradeType } from '@cowprotocol/widget-lib'
@@ -90,12 +95,35 @@ export function getDefaultCustomColorsByTheme(): Record<PaletteMode, ColorPalett
   }
 }
 
-export function getSolanaBlockedReason({ widgetMode }: ConfiguratorFormValues): string | undefined {
-  if (widgetMode !== 'standalone') {
-    return 'Solana needs standalone mode: a dapp-provided EIP-1193 provider cannot sign Solana transactions.'
+/**
+ * The token pair to show after a chain switch.
+ *
+ * The configurator's default buy token is COW, which is not deployed on every chain — Solana and
+ * Robinhood have no address for it, so the widget is handed a token it cannot resolve and the buy
+ * field comes up empty. Those chains fall back to wrapped native / USDC, by address: a symbol is
+ * ambiguous on Solana. Everywhere COW exists the default pair is left alone.
+ */
+export function getDefaultTokenPair(chainId: SupportedChainId): Pick<ConfiguratorFormValues, 'sellToken' | 'buyToken'> {
+  if (COW_TOKEN_TO_CHAIN[chainId]) {
+    return {
+      sellToken: DEFAULT_CONFIGURATOR_FORM_VALUES.sellToken,
+      buyToken: DEFAULT_CONFIGURATOR_FORM_VALUES.buyToken,
+    }
   }
 
-  return undefined
+  return {
+    sellToken: WRAPPED_NATIVE_CURRENCIES[chainId]?.address ?? '',
+    buyToken: USDC[chainId]?.address ?? '',
+  }
+}
+
+export function getSolanaDappModeNotice(
+  { enableSolana, widgetMode }: ConfiguratorFormValues,
+  hasSolanaProvider: boolean,
+): string | undefined {
+  if (!enableSolana || widgetMode === 'standalone' || hasSolanaProvider) return undefined
+
+  return 'In dapp mode the host app owns the wallet. Connect a Solana wallet below to lend it to the widget.'
 }
 
 export function getSolanaFeeNotice({ enableSolana, partnerFeeBps }: ConfiguratorFormValues): string | undefined {

@@ -13,8 +13,12 @@ describe('isSolanaEnabledForWidget', () => {
     expect(isSolanaEnabledForWidget({ enableSolana: true, standaloneMode: true })).toBe(true)
   })
 
-  it('is false in dapp mode, which has no wallet that can sign on Solana', () => {
-    expect(isSolanaEnabledForWidget({ enableSolana: true, standaloneMode: false })).toBe(false)
+  it('is true in dapp mode, where the host lends the wallet, connected or not', () => {
+    expect(isSolanaEnabledForWidget({ enableSolana: true, standaloneMode: false })).toBe(true)
+  })
+
+  it('still needs the opt-in in dapp mode', () => {
+    expect(isSolanaEnabledForWidget({ standaloneMode: false })).toBe(false)
   })
 
   it('is unaffected by a partner fee, which simply is not charged on Solana', () => {
