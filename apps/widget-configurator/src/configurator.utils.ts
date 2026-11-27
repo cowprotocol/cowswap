@@ -1,12 +1,18 @@
 import { DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK } from '@cowprotocol/common-const'
 import { isRecord } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isSolanaEnabledForWidget, TradeType } from '@cowprotocol/widget-lib'
 import type { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
 import { PaletteMode } from '@mui/material'
 
-import { DEFAULT_CONFIGURATOR_FORM_VALUES, DEFAULT_DARK_PALETTE, DEFAULT_LIGHT_PALETTE } from './configurator.constants'
-import { ColorPalette, ConfiguratorFormValues, ConfiguratorState } from './configurator.types'
+import {
+  DEFAULT_CONFIGURATOR_FORM_VALUES,
+  DEFAULT_DARK_PALETTE,
+  DEFAULT_LIGHT_PALETTE,
+  DEFAULT_TOKEN_LISTS,
+} from './configurator.constants'
+import { ColorPalette, ConfiguratorFormValues, ConfiguratorState, TokenListItem } from './configurator.types'
 import { parseJsonOrFallback } from './utils/json-field-parsing/jsonFieldParsing'
 import { normalizeWidgetSdkVersion } from './utils/widget-sdk-versions/widget-sdk-versions.utils'
 
@@ -19,6 +25,15 @@ export interface BuildConfiguratorStateParams {
   defaultPalette: ColorPalette
   disableToastMessages: boolean
 }
+
+/**
+ * Trade types the widget cannot offer on Solana.
+ *
+ * TWAP ("advanced") is blocked outright — `isTwapSupportedChain` is false there, and the widget
+ * renders the tab disabled. Yield has no Solana LP tokens behind it, so the tab opens on an empty
+ * list rather than failing.
+ */
+const TRADE_TYPES_UNAVAILABLE_ON_SOLANA: readonly TradeType[] = [TradeType.ADVANCED, TradeType.YIELD]
 
 /**
  * Derives the resolved {@link ConfiguratorState} from the persisted form values.
@@ -39,6 +54,14 @@ export function buildConfiguratorState({
 
   return {
     ...rest,
+    // The sidebar greys these out on Solana, but a persisted selection and a dapp-mode chain change
+    // both reach the widget without passing through it, and it renders an unavailable tab disabled.
+    currentTradeType: isTradeTypeAvailableOnChain(rest.currentTradeType, effectiveChainId)
+      ? rest.currentTradeType
+      : TradeType.SWAP,
+    enabledTradeTypes: rest.enabledTradeTypes.filter((tradeType) =>
+      isTradeTypeAvailableOnChain(tradeType, effectiveChainId),
+    ),
     locale: locale || undefined,
     chainId: effectiveChainId,
     customColors: colorPalette,
@@ -52,11 +75,41 @@ export function buildConfiguratorState({
   }
 }
 
+export function getCrossChainBlockedReason({ chainId }: ConfiguratorFormValues): string | undefined {
+  // Solana is a bridge destination only (`useSupportedTargetChains` treats it as bridge-only), so a
+  // trade that sells on Solana has no cross-chain route to offer.
+  if (!isSolanaChain(chainId)) return undefined
+
+  return 'Solana can only be a bridge destination, so a trade selling on Solana has no cross-chain route.'
+}
+
 export function getDefaultCustomColorsByTheme(): Record<PaletteMode, ColorPalette> {
   return {
     light: { ...DEFAULT_LIGHT_PALETTE },
     dark: { ...DEFAULT_DARK_PALETTE },
   }
+}
+
+export function getSolanaBlockedReason({ widgetMode }: ConfiguratorFormValues): string | undefined {
+  if (widgetMode !== 'standalone') {
+    return 'Solana needs standalone mode: a dapp-provided EIP-1193 provider cannot sign Solana transactions.'
+  }
+
+  return undefined
+}
+
+export function getSolanaFeeNotice({ enableSolana, partnerFeeBps }: ConfiguratorFormValues): string | undefined {
+  if (!enableSolana || partnerFeeBps <= 0) return undefined
+
+  return 'Partner fees are not charged on Solana yet, so Solana trades earn no fee.'
+}
+
+export function isSolanaSelectable({ enableSolana, widgetMode }: ConfiguratorFormValues): boolean {
+  return isSolanaEnabledForWidget({ enableSolana, standaloneMode: widgetMode === 'standalone' })
+}
+
+export function isTradeTypeAvailableOnChain(tradeType: TradeType, chainId: SupportedChainId): boolean {
+  return !isSolanaChain(chainId) || !TRADE_TYPES_UNAVAILABLE_ON_SOLANA.includes(tradeType)
 }
 
 export function resolveConfiguratorCustomColorsByTheme(persistedValue: unknown): Record<PaletteMode, ColorPalette> {
@@ -83,6 +136,7 @@ export function resolveConfiguratorFormValues(persistedValue: unknown): Configur
   return {
     ...merged,
     sdkVersion: normalizeWidgetSdkVersion(merged.sdkVersion),
+    tokenListUrls: withMissingDefaultTokenLists(merged.tokenListUrls),
   }
 }
 
@@ -110,4 +164,29 @@ function parseCustomColorsByTheme(value: unknown): Record<PaletteMode, ColorPale
   if (!light || !dark) return null
 
   return { light, dark }
+}
+
+/**
+ * A persisted `tokenListUrls` replaces the default array wholesale, so a list added to the defaults
+ * later would never reach anyone who has already used the configurator. Appended rather than merged
+ * by position: the persisted entries carry the user's own enabled flags and must survive untouched.
+ */
+function withMissingDefaultTokenLists(tokenListUrls: TokenListItem[]): TokenListItem[] {
+  if (!Array.isArray(tokenListUrls)) return DEFAULT_TOKEN_LISTS
+
+  const knownUrls = new Set(
+    tokenListUrls.map((list) => (isRecord(list) && typeof list.url === 'string' ? list.url.toLowerCase() : '')),
+  )
+  const missing = DEFAULT_TOKEN_LISTS.filter((list) => !knownUrls.has(list.url.toLowerCase()))
+
+  if (!missing.length) return tokenListUrls
+
+  // The widget reads an empty selection as "fall back to your own default lists", so appending an
+  // enabled list to a configuration with every list switched off would narrow it to that one list
+  // and strip the EVM defaults.
+  const selectsNothing = !tokenListUrls.some(
+    (list) => isRecord(list) && Boolean(list.enabled || list.enabledForSell || list.enabledForBuy),
+  )
+
+  return [...tokenListUrls, ...missing.map((list) => ({ ...list, enabled: selectsNothing ? false : list.enabled }))]
 }

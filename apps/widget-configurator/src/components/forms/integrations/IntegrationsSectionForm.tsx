@@ -1,10 +1,15 @@
 import type { ReactNode } from 'react'
 
+import Box from '@mui/material/Box'
+
+import { getSolanaFeeNotice } from '../../../configurator.utils'
 import { NumberInput } from '../../ui/inputs/NumberInput/NumberInput.component'
 
 import type { SidebarSectionFormProps } from '../forms.types'
 
 export function IntegrationsSectionForm({ values, onChange }: SidebarSectionFormProps): ReactNode {
+  const solanaFeeNotice = getSolanaFeeNotice(values)
+
   return (
     <NumberInput
       id="partnerFeePercent"
@@ -13,7 +18,16 @@ export function IntegrationsSectionForm({ values, onChange }: SidebarSectionForm
       value={values.partnerFeeBps}
       onChange={onChange}
       unit="BPS"
-      helperText={formatBpsAsPercent(values.partnerFeeBps)}
+      helperText={
+        <>
+          {formatBpsAsPercent(values.partnerFeeBps)}
+          {solanaFeeNotice ? (
+            <Box component="span" sx={{ display: 'block', mt: '0.4rem' }}>
+              {solanaFeeNotice}
+            </Box>
+          ) : null}
+        </>
+      }
       emptyValue={0}
       parseValue={(rawValue) => {
         const roundedValue = Math.ceil(Number(rawValue))

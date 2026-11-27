@@ -14,6 +14,7 @@ import {
 import { IframeCowEventEmitter } from './IframeCowEventEmitter'
 import { IframeSafeSdkBridge } from './IframeSafeSdkBridge'
 import { logWidget } from './logger'
+import { isSolanaEnabledForWidget, isSolanaEnabledInWidgetSrc } from './solanaAccess'
 import { isCowSwapWidgetPalette } from './themeUtils'
 import {
   CowSwapWidgetParams,
@@ -391,7 +392,11 @@ function reloadIframe(iframe: HTMLIFrameElement, params: CowSwapWidgetParams): v
 function requiresIframeReload(iframe: HTMLIFrameElement, params: CowSwapWidgetParams): boolean {
   const sandbox = getIframeSandbox(params)
 
-  return iframe.getAttribute('sandbox') !== sandbox
+  if (iframe.getAttribute('sandbox') !== sandbox) return true
+
+  // `updateParams` only posts the new params to a bundle that already decided its wallet adapters
+  // from the URL, so a change to the Solana opt-in is only honoured by reloading the iframe.
+  return isSolanaEnabledInWidgetSrc(iframe.src) !== isSolanaEnabledForWidget(params)
 }
 
 function resolveWidgetParams(params: CowSwapWidgetParams): CowSwapWidgetParams {

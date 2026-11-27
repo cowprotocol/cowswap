@@ -225,4 +225,22 @@ describe('buildWidgetUrlQuery', () => {
 
     expect(query.get('hooksEnabled')).toBe('true')
   })
+
+  it('does not serialize solanaEnabled without the partner opt-in', () => {
+    expect(buildWidgetUrlQuery({}).get('solanaEnabled')).toBeNull()
+  })
+
+  it('serializes solanaEnabled when the partner opted in', () => {
+    expect(buildWidgetUrlQuery({ enableSolana: true }).get('solanaEnabled')).toBe('true')
+  })
+
+  it('does not serialize solanaEnabled in dapp mode', () => {
+    expect(buildWidgetUrlQuery({ enableSolana: true, standaloneMode: false }).get('solanaEnabled')).toBeNull()
+  })
+
+  it('still serializes solanaEnabled when a partner fee is set', () => {
+    expect(
+      buildWidgetUrlQuery({ enableSolana: true, partnerFee: { bps: 50, recipient: '0x1234' } }).get('solanaEnabled'),
+    ).toBe('true')
+  })
 })

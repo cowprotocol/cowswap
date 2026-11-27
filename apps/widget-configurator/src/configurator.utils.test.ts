@@ -1,9 +1,21 @@
+import { SOLANA_TOKEN_LIST_URL } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { TradeType } from '@cowprotocol/widget-lib'
 
-import { DEFAULT_CONFIGURATOR_FORM_VALUES, DEFAULT_DARK_PALETTE, DEFAULT_LIGHT_PALETTE } from './configurator.constants'
+import {
+  DEFAULT_CONFIGURATOR_FORM_VALUES,
+  DEFAULT_DARK_PALETTE,
+  DEFAULT_LIGHT_PALETTE,
+  DEFAULT_TOKEN_LISTS,
+} from './configurator.constants'
 import {
   buildConfiguratorState,
+  getCrossChainBlockedReason,
   getDefaultCustomColorsByTheme,
+  isTradeTypeAvailableOnChain,
+  getSolanaBlockedReason,
+  getSolanaFeeNotice,
+  isSolanaSelectable,
   resolveConfiguratorCustomColorsByTheme,
   resolveConfiguratorFormValues,
 } from './configurator.utils'
@@ -29,6 +41,72 @@ jest.mock('@cowprotocol/common-const', () => {
 describe('configurator.utils', () => {
   beforeEach(() => {
     localStorage.clear()
+  })
+
+  it('blocks advanced and yield on Solana, which cannot run them', () => {
+    expect(isTradeTypeAvailableOnChain(TradeType.ADVANCED, SupportedChainId.SOLANA)).toBe(false)
+    expect(isTradeTypeAvailableOnChain(TradeType.YIELD, SupportedChainId.SOLANA)).toBe(false)
+  })
+
+  it('keeps swap and limit available on Solana', () => {
+    expect(isTradeTypeAvailableOnChain(TradeType.SWAP, SupportedChainId.SOLANA)).toBe(true)
+    expect(isTradeTypeAvailableOnChain(TradeType.LIMIT, SupportedChainId.SOLANA)).toBe(true)
+  })
+
+  it('leaves every trade type available on EVM chains', () => {
+    for (const tradeType of Object.values(TradeType)) {
+      expect(isTradeTypeAvailableOnChain(tradeType, SupportedChainId.MAINNET)).toBe(true)
+    }
+  })
+
+  it('ships the Solana token list enabled, which the widget needs to show any token there', () => {
+    const solanaList = DEFAULT_TOKEN_LISTS.find((list) => list.url === SOLANA_TOKEN_LIST_URL)
+
+    expect(solanaList?.enabled).toBe(true)
+  })
+
+  it('adds token lists introduced after a config was persisted', () => {
+    const staleTokenLists = [{ url: 'https://app.tryroll.com/tokens.json', enabled: true }]
+
+    const { tokenListUrls } = resolveConfiguratorFormValues({ tokenListUrls: staleTokenLists })
+
+    expect(tokenListUrls.map(({ url }) => url)).toContain(SOLANA_TOKEN_LIST_URL)
+  })
+
+  it('leaves the flags a user already chose untouched when adding new lists', () => {
+    const staleTokenLists = [
+      { url: 'https://app.tryroll.com/tokens.json', enabled: true, enabledForSell: true, enabledForBuy: false },
+    ]
+
+    const { tokenListUrls } = resolveConfiguratorFormValues({ tokenListUrls: staleTokenLists })
+
+    expect(tokenListUrls[0]).toEqual(staleTokenLists[0])
+  })
+
+  it('adds a new list switched off when the persisted config selects none', () => {
+    const allSwitchedOff = DEFAULT_TOKEN_LISTS.filter(({ url }) => url !== SOLANA_TOKEN_LIST_URL).map((list) => ({
+      ...list,
+      enabled: false,
+      enabledForSell: false,
+      enabledForBuy: false,
+    }))
+
+    const { tokenListUrls } = resolveConfiguratorFormValues({ tokenListUrls: allSwitchedOff })
+
+    expect(tokenListUrls.map(({ url }) => url)).toContain(SOLANA_TOKEN_LIST_URL)
+    expect(tokenListUrls.filter(({ enabled }) => enabled)).toEqual([])
+  })
+
+  it('blocks cross-chain swaps while Solana is the selected network', () => {
+    const values = { ...DEFAULT_CONFIGURATOR_FORM_VALUES, chainId: SupportedChainId.SOLANA }
+
+    expect(getCrossChainBlockedReason(values)).toEqual(expect.any(String))
+  })
+
+  it('leaves cross-chain swaps alone on EVM chains', () => {
+    const values = { ...DEFAULT_CONFIGURATOR_FORM_VALUES, chainId: SupportedChainId.MAINNET }
+
+    expect(getCrossChainBlockedReason(values)).toBeUndefined()
   })
 
   it('returns defaults when no value is persisted', () => {
@@ -74,6 +152,38 @@ describe('configurator.utils', () => {
     expect(state.disableWindowOpen).toBe(true)
   })
 
+  it('drops the trade types the effective chain cannot run', () => {
+    const state = buildConfiguratorState({
+      formValues: {
+        ...DEFAULT_CONFIGURATOR_FORM_VALUES,
+        enabledTradeTypes: [TradeType.SWAP, TradeType.LIMIT, TradeType.ADVANCED, TradeType.YIELD],
+        currentTradeType: TradeType.ADVANCED,
+      },
+      effectiveChainId: SupportedChainId.SOLANA,
+      colorPalette: DEFAULT_LIGHT_PALETTE,
+      defaultPalette: DEFAULT_DARK_PALETTE,
+      disableToastMessages: false,
+    })
+
+    expect(state.enabledTradeTypes).toEqual([TradeType.SWAP, TradeType.LIMIT])
+    expect(state.currentTradeType).toBe(TradeType.SWAP)
+  })
+
+  it('keeps every trade type on an EVM chain', () => {
+    const enabledTradeTypes = [TradeType.SWAP, TradeType.LIMIT, TradeType.ADVANCED, TradeType.YIELD]
+
+    const state = buildConfiguratorState({
+      formValues: { ...DEFAULT_CONFIGURATOR_FORM_VALUES, enabledTradeTypes, currentTradeType: TradeType.ADVANCED },
+      effectiveChainId: SupportedChainId.MAINNET,
+      colorPalette: DEFAULT_LIGHT_PALETTE,
+      defaultPalette: DEFAULT_DARK_PALETTE,
+      disableToastMessages: false,
+    })
+
+    expect(state.enabledTradeTypes).toEqual(enabledTradeTypes)
+    expect(state.currentTradeType).toBe(TradeType.ADVANCED)
+  })
+
   it('throws when effectiveChainId is undefined', () => {
     expect(() =>
       buildConfiguratorState({
@@ -84,5 +194,47 @@ describe('configurator.utils', () => {
         disableToastMessages: false,
       }),
     ).toThrow('buildConfiguratorState requires effectiveChainId')
+  })
+})
+
+describe('Solana availability', () => {
+  const OPTED_IN = {
+    ...DEFAULT_CONFIGURATOR_FORM_VALUES,
+    enableSolana: true,
+    widgetMode: 'standalone',
+    partnerFeeBps: 0,
+  } as const
+
+  it('is off in the shipped defaults, which the API docs promise', () => {
+    expect(isSolanaSelectable(DEFAULT_CONFIGURATOR_FORM_VALUES)).toBe(false)
+    expect(DEFAULT_CONFIGURATOR_FORM_VALUES.enableSolana).toBe(false)
+  })
+
+  it('is selectable once a standalone widget opts in', () => {
+    expect(isSolanaSelectable(OPTED_IN)).toBe(true)
+    expect(getSolanaBlockedReason(OPTED_IN)).toBeUndefined()
+    expect(getSolanaFeeNotice(OPTED_IN)).toBeUndefined()
+  })
+
+  it('is not selectable until the partner opts in, but the switch stays usable', () => {
+    const values = { ...OPTED_IN, enableSolana: false }
+
+    expect(isSolanaSelectable(values)).toBe(false)
+    expect(getSolanaBlockedReason(values)).toBeUndefined()
+  })
+
+  it('stays selectable with a partner fee set, and warns that Solana earns none', () => {
+    const values = { ...OPTED_IN, partnerFeeBps: 50 }
+
+    expect(isSolanaSelectable(values)).toBe(true)
+    expect(getSolanaBlockedReason(values)).toBeUndefined()
+    expect(getSolanaFeeNotice(values)).toEqual(expect.any(String))
+  })
+
+  it('blocks the opt-in in dapp mode', () => {
+    const values = { ...OPTED_IN, widgetMode: 'dapp' } as const
+
+    expect(getSolanaBlockedReason(values)).toEqual(expect.any(String))
+    expect(isSolanaSelectable(values)).toBe(false)
   })
 })

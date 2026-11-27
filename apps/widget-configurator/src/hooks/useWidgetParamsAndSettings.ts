@@ -40,6 +40,7 @@ function buildWidgetParams(configuratorState: ConfiguratorState | null): CowSwap
     currentTradeType,
     chainId,
     disableCrossChainSwap,
+    enableSolana,
     slippage, // TODO: Defined but not in form.
 
     // Tokens:
@@ -125,6 +126,7 @@ function buildWidgetParams(configuratorState: ConfiguratorState | null): CowSwap
     tradeType: currentTradeType,
     chainId,
     disableCrossChainSwap,
+    enableSolana,
     slippage, // TODO: Defined but not in the form.
 
     // Tokens:
