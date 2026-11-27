@@ -4,6 +4,8 @@ import { TokenAmount } from '@cowprotocol/ui'
 
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
+import { formatSurplusPercent } from './surplusPercent.utils'
+
 import * as styledEl from '../ReceiptModal.styled'
 
 interface Props {
@@ -23,12 +25,12 @@ export function SurplusField({ order }: Props) {
   }
 
   const parsedSurplus = CurrencyAmount.fromRawAmount(surplusToken, surplusAmount?.decimalPlaces(0).toFixed())
-  const formattedPercent = surplusPercentage?.multipliedBy(100)?.toFixed(2)
+  const formattedPercent = surplusPercentage ? formatSurplusPercent(surplusPercentage) : undefined
 
   return (
     <styledEl.Value title={`${parsedSurplus.toExact()} ${surplusToken.symbol}`}>
       <styledEl.InlineWrapper>
-        <styledEl.Surplus>+{formattedPercent}%</styledEl.Surplus>
+        <styledEl.Surplus>{formattedPercent}</styledEl.Surplus>
         <span>
           <TokenAmount amount={parsedSurplus} tokenSymbol={surplusToken} />
         </span>
