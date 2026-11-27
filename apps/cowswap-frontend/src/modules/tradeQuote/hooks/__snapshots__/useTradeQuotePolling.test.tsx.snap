@@ -53,7 +53,7 @@ exports[`useTradeQuotePolling() When wallet is connected Then should put account
       "4663": "0xba3cb449bd2b4adddbc894d8697f5170800eadec",
       "56": "0xba3cb449bd2b4adddbc894d8697f5170800eadec",
       "57073": "0xba3cb449bd2b4adddbc894d8697f5170800eadec",
-      "59144": "0xb37aDD6AC288BD3825a901Cba6ec65A89f31B8CC",
+      "59144": "0xba3cb449bd2b4adddbc894d8697f5170800eadec",
       "8453": "0xba3cb449bd2b4adddbc894d8697f5170800eadec",
       "9745": "0xba3cb449bd2b4adddbc894d8697f5170800eadec",
     },

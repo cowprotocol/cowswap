@@ -1,13 +1,10 @@
-import { normalizeError } from '@cowprotocol/common-utils'
+import { backendEnv, normalizeError } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-// import { backendEnv } from '@cowprotocol/common-utils'
-// import { orderBookApi } from 'cowSdk'
+import { orderBookApi } from 'cowSdk'
 import { z } from 'zod'
 
-// const CANONICAL_BATCH_SCHEDULE_PATH = '/api/v1/canonical_batch_schedule'
-/** Temporary until canonical_batch_schedule is on the env-resolved orderbook host. */
-const CANONICAL_BATCH_SCHEDULE_URL = 'https://barn.api.cow.fi/linea/api/v1/canonical_batch_schedule'
+const CANONICAL_BATCH_SCHEDULE_PATH = '/api/v1/canonical_batch_schedule'
 
 const unixSecondsSchema = z.number().finite()
 
@@ -23,14 +20,7 @@ const canonicalBatchScheduleSchema = z.object({
 export type CanonicalBatchSchedule = z.infer<typeof canonicalBatchScheduleSchema>
 
 export async function fetchCanonicalBatchSchedule(chainId: SupportedChainId): Promise<CanonicalBatchSchedule> {
-  // Temporary: the schedule endpoint only exists on barn Linea.
-  if (chainId !== SupportedChainId.LINEA) {
-    throw new Error(`canonical_batch_schedule is not available on chain ${chainId}`)
-  }
-
-  // const baseUrl = getOrderBookBaseUrl(chainId)
-  // const response = await fetch(`${baseUrl}${CANONICAL_BATCH_SCHEDULE_PATH}`)
-  const response = await fetch(CANONICAL_BATCH_SCHEDULE_URL)
+  const response = await fetch(`${getOrderBookBaseUrl(chainId)}${CANONICAL_BATCH_SCHEDULE_PATH}`)
 
   if (!response.ok) {
     throw new Error(`canonical_batch_schedule failed with ${response.status}`)
@@ -74,15 +64,15 @@ export function mapCanonicalBatchSchedule(response: unknown): CanonicalBatchSche
   return parsed.data
 }
 
-// /** `getApiBaseUrls` is private; `getOrderLink` is the public resolver for the same base. */
-// function getOrderBookBaseUrl(chainId: SupportedChainId): string {
-//   const orderLink = orderBookApi.getOrderLink('', { chainId, env: backendEnv })
-//   const ordersPath = '/api/v1/orders/'
-//   const ordersPathIndex = orderLink.lastIndexOf(ordersPath)
-//
-//   if (ordersPathIndex === -1) {
-//     throw normalizeError(new Error(`canonical_batch_schedule has no orderbook URL for chain ${chainId}`))
-//   }
-//
-//   return orderLink.slice(0, ordersPathIndex)
-// }
+/** `getApiBaseUrls` is private; `getOrderLink` resolves the same base, including custom base URLs. */
+function getOrderBookBaseUrl(chainId: SupportedChainId): string {
+  const orderLink = orderBookApi.getOrderLink('', { chainId, env: backendEnv })
+  const ordersPath = '/api/v1/orders/'
+  const ordersPathIndex = orderLink.lastIndexOf(ordersPath)
+
+  if (ordersPathIndex <= 0 || !orderLink.startsWith('http')) {
+    throw normalizeError(new Error(`canonical_batch_schedule has no orderbook URL for chain ${chainId}`))
+  }
+
+  return orderLink.slice(0, ordersPathIndex)
+}

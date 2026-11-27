@@ -7,7 +7,6 @@ import {
   COW_PROTOCOL_VAULT_RELAYER_ADDRESS_STAGING,
   ETH_FLOW_ADDRESSES,
   isEvmChain,
-  SupportedChainId,
 } from '@cowprotocol/cow-sdk'
 
 import { isBarnBackendEnv } from './environments'
@@ -18,13 +17,10 @@ import { isBarnBackendEnv } from './environments'
 export const COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS_PROD =
   _COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS_PROD as AddressPerChain
 
-// Barn env uses the staging map. Linea always uses the staging contract while its orderbook host is barn.
-export const COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS: AddressPerChain = withLineaBarnContract(
-  isBarnBackendEnv
-    ? (COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS_STAGING as AddressPerChain)
-    : COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS_PROD,
-  COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS_STAGING as AddressPerChain,
-)
+// When in barn backend env, use staging contracts for MAINNET only; prod for all other chains.
+export const COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS: AddressPerChain = isBarnBackendEnv
+  ? (COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS_STAGING as AddressPerChain)
+  : (COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS_PROD as AddressPerChain)
 
 // Production-only vault relayer, ignoring the barn backend env override.
 // Use this when allowances must always target the production relayer
@@ -33,13 +29,10 @@ export const COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS: AddressPerChain = withLin
 export const COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD: AddressPerChain =
   _COW_PROTOCOL_VAULT_RELAYER_ADDRESS as AddressPerChain
 
-// Barn env uses the staging map. Linea always uses the staging relayer while its orderbook host is barn.
-export const COW_PROTOCOL_VAULT_RELAYER_ADDRESS: AddressPerChain = withLineaBarnContract(
-  isBarnBackendEnv
-    ? (COW_PROTOCOL_VAULT_RELAYER_ADDRESS_STAGING as AddressPerChain)
-    : COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD,
-  COW_PROTOCOL_VAULT_RELAYER_ADDRESS_STAGING as AddressPerChain,
-)
+// When in barn backend env, use the staging vault relayer for MAINNET only; prod for all other chains.
+export const COW_PROTOCOL_VAULT_RELAYER_ADDRESS: AddressPerChain = isBarnBackendEnv
+  ? (COW_PROTOCOL_VAULT_RELAYER_ADDRESS_STAGING as AddressPerChain)
+  : COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD
 
 /**
  * ETH-Flow is the EVM-only wrapper that lets users sell native ETH (and equivalents)
@@ -54,18 +47,7 @@ function pickEvmAddresses(addresses: AddressPerChain): AddressPerChain {
   ) as AddressPerChain
 }
 
-// Temporary: Linea orderbook calls go to barn, which settles with the staging contracts.
-function withLineaBarnContract(addresses: AddressPerChain, staging: AddressPerChain): AddressPerChain {
-  const linea = staging[SupportedChainId.LINEA]
-  if (linea === undefined) return addresses
-
-  return { ...addresses, [SupportedChainId.LINEA]: linea }
-}
-
-// Barn env uses the staging map. Linea always uses the staging ETH-flow contract while its orderbook host is barn.
-export const COW_PROTOCOL_ETH_FLOW_ADDRESS: AddressPerChain = withLineaBarnContract(
-  pickEvmAddresses(
-    isBarnBackendEnv ? (BARN_ETH_FLOW_ADDRESSES as AddressPerChain) : (ETH_FLOW_ADDRESSES as AddressPerChain),
-  ),
-  pickEvmAddresses(BARN_ETH_FLOW_ADDRESSES as AddressPerChain),
+// When in barn backend env, use the staging vault relayer for MAINNET only; prod for all other chains.
+export const COW_PROTOCOL_ETH_FLOW_ADDRESS: AddressPerChain = pickEvmAddresses(
+  isBarnBackendEnv ? (BARN_ETH_FLOW_ADDRESSES as AddressPerChain) : (ETH_FLOW_ADDRESSES as AddressPerChain),
 )

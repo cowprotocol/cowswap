@@ -13,13 +13,10 @@ import {
   isEvmChain,
   MetadataApi,
   OrderBookApi,
-  PartialApiContext,
   Signer,
   setGlobalAdapter,
 } from '@cowprotocol/cow-sdk'
 import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
-
-import { lineaBarnOrderBookContext } from 'api/cowProtocol/lineaBarnQuote.utils'
 
 const prodBaseUrls = process.env.REACT_APP_ORDER_BOOK_URLS
   ? JSON.parse(process.env.REACT_APP_ORDER_BOOK_URLS)
@@ -50,31 +47,6 @@ export const orderBookApi = new OrderBookApi({
   ...(prodBaseUrls ? { baseUrls: prodBaseUrls } : undefined),
   backoffOpts: DEFAULT_BACKOFF_OPTIONS,
 })
-
-const getOrderBookQuote = orderBookApi.getQuote.bind(orderBookApi)
-const sendOrderBookOrder = orderBookApi.sendOrder.bind(orderBookApi)
-const uploadOrderBookAppData = orderBookApi.uploadAppData.bind(orderBookApi)
-const getOrderBookOrder = orderBookApi.getOrder.bind(orderBookApi)
-const getOrderBookOrders = orderBookApi.getOrders.bind(orderBookApi)
-const getOrderBookCompetitionStatus = orderBookApi.getOrderCompetitionStatus.bind(orderBookApi)
-const sendOrderBookCancellations = orderBookApi.sendSignedOrderCancellations.bind(orderBookApi)
-
-// Temporary: a Linea quote id exists only on barn, so the order post and the reads that follow it use that host.
-const lineaBarnContext = (contextOverride?: PartialApiContext): PartialApiContext | undefined =>
-  lineaBarnOrderBookContext(orderBookApi.context, contextOverride)
-
-orderBookApi.getQuote = (requestBody, contextOverride) =>
-  getOrderBookQuote(requestBody, lineaBarnContext(contextOverride))
-orderBookApi.sendOrder = (requestBody, contextOverride) =>
-  sendOrderBookOrder(requestBody, lineaBarnContext(contextOverride))
-orderBookApi.uploadAppData = (appDataHash, fullAppData, contextOverride) =>
-  uploadOrderBookAppData(appDataHash, fullAppData, lineaBarnContext(contextOverride))
-orderBookApi.getOrder = (orderUid, contextOverride) => getOrderBookOrder(orderUid, lineaBarnContext(contextOverride))
-orderBookApi.getOrders = (request, contextOverride) => getOrderBookOrders(request, lineaBarnContext(contextOverride))
-orderBookApi.getOrderCompetitionStatus = (orderUid, contextOverride) =>
-  getOrderBookCompetitionStatus(orderUid, lineaBarnContext(contextOverride))
-orderBookApi.sendSignedOrderCancellations = (requestBody, contextOverride) =>
-  sendOrderBookCancellations(requestBody, lineaBarnContext(contextOverride))
 
 export const prodOrderBookApi = isBarnBackendEnv
   ? new OrderBookApi({
