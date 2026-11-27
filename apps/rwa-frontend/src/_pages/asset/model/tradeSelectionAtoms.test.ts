@@ -42,4 +42,19 @@ describe('trade selection atoms', () => {
     expect(store.get(tradeSideAtom)).toBe('buy')
     expect(store.get(tradeTokenKeyAtom)).toBeNull()
   })
+
+  it('do not follow a pick made in another tab', () => {
+    const store = mountedStore()
+
+    window.localStorage.setItem('rwaTradeSide:v1', JSON.stringify('sell'))
+    window.dispatchEvent(
+      new StorageEvent('storage', {
+        key: 'rwaTradeSide:v1',
+        newValue: JSON.stringify('sell'),
+        storageArea: window.localStorage,
+      }),
+    )
+
+    expect(store.get(tradeSideAtom)).toBe('buy')
+  })
 })
