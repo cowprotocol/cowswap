@@ -96,7 +96,7 @@ export function TradeSetupSectionForm({ values, onChange }: SidebarSectionFormPr
       />
 
       <SwitchInput
-        checked={values.enableSolana}
+        checked={!solanaBlockedReason && values.enableSolana}
         disabled={!!solanaBlockedReason}
         label="Enable Solana"
         helperText={solanaHelperText}

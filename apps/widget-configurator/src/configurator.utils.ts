@@ -27,10 +27,6 @@ export interface BuildConfiguratorStateParams {
 }
 
 /**
- * Derives the resolved {@link ConfiguratorState} from the persisted form values.
- * JSON style fields are parsed here on demand instead of being kept as derived state.
- */
-/**
  * Trade types the widget cannot offer on Solana.
  *
  * TWAP ("advanced") is blocked outright — `isTwapSupportedChain` is false there, and the widget
@@ -39,6 +35,10 @@ export interface BuildConfiguratorStateParams {
  */
 const TRADE_TYPES_UNAVAILABLE_ON_SOLANA: readonly TradeType[] = [TradeType.ADVANCED, TradeType.YIELD]
 
+/**
+ * Derives the resolved {@link ConfiguratorState} from the persisted form values.
+ * JSON style fields are parsed here on demand instead of being kept as derived state.
+ */
 export function buildConfiguratorState({
   formValues,
   effectiveChainId,
@@ -54,6 +54,14 @@ export function buildConfiguratorState({
 
   return {
     ...rest,
+    // The sidebar greys these out on Solana, but a persisted selection and a dapp-mode chain change
+    // both reach the widget without passing through it, and it renders an unavailable tab disabled.
+    currentTradeType: isTradeTypeAvailableOnChain(rest.currentTradeType, effectiveChainId)
+      ? rest.currentTradeType
+      : TradeType.SWAP,
+    enabledTradeTypes: rest.enabledTradeTypes.filter((tradeType) =>
+      isTradeTypeAvailableOnChain(tradeType, effectiveChainId),
+    ),
     locale: locale || undefined,
     chainId: effectiveChainId,
     customColors: colorPalette,
@@ -171,5 +179,14 @@ function withMissingDefaultTokenLists(tokenListUrls: TokenListItem[]): TokenList
   )
   const missing = DEFAULT_TOKEN_LISTS.filter((list) => !knownUrls.has(list.url.toLowerCase()))
 
-  return missing.length ? [...tokenListUrls, ...missing] : tokenListUrls
+  if (!missing.length) return tokenListUrls
+
+  // The widget reads an empty selection as "fall back to your own default lists", so appending an
+  // enabled list to a configuration with every list switched off would narrow it to that one list
+  // and strip the EVM defaults.
+  const selectsNothing = !tokenListUrls.some(
+    (list) => isRecord(list) && Boolean(list.enabled || list.enabledForSell || list.enabledForBuy),
+  )
+
+  return [...tokenListUrls, ...missing.map((list) => ({ ...list, enabled: selectsNothing ? false : list.enabled }))]
 }

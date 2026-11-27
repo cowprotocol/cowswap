@@ -83,6 +83,20 @@ describe('configurator.utils', () => {
     expect(tokenListUrls[0]).toEqual(staleTokenLists[0])
   })
 
+  it('adds a new list switched off when the persisted config selects none', () => {
+    const allSwitchedOff = DEFAULT_TOKEN_LISTS.filter(({ url }) => url !== SOLANA_TOKEN_LIST_URL).map((list) => ({
+      ...list,
+      enabled: false,
+      enabledForSell: false,
+      enabledForBuy: false,
+    }))
+
+    const { tokenListUrls } = resolveConfiguratorFormValues({ tokenListUrls: allSwitchedOff })
+
+    expect(tokenListUrls.map(({ url }) => url)).toContain(SOLANA_TOKEN_LIST_URL)
+    expect(tokenListUrls.filter(({ enabled }) => enabled)).toEqual([])
+  })
+
   it('blocks cross-chain swaps while Solana is the selected network', () => {
     const values = { ...DEFAULT_CONFIGURATOR_FORM_VALUES, chainId: SupportedChainId.SOLANA }
 
@@ -138,6 +152,38 @@ describe('configurator.utils', () => {
     expect(state.disableWindowOpen).toBe(true)
   })
 
+  it('drops the trade types the effective chain cannot run', () => {
+    const state = buildConfiguratorState({
+      formValues: {
+        ...DEFAULT_CONFIGURATOR_FORM_VALUES,
+        enabledTradeTypes: [TradeType.SWAP, TradeType.LIMIT, TradeType.ADVANCED, TradeType.YIELD],
+        currentTradeType: TradeType.ADVANCED,
+      },
+      effectiveChainId: SupportedChainId.SOLANA,
+      colorPalette: DEFAULT_LIGHT_PALETTE,
+      defaultPalette: DEFAULT_DARK_PALETTE,
+      disableToastMessages: false,
+    })
+
+    expect(state.enabledTradeTypes).toEqual([TradeType.SWAP, TradeType.LIMIT])
+    expect(state.currentTradeType).toBe(TradeType.SWAP)
+  })
+
+  it('keeps every trade type on an EVM chain', () => {
+    const enabledTradeTypes = [TradeType.SWAP, TradeType.LIMIT, TradeType.ADVANCED, TradeType.YIELD]
+
+    const state = buildConfiguratorState({
+      formValues: { ...DEFAULT_CONFIGURATOR_FORM_VALUES, enabledTradeTypes, currentTradeType: TradeType.ADVANCED },
+      effectiveChainId: SupportedChainId.MAINNET,
+      colorPalette: DEFAULT_LIGHT_PALETTE,
+      defaultPalette: DEFAULT_DARK_PALETTE,
+      disableToastMessages: false,
+    })
+
+    expect(state.enabledTradeTypes).toEqual(enabledTradeTypes)
+    expect(state.currentTradeType).toBe(TradeType.ADVANCED)
+  })
+
   it('throws when effectiveChainId is undefined', () => {
     expect(() =>
       buildConfiguratorState({
@@ -158,6 +204,11 @@ describe('Solana availability', () => {
     widgetMode: 'standalone',
     partnerFeeBps: 0,
   } as const
+
+  it('is off in the shipped defaults, which the API docs promise', () => {
+    expect(isSolanaSelectable(DEFAULT_CONFIGURATOR_FORM_VALUES)).toBe(false)
+    expect(DEFAULT_CONFIGURATOR_FORM_VALUES.enableSolana).toBe(false)
+  })
 
   it('is selectable once a standalone widget opts in', () => {
     expect(isSolanaSelectable(OPTED_IN)).toBe(true)
