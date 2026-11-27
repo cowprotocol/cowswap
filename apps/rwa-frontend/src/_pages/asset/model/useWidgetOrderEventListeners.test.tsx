@@ -12,6 +12,8 @@ import { queryClientAtom } from 'jotai-tanstack-query'
 import { assetAccountTabAtomFamily } from './assetAccountTabAtom'
 import { useWidgetOrderEventListeners } from './useWidgetOrderEventListeners'
 
+import type { RwaTokenSummary } from '@/entities/asset'
+
 import { RWA_QUERY_KEY_ROOT } from '@/shared/api'
 import { awaitedActivityOrderAtom, awaitedOpenOrderAtom } from '@/widgets/account'
 
@@ -21,11 +23,18 @@ jest.mock('wagmi', () => ({ useConnection: jest.fn() }))
 const TICKER = 'XAU'
 const ORDER_UID = '0xorder'
 const OWNER = '0x00000000000000000000000000000000000000aA'
+const XAUT = { chainId: 1, address: '0x68749665FF8D2d112Fa859AA293F07A622782F38' } as RwaTokenSummary
+const USDC = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+const ASSET = { ticker: TICKER, tokens: [XAUT] }
 
 interface RenderedListeners {
   store: ReturnType<typeof createStore>
   invalidateQueries: jest.SpyInstance
   emit(event: CowWidgetEvents, payload: object): void
+}
+
+function outcome(uid: string, buyToken = XAUT.address): object {
+  return { chainId: 1, order: { uid, sellToken: USDC, buyToken } }
 }
 
 function renderListeners(address: string | null = OWNER): RenderedListeners {
@@ -35,7 +44,7 @@ function renderListeners(address: string | null = OWNER): RenderedListeners {
   const invalidateQueries = jest.spyOn(queryClient, 'invalidateQueries').mockResolvedValue(undefined)
   store.set(queryClientAtom, queryClient)
   const wrapper = ({ children }: { children: ReactNode }): ReactNode => <Provider store={store}>{children}</Provider>
-  const { result } = renderHook(() => useWidgetOrderEventListeners(TICKER), { wrapper })
+  const { result } = renderHook(() => useWidgetOrderEventListeners(ASSET), { wrapper })
   const listeners: CowWidgetEventListeners = result.current
 
   return {
@@ -79,7 +88,7 @@ describe('useWidgetOrderEventListeners', () => {
   it('awaits the filled order in the activity of the wallet and asset', () => {
     const { store, emit } = renderListeners()
 
-    emit(CowWidgetEvents.ON_FULFILLED_ORDER, { order: { uid: ORDER_UID } })
+    emit(CowWidgetEvents.ON_FULFILLED_ORDER, outcome(ORDER_UID))
 
     expect(store.get(awaitedActivityOrderAtom)).toEqual({
       id: ORDER_UID,
@@ -89,12 +98,23 @@ describe('useWidgetOrderEventListeners', () => {
     })
   })
 
+  it.each([
+    ['another asset', outcome(ORDER_UID, '0x00000000000000000000000000000000000000cC')],
+    ['a bridged buy', { chainId: 8453, order: { uid: ORDER_UID, sellToken: USDC, buyToken: USDC } }],
+  ])('does not await activity for a fill of %s', (_, payload) => {
+    const { store, emit } = renderListeners()
+
+    emit(CowWidgetEvents.ON_FULFILLED_ORDER, payload)
+
+    expect(store.get(awaitedActivityOrderAtom)).toBeNull()
+  })
+
   it.each([CowWidgetEvents.ON_CANCELLED_ORDER, CowWidgetEvents.ON_EXPIRED_ORDER])(
     'does not await activity for %s',
     (event) => {
       const { store, emit } = renderListeners()
 
-      emit(event, { order: { uid: ORDER_UID } })
+      emit(event, outcome(ORDER_UID))
 
       expect(store.get(awaitedActivityOrderAtom)).toBeNull()
     },
@@ -104,7 +124,7 @@ describe('useWidgetOrderEventListeners', () => {
     const { store, emit } = renderListeners(null)
 
     emit(CowWidgetEvents.ON_POSTED_ORDER, { orderUid: ORDER_UID })
-    emit(CowWidgetEvents.ON_FULFILLED_ORDER, { order: { uid: ORDER_UID } })
+    emit(CowWidgetEvents.ON_FULFILLED_ORDER, outcome(ORDER_UID))
 
     expect(store.get(awaitedOpenOrderAtom)).toBeNull()
     expect(store.get(awaitedActivityOrderAtom)).toBeNull()
@@ -119,7 +139,7 @@ describe('useWidgetOrderEventListeners', () => {
     const { store, invalidateQueries, emit } = renderListeners()
     store.set(assetAccountTabAtomFamily(TICKER), 'activity')
 
-    emit(event, { order: { uid: 'other' } })
+    emit(event, outcome('other'))
 
     expect(store.get(assetAccountTabAtomFamily(TICKER))).toBe('activity')
     expect(invalidateQueries).toHaveBeenCalledWith({ queryKey: [RWA_QUERY_KEY_ROOT, 'open-orders'] })
@@ -132,10 +152,10 @@ describe('useWidgetOrderEventListeners', () => {
       const { store, emit } = renderListeners()
       emit(CowWidgetEvents.ON_POSTED_ORDER, { orderUid: ORDER_UID })
 
-      emit(event, { order: { uid: 'other' } })
+      emit(event, outcome('other'))
       expect(store.get(awaitedOpenOrderAtom)).not.toBeNull()
 
-      emit(event, { order: { uid: ORDER_UID } })
+      emit(event, outcome(ORDER_UID))
       expect(store.get(awaitedOpenOrderAtom)).toBeNull()
     },
   )

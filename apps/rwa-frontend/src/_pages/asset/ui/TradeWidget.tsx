@@ -51,7 +51,7 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
   const tradeTokenSyncListeners = useWidgetTradeTokenSync(asset, selection)
   const tradeTypeSyncListeners = useWidgetTradeTypeSync()
   const orderAnalyticsListeners = useWidgetOrderAnalytics(asset)
-  const orderEventListeners = useWidgetOrderEventListeners(asset.ticker)
+  const orderEventListeners = useWidgetOrderEventListeners(asset)
   const listeners = useMemo(
     () => [...tradeTokenSyncListeners, ...tradeTypeSyncListeners, ...orderAnalyticsListeners, ...orderEventListeners],
     [tradeTokenSyncListeners, tradeTypeSyncListeners, orderAnalyticsListeners, orderEventListeners],

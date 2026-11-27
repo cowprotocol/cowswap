@@ -3,11 +3,14 @@ import { useMemo } from 'react'
 
 import { useConnection } from 'wagmi'
 
-import { type CowWidgetEventListeners, CowWidgetEvents } from '@cowprotocol/events'
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
+import { type CowWidgetEventListeners, CowWidgetEvents, type OnFulfilledOrderPayload } from '@cowprotocol/events'
 
 import { queryClientAtom } from 'jotai-tanstack-query'
 
 import { assetAccountTabAtomFamily } from './assetAccountTabAtom'
+
+import type { RwaTokenSummary } from '@/entities/asset'
 
 import { RWA_QUERY_KEY_ROOT } from '@/shared/api'
 import { awaitedActivityOrderAtom, awaitedOpenOrderAtom, type AwaitedOrder } from '@/widgets/account'
@@ -20,11 +23,25 @@ const ORDER_CLOSED_EVENTS = [
   CowWidgetEvents.ON_EXPIRED_ORDER,
 ] as const
 
-export function useWidgetOrderEventListeners(ticker: string): CowWidgetEventListeners {
+type OrderOutcome = Pick<OnFulfilledOrderPayload, 'chainId' | 'order'>
+
+export function useWidgetOrderEventListeners({
+  ticker,
+  tokens,
+}: {
+  ticker: string
+  tokens: RwaTokenSummary[]
+}): CowWidgetEventListeners {
   const store = useStore()
   const { address } = useConnection()
 
   return useMemo(() => {
+    const isAssetToken = (chainId: number, address: string): boolean =>
+      tokens.some((token) => token.chainId === chainId && areAddressesEqual(token.address, address))
+    // Activity lists the trades of the asset tokens on the order's own chain, so a bridged buy is never listed there
+    const isListedInActivity = ({ chainId, order }: OrderOutcome): boolean =>
+      isAssetToken(chainId, order.sellToken) || isAssetToken(chainId, order.buyToken)
+
     const refreshAccount = (): void => {
       const queryClient = store.get(queryClientAtom)
 
@@ -43,9 +60,11 @@ export function useWidgetOrderEventListeners(ticker: string): CowWidgetEventList
       },
       ...ORDER_CLOSED_EVENTS.map((event) => ({
         event,
-        handler: ({ order }: { order: { uid: string } }) => {
+        handler: (payload: OrderOutcome) => {
+          const { order } = payload
+
           store.set(awaitedOpenOrderAtom, (awaited) => (awaited?.id === order.uid ? null : awaited))
-          if (event === CowWidgetEvents.ON_FULFILLED_ORDER) {
+          if (event === CowWidgetEvents.ON_FULFILLED_ORDER && isListedInActivity(payload)) {
             store.set(awaitedActivityOrderAtom, getAwaitedOrder(order.uid, address, ticker))
           }
           refreshAccount()
@@ -53,7 +72,7 @@ export function useWidgetOrderEventListeners(ticker: string): CowWidgetEventList
       })),
       { event: CowWidgetEvents.ON_PRESIGNED_ORDER, handler: refreshAccount },
     ]
-  }, [store, ticker, address])
+  }, [store, ticker, tokens, address])
 }
 
 function getAwaitedOrder(id: string, owner: string | undefined, scope: string): AwaitedOrder | null {
