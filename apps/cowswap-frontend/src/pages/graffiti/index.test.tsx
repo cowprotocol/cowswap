@@ -394,6 +394,23 @@ describe('tools', () => {
     expect(screen.queryByPlaceholderText('type text…')).toBeNull()
   })
 
+  it('brings the tools up and says what to do next when the text tool is picked', async () => {
+    await renderLoadedWall()
+
+    fireEvent.click(screen.getByText('hide tools'))
+    fireEvent.click(screen.getByText('T text'))
+
+    expect(screen.getByText('hide tools')).toBeTruthy()
+    expect(screen.getByText('text tool: type your text in the tools panel, then tap the wall')).toBeTruthy()
+
+    const field = screen.getByPlaceholderText('type text…')
+
+    expect(document.activeElement).toBe(field)
+
+    fireEvent.change(field, { target: { value: 'moo' } })
+    expect(screen.getByText('tap the wall where your text should go — tap again to re-stamp')).toBeTruthy()
+  })
+
   it('selects a palette colour', async () => {
     await renderLoadedWall()
 

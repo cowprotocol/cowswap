@@ -7,26 +7,15 @@ import { AuctionCountdown as AuctionCountdownPure } from '../../pure/steps/Aucti
 
 export interface AuctionCountdownContainerProps {
   targetEpochSec: number
-  onRemainingChange?: (remainingSec: number) => void
   fallback?: ReactNode
 }
 
-export function AuctionCountdown({
-  targetEpochSec,
-  onRemainingChange,
-  fallback = null,
-}: AuctionCountdownContainerProps): ReactNode {
+export function AuctionCountdown({ targetEpochSec, fallback = null }: AuctionCountdownContainerProps): ReactNode {
   const intervalSeconds = useAtomValue(canonicalBatchIntervalSecondsAtom)
 
   if (intervalSeconds === undefined) {
     return fallback
   }
 
-  return (
-    <AuctionCountdownPure
-      targetEpochSec={targetEpochSec}
-      durationMs={intervalSeconds * 1000}
-      onRemainingChange={onRemainingChange}
-    />
-  )
+  return <AuctionCountdownPure targetEpochSec={targetEpochSec} durationMs={intervalSeconds * 1000} />
 }

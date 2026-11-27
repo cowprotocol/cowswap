@@ -23,6 +23,7 @@ import { tradingSdk } from 'tradingSdk/tradingSdk'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { mapUnsignedOrderToOrder, wrapErrorInOperatorError } from 'legacy/utils/trade'
+import { withWaitAndSaveNextBatch } from 'legacy/utils/withWaitAndSaveNextBatch'
 
 import { WidgetHookDeclineError } from 'modules/injectedWidget'
 import { emitPostedOrderEvent } from 'modules/orders'
@@ -237,10 +238,13 @@ export async function swapFlow(
       {
         id: orderId,
         chainId: chainId,
-        order: {
-          ...order,
-          isHidden: !input.flags.allowsOffchainSigning,
-        },
+        order: withWaitAndSaveNextBatch(
+          {
+            ...order,
+            isHidden: !input.flags.allowsOffchainSigning,
+          },
+          orderParams.waitAndSaveNextBatch,
+        ),
         isSafeWallet,
       },
       callbacks.dispatch,

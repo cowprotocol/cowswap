@@ -24,11 +24,21 @@ describe('getCookieDomainCandidates', () => {
 
 describe('clearTrackerStorage', () => {
   beforeEach(() => {
-    ;['_ga', '_ga_FC7FBG6T06', '_gcl_au', '_rdt_uuid', 'spdl_pid', '___adrsbl_nonce', 'first_utm_source'].forEach(
-      (name) => {
-        document.cookie = `${name}=1; Path=/`
-      },
-    )
+    const trackerCookies = [
+      '_ga',
+      '_ga_FC7FBG6T06',
+      '_gcl_au',
+      '_rdt_uuid',
+      '_twclid',
+      '_twpid',
+      '_twsid',
+      'spdl_pid',
+      '___adrsbl_nonce',
+      'first_utm_source',
+    ]
+    trackerCookies.forEach((name) => {
+      document.cookie = `${name}=1; Path=/`
+    })
     document.cookie = `${COOKIE_CONSENT_NAME}=keep; Path=/`
     document.cookie = 'theme=dark; Path=/'
 

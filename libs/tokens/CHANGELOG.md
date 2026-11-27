@@ -1,5 +1,24 @@
 # Changelog
 
+## [3.21.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.20.1...tokens-v3.21.0) (2026-11-25)
+
+### Minor Changes
+
+- feat(widget): add priority tokens setting to the widget (#8687)
+
+### Patch Changes
+
+- fix: hide rather than remove user added tokens that are present in enabled lists (#8668)
+
+- fix(rwa): apply geo restrictions to all RWA tokens via BFF (#8636)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.23.2
+  - @cowprotocol/common-hooks@3.22.2
+  - @cowprotocol/common-const@3.26.0
+  - @cowprotocol/ui@3.26.0
+  - @cowprotocol/core@3.16.2
+
 ## [3.20.1](https://github.com/cowprotocol/cowswap/compare/tokens-v3.20.0...tokens-v3.20.1) (2026-11-19)
 
 ### Patch Changes

@@ -11,6 +11,7 @@ import { Order } from 'legacy/state/orders/actions'
 
 import { getTakeProfitNavigation, getTakeProfitOrder, PricePercentageShortcuts } from 'modules/trade'
 
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { useNavigate } from 'common/hooks/useNavigate'
 
 import * as styledEl from './TakeProfitPrompt.styled'
@@ -57,8 +58,21 @@ export function TakeProfitPrompt({ order, onDismiss }: TakeProfitPromptProps): R
         <styledEl.Description>
           <Trans>Limit order to sell at a higher price. How much higher?</Trans>
         </styledEl.Description>
-        <PricePercentageShortcuts isInverted={false} disabled={false} onSelect={openLimitOrder} />
+        <PricePercentageShortcuts
+          isInverted={false}
+          disabled={false}
+          onSelect={openLimitOrder}
+          getClickEvent={getTakeProfitClickEvent}
+        />
       </styledEl.Content>
     </styledEl.Banner>
   )
+}
+
+function getTakeProfitClickEvent(percentage: string | null): string {
+  return toCowSwapGtmEvent({
+    category: CowSwapAnalyticsCategory.PROGRESS_BAR,
+    action: 'Click Take Profit',
+    label: percentage ?? 'custom',
+  })
 }

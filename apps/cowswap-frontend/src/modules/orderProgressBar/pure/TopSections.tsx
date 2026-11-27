@@ -38,7 +38,6 @@ interface FinishedCancellationFailedTopSectionProps extends BaseTopSectionProps 
 interface InitialTopSectionProps extends BaseTopSectionProps {
   order: OrderProgressBarProps['order']
   auctionValidFrom?: number
-  onAuctionRemainingChange?: (remainingSec: number) => void
 }
 
 interface SolvingTopSectionProps {
@@ -160,22 +159,13 @@ export function FinishedCancellationFailedTopSection({
   )
 }
 
-export function InitialTopSection({
-  stepName,
-  order,
-  auctionValidFrom,
-  onAuctionRemainingChange,
-}: InitialTopSectionProps): ReactNode {
+export function InitialTopSection({ stepName, order, auctionValidFrom }: InitialTopSectionProps): ReactNode {
   const tokens = <AnimatedTokens sellToken={order?.inputToken} buyToken={order?.outputToken} />
 
   return (
     <ProgressImageWrapper stepName={stepName}>
       {auctionValidFrom !== undefined ? (
-        <AuctionCountdown
-          targetEpochSec={auctionValidFrom}
-          onRemainingChange={onAuctionRemainingChange}
-          fallback={tokens}
-        />
+        <AuctionCountdown targetEpochSec={auctionValidFrom} fallback={tokens} />
       ) : (
         tokens
       )}

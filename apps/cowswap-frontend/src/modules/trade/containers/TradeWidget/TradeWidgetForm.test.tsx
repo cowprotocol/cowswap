@@ -63,7 +63,7 @@ jest.mock('@cowprotocol/ui', () => ({
 // ─── Module mocks ──────────────────────────────────────────────────────────
 
 jest.mock('modules/account', () => ({ useToggleAccountModal: () => jest.fn() }))
-jest.mock('modules/captcha', () => ({ CaptchaWidget: () => <div data-testid="captcha-widget" /> }))
+jest.mock('modules/captcha', () => ({ CaptchaSlot: () => <div data-testid="captcha-slot" /> }))
 jest.mock('modules/injectedWidget', () => ({ useInjectedWidgetParams: () => ({}) }))
 jest.mock('modules/tokensList', () => ({ useOpenTokenSelectWidget: () => jest.fn() }))
 jest.mock('modules/trade', () => ({
@@ -339,7 +339,7 @@ describe('TradeWidgetForm — captcha', () => {
     )
 
     expect(screen.getByTestId('bottom-content')).toBeTruthy()
-    expect(screen.getByTestId('captcha-widget')).toBeTruthy()
+    expect(screen.getByTestId('captcha-slot')).toBeTruthy()
     expect(screen.getByTestId('action-button')).toBeTruthy()
   })
 
@@ -348,6 +348,6 @@ describe('TradeWidgetForm — captcha', () => {
 
     renderWithI18n(<TradeWidgetForm {...buildProps()} />)
 
-    expect(screen.queryByTestId('captcha-widget')).toBeNull()
+    expect(screen.queryByTestId('captcha-slot')).toBeNull()
   })
 })

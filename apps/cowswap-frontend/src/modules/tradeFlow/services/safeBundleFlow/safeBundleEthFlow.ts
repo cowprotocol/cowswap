@@ -10,6 +10,7 @@ import { tradingSdk } from 'tradingSdk/tradingSdk'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { mapUnsignedOrderToOrder, type PostOrderParams, wrapErrorInOperatorError } from 'legacy/utils/trade'
+import { withWaitAndSaveNextBatch } from 'legacy/utils/withWaitAndSaveNextBatch'
 
 import { removePermitHookFromAppData } from 'modules/appData'
 import { buildApproveTx } from 'modules/operations/bundle/buildApproveTx'
@@ -161,11 +162,14 @@ export async function safeBundleEthFlow(
       {
         id: orderId,
         chainId: context.chainId,
-        order: {
-          ...order,
-          // Initially as hidden, until we get a confirmation from the wallet it succeeded
-          isHidden: true,
-        },
+        order: withWaitAndSaveNextBatch(
+          {
+            ...order,
+            // Initially as hidden, until we get a confirmation from the wallet it succeeded
+            isHidden: true,
+          },
+          orderParams.waitAndSaveNextBatch,
+        ),
         isSafeWallet,
       },
       callbacks.dispatch,

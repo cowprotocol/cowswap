@@ -1,8 +1,12 @@
 import { atom } from 'jotai'
 
+import { localTimeOffsetAtom } from '@cowprotocol/common-hooks'
+import { getServerNowSec } from '@cowprotocol/common-utils'
+import { jotaiStore } from '@cowprotocol/core'
 import { isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
+import { observe } from 'jotai-effect'
 import { atomWithQuery } from 'jotai-tanstack-query'
 
 import {
@@ -17,6 +21,7 @@ import {
  */
 export const canonicalBatchScheduleQueryAtom = atomWithQuery<CanonicalBatchSchedule | null>((get) => {
   const { chainId } = get(walletInfoAtom)
+  const timeOffsetSec = get(localTimeOffsetAtom)
   const enabled = isSupportedScheduleChain(chainId)
 
   return {
@@ -36,21 +41,65 @@ export const canonicalBatchScheduleQueryAtom = atomWithQuery<CanonicalBatchSched
         return false
       }
 
-      return Math.max(1_000, schedule.nextBatch * 1_000 - Date.now())
+      return Math.max(1_000, schedule.nextBatch * 1_000 - getServerNowSec(timeOffsetSec) * 1_000)
     },
     staleTime: 0,
   }
 })
 
+// Query data stays put while a refetch is in flight, so readers need a tick at nextBatch.
+const canonicalBatchScheduleClockAtom = atom(0)
+
+canonicalBatchScheduleClockAtom.onMount = () => {
+  let timeoutId = 0
+
+  const unobserve = observe((get, set) => {
+    get(localTimeOffsetAtom)
+    get(canonicalBatchScheduleQueryAtom)
+
+    const scheduleTick = (): void => {
+      window.clearTimeout(timeoutId)
+      timeoutId = 0
+
+      const timeOffsetSec = jotaiStore.get(localTimeOffsetAtom)
+      const schedule = jotaiStore.get(canonicalBatchScheduleQueryAtom).data
+
+      if (!schedule) {
+        return
+      }
+
+      const serverNowSec = getServerNowSec(timeOffsetSec)
+      const optimistic = getOptimisticCanonicalBatchSchedule(schedule, serverNowSec * 1_000)
+      // At least 1ms so a boundary-equal clock cannot busy-loop with setTimeout(0).
+      const delayMs = Math.max(1, (optimistic.nextBatch - serverNowSec) * 1_000)
+      const tick = jotaiStore.get(canonicalBatchScheduleClockAtom)
+
+      timeoutId = window.setTimeout(() => {
+        set(canonicalBatchScheduleClockAtom, tick + 1)
+        scheduleTick()
+      }, delayMs)
+    }
+
+    scheduleTick()
+  }, jotaiStore)
+
+  return () => {
+    window.clearTimeout(timeoutId)
+    unobserve()
+  }
+}
+
 /** Server schedule rolled forward once `nextBatch` is due, until the refetch resolves. */
 export const canonicalBatchScheduleAtom = atom((get): CanonicalBatchSchedule | undefined => {
+  get(canonicalBatchScheduleClockAtom)
+  const timeOffsetSec = get(localTimeOffsetAtom)
   const schedule = get(canonicalBatchScheduleQueryAtom).data
 
   if (!schedule) {
     return undefined
   }
 
-  return getOptimisticCanonicalBatchSchedule(schedule)
+  return getOptimisticCanonicalBatchSchedule(schedule, getServerNowSec(timeOffsetSec) * 1_000)
 })
 
 export const canonicalBatchNextBatchAtom = atom((get): number | undefined => {

@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.19.2](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.19.1...cow-fi-v2.19.2) (2026-11-25)
+
+### Patch Changes
+
+- fix(utm): emit utm_source instead of utm\_\_source on cow.fi links (#8543)
+
+- fix(cow-fi): server-render pages by isolating UTM useSearchParams (#8548)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.23.2
+  - @cowprotocol/common-hooks@3.22.2
+  - @cowprotocol/analytics@3.21.0
+  - @cowprotocol/assets@2.14.0
+  - @cowprotocol/common-const@3.26.0
+  - @cowprotocol/ui@3.26.0
+  - @cowprotocol/core@3.16.2
+  - @cowprotocol/widget-react@3.3.7
+  - @cowprotocol/wallet@3.23.2
+
 ## [2.19.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.19.0...cow-fi-v2.19.1) (2026-11-19)
 
 ### Patch Changes

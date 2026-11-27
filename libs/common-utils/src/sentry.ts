@@ -37,17 +37,17 @@ export function captureError(
   })
 }
 
-export function reportPermitWithDefaultSigner(params: Record<string, unknown>): void {
+export function reportPermitWithDefaultSigner(params: object): void {
   // report this to sentry if we ever use the default signer in the permit
   Sentry.captureException('User signed the permit using PERMIT_SIGNER instead of their account', {
     tags: { errorType: 'permitWithDefaultSigner' },
-    contexts: { params },
+    contexts: { params: params as Record<string, unknown> },
   })
 }
 
-export function reportPlaceOrderWithExpiredQuote(params: Record<string, unknown>): void {
+export function reportPlaceOrderWithExpiredQuote(params: object): void {
   Sentry.captureException('Attempt to place order with expired quote', {
     tags: { errorType: 'placeOrderWithExpiredQuote' },
-    contexts: { params },
+    contexts: { params: params as Record<string, unknown> },
   })
 }

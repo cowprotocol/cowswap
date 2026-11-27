@@ -28,6 +28,9 @@ jest.mock('tradingSdk/tradingSdk', () => ({ tradingSdk: { getPreSignTransaction:
 jest.mock('wagmi/actions', () => ({ sendTransaction: jest.fn() }))
 
 const mockHandlePermit = handlePermit as jest.MockedFunction<typeof handlePermit>
+const { addPendingOrderStep } = jest.requireMock('modules/trade/utils/addPendingOrderStep') as {
+  addPendingOrderStep: jest.Mock
+}
 
 describe('swapFlow - Send analytics payload', () => {
   const sellToken = new Token(1, '0x1111111111111111111111111111111111111111', 18, 'SELL', 'Sell Token')
@@ -48,7 +51,7 @@ describe('swapFlow - Send analytics payload', () => {
     orderToSign: {},
   })
 
-  function buildTradeContext(): TradeFlowContext {
+  function buildTradeContext(waitAndSaveNextBatch?: number): TradeFlowContext {
     return {
       context: { chainId: 1, inputAmount, outputAmount },
       callbacks: {
@@ -69,6 +72,7 @@ describe('swapFlow - Send analytics payload', () => {
         recipient: '0xaccount',
         recipientAddressOrName: '0xaccount',
         validTo: 1700000000,
+        waitAndSaveNextBatch,
       },
       tradeFlowAnalyticsContext: {
         account: '0xaccount',
@@ -102,5 +106,33 @@ describe('swapFlow - Send analytics payload', () => {
     )
 
     expect(analytics.trade).toHaveBeenCalledWith(expect.objectContaining({ quoteId: 123, allowsOffchainSigning: true }))
+  })
+
+  it('stamps the Wait & Save batch onto the pending order', async () => {
+    await swapFlow(
+      buildTradeContext(1_700_000_200),
+      { priceImpact: undefined } as never,
+      jest.fn().mockResolvedValue(true),
+      analytics as never,
+    )
+
+    expect(addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({
+        order: expect.objectContaining({ waitAndSaveNextBatch: 1_700_000_200 }),
+      }),
+      expect.anything(),
+    )
+  })
+
+  it('does not stamp a batch when Wait & Save produced no schedule', async () => {
+    await swapFlow(
+      buildTradeContext(),
+      { priceImpact: undefined } as never,
+      jest.fn().mockResolvedValue(true),
+      analytics as never,
+    )
+
+    const pendingOrder = addPendingOrderStep.mock.calls[0][0].order as { waitAndSaveNextBatch?: number }
+    expect(pendingOrder.waitAndSaveNextBatch).toBeUndefined()
   })
 })

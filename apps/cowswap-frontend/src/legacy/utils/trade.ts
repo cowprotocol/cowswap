@@ -32,12 +32,12 @@ import { AppDataInfo } from 'modules/appData'
 import { getIsOrderBookTypedError } from 'api/cowProtocol'
 import { ApiErrorObject, OperatorError } from 'api/cowProtocol/errors/OperatorError'
 
-export type MapUnsignedOrderToOrderParams = {
+export interface MapUnsignedOrderToOrderParams {
   unsignedOrder: UnsignedOrder
   additionalParams: UnsignedOrderAdditionalParams
 }
 
-export type PostOrderParams = {
+export interface PostOrderParams {
   account: string
   chainId: ChainId
   signer: WalletClient
@@ -58,18 +58,19 @@ export type PostOrderParams = {
   partiallyFillable: boolean
   quoteId?: number
   isSafeWallet: boolean
+  waitAndSaveNextBatch?: number
   /** Local display state. Positive waived-fee atoms in the token named by `waitAndSaveWaivedFeeSide`. */
   waitAndSaveWaivedFeeAmount?: string
   /** `buy` for a sell order, `sell` for a buy order. */
   waitAndSaveWaivedFeeSide?: 'buy' | 'sell'
 }
 
-export type SignOrderParams = {
+export interface SignOrderParams {
   quoteId: number | undefined
   order: UnsignedOrder
 }
 
-export type UnsignedOrderAdditionalParams = Omit<PostOrderParams, 'signer' | 'validTo'> & {
+export interface UnsignedOrderAdditionalParams extends Omit<PostOrderParams, 'signer' | 'validTo'> {
   orderId: string
   signature: string
   signingScheme: SigningScheme
@@ -77,7 +78,7 @@ export type UnsignedOrderAdditionalParams = Omit<PostOrderParams, 'signer' | 'va
   orderCreationHash?: string
 }
 
-type OrderCancellationParams = {
+interface OrderCancellationParams {
   orderId: string
   account: string
   chainId: ChainId

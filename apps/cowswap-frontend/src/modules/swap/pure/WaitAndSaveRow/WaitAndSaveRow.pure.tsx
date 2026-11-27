@@ -107,8 +107,6 @@ function WaitAndSaveDescription({
   onRetry: () => void
   saveAmount?: string
 }): ReactNode {
-  const joinsBatchGap = isEnabled ? ' ' : ' ~'
-
   return (
     <styledEl.DescriptionRow>
       {hasError ? (
@@ -149,14 +147,12 @@ function WaitAndSaveDescription({
                   {' · '}
                   Joins
                 </span>{' '}
-                batch in{joinsBatchGap}
-                <BatchCountdown isLoading={isLoading} joinsBatchInRef={joinsBatchInRef} />
+                batch in <BatchCountdown isLoading={isLoading} joinsBatchInRef={joinsBatchInRef} />
               </Trans>
             </>
           ) : (
             <Trans>
-              Joins batch in{joinsBatchGap}
-              <BatchCountdown isLoading={isLoading} joinsBatchInRef={joinsBatchInRef} />
+              Joins batch in <BatchCountdown isLoading={isLoading} joinsBatchInRef={joinsBatchInRef} />
             </Trans>
           )}
         </styledEl.NextBatch>

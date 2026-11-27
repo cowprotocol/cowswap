@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { ButtonPrimary, Media, UI } from '@cowprotocol/ui'
@@ -38,11 +38,19 @@ export function SolanaSigningCountdown(props: SolanaSigningCountdownProps): Reac
   const targetEpochSec = expiresAt / 1000
   const [isExpired, setIsExpired] = useState(() => expiresAt <= Date.now())
 
-  const onRemainingChange = useCallback((remainingSec: number) => {
-    if (remainingSec <= 0) {
+  useEffect(() => {
+    const delayMs = expiresAt - Date.now()
+
+    if (delayMs <= 0) {
       setIsExpired(true)
+      return
     }
-  }, [])
+
+    setIsExpired(false)
+    const timeoutId = window.setTimeout(() => setIsExpired(true), delayMs)
+
+    return () => window.clearTimeout(timeoutId)
+  }, [expiresAt])
 
   const onDismiss = isExpired && onExpiredDismiss ? onExpiredDismiss : rest.onDismiss
 
@@ -75,7 +83,6 @@ export function SolanaSigningCountdown(props: SolanaSigningCountdownProps): Reac
               targetEpochSec={targetEpochSec}
               durationMs={durationMs}
               useLocalClock
-              onRemainingChange={onRemainingChange}
               label={<Trans>To sign the transaction in your wallet</Trans>}
             />
           )}

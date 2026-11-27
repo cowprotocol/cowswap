@@ -57,7 +57,7 @@ describe('WaitAndSaveRow', () => {
   it('shows a batch-time skeleton while the schedule is loading', () => {
     renderRow({ isLoading: true })
 
-    expectExactText('Joins batch in ~')
+    expectExactText('Joins batch in')
     expect(screen.getByTestId('batch-time-skeleton')).toBeTruthy()
     expect(screen.queryByRole('button', { name: 'Try again' })).toBeNull()
     expect(screen.getByRole('checkbox', { name: 'Wait & save' })).toBeTruthy()
@@ -85,23 +85,23 @@ describe('WaitAndSaveRow', () => {
     expect(screen.queryByRole('checkbox', { name: 'Wait & save' })).toBeNull()
   })
 
-  it('shows the save amount on the title and approximate joins-batch copy when provided', () => {
+  it('shows the save amount on the title and joins-batch copy when provided', () => {
     renderRow({ saveAmount: '$2.50' })
 
     expectExactText('Wait & save $2.50')
-    expectExactText('No volume fee · Joins batch in ~')
+    expectExactText('No volume fee · Joins batch in')
   })
 
-  it('uses a live joins-batch prefix when enabled', () => {
+  it('keeps the joins-batch copy when enabled', () => {
     renderRow({ isEnabled: true, saveAmount: '$2.50' })
 
     expectExactText('No volume fee · Joins batch in')
   })
 
-  it('falls back to approximate joins-batch copy when no amount is provided', () => {
+  it('shows joins-batch copy when no amount is provided', () => {
     renderRow()
 
     expectExactText('Wait & save')
-    expectExactText('Joins batch in ~')
+    expectExactText('Joins batch in')
   })
 })
