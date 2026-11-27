@@ -1895,8 +1895,8 @@ msgid "Insufficient <0/> balance"
 msgstr "Insufficient <0/> balance"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/DeadlineTransactionSettings/DeadlineTransactionSettings.container.tsx
-msgid "With Wait for CoWs, your swap is automatically set to expire in <0/>."
-msgstr "With Wait for CoWs, your swap is automatically set to expire in <0/>."
+#~ msgid "With Wait for CoWs, your swap is automatically set to expire in <0/>."
+#~ msgstr "With Wait for CoWs, your swap is automatically set to expire in <0/>."
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Not enough price data for one or both assets to calculate the price impact"
@@ -2757,6 +2757,10 @@ msgstr "Hide technical details"
 #: apps/cowswap-frontend/src/modules/accountProxy/hooks/useRecoverFundsCallback.ts
 msgid "User rejected the request."
 msgstr "User rejected the request."
+
+#: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
+msgid "With Wait & save, your swap expires with the next batch. Swap expiration does not apply."
+msgstr "With Wait & save, your swap expires with the next batch. Swap expiration does not apply."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/AffiliateTradeCodeForm.tsx
@@ -4668,6 +4672,10 @@ msgstr "Swap refunded"
 msgid "Bridge costs are at least {formattedBridgeFeePercentage}% of the swap amount"
 msgstr "Bridge costs are at least {formattedBridgeFeePercentage}% of the swap amount"
 
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/DeadlineTransactionSettings/DeadlineTransactionSettings.container.tsx
+msgid "With Wait & save, your swap is automatically set to expire with the next batch."
+msgstr "With Wait & save, your swap is automatically set to expire with the next batch."
+
 #: apps/cowswap-frontend/src/modules/twap/containers/ActionButtons/index.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmModal.container.tsx
 msgid "TWAP order"
@@ -5778,8 +5786,8 @@ msgid "There may be a network issue that is delaying your order. You can wait fo
 msgstr "There may be a network issue that is delaying your order. You can wait for the issue to resolve{cancellationModal}"
 
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
-msgid "With Wait for CoWs, your swap expires with the next batch. Swap expiration does not apply."
-msgstr "With Wait for CoWs, your swap expires with the next batch. Swap expiration does not apply."
+#~ msgid "With Wait for CoWs, your swap expires with the next batch. Swap expiration does not apply."
+#~ msgstr "With Wait for CoWs, your swap expires with the next batch. Swap expiration does not apply."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
@@ -6680,8 +6688,8 @@ msgid "Alert"
 msgstr "Alert"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/DeadlineTransactionSettings/DeadlineTransactionSettings.container.tsx
-msgid "With Wait for CoWs, your swap is automatically set to expire with the next batch."
-msgstr "With Wait for CoWs, your swap is automatically set to expire with the next batch."
+#~ msgid "With Wait for CoWs, your swap is automatically set to expire with the next batch."
+#~ msgstr "With Wait for CoWs, your swap is automatically set to expire with the next batch."
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 #~ msgid "Start time first"
@@ -7550,6 +7558,10 @@ msgstr "Preparing your connect link…"
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step1.tsx
 msgid "Transaction {errorType}"
 msgstr "Transaction {errorType}"
+
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/DeadlineTransactionSettings/DeadlineTransactionSettings.container.tsx
+msgid "With Wait & save, your swap is automatically set to expire in <0/>."
+msgstr "With Wait & save, your swap is automatically set to expire in <0/>."
 
 #: apps/cowswap-frontend/src/modules/trade/containers/NoImpactWarning/index.tsx
 msgid "Price impact <0>unknown</0> - trade carefully"
