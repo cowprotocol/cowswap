@@ -52,6 +52,7 @@ export function useEstimatedBridgeBuyAmount(): BridgeEstimatedAmounts | null {
       feeAmount,
       minToReceiveAmount,
       intermediateCurrency,
+      bridgePrice,
     }
   }, [intermediateCurrency, outputCurrency, bridgeBuyAmountRaw, bridgeSellAmountRaw, swapBuyAmountRaw, feeAmountRaw])
 }
