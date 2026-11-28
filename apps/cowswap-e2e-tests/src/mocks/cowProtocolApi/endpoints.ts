@@ -76,6 +76,21 @@ export const COW_API_ENDPOINTS: readonly CowApiEndpoint[] = [
     contentType: 'text/plain',
   },
   {
+    key: 'canonicalBatchSchedule',
+    method: 'GET',
+    match: /^\/api\/v1\/canonical_batch_schedule$/,
+    // A past nextBatch makes the app poll every second. Keep the batch ahead of the test.
+    dynamicDefault: () => {
+      const nextBatch = Math.floor(Date.now() / 1000) + 30 * 60
+
+      return {
+        nextBatch,
+        nextBatchValidTo: nextBatch + 360,
+        intervalSeconds: 300,
+      }
+    },
+  },
+  {
     key: 'trades',
     method: 'GET',
     match: /^\/api\/v2\/trades$/,
@@ -114,6 +129,7 @@ export type CowApiEndpointKey =
   | 'putAppData'
   | 'quote'
   | 'version'
+  | 'canonicalBatchSchedule'
   | 'trades'
   | 'solverCompetition'
   | 'solverCompetitionByTx'
@@ -132,6 +148,7 @@ export const COW_API_ENDPOINT_KEYS: readonly CowApiEndpointKey[] = [
   'putAppData',
   'quote',
   'version',
+  'canonicalBatchSchedule',
   'trades',
   'solverCompetition',
   'solverCompetitionByTx',
