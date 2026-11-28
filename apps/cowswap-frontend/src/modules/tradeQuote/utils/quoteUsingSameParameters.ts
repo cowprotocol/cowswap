@@ -149,6 +149,13 @@ function isSignedSlippageWithinQuote(
   return (appData?.metadata.quote?.slippageBips ?? 0) <= (quoteSlippageBps ?? 0)
 }
 
+function readEnableWaitForCow(metadata: AppDataInfo['doc']['metadata']): boolean | undefined {
+  if (!('enableWaitForCow' in metadata)) return undefined
+
+  const value = (metadata as { enableWaitForCow?: unknown }).enableWaitForCow
+  return typeof value === 'boolean' ? value : undefined
+}
+
 function removeBridgePostHook(
   appData: AppDataInfo['doc'] | undefined,
   postHook: CowHook | undefined,
@@ -191,6 +198,7 @@ function removeQuoteMetadata(appData: AppDataInfo['doc']): string {
       hooks: hooks ?? undefined,
       referrer: referrer ?? undefined,
       replacedOrder: replacedOrder ?? undefined,
+      enableWaitForCow: readEnableWaitForCow(fullMetadata),
     },
   }
   return jsonStringify(obj)

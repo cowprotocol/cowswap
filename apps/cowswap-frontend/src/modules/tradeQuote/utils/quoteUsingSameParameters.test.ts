@@ -126,10 +126,14 @@ describe('quoteUsingSameParameters() slippage', () => {
 
 type AppDataDoc = Parameters<typeof quoteUsingSameParameters>[3]
 
-function appDataDoc(orderClass: string, slippageBips: number): AppDataDoc {
+function appDataDoc(orderClass: string, slippageBips: number, enableWaitForCow?: boolean): AppDataDoc {
   return {
     appCode: 'CoW Swap',
-    metadata: { orderClass: { orderClass }, quote: { slippageBips } },
+    metadata: {
+      orderClass: { orderClass },
+      quote: { slippageBips },
+      ...(enableWaitForCow !== undefined ? { enableWaitForCow } : {}),
+    },
   } as unknown as AppDataDoc
 }
 
@@ -181,5 +185,25 @@ describe('quoteUsingSameParameters() order type', () => {
         true,
       ),
     ).toBe(true)
+  })
+})
+
+describe('quoteUsingSameParameters() enableWaitForCow', () => {
+  it.each([
+    ['requotes when enableWaitForCow changes from true to missing', true, undefined, false],
+    ['requotes when enableWaitForCow changes from true to false', true, false, false],
+    ['requotes when enableWaitForCow changes from missing to false', undefined, false, false],
+    ['keeps the quote when enableWaitForCow stays true', true, true, true],
+    ['keeps the quote when enableWaitForCow stays false', false, false, true],
+  ])('%s', (_, currentFlag, nextFlag, isSame) => {
+    expect(
+      quoteUsingSameParameters(
+        evmQuoteState(false),
+        evmNextParams(false),
+        appDataDoc('market', 10, currentFlag),
+        appDataDoc('market', 10, nextFlag),
+        false,
+      ),
+    ).toBe(isSame)
   })
 })
