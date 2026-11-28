@@ -6,6 +6,9 @@ import { z } from 'zod'
 
 const CANONICAL_BATCH_SCHEDULE_PATH = '/api/v1/canonical_batch_schedule'
 
+/** Hung `fetch` never rejects, so this bounds the request. */
+export const CANONICAL_BATCH_SCHEDULE_REQUEST_TIMEOUT_MS = 10_000
+
 const unixSecondsSchema = z.number().finite()
 
 /** Orderbook fields we keep; extra JSON keys such as `secondsUntilNextBatch` are stripped. */
@@ -19,8 +22,14 @@ const canonicalBatchScheduleSchema = z.object({
 /** Canonical batch used as the countdown and as the `validTo` anchor. */
 export type CanonicalBatchSchedule = z.infer<typeof canonicalBatchScheduleSchema>
 
-export async function fetchCanonicalBatchSchedule(chainId: SupportedChainId): Promise<CanonicalBatchSchedule> {
-  const response = await fetch(`${getOrderBookBaseUrl(chainId)}${CANONICAL_BATCH_SCHEDULE_PATH}`)
+export async function fetchCanonicalBatchSchedule(
+  chainId: SupportedChainId,
+  signal?: AbortSignal,
+): Promise<CanonicalBatchSchedule> {
+  const timeoutSignal = AbortSignal.timeout(CANONICAL_BATCH_SCHEDULE_REQUEST_TIMEOUT_MS)
+  const response = await fetch(`${getOrderBookBaseUrl(chainId)}${CANONICAL_BATCH_SCHEDULE_PATH}`, {
+    signal: signal ? AbortSignal.any([signal, timeoutSignal]) : timeoutSignal,
+  })
 
   if (!response.ok) {
     throw new Error(`canonical_batch_schedule failed with ${response.status}`)

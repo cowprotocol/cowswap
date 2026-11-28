@@ -15,9 +15,12 @@ import {
   getOptimisticCanonicalBatchSchedule,
 } from '../services/canonicalBatchSchedule/getCanonicalBatchSchedule'
 
+/** Failed refetch keeps the last schedule. Polling a past `nextBatch` would clamp to 1s for the outage. */
+const SCHEDULE_ERROR_REFETCH_INTERVAL_MS = 30_000
+
 /**
  * Orderbook canonical batch schedule for Wait & Save.
- * Refetches when `nextBatch` is due and when chainId changes.
+ * Refetches when `nextBatch` is due, backs off while that refetch is failing, and refetches when chainId changes.
  */
 export const canonicalBatchScheduleQueryAtom = atomWithQuery<CanonicalBatchSchedule | null>((get) => {
   const { chainId } = get(walletInfoAtom)
@@ -27,18 +30,22 @@ export const canonicalBatchScheduleQueryAtom = atomWithQuery<CanonicalBatchSched
   return {
     queryKey: ['canonicalBatchSchedule', chainId] as const,
     enabled,
-    queryFn: async (): Promise<CanonicalBatchSchedule | null> => {
+    queryFn: async ({ signal }): Promise<CanonicalBatchSchedule | null> => {
       if (!isSupportedScheduleChain(chainId)) {
         return null
       }
 
-      return fetchCanonicalBatchSchedule(chainId)
+      return fetchCanonicalBatchSchedule(chainId, signal)
     },
     // Refetch when this batch is due. Readers use the optimistic schedule until the response arrives.
     refetchInterval: (query) => {
       const schedule = query.state.data
       if (!schedule) {
         return false
+      }
+
+      if (query.state.status === 'error') {
+        return SCHEDULE_ERROR_REFETCH_INTERVAL_MS
       }
 
       return Math.max(1_000, schedule.nextBatch * 1_000 - getServerNowSec(timeOffsetSec) * 1_000)
@@ -113,7 +120,8 @@ export const canonicalBatchIntervalSecondsAtom = atom((get): number | undefined 
 export const isCanonicalBatchScheduleErrorAtom = atom((get): boolean => {
   const query = get(canonicalBatchScheduleQueryAtom)
 
-  return query.isError || (query.isFetched && !query.data)
+  // A failed refetch sets isError without clearing the last schedule.
+  return (query.isError || query.isFetched) && !query.data
 })
 
 function isSupportedScheduleChain(chainId: number | undefined): chainId is SupportedChainId {

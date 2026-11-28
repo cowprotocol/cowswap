@@ -279,4 +279,63 @@ describe('canonicalBatchScheduleAtom', () => {
 
     unmount()
   })
+
+  it('keeps the schedule when a refetch fails and polls again after 30s', async () => {
+    installAdjustedClock(LOCAL_NOW_MS)
+
+    const intervalSeconds = 300
+    const nextBatch = LOCAL_NOW_MS / 1_000 + 180
+    const schedule = {
+      nextBatch,
+      nextBatchValidTo: nextBatch + 360,
+      intervalSeconds,
+    }
+
+    fetchCanonicalBatchSchedule.mockImplementation(() => {
+      if (fetchCanonicalBatchSchedule.mock.calls.length === 1) {
+        return Promise.resolve(schedule)
+      }
+
+      return Promise.reject(new Error('schedule unavailable'))
+    })
+
+    const { result, unmount } = renderHook(
+      () => ({
+        nextBatch: useAtomValue(canonicalBatchNextBatchAtom),
+        isError: useAtomValue(isCanonicalBatchScheduleErrorAtom),
+      }),
+      { wrapper: Wrapper },
+    )
+
+    await flushFakeTimers()
+
+    expect(result.current.nextBatch).toBe(nextBatch)
+    expect(result.current.isError).toBe(false)
+    expect(fetchCanonicalBatchSchedule).toHaveBeenCalledTimes(1)
+    expect(fetchCanonicalBatchSchedule).toHaveBeenCalledWith(SupportedChainId.MAINNET, expect.any(AbortSignal))
+
+    await act(async () => {
+      await jest.advanceTimersByTimeAsync(180_000)
+    })
+
+    expect(fetchCanonicalBatchSchedule).toHaveBeenCalledTimes(2)
+    expect(result.current.isError).toBe(false)
+    expect(result.current.nextBatch).toBe(nextBatch + intervalSeconds)
+
+    await act(async () => {
+      await jest.advanceTimersByTimeAsync(29_000)
+    })
+
+    expect(fetchCanonicalBatchSchedule).toHaveBeenCalledTimes(2)
+    expect(result.current.isError).toBe(false)
+
+    await act(async () => {
+      await jest.advanceTimersByTimeAsync(1_000)
+    })
+
+    expect(fetchCanonicalBatchSchedule).toHaveBeenCalledTimes(3)
+    expect(result.current.isError).toBe(false)
+
+    unmount()
+  })
 })

@@ -2,6 +2,7 @@ import { backendEnv } from '@cowprotocol/common-utils'
 import { ORDER_BOOK_PROD_CONFIG, ORDER_BOOK_STAGING_CONFIG, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import {
+  CANONICAL_BATCH_SCHEDULE_REQUEST_TIMEOUT_MS,
   CanonicalBatchSchedule,
   fetchCanonicalBatchSchedule,
   getOptimisticCanonicalBatchSchedule,
@@ -21,8 +22,36 @@ const responseSchedule = {
   secondsUntilNextBatch: 55,
 }
 
+function pendingUntilAbort(init: RequestInit | undefined): Promise<Response> {
+  const signal = init?.signal
+
+  return new Promise((_resolve, reject) => {
+    if (!signal) {
+      reject(new Error('canonical batch schedule fetch has no abort signal'))
+      return
+    }
+
+    const onAbort = (): void => {
+      const reason: unknown = signal.reason
+      reject(reason instanceof Error ? reason : new Error('aborted'))
+    }
+
+    if (signal.aborted) {
+      onAbort()
+      return
+    }
+
+    signal.addEventListener('abort', onAbort, { once: true })
+  })
+}
+
 describe('fetchCanonicalBatchSchedule', () => {
+  beforeEach(() => {
+    jest.useFakeTimers()
+  })
+
   afterEach(() => {
+    jest.useRealTimers()
     jest.restoreAllMocks()
   })
 
@@ -43,6 +72,10 @@ describe('fetchCanonicalBatchSchedule', () => {
       `${baseUrls[SupportedChainId.GNOSIS_CHAIN]}/api/v1/canonical_batch_schedule`,
       `${baseUrls[SupportedChainId.LINEA]}/api/v1/canonical_batch_schedule`,
     ])
+
+    for (const call of jest.mocked(globalThis.fetch).mock.calls) {
+      expect(call[1]).toEqual(expect.objectContaining({ signal: expect.any(AbortSignal) }))
+    }
   })
 
   it('throws when the orderbook responds with an error status', async () => {
@@ -55,6 +88,46 @@ describe('fetchCanonicalBatchSchedule', () => {
     await expect(fetchCanonicalBatchSchedule(SupportedChainId.MAINNET)).rejects.toThrow(
       'canonical_batch_schedule failed with 404',
     )
+  })
+
+  it('aborts a stalled initial request when the timeout elapses', async () => {
+    let requestSignal: AbortSignal | undefined
+    jest.spyOn(globalThis, 'fetch').mockImplementation((_input, init) => {
+      requestSignal = init?.signal ?? undefined
+      return pendingUntilAbort(init)
+    })
+
+    const pending = fetchCanonicalBatchSchedule(SupportedChainId.MAINNET)
+    const settled = pending.then(
+      () => {
+        throw new Error('stalled request resolved')
+      },
+      (error: unknown) => error,
+    )
+
+    await jest.advanceTimersByTimeAsync(CANONICAL_BATCH_SCHEDULE_REQUEST_TIMEOUT_MS - 1)
+
+    expect(requestSignal?.aborted).toBe(false)
+
+    await jest.advanceTimersByTimeAsync(1)
+
+    await expect(settled).resolves.toMatchObject({ name: 'TimeoutError' })
+    expect(requestSignal?.aborted).toBe(true)
+  })
+
+  it('aborts the request when the caller signal aborts', async () => {
+    const controller = new AbortController()
+    let requestSignal: AbortSignal | undefined
+    jest.spyOn(globalThis, 'fetch').mockImplementation((_input, init) => {
+      requestSignal = init?.signal ?? undefined
+      return pendingUntilAbort(init)
+    })
+
+    const pending = fetchCanonicalBatchSchedule(SupportedChainId.MAINNET, controller.signal)
+    controller.abort()
+
+    await expect(pending).rejects.toMatchObject({ name: 'AbortError' })
+    expect(requestSignal?.aborted).toBe(true)
   })
 })
 
