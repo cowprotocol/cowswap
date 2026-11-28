@@ -32,8 +32,11 @@ export type BuildAppDataParams = {
   partnerFee?: AppDataPartnerFee
   replacedOrderUid?: string
   userConsent?: UserConsentsMetadata
-  /** Canonical-batch start (unix seconds). Pending official sdk-app-data schema field. */
-  validFrom?: number
+  /**
+   * Wait for CoWs marker. Pending the official app-data schema.
+   * Pass `false` for a market opt-out and leave unset for limit and TWAP.
+   */
+  enableWaitForCow?: boolean
 }
 
 export async function buildAppData({
@@ -49,7 +52,7 @@ export async function buildAppData({
   partnerFee,
   replacedOrderUid,
   userConsent,
-  validFrom,
+  enableWaitForCow,
 }: BuildAppDataParams): Promise<AppDataInfo> {
   const referrerParams: AppDataRootSchema['metadata']['referrer'] = refCode ? { code: refCode } : undefined
 
@@ -60,8 +63,8 @@ export async function buildAppData({
   const orderClass = { orderClass: orderClassName }
   const replacedOrder = replacedOrderUid ? { uid: replacedOrderUid } : undefined
 
-  // validFrom is not in the published app-data schema yet (additionalProperties: false), but
-  // generateAppDataDoc preserves unknown metadata keys so the signed hash includes it.
+  // Not in the published schema (additionalProperties: false). generateAppDataDoc still keeps the key,
+  // and market opt-out must send false so deepmerge cannot retain a quote's true.
   const doc = await metadataApiSDK.generateAppDataDoc({
     appCode,
     environment,
@@ -75,7 +78,7 @@ export async function buildAppData({
       partnerFee,
       ...{ replacedOrder },
       ...(userConsent ? userConsent : {}),
-      ...(typeof validFrom === 'number' ? { validFrom } : {}),
+      ...(enableWaitForCow !== undefined ? { enableWaitForCow } : {}),
     },
   })
 

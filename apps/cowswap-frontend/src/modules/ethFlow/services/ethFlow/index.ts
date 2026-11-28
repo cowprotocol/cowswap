@@ -9,6 +9,7 @@ import { SigningSteps } from 'entities/trade'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { mapUnsignedOrderToOrder, wrapErrorInOperatorError } from 'legacy/utils/trade'
+import { withWaitAndSaveNextBatch } from 'legacy/utils/withWaitAndSaveNextBatch'
 
 import { removePermitHookFromAppData } from 'modules/appData'
 import { emitPostedOrderEvent } from 'modules/orders'
@@ -187,7 +188,7 @@ export async function ethFlow({
       {
         id: orderId,
         chainId: context.chainId,
-        order,
+        order: withWaitAndSaveNextBatch(order, orderParams.waitAndSaveNextBatch),
         isSafeWallet: orderParams.isSafeWallet,
       },
       dispatch,

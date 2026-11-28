@@ -71,6 +71,11 @@ export interface BaseOrder extends OrderCreation {
   // De-normalizing it as this is known at order placement time as `appData`,
   // but when returned from the api is replaced with the `appDataHash`
   fullAppData?: EnrichedOrder['fullAppData']
+  /**
+   * Unix seconds of the Wait & Save batch this order joined, snapshotted at placement.
+   * Countdown uses this until `apiAdditionalInfo.validFrom` is a finite number.
+   */
+  waitAndSaveNextBatch?: number
 
   // Wallet specific
   presignGnosisSafeTxHash?: string // Gnosis Safe tx

@@ -29,7 +29,11 @@ function expectExactText(text: string): void {
 }
 
 function normalizeText(value: string | null | undefined): string {
-  return (value ?? '').replace(/\s+/g, ' ').trim()
+  // ThreeDots inserts word joiners between the dots.
+  return (value ?? '')
+    .replace(/\u2060/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
 }
 
 function renderRow(props: Partial<WaitAndSaveRowProps> = {}): void {
@@ -40,6 +44,8 @@ function renderRow(props: Partial<WaitAndSaveRowProps> = {}): void {
         toggle={jest.fn()}
         joinsBatchInRef={createRef()}
         hasError={false}
+        isLoading={false}
+        isFetching={false}
         onRetry={jest.fn()}
         {...props}
       />
@@ -48,6 +54,15 @@ function renderRow(props: Partial<WaitAndSaveRowProps> = {}): void {
 }
 
 describe('WaitAndSaveRow', () => {
+  it('shows a batch-time skeleton while the schedule is loading', () => {
+    renderRow({ isLoading: true })
+
+    expectExactText('Joins batch in')
+    expect(screen.getByTestId('batch-time-skeleton')).toBeTruthy()
+    expect(screen.queryByRole('button', { name: 'Try again' })).toBeNull()
+    expect(screen.getByRole('checkbox', { name: 'Wait & save' })).toBeTruthy()
+  })
+
   it('replaces the toggle with a retry action when the schedule failed', () => {
     const onRetry = jest.fn()
 
@@ -62,23 +77,31 @@ describe('WaitAndSaveRow', () => {
     expect(onRetry).toHaveBeenCalledTimes(1)
   })
 
-  it('shows the save amount on the title and approximate joins-batch copy when provided', () => {
+  it('replaces Try again with Fetching batch time while a retry is in flight', () => {
+    renderRow({ hasError: true, isFetching: true })
+
+    expectExactText('Couldn’t load the next batch time · Fetching batch time...')
+    expect(screen.queryByRole('button', { name: 'Try again' })).toBeNull()
+    expect(screen.queryByRole('checkbox', { name: 'Wait & save' })).toBeNull()
+  })
+
+  it('shows the save amount on the title and joins-batch copy when provided', () => {
     renderRow({ saveAmount: '$2.50' })
 
     expectExactText('Wait & save $2.50')
-    expectExactText('No volume fee · Joins batch in ~')
+    expectExactText('No volume fee · Joins batch in')
   })
 
-  it('uses a live joins-batch prefix when enabled', () => {
+  it('keeps the joins-batch copy when enabled', () => {
     renderRow({ isEnabled: true, saveAmount: '$2.50' })
 
     expectExactText('No volume fee · Joins batch in')
   })
 
-  it('falls back to approximate joins-batch copy when no amount is provided', () => {
+  it('shows joins-batch copy when no amount is provided', () => {
     renderRow()
 
     expectExactText('Wait & save')
-    expectExactText('Joins batch in ~')
+    expectExactText('Joins batch in')
   })
 })

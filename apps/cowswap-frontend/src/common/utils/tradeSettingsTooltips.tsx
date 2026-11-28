@@ -81,10 +81,7 @@ export function getNonNativeOrderDeadlineTooltip(isWaitForCowsEnabled?: boolean)
     <SimpleStyledText>
       <p>
         {isWaitForCowsEnabled ? (
-          <Trans>
-            With Wait for CoWs, your swap stays open for this duration after it joins the next batch. Total time until
-            expiry is the batch wait plus this expiration.
-          </Trans>
+          <Trans>With Wait & save, your swap expires with the next batch. Swap expiration does not apply.</Trans>
         ) : (
           <Trans>Your swap expires and will not execute if it is pending for longer than the selected duration.</Trans>
         )}

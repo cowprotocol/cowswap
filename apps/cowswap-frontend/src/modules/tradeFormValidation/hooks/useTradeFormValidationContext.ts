@@ -26,11 +26,15 @@ import { useTokensBalancesCombined } from 'modules/combinedBalances'
 import { useApproveState, useGetAmountToSignApprove, useIsApprovalOrPermitRequired } from 'modules/erc20Approve'
 import { RwaTokenStatus, useRwaTokenStatus } from 'modules/rwa'
 import {
+  canonicalBatchScheduleQueryAtom,
+  isCanonicalBatchScheduleErrorAtom,
   useDerivedTradeState,
   useGetReceiveAmountInfo,
+  useIsWaitAndSaveAvailable,
   useIsWrapOrUnwrap,
   useNonEvmReceiverConfirmed,
   useTradePriceImpact,
+  waitAndSaveEnabledAtom,
 } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 
@@ -47,7 +51,7 @@ import { TradeFormValidationCommonContext } from '../types'
 import { getSwapMaximumSellAmount } from '../utils/getSwapMaximumSellAmount.utils'
 import { isUnsupportedTokenInQuote } from '../utils/isUnsupportedTokenInQuote.utils'
 
-// eslint-disable-next-line max-lines-per-function
+// eslint-disable-next-line max-lines-per-function, complexity
 export function useTradeFormValidationContext(): TradeFormValidationCommonContext | null {
   const { account } = useWalletInfo()
   const derivedTradeState = useDerivedTradeState()
@@ -112,6 +116,16 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const isRestrictedForCountry = rwaStatus === RwaTokenStatus.Restricted
 
   const solanaNativeShortfall = useSolanaNativeShortfall()
+  const isWaitAndSaveAvailable = useIsWaitAndSaveAvailable()
+  const isWaitAndSaveEnabled = useAtomValue(waitAndSaveEnabledAtom)
+  const canonicalBatchSchedule = useAtomValue(canonicalBatchScheduleQueryAtom)
+  const isCanonicalBatchScheduleError = useAtomValue(isCanonicalBatchScheduleErrorAtom)
+  const isCanonicalBatchScheduleLoading =
+    tradeType === TradeType.SWAP &&
+    isWaitAndSaveAvailable &&
+    isWaitAndSaveEnabled &&
+    !isCanonicalBatchScheduleError &&
+    canonicalBatchSchedule.data?.nextBatchValidTo == null
 
   return useMemo(() => {
     if (!derivedTradeState) return null
@@ -149,6 +163,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
         featureFlagsStatus === 'loading' ||
         (featureFlagsStatus === 'ready' && !canQuote && !captchaInteractionRequired),
       isCaptchaRequired: featureFlagsStatus === 'ready' && !canQuote && captchaInteractionRequired,
+      isCanonicalBatchScheduleLoading,
       swapMaximumSellAmount,
       solanaNativeShortfall,
     }
@@ -188,6 +203,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     captchaInteractionRequired,
     swapMaximumSellAmount,
     solanaNativeShortfall,
+    isCanonicalBatchScheduleLoading,
   ])
 }
 

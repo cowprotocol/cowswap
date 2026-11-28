@@ -41,6 +41,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isRestoringConnection,
     isCaptchaPending,
     isCaptchaRequired,
+    isCanonicalBatchScheduleLoading,
     swapMaximumSellAmount,
     solanaNativeShortfall,
   } = context
@@ -233,6 +234,10 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
     if (isSwapUnsupported) {
       validations.push(TradeFormValidation.CurrencyNotSupported)
+    }
+
+    if (isCanonicalBatchScheduleLoading) {
+      validations.push(TradeFormValidation.CanonicalBatchScheduleLoading)
     }
 
     if (isFastQuote || !tradeQuote.quote || isQuoteRefreshing || (isBridging && tradeQuote.isLoading)) {

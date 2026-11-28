@@ -1,16 +1,16 @@
 import { useAtomValue } from 'jotai'
-import { JSX, useCallback, useEffect, useRef, useState } from 'react'
+import { JSX, useCallback, useRef, useState } from 'react'
 
 import { DEFAULT_DEADLINE_FROM_NOW } from '@cowprotocol/common-const'
-import { useCountdown } from '@cowprotocol/common-hooks'
-import { formatBatchCountdown } from '@cowprotocol/common-utils'
+import { useCountdown, useLocalTimeOffset } from '@cowprotocol/common-hooks'
+import { formatApproximateBatchCountdown, getServerNowSec } from '@cowprotocol/common-utils'
 import { StatefulValue } from '@cowprotocol/types'
 import { SettingsInput, SettingsFeedback } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
-import { cowBatchValidFromAtom, useIsWaitAndSaveAvailable, waitAndSaveEnabledAtom } from 'modules/trade'
+import { canonicalBatchScheduleAtom, useIsWaitAndSaveAvailable, waitAndSaveEnabledAtom } from 'modules/trade'
 
 import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 'common/utils/tradeSettingsTooltips'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
@@ -24,52 +24,35 @@ interface DeadlineSettingsProps {
 export function DeadlineTransactionSettings({ deadlineState }: DeadlineSettingsProps): JSX.Element {
   const { viewValue, parseCustomDeadline, error, isDisabled, onBlur, deadlineRangeParams } =
     useCustomDeadline(deadlineState)
-  const [deadline] = deadlineState
   const nativeCurrency = useNativeCurrency()
   const isWaitAndSaveAvailable = useIsWaitAndSaveAvailable()
   const isWaitAndSaveEnabled = useAtomValue(waitAndSaveEnabledAtom)
-  const validFrom = useAtomValue(cowBatchValidFromAtom)
+  const nextBatchValidTo = useAtomValue(canonicalBatchScheduleAtom)?.nextBatchValidTo
 
   const showWaitForCows = isWaitAndSaveAvailable && isWaitAndSaveEnabled
-  const hasValidFrom = validFrom !== undefined
+  const timeOffsetSec = useLocalTimeOffset() ?? 0
+  const expiryRef = useRef<HTMLElement | null>(null)
+  const expiryEpochSec = showWaitForCows && !error ? nextBatchValidTo : undefined
+  const [, setExpiryRevision] = useState(0)
+  const autoExpiryLabel =
+    expiryEpochSec === undefined
+      ? undefined
+      : formatApproximateBatchCountdown(remainingSecUntil(expiryEpochSec, timeOffsetSec))
+  const autoExpiryLabelRef = useRef(autoExpiryLabel)
+  autoExpiryLabelRef.current = autoExpiryLabel
 
-  const batchWaitRef = useRef<HTMLElement | null>(null)
-  const totalExpiryRef = useRef<HTMLElement | null>(null)
-  const waitRemainingSecRef = useRef<number | undefined>(undefined)
-  const [isExpirationShorterThanWait, setIsExpirationShorterThanWait] = useState(false)
+  const refreshAutoExpiry = useCallback((remainingSec: number) => {
+    const next = formatApproximateBatchCountdown(remainingSec)
+    if (next === autoExpiryLabelRef.current) return
 
-  // The countdown spans only exist in the Wait for CoWs message, which the deadline error replaces.
-  const batchWaitEpochSec = showWaitForCows && !error ? validFrom : undefined
-  const totalExpiryEpochSec = batchWaitEpochSec !== undefined ? batchWaitEpochSec + deadline : undefined
-
-  const syncWarning = useCallback((remainingSec: number | undefined, deadlineSec: number) => {
-    const next = remainingSec !== undefined && deadlineSec > 0 && deadlineSec < remainingSec
-    setIsExpirationShorterThanWait((prev) => (prev === next ? prev : next))
+    setExpiryRevision((revision) => revision + 1)
   }, [])
 
-  const onBatchWaitRemainingChange = useCallback(
-    (remainingSec: number) => {
-      waitRemainingSecRef.current = remainingSec
-      syncWarning(remainingSec, deadline)
-    },
-    [deadline, syncWarning],
-  )
-
-  useEffect(() => {
-    syncWarning(waitRemainingSecRef.current, deadline)
-  }, [deadline, syncWarning])
-
   useCountdown({
-    targetRef: batchWaitRef,
-    targetEpochSec: batchWaitEpochSec,
-    format: formatBatchCountdown,
-    onRemainingChange: onBatchWaitRemainingChange,
-  })
-
-  useCountdown({
-    targetRef: totalExpiryRef,
-    targetEpochSec: totalExpiryEpochSec,
-    format: formatBatchCountdown,
+    targetRef: expiryRef,
+    targetEpochSec: expiryEpochSec,
+    format: formatApproximateBatchCountdown,
+    onRemainingChange: refreshAutoExpiry,
   })
 
   const minMinutes = deadlineRangeParams.minMinutes
@@ -77,24 +60,19 @@ export function DeadlineTransactionSettings({ deadlineState }: DeadlineSettingsP
   const deadlineRangeMessage = t`Minimum ${minMinutes} min, maximum ${maxMinutes} min.`
 
   const waitForCowsMessage = showWaitForCows ? (
-    hasValidFrom ? (
+    expiryEpochSec !== undefined ? (
       <Trans>
-        With Wait for CoWs, expiration starts after the next batch (~
-        <span ref={batchWaitRef} />
-        ). Total time until expiry ≈ <span ref={totalExpiryRef} />.
+        With Wait & save, your swap is automatically set to expire in <span ref={expiryRef} />.
       </Trans>
     ) : (
-      <Trans>
-        With Wait for CoWs, expiration starts after the next batch. Total time until expiry is the batch wait plus this
-        expiration.
-      </Trans>
+      <Trans>With Wait & save, your swap is automatically set to expire with the next batch.</Trans>
     )
   ) : null
 
   const footerSlot = error ? (
     <SettingsFeedback variant="error" message={deadlineRangeMessage} />
   ) : waitForCowsMessage ? (
-    <SettingsFeedback variant={isExpirationShorterThanWait ? 'warning' : 'info'} message={waitForCowsMessage} />
+    <SettingsFeedback variant="info" message={waitForCowsMessage} />
   ) : null
 
   return (
@@ -102,18 +80,27 @@ export function DeadlineTransactionSettings({ deadlineState }: DeadlineSettingsP
       id="deadline-input"
       label={t`Swap Expiration`}
       tooltip={
-        deadlineRangeParams.isEoaEthFlow
-          ? getNativeOrderDeadlineTooltip([nativeCurrency.symbol])
-          : getNonNativeOrderDeadlineTooltip(showWaitForCows)
+        showWaitForCows
+          ? getNonNativeOrderDeadlineTooltip(true)
+          : deadlineRangeParams.isEoaEthFlow
+            ? getNativeOrderDeadlineTooltip([nativeCurrency.symbol])
+            : getNonNativeOrderDeadlineTooltip()
       }
       placeholder={(DEFAULT_DEADLINE_FROM_NOW / 60).toString()}
-      value={viewValue}
-      unit={t`minutes`}
+      value={autoExpiryLabel ?? viewValue}
+      unit={autoExpiryLabel === undefined ? t`minutes` : undefined}
       onChange={(e) => parseCustomDeadline(e.target.value)}
       onBlur={onBlur}
-      disabled={isDisabled}
+      disabled={isDisabled || showWaitForCows}
       error={!!error}
       footerSlot={footerSlot}
     />
   )
+}
+
+/** Whole seconds until `targetEpochSec`, rounded the same way as the countdown hook. */
+function remainingSecUntil(targetEpochSec: number, timeOffsetSec: number): number {
+  const msLeft = (targetEpochSec - getServerNowSec(timeOffsetSec)) * 1000
+
+  return Math.max(0, Math.ceil(msLeft / 1000))
 }

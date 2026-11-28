@@ -1,11 +1,13 @@
 import { ReactNode, useState } from 'react'
 
-import { COW_BATCH_TIME_SECONDS } from '@cowprotocol/common-const'
 import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
 import { MilkGlassCountdown } from './MilkGlassCountdown.pure'
+
+/** Cosmos-only stand-in for a canonical batch interval. */
+const DEMO_BATCH_INTERVAL_SECONDS = 300
 
 function midCountdownTargetEpochSec(): number {
   return Math.floor(Date.now() / 1000) + 224
@@ -71,7 +73,7 @@ function MidCountdownFixture({ width }: { width: number }): ReactNode {
         <MilkGlassCountdown
           key={mountKey}
           targetEpochSec={targetEpochSec}
-          durationMs={COW_BATCH_TIME_SECONDS * 1000}
+          durationMs={DEMO_BATCH_INTERVAL_SECONDS * 1000}
           label="Until your order enters the auction"
         />
       </Hero>

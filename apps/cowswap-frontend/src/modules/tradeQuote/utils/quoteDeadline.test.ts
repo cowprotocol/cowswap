@@ -134,9 +134,10 @@ describe('Quote deadline utils', () => {
       expect(getOrderValidTo(deadline, getQuoteState(quoteDeadlineParams))).toEqual(MAX_VALID_TO_EPOCH)
     })
 
-    it('When validFrom is set, ValidTo should be validFrom + deadline + wall-clock entropy', () => {
+    it('When Wait & Save batch data is set, ValidTo is nextBatchValidTo plus wall-clock entropy', () => {
       const deadline = 120 // 2 minutes
-      const validFrom = Math.floor(NOW_TIME / 1000) + 240 // batch in 4 minutes
+      const nextBatch = Math.floor(NOW_TIME / 1000) + 240 // batch in 4 minutes
+      const nextBatchValidTo = nextBatch + 180
       const localQuoteTimestamp = Math.floor(NOW_TIME / 1000)
       const quoteDeadlineParams = {
         validFor: deadline,
@@ -145,43 +146,48 @@ describe('Quote deadline utils', () => {
       }
       const serverNowSec = Math.floor(NOW_TIME / 1000)
       const waitAndSaveEntropy = serverNowSec % 30
+      const anchor = { nextBatch, nextBatchValidTo }
+      const quoteState = getQuoteState(quoteDeadlineParams)
 
-      expect(getOrderValidTo(deadline, getQuoteState(quoteDeadlineParams), validFrom)).toEqual(
-        validFrom + deadline + waitAndSaveEntropy,
-      )
+      expect(nextBatchValidTo).toBeGreaterThan(nextBatch)
+      expect(nextBatchValidTo).toBeLessThan(serverNowSec + deadline + 10_000)
+      expect(getOrderValidTo(deadline, quoteState, anchor)).toEqual(nextBatchValidTo + waitAndSaveEntropy)
+      expect(getOrderValidTo(deadline + 10_000, quoteState, anchor)).toEqual(nextBatchValidTo + waitAndSaveEntropy)
     })
 
-    it('When validFrom is set, ValidTo differs across wall-clock seconds', () => {
+    it('When nextBatch is set, ValidTo differs across wall-clock seconds', () => {
       const deadline = 120
-      const validFrom = Math.floor(NOW_TIME / 1000) + 240
+      const nextBatch = Math.floor(NOW_TIME / 1000) + 240
       const localQuoteTimestamp = Math.floor(NOW_TIME / 1000)
       const quoteDeadlineParams = {
         validFor: deadline,
         quoteValidTo: localQuoteTimestamp + deadline,
         localQuoteTimestamp,
       }
+      const anchor = { nextBatch, nextBatchValidTo: nextBatch + 180 }
 
-      const first = getOrderValidTo(deadline, getQuoteState(quoteDeadlineParams), validFrom)
+      const first = getOrderValidTo(deadline, getQuoteState(quoteDeadlineParams), anchor)
       Date.now = jest.fn(() => NOW_TIME + 1000)
-      const second = getOrderValidTo(deadline, getQuoteState(quoteDeadlineParams), validFrom)
+      const second = getOrderValidTo(deadline, getQuoteState(quoteDeadlineParams), anchor)
 
       expect(second).not.toEqual(first)
       expect(second - first).toBe(1)
     })
 
-    it('When validFrom is set, ValidTo entropy wraps within 30 seconds', () => {
+    it('When nextBatch is set, ValidTo entropy wraps within 30 seconds', () => {
       const deadline = 120
-      const validFrom = Math.floor(NOW_TIME / 1000) + 240
+      const nextBatch = Math.floor(NOW_TIME / 1000) + 240
       const localQuoteTimestamp = Math.floor(NOW_TIME / 1000)
       const quoteDeadlineParams = {
         validFor: deadline,
         quoteValidTo: localQuoteTimestamp + deadline,
         localQuoteTimestamp,
       }
+      const anchor = { nextBatch, nextBatchValidTo: nextBatch + 180 }
 
-      const first = getOrderValidTo(deadline, getQuoteState(quoteDeadlineParams), validFrom)
+      const first = getOrderValidTo(deadline, getQuoteState(quoteDeadlineParams), anchor)
       Date.now = jest.fn(() => NOW_TIME + 30_000)
-      const wrapped = getOrderValidTo(deadline, getQuoteState(quoteDeadlineParams), validFrom)
+      const wrapped = getOrderValidTo(deadline, getQuoteState(quoteDeadlineParams), anchor)
 
       expect(wrapped).toEqual(first)
     })

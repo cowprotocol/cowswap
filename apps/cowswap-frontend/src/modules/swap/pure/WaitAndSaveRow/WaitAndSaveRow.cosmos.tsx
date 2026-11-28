@@ -6,15 +6,19 @@ import { WAIT_AND_SAVE_DEMO_SAVE_AMOUNT_FIAT } from './waitAndSaveRow.constants'
 import { WaitAndSaveRow } from './WaitAndSaveRow.pure'
 
 function RowFixture({
-  approximateLabel = '7 min',
+  approximateLabel = '~7 min',
   hasError = false,
   initiallyEnabled = false,
+  isFetching = false,
+  isLoading = false,
   liveLabel = '6m 42s',
   saveAmount,
 }: {
   approximateLabel?: string
   hasError?: boolean
   initiallyEnabled?: boolean
+  isFetching?: boolean
+  isLoading?: boolean
   liveLabel?: string
   saveAmount?: string
 }): ReactNode {
@@ -36,6 +40,8 @@ function RowFixture({
           toggle={() => setEnabled((value) => !value)}
           joinsBatchInRef={joinsBatchInRef}
           hasError={hasError}
+          isFetching={isFetching}
+          isLoading={isLoading}
           onRetry={() => undefined}
           saveAmount={saveAmount}
         />
@@ -52,6 +58,8 @@ const Fixtures = {
   lastMinuteApproximate: <RowFixture approximateLabel="45s" saveAmount={WAIT_AND_SAVE_DEMO_SAVE_AMOUNT_FIAT} />,
   lastMinuteLive: <RowFixture initiallyEnabled liveLabel="42s" saveAmount={WAIT_AND_SAVE_DEMO_SAVE_AMOUNT_FIAT} />,
   scheduleError: <RowFixture hasError />,
+  scheduleLoading: <RowFixture isLoading saveAmount={WAIT_AND_SAVE_DEMO_SAVE_AMOUNT_FIAT} />,
+  scheduleFetching: <RowFixture hasError isFetching />,
 }
 
 export default Fixtures

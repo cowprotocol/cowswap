@@ -6,6 +6,8 @@ import { TooltipIcon } from '@cowprotocol/ui'
 import { Trans, useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
+import { ThreeDots } from 'common/pure/ThreeDots/ThreeDots.pure'
+
 import * as styledEl from './WaitAndSaveRow.styled'
 import { WaitAndSaveTooltipContent } from './WaitAndSaveTooltipContent.pure'
 
@@ -14,6 +16,8 @@ export interface WaitAndSaveRowProps {
   toggle: () => void
   joinsBatchInRef: RefObject<HTMLElement | null>
   hasError: boolean
+  isLoading: boolean
+  isFetching: boolean
   onRetry: () => void
   saveAmount?: string
 }
@@ -23,6 +27,8 @@ export function WaitAndSaveRow({
   toggle,
   joinsBatchInRef,
   hasError,
+  isLoading,
+  isFetching,
   onRetry,
   saveAmount,
 }: WaitAndSaveRowProps): ReactNode {
@@ -48,6 +54,8 @@ export function WaitAndSaveRow({
           <WaitAndSaveDescription
             hasError={hasError}
             isEnabled={isEnabled}
+            isFetching={isFetching}
+            isLoading={isLoading}
             joinsBatchInRef={joinsBatchInRef}
             onRetry={onRetry}
             saveAmount={saveAmount}
@@ -68,34 +76,63 @@ export function WaitAndSaveRow({
   )
 }
 
+function BatchCountdown({
+  isLoading,
+  joinsBatchInRef,
+}: {
+  isLoading: boolean
+  joinsBatchInRef: RefObject<HTMLElement | null>
+}): ReactNode {
+  if (isLoading) {
+    return <styledEl.BatchTimeSkeleton aria-hidden data-testid="batch-time-skeleton" />
+  }
+
+  return <span ref={joinsBatchInRef} />
+}
+
 function WaitAndSaveDescription({
   hasError,
   isEnabled,
+  isFetching,
+  isLoading,
   joinsBatchInRef,
   onRetry,
   saveAmount,
 }: {
   hasError: boolean
   isEnabled: boolean
+  isFetching: boolean
+  isLoading: boolean
   joinsBatchInRef: RefObject<HTMLElement | null>
   onRetry: () => void
   saveAmount?: string
 }): ReactNode {
-  const joinsBatchGap = isEnabled ? ' ' : ' ~'
-
   return (
     <styledEl.DescriptionRow>
       {hasError ? (
         <styledEl.ScheduleError>
-          <Trans>
-            Couldn’t load the next batch{' '}
-            <span className="noBreak">
-              time ·{' '}
-              <styledEl.RetryButton type="button" onClick={onRetry}>
-                Try again
-              </styledEl.RetryButton>
-            </span>
-          </Trans>
+          {isFetching ? (
+            <Trans>
+              Couldn’t load the next batch{' '}
+              <span className="noBreak">
+                time ·{' '}
+                <styledEl.FetchingBatchTime>
+                  Fetching batch time
+                  <ThreeDots />
+                </styledEl.FetchingBatchTime>
+              </span>
+            </Trans>
+          ) : (
+            <Trans>
+              Couldn’t load the next batch{' '}
+              <span className="noBreak">
+                time ·{' '}
+                <styledEl.RetryButton type="button" onClick={onRetry}>
+                  Try again
+                </styledEl.RetryButton>
+              </span>
+            </Trans>
+          )}
         </styledEl.ScheduleError>
       ) : (
         <styledEl.NextBatch>
@@ -110,14 +147,12 @@ function WaitAndSaveDescription({
                   {' · '}
                   Joins
                 </span>{' '}
-                batch in{joinsBatchGap}
-                <span ref={joinsBatchInRef} />
+                batch in <BatchCountdown isLoading={isLoading} joinsBatchInRef={joinsBatchInRef} />
               </Trans>
             </>
           ) : (
             <Trans>
-              Joins batch in{joinsBatchGap}
-              <span ref={joinsBatchInRef} />
+              Joins batch in <BatchCountdown isLoading={isLoading} joinsBatchInRef={joinsBatchInRef} />
             </Trans>
           )}
         </styledEl.NextBatch>

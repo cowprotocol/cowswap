@@ -40,28 +40,28 @@ export function formatBatchCountdown(totalSeconds: number): string {
 const LAST_MINUTE_BUCKET_SEC = 15
 
 /**
- * Formats remaining batch wait as a coarse approximate label (`7 min`, `45s`).
+ * Formats remaining batch wait as a coarse approximate label (`~7 min`, `~45s`).
  * Minutes change once per minute; under a minute, values snap to 15s buckets.
  */
 export function formatApproximateBatchCountdown(totalSeconds: number): string {
   const seconds = Math.max(0, Math.floor(totalSeconds))
 
   if (seconds <= 0) {
-    return formatCountdownSeconds(0)
+    return `~${formatCountdownSeconds(0)}`
   }
 
   if (seconds >= 60) {
     const minutes = Math.ceil(seconds / 60)
 
-    return plural(minutes, {
+    return `~${plural(minutes, {
       one: '# min',
       few: '# min',
       many: '# min',
       other: '# min',
-    })
+    })}`
   }
 
-  return formatCountdownSeconds(Math.ceil(seconds / LAST_MINUTE_BUCKET_SEC) * LAST_MINUTE_BUCKET_SEC)
+  return `~${formatCountdownSeconds(Math.ceil(seconds / LAST_MINUTE_BUCKET_SEC) * LAST_MINUTE_BUCKET_SEC)}`
 }
 
 function formatCountdownSeconds(seconds: number): string {

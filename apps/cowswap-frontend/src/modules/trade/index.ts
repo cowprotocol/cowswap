@@ -3,8 +3,13 @@ export * from './types'
 export * from './const/common'
 export * from './state/tradeTypeAtom'
 export { waitAndSaveEnabledAtom } from './state/waitAndSaveEnabledAtom'
-export { cowBatchValidFromAtom } from './state/cowBatchValidFromAtom'
-export { useIsWaitAndSaveAvailable } from './hooks/useIsWaitAndSaveAvailable'
+export {
+  canonicalBatchScheduleQueryAtom,
+  canonicalBatchScheduleAtom,
+  canonicalBatchNextBatchAtom,
+  canonicalBatchIntervalSecondsAtom,
+  isCanonicalBatchScheduleErrorAtom,
+} from './state/canonicalBatchScheduleAtom'
 export * from './state/derivedTradeStateAtom'
 export * from './state/isWrapOrUnwrapAtom'
 export * from './state/isEoaEthFlowAtom'
@@ -144,3 +149,5 @@ export { PricePercentageShortcuts } from './pure/PricePercentageShortcuts/PriceP
 export type { PricePercentageShortcutsProps } from './pure/PricePercentageShortcuts/PricePercentageShortcuts.pure'
 export { getPercentageRate, isValidPricePercentageParam, PRICE_PERCENTAGE_PRESETS } from './utils/percentageRate.utils'
 export { getTakeProfitOrder, getTakeProfitNavigation } from './utils/takeProfit.utils'
+// Imports modules/erc20Approve, which imports this barrel. Keep it last so that cycle resolves after the other exports.
+export { useIsWaitAndSaveAvailable } from './hooks/useIsWaitAndSaveAvailable'

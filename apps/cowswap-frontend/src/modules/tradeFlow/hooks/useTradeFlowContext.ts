@@ -13,7 +13,7 @@ import useSWR from 'swr'
 import { AppDispatch } from 'legacy/state'
 import { useCloseModals } from 'legacy/state/application/hooks'
 
-import { useAppData, useAppDataHooks, useWaitAndSaveValidFrom } from 'modules/appData'
+import { useAppData, useAppDataHooks, useWaitAndSaveBatchData } from 'modules/appData'
 import { useBridgeQuoteAmounts } from 'modules/bridge'
 import { useGetAmountToSignApprove } from 'modules/erc20Approve'
 import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'modules/permit'
@@ -89,8 +89,9 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
     orderKind,
   } = derivedTradeState || {}
 
-  const waitAndSaveValidFrom = useWaitAndSaveValidFrom()
-  const validTo = getOrderValidTo(deadline, tradeQuote, waitAndSaveValidFrom)
+  const waitAndSaveBatchData = useWaitAndSaveBatchData()
+  const validTo = getOrderValidTo(deadline, tradeQuote, waitAndSaveBatchData)
+  const waitAndSaveNextBatch = waitAndSaveBatchData?.nextBatch
 
   const settlementChainId = settlementContract.chainId
 
@@ -136,6 +137,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             tradeConfirmActions,
             typedHooks,
             validTo,
+            waitAndSaveNextBatch,
             orderKind,
             uiOrderType,
             bridgeQuoteAmounts,
@@ -172,6 +174,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         tradeConfirmActions,
         typedHooks,
         validTo,
+        waitAndSaveNextBatch,
         orderKind,
         uiOrderType,
         bridgeQuoteAmounts,
@@ -227,6 +230,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             sellToken: sellToken as Token,
             buyToken: buyToken as Token,
             validTo,
+            waitAndSaveNextBatch,
             recipient: recipientAddress || recipient || account,
             recipientAddressOrName: recipient || null,
             allowsOffchainSigning,

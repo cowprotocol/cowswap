@@ -153,6 +153,9 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.QuoteLoading]: {
     text: <TradeLoadingButton />,
   },
+  [TradeFormValidation.CanonicalBatchScheduleLoading]: {
+    text: <TradeLoadingButton />,
+  },
   [TradeFormValidation.ImpactLoading]: {
     text: (
       <span>

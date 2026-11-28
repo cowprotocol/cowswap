@@ -23,7 +23,7 @@ export interface UseAppDataParams {
   replacedOrderUid?: string
   userConsent?: UserConsentsMetadata
   refCode?: string
-  validFrom?: number
+  enableWaitForCow?: boolean
 }
 
 /**
@@ -44,7 +44,7 @@ export function AppDataInfoUpdater({
   replacedOrderUid,
   userConsent,
   refCode,
-  validFrom,
+  enableWaitForCow,
 }: UseAppDataParams) {
   // AppDataInfo, from Jotai
   const setAppDataInfo = useSetAtom(appDataInfoAtom)
@@ -70,7 +70,7 @@ export function AppDataInfoUpdater({
       replacedOrderUid,
       userConsent,
       refCode,
-      validFrom,
+      enableWaitForCow,
     }
 
     try {
@@ -95,7 +95,7 @@ export function AppDataInfoUpdater({
     isSmartSlippage,
     userConsent,
     refCode,
-    validFrom,
+    enableWaitForCow,
   ])
 
   return null

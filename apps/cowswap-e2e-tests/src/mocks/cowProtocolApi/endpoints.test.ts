@@ -74,6 +74,7 @@ test('matchEndpoint resolves the remaining catalogue entries', () => {
   assert.equal(matchEndpoint('GET', `/api/v1/users/${ACCOUNT}/total_surplus`)?.endpoint.key, 'totalSurplus')
   assert.equal(matchEndpoint('POST', '/api/v1/quote')?.endpoint.key, 'quote')
   assert.equal(matchEndpoint('GET', '/api/v1/version')?.endpoint.key, 'version')
+  assert.equal(matchEndpoint('GET', '/api/v1/canonical_batch_schedule')?.endpoint.key, 'canonicalBatchSchedule')
   assert.equal(matchEndpoint('GET', '/api/v2/trades')?.endpoint.key, 'trades')
 })
 
@@ -95,6 +96,7 @@ test('every sample path matches exactly one catalogue entry', () => {
     ['PUT', `/api/v1/app_data/${APP_DATA_HASH}`],
     ['POST', '/api/v1/quote'],
     ['GET', '/api/v1/version'],
+    ['GET', '/api/v1/canonical_batch_schedule'],
     ['GET', '/api/v2/trades'],
     ['GET', '/api/v2/solver_competition/15567158'],
     ['GET', `/api/v2/solver_competition/by_tx_hash/${TX_HASH}`],

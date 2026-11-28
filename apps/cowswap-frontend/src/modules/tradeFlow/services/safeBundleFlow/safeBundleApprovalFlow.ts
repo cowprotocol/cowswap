@@ -11,6 +11,7 @@ import { tradingSdk } from 'tradingSdk/tradingSdk'
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { mapUnsignedOrderToOrder, wrapErrorInOperatorError } from 'legacy/utils/trade'
+import { withWaitAndSaveNextBatch } from 'legacy/utils/withWaitAndSaveNextBatch'
 
 import { removePermitHookFromAppData } from 'modules/appData'
 import { buildApproveTx } from 'modules/operations/bundle/buildApproveTx'
@@ -134,10 +135,13 @@ export async function safeBundleApprovalFlow({
       {
         id: orderId,
         chainId: context.chainId,
-        order: {
-          ...order,
-          isHidden: true,
-        },
+        order: withWaitAndSaveNextBatch(
+          {
+            ...order,
+            isHidden: true,
+          },
+          orderParams.waitAndSaveNextBatch,
+        ),
         isSafeWallet,
       },
       callbacks.dispatch,

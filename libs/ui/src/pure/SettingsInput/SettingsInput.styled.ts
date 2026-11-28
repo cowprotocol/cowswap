@@ -22,6 +22,11 @@ export const InputWrapper = styled.div<{ $hasLeftSlot: boolean; $hasError: boole
   font-size: 18px;
   padding-right: 16px;
   padding-left: ${({ $hasLeftSlot }) => ($hasLeftSlot ? '0' : '16px')};
+
+  &:has(input:disabled) {
+    cursor: not-allowed;
+    color: var(${UI.COLOR_TEXT_OPACITY_50});
+  }
 `
 
 export const Input = styled.input`
@@ -39,6 +44,7 @@ export const Input = styled.input`
   &:disabled {
     color: inherit;
     background-color: inherit;
+    cursor: not-allowed;
   }
 
   &::placeholder {

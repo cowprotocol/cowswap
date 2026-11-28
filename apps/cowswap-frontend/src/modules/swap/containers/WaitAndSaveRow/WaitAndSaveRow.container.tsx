@@ -4,7 +4,12 @@ import { ReactNode, useCallback, useEffect, useRef } from 'react'
 import { useCountdown } from '@cowprotocol/common-hooks'
 import { formatApproximateBatchCountdown, formatBatchCountdown } from '@cowprotocol/common-utils'
 
-import { cowBatchValidFromAtom, waitAndSaveEnabledAtom } from 'modules/trade'
+import {
+  canonicalBatchNextBatchAtom,
+  canonicalBatchScheduleQueryAtom,
+  isCanonicalBatchScheduleErrorAtom,
+  waitAndSaveEnabledAtom,
+} from 'modules/trade'
 
 import { WaitAndSaveRow } from '../../pure/WaitAndSaveRow/WaitAndSaveRow.pure'
 
@@ -12,12 +17,21 @@ export function WaitAndSaveRowContainer(): ReactNode {
   const [isEnabled, setEnabled] = useAtom(waitAndSaveEnabledAtom)
   const joinsBatchInRef = useRef<HTMLElement | null>(null)
   const remainingSecRef = useRef<number | undefined>(undefined)
-  const validFrom = useAtomValue(cowBatchValidFromAtom)
+  const countdownTargetEpochSec = useAtomValue(canonicalBatchNextBatchAtom)
+  const hasError = useAtomValue(isCanonicalBatchScheduleErrorAtom)
+  const { refetch, isFetching } = useAtomValue(canonicalBatchScheduleQueryAtom)
+  const isLoading = !hasError && countdownTargetEpochSec === undefined
   const format = isEnabled ? formatBatchCountdown : formatApproximateBatchCountdown
+
+  useEffect(() => {
+    if (hasError && isEnabled) {
+      setEnabled(false)
+    }
+  }, [isEnabled, hasError, setEnabled])
 
   useCountdown({
     targetRef: joinsBatchInRef,
-    targetEpochSec: validFrom,
+    targetEpochSec: hasError || isLoading ? undefined : countdownTargetEpochSec,
     format,
     onRemainingChange: (remainingSec) => {
       remainingSecRef.current = remainingSec
@@ -39,14 +53,18 @@ export function WaitAndSaveRowContainer(): ReactNode {
     setEnabled(!isEnabled)
   }, [isEnabled, setEnabled])
 
-  const onRetry = useCallback(() => undefined, [])
+  const onRetry = useCallback(() => {
+    void refetch()
+  }, [refetch])
 
   return (
     <WaitAndSaveRow
       isEnabled={isEnabled}
       toggle={toggle}
       joinsBatchInRef={joinsBatchInRef}
-      hasError={false}
+      hasError={hasError}
+      isLoading={isLoading}
+      isFetching={isFetching}
       onRetry={onRetry}
     />
   )

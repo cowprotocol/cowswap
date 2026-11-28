@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
 
 import { useLocalTimeOffset } from '@cowprotocol/common-hooks'
 import { getServerNowSec } from '@cowprotocol/common-utils'
@@ -10,12 +10,11 @@ import { useOrderValidFrom } from './useOrderValidFrom'
 export interface AuctionWaitState {
   auctionValidFrom: number | undefined
   isAuctionWaiting: boolean
-  onAuctionRemainingChange: (remainingSec: number) => void
 }
 
 /**
  * Tracks whether a Wait for CoWs order is still waiting for `validFrom`.
- * Display ticking is owned by `MilkGlassCountdown` in `AuctionCountdown`; this only gates UI.
+ * Expiry is timed here: the milk glass does not mount when the batch interval is missing.
  */
 export function useAuctionWaitState(order: Order | undefined): AuctionWaitState {
   const validFrom = useOrderValidFrom(order)
@@ -26,14 +25,25 @@ export function useAuctionWaitState(order: Order | undefined): AuctionWaitState 
     setIsWaiting(computeIsWaiting(validFrom, timeOffsetSec))
   }, [validFrom, timeOffsetSec])
 
-  const onAuctionRemainingChange = useCallback((remainingSec: number) => {
-    setIsWaiting(remainingSec > 0)
-  }, [])
+  useEffect(() => {
+    if (validFrom == null) {
+      return
+    }
+
+    const delayMs = (validFrom - getServerNowSec(timeOffsetSec)) * 1000
+
+    if (delayMs <= 0) {
+      return
+    }
+
+    const timeoutId = window.setTimeout(() => setIsWaiting(false), delayMs)
+
+    return () => window.clearTimeout(timeoutId)
+  }, [validFrom, timeOffsetSec])
 
   return {
     auctionValidFrom: isWaiting && validFrom != null ? validFrom : undefined,
     isAuctionWaiting: isWaiting,
-    onAuctionRemainingChange,
   }
 }
 
