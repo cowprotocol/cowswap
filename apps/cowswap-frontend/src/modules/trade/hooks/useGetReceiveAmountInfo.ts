@@ -1,5 +1,7 @@
 import { useMemo } from 'react'
 
+import { CurrencyAmount } from '@cowprotocol/currency'
+
 import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
@@ -18,12 +20,18 @@ export function useGetReceiveAmountInfo(): ReceiveAmountInfo | null {
   const bridgeFeeAmounts = bridgeQuote?.amountsAndCosts.costs.bridgingFee
 
   const params = useSwapReceiveAmountInfoParams()
-  const { expectedToReceiveAmount, intermediateCurrency } = useEstimatedBridgeBuyAmount() || {}
+  const { bridgePrice, intermediateCurrency } = useEstimatedBridgeBuyAmount() || {}
 
   return useMemo(() => {
     if (!params || !inputCurrency || !outputCurrency) return null
 
-    if (intermediateCurrency && bridgeFeeAmounts && expectedToReceiveAmount) {
+    if (intermediateCurrency && bridgeFeeAmounts && bridgePrice) {
+      // Replaces orderParams.buyAmount, from which getCrossChainReceiveAmountInfo() deducts the partner fee,
+      // so it must be bridged from the same pre-partner-fee amount
+      const expectedToReceiveAmount = bridgePrice.quote(
+        CurrencyAmount.fromRawAmount(intermediateCurrency, params.orderParams.buyAmount),
+      )
+
       return getCrossChainReceiveAmountInfo({
         ...params,
         // Important! Override currencies in case of cross-chain swap
@@ -36,5 +44,5 @@ export function useGetReceiveAmountInfo(): ReceiveAmountInfo | null {
     }
 
     return getReceiveAmountInfo(params)
-  }, [params, inputCurrency, outputCurrency, intermediateCurrency, bridgeFeeAmounts, expectedToReceiveAmount])
+  }, [params, inputCurrency, outputCurrency, intermediateCurrency, bridgeFeeAmounts, bridgePrice])
 }
